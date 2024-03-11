@@ -22,6 +22,7 @@ import {
   getModelApplications,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { toErrorString } from "utils";
 
 export enum TestId {
   PANEL = "grant-secret-panel",
@@ -37,14 +38,15 @@ export type FormFields = {
   applications: string[];
 };
 
-const handleErrors = (response: string | ErrorResults) => {
-  if (typeof response === "string") {
-    throw new Error(response);
-  } else if (Array.isArray(response.results)) {
-    const error = response.results.find(({ error }) => !!error);
-    if (error?.error?.message) {
-      throw new Error(error.error?.message);
+const handleErrors = (response: ErrorResults) => {
+  const errors = response.results.reduce((errorString, { error }) => {
+    if (error?.message) {
+      errorString = [errorString, error.message].filter(Boolean).join(". ");
     }
+    return errorString;
+  }, "");
+  if (errors) {
+    throw new Error(errors);
   }
 };
 
@@ -137,11 +139,7 @@ const GrantSecretPanel = () => {
                   handleRemovePanelQueryParams();
                 } catch (error) {
                   setSaving(false);
-                  if (typeof error === "string" || error instanceof Error) {
-                    setInlineError(
-                      error instanceof Error ? error.message : error,
-                    );
-                  }
+                  setInlineError(toErrorString(error));
                 }
               }}
             >

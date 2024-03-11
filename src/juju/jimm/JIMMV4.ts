@@ -17,10 +17,6 @@ export type CrossModelQueryResponse = {
   errors: Record<string, string[]>;
 };
 
-// In the case an invalid type and/or query is passed, the response might
-// sometimes be a string.
-export type CrossModelQueryFullResponse = CrossModelQueryResponse | string;
-
 export enum JIMMRelation {
   AUDIT_LOG_VIEWER = "audit_log_viewer",
   ADMINISTRATOR = "administrator",
@@ -36,16 +32,9 @@ export type RelationshipTuple = {
 
 // As typed in JIMM:
 // https://github.com/canonical/jimm/blob/c1e1642ac701bcbef2fdd8f4e347de9dcf16ac50/api/params/params.go#L324
-export type CheckRelationResponse =
-  | {
-      allowed: boolean;
-    }
-  | string;
-
-export const isCrossModelQueryResponse = (
-  response: CrossModelQueryFullResponse,
-): response is CrossModelQueryResponse =>
-  typeof response === "object" && "results" in response && "errors" in response;
+export type CheckRelationResponse = {
+  allowed: boolean;
+};
 
 class JIMMV4 extends JIMMV3 {
   static NAME: string;
@@ -76,7 +65,7 @@ class JIMMV4 extends JIMMV3 {
     });
   }
 
-  crossModelQuery(query: string): Promise<CrossModelQueryFullResponse> {
+  crossModelQuery(query: string): Promise<CrossModelQueryResponse> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",

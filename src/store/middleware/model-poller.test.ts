@@ -724,7 +724,7 @@ describe("model poller", () => {
 
   it("should handle Audit Logs user permission error", async () => {
     conn.facades.jimM = {
-      checkRelation: jest.fn().mockImplementation(async () => "Oops!"),
+      checkRelation: jest.fn().mockRejectedValue(new Error("Oops!")),
       version: 4,
     };
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
@@ -739,6 +739,30 @@ describe("model poller", () => {
     expect(console.error).toHaveBeenCalledWith(
       AuditLogsError.CHECK_PERMISSIONS,
       new Error("Oops!"),
+    );
+  });
+
+  it("should handle Audit Logs error", async () => {
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "findAuditEvents")
+      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchAuditEvents({
+      "user-tag": "user-eggman@external",
+      wsControllerURL: "wss://example.com",
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateAuditEventsErrors("Uh oh!"),
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      "Could not fetch audit events.",
+      new Error("Uh oh!"),
     );
   });
 
@@ -764,7 +788,7 @@ describe("model poller", () => {
     );
     expect(next).toHaveBeenCalledWith(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateCrossModelQuery(crossModelQueryResponse),
+      jujuActions.updateCrossModelQueryResults(crossModelQueryResponse.results),
     );
   });
 
@@ -787,6 +811,30 @@ describe("model poller", () => {
     expect(jujuModule.crossModelQuery).not.toHaveBeenCalled();
   });
 
+  it("handles errors object from response when fetching cross model query results", async () => {
+    const crossModelQueryResponse = {
+      results: {},
+      errors: { error1: ["Uh oh!"] },
+    };
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "crossModelQuery")
+      .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchCrossModelQuery({
+      wsControllerURL: "wss://example.com",
+      query: ".",
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateCrossModelQueryErrors(crossModelQueryResponse.errors),
+    );
+  });
+
   it("handles errors when fetching cross model query results", async () => {
     jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -803,11 +851,36 @@ describe("model poller", () => {
     });
     await middleware(next)(action);
     expect(console.error).toHaveBeenCalledWith(
-      "Could not perform cross model query:",
+      "Could not perform cross model query.",
       new Error("Uh oh!"),
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateCrossModelQuery(
+      jujuActions.updateCrossModelQueryErrors("Uh oh!"),
+    );
+  });
+
+  it("handles non-standard errors when fetching cross model query results", async () => {
+    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    jest
+      .spyOn(jujuModule, "crossModelQuery")
+      // eslint-disable-next-line prefer-promise-reject-errors
+      .mockImplementation(() => Promise.reject("Uh oh!"));
+    const middleware = await runMiddleware();
+    const action = jujuActions.fetchCrossModelQuery({
+      wsControllerURL: "wss://example.com",
+      query: ".",
+    });
+    await middleware(next)(action);
+    expect(console.error).toHaveBeenCalledWith(
+      "Could not perform cross model query.",
+      "Uh oh!",
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateCrossModelQueryErrors(
         "Unable to perform search. Please try again later.",
       ),
     );

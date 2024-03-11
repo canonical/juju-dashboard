@@ -184,11 +184,19 @@ describe("actions", () => {
     });
   });
 
-  it("updateCrossModelQuery", () => {
-    const payload = { results: {}, errors: {} };
-    expect(actions.updateCrossModelQuery(payload)).toStrictEqual({
-      type: "juju/updateCrossModelQuery",
-      payload,
+  it("updateCrossModelQueryResults", () => {
+    const results = { result1Key: ["result1Value"] };
+    expect(actions.updateCrossModelQueryResults(results)).toStrictEqual({
+      type: "juju/updateCrossModelQueryResults",
+      payload: results,
+    });
+  });
+
+  it("updateCrossModelQueryErrors", () => {
+    const errors = { error1: ["Uh oh!"] };
+    expect(actions.updateCrossModelQueryErrors(errors)).toStrictEqual({
+      type: "juju/updateCrossModelQueryErrors",
+      payload: errors,
     });
   });
 

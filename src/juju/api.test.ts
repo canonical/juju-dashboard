@@ -3,6 +3,7 @@ import * as jujuLib from "@canonical/jujulib";
 import * as jujuLibVersions from "@canonical/jujulib/dist/api/versions";
 import { waitFor } from "@testing-library/react";
 
+import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -517,14 +518,14 @@ describe("Juju API", () => {
       });
     });
 
-    it("handles string error responses", async () => {
+    it("handles status error response", async () => {
       const consoleError = console.error;
       console.error = jest.fn();
       const loginResponse = {
         conn: {
           facades: {
             client: {
-              fullStatus: jest.fn().mockReturnValue("Uh oh!"),
+              fullStatus: jest.fn().mockRejectedValue(new Error("Uh oh!")),
             },
           },
         } as unknown as Connection,
@@ -679,12 +680,12 @@ describe("Juju API", () => {
         () => state,
       );
       await expect(response).rejects.toStrictEqual(
-        new Error("Unable to fetch the status. "),
+        new Error("Unable to fetch the status. Status not returned."),
       );
       expect(console.error).toHaveBeenCalledWith(
         "Error connecting to model:",
         "abc123",
-        new Error("Unable to fetch the status. "),
+        new Error("Unable to fetch the status. Status not returned."),
       );
       expect(dispatch).not.toHaveBeenCalled();
       console.error = consoleError;
@@ -1190,6 +1191,31 @@ describe("Juju API", () => {
         }),
       );
     });
+
+    it("should handle error when unable to fetch the list of controllers", async () => {
+      const dispatch = jest.fn();
+      console.error = jest.fn();
+      const conn = {
+        facades: {
+          jimM: {
+            listControllers: jest
+              .fn()
+              .mockRejectedValueOnce(new Error("Uh oh!")),
+          },
+        },
+      } as unknown as Connection;
+      jest
+        .spyOn(jujuLibVersions, "jujuUpdateAvailable")
+        .mockImplementationOnce(async () => null);
+      await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
+        rootStateFactory.build(),
+      );
+      expect(dispatch).toHaveBeenCalledWith(
+        generalActions.storeConnectionError(
+          "Unable to fetch the list of controllers.",
+        ),
+      );
+    });
   });
 
   describe("disableControllerUUIDMasking", () => {
@@ -1374,7 +1400,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           client: {
-            watchAll: jest.fn().mockReturnValue("Uh oh!"),
+            watchAll: jest.fn().mockRejectedValue(new Error("Uh oh!")),
           },
           allWatcher: {
             next: jest.fn().mockReturnValue(null),

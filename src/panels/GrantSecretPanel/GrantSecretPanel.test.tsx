@@ -212,7 +212,7 @@ describe("GrantSecretPanel", () => {
   it("displays error string results", async () => {
     const grantSecret = jest
       .fn()
-      .mockImplementation(() => Promise.resolve("String error"));
+      .mockImplementation(() => Promise.reject(new Error("String error")));
     jest
       .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
@@ -225,11 +225,14 @@ describe("GrantSecretPanel", () => {
   });
 
   it("displays error object results", async () => {
-    const grantSecret = jest
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve({ results: [{ error: { message: "Error result" } }] }),
-      );
+    const grantSecret = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        results: [
+          { error: { message: "Error result 1" } },
+          { error: { message: "Error result 2" } },
+        ],
+      }),
+    );
     jest
       .spyOn(secretHooks, "useGrantSecret")
       .mockImplementation(() => grantSecret);
@@ -238,7 +241,7 @@ describe("GrantSecretPanel", () => {
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     expect(
       document.querySelector(".p-notification--negative"),
-    ).toHaveTextContent("Error result");
+    ).toHaveTextContent("Error result 1. Error result 2");
   });
 
   it("closes the panel if successful", async () => {
