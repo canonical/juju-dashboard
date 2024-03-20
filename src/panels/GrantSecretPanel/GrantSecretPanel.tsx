@@ -1,11 +1,15 @@
 import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
-import { ActionButton, Button, Spinner } from "@canonical/react-components";
+import {
+  ActionButton,
+  Button,
+  FormikField,
+  Spinner,
+} from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import { useId, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import FormikField from "components/FormikField";
 import Panel from "components/Panel";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import SecretLabel from "components/secrets/SecretLabel";
