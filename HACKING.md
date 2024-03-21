@@ -95,15 +95,11 @@ Then start the dashboard with:
 yarn start
 ```
 
-You should now be able to view the dashboard at the address that is displayed.
-
-Next you can move on to configuring the dashboard to use a different controller.
+Next you can move on to configuring a Juju controller to use with the dashboard.
 
 ### Controller configuration
 
-By default the dashboard is configured to run with [JAAS](https://jaas.ai).
-
-To use a different controller create a local config file:
+To configure the controller used by Juju Dashboard, create a local config file:
 
 ```
 cp public/config.js public/config.local.js
@@ -263,6 +259,8 @@ The easiest way to set up a juju controller is inside a
 [Multipass](https://multipass.run) container. This allows you cleanly add and
 remove controllers as necessary and provides a way to have multiple controllers
 running at once (with different Juju versions if needed).
+
+If a Kubernetes controller is required you can follow the [Multipass and Kubernetes](./docs/multipass-microk8s.md) instructions.
 
 If this controller is being created on an M1 mac then you will need to [set the
 arch](#juju-on-m1-macs) when running some of the commands.
@@ -454,6 +452,9 @@ repo.
 
 The Dockerfile is also used by the PR demo service which builds a Docker image
 and deploys it to display a running version of a branch.
+
+If this image needs to be tested in a Kubernetes environment then you can follow
+the [Multipass and Kubernetes](./docs/multipass-microk8s.md) instructions.
 
 To build the charm you first need to install [Docker Engine](https://docs.docker.com/engine/install/ubuntu/).
 

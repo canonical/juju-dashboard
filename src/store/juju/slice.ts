@@ -14,8 +14,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm/JIMMV3";
 import {
   type CrossModelQueryRequest,
-  type CrossModelQueryFullResponse,
-  isCrossModelQueryResponse,
+  type CrossModelQueryResponse,
 } from "juju/jimm/JIMMV4";
 import type {
   AllWatcherDelta,
@@ -241,21 +240,21 @@ const slice = createSlice({
     ) => {
       state.crossModelQuery.loading = true;
     },
-    updateCrossModelQuery: (
+    updateCrossModelQueryResults: (
       state,
-      { payload }: PayloadAction<CrossModelQueryFullResponse>,
+      { payload }: PayloadAction<CrossModelQueryResponse["results"]>,
     ) => {
-      // If "payload" is a string, it represents the error. In this case,
-      // "results" gets set to null and "errors" gets set to "payload".
-      state.crossModelQuery.results = isCrossModelQueryResponse(payload)
-        ? payload.results
-        : null;
-      state.crossModelQuery.errors =
-        isCrossModelQueryResponse(payload) && Object.keys(payload.errors).length
-          ? payload.errors
-          : typeof payload === "string"
-            ? payload
-            : null;
+      state.crossModelQuery.results = payload;
+      state.crossModelQuery.errors = null;
+      state.crossModelQuery.loaded = true;
+      state.crossModelQuery.loading = false;
+    },
+    updateCrossModelQueryErrors: (
+      state,
+      { payload }: PayloadAction<CrossModelQueryResponse["errors"] | string>,
+    ) => {
+      state.crossModelQuery.results = null;
+      state.crossModelQuery.errors = payload;
       state.crossModelQuery.loaded = true;
       state.crossModelQuery.loading = false;
     },

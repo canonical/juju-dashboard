@@ -42,11 +42,12 @@ import type {
 } from "store/juju/types";
 import { ModelsError } from "store/middleware/model-poller";
 import type { RootState, Store } from "store/store";
+import { toErrorString } from "utils";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
 import type { AuditEvents, FindAuditEventsRequest } from "./jimm/JIMMV3";
-import type { CrossModelQueryFullResponse } from "./jimm/JIMMV4";
+import type { CrossModelQueryResponse } from "./jimm/JIMMV4";
 import type {
   AllWatcherDelta,
   ApplicationInfo,
@@ -233,7 +234,7 @@ export async function fetchModelStatus(
     useIdentityProvider = config?.identityProviderAvailable ?? false;
   }
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
-  let status: FullStatusWithAnnotations | string | null = null;
+  let status: FullStatusWithAnnotations | null = null;
   let features: ModelFeatures | null = null;
   // Logged in state is checked multiple times as the user may have logged out
   // between requests.
@@ -247,15 +248,16 @@ export async function fetchModelStatus(
         useIdentityProvider,
       );
       if (isLoggedIn(getState(), wsControllerURL)) {
-        status =
-          (await conn?.facades.client?.fullStatus({ patterns: [] })) ?? null;
-        if (!status || typeof status === "string") {
-          // XXX If there is an error fetching the full status it's likely that
-          // Juju can no longer access this model. At this moment we don't have
-          // a location to notify the user. In the new watcher model that's
-          // being implemented we will be able to surface this error in the
-          // model details page.
-          throw new Error(`Unable to fetch the status. ${status ?? ""}`);
+        try {
+          status =
+            (await conn?.facades.client?.fullStatus({ patterns: [] })) ?? null;
+          if (!status) {
+            throw new Error("Status not returned.");
+          }
+        } catch (error) {
+          throw new Error(
+            `Unable to fetch the status. ${toErrorString(error)}`,
+          );
         }
       }
 
@@ -446,32 +448,32 @@ export async function fetchControllerList(
   getState: () => RootState,
 ) {
   let controllers: JujuController[] | null = null;
-  if (conn.facades.jimM) {
-    try {
+  try {
+    if (conn.facades.jimM) {
       const response = await conn.facades.jimM?.listControllers();
       controllers = response.controllers ?? [];
-    } catch (error) {
-      dispatch(
-        generalActions.storeConnectionError(
-          "Unable to fetch the list of controllers.",
-        ),
-      );
+    } else {
+      // If we're not connected to a JIMM then call to get the controller config
+      // and generate a fake controller list.
+      const controllerConfig =
+        await conn.facades.controller?.controllerConfig(null);
+      if (controllerConfig?.config) {
+        controllers = [
+          {
+            path: controllerConfig.config["controller-name"],
+            uuid: controllerConfig.config["controller-uuid"],
+            version: getControllerConnection(getState(), wsControllerURL)
+              ?.serverVersion,
+          },
+        ];
+      }
     }
-  } else {
-    // If we're not connected to a JIMM then call to get the controller config
-    // and generate a fake controller list.
-    const controllerConfig =
-      await conn.facades.controller?.controllerConfig(null);
-    if (controllerConfig?.config) {
-      controllers = [
-        {
-          path: controllerConfig.config["controller-name"],
-          uuid: controllerConfig.config["controller-uuid"],
-          version: getControllerConnection(getState(), wsControllerURL)
-            ?.serverVersion,
-        },
-      ];
-    }
+  } catch (error) {
+    dispatch(
+      generalActions.storeConnectionError(
+        "Unable to fetch the list of controllers.",
+      ),
+    );
   }
 
   if (controllers) {
@@ -588,10 +590,6 @@ export async function startModelWatcher(
     throw new Error(Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR);
   }
   const watcherHandle = await conn?.facades.client?.watchAll(null);
-  // If watchAll returns a string then it had an error.
-  if (typeof watcherHandle === "string") {
-    throw new Error(watcherHandle);
-  }
   const pingerIntervalId = startPingerLoop(conn);
   const id = watcherHandle?.["watcher-id"];
   if (!id) {
@@ -735,7 +733,7 @@ export function findAuditEvents(
 }
 
 export function crossModelQuery(conn: ConnectionWithFacades, query: string) {
-  return new Promise<CrossModelQueryFullResponse>((resolve, reject) => {
+  return new Promise<CrossModelQueryResponse>((resolve, reject) => {
     if (conn?.facades?.jimM) {
       conn.facades.jimM
         .crossModelQuery(query)

@@ -324,34 +324,6 @@ describe("SecretForm", () => {
     );
   });
 
-  it("displays error string results", async () => {
-    const createSecrets = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve("String error"));
-    jest
-      .spyOn(secretHooks, "useCreateSecrets")
-      .mockImplementation(() => createSecrets);
-    renderComponent(
-      <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,
-    );
-    await userEvent.type(
-      screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
-      "a key",
-    );
-    await userEvent.type(
-      screen.getByRole("textbox", { name: `${FieldsLabel.VALUE} 1` }),
-      "a value",
-    );
-    await waitFor(() =>
-      fireEvent.submit(screen.getByTestId(TestId.SECRET_FORM)),
-    );
-    await waitFor(() =>
-      expect(
-        document.querySelector(".p-notification--negative"),
-      ).toHaveTextContent("String error"),
-    );
-  });
-
   it("displays error object results", async () => {
     const createSecrets = jest
       .fn()

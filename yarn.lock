@@ -1796,15 +1796,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/jujulib@npm:5.0.0":
-  version: 5.0.0
-  resolution: "@canonical/jujulib@npm:5.0.0"
+"@canonical/jujulib@npm:6.0.0":
+  version: 6.0.0
+  resolution: "@canonical/jujulib@npm:6.0.0"
   dependencies:
     "@canonical/macaroon-bakery": "npm:1.3.2"
     btoa: "npm:1.2.1"
     websocket: "npm:1.0.34"
     xhr2: "npm:0.2.1"
-  checksum: 10dc98826611965d0c40e1c7f26407e7fd95287a82f37e44fd84408ccaef0750883fdd1677c2c13f6fd9d2a62e3f046202732732adc3199e7d84b4a75564439d
+  checksum: 3d25504d136fc5e103e3547b252b7ac51ce1df4b9d9afac3b1c2df7233fad1903e2b46b82e6d2a02d730d6ef4f195e82f5581140aacc06dc287450951e9f129a
   languageName: node
   linkType: hard
 
@@ -7653,14 +7653,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es5-ext@npm:^0.10.35, es5-ext@npm:^0.10.50":
-  version: 0.10.62
-  resolution: "es5-ext@npm:0.10.62"
+"es5-ext@npm:^0.10.35, es5-ext@npm:^0.10.50, es5-ext@npm:^0.10.62, es5-ext@npm:~0.10.14":
+  version: 0.10.64
+  resolution: "es5-ext@npm:0.10.64"
   dependencies:
     es6-iterator: "npm:^2.0.3"
     es6-symbol: "npm:^3.1.3"
+    esniff: "npm:^2.0.1"
     next-tick: "npm:^1.1.0"
-  checksum: 72dfbec5e4bce24754be9f2c2a1c67c01de3fe000103c115f52891f6a51f44a59674c40a1f6bd2390fcd43987746dccb76efafea91c7bb6295bdca8d63ba3db4
+  checksum: 4459b6ae216f3c615db086e02437bdfde851515a101577fd61b19f9b3c1ad924bab4d197981eb7f0ccb915f643f2fc10ff76b97a680e96cbb572d15a27acd9a3
   languageName: node
   linkType: hard
 
@@ -8225,6 +8226,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"esniff@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "esniff@npm:2.0.1"
+  dependencies:
+    d: "npm:^1.0.1"
+    es5-ext: "npm:^0.10.62"
+    event-emitter: "npm:^0.3.5"
+    type: "npm:^2.7.2"
+  checksum: 7efd8d44ac20e5db8cb0ca77eb65eca60628b2d0f3a1030bcb05e71cc40e6e2935c47b87dba3c733db12925aa5b897f8e0e7a567a2c274206f184da676ea2e65
+  languageName: node
+  linkType: hard
+
 "espree@npm:^9.5.2":
   version: 9.5.2
   resolution: "espree@npm:9.5.2"
@@ -8307,6 +8320,16 @@ __metadata:
   version: 1.8.1
   resolution: "etag@npm:1.8.1"
   checksum: 12be11ef62fb9817314d790089a0a49fae4e1b50594135dcb8076312b7d7e470884b5100d249b28c18581b7fd52f8b485689ffae22a11ed9ec17377a33a08f84
+  languageName: node
+  linkType: hard
+
+"event-emitter@npm:^0.3.5":
+  version: 0.3.5
+  resolution: "event-emitter@npm:0.3.5"
+  dependencies:
+    d: "npm:1"
+    es5-ext: "npm:~0.10.14"
+  checksum: 75082fa8ffb3929766d0f0a063bfd6046bd2a80bea2666ebaa0cfd6f4a9116be6647c15667bea77222afc12f5b4071b68d393cf39fdaa0e8e81eda006160aff0
   languageName: node
   linkType: hard
 
@@ -11269,7 +11292,7 @@ __metadata:
   resolution: "juju-dashboard@workspace:."
   dependencies:
     "@babel/plugin-proposal-private-property-in-object": "npm:7.21.11"
-    "@canonical/jujulib": "npm:5.0.0"
+    "@canonical/jujulib": "npm:6.0.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
     "@canonical/react-components": "npm:0.51.0"
     "@reduxjs/toolkit": "npm:2.0.1"
@@ -11340,7 +11363,7 @@ __metadata:
     stylelint-order: "npm:6.0.4"
     ts-jest: "npm:29.1.1"
     typescript: "npm:5.3.3"
-    vanilla-framework: "npm:4.7.0"
+    vanilla-framework: "npm:4.8.0"
     yup: "npm:1.3.3"
   languageName: unknown
   linkType: soft
@@ -16951,10 +16974,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.7.0":
-  version: 4.7.0
-  resolution: "vanilla-framework@npm:4.7.0"
-  checksum: 85a221467c588cfe0b040f03bff3e9c1c61bce6c0274d8767cff70782c1d5a8764a8d4e1cd3337e4cdcde92cd1da66e2a9b485b530c7292cb3c65c2f6d6f73c9
+"vanilla-framework@npm:4.8.0":
+  version: 4.8.0
+  resolution: "vanilla-framework@npm:4.8.0"
+  checksum: b3f9515eb438021ef489d8c1c79e76edeffd16ef5db68af9c27fec6cb1efe0db20b191d1b2d2dbf9a19c613f329a2933b389e0489ebcaddbe12ec6e0cfced95f
   languageName: node
   linkType: hard
 
