@@ -1,7 +1,10 @@
-import { Button, Icon, Textarea } from "@canonical/react-components";
+import {
+  Button,
+  FormikField,
+  Icon,
+  Textarea,
+} from "@canonical/react-components";
 import { FieldArray, useFormikContext } from "formik";
-
-import FormikField from "components/FormikField/FormikField";
 
 import type { FormFields } from "../types";
 

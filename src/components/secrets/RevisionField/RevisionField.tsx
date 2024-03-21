@@ -1,8 +1,10 @@
-import type { PropsWithSpread, SelectProps } from "@canonical/react-components";
-import { Select } from "@canonical/react-components";
+import type {
+  FormikFieldProps,
+  PropsWithSpread,
+  SelectProps,
+} from "@canonical/react-components";
+import { FormikField, Select } from "@canonical/react-components";
 
-import type { FormikFieldProps } from "components/FormikField";
-import FormikField from "components/FormikField";
 import { getSecretByURI } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 

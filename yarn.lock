@@ -1818,9 +1818,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:0.50.5":
-  version: 0.50.5
-  resolution: "@canonical/react-components@npm:0.50.5"
+"@canonical/react-components@npm:0.51.0":
+  version: 0.51.0
+  resolution: "@canonical/react-components@npm:0.51.0"
   dependencies:
     "@types/jest": "npm:29.5.11"
     "@types/node": "npm:20.8.5"
@@ -1836,10 +1836,11 @@ __metadata:
   peerDependencies:
     "@types/react": ^17.0.2 || ^18.0.0
     "@types/react-dom": ^17.0.2 || ^18.0.0
+    formik: ^2.4.5
     react: ^17.0.2 || ^18.0.0
     react-dom: ^17.0.2 || ^18.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: fba425fd06731a982666e889e0adf85d7fd28b8c408e1713e179d3cb267706e434dec7ef406977803dc95d5bac3d079c0e88e756a279669517fc689885531e6d
+  checksum: f1db7593e44d1e8fb517a7056ad3e5954ba1c2185094779f759169411346a83ea49cc11c86fdc38914f745b6d88a6ba5554650c0b6626fc79d9ee8884f5e198c
   languageName: node
   linkType: hard
 
@@ -11293,7 +11294,7 @@ __metadata:
     "@babel/plugin-proposal-private-property-in-object": "npm:7.21.11"
     "@canonical/jujulib": "npm:6.0.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
-    "@canonical/react-components": "npm:0.50.5"
+    "@canonical/react-components": "npm:0.51.0"
     "@reduxjs/toolkit": "npm:2.0.1"
     "@sentry/browser": "npm:7.93.0"
     "@testing-library/jest-dom": "npm:6.2.0"

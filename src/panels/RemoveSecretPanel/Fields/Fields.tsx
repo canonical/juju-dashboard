@@ -1,10 +1,9 @@
-import { ConfirmationModal } from "@canonical/react-components";
+import { ConfirmationModal, FormikField } from "@canonical/react-components";
 import { useFormikContext } from "formik";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 
-import FormikField from "components/FormikField/FormikField";
 import type { EntityDetailsRoute } from "components/Routes/Routes";
 import RevisionField from "components/secrets/RevisionField";
 import { getSecretByURI, getModelUUIDFromList } from "store/juju/selectors";
