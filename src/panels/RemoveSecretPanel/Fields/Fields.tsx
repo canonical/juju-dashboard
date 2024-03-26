@@ -75,12 +75,7 @@ const Fields = ({
                 This action can't be undone.
               </p>
             }
-            onConfirm={(event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-              // Stop propagation of the click event in order for the Panel
-              // to remain open after an error occurs in executeAction().
-              // Remove this manual fix once this issue gets resolved:
-              // https://github.com/canonical/react-components/issues/1032
-              event.nativeEvent.stopImmediatePropagation();
+            onConfirm={() => {
               handleRemoveSecret(values);
             }}
             close={hideConfirm}
