@@ -1818,9 +1818,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:0.51.0":
-  version: 0.51.0
-  resolution: "@canonical/react-components@npm:0.51.0"
+"@canonical/react-components@npm:0.51.1":
+  version: 0.51.1
+  resolution: "@canonical/react-components@npm:0.51.1"
   dependencies:
     "@types/jest": "npm:29.5.11"
     "@types/node": "npm:20.8.5"
@@ -1840,7 +1840,7 @@ __metadata:
     react: ^17.0.2 || ^18.0.0
     react-dom: ^17.0.2 || ^18.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: f1db7593e44d1e8fb517a7056ad3e5954ba1c2185094779f759169411346a83ea49cc11c86fdc38914f745b6d88a6ba5554650c0b6626fc79d9ee8884f5e198c
+  checksum: b81206c17e4edfd24ff70d26ac64553d464e05617b5ba5dff6fa741a3c6310266fbfa0e7bce62153ae2b25bf28a814e430177b3ca167a777b6a2229977776097
   languageName: node
   linkType: hard
 
@@ -11294,7 +11294,7 @@ __metadata:
     "@babel/plugin-proposal-private-property-in-object": "npm:7.21.11"
     "@canonical/jujulib": "npm:6.0.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
-    "@canonical/react-components": "npm:0.51.0"
+    "@canonical/react-components": "npm:0.51.1"
     "@reduxjs/toolkit": "npm:2.0.1"
     "@sentry/browser": "npm:7.93.0"
     "@testing-library/jest-dom": "npm:6.2.0"
@@ -11363,7 +11363,7 @@ __metadata:
     stylelint-order: "npm:6.0.4"
     ts-jest: "npm:29.1.1"
     typescript: "npm:5.3.3"
-    vanilla-framework: "npm:4.8.0"
+    vanilla-framework: "npm:4.9.0"
     yup: "npm:1.3.3"
   languageName: unknown
   linkType: soft
@@ -16974,10 +16974,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.8.0":
-  version: 4.8.0
-  resolution: "vanilla-framework@npm:4.8.0"
-  checksum: b3f9515eb438021ef489d8c1c79e76edeffd16ef5db68af9c27fec6cb1efe0db20b191d1b2d2dbf9a19c613f329a2933b389e0489ebcaddbe12ec6e0cfced95f
+"vanilla-framework@npm:4.9.0":
+  version: 4.9.0
+  resolution: "vanilla-framework@npm:4.9.0"
+  checksum: 8d4c5d775070bda32d7dc6de3fd0359e8bc1ae3f3a8c73561a55b16b72cdd74972ece2aca02910dcc889655c74c76048c3bcc434a6b6586d21ad4c0efcc2bc0f
   languageName: node
   linkType: hard
 
