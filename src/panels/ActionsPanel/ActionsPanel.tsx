@@ -259,12 +259,7 @@ export default function ActionsPanel(): JSX.Element {
               cancelButtonLabel={Label.CANCEL_BUTTON}
               confirmButtonLabel={Label.CONFIRM_BUTTON}
               confirmButtonAppearance="positive"
-              onConfirm={(event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-                // Stop propagation of the click event in order for the Panel
-                // to remain open after an error occurs in executeAction().
-                // Remove this manual fix once this issue gets resolved:
-                // https://github.com/canonical/react-components/issues/1032
-                event.nativeEvent.stopImmediatePropagation();
+              onConfirm={() => {
                 setConfirmType(null);
                 setIsExecutingAction(true);
                 executeAction()

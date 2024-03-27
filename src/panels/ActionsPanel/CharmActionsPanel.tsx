@@ -159,8 +159,7 @@ export default function CharmActionsPanel({
               cancelButtonLabel={Label.CANCEL_BUTTON}
               confirmButtonLabel={Label.CONFIRM_BUTTON}
               confirmButtonAppearance="positive"
-              onConfirm={(event) => {
-                event.stopPropagation();
+              onConfirm={() => {
                 setConfirmType(null);
                 executeAction();
                 onRemovePanelQueryParams();
