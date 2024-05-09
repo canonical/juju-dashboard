@@ -8,7 +8,6 @@ import {
 import type { ReactNode } from "react";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import type { Column } from "react-table";
 
 import AppLink from "components/AppLink";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
@@ -63,7 +62,7 @@ const SecretsTable = () => {
   });
   const canManageSecrets = useCanManageSecrets();
 
-  const tableData = useMemo(() => {
+  const tableData = useMemo<Record<string, ReactNode>[]>(() => {
     if (!secrets) {
       return [];
     }
@@ -163,7 +162,7 @@ const SecretsTable = () => {
     });
   }, [canManageSecrets, modelUUID, secrets, setQuery]);
 
-  const columnData: Column[] = useMemo(() => {
+  const columnData = useMemo(() => {
     const headers = [
       {
         Header: "Name",

@@ -15,7 +15,7 @@ import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import type { Column, Row } from "react-table";
+import type { Row } from "react-table";
 
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon/CharmIcon";
@@ -268,7 +268,7 @@ export default function ActionLogs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modelUUID]);
 
-  const tableData = useMemo(() => {
+  const tableData = useMemo<Record<string, unknown>[]>(() => {
     const handleOutputSelect = (actionTag: string, output: Output) => {
       setSelectedOutput((previousSelected) => ({
         ...previousSelected,
@@ -424,7 +424,7 @@ export default function ActionLogs() {
     selectedOutput,
   ]);
 
-  const columnData: Column<RowCells>[] = useMemo(
+  const columnData = useMemo(
     () => [
       {
         Header: "application",
