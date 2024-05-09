@@ -1,7 +1,7 @@
 import { ModularTable } from "@canonical/react-components";
+import type { ReactNode } from "react";
 import { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import type { Column } from "react-table";
 
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import RelativeDate from "components/RelativeDate";
@@ -26,7 +26,7 @@ import { useFetchAuditEvents } from "./hooks";
 
 import "./_audit-logs-table.scss";
 
-const COLUMN_DATA: Column[] = [
+const COLUMN_DATA = [
   {
     Header: "user",
     accessor: "user",
@@ -92,7 +92,7 @@ const AuditLogsTable = () => {
     [dispatch],
   );
 
-  const tableData = useMemo(() => {
+  const tableData = useMemo<Record<string, ReactNode>[]>(() => {
     if (!auditLogs) {
       return [];
     }
