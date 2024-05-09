@@ -2,7 +2,7 @@
 
 # Build stage: Install yarn dependencies
 # ===
-FROM node:20 AS yarn-dependencies
+FROM node:22 AS yarn-dependencies
 
 WORKDIR /srv
 
@@ -28,7 +28,7 @@ RUN if [ -n "$BUILD_ID" ]; then \
     fi
 RUN yarn run build
 
-FROM ubuntu:jammy
+FROM ubuntu:noble
 
 RUN apt update && apt install --yes nginx
 
