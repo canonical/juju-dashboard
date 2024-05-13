@@ -6,8 +6,6 @@ import reactHotToast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
 import ToastCard from "components/ToastCard/ToastCard";
-import SideNavigation from "components/upstream/SideNavigation";
-import { SideNavigationText } from "components/upstream/SideNavigation";
 import { DARK_THEME } from "consts";
 import useAnalytics from "hooks/useAnalytics";
 import { thunks as appThunks } from "store/app";
@@ -17,6 +15,9 @@ import { useAppDispatch, useAppSelector } from "store/store";
 import urls from "urls";
 
 import "./_user-menu.scss";
+import SideNavigation, {
+  SideNavigationText,
+} from "@canonical/react-components/dist/components/SideNavigation";
 
 export enum Label {
   LOGOUT_ERROR = "Error when trying to logout.",

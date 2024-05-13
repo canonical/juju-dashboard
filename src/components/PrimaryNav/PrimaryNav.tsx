@@ -7,10 +7,6 @@ import type { NavLinkProps } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
 import UserMenu from "components/UserMenu/UserMenu";
-import SideNavigation, {
-  SideNavigationText,
-} from "components/upstream/SideNavigation";
-import type { NavItem } from "components/upstream/SideNavigation/SideNavigation";
 import { DARK_THEME } from "consts";
 import {
   getAppVersion,
@@ -27,6 +23,10 @@ import { useAppSelector } from "store/store";
 import urls, { externalURLs } from "urls";
 
 import "./_primary-nav.scss";
+import SideNavigation, {
+  SideNavigationText,
+} from "@canonical/react-components/dist/components/SideNavigation";
+import { NavItem } from "@canonical/react-components/dist/components/SideNavigation/SideNavigation";
 
 export enum Label {
   ADVANCED_SEARCH = "Advanced search",
