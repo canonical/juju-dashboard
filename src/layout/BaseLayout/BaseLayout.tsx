@@ -6,9 +6,6 @@ import { Link, useLocation } from "react-router-dom";
 import FadeIn from "animations/FadeIn";
 import Banner from "components/Banner/Banner";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
-import ApplicationLayout from "components/upstream/ApplicationLayout";
-import type { PanelProps } from "components/upstream/Panel";
-import Panel from "components/upstream/Panel";
 import { DARK_THEME } from "consts";
 import useOffline from "hooks/useOffline";
 import Panels from "panels/Panels";
@@ -19,6 +16,10 @@ import { getIsJuju } from "store/general/selectors";
 import urls from "urls";
 
 import "./_base-layout.scss";
+import { ApplicationLayout } from "@canonical/react-components";
+import Panel, {
+  PanelProps,
+} from "@canonical/react-components/dist/components/Panel";
 
 export enum TestId {
   MAIN = "main-children",
@@ -77,7 +78,6 @@ const BaseLayout = ({
           component: Link,
           to: isJuju ? "https://juju.is" : urls.index,
         }}
-        navPanelClassName="p-primary-nav"
         sideNavigation={<PrimaryNav />}
         status={status}
       >

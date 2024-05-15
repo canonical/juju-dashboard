@@ -3,11 +3,13 @@
 @import "vanilla-framework/scss/vanilla";
 @import "../../scss/breakpoints";
 
-.p-primary-nav {
+.l-navigation__drawer > .p-panel {
   // Required so that the user menu can be absolutely positioned within the
   // side nav.
   position: relative;
+}
 
+.p-primary-nav {
   .entity-count {
     border-radius: 50%;
     display: inline-block;

@@ -1,5 +1,6 @@
 import type { PropsWithSpread } from "@canonical/react-components";
-import { useListener } from "@canonical/react-components";
+import { Button, Icon, useListener } from "@canonical/react-components";
+import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import classNames from "classnames";
 import type { ReactNode, MouseEvent } from "react";
 import { forwardRef, useId } from "react";
@@ -85,28 +86,36 @@ const Panel = forwardRef<HTMLDivElement, Props>(
       </>
     );
     return (
-      <Aside
-        {...props}
-        aria-labelledby={titleId}
-        role="dialog"
-        onClose={onRemovePanelQueryParams}
-        panelProps={{
-          className: classNames("side-panel", panelClassName),
-          contentClassName: props.isSplit ? "aside-split-wrapper" : null,
-          forwardRef: ref,
-          title: <span id={titleId}>{title}</span>,
-        }}
-      >
-        {props.isSplit ? (
-          <div className="aside-split-col aside-split-col--left">{content}</div>
-        ) : (
-          content
-        )}
-        {props.isSplit && splitContent ? (
-          <div className="aside-split-col aside-split-col--right">
-            <div className="side-panel__split-content">{splitContent}</div>
-          </div>
-        ) : null}
+      <Aside {...props} aria-labelledby={titleId} role="dialog">
+        <VanillaPanel
+          className={classNames("side-panel", panelClassName)}
+          controls={
+            <Button
+              appearance="base"
+              className="u-no-margin--bottom"
+              hasIcon
+              onClick={onRemovePanelQueryParams}
+            >
+              <Icon name="close">Close</Icon>
+            </Button>
+          }
+          contentClassName={props.isSplit ? "aside-split-wrapper" : null}
+          forwardRef={ref}
+          title={<span id={titleId}>{title}</span>}
+        >
+          {props.isSplit ? (
+            <div className="aside-split-col aside-split-col--left">
+              {content}
+            </div>
+          ) : (
+            content
+          )}
+          {props.isSplit && splitContent ? (
+            <div className="aside-split-col aside-split-col--right">
+              <div className="side-panel__split-content">{splitContent}</div>
+            </div>
+          ) : null}
+        </VanillaPanel>
       </Aside>
     );
   },
