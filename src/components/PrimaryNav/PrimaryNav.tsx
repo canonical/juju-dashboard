@@ -150,7 +150,7 @@ const PrimaryNav = () => {
 
   return (
     <>
-      <SideNavigation dark={DARK_THEME} items={groupedItems} />
+      <SideNavigation dark={DARK_THEME} items={groupedItems} className="p-primary-nav" />
       <UserMenu />
     </>
   );

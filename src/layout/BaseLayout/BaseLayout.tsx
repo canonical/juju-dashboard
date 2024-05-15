@@ -78,7 +78,6 @@ const BaseLayout = ({
           component: Link,
           to: isJuju ? "https://juju.is" : urls.index,
         }}
-        navPanelClassName="p-primary-nav"
         sideNavigation={<PrimaryNav />}
         status={status}
       >
