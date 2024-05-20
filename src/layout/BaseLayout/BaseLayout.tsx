@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import FadeIn from "animations/FadeIn";
 import Banner from "components/Banner/Banner";
+import Logo from "components/Logo";
 import PrimaryNav from "components/PrimaryNav/PrimaryNav";
 import ApplicationLayout from "components/upstream/ApplicationLayout";
 import type { PanelProps } from "components/upstream/Panel";
@@ -12,9 +13,6 @@ import Panel from "components/upstream/Panel";
 import { DARK_THEME } from "consts";
 import useOffline from "hooks/useOffline";
 import Panels from "panels/Panels";
-import jaasText from "static/images/logo/jaas-text.svg";
-import jujuText from "static/images/logo/juju-text.svg";
-import logoMark from "static/images/logo/logo-mark.svg";
 import { getIsJuju } from "store/general/selectors";
 import urls from "urls";
 
@@ -70,13 +68,13 @@ const BaseLayout = ({
       <ApplicationLayout
         aside={<Panels />}
         dark={DARK_THEME}
-        logo={{
-          icon: logoMark,
-          name: isJuju ? jujuText : jaasText,
-          nameAlt: isJuju ? "Juju" : "JAAS",
-          component: Link,
-          to: isJuju ? "https://juju.is" : urls.index,
-        }}
+        logo={
+          <Logo
+            component={Link}
+            isJuju={isJuju}
+            to={isJuju ? "https://juju.is" : urls.index}
+          />
+        }
         navPanelClassName="p-primary-nav"
         sideNavigation={<PrimaryNav />}
         status={status}

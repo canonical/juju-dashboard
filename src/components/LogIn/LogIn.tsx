@@ -7,10 +7,9 @@ import { useSelector } from "react-redux";
 
 import FadeUpIn from "animations/FadeUpIn";
 import AuthenticationButton from "components/AuthenticationButton";
+import Logo from "components/Logo";
 import ToastCard from "components/ToastCard/ToastCard";
 import bakery from "juju/bakery";
-import jaasLogo from "static/images/logo/jaas-logo-black-on-white.svg";
-import jujuLogo from "static/images/logo/juju-logo-black-on-white.svg";
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import {
@@ -91,11 +90,7 @@ export default function LogIn({ children }: PropsWithChildren) {
         <div className="login">
           <FadeUpIn isActive={!userIsLoggedIn}>
             <div className="login__inner p-card--highlighted">
-              <img
-                className="login__logo"
-                src={isJuju ? jujuLogo : jaasLogo}
-                alt={isJuju ? Label.JUJU_LOGO : Label.JAAS_LOGO}
-              />
+              <Logo className="login__logo" dark isJuju={isJuju} />
               {config?.identityProviderAvailable ? (
                 <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />
               ) : (

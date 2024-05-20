@@ -187,34 +187,6 @@ describe("LogIn", () => {
     });
   });
 
-  it("displays the JAAS logo under JAAS", () => {
-    const state = rootStateFactory.build({
-      general: generalStateFactory.withConfig().build({
-        visitURLs: ["I am a url"],
-        config: configFactory.build({
-          isJuju: false,
-        }),
-      }),
-    });
-    renderComponent(<LogIn>App content</LogIn>, { state });
-    const logo = screen.getByAltText(Label.JAAS_LOGO);
-    expect(logo).toHaveAttribute("src", "jaas-logo-black-on-white.svg");
-  });
-
-  it("displays the Juju logo under Juju", () => {
-    const state = rootStateFactory.build({
-      general: generalStateFactory.withConfig().build({
-        config: configFactory.build({
-          isJuju: true,
-          identityProviderAvailable: false,
-        }),
-      }),
-    });
-    renderComponent(<LogIn>App content</LogIn>, { state });
-    const logo = screen.getByAltText(Label.JUJU_LOGO);
-    expect(logo).toHaveAttribute("src", "juju-logo-black-on-white.svg");
-  });
-
   it("displays authentication request notifications", async () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
