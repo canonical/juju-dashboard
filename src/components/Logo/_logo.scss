@@ -1,0 +1,69 @@
+@import "vanilla-framework/scss/vanilla";
+@import "../../scss/breakpoints";
+
+.p-panel__logo.tag-logo {
+  margin-top: 0;
+
+  .p-panel__logo-image {
+    height: 36px;
+    margin-top: -3px;
+    max-width: inherit;
+  }
+
+  .logo-text {
+    align-self: end;
+    color: #fff;
+    margin-left: $sph--x-small;
+    top: $spv--small;
+
+    img {
+      vertical-align: bottom;
+    }
+  }
+
+  @include mobile {
+    .logo-text {
+      left: 38px;
+    }
+  }
+}
+
+.l-navigation-bar {
+  .p-panel__logo.tag-logo {
+    align-items: start;
+
+    .logo-text {
+      align-self: center;
+    }
+  }
+}
+
+.l-navigation {
+  .p-panel__logo.tag-logo {
+    .logo-text {
+      align-self: end;
+    }
+  }
+}
+
+@include mobile-and-medium {
+  .l-navigation.is-collapsed {
+    .tag-logo .logo-text {
+      display: none;
+    }
+
+    &:hover,
+    &:focus-within,
+    &.is-pinned {
+      .tag-logo .logo-text {
+        display: block;
+      }
+    }
+  }
+}
+
+@include mobile {
+  .l-navigation {
+    transition-duration: 0s !important;
+  }
+}

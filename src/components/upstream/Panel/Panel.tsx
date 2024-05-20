@@ -1,4 +1,4 @@
-import type { PropsWithSpread } from "@canonical/react-components/dist/types";
+import React, { isValidElement } from "react";
 import classNames from "classnames";
 import type {
   ComponentType,
@@ -9,79 +9,169 @@ import type {
 } from "react";
 
 import type { ExclusiveProps } from "types";
+import { PropsWithSpread } from "@canonical/react-components";
+
+export const isReactNode = (element: unknown): element is ReactNode =>
+  isValidElement(element);
 
 export type LogoDefaultElement = HTMLProps<HTMLAnchorElement>;
 
-type PanelLogo<L = LogoDefaultElement> = PropsWithSpread<
-  {
-    icon: string;
-    iconAlt?: string;
-    name: string;
-    nameAlt?: string;
-    component?: ElementType | ComponentType<L>;
-  },
-  L
->;
+type PanelLogo<L = LogoDefaultElement> =
+  | ReactNode
+  | PropsWithSpread<
+      {
+        /**
+         * The url of the icon image.
+         */
+        icon: string;
+        /**
+         * The alt text for the icon image.
+         */
+        iconAlt?: string;
+        /**
+         * The url of the name image.
+         */
+        name: string;
+        /**
+         * The alt text for the name image.
+         */
+        nameAlt?: string;
+        /**
+         * The element or component to use for displaying the logo e.g. `a` or `NavLink`.
+         * @default a
+         */
+        component?: ElementType | ComponentType<L>;
+      },
+      L
+    >;
 
 type PanelToggle = {
+  /**
+   * The panel toggle label.
+   */
   label: string;
+  /**
+   * The function to call when clicking the panel toggle.
+   */
   onClick: () => void;
 };
 
 type LogoProps<L = LogoDefaultElement> = {
-  logo: PanelLogo<L>;
+  /**
+   * The panel logo content or attributes.
+   */
+  logo?: PanelLogo<L>;
 };
 
 type TitleProps = {
+  /**
+   * The panel title.
+   */
   title: ReactNode;
+  /**
+   * Classes to apply to the title element.
+   */
   titleClassName?: string;
+  /**
+   * The element to use for the panel title e.g. `h1`.
+   * @default h4
+   */
   titleComponent?: ElementType;
+  /**
+   * An ID for the title element.
+   */
+  titleId?: string;
 };
 
 type HeaderProps<L = LogoDefaultElement> = ExclusiveProps<
   {},
   {
+    /**
+     * Content that will be displayed in the controls area.
+     */
     controls?: ReactNode;
+    /**
+     * Classes that will be applied to the controls element.
+     */
     controlsClassName?: string;
+    /**
+     * Whether the header should be sticky.
+     */
     stickyHeader?: boolean;
+    /**
+     * The panel toggle attributes.
+     */
     toggle?: PanelToggle;
   } & ExclusiveProps<LogoProps<L>, TitleProps>
 >;
 
 export type Props<L = LogoDefaultElement> = {
+  /**
+   * The panel content.
+   */
+  children?: PropsWithChildren["children"];
+  /**
+   * Classes that are applied to the content container (when using `wrapContent`).
+   */
   contentClassName?: string | null;
+  /**
+   * Classes that are applied to the top level panel element.
+   */
   className?: string | null;
+  /**
+   * Whether to use the dark theme.
+   */
   dark?: boolean;
+  /**
+   * Whether the panel should wrap the content in the `p-panel__content` element.
+   * @default true
+   */
   wrapContent?: boolean;
+  /**
+   * A ref to pass to the top level panel element.
+   */
   forwardRef?: React.Ref<HTMLDivElement> | null;
-} & PropsWithChildren &
-  HeaderProps<L>;
+} & HeaderProps<L>;
 
-const generateLogo = <L = LogoDefaultElement,>({
-  icon,
-  iconAlt,
-  name,
-  nameAlt,
-  component: Component = "a",
-  ...props
-}: PanelLogo<L>) => (
-  <Component className="p-panel__logo" {...props}>
-    <img
-      className="p-panel__logo-icon"
-      src={icon}
-      alt={iconAlt}
-      width="24"
-      height="24"
-    />
-    <img
-      className="p-panel__logo-name is-fading-when-collapsed"
-      src={name}
-      alt={nameAlt}
-      height="16"
-    />
-  </Component>
-);
+const generateLogo = <L = LogoDefaultElement,>(logo: PanelLogo<L>) => {
+  if (isReactNode(logo)) {
+    return logo;
+  }
+  const {
+    icon,
+    iconAlt,
+    name,
+    nameAlt,
+    component: Component = "a",
+    ...props
+  } = logo;
+  return (
+    <Component className="p-panel__logo" {...props}>
+      <img
+        className="p-panel__logo-icon"
+        src={icon}
+        alt={iconAlt}
+        width="24"
+        height="24"
+      />
+      <img
+        className="p-panel__logo-name is-fading-when-collapsed"
+        src={name}
+        alt={nameAlt}
+        height="16"
+      />
+    </Component>
+  );
+};
 
+/**
+ * This is a [React](https://reactjs.org/) component for panels in the
+ * [Vanilla](https://vanillaframework.io/docs/) layouts.
+ *
+ * The Panel component can be used in many areas of the application layout. It
+ * can be the child element of `AppAside`, `AppMain`, `AppNavigation`, `AppNavigationBar`
+ * and `AppStatus`.
+ */
 const Panel = <L = LogoDefaultElement,>({
   forwardRef,
   children,
@@ -95,6 +185,7 @@ const Panel = <L = LogoDefaultElement,>({
   title,
   titleClassName,
   titleComponent: TitleComponent = "h4",
+  titleId,
   toggle,
   wrapContent = true,
   ...props
@@ -118,6 +209,7 @@ const Panel = <L = LogoDefaultElement,>({
           ) : (
             <TitleComponent
               className={classNames("p-panel__title", titleClassName)}
+              id={titleId}
             >
               {title}
             </TitleComponent>

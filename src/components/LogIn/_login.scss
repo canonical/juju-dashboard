@@ -12,7 +12,8 @@
   width: 100vw;
   z-index: z("infinity");
 
-  &__inner {
+  &__inner.p-card--highlighted {
+    padding-top: 0;
     width: 280px;
 
     .p-button--positive,
@@ -34,9 +35,7 @@
     }
   }
 
-  &__logo {
-    display: block;
-    margin: 0 auto 1rem;
-    width: 110px;
+  &__logo.p-panel__logo {
+    margin-left: 0;
   }
 }
