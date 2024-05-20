@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 
 import FadeUpIn from "animations/FadeUpIn";
 import AuthenticationButton from "components/AuthenticationButton";
+import Logo from "components/Logo";
 import ToastCard from "components/ToastCard/ToastCard";
 import bakery from "juju/bakery";
 import { thunks as appThunks } from "store/app";
@@ -23,7 +24,6 @@ import type { RootState } from "store/store";
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import "./_login.scss";
-import Logo from "components/Logo";
 
 export enum ErrorResponse {
   INVALID_TAG = '"user-" is not a valid user tag',

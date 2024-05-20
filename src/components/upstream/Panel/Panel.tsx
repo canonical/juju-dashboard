@@ -1,5 +1,6 @@
-import React, { isValidElement } from "react";
+import type { PropsWithSpread } from "@canonical/react-components";
 import classNames from "classnames";
+import React, { isValidElement } from "react";
 import type {
   ComponentType,
   ElementType,
@@ -9,7 +10,6 @@ import type {
 } from "react";
 
 import type { ExclusiveProps } from "types";
-import { PropsWithSpread } from "@canonical/react-components";
 
 export const isReactNode = (element: unknown): element is ReactNode =>
   isValidElement(element);

@@ -1,7 +1,6 @@
 import { fireEvent, screen, within } from "@testing-library/react";
 
 import type { RootState } from "store/store";
-import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 

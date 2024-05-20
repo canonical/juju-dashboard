@@ -1,13 +1,9 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { screen } from "@testing-library/react";
+import type { HTMLProps } from "react";
 
 import { renderComponent } from "testing/utils";
 
 import Logo from "./Logo";
-import { configFactory, generalStateFactory } from "testing/factories/general";
-import { rootStateFactory } from "testing/factories/root";
-import BaseLayout from "../../layout/BaseLayout/BaseLayout";
-import { HTMLProps } from "react";
 
 describe("Logo", () => {
   it("displays the Juju logo in Juju", () => {

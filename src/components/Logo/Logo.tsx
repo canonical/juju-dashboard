@@ -1,15 +1,14 @@
+import type { PropsWithSpread } from "@canonical/react-components";
+import classNames from "classnames";
+import type { ComponentType, ElementType } from "react";
+
 import jaasDarkText from "static/images/logo/jaas-text-dark.svg";
-import jujuDarkText from "static/images/logo/juju-text-dark.svg";
 import jaasLightText from "static/images/logo/jaas-text.svg";
+import jujuDarkText from "static/images/logo/juju-text-dark.svg";
 import jujuLightText from "static/images/logo/juju-text.svg";
 import logoMark from "static/images/logo/logo-mark.svg";
-import { Link } from "react-router-dom";
-import urls from "urls";
 
 import "./_logo.scss";
-import classNames from "classnames";
-import { ComponentType, ElementType } from "react";
-import { PropsWithSpread } from "@canonical/react-components";
 
 type Props<C> = PropsWithSpread<
   {
