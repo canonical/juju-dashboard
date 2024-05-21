@@ -14,11 +14,6 @@
     border: none;
     margin: 0 0.5rem 0 0;
     padding: 0.25rem 1rem;
-    // Override Vanilla hover state as these chips are not yet actionable
-    &:hover,
-    &:active {
-      background-color: rgb(0 0 0 / 5%);
-    }
   }
 
   .status-icon {

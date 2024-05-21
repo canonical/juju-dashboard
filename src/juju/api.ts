@@ -607,7 +607,6 @@ export async function stopModelWatcher(
   watcherHandleId: string,
   pingerIntervalId: number,
 ) {
-  // TODO: use allWatcher.stop(...)
   await conn.facades.allWatcher?.stop({ id: watcherHandleId });
   stopPingerLoop(pingerIntervalId);
   conn.transport.close();

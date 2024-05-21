@@ -103,16 +103,10 @@
       @include desktop {
         grid-template-columns: 1fr;
       }
-
-      .p-breadcrumbs {
-        // Centre the content to match the tabs.
-        margin-bottom: 1.25rem;
-        margin-top: 1.25rem;
-      }
     }
 
-    // Modified styling of the Vanilla tabbed component. To remove the border
-    // bottom as it sits on a border already.
+    // Modified styling of the Vanilla tabbed component to remove the border
+    // bottom.
     .entity-details__view-selector {
       @include mobile {
         margin-left: -1rem;
@@ -121,31 +115,18 @@
     }
 
     .p-tabs {
-      &::after {
-        display: none;
-      }
-
       .p-tabs__list {
         margin-bottom: 0;
 
         &::after {
+          // Hide the bottom border.
           background-color: transparent;
         }
       }
 
-      &__link {
-        padding-bottom: 1.25rem;
-        padding-top: 1.25rem;
-
-        &::before {
-          background-color: transparent;
-        }
-      }
-
-      // Override the spacing between the hover state and bottom border to
-      // match the height of the breadcrumbs.
-      .p-tabs__link:hover::before,
-      .p-tabs__link:hover:focus:not(:focus-visible)::before {
+      &__link::before {
+        // Adjust the height and position to make up for the space that used to
+        // be taken up by the bottom border.
         bottom: 0;
         height: calc($bar-thickness);
       }
