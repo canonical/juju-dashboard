@@ -1,4 +1,4 @@
-import type { Connection } from "@canonical/jujulib";
+import type { Client, Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
 import * as jujuLibVersions from "@canonical/jujulib/dist/api/versions";
 import { waitFor } from "@testing-library/react";
@@ -95,7 +95,7 @@ describe("Juju API", () => {
       const conn = { facades: {}, info: {} };
       const juju = {
         login: jest.fn().mockReturnValue(conn),
-      };
+      } as unknown as Client;
       const connectSpy = jest
         .spyOn(jujuLib, "connect")
         .mockImplementation(async () => juju);
@@ -126,7 +126,7 @@ describe("Juju API", () => {
       const conn = { facades: {}, info: {} };
       const juju = {
         login: jest.fn().mockReturnValue(conn),
-      };
+      } as unknown as Client;
       jest.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
       await loginWithBakery(
         "wss://example.com/api",
@@ -144,7 +144,7 @@ describe("Juju API", () => {
         login: jest.fn().mockImplementation(() => {
           throw new Error();
         }),
-      };
+      } as unknown as Client;
       jest.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
       const response = await loginWithBakery(
         "wss://example.com/api",
@@ -171,7 +171,7 @@ describe("Juju API", () => {
       };
       const juju = {
         login: jest.fn().mockReturnValue(conn),
-      };
+      } as unknown as Client;
       jest.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
       await loginWithBakery(
         "wss://example.com/api",
@@ -203,7 +203,7 @@ describe("Juju API", () => {
       };
       const juju = {
         login: jest.fn().mockReturnValue(conn),
-      };
+      } as unknown as Client;
       jest.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
       await loginWithBakery(
         "wss://example.com/api",

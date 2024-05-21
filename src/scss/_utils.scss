@@ -54,13 +54,6 @@
   }
 }
 
-// Extend has-icon to work outside of buttons
-// https://github.com/canonical-web-and-design/vanilla-framework/issues/3102
-.has-icon [class*="p-icon"]:first-child {
-  margin-right: 0.25rem;
-  margin-top: 0.25rem;
-}
-
 .p-tooltip--constrain-width .p-tooltip__message {
   max-width: 20rem;
   white-space: pre-wrap;

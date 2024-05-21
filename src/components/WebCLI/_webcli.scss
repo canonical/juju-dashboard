@@ -17,7 +17,7 @@ $canonical-purple: #2c001e;
       cursor: default;
       flex-grow: 0;
       // https://github.com/canonical-web-and-design/vanilla-framework/pull/3370
-      // XXX The unquote will need to be removed with the next vanilla release
+      // The unquote is needed to create a proper font family string.
       font-family: unquote($font-monospace);
       font-weight: bold;
       line-height: $webcli-input-height;
@@ -34,7 +34,7 @@ $canonical-purple: #2c001e;
       background-color: $color-x-dark;
       color: $color-mid-light;
       // https://github.com/canonical-web-and-design/vanilla-framework/pull/3370
-      // XXX The unquote will need to be removed with the next vanilla release
+      // The unquote is needed to create a proper font family string.
       font-family: unquote($font-monospace);
       height: $webcli-input-height;
       margin-bottom: 0;

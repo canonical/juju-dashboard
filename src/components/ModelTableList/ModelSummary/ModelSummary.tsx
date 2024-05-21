@@ -28,7 +28,7 @@ const ModelSummary = ({ modelData, ownerTag }: Props) => {
       <Tooltip
         message="See applications"
         position="top-center"
-        className="u-flex--block has-icon"
+        className="u-flex--block u-has-icon"
       >
         <ModelDetailsLink
           modelName={modelData.model.name}
@@ -44,7 +44,7 @@ const ModelSummary = ({ modelData, ownerTag }: Props) => {
       <Tooltip
         message="Units"
         position="top-center"
-        className="u-flex--block has-icon"
+        className="u-flex--block u-has-icon"
       >
         <Icon name="units" />
         <span aria-label={Label.UNITS}>{unitCount}</span>
@@ -52,7 +52,7 @@ const ModelSummary = ({ modelData, ownerTag }: Props) => {
       <Tooltip
         message="See machines"
         position="top-center"
-        className="u-flex--block has-icon"
+        className="u-flex--block u-has-icon"
       >
         <ModelDetailsLink
           modelName={modelData.model.name}
