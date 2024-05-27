@@ -20,6 +20,12 @@ jobs:
       - name: Install
         run: yarn install --immutable
       - run: yarn test --coverage.enabled true
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: juju-dashboard-coverage
+          path: coverage
       - name: Produce TICS report
         shell: bash
         run: |
