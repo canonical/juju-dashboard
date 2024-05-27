@@ -8,6 +8,9 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
+    build: {
+      outDir: "build",
+    },
     plugins: [
       react(),
       tsconfigPaths(),
