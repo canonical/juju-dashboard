@@ -45,7 +45,7 @@ export function generateUnitCounts(
 ) {
   const counts = {};
   if (units && applicationName) {
-    Object.entries(units).forEach(([unitId, unitData]) => {
+    Object.values(units).forEach((unitData) => {
       if (unitData.application === applicationName) {
         const status = unitData["agent-status"].current;
         if (status) {

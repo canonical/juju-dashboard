@@ -1,5 +1,7 @@
 import type { Client, Connection, Transport } from "@canonical/jujulib";
 import type { UnknownAction, MiddlewareAPI } from "redux";
+import type { Mock } from "vitest";
+import { vi } from "vitest";
 
 import * as jujuModule from "juju/api";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
@@ -22,23 +24,23 @@ import {
   modelPollerMiddleware,
 } from "./model-poller";
 
-jest.mock("juju/api", () => ({
-  disableControllerUUIDMasking: jest
+vi.mock("juju/api", () => ({
+  disableControllerUUIDMasking: vi
     .fn()
     .mockImplementation(async () => await Promise.resolve()),
-  fetchControllerList: jest
+  fetchControllerList: vi
     .fn()
     .mockImplementation(async () => await Promise.resolve()),
-  loginWithBakery: jest.fn(),
-  fetchAllModelStatuses: jest.fn(),
-  setModelSharingPermissions: jest.fn(),
-  findAuditEvents: jest.fn(),
-  crossModelQuery: jest.fn(),
+  loginWithBakery: vi.fn(),
+  fetchAllModelStatuses: vi.fn(),
+  setModelSharingPermissions: vi.fn(),
+  findAuditEvents: vi.fn(),
+  crossModelQuery: vi.fn(),
 }));
 
 describe("model poller", () => {
   let fakeStore: MiddlewareAPI;
-  let next: jest.Mock;
+  let next: Mock;
   const originalLog = console.log;
   const wsControllerURL = "wss://example.com";
   const controllers: ControllerArgs[] = [
@@ -77,18 +79,18 @@ describe("model poller", () => {
   const consoleError = console.error;
 
   beforeEach(() => {
-    jest.useFakeTimers();
-    next = jest.fn();
+    vi.useFakeTimers();
+    next = vi.fn();
     fakeStore = {
-      getState: jest.fn(() => ({
+      getState: vi.fn(() => ({
         juju: jujuStateFactory.build(),
       })),
-      dispatch: jest.fn(),
+      dispatch: vi.fn(),
     };
     conn = {
       facades: {
         modelManager: {
-          listModels: jest.fn().mockResolvedValue({ "user-models": models }),
+          listModels: vi.fn().mockResolvedValue({ "user-models": models }),
         },
       },
       info: {
@@ -102,9 +104,9 @@ describe("model poller", () => {
       transport: {} as Transport,
     };
     juju = {
-      logout: jest.fn(),
+      logout: vi.fn(),
     } as unknown as Client;
-    console.error = jest.fn();
+    console.error = vi.fn();
   });
 
   afterEach(() => {
@@ -123,16 +125,13 @@ describe("model poller", () => {
     };
     const middleware = modelPollerMiddleware(fakeStore);
     await middleware(next)(action);
-    // For some reason the async functions don't finish when using fake timers, so
-    // force the test to wait for the next process:
-    await new Promise(jest.requireActual("timers").setImmediate);
     return middleware;
   };
 
   afterEach(() => {
     console.log = originalLog;
-    jest.restoreAllMocks();
-    jest.useRealTimers();
+    vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it("ignores unrelated actions", async () => {
@@ -154,9 +153,9 @@ describe("model poller", () => {
   });
 
   it("dispatches login errors", async () => {
-    jest
-      .spyOn(jujuModule, "loginWithBakery")
-      .mockImplementation(async () => ({ error: "Uh oh!" }));
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      error: "Uh oh!",
+    }));
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -168,8 +167,8 @@ describe("model poller", () => {
   });
 
   it("logs login exceptions", async () => {
-    jest.spyOn(console, "log").mockImplementation(jest.fn);
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => {
+    vi.spyOn(console, "log").mockImplementation(() => vi.fn());
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => {
       throw new Error("Uh oh!");
     });
     await runMiddleware();
@@ -189,11 +188,11 @@ describe("model poller", () => {
   });
 
   it("fetches and stores data", async () => {
-    const fetchControllerList = jest.spyOn(jujuModule, "fetchControllerList");
+    const fetchControllerList = vi.spyOn(jujuModule, "fetchControllerList");
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
     });
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -225,12 +224,12 @@ describe("model poller", () => {
       "user-models": [],
     });
     conn.facades.jimM = {
-      checkRelation: jest.fn().mockImplementation(async () => ({
+      checkRelation: vi.fn().mockImplementation(async () => ({
         allowed: true,
       })),
       version: 3,
     };
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -253,12 +252,12 @@ describe("model poller", () => {
       "user-models": [],
     });
     conn.facades.jimM = {
-      checkRelation: jest.fn().mockImplementation(async () => ({
+      checkRelation: vi.fn().mockImplementation(async () => ({
         allowed: true,
       })),
       version: 4,
     };
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -281,7 +280,7 @@ describe("model poller", () => {
       "user-models": [],
     });
     conn.facades.jimM = {
-      checkRelation: jest
+      checkRelation: vi
         .fn()
         .mockImplementation(async (payload: RelationshipTuple) => {
           if (payload.relation === "audit_log_viewer") {
@@ -292,7 +291,7 @@ describe("model poller", () => {
         }),
       version: 4,
     };
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -315,7 +314,7 @@ describe("model poller", () => {
       "user-models": [],
     });
     conn.facades.jimM = {
-      checkRelation: jest
+      checkRelation: vi
         .fn()
         .mockImplementation(async (payload: RelationshipTuple) => {
           if (payload.relation === "audit_log_viewer") {
@@ -331,7 +330,7 @@ describe("model poller", () => {
         }),
       version: 4,
     };
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -350,7 +349,7 @@ describe("model poller", () => {
   });
 
   it("dispatches an error if the info is not returned", async () => {
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn: { ...conn, info: {} },
       intervalId,
       juju,
@@ -366,14 +365,14 @@ describe("model poller", () => {
   });
 
   it("does not disable masking when running on Juju", async () => {
-    const disableControllerUUIDMasking = jest.spyOn(
+    const disableControllerUUIDMasking = vi.spyOn(
       jujuModule,
       "disableControllerUUIDMasking",
     );
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
     });
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -387,14 +386,14 @@ describe("model poller", () => {
     const controllers = [
       [wsControllerURL, { user: "eggman@external", password: "test" }, true],
     ];
-    const disableControllerUUIDMasking = jest.spyOn(
+    const disableControllerUUIDMasking = vi.spyOn(
       jujuModule,
       "disableControllerUUIDMasking",
     );
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
     });
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -411,13 +410,13 @@ describe("model poller", () => {
   });
 
   it("fails silently if the user is not authorised to disable masking", async () => {
-    jest
-      .spyOn(jujuModule, "disableControllerUUIDMasking")
-      .mockImplementation(() => Promise.reject(new Error()));
+    vi.spyOn(jujuModule, "disableControllerUUIDMasking").mockImplementation(
+      () => Promise.reject(new Error()),
+    );
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
     });
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -427,12 +426,9 @@ describe("model poller", () => {
   });
 
   it("fetches and updates models if logged in to controller", async () => {
-    jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
-    const fetchAllModelStatuses = jest.spyOn(
-      jujuModule,
-      "fetchAllModelStatuses",
-    );
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    const fetchAllModelStatuses = vi.spyOn(jujuModule, "fetchAllModelStatuses");
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -455,7 +451,7 @@ describe("model poller", () => {
   });
 
   it("should remove models error from state if no error occurs", async () => {
-    jest.spyOn(fakeStore, "getState").mockReturnValue({
+    vi.spyOn(fakeStore, "getState").mockReturnValue({
       ...storeState,
       juju: jujuStateFactory.build({
         controllers: {
@@ -464,7 +460,7 @@ describe("model poller", () => {
         modelsError: "Oops!",
       }),
     });
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -479,15 +475,15 @@ describe("model poller", () => {
   });
 
   it("should display error when unable to load all models", async () => {
-    jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "fetchAllModelStatuses")
-      .mockRejectedValue(new Error(ModelsError.LOAD_ALL_MODELS));
+    vi.spyOn(jujuModule, "fetchAllModelStatuses").mockRejectedValue(
+      new Error(ModelsError.LOAD_ALL_MODELS),
+    );
     await runMiddleware();
     expect(console.error).toHaveBeenCalledWith(
       ModelsError.LOAD_ALL_MODELS,
@@ -502,15 +498,15 @@ describe("model poller", () => {
   });
 
   it("should display error when unable to load some models", async () => {
-    jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "fetchAllModelStatuses")
-      .mockRejectedValue(new Error(ModelsError.LOAD_SOME_MODELS));
+    vi.spyOn(jujuModule, "fetchAllModelStatuses").mockRejectedValue(
+      new Error(ModelsError.LOAD_SOME_MODELS),
+    );
     await runMiddleware();
     expect(console.error).toHaveBeenCalledWith(
       ModelsError.LOAD_SOME_MODELS,
@@ -525,14 +521,13 @@ describe("model poller", () => {
   });
 
   it("should display error when unable to load latest models", async () => {
-    jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "fetchAllModelStatuses")
+    vi.spyOn(jujuModule, "fetchAllModelStatuses")
       .mockImplementationOnce(
         async () => new Promise<void>((resolve) => resolve()),
       )
@@ -545,10 +540,9 @@ describe("model poller", () => {
     runMiddleware({
       payload: { controllers, isJuju: true, poll: 1 },
     }).catch(console.error);
-    await new Promise(jest.requireActual("timers").setImmediate);
-    jest.advanceTimersByTime(30000);
+    vi.advanceTimersByTime(30000);
     // Resolve the async calls again.
-    await new Promise(jest.requireActual("timers").setImmediate);
+    await vi.runAllTimersAsync();
     expect(console.error).toHaveBeenCalledWith(
       ModelsError.LOAD_LATEST_MODELS,
       new Error(ModelsError.LOAD_SOME_MODELS),
@@ -562,14 +556,14 @@ describe("model poller", () => {
   });
 
   it("should display error when unable to update model list", async () => {
-    jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest.spyOn(jujuActions, "updateModelList").mockImplementation(
-      jest.fn(() => {
+    vi.spyOn(jujuActions, "updateModelList").mockImplementation(
+      vi.fn(() => {
         throw new Error(ModelsError.LIST_OR_UPDATE_MODELS);
       }),
     );
@@ -587,12 +581,9 @@ describe("model poller", () => {
   });
 
   it("updates models every 30 seconds", async () => {
-    jest.spyOn(fakeStore, "getState").mockReturnValue(storeState);
-    const fetchAllModelStatuses = jest.spyOn(
-      jujuModule,
-      "fetchAllModelStatuses",
-    );
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    const fetchAllModelStatuses = vi.spyOn(jujuModule, "fetchAllModelStatuses");
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -600,16 +591,15 @@ describe("model poller", () => {
     runMiddleware({ payload: { controllers, isJuju: true, poll: 1 } }).catch(
       console.error,
     );
-    await new Promise(jest.requireActual("timers").setImmediate);
-    jest.advanceTimersByTime(30000);
+    vi.advanceTimersByTime(30000);
     // Resolve the async calls again.
-    await new Promise(jest.requireActual("timers").setImmediate);
+    await vi.runAllTimersAsync();
     expect(next).not.toHaveBeenCalled();
     expect(fetchAllModelStatuses).toHaveBeenCalledTimes(2);
   });
 
   it("does not update models if the user logs out", async () => {
-    jest.spyOn(fakeStore, "getState").mockReturnValue({
+    vi.spyOn(fakeStore, "getState").mockReturnValue({
       ...storeState,
       general: generalStateFactory.build({
         controllerConnections: {
@@ -619,25 +609,21 @@ describe("model poller", () => {
         },
       }),
     });
-    const fetchAllModelStatuses = jest.spyOn(
-      jujuModule,
-      "fetchAllModelStatuses",
-    );
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    const fetchAllModelStatuses = vi.spyOn(jujuModule, "fetchAllModelStatuses");
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
     await runMiddleware();
-    jest.advanceTimersByTime(30000);
+    vi.advanceTimersByTime(30000);
     // Resolve the async calls again.
-    await new Promise(jest.requireActual("timers").setImmediate);
     expect(next).not.toHaveBeenCalled();
     expect(fetchAllModelStatuses).toHaveBeenCalledTimes(1);
   });
 
   it("handles logging out of models", async () => {
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -654,14 +640,14 @@ describe("model poller", () => {
   });
 
   it("handles updating permissions", async () => {
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "setModelSharingPermissions")
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+    vi.spyOn(jujuModule, "setModelSharingPermissions").mockImplementation(() =>
+      Promise.resolve({ results: [] }),
+    );
     const middleware = await runMiddleware();
     const action = appActions.updatePermissions({
       action: "grant",
@@ -679,14 +665,14 @@ describe("model poller", () => {
 
   it("handles fetching audit events", async () => {
     const events = { events: [auditEventFactory.build()] };
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "findAuditEvents")
-      .mockImplementation(() => Promise.resolve(events));
+    vi.spyOn(jujuModule, "findAuditEvents").mockImplementation(() =>
+      Promise.resolve(events),
+    );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchAuditEvents({
       "user-tag": "user-eggman@external",
@@ -705,14 +691,14 @@ describe("model poller", () => {
 
   it("handles no controller when fetching audit events", async () => {
     const events = { events: [] };
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "findAuditEvents")
-      .mockImplementation(() => Promise.resolve(events));
+    vi.spyOn(jujuModule, "findAuditEvents").mockImplementation(() =>
+      Promise.resolve(events),
+    );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchAuditEvents({
       "user-tag": "user-eggman@external",
@@ -724,10 +710,10 @@ describe("model poller", () => {
 
   it("should handle Audit Logs user permission error", async () => {
     conn.facades.jimM = {
-      checkRelation: jest.fn().mockRejectedValue(new Error("Oops!")),
+      checkRelation: vi.fn().mockRejectedValue(new Error("Oops!")),
       version: 4,
     };
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
@@ -743,14 +729,14 @@ describe("model poller", () => {
   });
 
   it("should handle Audit Logs error", async () => {
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "findAuditEvents")
-      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
+    vi.spyOn(jujuModule, "findAuditEvents").mockImplementation(() =>
+      Promise.reject(new Error("Uh oh!")),
+    );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchAuditEvents({
       "user-tag": "user-eggman@external",
@@ -768,14 +754,14 @@ describe("model poller", () => {
 
   it("handles fetching cross model query results", async () => {
     const crossModelQueryResponse = { results: {}, errors: {} };
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "crossModelQuery")
-      .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
+    vi.spyOn(jujuModule, "crossModelQuery").mockImplementation(() =>
+      Promise.resolve(crossModelQueryResponse),
+    );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
       wsControllerURL: "wss://example.com",
@@ -794,14 +780,14 @@ describe("model poller", () => {
 
   it("handles no controller when fetching cross model query results", async () => {
     const crossModelQueryResponse = { results: {}, errors: {} };
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "crossModelQuery")
-      .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
+    vi.spyOn(jujuModule, "crossModelQuery").mockImplementation(() =>
+      Promise.resolve(crossModelQueryResponse),
+    );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
       wsControllerURL: "nothing",
@@ -816,14 +802,14 @@ describe("model poller", () => {
       results: {},
       errors: { error1: ["Uh oh!"] },
     };
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "crossModelQuery")
-      .mockImplementation(() => Promise.resolve(crossModelQueryResponse));
+    vi.spyOn(jujuModule, "crossModelQuery").mockImplementation(() =>
+      Promise.resolve(crossModelQueryResponse),
+    );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
       wsControllerURL: "wss://example.com",
@@ -836,14 +822,14 @@ describe("model poller", () => {
   });
 
   it("handles errors when fetching cross model query results", async () => {
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "crossModelQuery")
-      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
+    vi.spyOn(jujuModule, "crossModelQuery").mockImplementation(() =>
+      Promise.reject(new Error("Uh oh!")),
+    );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
       wsControllerURL: "wss://example.com",
@@ -860,13 +846,12 @@ describe("model poller", () => {
   });
 
   it("handles non-standard errors when fetching cross model query results", async () => {
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    jest
-      .spyOn(jujuModule, "crossModelQuery")
+    vi.spyOn(jujuModule, "crossModelQuery")
       // eslint-disable-next-line prefer-promise-reject-errors
       .mockImplementation(() => Promise.reject("Uh oh!"));
     const middleware = await runMiddleware();

@@ -48,7 +48,6 @@ const isGrouped = <L = SideNavigationLinkDefaultElement,>(
 };
 
 const SideNavigation = <L = SideNavigationLinkDefaultElement,>({
-  children,
   className,
   dark,
   hasIcons,

@@ -1,8 +1,13 @@
 import { render } from "@testing-library/react";
+import { vi } from "vitest";
 
 import PanelInlineErrors from "./PanelInlineErrors";
 
 describe("PanelInlineErrors", () => {
+  beforeEach(() => {
+    vi.spyOn(window.HTMLElement.prototype, "scrollIntoView");
+  });
+
   it("shouldn't render if there is no inline error", () => {
     render(<PanelInlineErrors inlineErrors={[null]} />);
     const notifications = document.getElementsByClassName(
@@ -14,7 +19,7 @@ describe("PanelInlineErrors", () => {
   it("should render inline errors", () => {
     render(
       <PanelInlineErrors
-        inlineErrors={["Error 1", <button>Error 2</button>]}
+        inlineErrors={["Error 1", <button key="button">Error 2</button>]}
       />,
     );
     const notifications = document.getElementsByClassName(
@@ -38,7 +43,7 @@ describe("PanelInlineErrors", () => {
   it("should scroll on render if there are inline errors", () => {
     render(
       <PanelInlineErrors
-        inlineErrors={[<button>Error</button>]}
+        inlineErrors={[<button key="button">Error</button>]}
         scrollArea={document.createElement("div")}
       />,
     );

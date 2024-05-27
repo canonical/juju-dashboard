@@ -1,5 +1,6 @@
 import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import * as juju from "juju/api";
 import { getCharmsURLFromApplications } from "juju/api";
@@ -35,8 +36,8 @@ describe("CharmsAndActionsPanel", () => {
   });
 
   beforeEach(() => {
-    console.error = jest.fn();
-    jest.resetAllMocks();
+    console.error = vi.fn();
+    vi.resetAllMocks();
 
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
@@ -65,9 +66,9 @@ describe("CharmsAndActionsPanel", () => {
   });
 
   it("should display the spinner before loading the panel", async () => {
-    jest
-      .spyOn(juju, "getCharmsURLFromApplications")
-      .mockImplementation(() => Promise.resolve([]));
+    vi.spyOn(juju, "getCharmsURLFromApplications").mockImplementation(() =>
+      Promise.resolve([]),
+    );
     const {
       result: { container },
     } = renderComponent(<CharmsAndActionsPanel />, { path, url, state });
@@ -80,9 +81,9 @@ describe("CharmsAndActionsPanel", () => {
   });
 
   it("should render CharmActionsPanel when there is a unique charm", async () => {
-    jest
-      .spyOn(juju, "getCharmsURLFromApplications")
-      .mockImplementation(() => Promise.resolve(["ch:ceph"]));
+    vi.spyOn(juju, "getCharmsURLFromApplications").mockImplementation(() =>
+      Promise.resolve(["ch:ceph"]),
+    );
     state.juju.charms = [
       charmInfoFactory.build({
         url: "ch:ceph",
@@ -116,9 +117,9 @@ describe("CharmsAndActionsPanel", () => {
   });
 
   it("should render CharmsPanel when there is no unique charm", async () => {
-    jest
-      .spyOn(juju, "getCharmsURLFromApplications")
-      .mockImplementation(() => Promise.resolve(["ch:ceph", "ch:ceph2"]));
+    vi.spyOn(juju, "getCharmsURLFromApplications").mockImplementation(() =>
+      Promise.resolve(["ch:ceph", "ch:ceph2"]),
+    );
     state.juju.selectedApplications = [
       ...state.juju.selectedApplications,
       charmApplicationFactory.build({
@@ -151,15 +152,13 @@ describe("CharmsAndActionsPanel", () => {
 
   it("should show should show error in CharmsPanel", async () => {
     state.juju.charms = [];
-    jest
-      .spyOn(juju, "getCharmsURLFromApplications")
-      .mockImplementation(
-        jest
-          .fn()
-          .mockRejectedValue(
-            new Error("Error while calling getCharmsURLFromApplications"),
-          ),
-      );
+    vi.spyOn(juju, "getCharmsURLFromApplications").mockImplementation(
+      vi
+        .fn()
+        .mockRejectedValue(
+          new Error("Error while calling getCharmsURLFromApplications"),
+        ),
+    );
     const {
       result: { container },
     } = renderComponent(<CharmsAndActionsPanel />, { path, url, state });

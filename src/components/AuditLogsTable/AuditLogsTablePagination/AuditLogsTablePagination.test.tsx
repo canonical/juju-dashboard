@@ -47,13 +47,13 @@ describe("AuditLogsTablePagination", () => {
 
   it("should navigate to next page and then to previous page", async () => {
     state.juju.auditEvents.items = auditEventFactory.buildList(51);
-    renderComponent(<AuditLogsTablePagination />, { state });
+    const { router } = renderComponent(<AuditLogsTablePagination />, { state });
     await userEvent.click(screen.getByRole("button", { name: "Next page" }));
-    expect(window.location.search).toEqual("?page=2");
+    expect(router.state.location.search).toEqual("?page=2");
     await userEvent.click(
       screen.getByRole("button", { name: "Previous page" }),
     );
-    expect(window.location.search).toEqual("?page=1");
+    expect(router.state.location.search).toEqual("?page=1");
   });
 
   it("should change amount of logs per page", async () => {
@@ -74,16 +74,16 @@ describe("AuditLogsTablePagination", () => {
 
   it("should navigate to first page when pressing the back to start button", async () => {
     state.juju.auditEvents.items = auditEventFactory.buildList(51);
-    renderComponent(<AuditLogsTablePagination />, { state });
+    const { router } = renderComponent(<AuditLogsTablePagination />, { state });
     expect(
       screen.getByRole("button", { name: Label.FIRST_PAGE }),
     ).toBeDisabled();
     await userEvent.click(screen.getByRole("button", { name: "Next page" }));
-    expect(window.location.search).toEqual("?page=2");
+    expect(router.state.location.search).toEqual("?page=2");
     await userEvent.click(
       screen.getByRole("button", { name: Label.FIRST_PAGE }),
     );
-    expect(window.location.search).toEqual("");
+    expect(router.state.location.search).toEqual("");
   });
 
   it("shouldn't be possible to navigate to next page if audit logs are loading", () => {

@@ -119,7 +119,7 @@ export const modelPollerMiddleware: Middleware<
         // XXX Now that we can register multiple controllers this needs
         // to be sent per controller.
         if (
-          process.env.NODE_ENV === "production" &&
+          import.meta.env.PROD &&
           window.jujuDashboardConfig?.analyticsEnabled
         ) {
           Sentry.setTag("jujuVersion", conn.info.serverVersion);

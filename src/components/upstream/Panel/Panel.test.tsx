@@ -1,6 +1,7 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ButtonHTMLAttributes } from "react";
+import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
 
@@ -58,7 +59,7 @@ it("logo handles different components", () => {
 });
 
 it("displays a toggle", async () => {
-  const onClick = jest.fn();
+  const onClick = vi.fn();
   renderComponent(
     <Panel title="Test panel" toggle={{ label: "Toggle", onClick }} />,
   );
@@ -68,7 +69,7 @@ it("displays a toggle", async () => {
 });
 
 it("handles key presses on the toggle", async () => {
-  const onClick = jest.fn();
+  const onClick = vi.fn();
   renderComponent(
     <Panel title="Test panel" toggle={{ label: "Toggle", onClick }} />,
   );

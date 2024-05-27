@@ -1,6 +1,7 @@
 import { screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
@@ -20,9 +21,9 @@ describe("CharmApplicationsDetails", () => {
   let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     userEventWithTimers = userEvent.setup({
-      advanceTimers: jest.advanceTimersByTime,
+      advanceTimers: vi.advanceTimersByTime,
     });
     state = rootStateFactory.build({
       general: generalStateFactory.build({}),
@@ -54,7 +55,7 @@ describe("CharmApplicationsDetails", () => {
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("should render correctly", () => {
@@ -85,7 +86,7 @@ describe("CharmApplicationsDetails", () => {
     );
     await act(async () => {
       await userEventWithTimers.hover(screen.getByText("4 more"));
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(
       screen.getByRole("tooltip", {

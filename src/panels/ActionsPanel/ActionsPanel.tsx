@@ -431,7 +431,7 @@ const requiredPopulated: RequiredPopulated = (
   });
 };
 
-const optionsValidate: ValidationFnProps = (selected, optionsValues) => {
+const optionsValidate: ValidationFnProps = (_selected, _optionsValues) => {
   // XXX TODO
   return true;
 };

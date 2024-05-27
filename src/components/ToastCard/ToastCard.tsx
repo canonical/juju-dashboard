@@ -54,7 +54,7 @@ export default function ToastCard({
       data-testid="toast-card"
     >
       <div className="toast-card__body">
-        {iconName && <i className={`p-icon--${iconName}`}>Success</i>}
+        {iconName && <i className={`p-icon--${iconName}`}>{iconName}</i>}
         <div className="toast-card__message">{children}</div>
         <i
           className="p-icon--close"

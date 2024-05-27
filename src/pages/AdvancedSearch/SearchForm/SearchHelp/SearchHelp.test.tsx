@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Field, Form, Formik } from "formik";
+import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
 
@@ -8,9 +9,9 @@ import SearchHelp from "./SearchHelp";
 
 describe("SearchHelp", () => {
   it("should update the field and perform a search when clicking a link", async () => {
-    const search = jest.fn();
+    const search = vi.fn();
     renderComponent(
-      <Formik initialValues={{ query: "" }} onSubmit={jest.fn()}>
+      <Formik initialValues={{ query: "" }} onSubmit={vi.fn()}>
         <Form>
           <Field name="query" />
           <SearchHelp search={search} />

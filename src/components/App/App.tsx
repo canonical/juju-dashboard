@@ -10,7 +10,7 @@ import { useAppSelector } from "store/store";
 import "../../scss/index.scss";
 
 function App() {
-  const isProduction = process.env.NODE_ENV === "production" ?? true;
+  const isProduction = import.meta.env.PROD;
   const config = useAppSelector(getConfig);
   const analyticsEnabled = useAppSelector(getAnalyticsEnabled);
   if (isProduction && analyticsEnabled) {

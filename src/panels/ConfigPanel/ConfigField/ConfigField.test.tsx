@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import type { ConfigData } from "../types";
 
@@ -22,10 +23,10 @@ describe("ConfigField", () => {
         config={config}
         selectedConfig={undefined}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
       />,
     );
     expect(screen.getByRole("textbox")).toHaveValue("eggman2");
@@ -37,10 +38,10 @@ describe("ConfigField", () => {
         config={config}
         selectedConfig={config}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
       />,
     );
     expect(document.querySelector(".config-input")).toHaveClass(
@@ -54,10 +55,10 @@ describe("ConfigField", () => {
         config={config}
         selectedConfig={config}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
       />,
     );
     expect(document.querySelector(".config-input")).toHaveClass(
@@ -81,10 +82,10 @@ describe("ConfigField", () => {
         config={config}
         selectedConfig={config}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
       />,
     );
     expect(document.querySelector(".config-input--description")).toHaveStyle({
@@ -98,10 +99,10 @@ describe("ConfigField", () => {
         config={config}
         selectedConfig={config}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
       />,
     );
     expect(document.querySelector(".config-input--description")).toHaveStyle({
@@ -110,15 +111,15 @@ describe("ConfigField", () => {
   });
 
   it("can reset the value to the default", async () => {
-    const setNewValue = jest.fn();
+    const setNewValue = vi.fn();
     render(
       <ConfigField
         config={config}
         selectedConfig={undefined}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
+        setSelectedConfig={vi.fn()}
         setNewValue={setNewValue}
       />,
     );
@@ -134,11 +135,11 @@ describe("ConfigField", () => {
         config={{ ...config, error: "Uh oh!" }}
         selectedConfig={undefined}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
-        validate={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
+        validate={vi.fn()}
       />,
     );
     expect(document.querySelector(".p-form-validation")).toHaveClass(
@@ -150,16 +151,16 @@ describe("ConfigField", () => {
   });
 
   it("calls the validate function when first displayed", async () => {
-    const validate = jest.fn();
+    const validate = vi.fn();
     render(
       <ConfigField
         config={config}
         selectedConfig={undefined}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
         validate={validate}
       />,
     );
@@ -167,16 +168,16 @@ describe("ConfigField", () => {
   });
 
   it("calls the validate function when the value changes", async () => {
-    const validate = jest.fn();
+    const validate = vi.fn();
     const { rerender } = render(
       <ConfigField
         config={config}
         selectedConfig={undefined}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
         validate={validate}
       />,
     );
@@ -186,10 +187,10 @@ describe("ConfigField", () => {
         config={newConfig}
         selectedConfig={undefined}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
         validate={validate}
       />,
     );
@@ -197,16 +198,16 @@ describe("ConfigField", () => {
   });
 
   it("does not call the validate function if the value hasn't changed", async () => {
-    const validate = jest.fn();
+    const validate = vi.fn();
     const { rerender } = render(
       <ConfigField
         config={config}
         selectedConfig={undefined}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
         validate={validate}
       />,
     );
@@ -219,10 +220,10 @@ describe("ConfigField", () => {
         }
         selectedConfig={undefined}
         input={(value: string) => (
-          <input type="text" value={value} onChange={jest.fn()} />
+          <input type="text" value={value} onChange={vi.fn()} />
         )}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
         validate={validate}
       />,
     );

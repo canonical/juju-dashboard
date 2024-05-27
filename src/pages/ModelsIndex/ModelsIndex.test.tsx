@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import { TestId } from "components/LoadingSpinner/LoadingSpinner";
 import type { RootState } from "store/store";
@@ -105,7 +106,10 @@ describe("Models Index page", () => {
   });
 
   it("displays correct grouping view", async () => {
-    renderComponent(<ModelsIndex />, { state, url: "?groupedby=status" });
+    const { router } = renderComponent(<ModelsIndex />, {
+      state,
+      url: "?groupedby=status",
+    });
 
     expect(screen.getByRole("tab", { name: "Status" })).toHaveAttribute(
       "aria-selected",
@@ -114,7 +118,7 @@ describe("Models Index page", () => {
     const ownerButton = screen.getByRole("tab", { name: "Owner" });
     await userEvent.click(ownerButton);
     expect(ownerButton).toHaveAttribute("aria-selected", "true");
-    const searchParams = new URLSearchParams(window.location.search);
+    const searchParams = new URLSearchParams(router.state.location.search);
     expect(searchParams.get("groupedby")).toEqual("owner");
     expect(document.querySelector(".owners-group")).toBeInTheDocument();
   });
@@ -144,7 +148,7 @@ describe("Models Index page", () => {
   });
 
   it("can change model filters", async () => {
-    renderComponent(<ModelsIndex />, { state });
+    const { router } = renderComponent(<ModelsIndex />, { state });
     // There should be three tables, one for each status:
     expect(screen.getAllByRole("grid")).toHaveLength(3);
     // There will be one extra row for each table header:
@@ -171,7 +175,7 @@ describe("Models Index page", () => {
       credential: "",
       custom: "",
     });
-    expect(window.location.search).toBe(`?${params.toString()}`);
+    expect(router.state.location.search).toBe(`?${params.toString()}`);
   });
 
   it("should display the error notification", async () => {
@@ -183,7 +187,7 @@ describe("Models Index page", () => {
   it("should refresh the window when pressing the button in error notification", async () => {
     const location = window.location;
     Object.defineProperty(window, "location", {
-      value: { ...location, reload: jest.fn() },
+      value: { ...location, reload: vi.fn() },
     });
 
     state.juju.modelsError = "Oops!";

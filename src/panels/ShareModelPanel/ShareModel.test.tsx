@@ -1,6 +1,6 @@
-import { act, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import reactHotToast, { Toaster } from "react-hot-toast";
+import { vi } from "vitest";
 
 import { Label as ShareCardLabel } from "components/ShareCard/ShareCard";
 import { actions as appActions } from "store/app";
@@ -49,9 +49,7 @@ describe("Share Model Panel", () => {
   });
 
   afterEach(() => {
-    // Guarantees that Toaster state does not persist throughout renders.
-    act(() => reactHotToast.remove());
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should show panel", () => {
@@ -121,13 +119,7 @@ describe("Share Model Panel", () => {
   });
 
   it("shows a warning if trying to add an existing user", async () => {
-    renderComponent(
-      <>
-        <ShareModel />
-        <Toaster />
-      </>,
-      { state, url, path },
-    );
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
       "eggman@external",
@@ -141,18 +133,10 @@ describe("Share Model Panel", () => {
   });
 
   it("handles errors when adding a user", async () => {
-    jest
-      .spyOn(storeModule, "usePromiseDispatch")
-      .mockReturnValue(
-        jest.fn().mockImplementation(() => Promise.reject(new Error())),
-      );
-    renderComponent(
-      <>
-        <ShareModel />
-        <Toaster />
-      </>,
-      { state, url, path },
+    vi.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
+      vi.fn().mockImplementation(() => Promise.reject(new Error())),
     );
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
       "another@external",
@@ -166,16 +150,10 @@ describe("Share Model Panel", () => {
   });
 
   it("catches errors when adding a user", async () => {
-    jest
-      .spyOn(storeModule, "usePromiseDispatch")
-      .mockReturnValue(jest.fn().mockRejectedValue("Uh oh!"));
-    renderComponent(
-      <>
-        <ShareModel />
-        <Toaster />
-      </>,
-      { state, url, path },
+    vi.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
+      vi.fn().mockRejectedValue("Uh oh!"),
     );
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
       "another@external",
@@ -187,20 +165,14 @@ describe("Share Model Panel", () => {
   });
 
   it("handles error responses when adding a user", async () => {
-    jest.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
-      jest.fn().mockImplementation(() =>
+    vi.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
+      vi.fn().mockImplementation(() =>
         Promise.resolve({
           results: [{ error: { message: "This is an error" } }],
         }),
       ),
     );
-    renderComponent(
-      <>
-        <ShareModel />
-        <Toaster />
-      </>,
-      { state, url, path },
-    );
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
       "another@external",
@@ -212,17 +184,11 @@ describe("Share Model Panel", () => {
   });
 
   it("can add a user", async () => {
-    const dispatch = jest
+    const dispatch = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(dispatch);
-    renderComponent(
-      <>
-        <ShareModel />
-        <Toaster />
-      </>,
-      { state, url, path },
-    );
+    vi.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(dispatch);
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
       "another@external",
@@ -245,7 +211,7 @@ describe("Share Model Panel", () => {
   });
 
   it("can remove a user", async () => {
-    const updatePermissionsSpy = jest.spyOn(appActions, "updatePermissions");
+    const updatePermissionsSpy = vi.spyOn(appActions, "updatePermissions");
     renderComponent(<ShareModel />, { state, url, path });
     await userEvent.click(
       screen.getByRole("button", {
@@ -263,14 +229,8 @@ describe("Share Model Panel", () => {
   });
 
   it("can undo removing a user", async () => {
-    const updatePermissionsSpy = jest.spyOn(appActions, "updatePermissions");
-    renderComponent(
-      <>
-        <ShareModel />
-        <Toaster />
-      </>,
-      { state, url, path },
-    );
+    const updatePermissionsSpy = vi.spyOn(appActions, "updatePermissions");
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.click(
       screen.getByRole("button", {
         name: ShareCardLabel.REMOVE,
@@ -280,6 +240,7 @@ describe("Share Model Panel", () => {
       screen.getAllByRole("button", {
         name: "Undo",
       })[0],
+      { pointerEventsCheck: 0 },
     );
     expect(updatePermissionsSpy).toHaveBeenCalledWith({
       action: "grant",
@@ -292,14 +253,8 @@ describe("Share Model Panel", () => {
   });
 
   it("can change permissions", async () => {
-    const updatePermissionsSpy = jest.spyOn(appActions, "updatePermissions");
-    renderComponent(
-      <>
-        <ShareModel />
-        <Toaster />
-      </>,
-      { state, url, path },
-    );
+    const updatePermissionsSpy = vi.spyOn(appActions, "updatePermissions");
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(updatePermissionsSpy).toHaveBeenCalledWith({
       action: "grant",
@@ -315,20 +270,14 @@ describe("Share Model Panel", () => {
   });
 
   it("can handle errors when changing permissions", async () => {
-    jest.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
-      jest.fn().mockImplementation(() =>
+    vi.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
+      vi.fn().mockImplementation(() =>
         Promise.resolve({
           results: [{ error: { message: "No no no no no" } }],
         }),
       ),
     );
-    renderComponent(
-      <>
-        <ShareModel />
-        <Toaster />
-      </>,
-      { state, url, path },
-    );
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(document.querySelector(".toast-card__message")?.textContent).toBe(
       "No no no no no",
@@ -336,8 +285,8 @@ describe("Share Model Panel", () => {
   });
 
   it("ignores greater access errors when updating permissions", async () => {
-    jest.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
-      jest.fn().mockImplementation(() =>
+    vi.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
+      vi.fn().mockImplementation(() =>
         Promise.resolve({
           results: [
             { error: { message: "user already has admin access or greater" } },
@@ -345,13 +294,7 @@ describe("Share Model Panel", () => {
         }),
       ),
     );
-    renderComponent(
-      <>
-        <ShareModel />
-        <Toaster />
-      </>,
-      { state, url, path },
-    );
+    renderComponent(<ShareModel />, { state, url, path });
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
     expect(document.querySelector(".toast-card__message")?.textContent).toBe(
       "Permissions for spaceman@domain have been changed to write.",
@@ -359,13 +302,7 @@ describe("Share Model Panel", () => {
   });
 
   it("can show and hide the mobile add form", async () => {
-    renderComponent(
-      <>
-        <ShareModel />
-        <Toaster />
-      </>,
-      { state, url, path },
-    );
+    renderComponent(<ShareModel />, { state, url, path });
     // Check the initial state.
     expect(document.querySelector(".l-aside")).toHaveAttribute(
       "data-mobile-show-add-user",

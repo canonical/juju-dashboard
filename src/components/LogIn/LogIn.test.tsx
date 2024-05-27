@@ -1,7 +1,6 @@
-import { act, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Toaster } from "react-hot-toast";
-import reactHotToast from "react-hot-toast";
+import { vi } from "vitest";
 
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -16,13 +15,12 @@ describe("LogIn", () => {
   const consoleError = console.error;
 
   beforeEach(() => {
-    console.error = jest.fn();
+    console.error = vi.fn();
   });
 
   afterEach(() => {
     console.error = consoleError;
-    act(() => reactHotToast.remove());
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("renders a 'connecting' message while connecting", () => {
@@ -71,9 +69,9 @@ describe("LogIn", () => {
       }),
     });
     renderComponent(<LogIn>App content</LogIn>, { state });
-    expect(screen.getByRole("link")).toHaveTextContent(
-      "Log in to the dashboard",
-    );
+    expect(
+      screen.getByRole("link", { name: "Log in to the dashboard" }),
+    ).toBeInTheDocument();
     const content = screen.getByText("App content");
     expect(content).toBeInTheDocument();
     expect(content).toHaveClass("app-content");
@@ -148,18 +146,18 @@ describe("LogIn", () => {
     // for. This is necessary because we don't have a full store set up which
     // can dispatch thunks (and we don't need to handle the thunk, just know it
     // was dispatched).
-    jest.spyOn(appThunks, "connectAndStartPolling").mockImplementation(
-      jest.fn().mockReturnValue({
+    vi.spyOn(appThunks, "connectAndStartPolling").mockImplementation(
+      vi.fn().mockReturnValue({
         type: "connectAndStartPolling",
-        catch: jest.fn(),
+        catch: vi.fn(),
       }),
     );
-    const mockUseAppDispatch = jest.fn().mockReturnValue({
-      then: jest.fn().mockReturnValue({ catch: jest.fn() }),
+    const mockUseAppDispatch = vi.fn().mockReturnValue({
+      then: vi.fn().mockReturnValue({ catch: vi.fn() }),
     });
-    jest
-      .spyOn(dashboardStore, "useAppDispatch")
-      .mockReturnValue(mockUseAppDispatch);
+    vi.spyOn(dashboardStore, "useAppDispatch").mockReturnValue(
+      mockUseAppDispatch,
+    );
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
@@ -196,13 +194,7 @@ describe("LogIn", () => {
         visitURLs: ["/log-in"],
       }),
     });
-    renderComponent(
-      <>
-        <Toaster />
-        <LogIn>App content</LogIn>
-      </>,
-      { state },
-    );
+    renderComponent(<LogIn>App content</LogIn>, { state });
     const card = await screen.findByTestId("toast-card");
     expect(
       await within(card).findByText("Controller authentication required"),
@@ -222,48 +214,33 @@ describe("LogIn", () => {
         visitURLs: ["/log-in"],
       }),
     });
-    const { result } = renderComponent(
-      <>
-        <Toaster />
-        <LogIn>App content</LogIn>
-      </>,
-      { state },
-    );
+    renderComponent(<LogIn>App content</LogIn>, { state });
     const card = await screen.findByTestId("toast-card");
     expect(card).toBeInTheDocument();
     await userEvent.click(
       await within(card).findByRole("link", { name: "Authenticate" }),
-    );
-    result.rerender(
-      <>
-        <Toaster />
-        <LogIn>App content</LogIn>
-      </>,
+      { pointerEventsCheck: 0 },
     );
     expect(screen.queryByTestId("toast-card")).not.toBeInTheDocument();
   });
 
   it("should display console error when trying to log in", async () => {
-    jest
-      .spyOn(appThunks, "connectAndStartPolling")
-      .mockImplementation(
-        jest.fn().mockReturnValue({ type: "connectAndStartPolling" }),
-      );
-    jest
-      .spyOn(dashboardStore, "useAppDispatch")
-      .mockImplementation(
-        jest
-          .fn()
-          .mockReturnValue((action: unknown) =>
-            action instanceof Object &&
-            "type" in action &&
-            action.type === "connectAndStartPolling"
-              ? Promise.reject(
-                  new Error("Error while dispatching connectAndStartPolling!"),
-                )
-              : null,
-          ),
-      );
+    vi.spyOn(appThunks, "connectAndStartPolling").mockImplementation(
+      vi.fn().mockReturnValue({ type: "connectAndStartPolling" }),
+    );
+    vi.spyOn(dashboardStore, "useAppDispatch").mockImplementation(
+      vi
+        .fn()
+        .mockReturnValue((action: unknown) =>
+          action instanceof Object &&
+          "type" in action &&
+          action.type === "connectAndStartPolling"
+            ? Promise.reject(
+                new Error("Error while dispatching connectAndStartPolling!"),
+              )
+            : null,
+        ),
+    );
 
     renderComponent(<LogIn>App content</LogIn>);
     await userEvent.click(screen.getByRole("button"));

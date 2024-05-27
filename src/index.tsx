@@ -1,5 +1,3 @@
-import process from "process";
-
 import { Notification, Strip } from "@canonical/react-components";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as Sentry from "@sentry/browser";
@@ -15,8 +13,6 @@ import { actions as generalActions } from "store/general";
 
 import packageJSON from "../package.json";
 
-import * as serviceWorker from "./serviceWorker";
-
 export const ROOT_ID = "root";
 export const RECHECK_TIME = 500;
 const appVersion = packageJSON.version;
@@ -26,17 +22,7 @@ export enum Label {
   POLLING_ERROR = "Error while trying to connect and start polling.",
 }
 
-// Webpack 5 no longer makes node variables available at runtime so we need to
-// attach `process` to the window:
-// https://github.com/facebook/create-react-app/issues/12212
-if (!window.process) {
-  window.process = process;
-}
-
-if (
-  process.env.NODE_ENV === "production" &&
-  window.jujuDashboardConfig?.analyticsEnabled
-) {
+if (import.meta.env.PROD && window.jujuDashboardConfig?.analyticsEnabled) {
   Sentry.init({
     dsn: "https://5f679e274f34464194e9592a91ed65d4@sentry.is.canonical.com//29",
   });
@@ -135,7 +121,7 @@ function bootstrap() {
     }
   }
 
-  if (process.env.NODE_ENV === "production" && config.analyticsEnabled) {
+  if (import.meta.env.PROD && config.analyticsEnabled) {
     Sentry.setTag("isJuju", config.isJuju);
   }
 
@@ -159,8 +145,3 @@ function bootstrap() {
     </Provider>,
   );
 }
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();

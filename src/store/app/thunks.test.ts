@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+
 import { actions as appActions } from "store/app";
 import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
@@ -20,7 +22,7 @@ describe("thunks", () => {
   let state: RootState;
 
   beforeEach(() => {
-    console.error = jest.fn();
+    console.error = vi.fn();
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -60,8 +62,8 @@ describe("thunks", () => {
 
   it("logOut", async () => {
     const action = logOut();
-    const dispatch = jest.fn();
-    const getState = jest.fn(() =>
+    const dispatch = vi.fn();
+    const getState = vi.fn(() =>
       rootStateFactory.build({
         general: generalStateFactory.build({
           config: configFactory.build({
@@ -83,8 +85,8 @@ describe("thunks", () => {
   });
 
   it("connectAndStartPolling", async () => {
-    const dispatch = jest.fn();
-    const getState = jest.fn(() => state);
+    const dispatch = vi.fn();
+    const getState = vi.fn(() => state);
     const action = connectAndStartPolling();
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
@@ -96,7 +98,7 @@ describe("thunks", () => {
   });
 
   it("connectAndStartPolling should catch error instanceof Error", async () => {
-    const dispatch = jest
+    const dispatch = vi
       .fn()
       // Successfuly dispatch connectAndStartPolling/pending.
       .mockImplementationOnce(() => {})
@@ -105,7 +107,7 @@ describe("thunks", () => {
         // eslint-disable-next-line no-throw-literal
         throw "Error while dispatching connectAndPollControllers!";
       });
-    const getState = jest.fn(() => state);
+    const getState = vi.fn(() => state);
     const action = connectAndStartPolling();
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
@@ -126,7 +128,7 @@ describe("thunks", () => {
   });
 
   it("connectAndStartPolling should catch string error", async () => {
-    const dispatch = jest
+    const dispatch = vi
       .fn()
       // Successfuly dispatch connectAndStartPolling/pending.
       .mockImplementationOnce(() => {})
@@ -134,7 +136,7 @@ describe("thunks", () => {
       .mockImplementationOnce(() => {
         throw new Error("Error while dispatching connectAndPollControllers!");
       });
-    const getState = jest.fn(() => state);
+    const getState = vi.fn(() => state);
     const action = connectAndStartPolling();
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
@@ -155,7 +157,7 @@ describe("thunks", () => {
   });
 
   it("connectAndStartPolling should catch non-standard type of error", async () => {
-    const dispatch = jest
+    const dispatch = vi
       .fn()
       // Successfuly dispatch connectAndStartPolling/pending.
       .mockImplementationOnce(() => {})
@@ -164,7 +166,7 @@ describe("thunks", () => {
         // eslint-disable-next-line no-throw-literal
         throw ["Unknown error."];
       });
-    const getState = jest.fn(() => state);
+    const getState = vi.fn(() => state);
     const action = connectAndStartPolling();
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(

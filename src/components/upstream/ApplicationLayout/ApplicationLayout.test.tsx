@@ -1,5 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
 
@@ -75,7 +76,7 @@ it("pins the menu", async () => {
 });
 
 it("pins the menu using external state", async () => {
-  const onPinMenu = jest.fn();
+  const onPinMenu = vi.fn();
   renderComponent(
     <ApplicationLayout
       logo={logo}
@@ -101,7 +102,7 @@ it("opens and collapses the menu", async () => {
 });
 
 it("collapses the menu using external state", async () => {
-  const onCollapseMenu = jest.fn();
+  const onCollapseMenu = vi.fn();
   renderComponent(
     <ApplicationLayout
       logo={logo}

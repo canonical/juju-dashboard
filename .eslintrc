@@ -1,17 +1,30 @@
 {
   "extends": [
-    "react-app",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
     "plugin:prettier/recommended",
-    "plugin:jest/recommended",
     "plugin:import/typescript",
-    "plugin:promise/recommended"
+    "plugin:promise/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "parser": "@typescript-eslint/parser",
-    "project": "./tsconfig.json"
+    "project": "./tsconfig.json",
+    "ecmaFeatures": {
+      "jsx": true,
+    },
   },
-  "plugins": ["prettier", "jest", "promise"],
+  "plugins": [
+    "prettier",
+    "vitest",
+    "promise",
+    "react-refresh",
+    "react",
+    "import",
+  ],
   "root": true,
   "rules": {
     "@typescript-eslint/consistent-type-imports": "error",
@@ -22,8 +35,8 @@
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [".js", ".tsx"]
-      }
+        "extensions": [".js", ".tsx"],
+      },
     ],
     "import/prefer-default-export": 0,
     "import/imports-first": ["error", "absolute-first"],
@@ -33,7 +46,7 @@
       {
         "newlines-between": "always",
         "alphabetize": {
-          "order": "asc"
+          "order": "asc",
         },
         "groups": [
           "builtin",
@@ -41,26 +54,42 @@
           "internal",
           "parent",
           "sibling",
-          "index"
-        ]
-      }
+          "index",
+        ],
+      },
     ],
-    "jest/prefer-expect-assertions": 0,
-    "jest/prefer-inline-snapshots": 0,
-    "jest/lowercase-name": 0,
-    "jest/no-hooks": 0,
+    "vitest/prefer-expect-assertions": 0,
+    "vitest/no-hooks": 0,
     "default-case": 0,
     "no-param-reassign": 0,
     "no-case-declarations": 0,
     "prefer-destructuring": 0,
-    "promise/catch-or-return": ["error", { "allowFinally": true }]
+    "react/no-unescaped-entities": 0,
+    "react/display-name": 0,
+    "@typescript-eslint/no-duplicate-enum-values": 0,
+    "promise/catch-or-return": ["error", { "allowFinally": true }],
+    "react-refresh/only-export-components": [
+      "warn",
+      { "allowConstantExport": true },
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+      },
+    ],
   },
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": ["src"]
-      }
-    }
+        "paths": ["src"],
+      },
+    },
+    "react": {
+      "version": "detect",
+    },
   },
   "globals": {
     "window": true,
@@ -68,6 +97,6 @@
     "localStorage": true,
     "windowLocation": true,
     "jujuDashboardConfig": true,
-    "lightningjs": true
-  }
+    "lightningjs": true,
+  },
 }

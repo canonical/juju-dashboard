@@ -1,6 +1,7 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
+import { vi } from "vitest";
 
 import * as secretHooks from "juju/api-hooks/secrets";
 import { actions as jujuActions } from "store/juju";
@@ -30,10 +31,10 @@ import { TestId as SecretsTableTestId } from "./SecretsTable/SecretsTable";
 
 const mockStore = configureStore<RootState, unknown>([]);
 
-jest.mock("juju/api-hooks/secrets", () => {
+vi.mock("juju/api-hooks/secrets", () => {
   return {
-    useGetSecretContent: jest.fn().mockReturnValue(jest.fn()),
-    useListSecrets: jest.fn().mockReturnValue(jest.fn()),
+    useGetSecretContent: vi.fn().mockReturnValue(vi.fn()),
+    useListSecrets: vi.fn().mockReturnValue(vi.fn()),
   };
 });
 
@@ -46,9 +47,7 @@ describe("Secrets", () => {
   });
 
   beforeEach(() => {
-    jest
-      .spyOn(secretHooks, "useListSecrets")
-      .mockImplementation(() => jest.fn());
+    vi.spyOn(secretHooks, "useListSecrets").mockImplementation(() => vi.fn());
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         credentials: {
@@ -106,10 +105,10 @@ describe("Secrets", () => {
   });
 
   it("fetches secrets", async () => {
-    const listSecrets = jest.fn();
-    jest
-      .spyOn(secretHooks, "useListSecrets")
-      .mockImplementation(() => listSecrets);
+    const listSecrets = vi.fn();
+    vi.spyOn(secretHooks, "useListSecrets").mockImplementation(
+      () => listSecrets,
+    );
     renderComponent(<Secrets />, { state, path, url });
     expect(listSecrets).toHaveBeenCalled();
   });
@@ -169,10 +168,10 @@ describe("Secrets", () => {
         manageSecrets: true,
       }),
     });
-    renderComponent(<Secrets />, { state, path, url });
-    expect(window.location.search).toEqual("");
+    const { router } = renderComponent(<Secrets />, { state, path, url });
+    expect(router.state.location.search).toEqual("");
     await userEvent.click(screen.getByRole("button", { name: Label.ADD }));
-    expect(window.location.search).toEqual("?panel=add-secret");
+    expect(router.state.location.search).toEqual("?panel=add-secret");
   });
 
   it("does not display an add secret button if secrets can't be managed", async () => {

@@ -39,7 +39,7 @@ const AuditLogsFilterPanel = (): JSX.Element => {
     panel: null,
   });
   // Extract just the filters so that they can be looped over.
-  const { page, panel, ...filters } = queryParams;
+  const { page: _page, panel: _panel, ...filters } = queryParams;
   const hasFilters = Object.values(filters).some((filter) => !!filter);
   return (
     <>

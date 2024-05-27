@@ -1,4 +1,6 @@
 import type { UnknownAction, MiddlewareAPI } from "redux";
+import type { Mock } from "vitest";
+import { vi } from "vitest";
 
 import * as jujuModule from "juju/api";
 import { thunks as appThunks } from "store/app";
@@ -14,17 +16,17 @@ import { checkAuthMiddleware } from "./check-auth";
 
 describe("model poller", () => {
   let fakeStore: MiddlewareAPI;
-  let next: jest.Mock;
+  let next: Mock;
   const originalLog = console.log;
   const originalError = console.error;
   const wsControllerURL = "wss://example.com";
   let state: RootState;
 
   beforeEach(() => {
-    console.log = jest.fn();
-    console.error = jest.fn();
-    jest.useFakeTimers();
-    next = jest.fn();
+    console.log = vi.fn();
+    console.error = vi.fn();
+    vi.useFakeTimers();
+    next = vi.fn();
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         controllers: {
@@ -42,10 +44,10 @@ describe("model poller", () => {
       },
     });
     fakeStore = {
-      getState: jest.fn(() => state),
-      dispatch: jest.fn(),
+      getState: vi.fn(() => state),
+      dispatch: vi.fn(),
     };
-    jest.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       error: "Uh oh!",
       wsControllerURL: "wss://example.com/api",
     }));
@@ -60,12 +62,12 @@ describe("model poller", () => {
   afterEach(() => {
     console.log = originalLog;
     console.error = originalError;
-    jest.restoreAllMocks();
-    jest.useRealTimers();
+    vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it("ignores function actions", async () => {
-    const action = jest.fn() as unknown as UnknownAction;
+    const action = vi.fn() as unknown as UnknownAction;
     await runMiddleware(action);
     expect(next).toHaveBeenCalledWith(action);
   });

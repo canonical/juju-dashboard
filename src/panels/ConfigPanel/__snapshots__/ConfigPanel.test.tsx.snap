@@ -1,12 +1,12 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ConfigPanel displays a message if the app has no config 1`] = `
+exports[`ConfigPanel > displays a message if the app has no config 1`] = `
 <div
   class="config-panel__message"
 >
   <img
     alt=""
-    src="no-config-params.svg"
+    src="/src/static/images/no-config-params.svg"
   />
   <h4>
     This application doesn't have any configuration parameters

@@ -29,7 +29,7 @@ const mockStore = configureStore();
 const generateContainer =
   (state: RootState, path: string, url: string) =>
   ({ children }: PropsWithChildren) => {
-    window.history.pushState({}, "", url);
+    window.happyDOM.setURL(url);
     const store = mockStore(state);
     return (
       <Provider store={store}>

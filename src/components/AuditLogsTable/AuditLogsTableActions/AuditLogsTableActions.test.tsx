@@ -52,9 +52,9 @@ describe("AuditLogsTableActions", () => {
   });
 
   it("can open the filter panel", async () => {
-    renderComponent(<AuditLogsTableActions />);
+    const { router } = renderComponent(<AuditLogsTableActions />);
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
-    expect(window.location.search).toEqual("?panel=audit-log-filters");
+    expect(router.state.location.search).toEqual("?panel=audit-log-filters");
   });
 
   it("should navigate to first page when pressing refresh button", async () => {
@@ -67,11 +67,11 @@ describe("AuditLogsTableActions", () => {
       );
     }
     state.juju.auditEvents.items = auditLogs;
-    renderComponent(<AuditLogsTableActions />, { state });
+    const { router } = renderComponent(<AuditLogsTableActions />, { state });
     await userEvent.click(screen.getByRole("button", { name: "Next page" }));
-    expect(window.location.search).toEqual("?page=2");
+    expect(router.state.location.search).toEqual("?page=2");
     await userEvent.click(screen.getByRole("button", { name: "Refresh" }));
-    expect(window.location.search).toEqual("");
+    expect(router.state.location.search).toEqual("");
   });
 
   it("should navigate to next page and then to previous page", async () => {
@@ -84,13 +84,13 @@ describe("AuditLogsTableActions", () => {
       );
     }
     state.juju.auditEvents.items = auditLogs;
-    renderComponent(<AuditLogsTableActions />, { state });
+    const { router } = renderComponent(<AuditLogsTableActions />, { state });
     await userEvent.click(screen.getByRole("button", { name: "Next page" }));
-    expect(window.location.search).toEqual("?page=2");
+    expect(router.state.location.search).toEqual("?page=2");
     await userEvent.click(
       screen.getByRole("button", { name: "Previous page" }),
     );
-    expect(window.location.search).toEqual("?page=1");
+    expect(router.state.location.search).toEqual("?page=1");
   });
 
   it("should change amount of logs per page", async () => {

@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import { TestId as LoadingTestId } from "components/LoadingSpinner/LoadingSpinner";
 import * as componentUtils from "components/utils";
@@ -28,10 +29,13 @@ import urls from "urls";
 
 import SecretsTable, { Label, TestId } from "./SecretsTable";
 
-jest.mock("components/utils", () => ({
-  ...jest.requireActual("components/utils"),
-  copyToClipboard: jest.fn(),
-}));
+vi.mock("components/utils", async () => {
+  const utils = await vi.importActual("components/utils");
+  return {
+    ...utils,
+    copyToClipboard: vi.fn(),
+  };
+});
 
 describe("SecretsTable", () => {
   let state: RootState;
@@ -264,15 +268,15 @@ describe("SecretsTable", () => {
         loaded: true,
       }),
     });
-    renderComponent(<SecretsTable />, { state, path, url });
-    expect(window.location.search).toEqual("");
+    const { router } = renderComponent(<SecretsTable />, { state, path, url });
+    expect(router.state.location.search).toEqual("");
     await userEvent.click(
       screen.getByRole("button", { name: Label.ACTION_MENU }),
     );
     await userEvent.click(
       screen.getByRole("button", { name: Label.REMOVE_BUTTON }),
     );
-    expect(window.location.search).toEqual(
+    expect(router.state.location.search).toEqual(
       "?panel=remove-secret&secret=secret%3Aaabbccdd",
     );
   });
@@ -284,15 +288,15 @@ describe("SecretsTable", () => {
         loaded: true,
       }),
     });
-    renderComponent(<SecretsTable />, { state, path, url });
-    expect(window.location.search).toEqual("");
+    const { router } = renderComponent(<SecretsTable />, { state, path, url });
+    expect(router.state.location.search).toEqual("");
     await userEvent.click(
       screen.getByRole("button", { name: Label.ACTION_MENU }),
     );
     await userEvent.click(
       screen.getByRole("button", { name: Label.UPDATE_BUTTON }),
     );
-    expect(window.location.search).toEqual(
+    expect(router.state.location.search).toEqual(
       "?panel=update-secret&secret=secret%3Aaabbccdd",
     );
   });
@@ -304,15 +308,15 @@ describe("SecretsTable", () => {
         loaded: true,
       }),
     });
-    renderComponent(<SecretsTable />, { state, path, url });
-    expect(window.location.search).toEqual("");
+    const { router } = renderComponent(<SecretsTable />, { state, path, url });
+    expect(router.state.location.search).toEqual("");
     await userEvent.click(
       screen.getByRole("button", { name: Label.ACTION_MENU }),
     );
     await userEvent.click(
       screen.getByRole("button", { name: Label.GRANT_BUTTON }),
     );
-    expect(window.location.search).toEqual(
+    expect(router.state.location.search).toEqual(
       "?panel=grant-secret&secret=secret%3Aaabbccdd",
     );
   });

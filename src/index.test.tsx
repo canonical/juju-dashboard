@@ -1,5 +1,6 @@
 import { screen, waitFor } from "@testing-library/dom";
 import type { UnknownAction } from "redux";
+import { vi } from "vitest";
 
 import * as storeModule from "store";
 import { thunks as appThunks } from "store/app";
@@ -17,16 +18,18 @@ import {
   renderApp,
 } from "./index";
 
-jest.mock("components/App/App", () => {
+vi.mock("components/App/App", () => {
   const App = () => <div data-testid="app"></div>;
-  return App;
+  return { default: App };
 });
 
-jest.mock("store", () => {
+vi.mock("store", () => {
   return {
-    dispatch: jest.fn(),
-    getState: jest.fn(),
-    subscribe: jest.fn(),
+    default: {
+      dispatch: vi.fn(),
+      getState: vi.fn(),
+      subscribe: vi.fn(),
+    },
   };
 });
 
@@ -44,7 +47,7 @@ describe("renderApp", () => {
       value: new URL(window.location.href),
     });
     // Hide the config errors from the test output.
-    console.error = jest.fn();
+    console.error = vi.fn();
     rootNode = document.createElement("div");
     rootNode.setAttribute("id", ROOT_ID);
     document.body.appendChild(rootNode);
@@ -61,20 +64,18 @@ describe("renderApp", () => {
       document.body.removeChild(rootNode);
     }
     window.jujuDashboardConfig = undefined;
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("polls the config if it is not found", async () => {
-    jest.useFakeTimers({
-      legacyFakeTimers: true,
-    });
+    vi.useFakeTimers();
     window.jujuDashboardConfig = undefined;
     renderApp();
     for (let index = 0; index < 5; index++) {
       expect(document.querySelector(`#${ROOT_ID}`)?.children).toHaveLength(0);
-      jest.advanceTimersByTime(RECHECK_TIME);
+      vi.advanceTimersByTime(RECHECK_TIME);
     }
-    jest.useRealTimers();
+    vi.useRealTimers();
     await waitFor(() => {
       expect(
         screen.getByText(Label.NO_CONFIG, { exact: false }),
@@ -92,9 +93,9 @@ describe("renderApp", () => {
 
   it("handles 2.9 unsecure controller endpoints", async () => {
     window.location.href = "http://example.com";
-    const dispatch = jest
+    const dispatch = vi
       .spyOn(storeModule.default, "dispatch")
-      .mockImplementation(jest.fn());
+      .mockImplementation(vi.fn());
     const config = configFactory.build({
       baseControllerURL: null,
     });
@@ -110,9 +111,9 @@ describe("renderApp", () => {
 
   it("handles 2.9 secure controller endpoints", async () => {
     window.location.href = "https://example.com";
-    const dispatch = jest
+    const dispatch = vi
       .spyOn(storeModule.default, "dispatch")
-      .mockImplementation(jest.fn());
+      .mockImplementation(vi.fn());
     const config = configFactory.build({
       baseControllerURL: null,
     });
@@ -140,9 +141,9 @@ describe("renderApp", () => {
 
   it("handles unsecure relative controller endpoints", async () => {
     window.location.href = "http://example.com";
-    const dispatch = jest
+    const dispatch = vi
       .spyOn(storeModule.default, "dispatch")
-      .mockImplementation(jest.fn());
+      .mockImplementation(vi.fn());
     const config = configFactory.build({
       controllerAPIEndpoint: "/api",
     });
@@ -158,9 +159,9 @@ describe("renderApp", () => {
 
   it("handles secure relative controller endpoints", async () => {
     window.location.href = "https://example.com";
-    const dispatch = jest
+    const dispatch = vi
       .spyOn(storeModule.default, "dispatch")
-      .mockImplementation(jest.fn());
+      .mockImplementation(vi.fn());
     const config = configFactory.build({
       controllerAPIEndpoint: "/api",
     });
@@ -175,9 +176,9 @@ describe("renderApp", () => {
   });
 
   it("stores the config and app version", async () => {
-    const dispatch = jest
+    const dispatch = vi
       .spyOn(storeModule.default, "dispatch")
-      .mockImplementation(jest.fn());
+      .mockImplementation(vi.fn());
     const config = configFactory.build({
       controllerAPIEndpoint: "wss://example.com/api",
     });
@@ -194,14 +195,12 @@ describe("renderApp", () => {
     // for. This is necessary because we don't have a full store set up which
     // can dispatch thunks (and we don't need to handle the thunk, just know it
     // was dispatched).
-    jest
-      .spyOn(appThunks, "connectAndStartPolling")
-      .mockImplementation(
-        jest.fn().mockReturnValue({ type: "connectAndStartPolling" }),
-      );
-    const dispatch = jest
+    vi.spyOn(appThunks, "connectAndStartPolling").mockImplementation(
+      vi.fn().mockReturnValue({ type: "connectAndStartPolling" }),
+    );
+    const dispatch = vi
       .spyOn(storeModule.default, "dispatch")
-      .mockImplementation(jest.fn().mockResolvedValue({ catch: jest.fn() }));
+      .mockImplementation(vi.fn().mockResolvedValue({ catch: vi.fn() }));
     const config = configFactory.build({
       controllerAPIEndpoint: "wss://example.com/api",
       identityProviderAvailable: true,
@@ -227,7 +226,7 @@ describe("getControllerAPIEndpointErrors", () => {
   const consoleError = console.error;
 
   beforeEach(() => {
-    console.error = jest.fn();
+    console.error = vi.fn();
   });
 
   afterEach(() => {
@@ -281,23 +280,19 @@ describe("getControllerAPIEndpointErrors", () => {
   });
 
   it("should show console error when dispatching connectAndStartPolling", async () => {
-    jest
-      .spyOn(appThunks, "connectAndStartPolling")
-      .mockImplementation(
-        jest.fn().mockReturnValue({ type: "connectAndStartPolling" }),
-      );
-    jest
-      .spyOn(storeModule.default, "dispatch")
-      .mockImplementation(
-        (action) =>
-          (action instanceof Object &&
-          "type" in action &&
-          action.type === "connectAndStartPolling"
-            ? Promise.reject(
-                new Error("Error while dispatching connectAndStartPolling!"),
-              )
-            : null) as unknown as UnknownAction,
-      );
+    vi.spyOn(appThunks, "connectAndStartPolling").mockImplementation(
+      vi.fn().mockReturnValue({ type: "connectAndStartPolling" }),
+    );
+    vi.spyOn(storeModule.default, "dispatch").mockImplementation(
+      (action) =>
+        (action instanceof Object &&
+        "type" in action &&
+        action.type === "connectAndStartPolling"
+          ? Promise.reject(
+              new Error("Error while dispatching connectAndStartPolling!"),
+            )
+          : null) as unknown as UnknownAction,
+    );
     const config = configFactory.build({
       baseControllerURL: null,
       identityProviderAvailable: true,

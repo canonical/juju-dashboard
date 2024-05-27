@@ -2,6 +2,7 @@ import * as jujuLib from "@canonical/jujulib";
 import type { Connection } from "@canonical/jujulib";
 import { renderHook, waitFor } from "@testing-library/react";
 import configureStore from "redux-mock-store";
+import { vi } from "vitest";
 
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
@@ -30,8 +31,8 @@ import {
 
 const mockStore = configureStore<RootState, unknown>([]);
 
-jest.mock("@canonical/jujulib", () => ({
-  connectAndLogin: jest.fn(),
+vi.mock("@canonical/jujulib", () => ({
+  connectAndLogin: vi.fn(),
 }));
 
 describe("useListSecrets", () => {
@@ -66,17 +67,17 @@ describe("useListSecrets", () => {
       conn: {
         facades: {
           secrets: {
-            listSecrets: jest
+            listSecrets: vi
               .fn()
               .mockImplementation(() => Promise.resolve({ results: secrets })),
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useListSecrets("eggman@external", "test-model"),
       {
@@ -120,11 +121,11 @@ describe("useListSecrets", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useListSecrets("eggman@external", "test-model"),
       {
@@ -159,17 +160,17 @@ describe("useListSecrets", () => {
       conn: {
         facades: {
           secrets: {
-            listSecrets: jest
+            listSecrets: vi
               .fn()
               .mockImplementation(() => Promise.reject(new Error("Uh oh!"))),
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useListSecrets("eggman@external", "test-model"),
       {
@@ -235,17 +236,17 @@ describe("useGetSecretContent", () => {
       conn: {
         facades: {
           secrets: {
-            listSecrets: jest
+            listSecrets: vi
               .fn()
               .mockImplementation(() => Promise.resolve({ results: secrets })),
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useGetSecretContent("eggman@external", "test-model"),
       {
@@ -294,17 +295,17 @@ describe("useGetSecretContent", () => {
       conn: {
         facades: {
           secrets: {
-            listSecrets: jest
+            listSecrets: vi
               .fn()
               .mockImplementation(() => Promise.resolve({ results: secrets })),
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useGetSecretContent("eggman@external", "test-model"),
       {
@@ -344,17 +345,17 @@ describe("useGetSecretContent", () => {
       conn: {
         facades: {
           secrets: {
-            listSecrets: jest
+            listSecrets: vi
               .fn()
               .mockImplementation(() => Promise.resolve({ results: secrets })),
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useGetSecretContent("eggman@external", "test-model"),
       {
@@ -389,11 +390,11 @@ describe("useGetSecretContent", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useGetSecretContent("eggman@external", "test-model"),
       {
@@ -428,17 +429,17 @@ describe("useGetSecretContent", () => {
       conn: {
         facades: {
           secrets: {
-            listSecrets: jest
+            listSecrets: vi
               .fn()
               .mockImplementation(() => Promise.reject(new Error("Uh oh!"))),
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useGetSecretContent("eggman@external", "test-model"),
       {
@@ -502,7 +503,7 @@ describe("useCreateSecrets", () => {
       },
     ];
     const results = { results: [{ result: "secret:def456" }] };
-    const createSecrets = jest
+    const createSecrets = vi
       .fn()
       .mockImplementation(() => Promise.resolve(results));
     const loginResponse = {
@@ -513,11 +514,11 @@ describe("useCreateSecrets", () => {
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useCreateSecrets("eggman@external", "test-model"),
       {
@@ -548,11 +549,11 @@ describe("useCreateSecrets", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useCreateSecrets("eggman@external", "test-model"),
       {
@@ -608,7 +609,7 @@ describe("useUpdateSecrets", () => {
       },
     ];
     const results = { results: [{ result: "secret:def456" }] };
-    const updateSecrets = jest
+    const updateSecrets = vi
       .fn()
       .mockImplementation(() => Promise.resolve(results));
     const loginResponse = {
@@ -619,11 +620,11 @@ describe("useUpdateSecrets", () => {
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useUpdateSecrets("eggman@external", "test-model"),
       {
@@ -656,11 +657,11 @@ describe("useUpdateSecrets", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useUpdateSecrets("eggman@external", "test-model"),
       {
@@ -712,7 +713,7 @@ describe("useRemoveSecrets", () => {
       },
     ];
     const results = { results: [{ result: "secret:def456" }] };
-    const removeSecrets = jest
+    const removeSecrets = vi
       .fn()
       .mockImplementation(() => Promise.resolve(results));
     const loginResponse = {
@@ -723,11 +724,11 @@ describe("useRemoveSecrets", () => {
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useRemoveSecrets("eggman@external", "test-model"),
       {
@@ -756,11 +757,11 @@ describe("useRemoveSecrets", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useRemoveSecrets("eggman@external", "test-model"),
       {
@@ -807,7 +808,7 @@ describe("useGrantSecret", () => {
     const store = mockStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const results = { results: [{ result: "secret:def456" }] };
-    const grantSecret = jest
+    const grantSecret = vi
       .fn()
       .mockImplementation(() => Promise.resolve(results));
     const loginResponse = {
@@ -818,11 +819,11 @@ describe("useGrantSecret", () => {
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useGrantSecret("eggman@external", "test-model"),
       {
@@ -851,11 +852,11 @@ describe("useGrantSecret", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useGrantSecret("eggman@external", "test-model"),
       {
@@ -902,7 +903,7 @@ describe("useRevokeSecret", () => {
     const store = mockStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const results = { results: [{ result: "secret:def456" }] };
-    const revokeSecret = jest
+    const revokeSecret = vi
       .fn()
       .mockImplementation(() => Promise.resolve(results));
     const loginResponse = {
@@ -913,11 +914,11 @@ describe("useRevokeSecret", () => {
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useRevokeSecret("eggman@external", "test-model"),
       {
@@ -946,11 +947,11 @@ describe("useRevokeSecret", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
     const { result } = renderHook(
       () => useRevokeSecret("eggman@external", "test-model"),
       {

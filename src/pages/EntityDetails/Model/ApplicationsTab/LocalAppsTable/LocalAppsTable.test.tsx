@@ -416,7 +416,7 @@ describe("LocalAppsTable", () => {
 
   it("opens the choose-charm panel when clicking the run action button", async () => {
     state.juju.selectedApplications = [charmApplicationFactory.build()];
-    renderComponent(
+    const { router } = renderComponent(
       <LocalAppsTable
         applications={state.juju.modelWatcherData?.test123.applications}
       />,
@@ -426,9 +426,9 @@ describe("LocalAppsTable", () => {
         state,
       },
     );
-    expect(window.location.search).toEqual("?filterQuery=db");
+    expect(router.state.location.search).toEqual("?filterQuery=db");
     await userEvent.click(screen.getByRole("button", { name: /run action/i }));
-    expect(window.location.search).toEqual(
+    expect(router.state.location.search).toEqual(
       "?filterQuery=db&panel=select-charms-and-actions",
     );
   });

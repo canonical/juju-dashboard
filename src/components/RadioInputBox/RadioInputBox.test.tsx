@@ -1,12 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import RadioInputBox from "./RadioInputBox";
 
 describe("RadioInputBox", () => {
   it("opens to reveal a description and children on select", async () => {
     const child = <div>I am a child, wahhh</div>;
-    const onSelect = jest.fn();
+    const onSelect = vi.fn();
     render(
       <RadioInputBox
         name="Action"
@@ -25,7 +26,7 @@ describe("RadioInputBox", () => {
 
   it("opens if the selectedInput matches the name", async () => {
     const child = <div>I am a child, wahhh</div>;
-    const onSelect = jest.fn();
+    const onSelect = vi.fn();
     render(
       <RadioInputBox
         name="Action"

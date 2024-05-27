@@ -1,6 +1,7 @@
 import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
@@ -22,9 +23,9 @@ describe("CharmsPanel", () => {
   let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     userEventWithTimers = userEvent.setup({
-      advanceTimers: jest.advanceTimersByTime,
+      advanceTimers: vi.advanceTimersByTime,
     });
     state = rootStateFactory.build({
       general: generalStateFactory.build({}),
@@ -53,14 +54,14 @@ describe("CharmsPanel", () => {
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("renders the correct number of charms", () => {
     renderComponent(
       <CharmsPanel
-        onCharmURLChange={jest.fn()}
-        onRemovePanelQueryParams={jest.fn()}
+        onCharmURLChange={vi.fn()}
+        onRemovePanelQueryParams={vi.fn()}
         isLoading={false}
         inlineErrors={[]}
       />,
@@ -76,8 +77,8 @@ describe("CharmsPanel", () => {
   it("next button is disabled when no charm is selected", () => {
     renderComponent(
       <CharmsPanel
-        onCharmURLChange={jest.fn()}
-        onRemovePanelQueryParams={jest.fn()}
+        onCharmURLChange={vi.fn()}
+        onRemovePanelQueryParams={vi.fn()}
         isLoading={false}
         inlineErrors={[]}
       />,
@@ -93,8 +94,8 @@ describe("CharmsPanel", () => {
   it("next button is enabled when a charm is selected", () => {
     renderComponent(
       <CharmsPanel
-        onCharmURLChange={jest.fn()}
-        onRemovePanelQueryParams={jest.fn()}
+        onCharmURLChange={vi.fn()}
+        onRemovePanelQueryParams={vi.fn()}
         isLoading={false}
         inlineErrors={[]}
       />,
@@ -109,11 +110,11 @@ describe("CharmsPanel", () => {
   });
 
   it("can open the actions panel", async () => {
-    const mockHandleCharmURLChange = jest.fn();
+    const mockHandleCharmURLChange = vi.fn();
     renderComponent(
       <CharmsPanel
         onCharmURLChange={mockHandleCharmURLChange}
-        onRemovePanelQueryParams={jest.fn()}
+        onRemovePanelQueryParams={vi.fn()}
         isLoading={false}
         inlineErrors={[]}
       />,
@@ -126,11 +127,11 @@ describe("CharmsPanel", () => {
     expect(mockHandleCharmURLChange).toHaveBeenCalledTimes(1);
   });
 
-  it("should show tooltip and have charm button dissabled if no action is available", async () => {
+  it("should show tooltip and have charm button disabled if no action is available", async () => {
     renderComponent(
       <CharmsPanel
-        onCharmURLChange={jest.fn()}
-        onRemovePanelQueryParams={jest.fn()}
+        onCharmURLChange={vi.fn()}
+        onRemovePanelQueryParams={vi.fn()}
         isLoading={false}
         inlineErrors={[]}
       />,
@@ -140,7 +141,7 @@ describe("CharmsPanel", () => {
     expect(disabledRadioButton).toBeDisabled();
     await act(async () => {
       await userEventWithTimers.hover(disabledRadioButton);
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(
       screen.getByRole("tooltip", { name: Label.NO_ACTIONS }),
@@ -150,8 +151,8 @@ describe("CharmsPanel", () => {
   it("should show applications details of charms", () => {
     renderComponent(
       <CharmsPanel
-        onCharmURLChange={jest.fn()}
-        onRemovePanelQueryParams={jest.fn()}
+        onCharmURLChange={vi.fn()}
+        onRemovePanelQueryParams={vi.fn()}
         isLoading={false}
         inlineErrors={[]}
       />,
@@ -173,8 +174,8 @@ describe("CharmsPanel", () => {
     }
     renderComponent(
       <CharmsPanel
-        onCharmURLChange={jest.fn()}
-        onRemovePanelQueryParams={jest.fn()}
+        onCharmURLChange={vi.fn()}
+        onRemovePanelQueryParams={vi.fn()}
         isLoading={false}
         inlineErrors={[]}
       />,
@@ -185,7 +186,7 @@ describe("CharmsPanel", () => {
     );
     await act(async () => {
       await userEventWithTimers.hover(screen.getByText("4 more"));
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(
       screen.getByRole("tooltip", {
@@ -198,8 +199,8 @@ describe("CharmsPanel", () => {
     state.juju.charms = [];
     renderComponent(
       <CharmsPanel
-        onCharmURLChange={jest.fn()}
-        onRemovePanelQueryParams={jest.fn()}
+        onCharmURLChange={vi.fn()}
+        onRemovePanelQueryParams={vi.fn()}
         isLoading={false}
         inlineErrors={["Oops, there is an error!"]}
       />,

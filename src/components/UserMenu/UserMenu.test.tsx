@@ -1,6 +1,6 @@
-import { act, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import reactHotToast, { Toaster } from "react-hot-toast";
+import { vi } from "vitest";
 
 import { thunks as appThunks } from "store/app";
 import type { RootState } from "store/store";
@@ -33,13 +33,12 @@ describe("User Menu", () => {
         },
       }),
     });
-    console.error = jest.fn();
+    console.error = vi.fn();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
     console.error = consoleError;
-    act(() => reactHotToast.remove());
   });
 
   it("is inactive by default", () => {
@@ -59,17 +58,15 @@ describe("User Menu", () => {
   });
 
   it("should logout", async () => {
-    jest
-      .spyOn(appThunks, "logOut")
-      .mockImplementation(
-        jest.fn().mockReturnValue({ type: "logOut", catch: jest.fn() }),
-      );
-    const mockUseAppDispatch = jest.fn().mockReturnValue({
-      then: jest.fn().mockReturnValue({ catch: jest.fn() }),
+    vi.spyOn(appThunks, "logOut").mockImplementation(
+      vi.fn().mockReturnValue({ type: "logOut", catch: vi.fn() }),
+    );
+    const mockUseAppDispatch = vi.fn().mockReturnValue({
+      then: vi.fn().mockReturnValue({ catch: vi.fn() }),
     });
-    jest
-      .spyOn(dashboardStore, "useAppDispatch")
-      .mockReturnValue(mockUseAppDispatch);
+    vi.spyOn(dashboardStore, "useAppDispatch").mockReturnValue(
+      mockUseAppDispatch,
+    );
 
     renderComponent(<UserMenu />, { state });
     await userEvent.click(screen.getByRole("link", { name: "Log out" }));
@@ -82,33 +79,25 @@ describe("User Menu", () => {
   it("should show error when trying to logout and refresh page", async () => {
     const location = window.location;
     Object.defineProperty(window, "location", {
-      value: { ...location, reload: jest.fn() },
+      value: { ...location, reload: vi.fn() },
     });
 
-    jest
-      .spyOn(appThunks, "logOut")
-      .mockImplementation(jest.fn().mockReturnValue({ type: "logOut" }));
-    jest
-      .spyOn(dashboardStore, "useAppDispatch")
-      .mockImplementation(
-        jest
-          .fn()
-          .mockReturnValue((action: unknown) =>
-            action instanceof Object &&
-            "type" in action &&
-            action.type === "logOut"
-              ? Promise.reject(new Error("Error while dispatching logOut!"))
-              : null,
-          ),
-      );
-
-    renderComponent(
-      <>
-        <UserMenu />
-        <Toaster />
-      </>,
-      { state },
+    vi.spyOn(appThunks, "logOut").mockImplementation(
+      vi.fn().mockReturnValue({ type: "logOut" }),
     );
+    vi.spyOn(dashboardStore, "useAppDispatch").mockImplementation(
+      vi
+        .fn()
+        .mockReturnValue((action: unknown) =>
+          action instanceof Object &&
+          "type" in action &&
+          action.type === "logOut"
+            ? Promise.reject(new Error("Error while dispatching logOut!"))
+            : null,
+        ),
+    );
+
+    renderComponent(<UserMenu />, { state });
     await userEvent.click(screen.getByRole("link", { name: "Log out" }));
     expect(appThunks.logOut).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith(
@@ -122,7 +111,7 @@ describe("User Menu", () => {
     expect(logoutErrorNotification.childElementCount).toBe(1);
     const refreshButton = logoutErrorNotification.children[0];
     expect(refreshButton).toHaveTextContent("refreshing");
-    await userEvent.click(refreshButton);
+    await userEvent.click(refreshButton, { pointerEventsCheck: 0 });
     expect(window.location.reload).toHaveBeenCalledTimes(1);
 
     Object.defineProperty(window, "location", {

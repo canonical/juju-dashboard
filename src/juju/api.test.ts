@@ -2,6 +2,7 @@ import type { Client, Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
 import * as jujuLibVersions from "@canonical/jujulib/dist/api/versions";
 import { waitFor } from "@testing-library/react";
+import { vi } from "vitest";
 
 import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
@@ -57,46 +58,42 @@ import {
 import type { AllWatcherDelta } from "./types";
 import { DeltaChangeTypes, DeltaEntityTypes } from "./types";
 
-jest.mock("@canonical/jujulib", () => ({
-  connect: jest.fn(),
-  connectAndLogin: jest.fn(),
-  fetchModelStatus: jest.fn(),
+vi.mock("@canonical/jujulib", () => ({
+  connect: vi.fn(),
+  connectAndLogin: vi.fn(),
+  fetchModelStatus: vi.fn(),
 }));
 
-jest.mock("@canonical/jujulib/dist/api/versions", () => ({
-  jujuUpdateAvailable: jest.fn(),
+vi.mock("@canonical/jujulib/dist/api/versions", () => ({
+  jujuUpdateAvailable: vi.fn(),
 }));
 
 describe("Juju API", () => {
   beforeEach(() => {
-    jest.useFakeTimers({
-      legacyFakeTimers: true,
-    });
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
-    jest.useRealTimers();
+    vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   describe("loginWithBakery", () => {
     beforeEach(() => {
-      jest.useFakeTimers({
-        legacyFakeTimers: true,
-      });
+      vi.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.restoreAllMocks();
-      jest.useRealTimers();
+      vi.restoreAllMocks();
+      vi.useRealTimers();
     });
 
     it("connects and logs in", async () => {
       const conn = { facades: {}, info: {} };
       const juju = {
-        login: jest.fn().mockReturnValue(conn),
+        login: vi.fn().mockReturnValue(conn),
       } as unknown as Client;
-      const connectSpy = jest
+      const connectSpy = vi
         .spyOn(jujuLib, "connect")
         .mockImplementation(async () => juju);
       const response = await loginWithBakery(
@@ -110,7 +107,8 @@ describe("Juju API", () => {
       expect(response).toStrictEqual({
         conn,
         juju,
-        intervalId: expect.any(Number),
+        // This would be a number, but we're using mocked timers.
+        intervalId: expect.any(Object),
       });
       expect(connectSpy).toHaveBeenCalled();
       expect(juju.login).toHaveBeenCalledWith(
@@ -125,9 +123,9 @@ describe("Juju API", () => {
     it("handles login with external provider", async () => {
       const conn = { facades: {}, info: {} };
       const juju = {
-        login: jest.fn().mockReturnValue(conn),
+        login: vi.fn().mockReturnValue(conn),
       } as unknown as Client;
-      jest.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
+      vi.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
       await loginWithBakery(
         "wss://example.com/api",
         {
@@ -141,11 +139,11 @@ describe("Juju API", () => {
 
     it("handles login errors", async () => {
       const juju = {
-        login: jest.fn().mockImplementation(() => {
+        login: vi.fn().mockImplementation(() => {
           throw new Error();
         }),
       } as unknown as Client;
-      jest.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
+      vi.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
       const response = await loginWithBakery(
         "wss://example.com/api",
         {
@@ -160,7 +158,7 @@ describe("Juju API", () => {
     });
 
     it("starts pinging the connection", async () => {
-      const ping = jest.fn().mockResolvedValue(null);
+      const ping = vi.fn().mockResolvedValue(null);
       const conn = {
         facades: {
           pinger: {
@@ -170,9 +168,9 @@ describe("Juju API", () => {
         info: {},
       };
       const juju = {
-        login: jest.fn().mockReturnValue(conn),
+        login: vi.fn().mockReturnValue(conn),
       } as unknown as Client;
-      jest.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
+      vi.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
       await loginWithBakery(
         "wss://example.com/api",
         {
@@ -182,17 +180,17 @@ describe("Juju API", () => {
         false,
       );
       expect(ping).not.toHaveBeenCalled();
-      jest.advanceTimersByTime(PING_TIME);
+      vi.advanceTimersByTime(PING_TIME);
       expect(ping).toHaveBeenCalledTimes(1);
-      jest.advanceTimersByTime(PING_TIME);
+      vi.advanceTimersByTime(PING_TIME);
       expect(ping).toHaveBeenCalledTimes(2);
     });
 
     it("stops pinging the connection if there is an error", async () => {
-      const clearInterval = jest.spyOn(window, "clearInterval");
+      const clearInterval = vi.spyOn(window, "clearInterval");
       const consoleError = console.error;
-      console.error = jest.fn();
-      const ping = jest.fn().mockRejectedValue("Failed");
+      console.error = vi.fn();
+      const ping = vi.fn().mockRejectedValue("Failed");
       const conn = {
         facades: {
           pinger: {
@@ -202,9 +200,9 @@ describe("Juju API", () => {
         info: {},
       };
       const juju = {
-        login: jest.fn().mockReturnValue(conn),
+        login: vi.fn().mockReturnValue(conn),
       } as unknown as Client;
-      jest.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
+      vi.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
       await loginWithBakery(
         "wss://example.com/api",
         {
@@ -213,7 +211,7 @@ describe("Juju API", () => {
         },
         false,
       );
-      jest.advanceTimersByTime(PING_TIME);
+      vi.advanceTimersByTime(PING_TIME);
       await waitFor(() => {
         expect(clearInterval).toHaveBeenCalled();
       });
@@ -226,7 +224,7 @@ describe("Juju API", () => {
     const consoleError = console.error;
 
     beforeEach(() => {
-      console.error = jest.fn();
+      console.error = vi.fn();
     });
 
     afterEach(() => {
@@ -235,11 +233,9 @@ describe("Juju API", () => {
 
     it("can connect and log in", async () => {
       const juju = {
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => juju);
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => juju);
       const response = await connectAndLoginWithTimeout(
         "wss://example.com/eggman/test",
         {
@@ -253,7 +249,7 @@ describe("Juju API", () => {
     });
 
     it("can time out while logging in", async () => {
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
         async () =>
           new Promise((resolve) => {
             setTimeout(resolve, LOGIN_TIMEOUT + 10);
@@ -268,14 +264,14 @@ describe("Juju API", () => {
         generateConnectionOptions(false),
         false,
       );
-      jest.advanceTimersByTime(LOGIN_TIMEOUT);
+      vi.advanceTimersByTime(LOGIN_TIMEOUT);
       await expect(response).rejects.toMatchObject(
         new Error(Label.LOGIN_TIMEOUT_ERROR),
       );
     });
 
     it("should handle exceptions when logging in", async () => {
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => {
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => {
         return await new Promise((_resolve, reject) => {
           reject(new Error("Uh oh!"));
         });
@@ -327,13 +323,13 @@ describe("Juju API", () => {
         conn: {
           facades: {
             client: {
-              fullStatus: jest.fn().mockReturnValue({}),
+              fullStatus: vi.fn().mockReturnValue({}),
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      const connectAndLoginSpy = jest
+      const connectAndLoginSpy = vi
         .spyOn(jujuLib, "connectAndLogin")
         .mockImplementation(async () => loginResponse);
       await fetchModelStatus("abc123", "wss://example.com/api", () => state);
@@ -348,8 +344,8 @@ describe("Juju API", () => {
 
     it("handles timeout errors", async () => {
       const consoleError = console.error;
-      console.error = jest.fn();
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      console.error = vi.fn();
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
         async () =>
           new Promise((resolve) => {
             setTimeout(resolve, LOGIN_TIMEOUT + 10);
@@ -360,7 +356,7 @@ describe("Juju API", () => {
         "wss://example.com/api",
         () => state,
       );
-      jest.advanceTimersByTime(LOGIN_TIMEOUT);
+      vi.advanceTimersByTime(LOGIN_TIMEOUT);
       await expect(response).rejects.toStrictEqual(
         new Error(Label.LOGIN_TIMEOUT_ERROR),
       );
@@ -378,15 +374,15 @@ describe("Juju API", () => {
         conn: {
           facades: {
             client: {
-              fullStatus: jest.fn().mockReturnValue(status),
+              fullStatus: vi.fn().mockReturnValue(status),
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => loginResponse);
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        async () => loginResponse,
+      );
       const { status: response } = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
@@ -405,7 +401,7 @@ describe("Juju API", () => {
         conn: {
           facades: {
             annotations: {
-              get: jest.fn().mockReturnValue({
+              get: vi.fn().mockReturnValue({
                 results: [
                   {
                     annotations,
@@ -415,15 +411,15 @@ describe("Juju API", () => {
               }),
             },
             client: {
-              fullStatus: jest.fn().mockReturnValue(status),
+              fullStatus: vi.fn().mockReturnValue(status),
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => loginResponse);
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        async () => loginResponse,
+      );
       const { status: response } = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
@@ -440,15 +436,15 @@ describe("Juju API", () => {
         conn: {
           facades: {
             client: {
-              fullStatus: jest.fn().mockReturnValue(status),
+              fullStatus: vi.fn().mockReturnValue(status),
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => loginResponse);
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        async () => loginResponse,
+      );
       const { features } = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
@@ -466,18 +462,18 @@ describe("Juju API", () => {
         conn: {
           facades: {
             client: {
-              fullStatus: jest.fn().mockReturnValue(status),
+              fullStatus: vi.fn().mockReturnValue(status),
             },
             secrets: {
               VERSION: 1,
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => loginResponse);
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        async () => loginResponse,
+      );
       const { features } = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
@@ -495,18 +491,18 @@ describe("Juju API", () => {
         conn: {
           facades: {
             client: {
-              fullStatus: jest.fn().mockReturnValue(status),
+              fullStatus: vi.fn().mockReturnValue(status),
             },
             secrets: {
               VERSION: 2,
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => loginResponse);
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        async () => loginResponse,
+      );
       const { features } = await fetchModelStatus(
         "abc123",
         "wss://example.com/api",
@@ -520,20 +516,20 @@ describe("Juju API", () => {
 
     it("handles status error response", async () => {
       const consoleError = console.error;
-      console.error = jest.fn();
+      console.error = vi.fn();
       const loginResponse = {
         conn: {
           facades: {
             client: {
-              fullStatus: jest.fn().mockRejectedValue(new Error("Uh oh!")),
+              fullStatus: vi.fn().mockRejectedValue(new Error("Uh oh!")),
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => loginResponse);
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        async () => loginResponse,
+      );
       const response = fetchModelStatus(
         "abc123",
         "wss://example.com/api",
@@ -574,19 +570,19 @@ describe("Juju API", () => {
         conn: {
           facades: {
             client: {
-              fullStatus: jest.fn().mockReturnValue(status),
+              fullStatus: vi.fn().mockReturnValue(status),
             },
             secrets: {
               VERSION: 1,
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => loginResponse);
-      const dispatch = jest.fn();
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        async () => loginResponse,
+      );
+      const dispatch = vi.fn();
       await fetchAndStoreModelStatus(
         "abc123",
         "wss://example.com/api",
@@ -618,20 +614,20 @@ describe("Juju API", () => {
         conn: {
           facades: {
             client: {
-              fullStatus: jest.fn().mockReturnValue(status),
+              fullStatus: vi.fn().mockReturnValue(status),
             },
             secrets: {
               VERSION: 1,
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => loginResponse);
-      const dispatch = jest.fn();
-      const getState = jest
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        async () => loginResponse,
+      );
+      const dispatch = vi.fn();
+      const getState = vi
         .fn()
         .mockImplementationOnce(() => state)
         .mockImplementationOnce(() => state)
@@ -658,21 +654,21 @@ describe("Juju API", () => {
 
     it("handles no model status returned", async () => {
       const consoleError = console.error;
-      console.error = jest.fn();
+      console.error = vi.fn();
       const loginResponse = {
         conn: {
           facades: {
             client: {
-              fullStatus: jest.fn().mockReturnValue(null),
+              fullStatus: vi.fn().mockReturnValue(null),
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => loginResponse);
-      const dispatch = jest.fn();
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        async () => loginResponse,
+      );
+      const dispatch = vi.fn();
       const response = fetchAndStoreModelStatus(
         "abc123",
         "wss://example.com/api",
@@ -697,9 +693,9 @@ describe("Juju API", () => {
     const consoleError = console.error;
 
     beforeEach(() => {
-      console.error = jest.fn();
+      console.error = vi.fn();
       // Need to use real timers so the promises resolve in the tests.
-      jest.useRealTimers();
+      vi.useRealTimers();
       state = rootStateFactory.build({
         general: generalStateFactory.build({
           controllerConnections: {
@@ -730,11 +726,11 @@ describe("Juju API", () => {
 
     afterEach(() => {
       console.error = consoleError;
-      jest.restoreAllMocks();
+      vi.restoreAllMocks();
     });
 
     it("fetches model statuses", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const abc123 = modelInfoResultsFactory.build({
         results: [
           modelInfoResultFactory.build({
@@ -756,7 +752,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           modelManager: {
-            modelInfo: jest
+            modelInfo: vi
               .fn()
               .mockResolvedValueOnce(abc123)
               .mockResolvedValueOnce(def456),
@@ -785,8 +781,8 @@ describe("Juju API", () => {
     });
 
     it("updates controller cloud and region", async () => {
-      const dispatch = jest.fn().mockReturnValue({
-        then: jest.fn().mockReturnValue({ catch: jest.fn() }),
+      const dispatch = vi.fn().mockReturnValue({
+        then: vi.fn().mockReturnValue({ catch: vi.fn() }),
       });
       const abc123 = modelInfoResultsFactory.build({
         results: [
@@ -801,7 +797,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           modelManager: {
-            modelInfo: jest.fn().mockResolvedValueOnce(abc123),
+            modelInfo: vi.fn().mockResolvedValueOnce(abc123),
           },
         },
       } as unknown as Connection;
@@ -815,8 +811,8 @@ describe("Juju API", () => {
       // Call the dispatched thunk so that we can check it was called with the
       // right args.
       const thunkResult = await dispatch.mock.calls[1][0](
-        jest.fn(),
-        jest.fn().mockReturnValue(state),
+        vi.fn(),
+        vi.fn().mockReturnValue(state),
       );
       expect(thunkResult.meta.arg).toMatchObject({
         modelInfo: abc123,
@@ -825,12 +821,11 @@ describe("Juju API", () => {
     });
 
     it("should console error when trying to update controller cloud and region", async () => {
-      const dispatch = jest
+      const errorSpy = vi.spyOn(console, "error");
+      const dispatch = vi
         .fn()
         .mockReturnValueOnce(null)
-        .mockReturnValueOnce(
-          Promise.reject(new Error("Error while trying to dispatch!")),
-        );
+        .mockRejectedValueOnce(new Error("Error while trying to dispatch!"));
       const abc123 = modelInfoResultsFactory.build({
         results: [
           modelInfoResultFactory.build({
@@ -844,7 +839,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           modelManager: {
-            modelInfo: jest.fn().mockResolvedValueOnce(abc123),
+            modelInfo: vi.fn().mockResolvedValueOnce(abc123),
           },
         },
       } as unknown as Connection;
@@ -856,16 +851,18 @@ describe("Juju API", () => {
         () => state,
       );
       expect(dispatch).toHaveBeenCalledTimes(2);
-      expect(console.error).toHaveBeenCalledWith(
-        "Error when trying to add controller cloud and region data.",
-        new Error("Error while trying to dispatch!"),
+      await waitFor(() =>
+        expect(errorSpy).toHaveBeenCalledWith(
+          "Error when trying to add controller cloud and region data.",
+          new Error("Error while trying to dispatch!"),
+        ),
       );
     });
 
     it("should return a rejected promise when retrieving data for some models fails", async () => {
       // The dispatch of updateModelInfo fails only for the first model.
       // This would make 50% (1/2) of all models error out.
-      const dispatch = jest.fn().mockImplementationOnce(() => {
+      const dispatch = vi.fn().mockImplementationOnce(() => {
         throw new Error("Error while dispatching updateModelInfo!");
       });
       const abc123 = modelInfoResultsFactory.build({
@@ -889,7 +886,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           modelManager: {
-            modelInfo: jest
+            modelInfo: vi
               .fn()
               .mockResolvedValueOnce(abc123)
               .mockResolvedValueOnce(def456),
@@ -910,7 +907,7 @@ describe("Juju API", () => {
 
     it("should return a rejected promise when retrieving data for all models", async () => {
       // The dispatch of updateModelInfo fails for all models.
-      const dispatch = jest.fn().mockImplementation(() => {
+      const dispatch = vi.fn().mockImplementation(() => {
         throw new Error("Error while dispatching updateModelInfo!");
       });
       const abc123 = modelInfoResultsFactory.build({
@@ -934,7 +931,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           modelManager: {
-            modelInfo: jest
+            modelInfo: vi
               .fn()
               .mockResolvedValueOnce(abc123)
               .mockResolvedValueOnce(def456),
@@ -954,8 +951,8 @@ describe("Juju API", () => {
     });
 
     it("handles logout while fetching model status", async () => {
-      const dispatch = jest.fn();
-      const getState = jest
+      const dispatch = vi.fn();
+      const getState = vi
         .fn()
         .mockReturnValueOnce(state)
         .mockReturnValueOnce(state)
@@ -980,7 +977,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           modelManager: {
-            modelInfo: jest.fn().mockResolvedValueOnce(abc123),
+            modelInfo: vi.fn().mockResolvedValueOnce(abc123),
           },
         },
       } as unknown as Connection;
@@ -998,8 +995,8 @@ describe("Juju API", () => {
     });
 
     it("handles logout while fetching model info", async () => {
-      const dispatch = jest.fn();
-      const getState = jest
+      const dispatch = vi.fn();
+      const getState = vi
         .fn()
         .mockReturnValueOnce(state)
         .mockReturnValueOnce(state)
@@ -1026,7 +1023,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           modelManager: {
-            modelInfo: jest.fn().mockResolvedValueOnce(abc123),
+            modelInfo: vi.fn().mockResolvedValueOnce(abc123),
           },
         },
       } as unknown as Connection;
@@ -1052,11 +1049,11 @@ describe("Juju API", () => {
 
   describe("fetchControllerList", () => {
     it("can fetch controllers via JIMM", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const conn = {
         facades: {
           jimM: {
-            listControllers: jest.fn().mockResolvedValueOnce({
+            listControllers: vi.fn().mockResolvedValueOnce({
               controllers: [
                 controllerInfoFactory.build({ name: "jaas1" }),
                 controllerInfoFactory.build({ name: "jaas2" }),
@@ -1065,8 +1062,7 @@ describe("Juju API", () => {
           },
         },
       } as unknown as Connection;
-      jest
-        .spyOn(jujuLibVersions, "jujuUpdateAvailable")
+      vi.spyOn(jujuLibVersions, "jujuUpdateAvailable")
         .mockImplementationOnce(async () => true)
         .mockImplementationOnce(async () => false);
       await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
@@ -1090,18 +1086,17 @@ describe("Juju API", () => {
     });
 
     it("can fetch controllers via JIMM with 0 controllers", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const conn = {
         facades: {
           jimM: {
-            listControllers: jest.fn().mockResolvedValueOnce({
+            listControllers: vi.fn().mockResolvedValueOnce({
               controllers: null,
             }),
           },
         },
       } as unknown as Connection;
-      jest
-        .spyOn(jujuLibVersions, "jujuUpdateAvailable")
+      vi.spyOn(jujuLibVersions, "jujuUpdateAvailable")
         .mockImplementationOnce(async () => true)
         .mockImplementationOnce(async () => false);
       await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
@@ -1116,11 +1111,11 @@ describe("Juju API", () => {
     });
 
     it("can fetch the controller from Juju", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const conn = {
         facades: {
           controller: {
-            controllerConfig: jest.fn().mockResolvedValueOnce({
+            controllerConfig: vi.fn().mockResolvedValueOnce({
               config: {
                 "controller-name": "admin/juju1",
                 "controller-uuid": "abc123",
@@ -1138,9 +1133,9 @@ describe("Juju API", () => {
           },
         }),
       });
-      jest
-        .spyOn(jujuLibVersions, "jujuUpdateAvailable")
-        .mockImplementationOnce(async () => true);
+      vi.spyOn(jujuLibVersions, "jujuUpdateAvailable").mockImplementationOnce(
+        async () => true,
+      );
       await fetchControllerList(
         "wss://example.com/api",
         conn,
@@ -1163,19 +1158,19 @@ describe("Juju API", () => {
     });
 
     it("can handle null responses when checking for updates", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const conn = {
         facades: {
           jimM: {
-            listControllers: jest.fn().mockResolvedValueOnce({
+            listControllers: vi.fn().mockResolvedValueOnce({
               controllers: [controllerInfoFactory.build({ name: "jaas1" })],
             }),
           },
         },
       } as unknown as Connection;
-      jest
-        .spyOn(jujuLibVersions, "jujuUpdateAvailable")
-        .mockImplementationOnce(async () => null);
+      vi.spyOn(jujuLibVersions, "jujuUpdateAvailable").mockImplementationOnce(
+        async () => null,
+      );
       await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
         rootStateFactory.build(),
       );
@@ -1193,20 +1188,18 @@ describe("Juju API", () => {
     });
 
     it("should handle error when unable to fetch the list of controllers", async () => {
-      const dispatch = jest.fn();
-      console.error = jest.fn();
+      const dispatch = vi.fn();
+      console.error = vi.fn();
       const conn = {
         facades: {
           jimM: {
-            listControllers: jest
-              .fn()
-              .mockRejectedValueOnce(new Error("Uh oh!")),
+            listControllers: vi.fn().mockRejectedValueOnce(new Error("Uh oh!")),
           },
         },
       } as unknown as Connection;
-      jest
-        .spyOn(jujuLibVersions, "jujuUpdateAvailable")
-        .mockImplementationOnce(async () => null);
+      vi.spyOn(jujuLibVersions, "jujuUpdateAvailable").mockImplementationOnce(
+        async () => null,
+      );
       await fetchControllerList("wss://example.com/api", conn, dispatch, () =>
         rootStateFactory.build(),
       );
@@ -1223,7 +1216,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: jest.fn(() => Promise.resolve()),
+            disableControllerUUIDMasking: vi.fn(() => Promise.resolve()),
           },
         },
       } as unknown as Connection;
@@ -1235,7 +1228,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: jest.fn(() => Promise.resolve()),
+            disableControllerUUIDMasking: vi.fn(() => Promise.resolve()),
           },
         },
       } as unknown as Connection;
@@ -1246,7 +1239,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: jest.fn(() =>
+            disableControllerUUIDMasking: vi.fn(() =>
               Promise.reject(new Error()),
             ),
           },
@@ -1260,7 +1253,7 @@ describe("Juju API", () => {
 
   describe("connectAndLoginToModel", () => {
     it("exits if there is no model", async () => {
-      const connectAndLogin = jest.spyOn(jujuLib, "connectAndLogin");
+      const connectAndLogin = vi.spyOn(jujuLib, "connectAndLogin");
       const response = await connectAndLoginToModel(
         "abc12",
         rootStateFactory.build(),
@@ -1292,10 +1285,10 @@ describe("Juju API", () => {
       const conn = {
         facades: {},
       } as unknown as Connection;
-      const connectAndLogin = jest
+      const connectAndLogin = vi
         .spyOn(jujuLib, "connectAndLogin")
         .mockImplementation(async () => ({
-          logout: jest.fn(),
+          logout: vi.fn(),
           conn,
         }));
       const response = await connectAndLoginToModel("abc123", state);
@@ -1318,10 +1311,10 @@ describe("Juju API", () => {
       const conn = {
         facades: {},
       } as unknown as Connection;
-      const connectAndLogin = jest
+      const connectAndLogin = vi
         .spyOn(jujuLib, "connectAndLogin")
         .mockImplementation(async () => ({
-          logout: jest.fn(),
+          logout: vi.fn(),
           conn,
         }));
       const response = await connectToModel(
@@ -1352,12 +1345,12 @@ describe("Juju API", () => {
           },
         },
       });
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
       }));
-      await expect(
-        startModelWatcher("abc123", state, jest.fn()),
-      ).rejects.toThrow(Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR);
+      await expect(startModelWatcher("abc123", state, vi.fn())).rejects.toThrow(
+        Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR,
+      );
     });
 
     it("handles no response", async () => {
@@ -1371,22 +1364,23 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           client: {
-            watchAll: jest.fn().mockReturnValue(null),
+            watchAll: vi.fn().mockReturnValue(null),
           },
           allWatcher: {
-            next: jest.fn().mockReturnValue(null),
+            next: vi.fn().mockReturnValue(null),
           },
           pinger: {
-            ping: jest.fn().mockResolvedValue(null),
+            ping: vi.fn().mockResolvedValue(null),
           },
         },
       } as unknown as Connection;
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => ({ logout: jest.fn(), conn }));
-      await expect(
-        startModelWatcher("abc123", state, jest.fn()),
-      ).rejects.toThrow(Label.START_MODEL_WATCHER_NO_ID_ERROR);
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
+        conn,
+      }));
+      await expect(startModelWatcher("abc123", state, vi.fn())).rejects.toThrow(
+        Label.START_MODEL_WATCHER_NO_ID_ERROR,
+      );
     });
 
     it("handles error response", async () => {
@@ -1400,22 +1394,23 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           client: {
-            watchAll: jest.fn().mockRejectedValue(new Error("Uh oh!")),
+            watchAll: vi.fn().mockRejectedValue(new Error("Uh oh!")),
           },
           allWatcher: {
-            next: jest.fn().mockReturnValue(null),
+            next: vi.fn().mockReturnValue(null),
           },
           pinger: {
-            ping: jest.fn().mockResolvedValue(null),
+            ping: vi.fn().mockResolvedValue(null),
           },
         },
       } as unknown as Connection;
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(async () => ({ logout: jest.fn(), conn }));
-      await expect(
-        startModelWatcher("abc123", state, jest.fn()),
-      ).rejects.toThrow("Uh oh!");
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
+        conn,
+      }));
+      await expect(startModelWatcher("abc123", state, vi.fn())).rejects.toThrow(
+        "Uh oh!",
+      );
     });
 
     it("starts the model watcher", async () => {
@@ -1430,29 +1425,30 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           client: {
-            watchAll: jest.fn().mockReturnValue(watcherHandle),
+            watchAll: vi.fn().mockReturnValue(watcherHandle),
           },
           allWatcher: {
-            next: jest.fn().mockReturnValue(null),
+            next: vi.fn().mockReturnValue(null),
           },
           pinger: {
-            ping: jest.fn().mockResolvedValue(null),
+            ping: vi.fn().mockResolvedValue(null),
           },
         },
       } as unknown as Connection;
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
         conn,
       }));
-      const response = await startModelWatcher("abc123", state, jest.fn());
+      const response = await startModelWatcher("abc123", state, vi.fn());
       expect(conn.facades.client.watchAll).toHaveBeenCalled();
-      jest.advanceTimersByTime(PING_TIME);
+      vi.advanceTimersByTime(PING_TIME);
       expect(conn.facades.pinger.ping).toHaveBeenCalled();
       expect(conn.facades.allWatcher.next).toHaveBeenCalledWith({ id: 12345 });
       expect(response).toMatchObject({
         conn,
         watcherHandle,
-        pingerIntervalId: expect.any(Number),
+        // This will be a number, but we're using mocked timers in these tests.
+        pingerIntervalId: expect.any(Object),
       });
     });
 
@@ -1475,21 +1471,21 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           client: {
-            watchAll: jest.fn().mockReturnValue(watcherHandle),
+            watchAll: vi.fn().mockReturnValue(watcherHandle),
           },
           allWatcher: {
-            next: jest.fn().mockReturnValue({ deltas }),
+            next: vi.fn().mockReturnValue({ deltas }),
           },
           pinger: {
-            ping: jest.fn().mockResolvedValue(null),
+            ping: vi.fn().mockResolvedValue(null),
           },
         },
       } as unknown as Connection;
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
         conn,
       }));
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       await startModelWatcher("abc123", state, dispatch);
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.processAllWatcherDeltas(deltas),
@@ -1499,23 +1495,23 @@ describe("Juju API", () => {
 
   describe("stopModelWatcher", () => {
     it("stops the model watcher", async () => {
-      const clearInterval = jest
+      const clearInterval = vi
         .spyOn(window, "clearInterval")
-        .mockImplementation(jest.fn());
+        .mockImplementation(vi.fn());
       const conn = {
         facades: {
           allWatcher: {
-            stop: jest.fn().mockReturnValue(null),
+            stop: vi.fn().mockReturnValue(null),
           },
         },
         transport: {
-          close: jest.fn(),
+          close: vi.fn(),
         },
       } as unknown as Connection;
       await stopModelWatcher(conn, "123", 456);
       expect(conn.facades.allWatcher.stop).toHaveBeenCalledWith({ id: "123" });
       expect(conn.transport.close).toHaveBeenCalled();
-      jest.advanceTimersByTime(PING_TIME);
+      vi.advanceTimersByTime(PING_TIME);
       await waitFor(() => {
         expect(clearInterval).toHaveBeenCalled();
       });
@@ -1525,8 +1521,8 @@ describe("Juju API", () => {
 
   describe("setModelSharingPermissions", () => {
     it("handles no connection", async () => {
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
       }));
       const response = setModelSharingPermissions(
         "wss://example.com/api",
@@ -1536,7 +1532,7 @@ describe("Juju API", () => {
         "write",
         "read",
         "grant",
-        jest.fn(),
+        vi.fn(),
       );
       await expect(response).rejects.toMatchObject(
         new Error("Unable to connect to controller: wss://example.com/api"),
@@ -1544,13 +1540,13 @@ describe("Juju API", () => {
     });
 
     it("handles incorrect options", async () => {
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
       }));
       const conn = {
         facades: {
           modelManager: {
-            modelInfo: jest.fn(),
+            modelInfo: vi.fn(),
           },
         },
       } as unknown as Connection;
@@ -1562,7 +1558,7 @@ describe("Juju API", () => {
         undefined,
         undefined,
         "none",
-        jest.fn(),
+        vi.fn(),
       );
       await expect(response).rejects.toMatchObject(
         new Error("Incorrect options given."),
@@ -1570,15 +1566,15 @@ describe("Juju API", () => {
     });
 
     it("can revoke permissions", async () => {
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
       }));
       const modelAccessResponse = errorResultsFactory.build();
       const conn = {
         facades: {
           modelManager: {
-            modelInfo: jest.fn(),
-            modifyModelAccess: jest.fn().mockReturnValue(modelAccessResponse),
+            modelInfo: vi.fn(),
+            modifyModelAccess: vi.fn().mockReturnValue(modelAccessResponse),
           },
         },
       } as unknown as Connection;
@@ -1590,7 +1586,7 @@ describe("Juju API", () => {
         "write",
         "read",
         "revoke",
-        jest.fn(),
+        vi.fn(),
       );
       expect(conn.facades.modelManager.modifyModelAccess).toHaveBeenCalledTimes(
         1,
@@ -1609,15 +1605,15 @@ describe("Juju API", () => {
     });
 
     it("can grant permissions", async () => {
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
       }));
       const modelAccessResponse = errorResultsFactory.build();
       const conn = {
         facades: {
           modelManager: {
-            modelInfo: jest.fn(),
-            modifyModelAccess: jest.fn().mockReturnValue(modelAccessResponse),
+            modelInfo: vi.fn(),
+            modifyModelAccess: vi.fn().mockReturnValue(modelAccessResponse),
           },
         },
       } as unknown as Connection;
@@ -1629,7 +1625,7 @@ describe("Juju API", () => {
         "write",
         "read",
         "grant",
-        jest.fn(),
+        vi.fn(),
       );
       expect(conn.facades.modelManager.modifyModelAccess).toHaveBeenCalledWith({
         changes: [
@@ -1655,11 +1651,11 @@ describe("Juju API", () => {
     });
 
     it("can fetch and update permissions", async () => {
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
       }));
       const modelAccessResponse = errorResultsFactory.build();
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const modelInfo = modelInfoResultsFactory.build({
         results: [
           modelInfoResultFactory.build({
@@ -1672,8 +1668,8 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           modelManager: {
-            modelInfo: jest.fn().mockReturnValue(modelInfo),
-            modifyModelAccess: jest.fn().mockReturnValue(modelAccessResponse),
+            modelInfo: vi.fn().mockReturnValue(modelInfo),
+            modifyModelAccess: vi.fn().mockReturnValue(modelAccessResponse),
           },
         },
       } as unknown as Connection;
@@ -1716,12 +1712,12 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           charms: {
-            charmInfo: jest.fn().mockReturnValue(charm),
+            charmInfo: vi.fn().mockReturnValue(charm),
           },
         },
       } as unknown as Connection;
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
         conn,
       }));
       const response = await getCharmInfo("cs:etcd", "abc123", state);
@@ -1734,7 +1730,7 @@ describe("Juju API", () => {
 
   describe("getCharmsURLFromApplications", () => {
     it("fetches and stores charms", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const etcd = charmInfoFactory.build({
         url: "cs:etcd",
       });
@@ -1756,15 +1752,15 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           charms: {
-            charmInfo: jest
+            charmInfo: vi
               .fn()
               .mockResolvedValueOnce(etcd)
               .mockResolvedValueOnce(mysql),
           },
         },
       } as unknown as Connection;
-      jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: jest.fn(),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
+        logout: vi.fn(),
         conn,
       }));
       const apps = [
@@ -1788,7 +1784,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            findAuditEvents: jest
+            findAuditEvents: vi
               .fn()
               .mockImplementation(() => Promise.resolve(events)),
           },
@@ -1804,7 +1800,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            findAuditEvents: jest
+            findAuditEvents: vi
               .fn()
               .mockImplementation(() => Promise.resolve(events)),
           },
@@ -1824,7 +1820,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            findAuditEvents: jest.fn().mockImplementation(() => {
+            findAuditEvents: vi.fn().mockImplementation(() => {
               throw error;
             }),
           },
@@ -1849,7 +1845,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            crossModelQuery: jest.fn(() => Promise.resolve(result)),
+            crossModelQuery: vi.fn(() => Promise.resolve(result)),
           },
         },
       } as unknown as Connection;
@@ -1863,7 +1859,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            crossModelQuery: jest.fn().mockImplementation(() => {
+            crossModelQuery: vi.fn().mockImplementation(() => {
               throw error;
             }),
           },
@@ -1885,7 +1881,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            crossModelQuery: jest.fn(() =>
+            crossModelQuery: vi.fn(() =>
               Promise.reject(
                 new Error("Error while trying to run cross model query!"),
               ),

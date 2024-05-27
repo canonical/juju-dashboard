@@ -1,4 +1,6 @@
 import { render } from "@testing-library/react";
+import type { MockInstance } from "vitest";
+import { vi } from "vitest";
 
 import ErrorBoundary from "./ErrorBoundary";
 
@@ -11,14 +13,12 @@ function ChildComponent() {
 }
 
 describe("Error Boundary", () => {
-  let consoleError: jest.SpyInstance;
+  let consoleError: MockInstance;
 
   beforeEach(() => {
-    // jest does not catch the error thrown in the component so this cleans up
+    // Vitest does not catch the error thrown in the component so this cleans up
     // the console output.
-    consoleError = jest
-      .spyOn(console, "error")
-      .mockImplementation(() => jest.fn());
+    consoleError = vi.spyOn(console, "error").mockImplementation(() => vi.fn());
   });
 
   afterEach(() => {

@@ -35,7 +35,7 @@ it("displays links using a custom component", () => {
         {
           label: "Link one",
         },
-        <Link>Link two</Link>,
+        <Link key="link">Link two</Link>,
       ]}
       linkComponent={Link}
     />,
@@ -52,7 +52,7 @@ it("displays a mix of links and custom components", () => {
           label: "Link one",
           href: "#",
         },
-        <Link>Link two</Link>,
+        <Link key="link">Link two</Link>,
       ]}
     />,
   );
@@ -80,7 +80,7 @@ it("sets components per link", () => {
 });
 
 it("sets icons", () => {
-  const { result } = renderComponent(
+  renderComponent(
     <SideNavigation
       hasIcons
       items={[
@@ -90,11 +90,13 @@ it("sets icons", () => {
       ]}
     />,
   );
-  expect(result.container.firstChild).toHaveClass("p-side-navigation--icons");
+  expect(
+    document.querySelector(".p-side-navigation--icons"),
+  ).toBeInTheDocument();
 });
 
 it("automatically determines if icon class should be applied", () => {
-  const { result } = renderComponent(
+  renderComponent(
     <SideNavigation
       items={[
         {
@@ -105,5 +107,7 @@ it("automatically determines if icon class should be applied", () => {
       ]}
     />,
   );
-  expect(result.container.firstChild).toHaveClass("p-side-navigation--icons");
+  expect(
+    document.querySelector(".p-side-navigation--icons"),
+  ).toBeInTheDocument();
 });

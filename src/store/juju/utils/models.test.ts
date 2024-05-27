@@ -101,7 +101,7 @@ describe("generateIconPath", () => {
   it("should return default charm icon if the charm is local", () => {
     const charmId = "local:my-charm";
     const iconPath = generateIconPath(charmId);
-    expect(iconPath).toBe("default-charm-icon.svg");
+    expect(iconPath.endsWith("default-charm-icon.svg")).toBe(true);
   });
 
   it("should return a icon URI for a charmhub charm path", () => {

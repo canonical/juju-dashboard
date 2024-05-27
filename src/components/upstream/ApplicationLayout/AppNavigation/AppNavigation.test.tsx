@@ -11,11 +11,11 @@ it("displays children", () => {
 });
 
 it("displays as collapsed", () => {
-  const { result } = renderComponent(<AppNavigation collapsed />);
-  expect(result.container.firstChild).toHaveClass("is-collapsed");
+  renderComponent(<AppNavigation collapsed />);
+  expect(document.querySelector(".l-navigation")).toHaveClass("is-collapsed");
 });
 
 it("displays as pinned", () => {
-  const { result } = renderComponent(<AppNavigation pinned />);
-  expect(result.container.firstChild).toHaveClass("is-pinned");
+  renderComponent(<AppNavigation pinned />);
+  expect(document.querySelector(".l-navigation")).toHaveClass("is-pinned");
 });

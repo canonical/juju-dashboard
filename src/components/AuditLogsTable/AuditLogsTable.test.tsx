@@ -1,5 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import { add } from "date-fns";
+import { vi } from "vitest";
 
 import { TestId } from "components/LoadingSpinner/LoadingSpinner";
 import { actions as jujuActions } from "store/juju";
@@ -48,7 +49,7 @@ describe("AuditLogsTable", () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should have model as second header when showing the model data", async () => {

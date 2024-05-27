@@ -180,8 +180,6 @@ export function generateLocalApplicationRows(
 
 export function generateRemoteApplicationRows(
   modelStatusData: ModelData | null,
-  modelParams: ModelParams,
-  query?: Query,
 ) {
   if (!modelStatusData) {
     return [];
@@ -664,10 +662,7 @@ export function generateOffersRows(modelStatusData: ModelData | null) {
   });
 }
 
-export function generateAppOffersRows(
-  modelStatusData: ModelData | null,
-  query: Query,
-) {
+export function generateAppOffersRows(modelStatusData: ModelData | null) {
   if (!modelStatusData) {
     return [];
   }

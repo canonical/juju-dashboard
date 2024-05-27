@@ -12,7 +12,7 @@ type AnalyticMessage = {
 export default function useAnalytics() {
   const analyticsEnabled = useAppSelector(getAnalyticsEnabled);
   return ({ path, category = "", action = "" }: AnalyticMessage) => {
-    const isProduction = process.env.NODE_ENV === "production" ?? true;
+    const isProduction = import.meta.env.PROD;
     if (!isProduction || !analyticsEnabled) {
       return;
     }

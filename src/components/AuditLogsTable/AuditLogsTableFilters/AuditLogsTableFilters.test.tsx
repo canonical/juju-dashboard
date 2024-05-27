@@ -20,20 +20,20 @@ describe("AuditLogsTableFilters", () => {
   });
 
   it("can remove a single filter", async () => {
-    renderComponent(<AuditLogsTableFilters />, {
+    const { router } = renderComponent(<AuditLogsTableFilters />, {
       url: "/?user=eggman&model=test",
     });
     await userEvent.click(
       screen.getAllByRole("button", { name: "Dismiss" })[0],
     );
-    expect(window.location.search).toEqual("?model=test");
+    expect(router.state.location.search).toEqual("?model=test");
   });
 
   it("can clear all filters", async () => {
-    renderComponent(<AuditLogsTableFilters />, {
+    const { router } = renderComponent(<AuditLogsTableFilters />, {
       url: "/?user=eggman&model=test",
     });
     await userEvent.click(screen.getByRole("button", { name: "Clear" }));
-    expect(window.location.search).toEqual("");
+    expect(router.state.location.search).toEqual("");
   });
 });

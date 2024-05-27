@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import { Label as FieldsLabel } from "components/secrets/SecretForm/Fields/Fields";
 import * as secretHooks from "juju/api-hooks/secrets";
@@ -100,7 +101,7 @@ describe("SecretsPicker", () => {
   it("displays a spinner while loading secrets the first time", async () => {
     state.juju.secrets.abc123.loading = true;
     state.juju.secrets.abc123.loaded = false;
-    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+    renderComponent(<SecretsPicker setValue={vi.fn()} />, {
       state,
       url,
       path,
@@ -119,7 +120,7 @@ describe("SecretsPicker", () => {
   it("displays secrets while reloading secrets", async () => {
     state.juju.secrets.abc123.loading = true;
     state.juju.secrets.abc123.loaded = true;
-    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+    renderComponent(<SecretsPicker setValue={vi.fn()} />, {
       state,
       url,
       path,
@@ -137,7 +138,7 @@ describe("SecretsPicker", () => {
 
   it("displays secret errors", async () => {
     state.juju.secrets.abc123.errors = "Uh oh!";
-    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+    renderComponent(<SecretsPicker setValue={vi.fn()} />, {
       state,
       url,
       path,
@@ -149,7 +150,7 @@ describe("SecretsPicker", () => {
   });
 
   it("lists the secrets", async () => {
-    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+    renderComponent(<SecretsPicker setValue={vi.fn()} />, {
       state,
       url,
       path,
@@ -181,7 +182,7 @@ describe("SecretsPicker", () => {
         loaded: true,
       }),
     });
-    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+    renderComponent(<SecretsPicker setValue={vi.fn()} />, {
       state,
       url,
       path,
@@ -198,7 +199,7 @@ describe("SecretsPicker", () => {
   });
 
   it("can set the secret value", async () => {
-    const setValue = jest.fn();
+    const setValue = vi.fn();
     renderComponent(<SecretsPicker setValue={setValue} />, {
       state,
       url,
@@ -215,7 +216,7 @@ describe("SecretsPicker", () => {
     state.juju.modelFeatures.abc123 = modelFeaturesFactory.build({
       manageSecrets: false,
     });
-    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+    renderComponent(<SecretsPicker setValue={vi.fn()} />, {
       state,
       url,
       path,
@@ -238,7 +239,7 @@ describe("SecretsPicker", () => {
     state.juju.modelFeatures.abc123 = modelFeaturesFactory.build({
       manageSecrets: false,
     });
-    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+    renderComponent(<SecretsPicker setValue={vi.fn()} />, {
       state,
       url,
       path,
@@ -262,7 +263,7 @@ describe("SecretsPicker", () => {
     state.juju.modelFeatures.abc123 = modelFeaturesFactory.build({
       manageSecrets: true,
     });
-    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+    renderComponent(<SecretsPicker setValue={vi.fn()} />, {
       state,
       url,
       path,
@@ -280,7 +281,7 @@ describe("SecretsPicker", () => {
     state.juju.modelFeatures.abc123 = modelFeaturesFactory.build({
       manageSecrets: true,
     });
-    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+    renderComponent(<SecretsPicker setValue={vi.fn()} />, {
       state,
       url,
       path,
@@ -300,7 +301,7 @@ describe("SecretsPicker", () => {
     state.juju.modelFeatures.abc123 = modelFeaturesFactory.build({
       manageSecrets: true,
     });
-    renderComponent(<SecretsPicker setValue={jest.fn()} />, {
+    renderComponent(<SecretsPicker setValue={vi.fn()} />, {
       state,
       url,
       path,
@@ -326,15 +327,15 @@ describe("SecretsPicker", () => {
     state.juju.modelFeatures.abc123 = modelFeaturesFactory.build({
       manageSecrets: true,
     });
-    const createSecrets = jest
+    const createSecrets = vi
       .fn()
       .mockImplementation(() =>
         Promise.resolve({ results: [{ result: "secret:newlycreated" }] }),
       );
-    jest
-      .spyOn(secretHooks, "useCreateSecrets")
-      .mockImplementation(() => createSecrets);
-    const setValue = jest.fn();
+    vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
+      () => createSecrets,
+    );
+    const setValue = vi.fn();
     renderComponent(<SecretsPicker setValue={setValue} />, {
       state,
       url,

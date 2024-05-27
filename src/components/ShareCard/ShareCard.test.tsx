@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import ShareCard, { Label } from "./ShareCard";
 
@@ -11,8 +12,8 @@ describe("Share Card", () => {
         lastConnected="2021-06-03T16:03:15Z"
         access="read"
         isOwner={false}
-        removeUser={jest.fn()}
-        accessSelectChange={jest.fn()}
+        removeUser={vi.fn()}
+        accessSelectChange={vi.fn()}
       />,
     );
     expect(screen.getAllByText("janedoe")[0]).toHaveClass(
@@ -29,8 +30,8 @@ describe("Share Card", () => {
         lastConnected="2021-06-03T16:03:15Z"
         access="read"
         isOwner={true}
-        removeUser={jest.fn()}
-        accessSelectChange={jest.fn()}
+        removeUser={vi.fn()}
+        accessSelectChange={vi.fn()}
       />,
     );
     expect(screen.getByText(Label.OWNER)).toHaveClass("share-card__secondary");
@@ -39,8 +40,8 @@ describe("Share Card", () => {
   });
 
   it("should call remove function when icon clicked", async () => {
-    const removeUserFn = jest.fn();
-    const accessSelectChangeFn = jest.fn();
+    const removeUserFn = vi.fn();
+    const accessSelectChangeFn = vi.fn();
     render(
       <ShareCard
         userName="janedoe"
@@ -56,8 +57,8 @@ describe("Share Card", () => {
   });
 
   it("should call access change function when select value clicked", async () => {
-    const removeUserFn = jest.fn();
-    const accessSelectChangeFn = jest.fn(() => Promise.resolve(null));
+    const removeUserFn = vi.fn();
+    const accessSelectChangeFn = vi.fn(() => Promise.resolve(null));
     render(
       <ShareCard
         userName="janedoe"
@@ -74,10 +75,10 @@ describe("Share Card", () => {
 
   it("should display console error when trying to change access", async () => {
     const consoleError = console.error;
-    console.error = jest.fn();
+    console.error = vi.fn();
 
-    const removeUserFn = jest.fn();
-    const accessSelectChangeFn = jest.fn(() => Promise.reject(new Error()));
+    const removeUserFn = vi.fn();
+    const accessSelectChangeFn = vi.fn(() => Promise.reject(new Error()));
     render(
       <ShareCard
         userName="janedoe"

@@ -8,34 +8,42 @@ import Logo from "./Logo";
 describe("Logo", () => {
   it("displays the Juju logo in Juju", () => {
     renderComponent(<Logo isJuju />);
-    expect(screen.getAllByAltText("Juju")[1]).toHaveAttribute(
-      "src",
-      "juju-text.svg",
-    );
+    expect(
+      screen
+        .getAllByAltText("Juju")[1]
+        .getAttribute("src")
+        ?.endsWith("juju-text.svg"),
+    ).toBe(true);
   });
 
   it("displays the JAAS logo in JAAS", () => {
     renderComponent(<Logo />);
-    expect(screen.getAllByAltText("JAAS")[1]).toHaveAttribute(
-      "src",
-      "jaas-text.svg",
-    );
+    expect(
+      screen
+        .getAllByAltText("JAAS")[1]
+        .getAttribute("src")
+        ?.endsWith("jaas-text.svg"),
+    ).toBe(true);
   });
 
   it("displays the dark text in Juju", () => {
     renderComponent(<Logo dark isJuju />);
-    expect(screen.getAllByAltText("Juju")[1]).toHaveAttribute(
-      "src",
-      "juju-text-dark.svg",
-    );
+    expect(
+      screen
+        .getAllByAltText("Juju")[1]
+        .getAttribute("src")
+        ?.endsWith("juju-text-dark.svg"),
+    ).toBe(true);
   });
 
   it("displays the dark text in JAAS", () => {
     renderComponent(<Logo dark />);
-    expect(screen.getAllByAltText("JAAS")[1]).toHaveAttribute(
-      "src",
-      "jaas-text-dark.svg",
-    );
+    expect(
+      screen
+        .getAllByAltText("JAAS")[1]
+        .getAttribute("src")
+        ?.endsWith("jaas-text-dark.svg"),
+    ).toBe(true);
   });
 
   it("can display using a custom component", () => {

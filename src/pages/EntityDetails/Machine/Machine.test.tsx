@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import { vi } from "vitest";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import type { RootState } from "store/store";
@@ -20,14 +21,14 @@ import urls from "urls";
 
 import Machine from "./Machine";
 
-jest.mock("components/Topology/Topology", () => {
+vi.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;
-  return Topology;
+  return { default: Topology };
 });
 
-jest.mock("components/WebCLI/WebCLI", () => {
+vi.mock("components/WebCLI/WebCLI", () => {
   const WebCLI = () => <div className="webcli" data-testid="webcli"></div>;
-  return WebCLI;
+  return { default: WebCLI };
 });
 
 describe("Machine", () => {

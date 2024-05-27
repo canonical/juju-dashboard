@@ -2,6 +2,7 @@ import { Label as ActionButtonLabel } from "@canonical/react-components/dist/com
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import configureStore from "redux-mock-store";
+import { vi } from "vitest";
 
 import { RevisionFieldLabel } from "components/secrets/RevisionField";
 import * as secretHooks from "juju/api-hooks/secrets";
@@ -28,9 +29,9 @@ import SecretContent, { Label } from "./SecretContent";
 
 const mockStore = configureStore<RootState, unknown>([]);
 
-jest.mock("juju/api-hooks/secrets", () => {
+vi.mock("juju/api-hooks/secrets", () => {
   return {
-    useGetSecretContent: jest.fn().mockReturnValue(jest.fn()),
+    useGetSecretContent: vi.fn().mockReturnValue(vi.fn()),
   };
 });
 
@@ -43,9 +44,9 @@ describe("SecretContent", () => {
   });
 
   beforeEach(() => {
-    jest
-      .spyOn(secretHooks, "useGetSecretContent")
-      .mockImplementation(() => jest.fn());
+    vi.spyOn(secretHooks, "useGetSecretContent").mockImplementation(() =>
+      vi.fn(),
+    );
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         credentials: {
@@ -136,10 +137,10 @@ describe("SecretContent", () => {
   });
 
   it("can fetch the content for the chosen revision", async () => {
-    const getSecretContent = jest.fn();
-    jest
-      .spyOn(secretHooks, "useGetSecretContent")
-      .mockImplementation(() => getSecretContent);
+    const getSecretContent = vi.fn();
+    vi.spyOn(secretHooks, "useGetSecretContent").mockImplementation(
+      () => getSecretContent,
+    );
     renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
       state,
       path,

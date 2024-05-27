@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Route } from "react-router-dom";
+import { vi } from "vitest";
 
 import * as WebCLIModule from "components/WebCLI/WebCLI";
 import type { RootState } from "store/store";
@@ -27,12 +27,12 @@ import { ModelTab } from "urls";
 
 import EntityDetails, { Label } from "./EntityDetails";
 
-jest.mock("components/Topology/Topology", () => {
+vi.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;
-  return Topology;
+  return { default: Topology };
 });
 
-jest.mock("components/WebCLI/WebCLI", () => ({
+vi.mock("components/WebCLI/WebCLI", () => ({
   __esModule: true,
   default: () => {
     return <div className="webcli" data-testid="webcli"></div>;
@@ -87,8 +87,8 @@ describe("Entity Details Container", () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
-    jest.restoreAllMocks();
+    vi.resetAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should display the correct window title", () => {
@@ -161,7 +161,7 @@ describe("Entity Details Container", () => {
         listSecrets: true,
       }),
     });
-    renderComponent(<EntityDetails />, { path, url, state });
+    const { router } = renderComponent(<EntityDetails />, { path, url, state });
     const viewSelector = screen.getByTestId("view-selector");
     const sections = [
       {
@@ -186,7 +186,7 @@ describe("Entity Details Container", () => {
       },
     ];
     sections.forEach((section) => {
-      const scrollIntoView = jest.fn();
+      const scrollIntoView = vi.fn();
       fireEvent.click(within(viewSelector).getByText(section.text), {
         target: {
           scrollIntoView,
@@ -199,7 +199,9 @@ describe("Entity Details Container", () => {
           inline: "nearest",
         },
       ]);
-      expect(window.location.search).toEqual(`?activeView=${section.query}`);
+      expect(router.state.location.search).toEqual(
+        `?activeView=${section.query}`,
+      );
     });
   });
 
@@ -208,7 +210,7 @@ describe("Entity Details Container", () => {
     renderComponent(<EntityDetails />, {
       path,
       url,
-      routeChildren: <Route path="" element={children} />,
+      routeChildren: [{ path: "", element: children }],
       state,
     });
     expect(await screen.findByText(children)).toBeInTheDocument();
@@ -261,9 +263,9 @@ describe("Entity Details Container", () => {
   });
 
   it("passes the controller details to the webCLI", () => {
-    const cliComponent = jest
+    const cliComponent = vi
       .spyOn(WebCLIModule, "default")
-      .mockImplementation(jest.fn());
+      .mockImplementation(vi.fn());
     renderComponent(<EntityDetails />, { path, url, state });
     expect(cliComponent.mock.calls[0][0]).toMatchObject({
       controllerWSHost: "example.com:17070",
@@ -365,11 +367,11 @@ describe("Entity Details Container", () => {
     // Copy of window.location is required in order to mock only its "reload"
     // method and set window.location back to default value at the end.
     const location: Location = window.location;
-    // @ts-ignore
+    // @ts-expect-error test
     delete window.location;
     window.location = {
       ...location,
-      reload: jest.fn(),
+      reload: vi.fn(),
     };
 
     renderComponent(<EntityDetails modelWatcherError="timeout" />, {
@@ -387,9 +389,9 @@ describe("Entity Details Container", () => {
     state.general.config = configFactory.build({
       isJuju: true,
     });
-    renderComponent(<EntityDetails />, { path, url, state });
+    const { router } = renderComponent(<EntityDetails />, { path, url, state });
     const viewSelector = screen.getByTestId("view-selector");
-    const scrollIntoView = jest.fn();
+    const scrollIntoView = vi.fn();
     fireEvent.click(within(viewSelector).getByText("Action Logs"), {
       target: {
         scrollIntoView,
@@ -402,6 +404,6 @@ describe("Entity Details Container", () => {
         inline: "nearest",
       },
     ]);
-    expect(window.location.search).toEqual("?activeView=logs");
+    expect(router.state.location.search).toEqual("?activeView=logs");
   });
 });

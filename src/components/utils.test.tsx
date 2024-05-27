@@ -60,7 +60,7 @@ describe("copyToClipboard", () => {
   const execCommand = document.execCommand;
 
   beforeEach(() => {
-    document.execCommand = jest.fn();
+    document.execCommand = vi.fn();
   });
 
   afterEach(() => {

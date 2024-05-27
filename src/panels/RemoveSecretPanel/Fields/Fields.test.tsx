@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
+import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -72,12 +73,12 @@ describe("Fields", () => {
     renderComponent(
       <Formik<FormFields>
         initialValues={{ removeAll: false, revision: "" }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields
           secretURI="secret:aabbccdd"
-          hideConfirm={jest.fn()}
-          handleRemoveSecret={jest.fn()}
+          hideConfirm={vi.fn()}
+          handleRemoveSecret={vi.fn()}
           showConfirm={false}
         />
       </Formik>,
@@ -93,12 +94,12 @@ describe("Fields", () => {
     renderComponent(
       <Formik<FormFields>
         initialValues={{ removeAll: false, revision: "" }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields
           secretURI="secret:aabbccdd"
-          hideConfirm={jest.fn()}
-          handleRemoveSecret={jest.fn()}
+          hideConfirm={vi.fn()}
+          handleRemoveSecret={vi.fn()}
           showConfirm={true}
         />
       </Formik>,
@@ -110,15 +111,15 @@ describe("Fields", () => {
   });
 
   it("disables the revision field if the remove all checkbox is checked", async () => {
-    const handleRemoveSecret = jest.fn();
+    const handleRemoveSecret = vi.fn();
     renderComponent(
       <Formik<FormFields>
         initialValues={{ removeAll: false, revision: "" }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields
           secretURI="secret:aabbccdd"
-          hideConfirm={jest.fn()}
+          hideConfirm={vi.fn()}
           handleRemoveSecret={handleRemoveSecret}
           showConfirm={true}
         />
@@ -147,15 +148,15 @@ describe("Fields", () => {
       ],
       loaded: true,
     });
-    const handleRemoveSecret = jest.fn();
+    const handleRemoveSecret = vi.fn();
     renderComponent(
       <Formik<FormFields>
         initialValues={{ removeAll: false, revision: "" }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields
           secretURI="secret:aabbccdd"
-          hideConfirm={jest.fn()}
+          hideConfirm={vi.fn()}
           handleRemoveSecret={handleRemoveSecret}
           showConfirm={true}
         />
@@ -176,16 +177,16 @@ describe("Fields", () => {
   });
 
   it("can cancel the confirmation", async () => {
-    const hideConfirm = jest.fn();
+    const hideConfirm = vi.fn();
     renderComponent(
       <Formik<FormFields>
         initialValues={{ removeAll: false, revision: "" }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields
           secretURI="secret:aabbccdd"
           hideConfirm={hideConfirm}
-          handleRemoveSecret={jest.fn()}
+          handleRemoveSecret={vi.fn()}
           showConfirm={true}
         />
       </Formik>,
@@ -202,15 +203,15 @@ describe("Fields", () => {
   });
 
   it("can confirm a revision and call the callback", async () => {
-    const handleRemoveSecret = jest.fn();
+    const handleRemoveSecret = vi.fn();
     renderComponent(
       <Formik<FormFields>
         initialValues={{ removeAll: false, revision: "" }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields
           secretURI="secret:aabbccdd"
-          hideConfirm={jest.fn()}
+          hideConfirm={vi.fn()}
           handleRemoveSecret={handleRemoveSecret}
           showConfirm={true}
         />
@@ -231,15 +232,15 @@ describe("Fields", () => {
   });
 
   it("can confirm all revisions and call the callback", async () => {
-    const handleRemoveSecret = jest.fn();
+    const handleRemoveSecret = vi.fn();
     renderComponent(
       <Formik<FormFields>
         initialValues={{ removeAll: false, revision: "" }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields
           secretURI="secret:aabbccdd"
-          hideConfirm={jest.fn()}
+          hideConfirm={vi.fn()}
           handleRemoveSecret={handleRemoveSecret}
           showConfirm={true}
         />

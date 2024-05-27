@@ -1,6 +1,7 @@
 import type { Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
 import { screen, waitFor } from "@testing-library/react";
+import { vi } from "vitest";
 
 import * as juju from "juju/api";
 import { Label as EntityDetailsLabel } from "pages/EntityDetails/EntityDetails";
@@ -15,24 +16,24 @@ import urls from "urls";
 
 import ModelDetails, { Label as ModelDetailsLabel } from "./ModelDetails";
 
-jest.mock("pages/EntityDetails/App/App", () => {
-  return () => <div data-testid="app"></div>;
+vi.mock("pages/EntityDetails/App/App", () => {
+  return { default: () => <div data-testid="app"></div> };
 });
 
-jest.mock("pages/EntityDetails/Model/Model", () => {
-  return () => <div data-testid="model"></div>;
+vi.mock("pages/EntityDetails/Model/Model", () => {
+  return { default: () => <div data-testid="model"></div> };
 });
 
-jest.mock("pages/EntityDetails/Unit/Unit", () => {
-  return () => <div data-testid="unit"></div>;
+vi.mock("pages/EntityDetails/Unit/Unit", () => {
+  return { default: () => <div data-testid="unit"></div> };
 });
 
-jest.mock("pages/EntityDetails/Machine/Machine", () => {
-  return () => <div data-testid="machine"></div>;
+vi.mock("pages/EntityDetails/Machine/Machine", () => {
+  return { default: () => <div data-testid="machine"></div> };
 });
 
-jest.mock("@canonical/jujulib", () => ({
-  connectAndLogin: jest.fn(),
+vi.mock("@canonical/jujulib", () => ({
+  connectAndLogin: vi.fn(),
 }));
 
 describe("ModelDetails", () => {
@@ -68,34 +69,30 @@ describe("ModelDetails", () => {
         },
         facades: {
           client: {
-            fullStatus: jest.fn(),
-            watchAll: jest.fn().mockReturnValue({ "watcher-id": "123" }),
+            fullStatus: vi.fn(),
+            watchAll: vi.fn().mockReturnValue({ "watcher-id": "123" }),
           },
           allWatcher: {
-            next: jest.fn(),
-            stop: jest.fn(),
+            next: vi.fn(),
+            stop: vi.fn(),
           },
         },
         transport: {
-          close: jest.fn(),
+          close: vi.fn(),
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(async () => client);
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => client);
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
-    jest.restoreAllMocks();
+    vi.resetAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should start the watcher when displaying the model", async () => {
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(async () => client);
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => client);
     renderComponent(<ModelDetails />, { path, url, state });
     // Wait for the component to be rendered so that async methods have completed.
     await screen.findByTestId("model");
@@ -106,9 +103,7 @@ describe("ModelDetails", () => {
     const status = fullStatusFactory.build();
     client.conn.facades.client.fullStatus.mockReturnValue(status);
     client.conn.info.serverVersion = "3.1.99";
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(async () => client);
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => client);
     const { store } = renderComponent(<ModelDetails />, { path, url, state });
     const action = jujuActions.populateMissingAllWatcherData({
       uuid: "abc123",
@@ -123,9 +118,7 @@ describe("ModelDetails", () => {
 
   it("should not load the full status when using Juju 3.2", async () => {
     client.conn.info.serverVersion = "3.2.99";
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(async () => client);
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => client);
     const { store } = renderComponent(<ModelDetails />, { path, url, state });
     // Wait for the component to be rendered so that async methods have completed.
     await screen.findByTestId("model");
@@ -194,7 +187,7 @@ describe("ModelDetails", () => {
   });
 
   it("should display error if startModelWatcher timed out", async () => {
-    jest.spyOn(juju, "startModelWatcher").mockRejectedValue("timeout");
+    vi.spyOn(juju, "startModelWatcher").mockRejectedValue("timeout");
     renderComponent(<ModelDetails />, { path, url, state });
     await waitFor(() => {
       expect(document.querySelector(".p-notification--negative")).toBeVisible();
@@ -220,19 +213,17 @@ describe("ModelDetails", () => {
 
   it("should display console error when trying to stop model watcher", async () => {
     const consoleError = console.error;
-    console.error = jest.fn();
-    jest.spyOn(juju, "startModelWatcher").mockImplementation(
-      jest.fn().mockResolvedValue({
+    console.error = vi.fn();
+    vi.spyOn(juju, "startModelWatcher").mockImplementation(
+      vi.fn().mockResolvedValue({
         conn: client.conn,
         watcherHandle: { "watcher-id": "1" },
         pingerIntervalId: 1,
       }),
     );
-    jest
-      .spyOn(juju, "stopModelWatcher")
-      .mockImplementation(
-        jest.fn().mockRejectedValue(new Error("Failed to stop model watcher!")),
-      );
+    vi.spyOn(juju, "stopModelWatcher").mockImplementation(
+      vi.fn().mockRejectedValue(new Error("Failed to stop model watcher!")),
+    );
 
     const {
       result: { unmount },

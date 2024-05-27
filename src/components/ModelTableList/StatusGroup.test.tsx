@@ -1,6 +1,7 @@
 import { act, screen, within } from "@testing-library/react";
 import type { UserEvent } from "@testing-library/user-event";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -27,9 +28,9 @@ describe("StatusGroup", () => {
   let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     userEventWithTimers = userEvent.setup({
-      advanceTimers: jest.advanceTimersByTime,
+      advanceTimers: vi.advanceTimersByTime,
     });
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
@@ -99,7 +100,7 @@ describe("StatusGroup", () => {
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("by default, renders no tables when there is no data", () => {
@@ -127,10 +128,12 @@ describe("StatusGroup", () => {
 
   it("displays the provider type icon", () => {
     renderComponent(<StatusGroup filters={{}} />, { state });
-    expect(screen.getAllByTestId("provider-logo")[0]).toHaveAttribute(
-      "src",
-      "gce.svg",
-    );
+    expect(
+      screen
+        .getAllByTestId("provider-logo")[0]
+        .getAttribute("src")
+        ?.endsWith("/gce.svg"),
+    ).toBe(true);
   });
 
   it("model access button is present in status group", () => {
@@ -175,7 +178,7 @@ describe("StatusGroup", () => {
   });
 
   it("displays links to blocked apps and units", async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     state.juju.modelData.abc123.applications = {
       calico: modelDataApplicationFactory.build({
         status: detailedStatusFactory.build({
@@ -201,7 +204,7 @@ describe("StatusGroup", () => {
     expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
     await act(async () => {
       await userEventWithTimers.hover(error);
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     const tooltip = screen.getAllByRole("tooltip")[0];
     expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");

@@ -1,6 +1,6 @@
-import { act, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import reactHotToast, { Toaster } from "react-hot-toast";
+import { vi } from "vitest";
 
 import * as actionsHooks from "juju/api-hooks/actions";
 import type { RootState } from "store/store";
@@ -20,9 +20,9 @@ import { renderComponent } from "testing/utils";
 
 import CharmActionsPanel, { Label } from "./CharmActionsPanel";
 
-jest.mock("juju/api-hooks/actions", () => {
+vi.mock("juju/api-hooks/actions", () => {
   return {
-    useExecuteActionOnUnits: jest.fn().mockReturnValue(jest.fn()),
+    useExecuteActionOnUnits: vi.fn().mockReturnValue(vi.fn()),
   };
 });
 
@@ -84,21 +84,16 @@ describe("CharmActionsPanel", () => {
   });
 
   afterEach(() => {
-    // Guarantees that Toaster state does not persist throughout renders.
-    act(() => reactHotToast.remove());
-    jest.resetModules();
-    jest.restoreAllMocks();
+    vi.resetModules();
+    vi.restoreAllMocks();
   });
 
   it("Renders the list of available actions", async () => {
     renderComponent(
-      <>
-        <CharmActionsPanel
-          charmURL={charmURL}
-          onRemovePanelQueryParams={jest.fn()}
-        />
-        <Toaster />
-      </>,
+      <CharmActionsPanel
+        charmURL={charmURL}
+        onRemovePanelQueryParams={vi.fn()}
+      />,
       { path, url, state },
     );
     expect(await screen.findAllByRole("radio")).toHaveLength(2);
@@ -106,13 +101,10 @@ describe("CharmActionsPanel", () => {
 
   it("validates that an action is selected before submitting", async () => {
     renderComponent(
-      <>
-        <CharmActionsPanel
-          charmURL={charmURL}
-          onRemovePanelQueryParams={jest.fn()}
-        />
-        <Toaster />
-      </>,
+      <CharmActionsPanel
+        charmURL={charmURL}
+        onRemovePanelQueryParams={vi.fn()}
+      />,
       { path, url, state },
     );
     expect(
@@ -128,13 +120,10 @@ describe("CharmActionsPanel", () => {
       }),
     ];
     renderComponent(
-      <>
-        <CharmActionsPanel
-          charmURL={charmURL}
-          onRemovePanelQueryParams={jest.fn()}
-        />
-        <Toaster />
-      </>,
+      <CharmActionsPanel
+        charmURL={charmURL}
+        onRemovePanelQueryParams={vi.fn()}
+      />,
       { path, url, state },
     );
     expect(
@@ -154,13 +143,10 @@ describe("CharmActionsPanel", () => {
 
   it("disables the submit button if a required text field is empty", async () => {
     renderComponent(
-      <>
-        <CharmActionsPanel
-          charmURL={charmURL}
-          onRemovePanelQueryParams={jest.fn()}
-        />
-        <Toaster />
-      </>,
+      <CharmActionsPanel
+        charmURL={charmURL}
+        onRemovePanelQueryParams={vi.fn()}
+      />,
       { path, url, state },
     );
     expect(
@@ -206,13 +192,10 @@ describe("CharmActionsPanel", () => {
       }),
     ];
     renderComponent(
-      <>
-        <CharmActionsPanel
-          charmURL={charmURL}
-          onRemovePanelQueryParams={jest.fn()}
-        />
-        <Toaster />
-      </>,
+      <CharmActionsPanel
+        charmURL={charmURL}
+        onRemovePanelQueryParams={vi.fn()}
+      />,
       { path, url, state },
     );
     await userEvent.click(
@@ -232,20 +215,17 @@ describe("CharmActionsPanel", () => {
   });
 
   it("shows a confirmation dialog on clicking submit", async () => {
-    const executeActionOnUnitsSpy = jest
+    const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve());
-    jest
-      .spyOn(actionsHooks, "useExecuteActionOnUnits")
-      .mockImplementation(() => executeActionOnUnitsSpy);
+    vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
+      () => executeActionOnUnitsSpy,
+    );
     renderComponent(
-      <>
-        <CharmActionsPanel
-          charmURL={charmURL}
-          onRemovePanelQueryParams={jest.fn()}
-        />
-        <Toaster />
-      </>,
+      <CharmActionsPanel
+        charmURL={charmURL}
+        onRemovePanelQueryParams={vi.fn()}
+      />,
       { path, url, state },
     );
     expect(
@@ -266,20 +246,17 @@ describe("CharmActionsPanel", () => {
   });
 
   it("submits the action request to the api without options", async () => {
-    const executeActionOnUnitsSpy = jest
+    const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve());
-    jest
-      .spyOn(actionsHooks, "useExecuteActionOnUnits")
-      .mockImplementation(() => executeActionOnUnitsSpy);
+    vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
+      () => executeActionOnUnitsSpy,
+    );
     renderComponent(
-      <>
-        <CharmActionsPanel
-          charmURL={charmURL}
-          onRemovePanelQueryParams={jest.fn()}
-        />
-        <Toaster />
-      </>,
+      <CharmActionsPanel
+        charmURL={charmURL}
+        onRemovePanelQueryParams={vi.fn()}
+      />,
       { path, url, state },
     );
     expect(
@@ -303,20 +280,17 @@ describe("CharmActionsPanel", () => {
   });
 
   it("submits the action request to the api with options that are required", async () => {
-    const executeActionOnUnitsSpy = jest
+    const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve());
-    jest
-      .spyOn(actionsHooks, "useExecuteActionOnUnits")
-      .mockImplementation(() => executeActionOnUnitsSpy);
+    vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
+      () => executeActionOnUnitsSpy,
+    );
     renderComponent(
-      <>
-        <CharmActionsPanel
-          charmURL={charmURL}
-          onRemovePanelQueryParams={jest.fn()}
-        />
-        <Toaster />
-      </>,
+      <CharmActionsPanel
+        charmURL={charmURL}
+        onRemovePanelQueryParams={vi.fn()}
+      />,
       { path, url, state },
     );
     await userEvent.click(
@@ -345,20 +319,17 @@ describe("CharmActionsPanel", () => {
   });
 
   it("handles API errors", async () => {
-    const executeActionOnUnitsSpy = jest
+    const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() => Promise.reject(new Error()));
-    jest
-      .spyOn(actionsHooks, "useExecuteActionOnUnits")
-      .mockImplementation(() => executeActionOnUnitsSpy);
+    vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
+      () => executeActionOnUnitsSpy,
+    );
     renderComponent(
-      <>
-        <CharmActionsPanel
-          charmURL={charmURL}
-          onRemovePanelQueryParams={jest.fn()}
-        />
-        <Toaster />
-      </>,
+      <CharmActionsPanel
+        charmURL={charmURL}
+        onRemovePanelQueryParams={vi.fn()}
+      />,
       { path, url, state },
     );
     expect(
@@ -383,13 +354,10 @@ describe("CharmActionsPanel", () => {
 
   it("should cancel the run selected action confirmation modal", async () => {
     renderComponent(
-      <>
-        <CharmActionsPanel
-          charmURL={charmURL}
-          onRemovePanelQueryParams={jest.fn()}
-        />
-        <Toaster />
-      </>,
+      <CharmActionsPanel
+        charmURL={charmURL}
+        onRemovePanelQueryParams={vi.fn()}
+      />,
       { path, url, state },
     );
     expect(
@@ -414,22 +382,19 @@ describe("CharmActionsPanel", () => {
   });
 
   it("should throw error when executing action on unit", async () => {
-    const executeActionOnUnitsSpy = jest.fn().mockImplementation(() =>
+    const executeActionOnUnitsSpy = vi.fn().mockImplementation(() =>
       Promise.resolve({
         actions: [{ error: "Error when executing action on unit!" }],
       }),
     );
-    jest
-      .spyOn(actionsHooks, "useExecuteActionOnUnits")
-      .mockImplementation(() => executeActionOnUnitsSpy);
+    vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
+      () => executeActionOnUnitsSpy,
+    );
     renderComponent(
-      <>
-        <CharmActionsPanel
-          charmURL={charmURL}
-          onRemovePanelQueryParams={jest.fn()}
-        />
-        <Toaster />
-      </>,
+      <CharmActionsPanel
+        charmURL={charmURL}
+        onRemovePanelQueryParams={vi.fn()}
+      />,
       { path, url, state },
     );
     expect(

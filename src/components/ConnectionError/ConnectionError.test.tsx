@@ -1,6 +1,6 @@
-import { act, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import reactHotToast, { Toaster } from "react-hot-toast";
+import { vi } from "vitest";
 
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -13,7 +13,7 @@ describe("ConnectionError", () => {
   beforeEach(() => {
     location = window.location;
     Object.defineProperty(window, "location", {
-      value: { ...location, reload: jest.fn() },
+      value: { ...location, reload: vi.fn() },
     });
   });
 
@@ -21,7 +21,6 @@ describe("ConnectionError", () => {
     Object.defineProperty(window, "location", {
       value: location,
     });
-    act(() => reactHotToast.remove());
   });
 
   it("displays connection errors", () => {
@@ -45,18 +44,12 @@ describe("ConnectionError", () => {
     const state = rootStateFactory.withGeneralConfig().build({
       juju: { auditEvents: { errors: "Oops!" } },
     });
-    renderComponent(
-      <>
-        <Toaster />
-        <ConnectionError />
-      </>,
-      { state },
-    );
+    renderComponent(<ConnectionError />, { state });
     const auditLogsErrorNotification = screen.getByText(/Oops!/);
     expect(auditLogsErrorNotification.childElementCount).toBe(1);
     const refreshButton = auditLogsErrorNotification.children[0];
     expect(refreshButton).toHaveTextContent("refresh");
-    await userEvent.click(refreshButton);
+    await userEvent.click(refreshButton, { pointerEventsCheck: 0 });
     expect(window.location.reload).toHaveBeenCalled();
   });
 });

@@ -46,7 +46,7 @@ const AuditLogsTableFilters = () => {
     AuditLogFilters & { page: string | null }
   >({ ...DEFAULT_AUDIT_LOG_FILTERS, page: null });
   // Extract just the filters so that they can be looped over.
-  const { page, ...filters } = queryParams;
+  const { page: _page, ...filters } = queryParams;
   const hasFilters = Object.values(filters).some((filter) => !!filter);
   return hasFilters ? (
     <ActionBar>

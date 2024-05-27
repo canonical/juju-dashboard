@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import type { ConfigData } from "../types";
 
@@ -21,20 +22,20 @@ describe("NumberConfig", () => {
       <NumberConfig
         config={config}
         selectedConfig={undefined}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
       />,
     );
     expect(screen.getByRole("spinbutton")).toBeInTheDocument();
   });
 
   it("can change the value", async () => {
-    const setNewValue = jest.fn();
+    const setNewValue = vi.fn();
     render(
       <NumberConfig
         config={config}
         selectedConfig={undefined}
-        setSelectedConfig={jest.fn()}
+        setSelectedConfig={vi.fn()}
         setNewValue={setNewValue}
       />,
     );

@@ -293,13 +293,16 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
               code:
                 codeSnippetView === CodeSnippetView.JSON ? (
                   tokens.map((line, i) => {
-                    const { style, ...lineProps } = getLineProps({ line });
+                    const { style: _style, ...lineProps } = getLineProps({
+                      line,
+                    });
                     return (
                       <span key={i} {...lineProps}>
                         {line.map((token, key) => {
-                          const { style, ...tokenProps } = getTokenProps({
-                            token,
-                          });
+                          const { style: _style, ...tokenProps } =
+                            getTokenProps({
+                              token,
+                            });
                           return <span key={key} {...tokenProps} />;
                         })}
                       </span>

@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import { Formik } from "formik";
+import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
@@ -32,7 +33,7 @@ describe("Fields", () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should suggest user options", async () => {
@@ -63,7 +64,7 @@ describe("Fields", () => {
       }),
     };
     renderComponent(
-      <Formik initialValues={{}} onSubmit={jest.fn()}>
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
         <Fields />
       </Formik>,
       { state },
@@ -109,7 +110,7 @@ describe("Fields", () => {
       "wss://test.com/api": [controllerFactory.build({ name: "controller3" })],
     };
     renderComponent(
-      <Formik initialValues={{}} onSubmit={jest.fn()}>
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
         <Fields />
       </Formik>,
       {
@@ -132,7 +133,7 @@ describe("Fields", () => {
 
   it("can show the model field", async () => {
     renderComponent(
-      <Formik initialValues={{}} onSubmit={jest.fn()}>
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
         <Fields />
       </Formik>,
       {
@@ -146,7 +147,7 @@ describe("Fields", () => {
 
   it("can not show the model field", async () => {
     renderComponent(
-      <Formik initialValues={{}} onSubmit={jest.fn()}>
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
         <Fields />
       </Formik>,
       {
@@ -176,7 +177,7 @@ describe("Fields", () => {
       }),
     ];
     renderComponent(
-      <Formik initialValues={{}} onSubmit={jest.fn()}>
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
         <Fields />
       </Formik>,
       { state },

@@ -1,37 +1,22 @@
-import { act, renderHook } from "@testing-library/react";
-import configureStore from "redux-mock-store";
+import { act } from "@testing-library/react";
 
-import type { RootState } from "store/store";
-import { rootStateFactory } from "testing/factories";
-import { ComponentProviders, changeURL } from "testing/utils";
+import { renderWrappedHook } from "testing/utils";
 
 import { usePanelQueryParams } from "./hooks";
 
-const mockStore = configureStore<RootState, unknown>([]);
-
-const mockRenderHook = () =>
-  renderHook(
+const mockRenderHook = (url = "?") =>
+  renderWrappedHook(
     () =>
       usePanelQueryParams<{ panel: null | string; mockParam: string }>({
         panel: null,
         mockParam: "mockValue",
       }),
     {
-      wrapper: (props) => (
-        <ComponentProviders
-          {...props}
-          path=""
-          store={mockStore(rootStateFactory.build())}
-        />
-      ),
+      url,
     },
   );
 
 describe("usePanelQueryParams", () => {
-  beforeEach(() => {
-    changeURL("?");
-  });
-
   it("should initially have the correct query params", () => {
     const { result } = mockRenderHook();
     const [queryParams] = result.current;
@@ -40,9 +25,7 @@ describe("usePanelQueryParams", () => {
   });
 
   it("should replace default values of query params with those from URL", () => {
-    changeURL("?panel=mockPanelName");
-
-    const { result } = mockRenderHook();
+    const { result } = mockRenderHook("?panel=mockPanelName");
     const [queryParams] = result.current;
 
     expect(queryParams).toStrictEqual({
@@ -67,15 +50,13 @@ describe("usePanelQueryParams", () => {
   });
 
   it("should remove all panel params, while leaving the remaining params untouched", () => {
-    changeURL(
+    const { result, router } = mockRenderHook(
       "?externalParam=externalValue&panel=mockPanelName&mockParam=mockValue",
     );
-
-    const { result } = mockRenderHook();
     const [, , handleRemovePanelQueryParams] = result.current;
 
     act(() => handleRemovePanelQueryParams());
 
-    expect(window.location.search).toBe("?externalParam=externalValue");
+    expect(router?.state.location.search).toBe("?externalParam=externalValue");
   });
 });

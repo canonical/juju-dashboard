@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import * as secretHooks from "juju/api-hooks/secrets";
 import type { RootState } from "store/store";
@@ -22,10 +23,10 @@ import urls from "urls";
 import { Label as FieldsLabel } from "./Fields/Fields";
 import RemoveSecretPanel, { Label } from "./RemoveSecretPanel";
 
-jest.mock("juju/api-hooks/secrets", () => {
+vi.mock("juju/api-hooks/secrets", () => {
   return {
-    useRemoveSecrets: jest.fn().mockReturnValue(jest.fn()),
-    useListSecrets: jest.fn().mockReturnValue(jest.fn()),
+    useRemoveSecrets: vi.fn().mockReturnValue(vi.fn()),
+    useListSecrets: vi.fn().mockReturnValue(vi.fn()),
   };
 });
 
@@ -72,18 +73,16 @@ describe("RemoveSecretPanel", () => {
         }),
       },
     });
-    jest
-      .spyOn(secretHooks, "useListSecrets")
-      .mockImplementation(() => jest.fn());
+    vi.spyOn(secretHooks, "useListSecrets").mockImplementation(() => vi.fn());
   });
 
   it("shows a confirmation when the form is submitted", async () => {
-    const removeSecrets = jest
+    const removeSecrets = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useRemoveSecrets")
-      .mockImplementation(() => removeSecrets);
+    vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
+      () => removeSecrets,
+    );
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     expect(
@@ -93,12 +92,12 @@ describe("RemoveSecretPanel", () => {
   });
 
   it("can remove a secret", async () => {
-    const removeSecrets = jest
+    const removeSecrets = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useRemoveSecrets")
-      .mockImplementation(() => removeSecrets);
+    vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
+      () => removeSecrets,
+    );
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     await userEvent.click(
@@ -113,12 +112,12 @@ describe("RemoveSecretPanel", () => {
   });
 
   it("displays caught errors", async () => {
-    const removeSecrets = jest
+    const removeSecrets = vi
       .fn()
       .mockImplementation(() => Promise.reject(new Error("Caught error")));
-    jest
-      .spyOn(secretHooks, "useRemoveSecrets")
-      .mockImplementation(() => removeSecrets);
+    vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
+      () => removeSecrets,
+    );
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     await userEvent.click(
@@ -130,12 +129,12 @@ describe("RemoveSecretPanel", () => {
   });
 
   it("displays error string results", async () => {
-    const removeSecrets = jest
+    const removeSecrets = vi
       .fn()
       .mockImplementation(() => Promise.reject(new Error("String error")));
-    jest
-      .spyOn(secretHooks, "useRemoveSecrets")
-      .mockImplementation(() => removeSecrets);
+    vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
+      () => removeSecrets,
+    );
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     await userEvent.click(
@@ -147,14 +146,14 @@ describe("RemoveSecretPanel", () => {
   });
 
   it("displays error object results", async () => {
-    const removeSecrets = jest
+    const removeSecrets = vi
       .fn()
       .mockImplementation(() =>
         Promise.resolve({ results: [{ error: { message: "Error result" } }] }),
       );
-    jest
-      .spyOn(secretHooks, "useRemoveSecrets")
-      .mockImplementation(() => removeSecrets);
+    vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
+      () => removeSecrets,
+    );
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     await userEvent.click(
@@ -166,34 +165,38 @@ describe("RemoveSecretPanel", () => {
   });
 
   it("closes the panel if successful", async () => {
-    const removeSecrets = jest
+    const removeSecrets = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useRemoveSecrets")
-      .mockImplementation(() => removeSecrets);
-    renderComponent(<RemoveSecretPanel />, { state, path, url });
-    expect(window.location.search).toEqual(
+    vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
+      () => removeSecrets,
+    );
+    const { router } = renderComponent(<RemoveSecretPanel />, {
+      state,
+      path,
+      url,
+    });
+    expect(router.state.location.search).toEqual(
       "?panel=remove-secret&secret=secret:aabbccdd",
     );
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     await userEvent.click(
       screen.getByRole("button", { name: FieldsLabel.CONFIRM_BUTTON }),
     );
-    expect(window.location.search).toEqual("");
+    expect(router.state.location.search).toEqual("");
   });
 
   it("refetches the secrets if successful", async () => {
-    const removeSecrets = jest
+    const removeSecrets = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useRemoveSecrets")
-      .mockImplementation(() => removeSecrets);
-    const listSecrets = jest.fn();
-    jest
-      .spyOn(secretHooks, "useListSecrets")
-      .mockImplementation(() => listSecrets);
+    vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
+      () => removeSecrets,
+    );
+    const listSecrets = vi.fn();
+    vi.spyOn(secretHooks, "useListSecrets").mockImplementation(
+      () => listSecrets,
+    );
     renderComponent(<RemoveSecretPanel />, { state, path, url });
     expect(listSecrets).not.toHaveBeenCalled();
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));

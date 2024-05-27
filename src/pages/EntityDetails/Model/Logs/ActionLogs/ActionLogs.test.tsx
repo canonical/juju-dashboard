@@ -1,6 +1,7 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { add } from "date-fns";
+import { vi } from "vitest";
 
 import * as componentUtils from "components/utils";
 import * as actionsHooks from "juju/api-hooks/actions";
@@ -26,10 +27,13 @@ import { renderComponent } from "testing/utils";
 import ActionLogs, { Label } from "./ActionLogs";
 import { Output } from "./ActionLogs";
 
-jest.mock("components/utils", () => ({
-  ...jest.requireActual("components/utils"),
-  copyToClipboard: jest.fn(),
-}));
+vi.mock("components/utils", async () => {
+  const utils = await vi.importActual("components/utils");
+  return {
+    ...utils,
+    copyToClipboard: vi.fn(),
+  };
+});
 
 const completed = new Date();
 completed.setMonth(completed.getMonth() - 18);
@@ -100,10 +104,10 @@ const mockActionResults = actionResultsFactory.build({
   ],
 });
 
-jest.mock("juju/api-hooks/actions", () => {
+vi.mock("juju/api-hooks/actions", () => {
   return {
-    useQueryActionsList: jest.fn().mockReturnValue(jest.fn()),
-    useQueryOperationsList: jest.fn().mockReturnValue(jest.fn()),
+    useQueryActionsList: vi.fn().mockReturnValue(vi.fn()),
+    useQueryOperationsList: vi.fn().mockReturnValue(vi.fn()),
   };
 });
 
@@ -113,18 +117,12 @@ describe("Action Logs", () => {
   const url = "/models/eggman@external/group-test?activeView=action-logs";
 
   beforeEach(() => {
-    jest
-      .spyOn(actionsHooks, "useQueryOperationsList")
-      .mockImplementation(() =>
-        jest
-          .fn()
-          .mockImplementation(() => Promise.resolve(mockOperationResults)),
-      );
-    jest
-      .spyOn(actionsHooks, "useQueryActionsList")
-      .mockImplementation(() =>
-        jest.fn().mockImplementation(() => Promise.resolve(mockActionResults)),
-      );
+    vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(() =>
+      vi.fn().mockImplementation(() => Promise.resolve(mockOperationResults)),
+    );
+    vi.spyOn(actionsHooks, "useQueryActionsList").mockImplementation(() =>
+      vi.fn().mockImplementation(() => Promise.resolve(mockActionResults)),
+    );
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         modelData: {
@@ -146,7 +144,7 @@ describe("Action Logs", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("requests the action logs data on load", async () => {
@@ -215,13 +213,9 @@ describe("Action Logs", () => {
         }),
       ],
     });
-    jest
-      .spyOn(actionsHooks, "useQueryOperationsList")
-      .mockImplementation(() =>
-        jest
-          .fn()
-          .mockImplementation(() => Promise.resolve(mockOperationResults)),
-      );
+    vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(() =>
+      vi.fn().mockImplementation(() => Promise.resolve(mockOperationResults)),
+    );
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
       [
@@ -258,11 +252,9 @@ describe("Action Logs", () => {
         }),
       ],
     });
-    jest
-      .spyOn(actionsHooks, "useQueryActionsList")
-      .mockImplementation(() =>
-        jest.fn().mockImplementation(() => Promise.resolve(mockActionResults)),
-      );
+    vi.spyOn(actionsHooks, "useQueryActionsList").mockImplementation(() =>
+      vi.fn().mockImplementation(() => Promise.resolve(mockActionResults)),
+    );
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
       ["easyrsa", "1/list-disks", "completed", "", "", "", ""],
@@ -290,13 +282,9 @@ describe("Action Logs", () => {
         }),
       ],
     });
-    jest
-      .spyOn(actionsHooks, "useQueryOperationsList")
-      .mockImplementation(() =>
-        jest
-          .fn()
-          .mockImplementation(() => Promise.resolve(mockOperationResults)),
-      );
+    vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(() =>
+      vi.fn().mockImplementation(() => Promise.resolve(mockOperationResults)),
+    );
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
       ["easyrsa", "1/list-disks", "completed", "", "", "", ""],
@@ -342,11 +330,9 @@ describe("Action Logs", () => {
         }),
       ],
     });
-    jest
-      .spyOn(actionsHooks, "useQueryActionsList")
-      .mockImplementation(() =>
-        jest.fn().mockImplementation(() => Promise.resolve(mockActionResults)),
-      );
+    vi.spyOn(actionsHooks, "useQueryActionsList").mockImplementation(() =>
+      vi.fn().mockImplementation(() => Promise.resolve(mockActionResults)),
+    );
     renderComponent(<ActionLogs />, { path, url, state });
     const rows = await screen.findAllByRole("row");
     expect(
@@ -390,16 +376,16 @@ describe("Action Logs", () => {
 
   it("should show error when fetching action logs and refetch action logs", async () => {
     const consoleError = console.error;
-    console.error = jest.fn();
+    console.error = vi.fn();
 
-    const queryOperationsListSpy = jest
+    const queryOperationsListSpy = vi
       .fn()
       .mockImplementation(() =>
         Promise.reject(new Error("Error while querying operations list.")),
       );
-    jest
-      .spyOn(actionsHooks, "useQueryOperationsList")
-      .mockImplementation(() => queryOperationsListSpy);
+    vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(
+      () => queryOperationsListSpy,
+    );
     renderComponent(<ActionLogs />, { path, url, state });
     expect(queryOperationsListSpy).toHaveBeenCalledTimes(1);
     await waitFor(() => {

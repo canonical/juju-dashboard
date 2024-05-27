@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import { actions as generalActions } from "store/general";
 import { renderComponent } from "testing/utils";
@@ -20,7 +21,7 @@ describe("AuthenticationButton", () => {
   });
 
   it("should remove the URL when clicked", async () => {
-    const onClick = jest.fn();
+    const onClick = vi.fn();
     const { store } = renderComponent(
       <AuthenticationButton onClick={onClick} visitURL="http://example.com">
         Log in

@@ -1,5 +1,6 @@
 import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
@@ -13,9 +14,9 @@ import { renderComponent } from "testing/utils";
 
 import InfoPanel, { Label } from "./InfoPanel";
 
-jest.mock("components/Topology/Topology", () => {
+vi.mock("components/Topology/Topology", () => {
   const Topology = () => <div data-testid="topology"></div>;
-  return Topology;
+  return { default: Topology };
 });
 
 describe("Info Panel", () => {

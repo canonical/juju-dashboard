@@ -125,7 +125,7 @@ export function processDeltas(
       // when adding and removing units to other applications. At the time
       // of writing this does not appear to be a performance issue but something
       // to keep an eye on for those with many hundreds of units.
-      Object.entries(modelData.units).forEach(([key, value]) => {
+      Object.keys(modelData.units).forEach((key) => {
         const applicationName = key.split("/")[0];
         if (applicationUnitCounts[applicationName] === undefined) {
           applicationUnitCounts[applicationName] = 0;

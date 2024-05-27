@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
+import { vi } from "vitest";
 
 import OptionInputs from "./OptionInputs";
 
@@ -21,9 +22,9 @@ describe("OptionInputs", () => {
   ];
 
   it("renders the supplied list of options", () => {
-    const onValuesChange = jest.fn();
+    const onValuesChange = vi.fn();
     const { container } = render(
-      <Formik initialValues={{}} onSubmit={jest.fn()}>
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
         <OptionInputs
           name="MyAction"
           options={options}
@@ -35,9 +36,9 @@ describe("OptionInputs", () => {
   });
 
   it("can display a text input", () => {
-    const onValuesChange = jest.fn();
+    const onValuesChange = vi.fn();
     render(
-      <Formik initialValues={{}} onSubmit={jest.fn()}>
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
         <OptionInputs
           name="MyAction"
           options={options}
@@ -49,9 +50,9 @@ describe("OptionInputs", () => {
   });
 
   it("can display a checkbox", () => {
-    const onValuesChange = jest.fn();
+    const onValuesChange = vi.fn();
     render(
-      <Formik initialValues={{}} onSubmit={jest.fn()}>
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
         <OptionInputs
           name="MyAction"
           options={[
@@ -70,14 +71,14 @@ describe("OptionInputs", () => {
   });
 
   it("On input value change calls the onValuesChange handler", async () => {
-    const onValuesChange = jest.fn();
+    const onValuesChange = vi.fn();
     render(
       <Formik
         initialValues={{
           "MyAction-fruit": "",
           "MyAction-veg": "",
         }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <OptionInputs
           name="MyAction"

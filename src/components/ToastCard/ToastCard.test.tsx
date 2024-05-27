@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import cloneDeep from "clone-deep";
 import { Toaster } from "react-hot-toast";
 import reactHotToast from "react-hot-toast";
+import { vi } from "vitest";
 
 import ToastCard from "./ToastCard";
 
@@ -95,7 +96,7 @@ describe("Toast Card", () => {
   });
 
   it("should display a clickable undo button if an undo function is passed", async () => {
-    const undoFn = jest.fn();
+    const undoFn = vi.fn();
     const t = cloneDeep(toastInstanceExample);
     render(
       <ToastCard type="negative" toastInstance={t} undo={undoFn}>
@@ -118,7 +119,9 @@ describe("Toast Card", () => {
       ));
     });
     expect(screen.getByRole("status")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Close" }));
+    await userEvent.click(screen.getByRole("button", { name: "Close" }), {
+      pointerEventsCheck: 0,
+    });
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 

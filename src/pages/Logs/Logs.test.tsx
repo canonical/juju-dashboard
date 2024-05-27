@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import { vi } from "vitest";
 
 import { Label } from "components/AuditLogsTable/AuditLogsTableActions/AuditLogsTableActions";
 import type { RootState } from "store/store";
@@ -40,7 +41,7 @@ describe("Logs", () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should render the page", async () => {
