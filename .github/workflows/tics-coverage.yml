@@ -19,11 +19,19 @@ jobs:
           cache: "yarn"
       - name: Install
         run: yarn install --immutable
-      - run: yarn test --coverage
-      - name: TICS GitHub Action
-        uses: tiobe/tics-github-action@v2
+      - run: yarn test --coverage.enabled true
+      - name: Produce TICS report
+        shell: bash
+        run: |
+          set -x
+          export TICSAUTHTOKEN=${{ secrets.TICS_AUTH_TOKEN }}
+          curl --silent --show-error "https://canonical.tiobe.com/tiobeweb/TICS/api/public/v1/fapi/installtics/Script?cfg=default&platform=linux&url=https://canonical.tiobe.com/tiobeweb/TICS/" > install_tics.sh
+          . ./install_tics.sh
+          TICSQServer -project juju-dashboard -tmpdir /tmp/tics -branchdir .
+      - name: Upload TICS report
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          projectName: juju-dashboard
-          ticsConfiguration: https://canonical.tiobe.com/tiobeweb/TICS/api/cfg?name=default
-          ticsAuthToken: ${{ secrets.TICSAUTHTOKEN }}
-          installTics: true
+          name: tics-report
+          path: /tmp/tics/ticstmpdir
+          retention-days: 7
