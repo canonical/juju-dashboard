@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       coverage: {
-        reporter: ["text", "json-summary", "json"],
+        reporter: ["text", "json-summary", "json", "cobertura"],
         reportOnFailure: true,
       },
       environment: "happy-dom",
