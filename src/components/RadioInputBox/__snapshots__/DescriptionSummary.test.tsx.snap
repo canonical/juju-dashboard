@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`DescriptionSummary returns a details component if the description is longer than 30 characters 1`] = `
+exports[`DescriptionSummary > returns a details component if the description is longer than 30 characters 1`] = `
 <div>
   <details
     class="radio-input-box__details"

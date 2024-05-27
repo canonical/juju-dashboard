@@ -1,5 +1,5 @@
 import cloneDeep from "clone-deep";
-import * as DOMPurify from "dompurify";
+import DOMPurify from "dompurify";
 import { useCallback } from "react";
 import type { NavigateOptions } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";

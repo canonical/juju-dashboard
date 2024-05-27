@@ -68,13 +68,13 @@ describe("Logs", () => {
   });
 
   it("should navigate from Action Logs to Audit Logs", async () => {
-    renderComponent(<Logs />, {
+    const { router } = renderComponent(<Logs />, {
       url: `${url}?activeView=logs&tableView=action-logs`,
       path,
     });
     const auditLogsTab = screen.getByRole("tab", { name: "Audit logs" });
     await userEvent.click(auditLogsTab);
-    expect(window.location.search).toBe(
+    expect(router.state.location.search).toBe(
       "?activeView=logs&tableView=audit-logs",
     );
   });

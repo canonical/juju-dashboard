@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import type { ConfigData } from "../types";
 
@@ -21,8 +22,8 @@ describe("BooleanConfig", () => {
       <BooleanConfig
         config={config}
         selectedConfig={undefined}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
       />,
     );
     expect(screen.getByRole("radio", { name: "true" })).toBeInTheDocument();
@@ -30,12 +31,12 @@ describe("BooleanConfig", () => {
   });
 
   it("can change the value", async () => {
-    const setNewValue = jest.fn();
+    const setNewValue = vi.fn();
     render(
       <BooleanConfig
         config={config}
         selectedConfig={undefined}
-        setSelectedConfig={jest.fn()}
+        setSelectedConfig={vi.fn()}
         setNewValue={setNewValue}
       />,
     );

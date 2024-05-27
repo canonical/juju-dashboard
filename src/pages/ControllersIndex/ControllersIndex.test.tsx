@@ -1,6 +1,7 @@
 import { screen, within, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { generalStateFactory } from "testing/factories/general";
@@ -26,14 +27,14 @@ describe("Controllers table", () => {
 
   beforeEach(() => {
     state = rootStateFactory.withGeneralConfig().build();
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     userEventWithTimers = userEvent.setup({
-      advanceTimers: jest.advanceTimersByTime,
+      advanceTimers: vi.advanceTimersByTime,
     });
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("renders a blank page if no data", () => {
@@ -126,7 +127,7 @@ describe("Controllers table", () => {
     ).toBeInTheDocument();
     await act(async () => {
       await userEventWithTimers.hover(screen.getByText("Failed to connect"));
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(screen.getByText("Uh oh!")).toBeInTheDocument();
   });

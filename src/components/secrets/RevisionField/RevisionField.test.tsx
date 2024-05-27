@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import { Formik } from "formik";
+import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -20,10 +21,13 @@ import urls from "urls";
 
 import RevisionField from "./RevisionField";
 
-jest.mock("components/utils", () => ({
-  ...jest.requireActual("components/utils"),
-  copyToClipboard: jest.fn(),
-}));
+vi.mock("components/utils", async () => {
+  const utils = await vi.importActual("components/utils");
+  return {
+    ...utils,
+    copyToClipboard: vi.fn(),
+  };
+});
 
 describe("RevisionField", () => {
   let state: RootState;
@@ -74,7 +78,7 @@ describe("RevisionField", () => {
     renderComponent(
       <Formik<{ revision: string }>
         initialValues={{ revision: "" }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <RevisionField secretURI="secret:aabbccdd" modelUUID="abc123" />
       </Formik>,

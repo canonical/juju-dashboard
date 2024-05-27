@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import { Label as FieldsLabel } from "components/secrets/SecretForm/Fields/Fields";
 import * as secretHooks from "juju/api-hooks/secrets";
@@ -7,20 +8,18 @@ import { renderComponent } from "testing/utils";
 
 import SecretFormPanel, { Label } from "./SecretFormPanel";
 
-jest.mock("juju/api-hooks/secrets", () => {
+vi.mock("juju/api-hooks/secrets", () => {
   return {
-    useCreateSecrets: jest.fn().mockReturnValue(jest.fn()),
-    useUpdateSecrets: jest.fn().mockReturnValue(jest.fn()),
-    useListSecrets: jest.fn().mockImplementation(() => jest.fn()),
-    useGetSecretContent: jest.fn().mockReturnValue(jest.fn()),
+    useCreateSecrets: vi.fn().mockReturnValue(vi.fn()),
+    useUpdateSecrets: vi.fn().mockReturnValue(vi.fn()),
+    useListSecrets: vi.fn().mockImplementation(() => vi.fn()),
+    useGetSecretContent: vi.fn().mockReturnValue(vi.fn()),
   };
 });
 
 describe("SecretFormPanel", () => {
   beforeEach(() => {
-    jest
-      .spyOn(secretHooks, "useListSecrets")
-      .mockImplementation(() => jest.fn());
+    vi.spyOn(secretHooks, "useListSecrets").mockImplementation(() => vi.fn());
   });
 
   it("displays correctly when creating a secret", async () => {
@@ -46,16 +45,18 @@ describe("SecretFormPanel", () => {
   });
 
   it("closes the panel if successful", async () => {
-    const createSecrets = jest
+    const createSecrets = vi
       .fn()
       .mockImplementation(() =>
         Promise.resolve({ results: [{ result: "secret:aabbccdd" }] }),
       );
-    jest
-      .spyOn(secretHooks, "useCreateSecrets")
-      .mockImplementation(() => createSecrets);
-    renderComponent(<SecretFormPanel />, { url: "?panel=add-secret" });
-    expect(window.location.search).toEqual("?panel=add-secret");
+    vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
+      () => createSecrets,
+    );
+    const { router } = renderComponent(<SecretFormPanel />, {
+      url: "?panel=add-secret",
+    });
+    expect(router.state.location.search).toEqual("?panel=add-secret");
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
       "a key",
@@ -67,6 +68,6 @@ describe("SecretFormPanel", () => {
     await userEvent.click(
       screen.getByRole("button", { name: Label.SUBMIT_ADD }),
     );
-    expect(window.location.search).toEqual("");
+    expect(router.state.location.search).toEqual("");
   });
 });

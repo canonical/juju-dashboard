@@ -2,6 +2,7 @@ import * as jujuLib from "@canonical/jujulib";
 import type { Connection } from "@canonical/jujulib";
 import { renderHook, waitFor } from "@testing-library/react";
 import configureStore from "redux-mock-store";
+import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -24,8 +25,8 @@ import {
 
 const mockStore = configureStore<RootState, unknown>([]);
 
-jest.mock("@canonical/jujulib", () => ({
-  connectAndLogin: jest.fn(),
+vi.mock("@canonical/jujulib", () => ({
+  connectAndLogin: vi.fn(),
 }));
 
 describe("useModelConnectionCallback", () => {
@@ -49,14 +50,12 @@ describe("useModelConnectionCallback", () => {
         },
       },
     });
-    jest.useFakeTimers({
-      legacyFakeTimers: true,
-    });
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
-    jest.useRealTimers();
+    vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it("can connect and log in", async () => {
@@ -65,16 +64,16 @@ describe("useModelConnectionCallback", () => {
       conn: {
         facades: {
           client: {
-            fullStatus: jest.fn().mockReturnValue({}),
+            fullStatus: vi.fn().mockReturnValue({}),
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
-    const callback = jest.fn();
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
+    const callback = vi.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
       wrapper: (props) => (
         <ComponentProviders
@@ -92,8 +91,8 @@ describe("useModelConnectionCallback", () => {
 
   it("does not connect if the data is unavailable", async () => {
     changeURL("/models/eggman@external/group-test/app/etcd");
-    const connectAndLoginSpy = jest.spyOn(jujuLib, "connectAndLogin");
-    const callback = jest.fn();
+    const connectAndLoginSpy = vi.spyOn(jujuLib, "connectAndLogin");
+    const callback = vi.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
       wrapper: (props) => (
         <ComponentProviders
@@ -111,10 +110,10 @@ describe("useModelConnectionCallback", () => {
 
   it("returns connection errors", async () => {
     changeURL("/models/eggman@external/group-test/app/etcd");
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
-    const callback = jest.fn();
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.reject(new Error("Uh oh!")),
+    );
+    const callback = vi.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
       wrapper: (props) => (
         <ComponentProviders
@@ -134,13 +133,13 @@ describe("useModelConnectionCallback", () => {
 
   it("returns string connection errors", async () => {
     changeURL("/models/eggman@external/group-test/app/etcd");
-    jest.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
       async () =>
         new Promise((resolve) => {
           setTimeout(resolve, LOGIN_TIMEOUT + 10);
         }),
     );
-    const callback = jest.fn();
+    const callback = vi.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
       wrapper: (props) => (
         <ComponentProviders
@@ -151,7 +150,7 @@ describe("useModelConnectionCallback", () => {
       ),
     });
     result.current(callback);
-    jest.advanceTimersByTime(LOGIN_TIMEOUT);
+    vi.advanceTimersByTime(LOGIN_TIMEOUT);
     await waitFor(() => {
       expect(callback).toHaveBeenCalledWith({
         error: APILabel.LOGIN_TIMEOUT_ERROR,
@@ -162,12 +161,12 @@ describe("useModelConnectionCallback", () => {
   it("handles no connection", async () => {
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
-    const callback = jest.fn();
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
+    const callback = vi.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
       wrapper: (props) => (
         <ComponentProviders
@@ -188,8 +187,8 @@ describe("useModelConnectionCallback", () => {
   it("handles no model or websocket URL", async () => {
     state.juju.models = {};
     changeURL("/models/eggman@external/group-test/app/etcd");
-    const callback = jest.fn();
-    const connectAndLogin = jest.spyOn(jujuLib, "connectAndLogin");
+    const callback = vi.fn();
+    const connectAndLogin = vi.spyOn(jujuLib, "connectAndLogin");
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
       wrapper: (props) => (
         <ComponentProviders
@@ -211,16 +210,16 @@ describe("useModelConnectionCallback", () => {
       conn: {
         facades: {
           client: {
-            fullStatus: jest.fn().mockReturnValue({}),
+            fullStatus: vi.fn().mockReturnValue({}),
           },
         },
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
-    const callback = jest.fn();
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
+    const callback = vi.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
       wrapper: (props) => (
         <ComponentProviders
@@ -270,14 +269,12 @@ describe("useCallWithConnectionPromise", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
-    const handler = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve("result"));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
+    const handler = vi.fn().mockImplementation(() => Promise.resolve("result"));
     const { result } = renderHook(
       () =>
         useCallWithConnectionPromise(handler, "eggman@external", "test-model"),
@@ -302,14 +299,12 @@ describe("useCallWithConnectionPromise", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
-    const handler = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve("result"));
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
+    const handler = vi.fn().mockImplementation(() => Promise.resolve("result"));
     const { result } = renderHook(
       () =>
         useCallWithConnectionPromise(handler, "eggman@external", "test-model"),
@@ -333,12 +328,12 @@ describe("useCallWithConnectionPromise", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
-    const handler = jest
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
+    const handler = vi
       .fn()
       .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
     const { result } = renderHook(
@@ -391,14 +386,14 @@ describe("useCallWithConnection", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
-    const handler = jest.fn();
-    const onSuccess = jest.fn();
-    const onError = jest.fn();
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
+    const handler = vi.fn();
+    const onSuccess = vi.fn();
+    const onError = vi.fn();
     const { result } = renderHook(
       () =>
         useCallWithConnection(
@@ -431,16 +426,14 @@ describe("useCallWithConnection", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
-    const handler = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve("result"));
-    const onSuccess = jest.fn();
-    const onError = jest.fn();
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
+    const handler = vi.fn().mockImplementation(() => Promise.resolve("result"));
+    const onSuccess = vi.fn();
+    const onError = vi.fn();
     const { result } = renderHook(
       () =>
         useCallWithConnection(
@@ -473,16 +466,16 @@ describe("useCallWithConnection", () => {
       conn: {
         facades: {},
       } as unknown as Connection,
-      logout: jest.fn(),
+      logout: vi.fn(),
     };
-    jest
-      .spyOn(jujuLib, "connectAndLogin")
-      .mockImplementation(() => Promise.resolve(loginResponse));
-    const handler = jest
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      Promise.resolve(loginResponse),
+    );
+    const handler = vi
       .fn()
       .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
-    const onSuccess = jest.fn();
-    const onError = jest.fn();
+    const onSuccess = vi.fn();
+    const onError = vi.fn();
     const { result } = renderHook(
       () =>
         useCallWithConnection(

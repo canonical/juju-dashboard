@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import { usePanelQueryParams } from "panels/hooks";
 import { renderComponent } from "testing/utils";
@@ -53,7 +54,7 @@ describe("Panel", () => {
   it("can display split columns", async () => {
     render(
       <Panel
-        onRemovePanelQueryParams={jest.fn()}
+        onRemovePanelQueryParams={vi.fn()}
         isSplit
         title="Test panel"
         splitContent={<div className="split-content"></div>}
@@ -77,7 +78,7 @@ describe("Panel", () => {
   it("can display a button drawer", async () => {
     render(
       <Panel
-        onRemovePanelQueryParams={jest.fn()}
+        onRemovePanelQueryParams={vi.fn()}
         title="Test panel"
         drawer={<button>Open!</button>}
       >
@@ -91,10 +92,10 @@ describe("Panel", () => {
   });
 
   it("should clear only the panel params when escape key is pressed", async () => {
-    mockRenderComponent({});
+    const { router } = mockRenderComponent({});
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe(
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
       "?panel=share-model&externalParam=externalValue",
     );
 
@@ -102,15 +103,15 @@ describe("Panel", () => {
       skipClick: true,
     });
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe("?externalParam=externalValue");
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe("?externalParam=externalValue");
   });
 
   it("should not close if another key is pressed", async () => {
-    mockRenderComponent({});
+    const { router } = mockRenderComponent({});
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe(
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
       "?panel=share-model&externalParam=externalValue",
     );
 
@@ -118,17 +119,19 @@ describe("Panel", () => {
       skipClick: true,
     });
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe(
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
       "?panel=share-model&externalParam=externalValue",
     );
   });
 
   it("should check if it can close when escape key is pressed", async () => {
-    mockRenderComponent({ checkCanClose: mockCheckCanClose });
+    const { router } = mockRenderComponent({
+      checkCanClose: mockCheckCanClose,
+    });
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe(
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
       "?panel=share-model&externalParam=externalValue",
     );
 
@@ -136,54 +139,56 @@ describe("Panel", () => {
       skipClick: true,
     });
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe(
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
       "?panel=share-model&externalParam=externalValue",
     );
   });
 
   it("should only clear the panel params when clicking outside the panel", async () => {
-    mockRenderComponent({});
+    const { router } = mockRenderComponent({});
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe(
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
       "?panel=share-model&externalParam=externalValue",
     );
 
     await userEvent.click(window.document.documentElement);
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe("?externalParam=externalValue");
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe("?externalParam=externalValue");
   });
 
   it("should not clear the search params when clicking inside the panel", async () => {
-    mockRenderComponent({});
+    const { router } = mockRenderComponent({});
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe(
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
       "?panel=share-model&externalParam=externalValue",
     );
 
     await userEvent.click(screen.getByText("Test content"));
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe(
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
       "?panel=share-model&externalParam=externalValue",
     );
   });
 
   it("should check if it can close when clicking outside the panel", async () => {
-    mockRenderComponent({ checkCanClose: mockCheckCanClose });
+    const { router } = mockRenderComponent({
+      checkCanClose: mockCheckCanClose,
+    });
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe(
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
       "?panel=share-model&externalParam=externalValue",
     );
 
     await userEvent.click(window.document.documentElement);
 
-    expect(window.location.pathname).toBe("/foo");
-    expect(window.location.search).toBe(
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
       "?panel=share-model&externalParam=externalValue",
     );
   });

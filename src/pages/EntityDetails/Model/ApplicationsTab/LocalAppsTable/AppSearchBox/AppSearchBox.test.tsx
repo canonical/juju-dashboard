@@ -8,10 +8,10 @@ import AppSearchBox from "./AppSearchBox";
 
 describe("AppSearchBox", () => {
   it("changes the query param when searching", async () => {
-    renderComponent(<AppSearchBox />);
-    expect(window.location.search).toEqual("");
+    const { router } = renderComponent(<AppSearchBox />);
+    expect(router.state.location.search).toEqual("");
     await userEvent.type(screen.getByRole("searchbox"), "what{Enter}");
-    expect(window.location.search).toEqual("?filterQuery=what");
+    expect(router.state.location.search).toEqual("?filterQuery=what");
   });
 
   it("clears selected applications when changing the search", async () => {

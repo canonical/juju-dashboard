@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import * as componentUtils from "components/utils";
 import { actions as jujuActions } from "store/juju";
@@ -11,10 +12,13 @@ import { renderComponent } from "testing/utils";
 
 import SearchForm, { Label, QUERY_HISTORY_KEY } from "./SearchForm";
 
-jest.mock("components/utils", () => ({
-  ...jest.requireActual("components/utils"),
-  copyToClipboard: jest.fn(),
-}));
+vi.mock("components/utils", async () => {
+  const utils = await vi.importActual("components/utils");
+  return {
+    ...utils,
+    copyToClipboard: vi.fn(),
+  };
+});
 
 describe("SearchForm", () => {
   let state: RootState;
@@ -56,9 +60,9 @@ describe("SearchForm", () => {
   });
 
   it("submits the form if enter is pressed in the input", async () => {
-    renderComponent(<SearchForm />, { state });
+    const { router } = renderComponent(<SearchForm />, { state });
     await userEvent.type(screen.getByRole("textbox"), ".applications{Enter}");
-    expect(window.location.search).toBe("?q=.applications");
+    expect(router.state.location.search).toBe("?q=.applications");
   });
 
   it("should store the query in local storage when submitting the form", async () => {

@@ -1,6 +1,7 @@
 import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import TruncatedTooltip from "./TruncatedTooltip";
 
@@ -16,9 +17,9 @@ describe("TruncatedTooltip", () => {
   let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     userEventWithTimers = userEvent.setup({
-      advanceTimers: jest.advanceTimersByTime,
+      advanceTimers: vi.advanceTimersByTime,
     });
     Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
       configurable: true,
@@ -37,7 +38,7 @@ describe("TruncatedTooltip", () => {
     if (scrollWidth) {
       Object.defineProperty(HTMLElement.prototype, "scrollWidth", scrollWidth);
     }
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("hides the tooltip if the content fits", async () => {
@@ -47,7 +48,7 @@ describe("TruncatedTooltip", () => {
     );
     await act(async () => {
       await userEventWithTimers.hover(screen.getByText(content));
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(screen.getByTestId("tooltip-portal")).toHaveClass("u-hide");
   });
@@ -66,7 +67,7 @@ describe("TruncatedTooltip", () => {
     );
     await act(async () => {
       await userEventWithTimers.hover(screen.getByText(content));
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(screen.getByTestId("tooltip-portal")).not.toHaveClass("u-hide");
   });

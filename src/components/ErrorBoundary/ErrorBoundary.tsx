@@ -33,10 +33,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: unknown) {
-    if (
-      process.env.NODE_ENV === "production" &&
-      window.jujuDashboardConfig?.analyticsEnabled
-    ) {
+    if (import.meta.env.PROD && window.jujuDashboardConfig?.analyticsEnabled) {
       Sentry.withScope((scope) => {
         scope.setExtras(info as Extras);
         const eventId = Sentry.captureException(error);

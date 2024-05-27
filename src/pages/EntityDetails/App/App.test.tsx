@@ -1,5 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import * as componentUtils from "components/utils";
@@ -25,20 +26,23 @@ import { renderComponent } from "testing/utils";
 
 import App, { Label, TestId } from "./App";
 
-jest.mock("components/Topology/Topology", () => {
+vi.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;
-  return Topology;
+  return { default: Topology };
 });
 
-jest.mock("components/WebCLI/WebCLI", () => {
+vi.mock("components/WebCLI/WebCLI", () => {
   const WebCLI = () => <div className="webcli" data-testid="webcli"></div>;
-  return WebCLI;
+  return { default: WebCLI };
 });
 
-jest.mock("components/utils", () => ({
-  ...jest.requireActual("components/utils"),
-  copyToClipboard: jest.fn(),
-}));
+vi.mock("components/utils", async () => {
+  const utils = await vi.importActual("components/utils");
+  return {
+    ...utils,
+    copyToClipboard: vi.fn(),
+  };
+});
 
 describe("Entity Details App", () => {
   let state: RootState;
@@ -162,10 +166,8 @@ describe("Entity Details App", () => {
     const unitsListChecked = (value: boolean) => {
       selectedUnits.forEach((input) => {
         if (value) {
-          // eslint-disable-next-line jest/no-conditional-expect
           expect(input).toBeChecked();
         } else {
-          // eslint-disable-next-line jest/no-conditional-expect
           expect(input).not.toBeChecked();
         }
       });
@@ -214,7 +216,7 @@ describe("Entity Details App", () => {
   });
 
   it("updates the url when units are selected and deselected", async () => {
-    renderComponent(<App />, { path, url, state });
+    const { router } = renderComponent(<App />, { path, url, state });
 
     // Select a single unit.
     const firstInput = screen.getByTestId("table-checkbox-0");
@@ -222,19 +224,23 @@ describe("Entity Details App", () => {
 
     // Trigger the action panel to open to enable the auto url pushing.
     await userEvent.click(screen.getByTestId(TestId.RUN_ACTION_BUTTON));
-    expect(window.location.search).toEqual("?panel=execute-action&units=0");
+    expect(router.state.location.search).toEqual(
+      "?panel=execute-action&units=0",
+    );
 
     // Select another unit and it should update the url.
     const secondInput = screen.getByTestId("table-checkbox-1");
     await userEvent.click(secondInput);
 
-    expect(window.location.search).toEqual("?panel=execute-action&units=0%2C1");
+    expect(router.state.location.search).toEqual(
+      "?panel=execute-action&units=0%2C1",
+    );
   });
 
   it("navigates to the actions log when button pressed", async () => {
-    renderComponent(<App />, { path, url, state });
+    const { router } = renderComponent(<App />, { path, url, state });
     await userEvent.click(screen.getByTestId(TestId.SHOW_LOGS));
-    expect(window.location.search).toEqual("?activeView=logs");
+    expect(router.state.location.search).toEqual("?activeView=logs");
   });
 
   it("does not fail if a subordinate is not related to another application", async () => {
@@ -247,12 +253,12 @@ describe("Entity Details App", () => {
   });
 
   it("can display the config panel", async () => {
-    renderComponent(<App />, { path, url, state });
-    expect(window.location.search).toEqual("");
+    const { router } = renderComponent(<App />, { path, url, state });
+    expect(router.state.location.search).toEqual("");
     await userEvent.click(
       screen.getByRole("button", { name: Label.CONFIGURE }),
     );
-    expect(window.location.search).toEqual(
+    expect(router.state.location.search).toEqual(
       "?panel=config&entity=etcd&charm=cs%3Aceph-mon-55&modelUUID=abc123",
     );
   });
@@ -269,8 +275,8 @@ describe("Entity Details App", () => {
         }),
       ],
     });
-    renderComponent(<App />, { path, url, state });
-    expect(window.location.search).toEqual("");
+    const { router } = renderComponent(<App />, { path, url, state });
+    expect(router.state.location.search).toEqual("");
     expect(
       screen.queryByRole("button", { name: Label.CONFIGURE }),
     ).not.toBeInTheDocument();
@@ -288,8 +294,8 @@ describe("Entity Details App", () => {
         }),
       ],
     });
-    renderComponent(<App />, { path, url, state });
-    expect(window.location.search).toEqual("");
+    const { router } = renderComponent(<App />, { path, url, state });
+    expect(router.state.location.search).toEqual("");
     expect(
       screen.queryByRole("button", { name: Label.RUN_ACTION }),
     ).not.toBeInTheDocument();

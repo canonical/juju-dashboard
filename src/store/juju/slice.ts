@@ -207,7 +207,7 @@ const slice = createSlice({
     // the model-poller middleware.
     fetchAuditEvents: (
       state,
-      action: PayloadAction<FindAuditEventsRequest & WsControllerURLParam>,
+      _action: PayloadAction<FindAuditEventsRequest & WsControllerURLParam>,
     ) => {
       state.auditEvents.loading = true;
     },
@@ -234,7 +234,7 @@ const slice = createSlice({
     },
     fetchCrossModelQuery: (
       state,
-      action: PayloadAction<
+      _action: PayloadAction<
         Pick<CrossModelQueryRequest, "query"> & WsControllerURLParam
       >,
     ) => {

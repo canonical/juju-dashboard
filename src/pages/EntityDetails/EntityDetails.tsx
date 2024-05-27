@@ -40,11 +40,11 @@ type Props = {
 };
 
 const getEntityType = (params: Partial<EntityDetailsRoute>) => {
-  if (!!params.unitId) {
+  if (params.unitId) {
     return "unit";
-  } else if (!!params.machineId) {
+  } else if (params.machineId) {
     return "machine";
-  } else if (!!params.appName) {
+  } else if (params.appName) {
     return "app";
   }
   return "model";

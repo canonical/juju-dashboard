@@ -1,5 +1,6 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
 import { TestId as SecretsTestId } from "pages/EntityDetails/Model/Secrets/Secrets";
@@ -43,17 +44,17 @@ import Model, { Label, TestId } from "./Model";
 const mockOperationResults = operationResultsFactory.build();
 const mockActionResults = actionResultsFactory.build();
 
-jest.mock("components/Topology/Topology", () => {
+vi.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;
-  return Topology;
+  return { default: Topology };
 });
 
-jest.mock("components/WebCLI/WebCLI", () => {
+vi.mock("components/WebCLI/WebCLI", () => {
   const WebCLI = () => <div className="webcli" data-testid="webcli"></div>;
-  return WebCLI;
+  return { default: WebCLI };
 });
 
-jest.mock("juju/api", () => {
+vi.mock("juju/api", () => {
   return {
     queryOperationsList: () => {
       return new Promise((resolve) => {
@@ -120,7 +121,7 @@ describe("Model", () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("renders the info panel data", () => {
@@ -158,7 +159,7 @@ describe("Model", () => {
     };
     renderComponent(<Model />, { state, url, path });
 
-    Element.prototype.scrollIntoView = jest.fn();
+    Element.prototype.scrollIntoView = vi.fn();
 
     expect(
       document.querySelector(".entity-details__main > .entity-details__apps"),
@@ -198,7 +199,7 @@ describe("Model", () => {
       path,
     });
 
-    Element.prototype.scrollIntoView = jest.fn();
+    vi.spyOn(window.HTMLElement.prototype, "scrollIntoView");
 
     expect(
       document.querySelector(".entity-details__main > .entity-details__apps"),
@@ -238,7 +239,7 @@ describe("Model", () => {
       path,
     });
 
-    Element.prototype.scrollIntoView = jest.fn();
+    Element.prototype.scrollIntoView = vi.fn();
 
     expect(
       document.querySelector(".entity-details__main > .entity-details__apps"),
@@ -278,7 +279,7 @@ describe("Model", () => {
       path,
     });
 
-    Element.prototype.scrollIntoView = jest.fn();
+    Element.prototype.scrollIntoView = vi.fn();
 
     expect(
       document.querySelector(".entity-details__main > .entity-details__apps"),
@@ -318,7 +319,7 @@ describe("Model", () => {
       path,
     });
 
-    Element.prototype.scrollIntoView = jest.fn();
+    Element.prototype.scrollIntoView = vi.fn();
 
     expect(
       document.querySelector(".entity-details__main > .entity-details__apps"),
@@ -358,7 +359,7 @@ describe("Model", () => {
       path,
     });
 
-    Element.prototype.scrollIntoView = jest.fn();
+    Element.prototype.scrollIntoView = vi.fn();
 
     await waitFor(() => {
       expect(
@@ -690,11 +691,11 @@ describe("Model", () => {
         }),
       ],
     });
-    renderComponent(<Model />, { state, url, path });
-    expect(window.location.search).toEqual("");
+    const { router } = renderComponent(<Model />, { state, url, path });
+    expect(router.state.location.search).toEqual("");
     await userEvent.click(
       screen.getByRole("button", { name: Label.ACCESS_BUTTON }),
     );
-    expect(window.location.search).toEqual("?panel=share-model");
+    expect(router.state.location.search).toEqual("?panel=share-model");
   });
 });

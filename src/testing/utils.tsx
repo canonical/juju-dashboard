@@ -1,7 +1,16 @@
-import { render } from "@testing-library/react";
-import type { PropsWithChildren, ReactNode } from "react";
+import type { Router as RemixRouter } from "@remix-run/router";
+import { render, renderHook } from "@testing-library/react";
+import { useEffect, type PropsWithChildren, type ReactNode } from "react";
+import reactHotToast, { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import type { RouteObject } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  RouterProvider,
+  Routes,
+  createMemoryRouter,
+} from "react-router-dom";
 import type { MockStoreEnhanced } from "redux-mock-store";
 import configureStore from "redux-mock-store";
 
@@ -19,7 +28,7 @@ type OptionsWithState = {
 type Options = {
   url?: string;
   path?: string;
-  routeChildren?: ReactNode;
+  routeChildren?: RouteObject[];
 } & (OptionsWithStore | OptionsWithState);
 
 export type ComponentProps = {
@@ -47,10 +56,10 @@ export const ComponentProviders = ({
   </Provider>
 );
 
-export const changeURL = (url: string) => window.history.pushState({}, "", url);
+export const changeURL = (url: string) => window.happyDOM.setURL(url);
 
-export const renderComponent = (
-  component: JSX.Element,
+export const wrapComponent = (
+  component: ReactNode,
   options?: Options | null,
 ) => {
   const store =
@@ -59,16 +68,80 @@ export const renderComponent = (
       : configureStore<RootState, unknown>()(
           options?.state ?? rootStateFactory.build(),
         );
-  changeURL(options?.url ?? "/");
-  const result = render(component, {
-    wrapper: (props) => (
-      <ComponentProviders
-        {...props}
-        routeChildren={options?.routeChildren}
-        path={options?.path ?? "*"}
-        store={store}
-      />
-    ),
+  const router = createMemoryRouter(
+    [
+      {
+        path: options?.path ?? "*",
+        element: <Provider store={store}>{component}</Provider>,
+        children: options?.routeChildren,
+      },
+      // Capture other paths to prevent warnings when navigating in tests.
+      { path: "*", element: <span>Navigated to an unknown URL.</span> },
+    ],
+    { initialEntries: [options?.url ?? "/"] },
+  );
+  return {
+    router,
+    Component: () => <RouterProvider router={router} />,
+    store,
+    Wrapper: ({ children }: PropsWithChildren) => {
+      useEffect(
+        () => () => {
+          // Clean up all toast messages to prevent bleed between tests.
+          reactHotToast.remove();
+        },
+        [],
+      );
+      return (
+        <Provider store={store}>
+          <Toaster toastOptions={{ duration: 0 }} />
+          {children}
+        </Provider>
+      );
+    },
+  };
+};
+
+export const renderComponent = (
+  component: ReactNode,
+  options?: Options | null,
+) => {
+  const { router, Component, store, Wrapper } = wrapComponent(
+    component,
+    options,
+  );
+  const result = render(<Component />, {
+    wrapper: Wrapper,
   });
-  return { changeURL, result, store };
+  return { router, result, store };
+};
+
+export const renderWrappedHook = <Result, Props>(
+  hook: (initialProps: Props) => Result,
+  options?: Options | null,
+): {
+  router: RemixRouter | null;
+  result: { current: Result };
+  store: OptionsWithStore["store"] | null;
+} => {
+  let router: RemixRouter | null = null;
+  let store: OptionsWithStore["store"] | null = null;
+  const { result } = renderHook(hook, {
+    wrapper: ({ children }: PropsWithChildren) => {
+      const {
+        router: returnedRouter,
+        Component,
+        store: returnedStore,
+        Wrapper,
+      } = wrapComponent(children, options);
+      router = returnedRouter;
+      store = returnedStore;
+      return (
+        <Wrapper>
+          <Component />
+        </Wrapper>
+      );
+    },
+  });
+  return { router, result, store };
 };

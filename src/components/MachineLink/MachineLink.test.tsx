@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
@@ -57,7 +58,7 @@ describe("MachineLink", () => {
   });
 
   it("should not propagate clicks", async () => {
-    const onClick = jest.fn();
+    const onClick = vi.fn();
     renderComponent(
       <button onClick={onClick}>
         <MachineLink uuid="abc123" machineId="0">

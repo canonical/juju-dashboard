@@ -51,11 +51,11 @@ describe("AuditLogsFilterPanel", () => {
       panel: "audit-log-filters",
     };
     const queryParams = new URLSearchParams(params);
-    renderComponent(<AuditLogsFilterPanel />, {
+    const { router } = renderComponent(<AuditLogsFilterPanel />, {
       url: `/?${queryParams.toString()}&page=4`,
     });
     await userEvent.click(screen.getByRole("button", { name: Label.CLEAR }));
-    expect(window.location.search).toBe("");
+    expect(router.state.location.search).toBe("");
   });
 
   it("disables the clear button if there are no filters", async () => {
@@ -73,7 +73,7 @@ describe("AuditLogsFilterPanel", () => {
       model: "model1",
       method: "Login",
     };
-    renderComponent(<AuditLogsFilterPanel />, {
+    const { router } = renderComponent(<AuditLogsFilterPanel />, {
       url: "/?panel=audit-log-filters&page=4",
     });
     const after = document.querySelector<HTMLInputElement>(
@@ -104,11 +104,11 @@ describe("AuditLogsFilterPanel", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
     const queryParams = new URLSearchParams(params);
-    expect(window.location.search).toBe(`?${queryParams.toString()}`);
+    expect(router.state.location.search).toBe(`?${queryParams.toString()}`);
   });
 
   it("removes blank query params", async () => {
-    renderComponent(<AuditLogsFilterPanel />, {
+    const { router } = renderComponent(<AuditLogsFilterPanel />, {
       url: "/?panel=audit-log-filters",
     });
     await userEvent.type(
@@ -117,11 +117,11 @@ describe("AuditLogsFilterPanel", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
     // Only the facade was set, so no other filters should appear in the query string.
-    expect(window.location.search).toBe("?method=Login");
+    expect(router.state.location.search).toBe("?method=Login");
   });
 
   it("removes query params if the value was removed", async () => {
-    renderComponent(<AuditLogsFilterPanel />, {
+    const { router } = renderComponent(<AuditLogsFilterPanel />, {
       url: "/?panel=audit-log-filters&user-tag=user-eggman@external&method=Login",
     });
     await userEvent.clear(
@@ -130,6 +130,8 @@ describe("AuditLogsFilterPanel", () => {
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
     // The method value was cleared in the input so it should get removed from
     // the query string.
-    expect(window.location.search).toBe("?user-tag=user-eggman%40external");
+    expect(router.state.location.search).toBe(
+      "?user-tag=user-eggman%40external",
+    );
   });
 });

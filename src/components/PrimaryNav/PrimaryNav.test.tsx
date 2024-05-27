@@ -1,5 +1,6 @@
 import * as versionsAPI from "@canonical/jujulib/dist/api/versions";
 import { screen, waitFor, within } from "@testing-library/react";
+import { vi } from "vitest";
 
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
@@ -18,9 +19,13 @@ import { renderComponent } from "testing/utils";
 
 import PrimaryNav, { Label } from "./PrimaryNav";
 
+vi.mock("@canonical/jujulib/dist/api/versions", () => ({
+  dashboardUpdateAvailable: vi.fn(),
+}));
+
 describe("Primary Nav", () => {
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("displays correct number of blocked models", () => {
@@ -52,7 +57,8 @@ describe("Primary Nav", () => {
     expect(screen.getByText("2")).toHaveClass("entity-count");
   });
 
-  it("displays the version number", () => {
+  it("displays the version number", async () => {
+    vi.spyOn(versionsAPI, "dashboardUpdateAvailable").mockResolvedValue(true);
     const state = rootStateFactory.build({
       general: generalStateFactory.build({
         appVersion: "0.4.0",
@@ -60,7 +66,7 @@ describe("Primary Nav", () => {
       }),
     });
     renderComponent(<PrimaryNav />, { state });
-    expect(screen.getByText("Version 0.4.0")).toHaveClass("version");
+    expect(await screen.findByText("Version 0.4.0")).toHaveClass("version");
   });
 
   it("displays an icon if controllers require authentication", () => {
@@ -106,7 +112,7 @@ describe("Primary Nav", () => {
   });
 
   it("shows an update available message if there is an update available for the dashboard", async () => {
-    jest.spyOn(versionsAPI, "dashboardUpdateAvailable").mockResolvedValue(true);
+    vi.spyOn(versionsAPI, "dashboardUpdateAvailable").mockResolvedValue(true);
     const state = rootStateFactory
       .withGeneralConfig()
       .build({ general: { appVersion: "0.8.0" } });
@@ -119,9 +125,7 @@ describe("Primary Nav", () => {
   });
 
   it("doesn't show an update available message if there is no update available for the dashboard", async () => {
-    jest
-      .spyOn(versionsAPI, "dashboardUpdateAvailable")
-      .mockResolvedValue(false);
+    vi.spyOn(versionsAPI, "dashboardUpdateAvailable").mockResolvedValue(false);
     const state = rootStateFactory
       .withGeneralConfig()
       .build({ general: { appVersion: "9.9.0" } });
@@ -133,9 +137,9 @@ describe("Primary Nav", () => {
   });
 
   it("handles no update response", async () => {
-    jest
-      .spyOn(versionsAPI, "dashboardUpdateAvailable")
-      .mockRejectedValue(new Error());
+    vi.spyOn(versionsAPI, "dashboardUpdateAvailable").mockRejectedValue(
+      new Error(),
+    );
     const state = rootStateFactory
       .withGeneralConfig()
       .build({ general: { appVersion: "9.9.0" } });

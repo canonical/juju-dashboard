@@ -202,7 +202,7 @@ should be used.
 
 ### Testing
 
-The dashboard is unit tested and interaction tested using [Jest](https://jestjs.io/) and [React
+The dashboard is unit tested and interaction tested using [Vitest](https://vitest.dev/) and [React
 Testing Library](https://testing-library.com/).
 
 [Codecov](https://codecov.io/) is used to monitor test coverage on PRs and is

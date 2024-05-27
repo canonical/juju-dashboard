@@ -1,4 +1,3 @@
-import type { PropsWithSpread } from "@canonical/react-components";
 import { Spinner } from "@canonical/react-components";
 import classNames from "classnames";
 import type { HTMLProps } from "react";
@@ -9,7 +8,7 @@ export enum TestId {
   LOADING = "loading-spinner",
 }
 
-type Props = PropsWithSpread<{}, HTMLProps<HTMLDivElement>>;
+type Props = HTMLProps<HTMLDivElement>;
 
 const LoadingSpinner = ({ className, ...props }: Props) => {
   return (

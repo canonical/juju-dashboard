@@ -1,6 +1,7 @@
 import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import RelativeDate from "./RelativeDate";
 
@@ -9,14 +10,14 @@ describe("RelativeDate", () => {
   let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     userEventWithTimers = userEvent.setup({
-      advanceTimers: jest.advanceTimersByTime,
+      advanceTimers: vi.advanceTimersByTime,
     });
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("displays a relative date", async () => {
@@ -30,7 +31,7 @@ describe("RelativeDate", () => {
     expect(screen.queryByText(fullDate)).not.toBeInTheDocument();
     await act(async () => {
       await userEventWithTimers.hover(screen.getByText("1 day ago"));
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
     expect(screen.getByText(fullDate)).toBeInTheDocument();
   });

@@ -1,12 +1,13 @@
 import { screen } from "@testing-library/react";
+import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
 
 import EntityInfo from "./EntityInfo";
 
-jest.mock("components/Topology/Topology", () => {
+vi.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;
-  return Topology;
+  return { default: Topology };
 });
 
 describe("Entity info", () => {

@@ -1,6 +1,8 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { WS } from "jest-websocket-mock";
+import type { MockInstance } from "vitest";
+import { vi } from "vitest";
 
 import bakery from "juju/bakery";
 import { generalStateFactory, configFactory } from "testing/factories/general";
@@ -11,17 +13,17 @@ import { TestId } from "./Output";
 import WebCLI, { MAX_HISTORY, Label as WebCLILabel } from "./WebCLI";
 import { Label as ConnectionLabel } from "./connection";
 
-jest.mock("juju/bakery", () => ({
+vi.mock("juju/bakery", () => ({
   __esModule: true,
   default: {
     storage: {
-      get: jest.fn(),
+      get: vi.fn(),
     },
   },
 }));
 
 describe("WebCLI", () => {
-  let bakerySpy: jest.SpyInstance;
+  let bakerySpy: MockInstance;
   let server: WS;
   const props = {
     controllerWSHost: "localhost:1234",
@@ -33,7 +35,7 @@ describe("WebCLI", () => {
   };
 
   beforeEach(() => {
-    bakerySpy = jest.spyOn(bakery.storage, "get");
+    bakerySpy = vi.spyOn(bakery.storage, "get");
     server = new WS("wss://localhost:1234/model/abc123/commands");
   });
 
@@ -44,9 +46,9 @@ describe("WebCLI", () => {
   });
 
   it("renders correctly", async () => {
-    const { result } = renderComponent(<WebCLI {...props} />);
+    renderComponent(<WebCLI {...props} />);
     await server.connected;
-    expect(result.container).toMatchSnapshot();
+    expect(document.querySelector(".webcli")).toMatchSnapshot();
   });
 
   it("shows the help in the output when the ? is clicked", async () => {
@@ -348,8 +350,8 @@ describe("WebCLI", () => {
   });
 
   it("clears the buffer timeout if there are pending updates when unmounting", async () => {
-    jest.useFakeTimers();
-    const clearTimeoutSpy = jest.spyOn(global, "clearTimeout");
+    vi.useFakeTimers();
+    const clearTimeoutSpy = vi.spyOn(global, "clearTimeout");
     const { result } = renderComponent(<WebCLI {...props} />);
     const messages = [
       {
@@ -367,7 +369,7 @@ describe("WebCLI", () => {
     result.unmount();
     expect(clearTimeoutSpy).toHaveBeenCalled();
     clearTimeoutSpy.mockRestore();
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("should display connection error when no websocket address is present", () => {

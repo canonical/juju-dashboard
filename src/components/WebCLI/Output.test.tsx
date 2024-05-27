@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
 
@@ -11,7 +12,7 @@ describe("Output", () => {
         content="Output"
         helpMessage="Help message"
         showHelp={false}
-        setShouldShowHelp={jest.fn()}
+        setShouldShowHelp={vi.fn()}
       />,
     );
     expect(screen.getByText("Output")).toBeInTheDocument();
@@ -24,7 +25,7 @@ describe("Output", () => {
         content="Output"
         helpMessage="Help message"
         showHelp={true}
-        setShouldShowHelp={jest.fn()}
+        setShouldShowHelp={vi.fn()}
       />,
     );
     expect(screen.queryByRole("Output")).not.toBeInTheDocument();
@@ -38,7 +39,7 @@ describe("Output", () => {
         content={content}
         helpMessage="Help message"
         showHelp={false}
-        setShouldShowHelp={jest.fn()}
+        setShouldShowHelp={vi.fn()}
       />,
     );
     const boldElements = screen.getAllByText(/.*/, { selector: "b" });

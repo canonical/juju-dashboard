@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import { vi } from "vitest";
 
 import * as OptionsInputModule from "components/RadioInputBox/OptionInputs";
 import { applicationCharmActionParamsFactory } from "testing/factories/juju/ActionV7";
@@ -9,12 +10,12 @@ import type { ActionData } from "./ActionsPanel";
 
 describe("ActionOptions", () => {
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("generates a list of options from the provided data", () => {
-    const OptionsInputSpy = jest.spyOn(OptionsInputModule, "default");
-    const onValuesChange = jest.fn();
+    const OptionsInputSpy = vi.spyOn(OptionsInputModule, "default");
+    const onValuesChange = vi.fn();
     const actionData = {
       "add-disk": charmActionSpecFactory.build({
         params: applicationCharmActionParamsFactory.build({

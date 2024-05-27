@@ -8,7 +8,7 @@ describe("JIMMV3", () => {
 
   beforeEach(() => {
     transport = {
-      write: jest.fn(),
+      write: vi.fn(),
     } as unknown as Transport;
   });
 

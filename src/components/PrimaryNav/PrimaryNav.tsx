@@ -132,6 +132,7 @@ const PrimaryNav = () => {
       rel: "noopener noreferrer",
     },
     <SideNavigationText
+      key="version"
       status={
         updateAvailable ? (
           <Tooltip message="A new version of the dashboard is available.">

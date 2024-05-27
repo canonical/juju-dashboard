@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Field, Form, Formik } from "formik";
+import { vi } from "vitest";
 
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { crossModelQueryStateFactory } from "testing/factories/juju/juju";
@@ -12,11 +13,11 @@ import { Label } from "./SearchHistoryMenu";
 describe("SearchHistoryMenu", () => {
   it("should be disabled when there is no history", async () => {
     renderComponent(
-      <Formik initialValues={{ query: "" }} onSubmit={jest.fn()}>
+      <Formik initialValues={{ query: "" }} onSubmit={vi.fn()}>
         <SearchHistoryMenu
           queryHistory={[]}
-          search={jest.fn()}
-          setQueryHistory={jest.fn()}
+          search={vi.fn()}
+          setQueryHistory={vi.fn()}
         />
       </Formik>,
       { url: "/?q=.applications" },
@@ -33,11 +34,11 @@ describe("SearchHistoryMenu", () => {
       }),
     });
     renderComponent(
-      <Formik initialValues={{ query: "" }} onSubmit={jest.fn()}>
+      <Formik initialValues={{ query: "" }} onSubmit={vi.fn()}>
         <SearchHistoryMenu
           queryHistory={[".applications"]}
-          search={jest.fn()}
-          setQueryHistory={jest.fn()}
+          search={vi.fn()}
+          setQueryHistory={vi.fn()}
         />
       </Formik>,
       { state, url: "/?q=.applications" },
@@ -51,11 +52,11 @@ describe("SearchHistoryMenu", () => {
 
   it("should display the history in the menu", async () => {
     renderComponent(
-      <Formik initialValues={{ query: "" }} onSubmit={jest.fn()}>
+      <Formik initialValues={{ query: "" }} onSubmit={vi.fn()}>
         <SearchHistoryMenu
           queryHistory={[".applications", ".machines"]}
-          search={jest.fn()}
-          setQueryHistory={jest.fn()}
+          search={vi.fn()}
+          setQueryHistory={vi.fn()}
         />
       </Formik>,
       { url: "/?q=.applications" },
@@ -71,15 +72,15 @@ describe("SearchHistoryMenu", () => {
   });
 
   it("should update the field and perform a search when clicking an item", async () => {
-    const search = jest.fn();
+    const search = vi.fn();
     renderComponent(
-      <Formik initialValues={{ query: "" }} onSubmit={jest.fn()}>
+      <Formik initialValues={{ query: "" }} onSubmit={vi.fn()}>
         <Form>
           <Field name="query" />
           <SearchHistoryMenu
             queryHistory={[".applications", ".machines"]}
             search={search}
-            setQueryHistory={jest.fn()}
+            setQueryHistory={vi.fn()}
           />
         </Form>
       </Formik>,
@@ -93,12 +94,12 @@ describe("SearchHistoryMenu", () => {
   });
 
   it("should be able to clear the history", async () => {
-    const setQueryHistory = jest.fn();
+    const setQueryHistory = vi.fn();
     renderComponent(
-      <Formik initialValues={{ query: "" }} onSubmit={jest.fn()}>
+      <Formik initialValues={{ query: "" }} onSubmit={vi.fn()}>
         <SearchHistoryMenu
           queryHistory={[".applications", ".machines"]}
-          search={jest.fn()}
+          search={vi.fn()}
           setQueryHistory={setQueryHistory}
         />
       </Formik>,

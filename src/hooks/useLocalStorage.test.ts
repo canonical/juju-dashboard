@@ -1,4 +1,5 @@
 import { act, renderHook } from "@testing-library/react";
+import { vi } from "vitest";
 
 import useLocalStorage from "./useLocalStorage";
 
@@ -7,7 +8,7 @@ describe("useLocalStorage", () => {
 
   beforeEach(() => {
     consoleError = console.error;
-    console.error = jest.fn();
+    console.error = vi.fn();
   });
 
   afterEach(() => {

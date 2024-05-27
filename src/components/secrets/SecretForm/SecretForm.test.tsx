@@ -1,5 +1,6 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import * as secretHooks from "juju/api-hooks/secrets";
 import type { RootState } from "store/store";
@@ -22,12 +23,12 @@ import urls from "urls";
 import { Label as FieldsLabel } from "./Fields/Fields";
 import SecretForm, { TestId } from "./SecretForm";
 
-jest.mock("juju/api-hooks/secrets", () => {
+vi.mock("juju/api-hooks/secrets", () => {
   return {
-    useCreateSecrets: jest.fn().mockReturnValue(jest.fn()),
-    useUpdateSecrets: jest.fn().mockReturnValue(jest.fn()),
-    useListSecrets: jest.fn().mockReturnValue(jest.fn()),
-    useGetSecretContent: jest.fn().mockReturnValue(jest.fn()),
+    useCreateSecrets: vi.fn().mockReturnValue(vi.fn()),
+    useUpdateSecrets: vi.fn().mockReturnValue(vi.fn()),
+    useListSecrets: vi.fn().mockReturnValue(vi.fn()),
+    useGetSecretContent: vi.fn().mockReturnValue(vi.fn()),
   };
 });
 
@@ -41,12 +42,10 @@ describe("SecretForm", () => {
   const updateURL = `${url}?panel=remove-secret&secret=secret:aabbccdd`;
 
   beforeEach(() => {
-    jest
-      .spyOn(secretHooks, "useListSecrets")
-      .mockImplementation(() => jest.fn());
-    jest
-      .spyOn(secretHooks, "useGetSecretContent")
-      .mockImplementation(() => jest.fn());
+    vi.spyOn(secretHooks, "useListSecrets").mockImplementation(() => vi.fn());
+    vi.spyOn(secretHooks, "useGetSecretContent").mockImplementation(() =>
+      vi.fn(),
+    );
 
     state = rootStateFactory.build({
       general: generalStateFactory.build({
@@ -85,17 +84,17 @@ describe("SecretForm", () => {
   });
 
   it("can create a secret", async () => {
-    const createSecrets = jest
+    const createSecrets = vi
       .fn()
       .mockImplementation(() =>
         Promise.resolve({ results: [{ result: "secret:aabbccdd" }] }),
       );
-    jest
-      .spyOn(secretHooks, "useCreateSecrets")
-      .mockImplementation(() => createSecrets);
-    const onSuccess = jest.fn();
+    vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
+      () => createSecrets,
+    );
+    const onSuccess = vi.fn();
     renderComponent(
-      <SecretForm formId="abc" onSuccess={onSuccess} setSaving={jest.fn()} />,
+      <SecretForm formId="abc" onSuccess={onSuccess} setSaving={vi.fn()} />,
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: FieldsLabel.LABEL }),
@@ -136,8 +135,8 @@ describe("SecretForm", () => {
         update
         secretURI="secret:aabbccdd"
         formId="abc"
-        onSuccess={jest.fn()}
-        setSaving={jest.fn()}
+        onSuccess={vi.fn()}
+        setSaving={vi.fn()}
       />,
       {
         path,
@@ -166,19 +165,19 @@ describe("SecretForm", () => {
   });
 
   it("can update a secret", async () => {
-    const updateSecrets = jest
+    const updateSecrets = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useUpdateSecrets")
-      .mockImplementation(() => updateSecrets);
+    vi.spyOn(secretHooks, "useUpdateSecrets").mockImplementation(
+      () => updateSecrets,
+    );
     renderComponent(
       <SecretForm
         update
         secretURI="secret:aabbccdd"
         formId="abc"
-        onSuccess={jest.fn()}
-        setSaving={jest.fn()}
+        onSuccess={vi.fn()}
+        setSaving={vi.fn()}
       />,
       {
         path,
@@ -225,14 +224,14 @@ describe("SecretForm", () => {
   });
 
   it("encodes unencoded values", async () => {
-    const createSecrets = jest
+    const createSecrets = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useCreateSecrets")
-      .mockImplementation(() => createSecrets);
+    vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
+      () => createSecrets,
+    );
     renderComponent(
-      <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,
+      <SecretForm formId="abc" onSuccess={vi.fn()} setSaving={vi.fn()} />,
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
@@ -260,14 +259,14 @@ describe("SecretForm", () => {
 
   it("does not encode encoded values", async () => {
     const encoded = "YSB2YWx1ZQ==";
-    const createSecrets = jest
+    const createSecrets = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useCreateSecrets")
-      .mockImplementation(() => createSecrets);
+    vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
+      () => createSecrets,
+    );
     renderComponent(
-      <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,
+      <SecretForm formId="abc" onSuccess={vi.fn()} setSaving={vi.fn()} />,
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
@@ -297,14 +296,14 @@ describe("SecretForm", () => {
   });
 
   it("displays caught errors", async () => {
-    const createSecrets = jest
+    const createSecrets = vi
       .fn()
       .mockImplementation(() => Promise.reject(new Error("Caught error")));
-    jest
-      .spyOn(secretHooks, "useCreateSecrets")
-      .mockImplementation(() => createSecrets);
+    vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
+      () => createSecrets,
+    );
     renderComponent(
-      <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,
+      <SecretForm formId="abc" onSuccess={vi.fn()} setSaving={vi.fn()} />,
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
@@ -325,16 +324,16 @@ describe("SecretForm", () => {
   });
 
   it("displays error object results", async () => {
-    const createSecrets = jest
+    const createSecrets = vi
       .fn()
       .mockImplementation(() =>
         Promise.resolve({ results: [{ error: { message: "Error result" } }] }),
       );
-    jest
-      .spyOn(secretHooks, "useCreateSecrets")
-      .mockImplementation(() => createSecrets);
+    vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
+      () => createSecrets,
+    );
     renderComponent(
-      <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,
+      <SecretForm formId="abc" onSuccess={vi.fn()} setSaving={vi.fn()} />,
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
@@ -355,18 +354,18 @@ describe("SecretForm", () => {
   });
 
   it("refetches the secrets if successful", async () => {
-    const createSecrets = jest
+    const createSecrets = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useCreateSecrets")
-      .mockImplementation(() => createSecrets);
-    const listSecrets = jest.fn();
-    jest
-      .spyOn(secretHooks, "useListSecrets")
-      .mockImplementation(() => listSecrets);
+    vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
+      () => createSecrets,
+    );
+    const listSecrets = vi.fn();
+    vi.spyOn(secretHooks, "useListSecrets").mockImplementation(
+      () => listSecrets,
+    );
     renderComponent(
-      <SecretForm formId="abc" onSuccess={jest.fn()} setSaving={jest.fn()} />,
+      <SecretForm formId="abc" onSuccess={vi.fn()} setSaving={vi.fn()} />,
       { url: "?panel=add-secret" },
     );
     await userEvent.type(

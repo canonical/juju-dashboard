@@ -3,6 +3,7 @@ import * as reactGA from "react-ga";
 import { Provider } from "react-redux";
 import * as reactRouterDOM from "react-router-dom";
 import configureStore from "redux-mock-store";
+import { vi } from "vitest";
 
 import * as Routes from "components/Routes/Routes";
 import { configFactory, generalStateFactory } from "testing/factories/general";
@@ -10,13 +11,13 @@ import { rootStateFactory } from "testing/factories/root";
 
 import App from "./App";
 
-jest.mock("components/Routes/Routes", () => ({
-  Routes: jest.fn(),
+vi.mock("components/Routes/Routes", () => ({
+  Routes: vi.fn(),
 }));
 
-jest.mock("react-ga", () => ({
-  initialize: jest.fn(),
-  pageview: jest.fn(),
+vi.mock("react-ga", () => ({
+  initialize: vi.fn(),
+  pageview: vi.fn(),
 }));
 
 const mockStore = configureStore([]);
@@ -28,16 +29,17 @@ describe("App", () => {
     consoleError = console.error;
     // Even though the error boundary catches the error, there is still a
     // console.error in the test output.
-    console.error = jest.fn();
+    console.error = vi.fn();
   });
 
   afterEach(() => {
     console.error = consoleError;
-    jest.resetAllMocks();
+    vi.resetAllMocks();
+    vi.unstubAllEnvs();
   });
 
   it("properly sets up Router", () => {
-    const BrowserRouterSpy = jest
+    const BrowserRouterSpy = vi
       .spyOn(reactRouterDOM, "BrowserRouter")
       .mockImplementation(() => <div></div>);
     const store = mockStore(rootStateFactory.withGeneralConfig().build());
@@ -51,7 +53,7 @@ describe("App", () => {
   });
 
   it("catches and displays errors", () => {
-    jest.spyOn(Routes, "Routes").mockImplementation(() => {
+    vi.spyOn(Routes, "Routes").mockImplementation(() => {
       throw new Error("This is a thrown error");
     });
     const store = mockStore(rootStateFactory.withGeneralConfig().build());
@@ -77,11 +79,10 @@ describe("App", () => {
   });
 
   it("sends pageview events", () => {
-    window.history.pushState({}, "", "/models");
-    const node_env = process.env.NODE_ENV;
-    Object.defineProperty(process.env, "NODE_ENV", { value: "production" });
-    const initializeSpy = jest.spyOn(reactGA, "initialize");
-    const pageviewSpy = jest.spyOn(reactGA, "pageview");
+    vi.stubEnv("PROD", true);
+    window.happyDOM.setURL("/models");
+    const initializeSpy = vi.spyOn(reactGA, "initialize");
+    const pageviewSpy = vi.spyOn(reactGA, "pageview");
     const state = rootStateFactory.withGeneralConfig().build();
     const store = mockStore(state);
     render(
@@ -91,17 +92,13 @@ describe("App", () => {
     );
     expect(initializeSpy).toHaveBeenCalled();
     expect(pageviewSpy).toHaveBeenCalledWith("/models");
-    Object.defineProperty(process.env, "NODE_ENV", {
-      value: node_env,
-    });
   });
 
   it("does not send pageview events if analytics is disabled", () => {
-    window.history.pushState({}, "", "/models");
-    const node_env = process.env.NODE_ENV;
-    Object.defineProperty(process.env, "NODE_ENV", { value: "production" });
-    const initializeSpy = jest.spyOn(reactGA, "initialize");
-    const pageviewSpy = jest.spyOn(reactGA, "pageview");
+    vi.stubEnv("PROD", true);
+    window.happyDOM.setURL("/models");
+    const initializeSpy = vi.spyOn(reactGA, "initialize");
+    const pageviewSpy = vi.spyOn(reactGA, "pageview");
     const state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -117,8 +114,5 @@ describe("App", () => {
     );
     expect(initializeSpy).not.toHaveBeenCalled();
     expect(pageviewSpy).not.toHaveBeenCalled();
-    Object.defineProperty(process.env, "NODE_ENV", {
-      value: node_env,
-    });
   });
 });

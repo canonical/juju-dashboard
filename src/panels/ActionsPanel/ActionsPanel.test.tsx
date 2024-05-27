@@ -1,5 +1,6 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import * as actionsHooks from "juju/api-hooks/actions";
 import type { RootState } from "store/store";
@@ -50,10 +51,10 @@ const mockResponse = applicationsCharmActionsResultsFactory.build({
   ],
 });
 
-jest.mock("juju/api-hooks/actions", () => {
+vi.mock("juju/api-hooks/actions", () => {
   return {
-    useExecuteActionOnUnits: jest.fn().mockReturnValue(jest.fn()),
-    useGetActionsForApplication: jest.fn().mockReturnValue(jest.fn()),
+    useExecuteActionOnUnits: vi.fn().mockReturnValue(vi.fn()),
+    useGetActionsForApplication: vi.fn().mockReturnValue(vi.fn()),
   };
 });
 
@@ -65,13 +66,13 @@ describe("ActionsPanel", () => {
     "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&units=ceph%2F0,ceph%2F1";
 
   beforeEach(() => {
-    console.error = jest.fn();
-    const getActionsForApplicationSpy = jest
+    console.error = vi.fn();
+    const getActionsForApplicationSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve(mockResponse));
-    jest
-      .spyOn(actionsHooks, "useGetActionsForApplication")
-      .mockImplementation(() => getActionsForApplicationSpy);
+    vi.spyOn(actionsHooks, "useGetActionsForApplication").mockImplementation(
+      () => getActionsForApplicationSpy,
+    );
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         modelData: {
@@ -87,8 +88,8 @@ describe("ActionsPanel", () => {
 
   afterEach(() => {
     console.error = consoleError;
-    jest.resetModules();
-    jest.restoreAllMocks();
+    vi.resetModules();
+    vi.restoreAllMocks();
   });
 
   it("Renders the list of available actions", async () => {
@@ -190,12 +191,12 @@ describe("ActionsPanel", () => {
         }),
       ],
     });
-    const getActionsForApplicationSpy = jest
+    const getActionsForApplicationSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve(mockResponse));
-    jest
-      .spyOn(actionsHooks, "useGetActionsForApplication")
-      .mockImplementation(() => getActionsForApplicationSpy);
+    vi.spyOn(actionsHooks, "useGetActionsForApplication").mockImplementation(
+      () => getActionsForApplicationSpy,
+    );
     renderComponent(<ActionsPanel />, { path, url, state });
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" }),
@@ -214,12 +215,12 @@ describe("ActionsPanel", () => {
   });
 
   it("shows a confirmation dialog on clicking submit", async () => {
-    const executeActionOnUnitsSpy = jest
+    const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve());
-    jest
-      .spyOn(actionsHooks, "useExecuteActionOnUnits")
-      .mockImplementation(() => executeActionOnUnitsSpy);
+    vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
+      () => executeActionOnUnitsSpy,
+    );
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" }),
@@ -242,12 +243,12 @@ describe("ActionsPanel", () => {
   });
 
   it("submits the action request to the api without options", async () => {
-    const executeActionOnUnitsSpy = jest
+    const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve());
-    jest
-      .spyOn(actionsHooks, "useExecuteActionOnUnits")
-      .mockImplementation(() => executeActionOnUnitsSpy);
+    vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
+      () => executeActionOnUnitsSpy,
+    );
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" }),
@@ -270,12 +271,12 @@ describe("ActionsPanel", () => {
   });
 
   it("submits the action request to the api with options that are required", async () => {
-    const executeActionOnUnitsSpy = jest
+    const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve());
-    jest
-      .spyOn(actionsHooks, "useExecuteActionOnUnits")
-      .mockImplementation(() => executeActionOnUnitsSpy);
+    vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
+      () => executeActionOnUnitsSpy,
+    );
     renderComponent(<ActionsPanel />, { path, url, state });
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" }),
@@ -330,16 +331,16 @@ describe("ActionsPanel", () => {
   });
 
   it("should display error when trying to get actions for application", async () => {
-    const getActionsForApplicationSpy = jest
+    const getActionsForApplicationSpy = vi
       .fn()
       .mockImplementation(() =>
         Promise.reject(
           new Error("Error while trying to get actions for application!"),
         ),
       );
-    jest
-      .spyOn(actionsHooks, "useGetActionsForApplication")
-      .mockImplementation(() => getActionsForApplicationSpy);
+    vi.spyOn(actionsHooks, "useGetActionsForApplication").mockImplementation(
+      () => getActionsForApplicationSpy,
+    );
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(getActionsForApplicationSpy).toHaveBeenCalledTimes(1);
     await waitFor(() =>
@@ -363,16 +364,16 @@ describe("ActionsPanel", () => {
   });
 
   it("should display error when trying to submit the action request", async () => {
-    const executeActionOnUnitsSpy = jest
+    const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() =>
         Promise.reject(
           new Error("Error while trying to execute action on units!"),
         ),
       );
-    jest
-      .spyOn(actionsHooks, "useExecuteActionOnUnits")
-      .mockImplementation(() => executeActionOnUnitsSpy);
+    vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
+      () => executeActionOnUnitsSpy,
+    );
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" }),

@@ -109,17 +109,17 @@ export default function Breadcrumb(): JSX.Element {
     title: undefined,
   };
 
-  if (!!appName) {
+  if (appName) {
     entityType.id = appName;
     entityType.title = "Applications";
   }
 
-  if (!!unitId) {
+  if (unitId) {
     entityType.id = unitId;
     entityType.title = "Units";
   }
 
-  if (!!machineId) {
+  if (machineId) {
     entityType.id = machineId;
     entityType.title = "Machines";
   }

@@ -56,6 +56,7 @@ const UserMenu = () => {
             items={[
               <SideNavigationText
                 icon="user"
+                key="user"
                 className="user-menu__toggle"
                 onClick={toggleUserMenuActive}
                 onKeyUp={toggleUserMenuActive}

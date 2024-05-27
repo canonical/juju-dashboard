@@ -1,20 +1,21 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik, Field } from "formik";
+import { vi } from "vitest";
 
 import FormikFormData from "./FormikFormData";
 
 describe("FormikFormData", () => {
   function generateComponent() {
     const children = <Field type="checkbox" name="test" data-testid="field" />;
-    const changeHandler = jest.fn();
-    const setupHandler = jest.fn();
+    const changeHandler = vi.fn();
+    const setupHandler = vi.fn();
     render(
       <Formik
         initialValues={{
           test: false,
         }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <FormikFormData onFormChange={changeHandler} onSetup={setupHandler}>
           {children}

@@ -1,5 +1,5 @@
 import type { PropsWithSpread } from "@canonical/react-components";
-import * as React from "react";
+import type * as React from "react";
 import { Link } from "react-router-dom";
 import type { LinkProps } from "react-router-dom";
 

@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
+import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
 
@@ -11,7 +12,7 @@ describe("Fields", () => {
     renderComponent(
       <Formik
         initialValues={{ pairs: [{ key: "", value: "", isBase64: false }] }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields />
       </Formik>,
@@ -28,7 +29,7 @@ describe("Fields", () => {
     renderComponent(
       <Formik
         initialValues={{ pairs: [{ key: "", value: "", isBase64: false }] }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields />
       </Formik>,
@@ -52,7 +53,7 @@ describe("Fields", () => {
     renderComponent(
       <Formik
         initialValues={{ pairs: [{ key: "", value: "", isBase64: false }] }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields />
       </Formik>,
@@ -64,7 +65,7 @@ describe("Fields", () => {
     renderComponent(
       <Formik
         initialValues={{ pairs: [{ key: "", value: "", isBase64: false }] }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields />
       </Formik>,
@@ -81,7 +82,7 @@ describe("Fields", () => {
     renderComponent(
       <Formik
         initialValues={{ pairs: [{ key: "", value: "", isBase64: false }] }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields update />
       </Formik>,
@@ -95,7 +96,7 @@ describe("Fields", () => {
     renderComponent(
       <Formik
         initialValues={{ pairs: [{ key: "", value: "", isBase64: false }] }}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       >
         <Fields update={false} />
       </Formik>,

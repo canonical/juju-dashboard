@@ -22,7 +22,7 @@ const SegmentedControl = <P,>({
   return (
     <div className={classNames("p-segmented-control", className)} {...props}>
       <div className="p-segmented-control__list" role="tablist">
-        {buttons.map(({ key, ...buttonProps }, i) => (
+        {buttons.map(({ key, ...buttonProps }) => (
           <Button
             element={buttonComponent}
             key={key}

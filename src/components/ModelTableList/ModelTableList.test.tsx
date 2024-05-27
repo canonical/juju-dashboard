@@ -1,5 +1,5 @@
-import type { RenderResult } from "@testing-library/react";
 import { screen, within } from "@testing-library/react";
+import { vi } from "vitest";
 
 import * as appSelectors from "store/juju/selectors";
 import type { RootState } from "store/store";
@@ -18,6 +18,11 @@ import { TestId as StatusTestId } from "./StatusGroup";
 
 describe("ModelTableList", () => {
   let state: RootState;
+  const tables = [
+    ["status", StatusTestId.STATUS_GROUP],
+    ["owner", OwnerTestId.OWNER_GROUP],
+    ["cloud", CloudTestId.CLOUD_GROUP],
+  ];
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -32,7 +37,7 @@ describe("ModelTableList", () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("by default, renders the status table", () => {
@@ -43,32 +48,20 @@ describe("ModelTableList", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("displays all data from redux store when grouping by...", () => {
-    const tables = [
-      ["status", StatusTestId.STATUS_GROUP],
-      ["owner", OwnerTestId.OWNER_GROUP],
-      ["cloud", CloudTestId.CLOUD_GROUP],
-    ];
-    let result: RenderResult;
-    tables.forEach((table) => {
-      if (result) {
-        result.rerender(<ModelTableList filters={{}} groupedBy={table[0]} />);
-      } else {
-        ({ result } = renderComponent(
-          <ModelTableList filters={{}} groupedBy={table[0]} />,
-        ));
-      }
+  tables.forEach((table) => {
+    it(`displays all data from redux store when grouping by ${table[0]}`, () => {
+      renderComponent(<ModelTableList filters={{}} groupedBy={table[0]} />);
       expect(screen.getByTestId(table[1])).toBeInTheDocument();
       tables.forEach((otherTable) => {
         if (otherTable[0] !== table[0]) {
-          expect(screen.queryByTestId(otherTable[1])).not.toBeInTheDocument(); // eslint-disable-line jest/no-conditional-expect
+          expect(screen.queryByTestId(otherTable[1])).not.toBeInTheDocument();
         }
       });
     });
   });
 
   it("passes the filters to the group components", () => {
-    const getGroupedByStatusAndFilteredModelData = jest.spyOn(
+    const getGroupedByStatusAndFilteredModelData = vi.spyOn(
       appSelectors,
       "getGroupedByStatusAndFilteredModelData",
     );

@@ -11,11 +11,11 @@ import { modelPollerMiddleware } from "store/middleware/model-poller";
 import uiReducer from "store/ui";
 
 let preloadedState: Record<string, unknown> | undefined;
-if (process.env.NODE_ENV !== "production" && process.env.REACT_APP_MOCK_STORE) {
+if (!import.meta.env.PROD && process.env.VITE_APP_MOCK_STORE) {
   try {
-    preloadedState = JSON.parse(process.env.REACT_APP_MOCK_STORE);
+    preloadedState = JSON.parse(process.env.VITE_APP_MOCK_STORE);
   } catch (error) {
-    console.error("REACT_APP_MOCK_STORE could not be parsed");
+    console.error("VITE_APP_MOCK_STORE could not be parsed");
   }
 }
 

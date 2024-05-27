@@ -41,7 +41,7 @@ export default function Machine() {
     }
     const filteredApps: ApplicationData = {};
     const appList = new Set<string>();
-    Object.entries(units).forEach(([unitId, unitData]) => {
+    Object.values(units).forEach((unitData) => {
       if (unitData["machine-id"] === machineId) {
         appList.add(unitData.application);
       }

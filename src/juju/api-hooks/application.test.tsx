@@ -2,6 +2,7 @@ import type { Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
 import { renderHook } from "@testing-library/react";
 import configureStore from "redux-mock-store";
+import { vi } from "vitest";
 
 import type { Config } from "panels/ConfigPanel/types";
 import type { RootState } from "store/store";
@@ -26,8 +27,8 @@ import {
 
 const mockStore = configureStore<RootState, unknown>([]);
 
-jest.mock("@canonical/jujulib", () => ({
-  connectAndLogin: jest.fn(),
+vi.mock("@canonical/jujulib", () => ({
+  connectAndLogin: vi.fn(),
 }));
 
 describe("application", () => {
@@ -64,11 +65,11 @@ describe("application", () => {
         conn: {
           facades: {},
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(() => Promise.resolve(loginResponse));
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+        Promise.resolve(loginResponse),
+      );
       const { result } = renderHook(
         () => useGetApplicationConfig("eggman@external", "test-model"),
         {
@@ -90,15 +91,15 @@ describe("application", () => {
         conn: {
           facades: {
             application: {
-              get: jest.fn().mockImplementation(() => Promise.resolve(config)),
+              get: vi.fn().mockImplementation(() => Promise.resolve(config)),
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(() => Promise.resolve(loginResponse));
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+        Promise.resolve(loginResponse),
+      );
       const { result } = renderHook(
         () => useGetApplicationConfig("eggman@external", "test-model"),
         {
@@ -132,11 +133,11 @@ describe("application", () => {
         conn: {
           facades: {},
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(() => Promise.resolve(loginResponse));
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+        Promise.resolve(loginResponse),
+      );
       const { result } = renderHook(
         () => useSetApplicationConfig("eggman@external", "test-model"),
         {
@@ -173,17 +174,17 @@ describe("application", () => {
         conn: {
           facades: {
             application: {
-              setConfigs: jest
+              setConfigs: vi
                 .fn()
                 .mockImplementation(() => Promise.resolve(configResponse)),
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(() => Promise.resolve(loginResponse));
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+        Promise.resolve(loginResponse),
+      );
       const { result } = renderHook(
         () => useSetApplicationConfig("eggman@external", "test-model"),
         {
@@ -242,17 +243,17 @@ describe("application", () => {
         conn: {
           facades: {
             application: {
-              setConfigs: jest
+              setConfigs: vi
                 .fn()
                 .mockImplementation(() => Promise.resolve(configResponse)),
             },
           },
         } as unknown as Connection,
-        logout: jest.fn(),
+        logout: vi.fn(),
       };
-      jest
-        .spyOn(jujuLib, "connectAndLogin")
-        .mockImplementation(() => Promise.resolve(loginResponse));
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+        Promise.resolve(loginResponse),
+      );
       const { result } = renderHook(
         () => useSetApplicationConfig("eggman@external", "test-model"),
         {

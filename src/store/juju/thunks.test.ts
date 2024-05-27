@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+
 import { rootStateFactory } from "testing/factories";
 import {
   credentialFactory,
@@ -18,7 +20,16 @@ import { actions } from "./slice";
 import { addControllerCloudRegion } from "./thunks";
 
 // Prevent setting up the bakery instance.
-jest.mock("juju/bakery");
+vi.mock("juju/bakery");
+vi.mock("@reduxjs/toolkit", async () => {
+  const toolkit = await vi.importActual("@reduxjs/toolkit");
+  return {
+    ...toolkit,
+    // Mock configureStore as an import loop is preventing this from
+    // behaving correctly in these tests.
+    configureStore: vi.fn(),
+  };
+});
 
 describe("thunks", () => {
   it("addControllerCloudRegion", async () => {
@@ -35,8 +46,8 @@ describe("thunks", () => {
         ],
       }),
     });
-    const dispatch = jest.fn();
-    const getState = jest.fn(() =>
+    const dispatch = vi.fn();
+    const getState = vi.fn(() =>
       rootStateFactory.build({
         general: generalStateFactory.build({
           controllerConnections: {
@@ -86,8 +97,8 @@ describe("thunks", () => {
       wsControllerURL: "wss://example.com",
       modelInfo: modelInfoResultsFactory.build(),
     });
-    const dispatch = jest.fn();
-    const getState = jest.fn(() =>
+    const dispatch = vi.fn();
+    const getState = vi.fn(() =>
       rootStateFactory.build({
         general: {},
         juju: jujuStateFactory.build({

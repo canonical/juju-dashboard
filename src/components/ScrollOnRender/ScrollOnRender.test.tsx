@@ -1,8 +1,13 @@
 import { render, screen } from "@testing-library/react";
+import { vi } from "vitest";
 
 import ScrollOnRender from "./ScrollOnRender";
 
 describe("ScrollOnRender", () => {
+  beforeEach(() => {
+    vi.spyOn(window.HTMLElement.prototype, "scrollIntoView");
+  });
+
   it("renders the provided children", () => {
     render(<ScrollOnRender>kids</ScrollOnRender>);
     expect(screen.getByText("kids")).toBeInTheDocument();

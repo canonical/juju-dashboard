@@ -120,7 +120,7 @@ const RemoveSecretPanel = () => {
                 removeAll: false,
                 revision: secret["latest-revision"].toString(),
               }}
-              onSubmit={(values) => {
+              onSubmit={() => {
                 setShowConfirm(true);
               }}
             >

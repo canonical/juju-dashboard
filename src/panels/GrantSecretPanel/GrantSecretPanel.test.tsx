@@ -1,5 +1,6 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import * as secretHooks from "juju/api-hooks/secrets";
 import type { RootState } from "store/store";
@@ -25,11 +26,11 @@ import urls from "urls";
 
 import GrantSecretPanel, { Label } from "./GrantSecretPanel";
 
-jest.mock("juju/api-hooks/secrets", () => {
+vi.mock("juju/api-hooks/secrets", () => {
   return {
-    useGrantSecret: jest.fn().mockReturnValue(jest.fn()),
-    useListSecrets: jest.fn().mockReturnValue(jest.fn()),
-    useRevokeSecret: jest.fn().mockReturnValue(jest.fn()),
+    useGrantSecret: vi.fn().mockReturnValue(vi.fn()),
+    useListSecrets: vi.fn().mockReturnValue(vi.fn()),
+    useRevokeSecret: vi.fn().mockReturnValue(vi.fn()),
   };
 });
 
@@ -79,9 +80,7 @@ describe("GrantSecretPanel", () => {
         }),
       },
     });
-    jest
-      .spyOn(secretHooks, "useListSecrets")
-      .mockImplementation(() => jest.fn());
+    vi.spyOn(secretHooks, "useListSecrets").mockImplementation(() => vi.fn());
   });
 
   it("displays a spinner while loading", async () => {
@@ -142,18 +141,18 @@ describe("GrantSecretPanel", () => {
         ],
       }),
     ];
-    const grantSecret = jest
+    const grantSecret = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useGrantSecret")
-      .mockImplementation(() => grantSecret);
-    const revokeSecret = jest
+    vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
+      () => grantSecret,
+    );
+    const revokeSecret = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useRevokeSecret")
-      .mockImplementation(() => revokeSecret);
+    vi.spyOn(secretHooks, "useRevokeSecret").mockImplementation(
+      () => revokeSecret,
+    );
     renderComponent(<GrantSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
     await userEvent.click(screen.getByRole("checkbox", { name: "lxd" }));
@@ -172,18 +171,18 @@ describe("GrantSecretPanel", () => {
         ],
       }),
     ];
-    const grantSecret = jest
+    const grantSecret = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useGrantSecret")
-      .mockImplementation(() => grantSecret);
-    const revokeSecret = jest
+    vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
+      () => grantSecret,
+    );
+    const revokeSecret = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useRevokeSecret")
-      .mockImplementation(() => revokeSecret);
+    vi.spyOn(secretHooks, "useRevokeSecret").mockImplementation(
+      () => revokeSecret,
+    );
     renderComponent(<GrantSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
     await userEvent.click(screen.getByRole("checkbox", { name: "nginx" }));
@@ -193,12 +192,12 @@ describe("GrantSecretPanel", () => {
   });
 
   it("displays caught errors", async () => {
-    const grantSecret = jest
+    const grantSecret = vi
       .fn()
       .mockImplementation(() => Promise.reject(new Error("Caught error")));
-    jest
-      .spyOn(secretHooks, "useGrantSecret")
-      .mockImplementation(() => grantSecret);
+    vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
+      () => grantSecret,
+    );
     renderComponent(<GrantSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
@@ -210,12 +209,12 @@ describe("GrantSecretPanel", () => {
   });
 
   it("displays error string results", async () => {
-    const grantSecret = jest
+    const grantSecret = vi
       .fn()
       .mockImplementation(() => Promise.reject(new Error("String error")));
-    jest
-      .spyOn(secretHooks, "useGrantSecret")
-      .mockImplementation(() => grantSecret);
+    vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
+      () => grantSecret,
+    );
     renderComponent(<GrantSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
@@ -225,7 +224,7 @@ describe("GrantSecretPanel", () => {
   });
 
   it("displays error object results", async () => {
-    const grantSecret = jest.fn().mockImplementation(() =>
+    const grantSecret = vi.fn().mockImplementation(() =>
       Promise.resolve({
         results: [
           { error: { message: "Error result 1" } },
@@ -233,9 +232,9 @@ describe("GrantSecretPanel", () => {
         ],
       }),
     );
-    jest
-      .spyOn(secretHooks, "useGrantSecret")
-      .mockImplementation(() => grantSecret);
+    vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
+      () => grantSecret,
+    );
     renderComponent(<GrantSecretPanel />, { state, path, url });
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
@@ -245,32 +244,36 @@ describe("GrantSecretPanel", () => {
   });
 
   it("closes the panel if successful", async () => {
-    const grantSecret = jest
+    const grantSecret = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useGrantSecret")
-      .mockImplementation(() => grantSecret);
-    renderComponent(<GrantSecretPanel />, { state, path, url });
-    expect(window.location.search).toEqual(
+    vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
+      () => grantSecret,
+    );
+    const { router } = renderComponent(<GrantSecretPanel />, {
+      state,
+      path,
+      url,
+    });
+    expect(router.state.location.search).toEqual(
       "?panel=grant-secret&secret=secret:aabbccdd",
     );
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
-    expect(window.location.search).toEqual("");
+    expect(router.state.location.search).toEqual("");
   });
 
   it("refetches the secrets if successful", async () => {
-    const grantSecret = jest
+    const grantSecret = vi
       .fn()
       .mockImplementation(() => Promise.resolve({ results: [] }));
-    jest
-      .spyOn(secretHooks, "useGrantSecret")
-      .mockImplementation(() => grantSecret);
-    const listSecrets = jest.fn();
-    jest
-      .spyOn(secretHooks, "useListSecrets")
-      .mockImplementation(() => listSecrets);
+    vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
+      () => grantSecret,
+    );
+    const listSecrets = vi.fn();
+    vi.spyOn(secretHooks, "useListSecrets").mockImplementation(
+      () => listSecrets,
+    );
     renderComponent(<GrantSecretPanel />, { state, path, url });
     expect(listSecrets).not.toHaveBeenCalled();
     await userEvent.click(screen.getByRole("checkbox", { name: "etcd" }));

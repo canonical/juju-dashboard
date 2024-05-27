@@ -1,6 +1,7 @@
 import type { PropsWithSpread } from "@canonical/react-components";
 import classNames from "classnames";
-import React, { isValidElement } from "react";
+import { isValidElement } from "react";
+import type React from "react";
 import type {
   ComponentType,
   ElementType,
@@ -11,7 +12,7 @@ import type {
 
 import type { ExclusiveProps } from "types";
 
-export const isReactNode = (element: unknown): element is ReactNode =>
+const isReactNode = (element: unknown): element is ReactNode =>
   isValidElement(element);
 
 export type LogoDefaultElement = HTMLProps<HTMLAnchorElement>;
@@ -84,7 +85,7 @@ type TitleProps = {
 };
 
 type HeaderProps<L = LogoDefaultElement> = ExclusiveProps<
-  {},
+  object,
   {
     /**
      * Content that will be displayed in the controls area.

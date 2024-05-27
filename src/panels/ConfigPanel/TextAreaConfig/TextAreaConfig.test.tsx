@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -77,8 +78,8 @@ describe("TextAreaConfig", () => {
       <TextAreaConfig
         config={config}
         selectedConfig={undefined}
-        setSelectedConfig={jest.fn()}
-        setNewValue={jest.fn()}
+        setSelectedConfig={vi.fn()}
+        setNewValue={vi.fn()}
       />,
       { state, url, path },
     );
@@ -86,12 +87,12 @@ describe("TextAreaConfig", () => {
   });
 
   it("can change the value", async () => {
-    const setNewValue = jest.fn();
+    const setNewValue = vi.fn();
     renderComponent(
       <TextAreaConfig
         config={config}
         selectedConfig={undefined}
-        setSelectedConfig={jest.fn()}
+        setSelectedConfig={vi.fn()}
         setNewValue={setNewValue}
       />,
       { state, url, path },
@@ -101,12 +102,12 @@ describe("TextAreaConfig", () => {
   });
 
   it("can set a secret", async () => {
-    const setNewValue = jest.fn();
+    const setNewValue = vi.fn();
     renderComponent(
       <TextAreaConfig
         config={config}
         selectedConfig={undefined}
-        setSelectedConfig={jest.fn()}
+        setSelectedConfig={vi.fn()}
         setNewValue={setNewValue}
       />,
       { state, url, path },
