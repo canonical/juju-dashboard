@@ -17,7 +17,7 @@ import { useId, useState } from "react";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import SecretForm from "components/secrets/SecretForm";
 import SecretLabel from "components/secrets/SecretLabel";
 import useCanManageSecrets from "hooks/useCanManageSecrets";

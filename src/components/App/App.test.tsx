@@ -5,14 +5,14 @@ import * as reactRouterDOM from "react-router-dom";
 import configureStore from "redux-mock-store";
 import { vi } from "vitest";
 
-import * as Routes from "components/Routes/Routes";
+import * as Routes from "components/Routes";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 
 import App from "./App";
 
-vi.mock("components/Routes/Routes", () => ({
-  Routes: vi.fn(),
+vi.mock("components/Routes", () => ({
+  default: vi.fn(),
 }));
 
 vi.mock("react-ga", () => ({
@@ -53,7 +53,7 @@ describe("App", () => {
   });
 
   it("catches and displays errors", () => {
-    vi.spyOn(Routes, "Routes").mockImplementation(() => {
+    vi.spyOn(Routes, "default").mockImplementation(() => {
       throw new Error("This is a thrown error");
     });
     const store = mockStore(rootStateFactory.withGeneralConfig().build());

@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
-import Topology from "components/Topology/Topology";
+import type { EntityDetailsRoute } from "components/Routes";
+import Topology from "components/Topology";
 import { getViewportWidth } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import {

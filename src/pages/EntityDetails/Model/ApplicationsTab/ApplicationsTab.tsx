@@ -3,10 +3,10 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import type { Chip } from "components/ChipGroup/ChipGroup";
-import ChipGroup from "components/ChipGroup/ChipGroup";
-import ContentReveal from "components/ContentReveal/ContentReveal";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { Chip } from "components/ChipGroup";
+import ChipGroup from "components/ChipGroup";
+import ContentReveal from "components/ContentReveal";
+import type { EntityDetailsRoute } from "components/Routes";
 import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
 import {

@@ -4,8 +4,8 @@ import classNames from "classnames";
 import type { ReactNode, MouseEvent } from "react";
 import { forwardRef, useId } from "react";
 
-import Aside from "components/Aside/Aside";
-import type { Props as AsideProps } from "components/Aside/Aside";
+import Aside from "components/Aside";
+import type { AsideProps } from "components/Aside";
 
 import "./_panel.scss";
 

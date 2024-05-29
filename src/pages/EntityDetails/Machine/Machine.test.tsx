@@ -21,12 +21,12 @@ import urls from "urls";
 
 import Machine from "./Machine";
 
-vi.mock("components/Topology/Topology", () => {
+vi.mock("components/Topology", () => {
   const Topology = () => <div className="topology"></div>;
   return { default: Topology };
 });
 
-vi.mock("components/WebCLI/WebCLI", () => {
+vi.mock("components/WebCLI", () => {
   const WebCLI = () => <div className="webcli" data-testid="webcli"></div>;
   return { default: WebCLI };
 });

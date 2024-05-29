@@ -3,9 +3,9 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import EntityInfo from "components/EntityInfo/EntityInfo";
-import InfoPanel from "components/InfoPanel/InfoPanel";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import EntityInfo from "components/EntityInfo";
+import InfoPanel from "components/InfoPanel";
+import type { EntityDetailsRoute } from "components/Routes";
 import useCanConfigureModel from "hooks/useCanConfigureModel";
 import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -34,7 +34,7 @@ import {
   generateRelationRows,
 } from "tables/tableRows";
 
-import ApplicationsTab from "./ApplicationsTab/ApplicationsTab";
+import ApplicationsTab from "./ApplicationsTab";
 import Logs from "./Logs";
 import Secrets from "./Secrets";
 import { Label, TestId } from "./types";

@@ -14,7 +14,7 @@ import usePortal from "react-useportal";
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon";
 import Panel from "components/Panel";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import SecretLabel from "components/secrets/SecretLabel";
 import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";

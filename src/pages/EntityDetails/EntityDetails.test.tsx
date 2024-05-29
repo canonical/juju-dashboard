@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import * as WebCLIModule from "components/WebCLI/WebCLI";
+import * as WebCLIModule from "components/WebCLI";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
@@ -28,12 +28,12 @@ import { ModelTab } from "urls";
 import EntityDetails from "./EntityDetails";
 import { Label } from "./types";
 
-vi.mock("components/Topology/Topology", () => {
+vi.mock("components/Topology", () => {
   const Topology = () => <div className="topology"></div>;
   return { default: Topology };
 });
 
-vi.mock("components/WebCLI/WebCLI", () => ({
+vi.mock("components/WebCLI", () => ({
   __esModule: true,
   default: () => {
     return <div className="webcli" data-testid="webcli"></div>;

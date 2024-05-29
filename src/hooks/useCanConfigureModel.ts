@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import useModelStatus from "hooks/useModelStatus";
 import { getActiveUser, getModelUUIDFromList } from "store/juju/selectors";
 import { canAdministerModel } from "store/juju/utils/models";

@@ -1,9 +1,7 @@
 import classNames from "classnames";
-import "./_chip-group.scss";
 
-export type Chip = {
-  [key: string]: number;
-};
+import "./_chip-group.scss";
+import type { Chip } from "./types";
 
 type Props = {
   chips?: Chip | null;

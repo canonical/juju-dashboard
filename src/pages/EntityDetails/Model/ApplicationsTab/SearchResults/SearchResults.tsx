@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import { useQueryParams } from "hooks/useQueryParams";
 import type { ApplicationData, ApplicationInfo } from "juju/types";
 import { actions as jujuActions } from "store/juju";

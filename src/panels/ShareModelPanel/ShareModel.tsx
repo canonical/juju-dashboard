@@ -7,8 +7,8 @@ import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
 import Panel from "components/Panel";
-import ShareCard from "components/ShareCard/ShareCard";
-import ToastCard from "components/ToastCard/ToastCard";
+import ShareCard from "components/ShareCard";
+import ToastCard from "components/ToastCard";
 import useModelStatus from "hooks/useModelStatus";
 import { usePanelQueryParams } from "panels/hooks";
 import { actions as appActions } from "store/app";

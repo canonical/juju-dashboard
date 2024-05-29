@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 
-import NotFound from "components/NotFound/NotFound";
+import NotFound from "components/NotFound";
 import useWindowTitle from "hooks/useWindowTitle";
-import BaseLayout from "layout/BaseLayout/BaseLayout";
+import BaseLayout from "layout/BaseLayout";
 import urls from "urls";
 
 import { Label } from "./types";

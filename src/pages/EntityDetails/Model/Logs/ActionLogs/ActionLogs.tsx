@@ -21,7 +21,7 @@ import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon/CharmIcon";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import RelativeDate from "components/RelativeDate";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import Status from "components/Status";
 import { copyToClipboard } from "components/utils";
 import useInlineErrors from "hooks/useInlineErrors";

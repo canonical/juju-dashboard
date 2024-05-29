@@ -6,10 +6,10 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 
-import LoadingHandler from "components/LoadingHandler/LoadingHandler";
+import LoadingHandler from "components/LoadingHandler";
 import Panel from "components/Panel";
-import RadioInputBox from "components/RadioInputBox/RadioInputBox";
-import ToastCard from "components/ToastCard/ToastCard";
+import RadioInputBox from "components/RadioInputBox";
+import ToastCard from "components/ToastCard";
 import useAnalytics from "hooks/useAnalytics";
 import { useExecuteActionOnUnits } from "juju/api-hooks";
 import ActionOptions from "panels/ActionsPanel/ActionOptions";

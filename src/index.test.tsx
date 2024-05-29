@@ -18,7 +18,7 @@ import {
   renderApp,
 } from "./index";
 
-vi.mock("components/App/App", () => {
+vi.mock("components/App", () => {
   const App = () => <div data-testid="app"></div>;
   return { default: App };
 });

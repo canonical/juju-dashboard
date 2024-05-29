@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import { isSet } from "components/utils";
 import useInlineErrors from "hooks/useInlineErrors";
 import { getCharmsURLFromApplications } from "juju/api";

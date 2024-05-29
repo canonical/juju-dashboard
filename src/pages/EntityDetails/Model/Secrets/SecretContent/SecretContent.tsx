@@ -11,7 +11,7 @@ import { Form, Formik } from "formik";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import RevisionField from "components/secrets/RevisionField";
 import SecretLabel from "components/secrets/SecretLabel";
 import { useGetSecretContent } from "juju/api-hooks";

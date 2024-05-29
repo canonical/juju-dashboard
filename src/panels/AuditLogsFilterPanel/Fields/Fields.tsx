@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import AutocompleteInput from "components/AutocompleteInput";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import { DATETIME_LOCAL } from "consts";
 import {
   getAuditEventsMethods,

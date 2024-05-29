@@ -6,7 +6,7 @@ import {
   getGroupedUnitsDataByStatus,
 } from "store/juju/selectors";
 
-import ControllerChart from "../ControllerChart/ControllerChart";
+import ControllerChart from "../ControllerChart";
 
 import "./_controller-overview.scss";
 

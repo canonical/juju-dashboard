@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
   getControllerConnection,

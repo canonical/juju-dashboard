@@ -31,7 +31,7 @@ import { useAppSelector } from "store/store";
 import urls from "urls";
 import { breakLines } from "utils";
 
-import ControllersOverview from "./ControllerOverview/ControllerOverview";
+import ControllersOverview from "./ControllerOverview";
 import "./_controllers.scss";
 import { Label } from "./types";
 

@@ -1,4 +1,4 @@
-import DonutChart from "components/DonutChart/DonutChart";
+import DonutChart from "components/DonutChart";
 import { pluralize } from "store/juju/utils/models";
 
 import "./_controller-chart.scss";

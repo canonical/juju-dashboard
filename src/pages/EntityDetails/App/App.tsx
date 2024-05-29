@@ -6,12 +6,12 @@ import { useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
-import ChipGroup from "components/ChipGroup/ChipGroup";
-import EntityInfo from "components/EntityInfo/EntityInfo";
-import FormikFormData from "components/FormikFormData/FormikFormData";
-import type { SetFieldValue } from "components/FormikFormData/FormikFormData";
-import InfoPanel from "components/InfoPanel/InfoPanel";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import ChipGroup from "components/ChipGroup";
+import EntityInfo from "components/EntityInfo";
+import FormikFormData from "components/FormikFormData";
+import type { SetFieldValue } from "components/FormikFormData";
+import InfoPanel from "components/InfoPanel";
+import type { EntityDetailsRoute } from "components/Routes";
 import SegmentedControl from "components/SegmentedControl";
 import Status from "components/Status";
 import useCanConfigureModel from "hooks/useCanConfigureModel";

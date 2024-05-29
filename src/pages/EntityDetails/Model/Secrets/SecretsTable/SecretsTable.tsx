@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 import AppLink from "components/AppLink";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import RelativeDate from "components/RelativeDate";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { copyToClipboard } from "components/utils";
 import useCanManageSecrets from "hooks/useCanManageSecrets";

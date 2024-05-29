@@ -17,19 +17,19 @@ import urls from "urls";
 import ModelDetails from "./ModelDetails";
 import { Label as ModelDetailsLabel } from "./types";
 
-vi.mock("pages/EntityDetails/App/App", () => {
+vi.mock("pages/EntityDetails/App", () => {
   return { default: () => <div data-testid="app"></div> };
 });
 
-vi.mock("pages/EntityDetails/Model/Model", () => {
+vi.mock("pages/EntityDetails/Model", () => {
   return { default: () => <div data-testid="model"></div> };
 });
 
-vi.mock("pages/EntityDetails/Unit/Unit", () => {
+vi.mock("pages/EntityDetails/Unit", () => {
   return { default: () => <div data-testid="unit"></div> };
 });
 
-vi.mock("pages/EntityDetails/Machine/Machine", () => {
+vi.mock("pages/EntityDetails/Machine", () => {
   return { default: () => <div data-testid="machine"></div> };
 });
 

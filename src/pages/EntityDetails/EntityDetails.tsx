@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams, Link, Outlet } from "react-router-dom";
 
-import Breadcrumb from "components/Breadcrumb/Breadcrumb";
-import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
-import NotFound from "components/NotFound/NotFound";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
-import WebCLI from "components/WebCLI/WebCLI";
+import Breadcrumb from "components/Breadcrumb";
+import LoadingSpinner from "components/LoadingSpinner";
+import NotFound from "components/NotFound";
+import type { EntityDetailsRoute } from "components/Routes";
+import WebCLI from "components/WebCLI";
 import { useEntityDetailsParams } from "components/hooks";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";

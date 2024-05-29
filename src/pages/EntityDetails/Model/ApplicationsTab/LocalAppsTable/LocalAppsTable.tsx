@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import useAnalytics from "hooks/useAnalytics";
 import useCanConfigureModel from "hooks/useCanConfigureModel";
 import { useQueryParams } from "hooks/useQueryParams";

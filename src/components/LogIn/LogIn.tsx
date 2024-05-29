@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import FadeUpIn from "animations/FadeUpIn";
 import AuthenticationButton from "components/AuthenticationButton";
 import Logo from "components/Logo";
-import ToastCard from "components/ToastCard/ToastCard";
+import ToastCard from "components/ToastCard";
 import bakery from "juju/bakery";
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";

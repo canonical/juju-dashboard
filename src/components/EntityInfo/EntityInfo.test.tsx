@@ -5,7 +5,7 @@ import { renderComponent } from "testing/utils";
 
 import EntityInfo from "./EntityInfo";
 
-vi.mock("components/Topology/Topology", () => {
+vi.mock("components/Topology", () => {
   const Topology = () => <div className="topology"></div>;
   return { default: Topology };
 });

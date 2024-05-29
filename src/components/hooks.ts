@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import { getModelByUUID } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import getUserName from "utils/getUserName";

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import type { NavLinkProps } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
-import UserMenu from "components/UserMenu/UserMenu";
+import UserMenu from "components/UserMenu";
 import SideNavigation, {
   SideNavigationText,
 } from "components/upstream/SideNavigation";

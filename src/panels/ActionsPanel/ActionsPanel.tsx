@@ -8,11 +8,11 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 
-import CharmIcon from "components/CharmIcon/CharmIcon";
-import LoadingHandler from "components/LoadingHandler/LoadingHandler";
+import CharmIcon from "components/CharmIcon";
+import LoadingHandler from "components/LoadingHandler";
 import Panel from "components/Panel";
-import RadioInputBox from "components/RadioInputBox/RadioInputBox";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import RadioInputBox from "components/RadioInputBox";
+import type { EntityDetailsRoute } from "components/Routes";
 import useInlineErrors from "hooks/useInlineErrors";
 import {
   useExecuteActionOnUnits,

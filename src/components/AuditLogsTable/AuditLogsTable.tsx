@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import RelativeDate from "components/RelativeDate";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import { useQueryParams } from "hooks/useQueryParams";
 import { actions as jujuActions } from "store/juju";
 import {

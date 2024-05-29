@@ -2,8 +2,8 @@ import { initialize, pageview } from "react-ga";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import ConnectionError from "components/ConnectionError";
-import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
-import { Routes } from "components/Routes/Routes";
+import ErrorBoundary from "components/ErrorBoundary";
+import Routes from "components/Routes";
 import { getAnalyticsEnabled, getConfig } from "store/general/selectors";
 import { useAppSelector } from "store/store";
 
