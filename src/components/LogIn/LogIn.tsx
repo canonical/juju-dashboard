@@ -1,6 +1,4 @@
-import { Spinner } from "@canonical/react-components";
-import { unwrapResult } from "@reduxjs/toolkit";
-import type { FormEvent, PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { useEffect, useRef } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -9,9 +7,6 @@ import FadeUpIn from "animations/FadeUpIn";
 import AuthenticationButton from "components/AuthenticationButton";
 import Logo from "components/Logo";
 import ToastCard from "components/ToastCard";
-import bakery from "juju/bakery";
-import { thunks as appThunks } from "store/app";
-import { actions as generalActions } from "store/general";
 import {
   getConfig,
   getLoginError,
@@ -20,10 +15,11 @@ import {
   isLoggedIn,
   getIsJuju,
 } from "store/general/selectors";
-import type { RootState } from "store/store";
-import { useAppDispatch, useAppSelector } from "store/store";
+import { useAppSelector } from "store/store";
 
 import "./_login.scss";
+import IdentityProviderForm from "./IdentityProviderForm";
+import UserPassForm from "./UserPassForm";
 import { ErrorResponse, Label } from "./types";
 
 export default function LogIn({ children }: PropsWithChildren) {
@@ -120,82 +116,4 @@ function generateErrorMessage(loginError?: string | null) {
       {loginErrorMessage}
     </p>
   );
-}
-
-function IdentityProviderForm({ userIsLoggedIn }: { userIsLoggedIn: boolean }) {
-  const visitURL = useSelector((state: RootState) => {
-    if (!userIsLoggedIn) {
-      // This form only gets displayed on the main login page, at which point
-      // there can only be one authentication request, so just return the
-      // first one.
-      return state?.general?.visitURLs?.[0];
-    }
-  });
-
-  return <Button visitURL={visitURL}></Button>;
-}
-
-interface LoginElements extends HTMLFormControlsCollection {
-  username: HTMLInputElement;
-  password: HTMLInputElement;
-}
-
-function UserPassForm() {
-  const dispatch = useAppDispatch();
-  const focus = useRef<HTMLInputElement>(null);
-  const wsControllerURL = useAppSelector(getWSControllerURL);
-
-  function handleSubmit(
-    e: FormEvent<HTMLFormElement & { elements: LoginElements }>,
-  ) {
-    e.preventDefault();
-    const elements = e.currentTarget.elements;
-    const user = elements.username.value;
-    const password = elements.password.value;
-    dispatch(generalActions.cleanupLoginErrors());
-    dispatch(
-      generalActions.storeUserPass({
-        wsControllerURL,
-        credential: { user, password },
-      }),
-    );
-    if (bakery) {
-      // TODO: Consider displaying an error alert.
-      dispatch(appThunks.connectAndStartPolling())
-        .then(unwrapResult)
-        .catch((error) => console.error(Label.POLLING_ERROR, error));
-    }
-  }
-
-  useEffect(() => {
-    focus.current?.focus();
-  }, []);
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="username">Username</label>
-      <input type="text" name="username" id="username" ref={focus} />
-      <label htmlFor="password">Password</label>
-      <input type="password" name="password" id="password" />
-      <button className="p-button--positive" type="submit">
-        Log in to the dashboard
-      </button>
-    </form>
-  );
-}
-
-function Button({ visitURL }: { visitURL?: string | null }) {
-  if (visitURL) {
-    return (
-      <AuthenticationButton appearance="positive" visitURL={visitURL}>
-        Log in to the dashboard
-      </AuthenticationButton>
-    );
-  } else {
-    return (
-      <button className="p-button--neutral" disabled>
-        <Spinner text="Connecting..." />
-      </button>
-    );
-  }
 }
