@@ -4,7 +4,8 @@ import { vi } from "vitest";
 
 import type { ConfigData } from "../types";
 
-import ConfigField, { Label } from "./ConfigField";
+import ConfigField from "./ConfigField";
+import { Label } from "./types";
 
 describe("ConfigField", () => {
   const config: ConfigData = {

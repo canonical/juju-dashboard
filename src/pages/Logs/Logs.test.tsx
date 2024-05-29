@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { vi } from "vitest";
 
-import { Label } from "components/AuditLogsTable/AuditLogsTableActions/AuditLogsTableActions";
+import { AuditLogsTableActionsLabel } from "components/AuditLogsTable/AuditLogsTableActions";
 import type { RootState } from "store/store";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
@@ -53,7 +53,7 @@ describe("Logs", () => {
   it("should display the actions", async () => {
     renderComponent(<Logs />, { state });
     expect(
-      screen.getByRole("button", { name: Label.FILTER }),
+      screen.getByRole("button", { name: AuditLogsTableActionsLabel.FILTER }),
     ).toBeInTheDocument();
   });
 });

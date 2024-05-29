@@ -17,7 +17,7 @@ import { useId, useState } from "react";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import SecretForm from "components/secrets/SecretForm";
 import SecretLabel from "components/secrets/SecretLabel";
 import useCanManageSecrets from "hooks/useCanManageSecrets";
@@ -32,15 +32,7 @@ import {
 import { useAppSelector } from "store/store";
 import { secretIsAppOwned } from "utils";
 
-export enum Label {
-  BUTTON_ADD = "Add a secret...",
-  BUTTON_CANCEL = "Cancel",
-  BUTTON_SUBMIT = "Add secret",
-  CHOOSE_SECRET = "Choose a secret",
-  LOADING = "Loading",
-  MODAL_TITLE = "Add secret",
-  NONE = "No secrets",
-}
+import { Label } from "./types";
 
 type Props = {
   setValue: (secret: string) => void;

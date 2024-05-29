@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import useAnalytics from "hooks/useAnalytics";
 import useCanConfigureModel from "hooks/useCanConfigureModel";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -20,17 +20,12 @@ import { generateLocalApplicationTableHeaders } from "tables/tableHeaders";
 import { generateLocalApplicationRows } from "tables/tableRows";
 
 import AppSearchBox from "./AppSearchBox";
+import { Label } from "./types";
 import {
   addSelectAllColumn,
   addSelectColumn,
   useTableSelect,
 } from "./useTableSelect";
-
-export enum Label {
-  NONE = "There are no local applications in this model",
-  NONE_SEARCH = "No matching local applications found in this model",
-  RUN_ACTION = "Run action",
-}
 
 type Props = {
   applications?: ApplicationData | null;

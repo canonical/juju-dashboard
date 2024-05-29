@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
-import Topology from "components/Topology/Topology";
+import type { EntityDetailsRoute } from "components/Routes";
+import Topology from "components/Topology";
 import { getViewportWidth } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import {
@@ -15,14 +15,7 @@ import {
 } from "store/juju/selectors";
 
 import "./_info-panel.scss";
-
-export enum TestId {
-  INFO_PANEL = "info-panel",
-}
-
-export enum Label {
-  EXPAND_BUTTON = "Expand topology",
-}
+import { Label, TestId } from "./types";
 
 const expandedTopologyDimensions = () => {
   const de = document.documentElement;

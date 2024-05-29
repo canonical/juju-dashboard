@@ -8,7 +8,8 @@ import {
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
-import ModelSummary, { Label } from "./ModelSummary";
+import ModelSummary from "./ModelSummary";
+import { Label } from "./types";
 
 describe("ModelSummary", () => {
   it("displays links", () => {

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import type { NavLinkProps } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
-import UserMenu from "components/UserMenu/UserMenu";
+import UserMenu from "components/UserMenu";
 import SideNavigation, {
   SideNavigationText,
 } from "components/upstream/SideNavigation";
@@ -27,11 +27,7 @@ import { useAppSelector } from "store/store";
 import urls, { externalURLs } from "urls";
 
 import "./_primary-nav.scss";
-
-export enum Label {
-  ADVANCED_SEARCH = "Advanced search",
-  LOGS = "Logs",
-}
+import { Label } from "./types";
 
 const useControllersLink = () => {
   const controllers: Controllers | null = useSelector(getControllerData);

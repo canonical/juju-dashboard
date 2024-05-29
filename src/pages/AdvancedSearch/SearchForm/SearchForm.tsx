@@ -21,17 +21,10 @@ import { useAppDispatch, useAppSelector } from "store/store";
 
 import SearchHelp from "./SearchHelp";
 import SearchHistoryMenu from "./SearchHistoryMenu";
-import type { FormFields } from "./types";
+import { QUERY_HISTORY_KEY } from "./consts";
+import { Label, type FormFields } from "./types";
 
 import "./_search-form.scss";
-
-export enum Label {
-  HELP = "Help",
-  SEARCH = "Search",
-  COPY_JSON = "Copy JSON",
-}
-
-export const QUERY_HISTORY_KEY = "queryHistory";
 
 const SearchForm = (): JSX.Element => {
   const formikRef = useRef<FormikProps<FormFields>>(null);

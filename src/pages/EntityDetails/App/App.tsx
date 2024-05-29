@@ -6,12 +6,12 @@ import { useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
-import ChipGroup from "components/ChipGroup/ChipGroup";
-import EntityInfo from "components/EntityInfo/EntityInfo";
-import FormikFormData from "components/FormikFormData/FormikFormData";
-import type { SetFieldValue } from "components/FormikFormData/FormikFormData";
-import InfoPanel from "components/InfoPanel/InfoPanel";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import ChipGroup from "components/ChipGroup";
+import EntityInfo from "components/EntityInfo";
+import FormikFormData from "components/FormikFormData";
+import type { SetFieldValue } from "components/FormikFormData";
+import InfoPanel from "components/InfoPanel";
+import type { EntityDetailsRoute } from "components/Routes";
 import SegmentedControl from "components/SegmentedControl";
 import Status from "components/Status";
 import useCanConfigureModel from "hooks/useCanConfigureModel";
@@ -36,19 +36,7 @@ import urls from "urls";
 
 import { generateMachineCounts, generateUnitCounts } from "../counts";
 
-export enum TestId {
-  MACHINES_TABLE = "machines-table",
-  RUN_ACTION_BUTTON = "run-action-button",
-  SELECT_ALL = "select-all",
-  SHOW_LOGS = "show-logs",
-  UNITS_TABLE = "units-table",
-}
-
-export enum Label {
-  CONFIGURE = "Configure",
-  NO_UNITS = "There are no units in this application",
-  RUN_ACTION = "Run action",
-}
+import { Label, TestId } from "./types";
 
 type FormData = {
   selectAll: boolean;

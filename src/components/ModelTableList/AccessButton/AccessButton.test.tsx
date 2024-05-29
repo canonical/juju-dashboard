@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import AccessButton, { Label } from "./AccessButton";
+import AccessButton from "./AccessButton";
+import { Label } from "./types";
 
 describe("AccessButton", () => {
   it("displays an access button", () => {

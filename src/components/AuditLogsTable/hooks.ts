@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import { useQueryParams } from "hooks/useQueryParams";
 import {
   getControllerConnection,
@@ -16,7 +16,7 @@ import {
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilters";
-import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/AuditLogsTableFilters";
+import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/consts";
 import { DEFAULT_PAGE } from "./consts";
 
 export const useFetchAuditEvents = () => {

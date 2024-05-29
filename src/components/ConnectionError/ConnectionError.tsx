@@ -2,7 +2,7 @@ import { Button, Notification, Strip } from "@canonical/react-components";
 import { useEffect, type PropsWithChildren } from "react";
 import reactHotToast from "react-hot-toast";
 
-import ToastCard from "components/ToastCard/ToastCard";
+import ToastCard from "components/ToastCard";
 import { getConnectionError } from "store/general/selectors";
 import { getAuditEventsErrors } from "store/juju/selectors";
 import { useAppSelector } from "store/store";

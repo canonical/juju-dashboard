@@ -5,7 +5,8 @@ import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
 
-import Fields, { Label } from "./Fields";
+import Fields from "./Fields";
+import { Label } from "./types";
 
 describe("Fields", () => {
   it("displays key/value pairs", async () => {

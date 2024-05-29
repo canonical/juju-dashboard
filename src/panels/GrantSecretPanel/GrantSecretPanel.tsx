@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import Panel from "components/Panel";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import SecretLabel from "components/secrets/SecretLabel";
 import {
   useListSecrets,
@@ -28,15 +28,7 @@ import {
 import { useAppSelector } from "store/store";
 import { toErrorString } from "utils";
 
-export enum TestId {
-  PANEL = "grant-secret-panel",
-}
-
-export enum Label {
-  CANCEL = "Cancel",
-  SUBMIT = "Grant",
-  NO_APPS = "There are no applications in this model.",
-}
+import { Label, TestId } from "./types";
 
 export type FormFields = {
   applications: string[];

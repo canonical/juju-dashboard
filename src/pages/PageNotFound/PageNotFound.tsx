@@ -1,13 +1,11 @@
 import { Link } from "react-router-dom";
 
-import NotFound from "components/NotFound/NotFound";
+import NotFound from "components/NotFound";
 import useWindowTitle from "hooks/useWindowTitle";
-import BaseLayout from "layout/BaseLayout/BaseLayout";
+import BaseLayout from "layout/BaseLayout";
 import urls from "urls";
 
-export enum Label {
-  NOT_FOUND = "Hmm, we can't seem to find that page...",
-}
+import { Label } from "./types";
 
 export default function PageNotFound() {
   useWindowTitle("404 - Page not found");

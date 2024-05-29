@@ -8,14 +8,14 @@ import type { ReactNode } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import ChipGroup from "components/ChipGroup/ChipGroup";
-import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
-import ModelTableList from "components/ModelTableList/ModelTableList";
+import ChipGroup from "components/ChipGroup";
+import LoadingSpinner from "components/LoadingSpinner";
+import ModelTableList from "components/ModelTableList";
 import SegmentedControl from "components/SegmentedControl";
 import useModelAttributes from "hooks/useModelAttributes";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
-import BaseLayout from "layout/BaseLayout/BaseLayout";
+import BaseLayout from "layout/BaseLayout";
 import {
   getGroupedModelStatusCounts,
   getModelData,
@@ -29,10 +29,7 @@ import type { ModelsGroupedBy } from "urls";
 import urls from "urls";
 
 import "./_models.scss";
-
-export enum Label {
-  NOT_FOUND = "No models found",
-}
+import { Label } from "./types";
 
 export default function Models() {
   useWindowTitle("Models");

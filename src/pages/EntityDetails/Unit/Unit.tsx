@@ -3,9 +3,9 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import EntityInfo from "components/EntityInfo/EntityInfo";
-import InfoPanel from "components/InfoPanel/InfoPanel";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import EntityInfo from "components/EntityInfo";
+import InfoPanel from "components/InfoPanel";
+import type { EntityDetailsRoute } from "components/Routes";
 import type { ApplicationData, MachineData } from "juju/types";
 import {
   getAllModelApplicationStatus,

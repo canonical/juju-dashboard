@@ -8,7 +8,8 @@ import {
 import { jujuStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
-import CharmActionsPanelTitle, { Label } from "./CharmActionsPanelTitle";
+import CharmActionsPanelTitle from "./CharmActionsPanelTitle";
+import { Label } from "./types";
 
 describe("CharmActionsPanelTitle", () => {
   it("should display a warning message if there are no selected applications", () => {

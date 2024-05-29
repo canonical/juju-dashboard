@@ -1,16 +1,16 @@
 import { screen } from "@testing-library/react";
 
-import { Routes } from "components/Routes/Routes";
-import { TestId } from "layout/BaseLayout/BaseLayout";
+import Routes from "components/Routes";
+import { BaseLayoutTestId } from "layout/BaseLayout";
 import { renderComponent } from "testing/utils";
 
-import { Label } from "./PageNotFound";
+import { Label } from "./types";
 
 describe("PageNotFound page", () => {
   it("should display when unknown route is accessed", () => {
     renderComponent(<Routes />, { url: "/foobar11" });
     expect(screen.getByText(Label.NOT_FOUND)).toBeInTheDocument();
     // Ensure only one route is rendered
-    expect(screen.getAllByTestId(TestId.MAIN)).toHaveLength(1);
+    expect(screen.getAllByTestId(BaseLayoutTestId.MAIN)).toHaveLength(1);
   });
 });

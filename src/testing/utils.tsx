@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import type { Router as RemixRouter } from "@remix-run/router";
 import { render, renderHook } from "@testing-library/react";
 import { useEffect, type PropsWithChildren, type ReactNode } from "react";

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import AutocompleteInput from "components/AutocompleteInput";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import { DATETIME_LOCAL } from "consts";
 import {
   getAuditEventsMethods,
@@ -17,13 +17,7 @@ import {
 
 import type { FormFields } from "../types";
 
-export enum Label {
-  AFTER = "After",
-  BEFORE = "Before",
-  METHOD = "Facade method",
-  MODEL = "Model",
-  USER = "User",
-}
+import { Label } from "./types";
 
 const Fields = (): JSX.Element => {
   const { modelName } = useParams<EntityDetailsRoute>();

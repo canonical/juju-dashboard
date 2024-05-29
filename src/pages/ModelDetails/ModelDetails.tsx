@@ -3,23 +3,21 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes, useParams } from "react-router-dom";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import { startModelWatcher, stopModelWatcher } from "juju/api";
 import type { ConnectionWithFacades } from "juju/types";
-import App from "pages/EntityDetails/App/App";
-import EntityDetails from "pages/EntityDetails/EntityDetails";
-import Machine from "pages/EntityDetails/Machine/Machine";
-import Model from "pages/EntityDetails/Model/Model";
-import Unit from "pages/EntityDetails/Unit/Unit";
+import EntityDetails from "pages/EntityDetails";
+import App from "pages/EntityDetails/App";
+import Machine from "pages/EntityDetails/Machine";
+import Model from "pages/EntityDetails/Model";
+import Unit from "pages/EntityDetails/Unit";
 import { actions as jujuActions } from "store/juju";
 import { getModelUUIDFromList } from "store/juju/selectors";
 import { useAppStore } from "store/store";
 import urls from "urls";
 import { getMajorMinorVersion, toErrorString } from "utils";
 
-export enum Label {
-  MODEL_WATCHER_ERROR = "Error while trying to stop model watcher.",
-}
+import { Label } from "./types";
 
 export default function ModelDetails() {
   const appState = useAppStore().getState();

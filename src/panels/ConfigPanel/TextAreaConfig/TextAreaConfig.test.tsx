@@ -18,7 +18,7 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import { Label } from "../SecretsPicker/SecretsPicker";
+import { SecretsPickerLabel } from "../SecretsPicker";
 import type { ConfigData } from "../types";
 
 import TextAreaConfig from "./TextAreaConfig";
@@ -113,7 +113,7 @@ describe("TextAreaConfig", () => {
       { state, url, path },
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
+      screen.getByRole("button", { name: SecretsPickerLabel.CHOOSE_SECRET }),
     );
     await userEvent.click(
       screen.getByRole("button", { name: "secret1 (aabbccdd)" }),

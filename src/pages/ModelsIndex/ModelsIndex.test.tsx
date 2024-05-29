@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { TestId } from "components/LoadingSpinner/LoadingSpinner";
+import { LoadingSpinnerTestId } from "components/LoadingSpinner";
 import type { RootState } from "store/store";
 import {
   detailedStatusFactory,
@@ -18,7 +18,8 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import ModelsIndex, { Label } from "./ModelsIndex";
+import ModelsIndex from "./ModelsIndex";
+import { Label } from "./types";
 
 describe("Models Index page", () => {
   let state: RootState;
@@ -94,7 +95,9 @@ describe("Models Index page", () => {
   it("displays a spinner while loading models", () => {
     state.juju.modelsLoaded = false;
     renderComponent(<ModelsIndex />, { state });
-    expect(screen.getByTestId(TestId.LOADING)).toBeInTheDocument();
+    expect(
+      screen.getByTestId(LoadingSpinnerTestId.LOADING),
+    ).toBeInTheDocument();
   });
 
   it("displays a message if there are no models", () => {

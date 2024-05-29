@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { vi } from "vitest";
 
-import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
+import { InfoPanelTestId } from "components/InfoPanel";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
@@ -17,12 +17,12 @@ import urls from "urls";
 
 import Unit from "./Unit";
 
-vi.mock("components/Topology/Topology", () => {
+vi.mock("components/Topology", () => {
   const Topology = () => <div className="topology"></div>;
   return { default: Topology };
 });
 
-vi.mock("components/WebCLI/WebCLI", () => {
+vi.mock("components/WebCLI", () => {
   const WebCLI = () => <div className="webcli" data-testid="webcli"></div>;
   return { default: WebCLI };
 });

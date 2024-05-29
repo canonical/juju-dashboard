@@ -4,20 +4,14 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import RevisionField from "components/secrets/RevisionField";
 import { getSecretByURI, getModelUUIDFromList } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
 import type { FormFields } from "../types";
 
-export enum Label {
-  CANCEL_BUTTON = "Cancel",
-  CONFIRM_BUTTON = "Remove",
-  CONFIRM_TITLE = "Remove secret?",
-  REMOVE_ALL = "Remove all revisions",
-  REVISION = "Revision",
-}
+import { Label } from "./types";
 
 type Props = {
   hideConfirm: () => void;

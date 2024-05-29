@@ -2,17 +2,13 @@ import { Button, RadioInput, Tooltip } from "@canonical/react-components";
 import { useState, type FormEventHandler, type ReactNode } from "react";
 
 import Panel from "components/Panel";
-import { TestId } from "panels/CharmsAndActionsPanel/CharmsAndActionsPanel";
+import { CharmsAndActionsPanelTestId } from "panels/CharmsAndActionsPanel";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { getCharms } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
 import CharmApplicationsDetails from "./CharmApplicationsDetails";
-
-export enum Label {
-  PANEL_TITLE = "Choose applications of charm:",
-  NO_ACTIONS = "No actions available for this charm!",
-}
+import { Label } from "./types";
 
 type Props = {
   onCharmURLChange: (charmURL: string | null) => void;
@@ -46,7 +42,7 @@ export default function CharmsPanel({
         </Button>
       }
       width="narrow"
-      data-testid={TestId.PANEL}
+      data-testid={CharmsAndActionsPanelTestId.PANEL}
       title={Label.PANEL_TITLE}
       onRemovePanelQueryParams={onRemovePanelQueryParams}
       loading={isLoading}

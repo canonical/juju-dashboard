@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 import AppLink from "components/AppLink";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import RelativeDate from "components/RelativeDate";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { copyToClipboard } from "components/utils";
 import useCanManageSecrets from "hooks/useCanManageSecrets";
@@ -29,19 +29,7 @@ import { secretIsAppOwned } from "utils";
 import SecretContent from "../SecretContent";
 
 import "./_secrets-table.scss";
-
-export enum Label {
-  ACTION_MENU = "Action menu",
-  COPY = "Copy",
-  GRANT_BUTTON = "Grant...",
-  REMOVE_BUTTON = "Remove...",
-  UPDATE_BUTTON = "Update...",
-}
-
-export enum TestId {
-  SECRETS_TABLE = "secrets-table",
-  GRANTED_TO = "granted-to",
-}
+import { Label, TestId } from "./types";
 
 const SecretsTable = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();

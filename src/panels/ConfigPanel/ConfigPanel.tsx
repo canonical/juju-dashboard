@@ -14,7 +14,7 @@ import usePortal from "react-useportal";
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon";
 import Panel from "components/Panel";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import SecretLabel from "components/secrets/SecretLabel";
 import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
@@ -42,35 +42,16 @@ import ChangedKeyValues from "./ChangedKeyValues";
 import type { SetNewValue, SetSelectedConfig } from "./ConfigField";
 import NumberConfig from "./NumberConfig";
 import TextAreaConfig from "./TextAreaConfig";
-import type { Config, ConfigData, ConfigValue } from "./types";
+import {
+  Label,
+  TestId,
+  type Config,
+  type ConfigData,
+  type ConfigValue,
+} from "./types";
 import { getRequiredGrants } from "./utils";
 
 import "./_config-panel.scss";
-
-export enum Label {
-  CANCEL_BUTTON = "Cancel",
-  CANCEL_CONFIRM = "Are you sure you wish to cancel?",
-  CANCEL_CONFIRM_CANCEL_BUTTON = "Continue editing",
-  CANCEL_CONFIRM_CONFIRM_BUTTON = "Yes, I'm sure",
-  GRANT_CANCEL_BUTTON = "No",
-  GRANT_CONFIRM = "Grant secrets?",
-  GRANT_CONFIRM_BUTTON = "Yes",
-  GRANT_ERROR = "Unable to grant application access to secrets.",
-  INVALID_SECRET_ERROR = "This is an invalid secret URI.",
-  SECRET_PREFIX_ERROR = "A secret URI must begin with the 'secret:' prefix.",
-  NONE = "This application doesn't have any configuration parameters",
-  RESET_BUTTON = "Reset all values",
-  SAVE_BUTTON = "Save and apply",
-  SAVE_CONFIRM = "Are you sure you wish to apply these changes?",
-  SAVE_CONFIRM_CANCEL_BUTTON = "Cancel",
-  SAVE_CONFIRM_CONFIRM_BUTTON = "Yes, apply changes",
-  GET_CONFIG_ERROR = "Unable to get application config.",
-  SUBMIT_TO_JUJU_ERROR = "Unable to submit config changes to Juju.",
-}
-
-export enum TestId {
-  PANEL = "config-panel",
-}
 
 enum InlineErrors {
   FORM = "form",

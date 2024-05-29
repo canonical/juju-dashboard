@@ -4,11 +4,7 @@ import ModelDetailsLink from "components/ModelDetailsLink";
 import type { ModelData } from "store/juju/types";
 import { ModelTab } from "urls";
 
-export enum Label {
-  APPS = "Number of applications",
-  MACHINES = "Number of machines",
-  UNITS = "Number of units",
-}
+import { Label } from "./types";
 
 type Props = {
   modelData: ModelData;

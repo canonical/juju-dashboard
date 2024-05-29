@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import * as Yup from "yup";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import {
   useCreateSecrets,
   useListSecrets,
@@ -33,11 +33,7 @@ import { useAppSelector, useAppDispatch } from "store/store";
 import { toErrorString } from "utils";
 
 import Fields from "./Fields";
-import { type FormFields } from "./types";
-
-export enum TestId {
-  SECRET_FORM = "secret-form",
-}
+import { TestId, type FormFields } from "./types";
 
 type Props = {
   formId: string;

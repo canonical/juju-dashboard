@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import useCanManageSecrets from "hooks/useCanManageSecrets";
 import { useQueryParams } from "hooks/useQueryParams";
 import { useListSecrets } from "juju/api-hooks";
@@ -16,14 +16,7 @@ import {
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import SecretsTable from "./SecretsTable";
-
-export enum Label {
-  ADD = "Add secret",
-}
-
-export enum TestId {
-  SECRETS_TAB = "secrets-tab",
-}
+import { Label, TestId } from "./types";
 
 const Secrets = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();

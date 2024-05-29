@@ -8,9 +8,7 @@ import { FormikField, Select } from "@canonical/react-components";
 import { getSecretByURI } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
-export enum Label {
-  REVISION = "Revision",
-}
+import { Label } from "./types";
 
 type Props = PropsWithSpread<
   {

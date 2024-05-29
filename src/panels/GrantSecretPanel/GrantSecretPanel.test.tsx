@@ -24,7 +24,8 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import GrantSecretPanel, { Label } from "./GrantSecretPanel";
+import GrantSecretPanel from "./GrantSecretPanel";
+import { Label } from "./types";
 
 vi.mock("juju/api-hooks/secrets", () => {
   return {

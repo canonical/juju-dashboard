@@ -22,7 +22,8 @@ import urls from "urls";
 import { secretRevisionFactory } from "../../../testing/factories/juju/juju";
 import type { FormFields } from "../types";
 
-import Fields, { Label } from "./Fields";
+import Fields from "./Fields";
+import { Label } from "./types";
 
 describe("Fields", () => {
   let state: RootState;

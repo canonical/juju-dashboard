@@ -11,17 +11,17 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import { TestId as CloudTestId } from "./CloudGroup";
+import { CloudGroupTestId } from "./CloudGroup";
 import ModelTableList from "./ModelTableList";
-import { TestId as OwnerTestId } from "./OwnerGroup";
-import { TestId as StatusTestId } from "./StatusGroup";
+import { OwnerGroupTestId } from "./OwnerGroup";
+import { StatusGroupTestId } from "./StatusGroup";
 
 describe("ModelTableList", () => {
   let state: RootState;
   const tables = [
-    ["status", StatusTestId.STATUS_GROUP],
-    ["owner", OwnerTestId.OWNER_GROUP],
-    ["cloud", CloudTestId.CLOUD_GROUP],
+    ["status", StatusGroupTestId.STATUS_GROUP],
+    ["owner", OwnerGroupTestId.OWNER_GROUP],
+    ["cloud", CloudGroupTestId.CLOUD_GROUP],
   ];
 
   beforeEach(() => {
@@ -42,9 +42,11 @@ describe("ModelTableList", () => {
 
   it("by default, renders the status table", () => {
     renderComponent(<ModelTableList filters={{}} groupedBy="" />, { state });
-    expect(screen.getByTestId(StatusTestId.STATUS_GROUP)).toBeInTheDocument();
     expect(
-      screen.queryByTestId(OwnerTestId.OWNER_GROUP),
+      screen.getByTestId(StatusGroupTestId.STATUS_GROUP),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(OwnerGroupTestId.OWNER_GROUP),
     ).not.toBeInTheDocument();
   });
 
@@ -66,9 +68,9 @@ describe("ModelTableList", () => {
       "getGroupedByStatusAndFilteredModelData",
     );
     const tables = [
-      { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
-      { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
-      { groupedBy: "status", component: StatusTestId.STATUS_GROUP },
+      { groupedBy: "status", component: StatusGroupTestId.STATUS_GROUP },
+      { groupedBy: "status", component: StatusGroupTestId.STATUS_GROUP },
+      { groupedBy: "status", component: StatusGroupTestId.STATUS_GROUP },
     ];
     const filters = { cloud: ["aws"] };
     tables.forEach((table) => {

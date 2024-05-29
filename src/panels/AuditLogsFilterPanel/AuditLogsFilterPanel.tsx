@@ -2,25 +2,14 @@ import { Button } from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import { useId } from "react";
 
-import {
-  DEFAULT_AUDIT_LOG_FILTERS,
-  type AuditLogFilters,
-} from "components/AuditLogsTable/AuditLogsTableFilters/AuditLogsTableFilters";
+import { type AuditLogFilters } from "components/AuditLogsTable/AuditLogsTableFilters/AuditLogsTableFilters";
+import { DEFAULT_AUDIT_LOG_FILTERS } from "components/AuditLogsTable/AuditLogsTableFilters/consts";
 import Panel from "components/Panel";
 import { useQueryParams } from "hooks/useQueryParams";
 import { usePanelQueryParams } from "panels/hooks";
 
 import Fields from "./Fields";
-import type { FormFields } from "./types";
-
-export enum Label {
-  CLEAR = "Clear",
-  FILTER = "Filter",
-}
-
-export enum TestId {
-  PANEL = "audit-logs-filter-panel",
-}
+import { Label, TestId, type FormFields } from "./types";
 
 const AuditLogsFilterPanel = (): JSX.Element => {
   const formId = useId();

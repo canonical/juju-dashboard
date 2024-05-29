@@ -68,10 +68,7 @@
     "react/display-name": 0,
     "@typescript-eslint/no-duplicate-enum-values": 0,
     "promise/catch-or-return": ["error", { "allowFinally": true }],
-    "react-refresh/only-export-components": [
-      "warn",
-      { "allowConstantExport": true },
-    ],
+    "react-refresh/only-export-components": ["error"],
     "@typescript-eslint/no-unused-vars": [
       "error",
       {

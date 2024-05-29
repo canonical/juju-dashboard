@@ -7,13 +7,11 @@ import {
 } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 
+import { Label } from "./types";
+
 type Props = {
   charmURL: string;
 };
-
-export enum Label {
-  NONE_SELECTED_TITLE = "You need to select a charm and applications to continue.",
-}
 
 const CharmActionsPanelTitle = ({ charmURL }: Props): JSX.Element => {
   const selectedApplications = useSelector(getSelectedApplications(charmURL));

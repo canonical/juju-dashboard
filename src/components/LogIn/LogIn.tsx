@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import FadeUpIn from "animations/FadeUpIn";
 import AuthenticationButton from "components/AuthenticationButton";
 import Logo from "components/Logo";
-import ToastCard from "components/ToastCard/ToastCard";
+import ToastCard from "components/ToastCard";
 import bakery from "juju/bakery";
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -24,19 +24,7 @@ import type { RootState } from "store/store";
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import "./_login.scss";
-
-export enum ErrorResponse {
-  INVALID_TAG = '"user-" is not a valid user tag',
-  INVALID_FIELD = "invalid entity name or password",
-}
-
-export enum Label {
-  INVALID_NAME = "Invalid user name",
-  INVALID_FIELD = "Invalid user name or password",
-  JAAS_LOGO = "JAAS logo",
-  JUJU_LOGO = "Juju logo",
-  POLLING_ERROR = "Error when trying to connect and start polling models.",
-}
+import { ErrorResponse, Label } from "./types";
 
 export default function LogIn({ children }: PropsWithChildren) {
   const viewedAuthRequests = useRef<string[]>([]);

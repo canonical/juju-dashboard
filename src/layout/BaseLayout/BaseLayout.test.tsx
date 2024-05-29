@@ -4,7 +4,8 @@ import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import BaseLayout, { Label } from "./BaseLayout";
+import BaseLayout from "./BaseLayout";
+import { Label } from "./types";
 
 describe("Base Layout", () => {
   let state: RootState;

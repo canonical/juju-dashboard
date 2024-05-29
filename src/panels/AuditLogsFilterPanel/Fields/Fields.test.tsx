@@ -16,7 +16,8 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import Fields, { Label } from "./Fields";
+import Fields from "./Fields";
+import { Label } from "./types";
 
 describe("Fields", () => {
   let state: RootState;

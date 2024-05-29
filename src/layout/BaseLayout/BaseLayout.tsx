@@ -4,29 +4,20 @@ import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 
 import FadeIn from "animations/FadeIn";
-import Banner from "components/Banner/Banner";
+import Banner from "components/Banner";
 import Logo from "components/Logo";
-import PrimaryNav from "components/PrimaryNav/PrimaryNav";
+import PrimaryNav from "components/PrimaryNav";
 import ApplicationLayout from "components/upstream/ApplicationLayout";
 import type { PanelProps } from "components/upstream/Panel";
 import Panel from "components/upstream/Panel";
 import { DARK_THEME } from "consts";
 import useOffline from "hooks/useOffline";
-import Panels from "panels/Panels";
+import Panels from "panels";
 import { getIsJuju } from "store/general/selectors";
 import urls from "urls";
 
 import "./_base-layout.scss";
-
-export enum TestId {
-  MAIN = "main-children",
-}
-
-export enum Label {
-  OFFLINE = "Your dashboard is offline.",
-  MOBILE_MENU_OPEN_BUTTON = "Open menu",
-  MOBILE_MENU_CLOSE_BUTTON = "Close menu",
-}
+import { Label, TestId } from "./types";
 
 type Props = {
   status?: ReactNode;

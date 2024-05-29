@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import Panel from "components/Panel";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import type { EntityDetailsRoute } from "components/Routes";
 import SecretLabel from "components/secrets/SecretLabel";
 import { useRemoveSecrets, useListSecrets } from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
@@ -16,16 +16,7 @@ import { useAppSelector } from "store/store";
 import { toErrorString } from "utils";
 
 import Fields from "./Fields";
-import { type FormFields } from "./types";
-
-export enum TestId {
-  PANEL = "remove-secret-panel",
-}
-
-export enum Label {
-  CANCEL = "Cancel",
-  SUBMIT = "Remove secret",
-}
+import { Label, TestId, type FormFields } from "./types";
 
 const RemoveSecretPanel = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();

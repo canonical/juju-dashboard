@@ -8,7 +8,7 @@ import { crossModelQueryStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import SearchHistoryMenu from "./SearchHistoryMenu";
-import { Label } from "./SearchHistoryMenu";
+import { Label } from "./types";
 
 describe("SearchHistoryMenu", () => {
   it("should be disabled when there is no history", async () => {

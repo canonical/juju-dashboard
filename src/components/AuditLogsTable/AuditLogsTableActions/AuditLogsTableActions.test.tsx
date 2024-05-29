@@ -9,7 +9,8 @@ import { auditEventFactory } from "testing/factories/juju/jimm";
 import { auditEventsStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
-import AuditLogsTableActions, { Label } from "./AuditLogsTableActions";
+import AuditLogsTableActions from "./AuditLogsTableActions";
+import { Label } from "./types";
 
 describe("AuditLogsTableActions", () => {
   let state: RootState;

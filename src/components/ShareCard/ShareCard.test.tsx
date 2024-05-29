@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import ShareCard, { Label } from "./ShareCard";
+import ShareCard from "./ShareCard";
+import { Label } from "./types";
 
 describe("Share Card", () => {
   it("should display appropriate text", () => {

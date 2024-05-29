@@ -1,20 +1,18 @@
-import type { ActionSpec } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 import {
   ActionButton,
   Button,
   ConfirmationModal,
 } from "@canonical/react-components";
-import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import usePortal from "react-useportal";
 
-import CharmIcon from "components/CharmIcon/CharmIcon";
-import LoadingHandler from "components/LoadingHandler/LoadingHandler";
+import CharmIcon from "components/CharmIcon";
+import LoadingHandler from "components/LoadingHandler";
 import Panel from "components/Panel";
-import RadioInputBox from "components/RadioInputBox/RadioInputBox";
-import type { EntityDetailsRoute } from "components/Routes/Routes";
+import RadioInputBox from "components/RadioInputBox";
+import type { EntityDetailsRoute } from "components/Routes";
 import useInlineErrors from "hooks/useInlineErrors";
 import {
   useExecuteActionOnUnits,
@@ -29,62 +27,15 @@ import type { RootState } from "store/store";
 import { useAppStore } from "store/store";
 
 import ActionOptions from "./ActionOptions";
-
-export enum Label {
-  CANCEL_BUTTON = "Cancel",
-  CONFIRM_BUTTON = "Confirm",
-  NO_UNITS_SELECTED = "0 units selected",
-  NO_ACTIONS_PROVIDED = "This charm has not provided any actions.",
-  GET_ACTIONS_ERROR = "Unable to get actions for application.",
-  EXECUTE_ACTION_ERROR = "Couldn't start the action.",
-}
-
-export enum TestId {
-  PANEL = "actions-panel",
-}
-
-export type ActionData = Record<string, ActionSpec>;
-
-type ActionParams = {
-  description: string;
-  properties: ActionProps;
-  required?: string[];
-  title: string;
-  type: string;
-};
-
-type ActionProps = {
-  [key: string]: ActionProp;
-};
-
-type ActionProp = {
-  description: string;
-  type: string;
-};
-
-export type ActionOptionsType = ActionOptionDetails[];
-
-type ActionOptionDetails = {
-  name: string;
-  description: string;
-  type: string;
-  required: boolean;
-};
-
-export type ActionOptionValues = {
-  [actionName: string]: ActionOptionValue;
-};
-
-export type ActionOptionValue = {
-  [optionName: string]: string;
-};
+import type {
+  ActionData,
+  ActionOptionValue,
+  ActionOptionValues,
+} from "./types";
+import { Label, TestId } from "./types";
+import { enableSubmit, onValuesChange } from "./utils";
 
 type SetSelectedAction = (actionName: string) => void;
-
-export type OnValuesChange = (
-  actionName: string,
-  options: ActionOptionValue,
-) => void;
 
 type ActionsQueryParams = {
   panel?: string | null;
@@ -351,87 +302,3 @@ export default function ActionsPanel(): JSX.Element {
     </Panel>
   );
 }
-
-export function onValuesChange(
-  actionName: string,
-  values: ActionOptionValue,
-  optionValues: MutableRefObject<ActionOptionValues>,
-) {
-  const updatedValues: ActionOptionValue = {};
-  Object.keys(values).forEach((key) => {
-    // Use toString to convert booleans to strings as this is what the API requires.
-    updatedValues[key.replace(`${actionName}-`, "")] = values[key].toString();
-  });
-
-  optionValues.current = {
-    ...optionValues.current,
-    [actionName]: updatedValues,
-  };
-}
-
-export function enableSubmit(
-  selectedAction: string | undefined,
-  selectedUnits: string[],
-  actionData: ActionData,
-  optionsValues: MutableRefObject<ActionOptionValues>,
-  setDisableSubmit: (disable: boolean) => void,
-) {
-  if (selectedAction && selectedUnits.length > 0) {
-    if (hasNoOptions(selectedAction, optionsValues.current)) {
-      setDisableSubmit(false);
-      return;
-    }
-    if (
-      requiredPopulated(selectedAction, actionData, optionsValues.current) &&
-      optionsValidate(selectedAction, optionsValues.current)
-    ) {
-      setDisableSubmit(false);
-      return;
-    }
-  }
-  setDisableSubmit(true);
-}
-
-type ValidationFnProps = (
-  selectedAction: string,
-  optionValues: ActionOptionValues,
-) => boolean;
-
-type RequiredPopulated = (
-  selectedAction: string,
-  actionData: ActionData,
-  optionValues: ActionOptionValues,
-) => boolean;
-
-const hasNoOptions: ValidationFnProps = (selected, optionValues) => {
-  // If there are no options stored then it doesn't have any.
-  if (!optionValues[selected]) {
-    return true;
-  }
-  return Object.keys(optionValues[selected]).length === 0;
-};
-
-const requiredPopulated: RequiredPopulated = (
-  selected,
-  actionData,
-  optionsValues,
-) => {
-  const required: ActionParams["required"] =
-    actionData[selected].params.required;
-  if (!required) {
-    return true;
-  }
-  if (required.length === 0) {
-    return true;
-  }
-  return !required.some((option) => {
-    const optionType = actionData[selected].params.properties[option].type;
-    const value = optionsValues[selected][option];
-    return optionType === "boolean" ? value !== "true" : value === "";
-  });
-};
-
-const optionsValidate: ValidationFnProps = (_selected, _optionsValues) => {
-  // XXX TODO
-  return true;
-};

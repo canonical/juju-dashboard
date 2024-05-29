@@ -3,10 +3,7 @@ import type { ReactNode } from "react";
 import { useState, useEffect } from "react";
 
 import "./_banner.scss";
-
-export enum Label {
-  CLOSE = "Close banner",
-}
+import { Label } from "./types";
 
 type Props = {
   isActive: boolean;

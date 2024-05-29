@@ -9,7 +9,8 @@ import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import UserMenu, { Label } from "./UserMenu";
+import UserMenu from "./UserMenu";
+import { Label } from "./types";
 
 describe("User Menu", () => {
   let state: RootState;

@@ -10,7 +10,9 @@ import { generalStateFactory, configFactory } from "testing/factories/general";
 import { crossModelQueryFactory } from "testing/factories/juju/jimm";
 import { renderComponent } from "testing/utils";
 
-import SearchForm, { Label, QUERY_HISTORY_KEY } from "./SearchForm";
+import SearchForm from "./SearchForm";
+import { QUERY_HISTORY_KEY } from "./consts";
+import { Label } from "./types";
 
 vi.mock("components/utils", async () => {
   const utils = await vi.importActual("components/utils");

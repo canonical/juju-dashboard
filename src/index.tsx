@@ -6,7 +6,7 @@ import type { Root } from "react-dom/client";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 
-import App from "components/App/App";
+import App from "components/App";
 import reduxStore from "store";
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";

@@ -33,7 +33,8 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import ConfigPanel, { Label } from "./ConfigPanel";
+import ConfigPanel from "./ConfigPanel";
+import { Label } from "./types";
 
 vi.mock("juju/api-hooks/application", () => ({
   useGetApplicationConfig: vi.fn(),
