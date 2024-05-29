@@ -33,11 +33,7 @@ import { breakLines } from "utils";
 
 import ControllersOverview from "./ControllerOverview/ControllerOverview";
 import "./_controllers.scss";
-
-export enum Label {
-  DEFAULT = "Default",
-  NAME = "Name",
-}
+import { Label } from "./types";
 
 type AnnotatedController = Controller & {
   models: number;

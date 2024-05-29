@@ -16,14 +16,7 @@ import {
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import SecretsTable from "./SecretsTable";
-
-export enum Label {
-  ADD = "Add secret",
-}
-
-export enum TestId {
-  SECRETS_TAB = "secrets-tab",
-}
+import { Label, TestId } from "./types";
 
 const Secrets = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();

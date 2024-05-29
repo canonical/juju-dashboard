@@ -2,7 +2,7 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
+import { TestId as InfoPanelTestId } from "components/InfoPanel/types";
 import * as componentUtils from "components/utils";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
@@ -24,7 +24,8 @@ import {
 } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 
-import App, { Label, TestId } from "./App";
+import App from "./App";
+import { Label, TestId } from "./types";
 
 vi.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;

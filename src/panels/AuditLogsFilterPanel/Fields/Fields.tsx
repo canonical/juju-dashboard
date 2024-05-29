@@ -17,13 +17,7 @@ import {
 
 import type { FormFields } from "../types";
 
-export enum Label {
-  AFTER = "After",
-  BEFORE = "Before",
-  METHOD = "Facade method",
-  MODEL = "Model",
-  USER = "User",
-}
+import { Label } from "./types";
 
 const Fields = (): JSX.Element => {
   const { modelName } = useParams<EntityDetailsRoute>();

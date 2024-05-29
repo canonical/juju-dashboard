@@ -9,9 +9,11 @@ import { generalStateFactory, configFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import { TestId } from "./Output";
-import WebCLI, { MAX_HISTORY, Label as WebCLILabel } from "./WebCLI";
+import { OutputTestId } from "./Output";
+import WebCLI from "./WebCLI";
 import { Label as ConnectionLabel } from "./connection";
+import { MAX_HISTORY } from "./consts";
+import { Label } from "./types";
 
 vi.mock("juju/bakery", () => ({
   __esModule: true,
@@ -237,11 +239,11 @@ describe("WebCLI", () => {
       server.send(JSON.stringify(message));
     });
 
-    const code = await screen.findByTestId(TestId.CODE);
+    const code = await screen.findByTestId(OutputTestId.CODE);
     expect(code?.textContent).toMatchSnapshot();
     // Wait for the setTimeout that buffers the message updates in connection.js.
     await waitFor(() => {
-      expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
+      expect(screen.getByTestId(OutputTestId.CONTENT)).toHaveAttribute(
         "style",
         "height: 300px;",
       );
@@ -292,11 +294,11 @@ describe("WebCLI", () => {
       server.send(JSON.stringify(message));
     });
 
-    const code = await screen.findByTestId(TestId.CODE);
+    const code = await screen.findByTestId(OutputTestId.CODE);
     expect(code?.textContent).toMatchSnapshot();
     // Wait for the setTimeout that buffers the message updates in connection.js.
     await waitFor(() => {
-      expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
+      expect(screen.getByTestId(OutputTestId.CONTENT)).toHaveAttribute(
         "style",
         "height: 300px;",
       );
@@ -306,7 +308,7 @@ describe("WebCLI", () => {
   it("can be resized with a mouse", async () => {
     renderComponent(<WebCLI {...props} />);
     await server.connected;
-    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+    expect(await screen.findByTestId(OutputTestId.CONTENT)).toHaveAttribute(
       "style",
       "height: 1px;",
     );
@@ -318,7 +320,7 @@ describe("WebCLI", () => {
         clientY: 100,
       });
     }
-    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+    expect(await screen.findByTestId(OutputTestId.CONTENT)).toHaveAttribute(
       "style",
       "height: 628px;",
     );
@@ -327,7 +329,7 @@ describe("WebCLI", () => {
   it("can be resized on mobile", async () => {
     renderComponent(<WebCLI {...props} />);
     await server.connected;
-    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+    expect(await screen.findByTestId(OutputTestId.CONTENT)).toHaveAttribute(
       "style",
       "height: 1px;",
     );
@@ -343,7 +345,7 @@ describe("WebCLI", () => {
         ],
       });
     }
-    expect(await screen.findByTestId(TestId.CONTENT)).toHaveAttribute(
+    expect(await screen.findByTestId(OutputTestId.CONTENT)).toHaveAttribute(
       "style",
       "height: 628px;",
     );
@@ -376,7 +378,7 @@ describe("WebCLI", () => {
     renderComponent(<WebCLI {...props} modelUUID="" />);
     expect(
       document.querySelector(".webcli__output-content code"),
-    ).toHaveTextContent(`ERROR: ${WebCLILabel.CONNECTION_ERROR}`);
+    ).toHaveTextContent(`ERROR: ${Label.CONNECTION_ERROR}`);
   });
 
   it("should display authentication error when no credentials and macaroons are available", async () => {
@@ -391,7 +393,7 @@ describe("WebCLI", () => {
     );
     expect(
       document.querySelector(".webcli__output-content code"),
-    ).toHaveTextContent(`ERROR: ${WebCLILabel.AUTHENTICATION_ERROR}`);
+    ).toHaveTextContent(`ERROR: ${Label.AUTHENTICATION_ERROR}`);
   });
 
   it("should display error when JSON can't be parsed", async () => {
@@ -499,7 +501,7 @@ describe("WebCLI", () => {
     server.error();
     expect(
       document.querySelector(".webcli__output-content code"),
-    ).toHaveTextContent(`ERROR: ${WebCLILabel.UNKNOWN_ERROR}`);
+    ).toHaveTextContent(`ERROR: ${Label.UNKNOWN_ERROR}`);
   });
 
   it("should display error when trying to send message over an unopened connection", async () => {
@@ -510,6 +512,6 @@ describe("WebCLI", () => {
     await userEvent.type(input, "status --color{enter}");
     expect(
       document.querySelector(".webcli__output-content code"),
-    ).toHaveTextContent(`ERROR: ${WebCLILabel.NOT_OPEN_ERROR}`);
+    ).toHaveTextContent(`ERROR: ${Label.NOT_OPEN_ERROR}`);
   });
 });

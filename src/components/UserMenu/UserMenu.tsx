@@ -17,10 +17,7 @@ import { useAppDispatch, useAppSelector } from "store/store";
 import urls from "urls";
 
 import "./_user-menu.scss";
-
-export enum Label {
-  LOGOUT_ERROR = "Error when trying to logout.",
-}
+import { Label } from "./types";
 
 const UserMenu = () => {
   const sendAnalytics = useAnalytics();

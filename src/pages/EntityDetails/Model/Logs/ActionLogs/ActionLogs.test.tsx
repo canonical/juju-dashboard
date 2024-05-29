@@ -24,8 +24,8 @@ import {
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
-import ActionLogs, { Label } from "./ActionLogs";
-import { Output } from "./ActionLogs";
+import ActionLogs from "./ActionLogs";
+import { Label, Output } from "./types";
 
 vi.mock("components/utils", async () => {
   const utils = await vi.importActual("components/utils");

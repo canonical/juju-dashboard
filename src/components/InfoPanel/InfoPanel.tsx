@@ -15,14 +15,7 @@ import {
 } from "store/juju/selectors";
 
 import "./_info-panel.scss";
-
-export enum TestId {
-  INFO_PANEL = "info-panel",
-}
-
-export enum Label {
-  EXPAND_BUTTON = "Expand topology",
-}
+import { Label, TestId } from "./types";
 
 const expandedTopologyDimensions = () => {
   const de = document.documentElement;

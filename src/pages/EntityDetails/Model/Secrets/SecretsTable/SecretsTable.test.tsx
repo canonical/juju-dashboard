@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { TestId as LoadingTestId } from "components/LoadingSpinner/LoadingSpinner";
+import { TestId as LoadingTestId } from "components/LoadingSpinner/types";
 import * as componentUtils from "components/utils";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -27,7 +27,8 @@ import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watch
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import SecretsTable, { Label, TestId } from "./SecretsTable";
+import SecretsTable from "./SecretsTable";
+import { Label, TestId } from "./types";
 
 vi.mock("components/utils", async () => {
   const utils = await vi.importActual("components/utils");

@@ -10,3 +10,7 @@ export type FormFields = {
   label: string;
   pairs: SecretPairs[];
 };
+
+export enum TestId {
+  SECRET_FORM = "secret-form",
+}

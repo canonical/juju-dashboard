@@ -25,7 +25,8 @@ import { renderComponent } from "testing/utils";
 import urls from "urls";
 import { ModelTab } from "urls";
 
-import EntityDetails, { Label } from "./EntityDetails";
+import EntityDetails from "./EntityDetails";
+import { Label } from "./types";
 
 vi.mock("components/Topology/Topology", () => {
   const Topology = () => <div className="topology"></div>;

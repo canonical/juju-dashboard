@@ -81,6 +81,7 @@ export const addSelectAllColumn = (
   ];
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 const Checkbox = ({
   onSelect,
   app,

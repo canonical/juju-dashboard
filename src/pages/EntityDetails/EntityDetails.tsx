@@ -28,12 +28,7 @@ import { ModelTab } from "urls";
 import { getMajorMinorVersion } from "utils";
 
 import "./_entity-details.scss";
-
-export enum Label {
-  NOT_FOUND = "Model not found",
-  MODEL_WATCHER_TIMEOUT = "Fetching model watcher data timed out.",
-  MODEL_WATCHER_ERROR = "Error occured while fetching model watcher data.",
-}
+import { Label } from "./types";
 
 type Props = {
   modelWatcherError?: string | null;

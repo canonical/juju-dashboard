@@ -25,7 +25,8 @@ import { modelSecretsContentFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import SecretContent, { Label } from "./SecretContent";
+import SecretContent from "./SecretContent";
+import { Label } from "./types";
 
 const mockStore = configureStore<RootState, unknown>([]);
 

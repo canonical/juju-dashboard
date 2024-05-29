@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { vi } from "vitest";
 
-import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
+import { InfoPanelTestId } from "components/InfoPanel";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {

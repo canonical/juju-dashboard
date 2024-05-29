@@ -16,16 +16,7 @@ import { useAppSelector } from "store/store";
 import { toErrorString } from "utils";
 
 import Fields from "./Fields";
-import { type FormFields } from "./types";
-
-export enum TestId {
-  PANEL = "remove-secret-panel",
-}
-
-export enum Label {
-  CANCEL = "Cancel",
-  SUBMIT = "Remove secret",
-}
+import { Label, TestId, type FormFields } from "./types";
 
 const RemoveSecretPanel = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();

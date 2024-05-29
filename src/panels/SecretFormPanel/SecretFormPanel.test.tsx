@@ -2,11 +2,12 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { Label as FieldsLabel } from "components/secrets/SecretForm/Fields/Fields";
+import { FieldsLabel } from "components/secrets/SecretForm/Fields";
 import * as secretHooks from "juju/api-hooks/secrets";
 import { renderComponent } from "testing/utils";
 
-import SecretFormPanel, { Label } from "./SecretFormPanel";
+import SecretFormPanel from "./SecretFormPanel";
+import { Label } from "./types";
 
 vi.mock("juju/api-hooks/secrets", () => {
   return {

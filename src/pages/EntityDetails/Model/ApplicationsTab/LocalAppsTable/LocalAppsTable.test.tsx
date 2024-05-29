@@ -15,7 +15,7 @@ import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watch
 import { renderComponent } from "testing/utils";
 
 import LocalAppsTable from "./LocalAppsTable";
-import { Label } from "./LocalAppsTable";
+import { Label } from "./types";
 
 describe("LocalAppsTable", () => {
   let state: RootState;

@@ -27,11 +27,7 @@ import {
 } from "store/juju/selectors";
 import { useAppSelector, useAppDispatch } from "store/store";
 
-export enum Label {
-  MODAL_TITLE = "Secret values",
-  SHOW = "Show content",
-  SUBMIT = "View",
-}
+import { Label } from "./types";
 
 type Props = {
   secretURI: string;

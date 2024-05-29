@@ -37,16 +37,7 @@ import {
 import ApplicationsTab from "./ApplicationsTab/ApplicationsTab";
 import Logs from "./Logs";
 import Secrets from "./Secrets";
-
-export enum Label {
-  ACCESS_BUTTON = "Model access",
-}
-
-export enum TestId {
-  CONSUMED = "consumed",
-  MAIN = "entity-details-main",
-  OFFERS = "offers",
-}
+import { Label, TestId } from "./types";
 
 const shouldShow = (segment: string, activeView: string) => {
   switch (activeView) {

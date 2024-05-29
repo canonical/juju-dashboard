@@ -13,14 +13,7 @@ import { useAppDispatch, useAppSelector } from "store/store";
 import CodeSnippetBlock from "../CodeSnippetBlock/CodeSnippetBlock";
 
 import "./_results-block.scss";
-
-export enum TestId {
-  LOADING = "loading",
-}
-
-export enum Label {
-  NO_RESULTS = "No results returned!",
-}
+import { Label, TestId } from "./types";
 
 const ResultsBlock = (): JSX.Element | null => {
   const dispatch = useAppDispatch();

@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { Label as FieldsLabel } from "components/secrets/SecretForm/Fields/Fields";
+import { FieldsLabel } from "components/secrets/SecretForm/Fields";
 import * as secretHooks from "juju/api-hooks/secrets";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -25,7 +25,8 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import SecretsPicker, { Label } from "./SecretsPicker";
+import SecretsPicker from "./SecretsPicker";
+import { Label } from "./types";
 
 describe("SecretsPicker", () => {
   let state: RootState;

@@ -29,19 +29,7 @@ import { secretIsAppOwned } from "utils";
 import SecretContent from "../SecretContent";
 
 import "./_secrets-table.scss";
-
-export enum Label {
-  ACTION_MENU = "Action menu",
-  COPY = "Copy",
-  GRANT_BUTTON = "Grant...",
-  REMOVE_BUTTON = "Remove...",
-  UPDATE_BUTTON = "Update...",
-}
-
-export enum TestId {
-  SECRETS_TABLE = "secrets-table",
-  GRANTED_TO = "granted-to",
-}
+import { Label, TestId } from "./types";
 
 const SecretsTable = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();

@@ -5,3 +5,12 @@ export type FormFields = {
   model: string;
   method: string;
 };
+
+export enum Label {
+  CLEAR = "Clear",
+  FILTER = "Filter",
+}
+
+export enum TestId {
+  PANEL = "audit-logs-filter-panel",
+}

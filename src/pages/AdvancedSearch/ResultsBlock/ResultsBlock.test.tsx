@@ -15,7 +15,8 @@ import { renderComponent } from "testing/utils";
 import urls from "urls";
 import { ModelTab } from "urls";
 
-import ResultsBlock, { Label, TestId } from "./ResultsBlock";
+import ResultsBlock from "./ResultsBlock";
+import { Label, TestId } from "./types";
 
 // Handle clicking the toggle for a key that has an anchor wrapping the label.
 const clickToggleForLink = async (name: string) => {

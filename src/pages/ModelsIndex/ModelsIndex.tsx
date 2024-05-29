@@ -29,10 +29,7 @@ import type { ModelsGroupedBy } from "urls";
 import urls from "urls";
 
 import "./_models.scss";
-
-export enum Label {
-  NOT_FOUND = "No models found",
-}
+import { Label } from "./types";
 
 export default function Models() {
   useWindowTitle("Models");

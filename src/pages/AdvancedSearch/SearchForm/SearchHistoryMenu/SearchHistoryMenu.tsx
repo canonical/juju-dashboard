@@ -6,10 +6,7 @@ import { useAppSelector } from "store/store";
 
 import type { FormFields } from "../types";
 
-export enum Label {
-  CLEAR = "Clear history",
-  HISTORY = "History",
-}
+import { Label } from "./types";
 
 type Props = {
   queryHistory: string[];

@@ -7,12 +7,7 @@ import TruncatedTooltip from "components/TruncatedTooltip";
 import { formatFriendlyDateToNow } from "components/utils";
 
 import "./_share-card.scss";
-
-export enum Label {
-  OWNER = "Owner",
-  REMOVE = "Remove user",
-  ACCESS_CHANGE_ERROR = "Error when trying to change access in a share card.",
-}
+import { Label } from "./types";
 
 type Props = {
   userName: string;

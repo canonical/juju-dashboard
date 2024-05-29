@@ -18,7 +18,8 @@ import {
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
-import ActionsPanel, { Label } from "./ActionsPanel";
+import ActionsPanel from "./ActionsPanel";
+import { Label } from "./types";
 
 const mockResponse = applicationsCharmActionsResultsFactory.build({
   results: [

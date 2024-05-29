@@ -19,7 +19,7 @@ import getUserName from "utils/getUserName";
 
 import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilters";
 import AuditLogsTableFilters from "./AuditLogsTableFilters/AuditLogsTableFilters";
-import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/AuditLogsTableFilters";
+import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/consts";
 import AuditLogsTablePagination from "./AuditLogsTablePagination";
 import { DEFAULT_PAGE } from "./consts";
 import { useFetchAuditEvents } from "./hooks";

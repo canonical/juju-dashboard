@@ -14,15 +14,10 @@ import { getUserName } from "utils";
 
 import WebCLIOutput from "./Output";
 import Connection from "./connection";
+import { MAX_HISTORY } from "./consts";
+import { Label } from "./types";
 
 import "./_webcli.scss";
-
-export enum Label {
-  CONNECTION_ERROR = "Unable to connect to the model.",
-  AUTHENTICATION_ERROR = "Unable to authenticate.",
-  NOT_OPEN_ERROR = "WebSocket connection is not open.",
-  UNKNOWN_ERROR = "Unknown error.",
-}
 
 enum InlineErrors {
   CONNECTION = "connection",
@@ -41,8 +36,6 @@ type Authentication = {
   credentials?: string;
   macaroons?: Macaroon[];
 };
-
-export const MAX_HISTORY = 200;
 
 const WebCLI = ({
   controllerWSHost,

@@ -26,8 +26,9 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import Secrets, { Label } from "./Secrets";
-import { TestId as SecretsTableTestId } from "./SecretsTable/SecretsTable";
+import Secrets from "./Secrets";
+import { TestId as SecretsTableTestId } from "./SecretsTable/types";
+import { Label } from "./types";
 
 const mockStore = configureStore<RootState, unknown>([]);
 

@@ -31,7 +31,9 @@ import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
 import type { RootState } from "store/store";
 import urls from "urls";
+
 import "./_action-logs.scss";
+import { Label, Output } from "./types";
 
 type Operations = OperationResult[];
 type Actions = ActionResult[];
@@ -59,18 +61,6 @@ type TableRow = RowCells & {
 type ApplicationData = {
   charm: string;
 };
-
-export enum Label {
-  OUTPUT = "Output",
-  COPY = "Copy to clipboard",
-  FETCH_ERROR = "Error while trying to fetch data.",
-}
-
-export enum Output {
-  ALL = "STDOUT/STDERR",
-  STDERR = "STDERR",
-  STDOUT = "STDOUT",
-}
 
 enum InlineErrors {
   FETCH = "fetch",

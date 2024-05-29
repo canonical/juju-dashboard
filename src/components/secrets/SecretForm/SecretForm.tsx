@@ -33,11 +33,7 @@ import { useAppSelector, useAppDispatch } from "store/store";
 import { toErrorString } from "utils";
 
 import Fields from "./Fields";
-import { type FormFields } from "./types";
-
-export enum TestId {
-  SECRET_FORM = "secret-form",
-}
+import { TestId, type FormFields } from "./types";
 
 type Props = {
   formId: string;

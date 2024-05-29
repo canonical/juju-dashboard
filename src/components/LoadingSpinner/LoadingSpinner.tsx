@@ -3,10 +3,7 @@ import classNames from "classnames";
 import type { HTMLProps } from "react";
 
 import "./_loading-spinner.scss";
-
-export enum TestId {
-  LOADING = "loading-spinner",
-}
+import { TestId } from "./types";
 
 type Props = HTMLProps<HTMLDivElement>;
 

@@ -27,11 +27,7 @@ import { useAppSelector } from "store/store";
 import urls, { externalURLs } from "urls";
 
 import "./_primary-nav.scss";
-
-export enum Label {
-  ADVANCED_SEARCH = "Advanced search",
-  LOGS = "Logs",
-}
+import { Label } from "./types";
 
 const useControllersLink = () => {
   const controllers: Controllers | null = useSelector(getControllerData);

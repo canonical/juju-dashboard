@@ -5,8 +5,9 @@ import { format } from "date-fns";
 import { DATETIME_LOCAL } from "consts";
 import { renderComponent } from "testing/utils";
 
-import AuditLogsFilterPanel, { Label } from "./AuditLogsFilterPanel";
-import { Label as FieldLabel } from "./Fields/Fields";
+import AuditLogsFilterPanel from "./AuditLogsFilterPanel";
+import { FieldsLabel } from "./Fields";
+import { Label } from "./types";
 
 describe("AuditLogsFilterPanel", () => {
   it("restores the filter values from the URL", async () => {
@@ -23,21 +24,21 @@ describe("AuditLogsFilterPanel", () => {
       url: `/?${queryParams.toString()}`,
     });
     // Have to use querySelector here as RTL doesn't support datetime-local.
-    expect(document.querySelector(`input#${FieldLabel.AFTER}`)).toHaveValue(
+    expect(document.querySelector(`input#${FieldsLabel.AFTER}`)).toHaveValue(
       params.after,
     );
     // Have to use querySelector here as RTL doesn't support datetime-local.
-    expect(document.querySelector(`input#${FieldLabel.AFTER}`)).toHaveValue(
+    expect(document.querySelector(`input#${FieldsLabel.AFTER}`)).toHaveValue(
       params.before,
     );
-    expect(screen.getByRole("combobox", { name: FieldLabel.USER })).toHaveValue(
-      params.user,
-    );
     expect(
-      screen.getByRole("combobox", { name: FieldLabel.METHOD }),
+      screen.getByRole("combobox", { name: FieldsLabel.USER }),
+    ).toHaveValue(params.user);
+    expect(
+      screen.getByRole("combobox", { name: FieldsLabel.METHOD }),
     ).toHaveValue(params.method);
     expect(
-      screen.getByRole("combobox", { name: FieldLabel.METHOD }),
+      screen.getByRole("combobox", { name: FieldsLabel.METHOD }),
     ).toHaveValue(params.method);
   });
 
@@ -77,29 +78,29 @@ describe("AuditLogsFilterPanel", () => {
       url: "/?panel=audit-log-filters&page=4",
     });
     const after = document.querySelector<HTMLInputElement>(
-      `input#${FieldLabel.AFTER}`,
+      `input#${FieldsLabel.AFTER}`,
     );
     expect(after).toBeTruthy();
     if (after) {
       await userEvent.type(after, params.after);
     }
     const before = document.querySelector<HTMLInputElement>(
-      `input#${FieldLabel.BEFORE}`,
+      `input#${FieldsLabel.BEFORE}`,
     );
     expect(before).toBeTruthy();
     if (before) {
       await userEvent.type(before, params.before);
     }
     await userEvent.type(
-      screen.getByRole("combobox", { name: FieldLabel.USER }),
+      screen.getByRole("combobox", { name: FieldsLabel.USER }),
       params.user,
     );
     await userEvent.type(
-      screen.getByRole("combobox", { name: FieldLabel.MODEL }),
+      screen.getByRole("combobox", { name: FieldsLabel.MODEL }),
       params.model,
     );
     await userEvent.type(
-      screen.getByRole("combobox", { name: FieldLabel.METHOD }),
+      screen.getByRole("combobox", { name: FieldsLabel.METHOD }),
       params.method,
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
@@ -112,7 +113,7 @@ describe("AuditLogsFilterPanel", () => {
       url: "/?panel=audit-log-filters",
     });
     await userEvent.type(
-      screen.getByRole("combobox", { name: FieldLabel.METHOD }),
+      screen.getByRole("combobox", { name: FieldsLabel.METHOD }),
       "Login",
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
@@ -125,7 +126,7 @@ describe("AuditLogsFilterPanel", () => {
       url: "/?panel=audit-log-filters&user-tag=user-eggman@external&method=Login",
     });
     await userEvent.clear(
-      screen.getByRole("combobox", { name: FieldLabel.METHOD }),
+      screen.getByRole("combobox", { name: FieldsLabel.METHOD }),
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
     // The method value was cleared in the input so it should get removed from

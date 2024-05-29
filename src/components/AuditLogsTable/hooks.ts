@@ -16,7 +16,7 @@ import {
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilters";
-import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/AuditLogsTableFilters";
+import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/consts";
 import { DEFAULT_PAGE } from "./consts";
 
 export const useFetchAuditEvents = () => {

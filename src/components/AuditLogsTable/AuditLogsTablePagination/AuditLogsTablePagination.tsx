@@ -16,10 +16,7 @@ import { useAppDispatch, useAppSelector } from "store/store";
 import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE } from "../consts";
 
 import "./_audit-logs-table-pagination.scss";
-
-export enum Label {
-  FIRST_PAGE = "Back to first page",
-}
+import { Label } from "./types";
 
 type Props = PropsWithSpread<
   {

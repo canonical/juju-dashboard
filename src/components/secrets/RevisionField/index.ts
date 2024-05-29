@@ -1,1 +1,2 @@
-export { default, Label as RevisionFieldLabel } from "./RevisionField";
+export { default } from "./RevisionField";
+export { Label as RevisionFieldLabel } from "./types";

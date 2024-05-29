@@ -1,8 +1,6 @@
 import type { SetParams } from "hooks/useQueryParams";
 
-export enum Label {
-  ACCESS_BUTTON = "Access",
-}
+import { Label } from "./types";
 
 type Props = {
   modelName: string;

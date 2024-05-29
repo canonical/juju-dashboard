@@ -10,7 +10,8 @@ import { auditEventFactory } from "testing/factories/juju/jimm";
 import { auditEventsStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
-import AuditLogsTablePagination, { Label } from "./AuditLogsTablePagination";
+import AuditLogsTablePagination from "./AuditLogsTablePagination";
+import { Label } from "./types";
 
 describe("AuditLogsTablePagination", () => {
   let state: RootState;

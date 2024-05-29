@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import Banner, { Label } from "./Banner";
+import Banner from "./Banner";
+import { Label } from "./types";
 
 describe("Banner", () => {
   it("should display banner text", () => {

@@ -14,7 +14,8 @@ import {
 } from "testing/factories/juju/Charms";
 import { renderComponent } from "testing/utils";
 
-import CharmsPanel, { Label } from "./CharmsPanel";
+import CharmsPanel from "./CharmsPanel";
+import { Label } from "./types";
 
 describe("CharmsPanel", () => {
   let state: RootState;

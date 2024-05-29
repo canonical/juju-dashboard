@@ -18,15 +18,15 @@ import {
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 
-import { TestId as ActionsPanelTestId } from "./ActionsPanel/ActionsPanel";
-import { TestId as AuditLogsFilterPanelTestId } from "./AuditLogsFilterPanel/AuditLogsFilterPanel";
-import { TestId as CharmsAndActionsPanelTestId } from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
-import { TestId as ConfigPanelTestId } from "./ConfigPanel/ConfigPanel";
-import { TestId as GrantSecretPanelTestId } from "./GrantSecretPanel/GrantSecretPanel";
+import { ActionsPanelTestId } from "./ActionsPanel";
+import { AuditLogsFilterPanelTestId } from "./AuditLogsFilterPanel";
+import { CharmsAndActionsPanelTestId } from "./CharmsAndActionsPanel";
+import { ConfigPanelTestId } from "./ConfigPanel";
+import { GrantSecretPanelTestId } from "./GrantSecretPanel";
 import Panels from "./Panels";
-import { TestId as RemoveSecretPanelTestId } from "./RemoveSecretPanel/RemoveSecretPanel";
-import { TestId as SecretFormPanelTestId } from "./SecretFormPanel/SecretFormPanel";
-import { TestId as ShareModelTestId } from "./ShareModelPanel/ShareModel";
+import { RemoveSecretPanelTestId } from "./RemoveSecretPanel";
+import { SecretFormPanelTestId } from "./SecretFormPanel";
+import { ShareModelTestId } from "./ShareModelPanel";
 
 describe("Panels", () => {
   it("can display the actions panel", () => {

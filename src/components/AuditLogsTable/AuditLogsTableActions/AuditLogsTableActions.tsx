@@ -6,10 +6,7 @@ import AuditLogsTablePagination from "../AuditLogsTablePagination";
 import { DEFAULT_PAGE } from "../consts";
 import { useFetchAuditEvents } from "../hooks";
 
-export enum Label {
-  FILTER = "Filter",
-  REFRESH = "Refresh",
-}
+import { Label } from "./types";
 
 const AuditLogsTableActions = () => {
   const [, setQueryParams] = useQueryParams<{

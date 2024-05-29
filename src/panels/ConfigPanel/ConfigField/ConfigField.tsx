@@ -10,10 +10,7 @@ import { isSet } from "components/utils";
 
 import type { ConfigData, ConfigValue } from "../types";
 
-export enum Label {
-  DEFAULT_BUTTON = "use default",
-  TOGGLE_DESCRIPTION = "Toggle description",
-}
+import { Label } from "./types";
 
 export type SetNewValue = (name: string, value: ConfigValue) => void;
 

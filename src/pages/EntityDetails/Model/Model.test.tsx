@@ -2,8 +2,8 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { TestId as InfoPanelTestId } from "components/InfoPanel/InfoPanel";
-import { TestId as SecretsTestId } from "pages/EntityDetails/Model/Secrets/Secrets";
+import { TestId as InfoPanelTestId } from "components/InfoPanel/types";
+import { TestId as SecretsTestId } from "pages/EntityDetails/Model/Secrets/types";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
@@ -39,7 +39,8 @@ import {
 } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 
-import Model, { Label, TestId } from "./Model";
+import Model from "./Model";
+import { Label, TestId } from "./types";
 
 const mockOperationResults = operationResultsFactory.build();
 const mockActionResults = actionResultsFactory.build();

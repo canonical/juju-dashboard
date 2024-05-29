@@ -5,6 +5,8 @@ import ActionBar from "components/ActionBar/ActionBar";
 import { useQueryParams } from "hooks/useQueryParams";
 import type { SetParams } from "hooks/useQueryParams";
 
+import { DEFAULT_AUDIT_LOG_FILTERS } from "./consts";
+
 export type AuditLogFilters = {
   after: string | null;
   before: string | null;
@@ -13,15 +15,7 @@ export type AuditLogFilters = {
   method: string | null;
 };
 
-export const DEFAULT_AUDIT_LOG_FILTERS = {
-  after: null,
-  before: null,
-  user: null,
-  model: null,
-  method: null,
-};
-
-export const generateFilters = (
+const generateFilters = (
   filters: AuditLogFilters,
   setFilters: SetParams<AuditLogFilters>,
 ) =>

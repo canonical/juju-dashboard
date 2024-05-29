@@ -17,9 +17,7 @@ import { useAppStore } from "store/store";
 import urls from "urls";
 import { getMajorMinorVersion, toErrorString } from "utils";
 
-export enum Label {
-  MODEL_WATCHER_ERROR = "Error while trying to stop model watcher.",
-}
+import { Label } from "./types";
 
 export default function ModelDetails() {
   const appState = useAppStore().getState();

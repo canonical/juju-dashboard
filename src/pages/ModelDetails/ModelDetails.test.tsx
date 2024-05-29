@@ -4,7 +4,7 @@ import { screen, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
 import * as juju from "juju/api";
-import { Label as EntityDetailsLabel } from "pages/EntityDetails/EntityDetails";
+import { EntityDetailsLabel } from "pages/EntityDetails";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
@@ -14,7 +14,8 @@ import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watch
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import ModelDetails, { Label as ModelDetailsLabel } from "./ModelDetails";
+import ModelDetails from "./ModelDetails";
+import { Label as ModelDetailsLabel } from "./types";
 
 vi.mock("pages/EntityDetails/App/App", () => {
   return { default: () => <div data-testid="app"></div> };

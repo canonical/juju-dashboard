@@ -16,13 +16,7 @@ import {
 } from "store/juju/selectors";
 import { useAppStore } from "store/store";
 
-export enum Label {
-  GET_URL_ERROR = "Unable to get data for selected application(s).",
-}
-
-export enum TestId {
-  PANEL = "charms-and-actions-panel",
-}
+import { Label } from "./types";
 
 enum InlineErrors {
   GET_URL = "get-url",

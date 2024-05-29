@@ -2,7 +2,7 @@ import { screen, within } from "@testing-library/react";
 import { add } from "date-fns";
 import { vi } from "vitest";
 
-import { TestId } from "components/LoadingSpinner/LoadingSpinner";
+import { LoadingSpinnerTestId } from "components/LoadingSpinner";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
@@ -113,7 +113,9 @@ describe("AuditLogsTable", () => {
     ];
     renderComponent(<AuditLogsTable />, { state });
     expect(await screen.findByRole("table")).toBeInTheDocument();
-    expect(screen.queryByTestId(TestId.LOADING)).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(LoadingSpinnerTestId.LOADING),
+    ).not.toBeInTheDocument();
     const row = screen.getAllByRole("row")[1];
     const cells = within(row).getAllByRole("cell");
     expect(cells[0]).toHaveTextContent("eggman");

@@ -12,7 +12,8 @@ import {
 } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 
-import InfoPanel, { Label } from "./InfoPanel";
+import InfoPanel from "./InfoPanel";
+import { Label } from "./types";
 
 vi.mock("components/Topology/Topology", () => {
   const Topology = () => <div data-testid="topology"></div>;

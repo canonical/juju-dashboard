@@ -17,7 +17,8 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import PrimaryNav, { Label } from "./PrimaryNav";
+import PrimaryNav from "./PrimaryNav";
+import { Label } from "./types";
 
 vi.mock("@canonical/jujulib/dist/api/versions", () => ({
   dashboardUpdateAvailable: vi.fn(),

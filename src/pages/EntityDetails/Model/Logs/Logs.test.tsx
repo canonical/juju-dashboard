@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { Label } from "components/AuditLogsTable/AuditLogsTableActions/AuditLogsTableActions";
+import { AuditLogsTableActionsLabel } from "components/AuditLogsTable/AuditLogsTableActions";
 import { rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { renderComponent } from "testing/utils";
@@ -85,7 +85,7 @@ describe("Logs", () => {
       path,
     });
     expect(
-      screen.queryByRole("button", { name: Label.FILTER }),
+      screen.queryByRole("button", { name: AuditLogsTableActionsLabel.FILTER }),
     ).not.toBeInTheDocument();
   });
 
@@ -95,7 +95,7 @@ describe("Logs", () => {
       path,
     });
     expect(
-      screen.getByRole("button", { name: Label.FILTER }),
+      screen.getByRole("button", { name: AuditLogsTableActionsLabel.FILTER }),
     ).toBeInTheDocument();
   });
 });

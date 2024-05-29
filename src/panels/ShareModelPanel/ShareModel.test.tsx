@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { Label as ShareCardLabel } from "components/ShareCard/ShareCard";
+import { ShareCardLabel } from "components/ShareCard";
 import { actions as appActions } from "store/app";
 import type { RootState } from "store/store";
 import * as storeModule from "store/store";
@@ -16,7 +16,8 @@ import {
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
-import ShareModel, { Label } from "./ShareModel";
+import ShareModel from "./ShareModel";
+import { Label } from "./types";
 
 describe("Share Model Panel", () => {
   let state: RootState;

@@ -9,7 +9,8 @@ import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import LogIn, { ErrorResponse, Label } from "./LogIn";
+import LogIn from "./LogIn";
+import { ErrorResponse, Label } from "./types";
 
 describe("LogIn", () => {
   const consoleError = console.error;

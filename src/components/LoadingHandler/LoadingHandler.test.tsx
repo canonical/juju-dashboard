@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
-import LoadingHandler, { TestId } from "./LoadingHandler";
+import LoadingHandler from "./LoadingHandler";
+import { TestId } from "./types";
 
 describe("LoadingHandler", () => {
   it("returns a spinner if no data and set to loading", () => {

@@ -20,8 +20,9 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import { Label as FieldsLabel } from "./Fields/Fields";
-import SecretForm, { TestId } from "./SecretForm";
+import { FieldsLabel } from "./Fields";
+import SecretForm from "./SecretForm";
+import { TestId } from "./types";
 
 vi.mock("juju/api-hooks/secrets", () => {
   return {

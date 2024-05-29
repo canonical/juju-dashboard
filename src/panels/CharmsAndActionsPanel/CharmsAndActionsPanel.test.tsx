@@ -20,11 +20,10 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import { Label as CharmsPanelLabel } from "../CharmsPanel/CharmsPanel";
+import { CharmsPanelLabel } from "../CharmsPanel";
 
-import CharmsAndActionsPanel, {
-  Label as CharmsAndActionsPanelLabel,
-} from "./CharmsAndActionsPanel";
+import CharmsAndActionsPanel from "./CharmsAndActionsPanel";
+import { Label as CharmsAndActionsPanelLabel } from "./types";
 
 describe("CharmsAndActionsPanel", () => {
   const consoleError = console.error;

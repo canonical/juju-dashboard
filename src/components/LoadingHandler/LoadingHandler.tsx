@@ -2,10 +2,7 @@ import { Spinner } from "@canonical/react-components";
 import type { ReactNode } from "react";
 
 import "./_loading-handler.scss";
-
-export enum TestId {
-  LOADING = "loading",
-}
+import { TestId } from "./types";
 
 type LoadingHandlerProps = {
   children?: ReactNode;

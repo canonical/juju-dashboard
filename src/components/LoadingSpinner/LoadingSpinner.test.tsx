@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
-import LoadingSpinner, { TestId } from "./LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
+import { TestId } from "./types";
 
 describe("LoadingSpinner", () => {
   it("should display the spinner", async () => {

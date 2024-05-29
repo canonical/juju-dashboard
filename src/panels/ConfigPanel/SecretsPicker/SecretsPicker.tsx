@@ -32,15 +32,7 @@ import {
 import { useAppSelector } from "store/store";
 import { secretIsAppOwned } from "utils";
 
-export enum Label {
-  BUTTON_ADD = "Add a secret...",
-  BUTTON_CANCEL = "Cancel",
-  BUTTON_SUBMIT = "Add secret",
-  CHOOSE_SECRET = "Choose a secret",
-  LOADING = "Loading",
-  MODAL_TITLE = "Add secret",
-  NONE = "No secrets",
-}
+import { Label } from "./types";
 
 type Props = {
   setValue: (secret: string) => void;

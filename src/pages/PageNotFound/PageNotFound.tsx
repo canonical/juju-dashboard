@@ -5,9 +5,7 @@ import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 import urls from "urls";
 
-export enum Label {
-  NOT_FOUND = "Hmm, we can't seem to find that page...",
-}
+import { Label } from "./types";
 
 export default function PageNotFound() {
   useWindowTitle("404 - Page not found");

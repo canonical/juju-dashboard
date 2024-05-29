@@ -9,11 +9,7 @@ import { getIsJuju } from "store/general/selectors";
 import "./_logs.scss";
 import ActionLogs from "./ActionLogs";
 import AuditLogs from "./AuditLogs";
-
-export enum Label {
-  ACTION_LOGS = "Action logs",
-  AUDIT_LOGS = "Audit logs",
-}
+import { Label } from "./types";
 
 const BUTTON_DETAILS = [
   { title: Label.ACTION_LOGS, url: "action-logs" },

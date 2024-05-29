@@ -93,3 +93,5 @@ export function Routes() {
     </ReactRouterRoutes>
   );
 }
+
+export default Routes;

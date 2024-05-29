@@ -28,15 +28,7 @@ import {
 import { useAppSelector } from "store/store";
 import { toErrorString } from "utils";
 
-export enum TestId {
-  PANEL = "grant-secret-panel",
-}
-
-export enum Label {
-  CANCEL = "Cancel",
-  SUBMIT = "Grant",
-  NO_APPS = "There are no applications in this model.",
-}
+import { Label, TestId } from "./types";
 
 export type FormFields = {
   applications: string[];
