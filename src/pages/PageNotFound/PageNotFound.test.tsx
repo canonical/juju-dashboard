@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 
-import { Routes } from "components/Routes/Routes";
+import Routes from "components/Routes";
 import { BaseLayoutTestId } from "layout/BaseLayout";
 import { renderComponent } from "testing/utils";
 
