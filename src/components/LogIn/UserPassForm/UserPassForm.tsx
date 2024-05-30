@@ -1,6 +1,5 @@
 import { unwrapResult } from "@reduxjs/toolkit";
 import type { FormEvent } from "react";
-import { useEffect, useRef } from "react";
 
 import bakery from "juju/bakery";
 import { thunks as appThunks } from "store/app";
@@ -17,7 +16,6 @@ interface LoginElements extends HTMLFormControlsCollection {
 
 const UserPassForm = () => {
   const dispatch = useAppDispatch();
-  const focus = useRef<HTMLInputElement>(null);
   const wsControllerURL = useAppSelector(getWSControllerURL);
 
   function handleSubmit(
@@ -41,14 +39,10 @@ const UserPassForm = () => {
     }
   }
 
-  useEffect(() => {
-    focus.current?.focus();
-  }, []);
-
   return (
     <form onSubmit={handleSubmit}>
       <label htmlFor="username">Username</label>
-      <input type="text" name="username" id="username" ref={focus} />
+      <input type="text" name="username" id="username" autoFocus />
       <label htmlFor="password">Password</label>
       <input type="password" name="password" id="password" />
       <button className="p-button--positive" type="submit">

@@ -1,7 +1,6 @@
 import { screen, within } from "@testing-library/react";
-import { vi } from "vitest";
 
-import { configFactory, generalStateFactory } from "testing/factories/general";
+import { generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
@@ -10,23 +9,17 @@ import { Label } from "../types";
 import IdentityProviderForm from "./IdentityProviderForm";
 
 describe("IdentityProviderForm", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("renders a 'connecting' message while connecting a logged in user", () => {
+  it("should render a 'connecting' message if the user is logged in", () => {
     renderComponent(<IdentityProviderForm userIsLoggedIn={true} />);
     expect(
       within(screen.getByRole("button")).getByText("Connecting..."),
     ).toBeInTheDocument();
   });
 
-  it("renders a 'connecting' message while connecting a logged in user", () => {
+  it("should render a 'connecting' message if the user is not logged in and there is no visitURLs", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
-        config: configFactory.build({
-          identityProviderAvailable: true,
-        }),
+        visitURLs: null,
       }),
     });
     renderComponent(<IdentityProviderForm userIsLoggedIn={false} />, { state });
@@ -35,13 +28,10 @@ describe("IdentityProviderForm", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders a login message if the user is not logged in", () => {
+  it("should render a login message if the user is not logged in and there is visitURLs", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         visitURLs: ["I am a url"],
-        config: configFactory.build({
-          identityProviderAvailable: true,
-        }),
       }),
     });
     renderComponent(<IdentityProviderForm userIsLoggedIn={false} />, { state });

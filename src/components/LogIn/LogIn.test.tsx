@@ -36,6 +36,41 @@ describe("LogIn", () => {
     expect(content).toHaveClass("app-content");
   });
 
+  it("renders an IdentityProvider login UI if the user is not logged in", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.withConfig().build({
+        visitURLs: ["I am a url"],
+        config: configFactory.build({
+          identityProviderAvailable: true,
+        }),
+      }),
+    });
+    renderComponent(<LogIn>App content</LogIn>, { state });
+    expect(
+      screen.getByRole("link", { name: Label.LOGIN_TO_DASHBOARD }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("textbox", { name: "Username" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders a UserPass login UI if the user is not logged in", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.withConfig().build({
+        config: configFactory.build({
+          identityProviderAvailable: false,
+        }),
+      }),
+    });
+    renderComponent(<LogIn>App content</LogIn>, { state });
+    expect(screen.getByRole("button")).toHaveTextContent(
+      Label.LOGIN_TO_DASHBOARD,
+    );
+    expect(
+      screen.getByRole("textbox", { name: "Username" }),
+    ).toBeInTheDocument();
+  });
+
   it("renders a login error if one exists", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
@@ -103,6 +138,9 @@ describe("LogIn", () => {
   });
 
   it("should remove the authentication request when clicking the authenticate button", async () => {
+    const consoleError = console.error;
+    console.error = vi.fn();
+
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
@@ -120,5 +158,7 @@ describe("LogIn", () => {
       { pointerEventsCheck: 0 },
     );
     expect(screen.queryByTestId("toast-card")).not.toBeInTheDocument();
+
+    console.error = consoleError;
   });
 });

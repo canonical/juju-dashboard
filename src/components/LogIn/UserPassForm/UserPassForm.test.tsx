@@ -5,7 +5,7 @@ import { vi } from "vitest";
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import * as dashboardStore from "store/store";
-import { configFactory, generalStateFactory } from "testing/factories/general";
+import { generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
@@ -18,7 +18,7 @@ describe("UserPassForm", () => {
     vi.restoreAllMocks();
   });
 
-  it("logs in", async () => {
+  it("should log in", async () => {
     // Mock the result of the thunk to be a normal action so that it can be tested
     // for. This is necessary because we don't have a full store set up which
     // can dispatch thunks (and we don't need to handle the thunk, just know it
@@ -36,11 +36,7 @@ describe("UserPassForm", () => {
       mockUseAppDispatch,
     );
     const state = rootStateFactory.build({
-      general: generalStateFactory.withConfig().build({
-        config: configFactory.build({
-          identityProviderAvailable: false,
-        }),
-      }),
+      general: generalStateFactory.withConfig().build(),
     });
     renderComponent(<UserPassForm />, { state });
     await userEvent.type(
