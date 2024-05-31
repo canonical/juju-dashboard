@@ -6,7 +6,6 @@ export enum ErrorResponse {
 export enum Label {
   INVALID_NAME = "Invalid user name",
   INVALID_FIELD = "Invalid user name or password",
-  JAAS_LOGO = "JAAS logo",
-  JUJU_LOGO = "Juju logo",
   POLLING_ERROR = "Error when trying to connect and start polling models.",
+  LOGIN_TO_DASHBOARD = "Log in to the dashboard",
 }
