@@ -35,6 +35,11 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "0.0.0.0",
       port: Number(env.PORT),
+      proxy: {
+        "/auth": {
+          target: env.VITE_JIMM_API_URL ?? "/",
+        },
+      },
     },
     test: {
       coverage: {
