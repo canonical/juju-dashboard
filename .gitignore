@@ -20,3 +20,6 @@ public/config.local.js
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+.env.local
+.env.*.local
