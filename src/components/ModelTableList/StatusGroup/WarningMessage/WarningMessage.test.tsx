@@ -78,4 +78,40 @@ describe("WarningMessage", () => {
       "/models/eggman@external/sub-test/app/etcd/unit/etcd-0",
     );
   });
+
+  it("should display tooltip correctly when more than 5 messages are present", async () => {
+    const model = modelDataFactory.build({
+      applications: [1, 2, 3, 4, 5, 6].reduce(
+        (applications, index) => ({
+          ...applications,
+          [`app${index}`]: modelDataApplicationFactory.build({
+            status: detailedStatusFactory.build({
+              info: `app${index} blocked`,
+              status: "blocked",
+            }),
+          }),
+        }),
+        {},
+      ),
+    });
+    renderComponent(<WarningMessage model={model} />);
+    const error = screen.getByRole("link", { name: "app1 blocked" });
+    expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
+    await act(async () => {
+      await userEventWithTimers.hover(error);
+      vi.runAllTimers();
+    });
+    const tooltip = screen.getAllByRole("tooltip")[0];
+    expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
+    [1, 2, 3, 4, 5].forEach((index) => {
+      const appError = within(tooltip).getByRole("link", {
+        name: `app${index} blocked`,
+      });
+      expect(appError).toHaveAttribute(
+        "href",
+        `/models/eggman@external/sub-test/app/app${index}`,
+      );
+    });
+    expect(within(tooltip).getByText("+1 more...")).toBeInTheDocument();
+  });
 });
