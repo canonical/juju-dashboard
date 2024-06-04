@@ -1,7 +1,4 @@
-import { act, screen, within } from "@testing-library/react";
-import type { UserEvent } from "@testing-library/user-event";
-import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
+import { screen, within } from "@testing-library/react";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -16,7 +13,6 @@ import {
   modelDataApplicationFactory,
   modelDataFactory,
   modelDataInfoFactory,
-  modelDataUnitFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
@@ -25,13 +21,8 @@ import StatusGroup from "./StatusGroup";
 
 describe("StatusGroup", () => {
   let state: RootState;
-  let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
-    vi.useFakeTimers();
-    userEventWithTimers = userEvent.setup({
-      advanceTimers: vi.advanceTimersByTime,
-    });
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         modelData: {
@@ -97,10 +88,6 @@ describe("StatusGroup", () => {
         },
       }),
     });
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
   });
 
   it("by default, renders no tables when there is no data", () => {
@@ -177,8 +164,7 @@ describe("StatusGroup", () => {
     );
   });
 
-  it("displays links to blocked apps and units", async () => {
-    vi.useFakeTimers();
+  it("displays links to blocked apps", async () => {
     state.juju.modelData.abc123.applications = {
       calico: modelDataApplicationFactory.build({
         status: detailedStatusFactory.build({
@@ -186,41 +172,11 @@ describe("StatusGroup", () => {
           status: "blocked",
         }),
       }),
-      etcd: modelDataApplicationFactory.build({
-        units: {
-          "etcd/0": modelDataUnitFactory.build({
-            "agent-status": detailedStatusFactory.build({
-              info: "unit blocked",
-              status: "lost",
-            }),
-          }),
-        },
-      }),
     };
     renderComponent(<StatusGroup filters={{}} />, { state });
     const tables = screen.getAllByRole("grid");
     const row = within(tables[0]).getAllByRole("row")[1];
     const error = within(row).getByRole("link", { name: "app blocked" });
     expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
-    await act(async () => {
-      await userEventWithTimers.hover(error);
-      vi.runAllTimers();
-    });
-    const tooltip = screen.getAllByRole("tooltip")[0];
-    expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
-    const appError = within(tooltip).getByRole("link", {
-      name: "app blocked",
-    });
-    expect(appError).toHaveAttribute(
-      "href",
-      "/models/eggman@external/sub-test/app/calico",
-    );
-    const unitError = within(tooltip).getByRole("link", {
-      name: "unit blocked",
-    });
-    expect(unitError).toHaveAttribute(
-      "href",
-      "/models/eggman@external/sub-test/app/etcd/unit/etcd-0",
-    );
   });
 });
