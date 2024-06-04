@@ -9,12 +9,14 @@ import urls from "urls";
 import { getUserName } from "utils";
 
 type Props = {
+  /**
+   * The full model data.
+   */
   model: ModelData;
 };
 
 /**
   Warning message for the model name cell.
-  @param model The full model data.
   @return The react component for the warning message.
 */
 const WarningMessage = ({ model }: Props) => {
