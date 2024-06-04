@@ -7,24 +7,19 @@ import { Highlight } from "prism-react-renderer";
 import Prism from "prismjs/components/prism-core";
 import { useCallback, useState } from "react";
 import type { KeyPath } from "react-json-tree";
-import {
-  JSONTree,
-  type LabelRenderer,
-  type ValueRenderer,
-} from "react-json-tree";
+import { JSONTree, type ValueRenderer } from "react-json-tree";
 import "prismjs/components/prism-json";
 
 import AppLink from "components/AppLink";
 import MachineLink from "components/MachineLink";
 import Status from "components/Status";
-import UnitLink from "components/UnitLink";
 import { formatFriendlyDateToNow } from "components/utils";
 import { type CrossModelQueryResponse } from "juju/jimm/JIMMV4";
 import type { CrossModelQueryState } from "store/juju/types";
-import { ModelTab } from "urls";
 
-import ResultsModelLink from "../ResultsModelLink";
 import { CodeSnippetView } from "../types";
+
+import Label from "./Label";
 
 type Props = {
   className: string;
@@ -54,20 +49,6 @@ const THEME = {
   base0F: DEFAULT_THEME_COLOUR,
 };
 
-const getTab = (key: string) => {
-  switch (key) {
-    case "applications":
-    case "offers":
-      return ModelTab.APPS;
-    case "machines":
-      return ModelTab.MACHINES;
-    case "relations":
-      return ModelTab.INTEGRATIONS;
-    default:
-      return;
-  }
-};
-
 // Use a key path to get the parent object that contains the current item from the results data.
 const getCurrentObject = (
   keyPath: KeyPath,
@@ -95,72 +76,6 @@ const getCurrentObject = (
       // Handle the case where the key path does not match the object that was provided.
       return null;
     }, results);
-
-const labelRenderer: LabelRenderer = (keyPath) => {
-  const currentKey = keyPath[0];
-  const parentKey = keyPath.length >= 2 ? keyPath[1] : null;
-  // The last item in keyPath should always be the model UUID.
-  const modelUUID = keyPath[keyPath.length - 1];
-  if (!modelUUID || typeof modelUUID !== "string") {
-    // If this is not a value that can be displayed then display "[none]" instead.
-    return <span className="u-text--muted">[none]:</span>;
-  }
-  // If this is a top level key then it is a model UUID.
-  if (keyPath.length === 1) {
-    return (
-      <ResultsModelLink
-        replaceLabel
-        title={`UUID: ${modelUUID}`}
-        uuid={modelUUID}
-      />
-    );
-  }
-  // Link units[unit-key] to unit in model details.
-  if (parentKey === "units" && typeof currentKey === "string") {
-    const [appName, unitId] = currentKey.split("/");
-    return (
-      <UnitLink uuid={modelUUID} appName={appName} unitId={unitId}>
-        {currentKey}:
-      </UnitLink>
-    );
-  }
-  // Link machines[machine-key] to machine in model details.
-  if (parentKey === "machines" && typeof currentKey === "string") {
-    return (
-      <MachineLink uuid={modelUUID} machineId={currentKey}>
-        {currentKey}:
-      </MachineLink>
-    );
-  }
-  // Link offers[app-key] and applications[app-key] to app in model details.
-  if (
-    (parentKey === "offers" || parentKey === "applications") &&
-    typeof currentKey === "string"
-  ) {
-    return (
-      <AppLink uuid={modelUUID} appName={currentKey}>
-        {currentKey}:
-      </AppLink>
-    );
-  }
-  switch (currentKey) {
-    case "applications":
-    case "machines":
-    case "offers":
-    case "relations":
-    case "model":
-      return (
-        <ResultsModelLink uuid={modelUUID} view={getTab(currentKey)}>
-          {currentKey}
-        </ResultsModelLink>
-      );
-    // Display something when the key is a blank string.
-    case "":
-      return <span className="u-text--muted">[none]:</span>;
-    default:
-      return <>{currentKey}:</>;
-  }
-};
 
 const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
   const [codeSnippetView, setCodeSnippetView] = useState<CodeSnippetView>(
@@ -312,8 +227,8 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
                   <JSONTree
                     data={code}
                     hideRoot
-                    labelRenderer={labelRenderer}
-                    shouldExpandNodeInitially={(keyPath, data, level) =>
+                    labelRenderer={(keyPath) => <Label keyPath={keyPath} />}
+                    shouldExpandNodeInitially={(_keyPath, _data, level) =>
                       level <= 2
                     }
                     theme={THEME}
