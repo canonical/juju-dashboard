@@ -4,24 +4,11 @@ import AppLink from "components/AppLink";
 import MachineLink from "components/MachineLink";
 import UnitLink from "components/UnitLink";
 import ResultsModelLink from "pages/AdvancedSearch/ResultsModelLink";
-import { ModelTab } from "urls";
+
+import { getTab } from "./utils";
 
 type Props = {
   keyPath: KeyPath;
-};
-
-const getTab = (key: string) => {
-  switch (key) {
-    case "applications":
-    case "offers":
-      return ModelTab.APPS;
-    case "machines":
-      return ModelTab.MACHINES;
-    case "relations":
-      return ModelTab.INTEGRATIONS;
-    default:
-      return;
-  }
 };
 
 const Label = ({ keyPath }: Props) => {
