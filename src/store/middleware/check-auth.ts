@@ -5,6 +5,7 @@
 
 import { isAction, type Middleware } from "redux";
 
+import * as jimmThunks from "juju/jimm/thunks";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import { isLoggedIn } from "store/general/selectors";
@@ -99,6 +100,12 @@ export const checkAuthMiddleware: Middleware<
       addControllerCloudRegion.fulfilled.type,
       addControllerCloudRegion.pending.type,
       addControllerCloudRegion.rejected.type,
+      jimmThunks.logout.fulfilled.type,
+      jimmThunks.logout.pending.type,
+      jimmThunks.logout.rejected.type,
+      jimmThunks.whoami.fulfilled.type,
+      jimmThunks.whoami.pending.type,
+      jimmThunks.whoami.rejected.type,
     ];
 
     const state = getState();

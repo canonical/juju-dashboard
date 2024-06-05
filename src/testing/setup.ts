@@ -1,8 +1,13 @@
 import "@testing-library/jest-dom/vitest";
 import type { Window as HappyDOMWindow } from "happy-dom";
 import { vi } from "vitest";
+import createFetchMock from "vitest-fetch-mock";
 
 vi.mock("react-ga");
+
+const fetchMocker = createFetchMock(vi);
+// sets globalThis.fetch and globalThis.fetchMock to our mocked version
+fetchMocker.enableMocks();
 
 declare global {
   interface Window extends HappyDOMWindow {}
