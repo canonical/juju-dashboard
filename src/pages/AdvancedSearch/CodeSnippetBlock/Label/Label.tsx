@@ -1,4 +1,4 @@
-import type { KeyPath } from "react-json-tree";
+import type { KeyPath, LabelRenderer } from "react-json-tree";
 
 import AppLink from "components/AppLink";
 import MachineLink from "components/MachineLink";
@@ -11,7 +11,7 @@ type Props = {
   keyPath: KeyPath;
 };
 
-const Label = ({ keyPath }: Props) => {
+const Label = ({ keyPath }: Props): ReturnType<LabelRenderer> => {
   const currentKey = keyPath[0];
   const parentKey = keyPath.length >= 2 ? keyPath[1] : null;
   // The last item in keyPath should always be the model UUID.
