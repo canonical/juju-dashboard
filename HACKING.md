@@ -33,7 +33,6 @@ contribute and what kinds of contributions are welcome.
     - [Vanilla Framework](#vanilla-framework)
     - [Vanilla React Components](#vanilla-react-components)
 - [Juju controllers in Multipass](#juju-controllers-in-multipass)
-  - [Kubernetes controller](#kubernetes-controller)
   - [Juju controller](#juju-controller)
   - [JIMM controller](#jimm-controller)
     - [Set up JIMM](#set-up-jimm)
@@ -272,10 +271,6 @@ There are three main types of deployment:
 - [Juju with Kubernetes](./docs/multipass-microk8s.md)
 - [JIMM controller](#jimm-controller)
 
-### Kubernetes controller
-
-If a Kubernetes controller is required you can follow the  instructions.
-
 ### Juju controller
 
 If this controller is being created on an M1 mac then you will need to [set the
@@ -425,7 +420,7 @@ multipass launch --cpus 2 --disk 20G --memory 8G --name jimm
 Copy your ssh key into the container. You can do this manually or use this one-liner:
 
 ```shell
-cat ~/.ssh/id_rsa.pub | multipass exec jimm -- tee -a .ssh/authorized_keys
+cat ~/.ssh/id_[key-name].pub | multipass exec jimm -- tee -a .ssh/authorized_keys
 ```
 
 SSH into the container:
@@ -478,18 +473,34 @@ steps.
 
 To expose the various JIMM APIs so that they can be accessed from outside of the
 Multipass container, you can use an SSH port forward. This will also enable
-access to the Multipass using the hostnames set up inside the Multipass e.g. jimm.localhost.
+access to the Multipass using the hostnames set up inside the Multipass e.g.
+jimm.localhost.
 
-From your host machine run the following:
+On Linux, ports below 1024 are privileged. The easiest way to get around this is
+to port forward as root.
+
+Start by generating SSH keys for root:
+
+```shell
+sudo ssh-keygen
+```
+
+Copy your root ssh key into the container. You can do this manually or use this one-liner:
+
+```shell
+sudo cat /root/.ssh/id_[key-name].pub | multipass exec jimm -- tee -a .ssh/authorized_keys
+```
+
+Now from your host machine run the following:
 
 ```shell
 export JIMM_CONTAINER=[multipass.ip]
-ssh -A -L :8082:$JIMM_CONTAINER:8082 -L :17070:$JIMM_CONTAINER:17070  -L :443:$JIMM_CONTAINER:443 -L :8036:$JIMM_CONTAINER:8036 ubuntu@$JIMM_CONTAINER
+sudo ssh -A -L :8082:$JIMM_CONTAINER:8082 -L :17070:$JIMM_CONTAINER:17070  -L :443:$JIMM_CONTAINER:443 -L :8036:$JIMM_CONTAINER:8036 ubuntu@$JIMM_CONTAINER
 ```
 
 #### Set up Juju Dashboard
 
-Start by getting your fork of the dashboard:
+Inside the JIMM Multipass, get your fork of the dashboard:
 
 ```shell
 cd ~
@@ -503,22 +514,26 @@ Install Node.js an Yarn:
 sudo snap install node --classic
 ```
 
-Install the dependencies
+Install the dependencies:
 
 ```shell
 yarn install
 ```
 
 Copy the configuration file:
+
 ```shell
 cp public/config.js public/config.local.js
+```
+
+Edit the file:
+```shell
+nano public/config.local.js
 ```
 
 Change the configuration as follows:
 
 ```shell
-nano public/config.local.js
-// Change these options:
 controllerAPIEndpoint: "ws://jimm.localhost:17070/api",
 identityProviderAvailable: false,
 ```
