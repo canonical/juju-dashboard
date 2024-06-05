@@ -33,6 +33,12 @@ contribute and what kinds of contributions are welcome.
     - [Vanilla Framework](#vanilla-framework)
     - [Vanilla React Components](#vanilla-react-components)
 - [Juju controllers in Multipass](#juju-controllers-in-multipass)
+  - [Juju controller](#juju-controller)
+  - [JIMM controller](#jimm-controller)
+    - [Set up JIMM](#set-up-jimm)
+    - [Forward ports](#forward-ports)
+    - [Set up Juju Dashboard](#set-up-juju-dashboard)
+    - [Restarting JIMM](#restarting-jimm)
   - [Self signed certificates](#self-signed-certificates)
   - [Juju on M1 Macs](#juju-on-m1-macs)
 - [Building the Docker image](#building-the-docker-image)
@@ -260,7 +266,12 @@ The easiest way to set up a juju controller is inside a
 remove controllers as necessary and provides a way to have multiple controllers
 running at once (with different Juju versions if needed).
 
-If a Kubernetes controller is required you can follow the [Multipass and Kubernetes](./docs/multipass-microk8s.md) instructions.
+There are three main types of deployment:
+- [Juju controller](#juju-controller)
+- [Juju with Kubernetes](./docs/multipass-microk8s.md)
+- [JIMM controller](#jimm-controller)
+
+### Juju controller
 
 If this controller is being created on an M1 mac then you will need to [set the
 arch](#juju-on-m1-macs) when running some of the commands.
@@ -395,6 +406,168 @@ And if you no longer require the container you can remove it:
 multipass delete juju
 multipass purge
 ```
+
+### JIMM controller
+
+First, create a new Multipass container. You may need to adjust the resources
+depending on your host machine, but you will need to allocate at least 20GB of
+disk space.
+
+```shell
+multipass launch --cpus 2 --disk 20G --memory 8G --name jimm
+```
+
+Copy your ssh key into the container. You can do this manually or use this one-liner:
+
+```shell
+cat ~/.ssh/id_[key-name].pub | multipass exec jimm -- tee -a .ssh/authorized_keys
+```
+
+SSH into the container:
+
+```shell
+ssh -A ubuntu@[multipass.ip]
+```
+
+#### Set up JIMM
+
+Check out the JIMM repository:
+
+```shell
+git clone git@github.com:canonical/jimm.git
+cd jimm
+```
+
+Start by making a small configuration change so that the login process redirects
+to the development dashboard URL:
+
+```shell
+nano docker-compose.yaml
+```
+
+Find `JIMM_DASHBOARD_FINAL_REDIRECT_URL` and set it to `"http://jimm.localhost:8036"`.
+
+Next follow the steps in the [Starting the
+environment](https://github.com/canonical/jimm/tree/v3/local#starting-the-environment)
+section of the JIMM docs.
+
+Once the environment is running it will be steadily
+outputting openfga health checks like the following, at which
+point you can move on to the next steps:
+
+```shell
+openfga                      | 2024-06-03T02:25:47.168Z	INFO	grpc_req_complete	{"grpc_service": "grpc.health.v1.Health", "grpc_method": "Check", "grpc_type": "unary", "request_id": "db6a8859-f296-44b3-b150-a1dff5be93fe", "raw_request": {"service":""}, "raw_response": {"status":"SERVING"}, "peer.address": "127.0.0.1:49320", "grpc_code": 0}
+```
+
+In a new terminal, enter the container, this time following the [port forward
+instructions](#forward-ports) and then go to the JIMM directory.
+```shell
+cd jimm
+```
+
+Now follow the [Q/A Using
+jimmctl](https://github.com/canonical/jimm/tree/v3/local#qa-using-jimmctl)
+steps.
+
+#### Forward ports
+
+To expose the various JIMM APIs so that they can be accessed from outside of the
+Multipass container, you can use an SSH port forward. This will also enable
+access to the Multipass using the hostnames set up inside the Multipass e.g.
+jimm.localhost.
+
+On Linux, ports below 1024 are privileged. The easiest way to get around this is
+to port forward as root.
+
+Start by generating SSH keys for root:
+
+```shell
+sudo ssh-keygen
+```
+
+Copy your root ssh key into the container. You can do this manually or use this one-liner:
+
+```shell
+sudo cat /root/.ssh/id_[key-name].pub | multipass exec jimm -- tee -a .ssh/authorized_keys
+```
+
+Now from your host machine run the following:
+
+```shell
+export JIMM_CONTAINER=[multipass.ip]
+sudo ssh -A -L :8082:$JIMM_CONTAINER:8082 -L :17070:$JIMM_CONTAINER:17070  -L :443:$JIMM_CONTAINER:443 -L :8036:$JIMM_CONTAINER:8036 ubuntu@$JIMM_CONTAINER
+```
+
+#### Set up Juju Dashboard
+
+Inside the JIMM Multipass, get your fork of the dashboard:
+
+```shell
+cd ~
+git clone git@github.com:[your-username]/juju-dashboard.git
+cd juju-dashboard
+```
+
+Install Node.js an Yarn:
+
+```shell
+sudo snap install node --classic
+```
+
+Install the dependencies:
+
+```shell
+yarn install
+```
+
+Copy the configuration file:
+
+```shell
+cp public/config.js public/config.local.js
+```
+
+Edit the file:
+```shell
+nano public/config.local.js
+```
+
+Change the configuration as follows:
+
+```shell
+controllerAPIEndpoint: "ws://jimm.localhost:17070/api",
+identityProviderAvailable: false,
+```
+
+Now you can start the dashboard with:
+
+```shell
+yarn start
+```
+
+To access the dashboard you can visit:
+
+```shell
+http://jimm.localhost:8036/
+```
+
+To log in you need to use the username and password listed in: [Controller set up](https://github.com/canonical/jimm/tree/v3/local#controller-set-up).
+
+#### Restarting JIMM
+
+Each time you start the multipass container you need to do the following:
+
+1. Follow steps 4 and 5 of the [Starting the
+environment](https://github.com/canonical/jimm/tree/v3/local#starting-the-environment)
+instructions (doing the cleanup first and then start the env).
+2. [Forward ports](#forward-ports)
+3. Follow the steps in [Controller set
+   up](https://github.com/canonical/jimm/tree/v3/local#controller-set-up) (you
+   can skip the `setup-controller.sh` step and
+   may need to run `sudo iptables -F FORWARD && sudo iptables -P FORWARD ACCEPT`
+   before these steps).
+4. Now you can start the dashboard as normal.
+
+
 
 ### Self signed certificates
 
