@@ -8,6 +8,7 @@ import type { RelationshipTuple } from "juju/jimm/JIMMV4";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import type { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
+import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
@@ -44,7 +45,11 @@ describe("model poller", () => {
   const originalLog = console.log;
   const wsControllerURL = "wss://example.com";
   const controllers: ControllerArgs[] = [
-    [wsControllerURL, { user: "eggman@external", password: "test" }, false],
+    [
+      wsControllerURL,
+      { user: "eggman@external", password: "test" },
+      AuthMethod.LOCAL,
+    ],
   ];
   const models = [
     {
@@ -182,7 +187,7 @@ describe("model poller", () => {
           password: "test",
           user: "eggman@external",
         },
-        false,
+        AuthMethod.LOCAL,
       ],
     );
   });
@@ -384,7 +389,11 @@ describe("model poller", () => {
 
   it("disables masking when using JIMM", async () => {
     const controllers = [
-      [wsControllerURL, { user: "eggman@external", password: "test" }, true],
+      [
+        wsControllerURL,
+        { user: "eggman@external", password: "test" },
+        AuthMethod.CANDID,
+      ],
     ];
     const disableControllerUUIDMasking = vi.spyOn(
       jujuModule,

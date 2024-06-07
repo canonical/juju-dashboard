@@ -98,6 +98,7 @@ describe("renderApp", () => {
       .mockImplementation(vi.fn());
     const config = configFactory.build({
       baseControllerURL: null,
+      isJuju: true,
     });
     window.jujuDashboardConfig = config;
     renderApp();
@@ -116,6 +117,7 @@ describe("renderApp", () => {
       .mockImplementation(vi.fn());
     const config = configFactory.build({
       baseControllerURL: null,
+      isJuju: true,
     });
     window.jujuDashboardConfig = config;
     renderApp();
@@ -146,6 +148,7 @@ describe("renderApp", () => {
       .mockImplementation(vi.fn());
     const config = configFactory.build({
       controllerAPIEndpoint: "/api",
+      isJuju: true,
     });
     window.jujuDashboardConfig = config;
     renderApp();
@@ -164,6 +167,7 @@ describe("renderApp", () => {
       .mockImplementation(vi.fn());
     const config = configFactory.build({
       controllerAPIEndpoint: "/api",
+      isJuju: true,
     });
     window.jujuDashboardConfig = config;
     renderApp();
@@ -181,6 +185,7 @@ describe("renderApp", () => {
       .mockImplementation(vi.fn());
     const config = configFactory.build({
       controllerAPIEndpoint: "wss://example.com/api",
+      isJuju: true,
     });
     window.jujuDashboardConfig = config;
     renderApp();
@@ -190,7 +195,7 @@ describe("renderApp", () => {
     );
   });
 
-  it("connects if there is an identity provider", async () => {
+  it("connects when using Candid", async () => {
     // Mock the result of the thunk a normal action so that it can be tested
     // for. This is necessary because we don't have a full store set up which
     // can dispatch thunks (and we don't need to handle the thunk, just know it
@@ -203,7 +208,8 @@ describe("renderApp", () => {
       .mockImplementation(vi.fn().mockResolvedValue({ catch: vi.fn() }));
     const config = configFactory.build({
       controllerAPIEndpoint: "wss://example.com/api",
-      identityProviderAvailable: true,
+      identityProviderURL: "/candid",
+      isJuju: true,
     });
     window.jujuDashboardConfig = config;
     renderApp();
@@ -295,7 +301,8 @@ describe("getControllerAPIEndpointErrors", () => {
     );
     const config = configFactory.build({
       baseControllerURL: null,
-      identityProviderAvailable: true,
+      identityProviderURL: "/candid",
+      isJuju: true,
     });
     window.jujuDashboardConfig = config;
     renderApp();

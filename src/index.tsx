@@ -10,6 +10,8 @@ import App from "components/App";
 import reduxStore from "store";
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
+import { AuthMethod } from "store/general/types";
+import type { WindowConfig } from "types";
 
 import packageJSON from "../package.json";
 
@@ -28,6 +30,16 @@ if (import.meta.env.PROD && window.jujuDashboardConfig?.analyticsEnabled) {
   });
   Sentry.setTag("dashboardVersion", appVersion);
 }
+
+const getAuthMethod = (config: WindowConfig) => {
+  if (!config.isJuju) {
+    return AuthMethod.OIDC;
+  }
+  if (config.identityProviderURL) {
+    return AuthMethod.CANDID;
+  }
+  return AuthMethod.LOCAL;
+};
 
 const addressRegex = new RegExp(/^ws[s]?:\/\/(\S+)\//);
 export const getControllerAPIEndpointErrors = (
@@ -80,7 +92,13 @@ export const renderApp = () => {
 renderApp();
 
 function bootstrap() {
-  const config = window.jujuDashboardConfig;
+  const windowConfig = window.jujuDashboardConfig;
+  const config = windowConfig
+    ? {
+        ...windowConfig,
+        authMethod: getAuthMethod(windowConfig),
+      }
+    : null;
   let error: string | null = null;
   if (!config) {
     error = Label.NO_CONFIG;
@@ -128,8 +146,8 @@ function bootstrap() {
   reduxStore.dispatch(generalActions.storeConfig(config));
   reduxStore.dispatch(generalActions.storeVersion(appVersion));
 
-  if (config.identityProviderAvailable) {
-    // If an identity provider is available then try and connect automatically
+  if (config.authMethod === AuthMethod.CANDID) {
+    // If using Candid authentication then try and connect automatically
     // If not then wait for the login UI to trigger this
     reduxStore
       .dispatch(appThunks.connectAndStartPolling())

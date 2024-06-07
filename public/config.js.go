@@ -4,8 +4,8 @@ var jujuDashboardConfig = {
   baseControllerURL: null,
   // Configurable base url to allow deploying to different paths.
   baseAppURL: "{{.baseAppURL}}",
-  // If true then identity will be provided by a third party provider.
-  identityProviderAvailable: {{.identityProviderAvailable}},
+  // The URL of the third party identity provider.
+  identityProviderURL: {{.identityProviderURL}},
   // Is this application being rendered in Juju and not JAAS. This flag should
   // only be used for superficial updates like logos. Use feature detection
   // for other environment features.

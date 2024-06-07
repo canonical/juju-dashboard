@@ -34,6 +34,7 @@ import {
   isLoggedIn,
 } from "store/general/selectors";
 import type { Credential } from "store/general/types";
+import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type {
@@ -110,10 +111,10 @@ export function generateConnectionOptions(
 
 function determineLoginParams(
   credentials: Credential | null | undefined,
-  identityProviderAvailable: boolean,
+  authMethod?: AuthMethod,
 ) {
   let loginParams: Credentials = {};
-  if (credentials && !identityProviderAvailable) {
+  if (credentials && authMethod === AuthMethod.LOCAL) {
     loginParams = {
       username: credentials.user,
       password: credentials.password,
@@ -147,7 +148,7 @@ function stopPingerLoop(intervalId: number) {
   @param wsControllerURL The fully qualified URL of the controller api.
   @param credentials The users credentials in the format
     {user: ..., password: ...}
-  @param identityProviderAvailable Whether an identity provider is available.
+  @param authMethod The method to use for authentication.
   @returns
     conn The controller connection instance.
     juju The juju api instance.
@@ -155,16 +156,13 @@ function stopPingerLoop(intervalId: number) {
 export async function loginWithBakery(
   wsControllerURL: string,
   credentials?: Credential,
-  identityProviderAvailable: boolean = false,
+  authMethod?: AuthMethod,
 ) {
   const juju: JujuClient = await connect(
     wsControllerURL,
     generateConnectionOptions(true, (e) => console.log("controller closed", e)),
   );
-  const loginParams = determineLoginParams(
-    credentials,
-    identityProviderAvailable,
-  );
+  const loginParams = determineLoginParams(credentials, authMethod);
   let conn: ConnectionWithFacades | null | undefined = null;
   try {
     conn = await juju.login(loginParams, CLIENT_VERSION);
@@ -187,22 +185,19 @@ export type LoginResponse = Awaited<ReturnType<typeof connectAndLogin>> & {
   @param credentials The users credentials in the format
     {user: ..., password: ...}
   @param options The options for the connection.
-  @param identityProviderAvailable If an identity provider is available.
+  @param authMethod The method to use for authentication.
   @returns The full model status.
 */
 export async function connectAndLoginWithTimeout(
   modelURL: string,
   credentials: Credential | null | undefined,
   options: ConnectOptions,
-  identityProviderAvailable: boolean,
+  authMethod?: AuthMethod,
 ): Promise<LoginResponse> {
   const timeout: Promise<never> = new Promise((_resolve, reject) => {
     setTimeout(reject, LOGIN_TIMEOUT, new Error(Label.LOGIN_TIMEOUT_ERROR));
   });
-  const loginParams = determineLoginParams(
-    credentials,
-    identityProviderAvailable,
-  );
+  const loginParams = determineLoginParams(credentials, authMethod);
   const juju: Promise<LoginResponse> = connectAndLogin(
     modelURL,
     loginParams,
@@ -226,13 +221,7 @@ export async function fetchModelStatus(
   getState: () => RootState,
 ) {
   const appState = getState();
-  const baseWSControllerURL = getWSControllerURL(appState);
   const config = getConfig(appState);
-  let useIdentityProvider = false;
-
-  if (baseWSControllerURL === wsControllerURL) {
-    useIdentityProvider = config?.identityProviderAvailable ?? false;
-  }
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   let status: FullStatusWithAnnotations | null = null;
   let features: ModelFeatures | null = null;
@@ -245,7 +234,7 @@ export async function fetchModelStatus(
         modelURL,
         controllerCredentials,
         generateConnectionOptions(false),
-        useIdentityProvider,
+        config?.authMethod,
       );
       if (isLoggedIn(getState(), wsControllerURL)) {
         try {
@@ -532,14 +521,14 @@ export async function connectToModel(
   modelUUID: string,
   wsControllerURL: string,
   credentials?: Credential,
-  identityProviderAvailable = false,
+  authMethod?: AuthMethod,
 ) {
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   const response = await connectAndLoginWithTimeout(
     modelURL,
     credentials,
     generateConnectionOptions(true),
-    identityProviderAvailable,
+    authMethod,
   );
   return response.conn;
 }
@@ -564,7 +553,7 @@ export async function connectAndLoginToModel(
     modelUUID,
     wsControllerURL,
     credentials,
-    config?.identityProviderAvailable,
+    config?.authMethod,
   );
 }
 

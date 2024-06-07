@@ -2,6 +2,7 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
+import { AuthMethod } from "store/general/types";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -41,7 +42,7 @@ describe("LogIn", () => {
       general: generalStateFactory.withConfig().build({
         visitURLs: ["I am a url"],
         config: configFactory.build({
-          identityProviderAvailable: true,
+          authMethod: AuthMethod.CANDID,
         }),
       }),
     });
@@ -58,7 +59,7 @@ describe("LogIn", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
-          identityProviderAvailable: false,
+          authMethod: AuthMethod.LOCAL,
         }),
       }),
     });
@@ -78,7 +79,7 @@ describe("LogIn", () => {
           "wss://controller.example.com": "Controller rejected request",
         },
         config: configFactory.build({
-          identityProviderAvailable: false,
+          authMethod: AuthMethod.LOCAL,
         }),
       }),
     });
@@ -95,7 +96,7 @@ describe("LogIn", () => {
           "wss://controller.example.com": ErrorResponse.INVALID_TAG,
         },
         config: configFactory.build({
-          identityProviderAvailable: false,
+          authMethod: AuthMethod.LOCAL,
         }),
       }),
     });
@@ -110,7 +111,7 @@ describe("LogIn", () => {
           "wss://controller.example.com": ErrorResponse.INVALID_FIELD,
         },
         config: configFactory.build({
-          identityProviderAvailable: false,
+          authMethod: AuthMethod.LOCAL,
         }),
       }),
     });
@@ -122,9 +123,9 @@ describe("LogIn", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
-          identityProviderAvailable: true,
+          authMethod: AuthMethod.CANDID,
         }),
-        visitURLs: ["/log-in"],
+        visitURLs: ["http://example.com/log-in"],
       }),
     });
     renderComponent(<LogIn>App content</LogIn>, { state });
@@ -145,9 +146,9 @@ describe("LogIn", () => {
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
           isJuju: true,
-          identityProviderAvailable: false,
+          authMethod: AuthMethod.LOCAL,
         }),
-        visitURLs: ["/log-in"],
+        visitURLs: ["http://example.com/log-in"],
       }),
     });
     renderComponent(<LogIn>App content</LogIn>, { state });

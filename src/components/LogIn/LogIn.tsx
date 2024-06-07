@@ -15,6 +15,7 @@ import {
   isLoggedIn,
   getIsJuju,
 } from "store/general/selectors";
+import { AuthMethod } from "store/general/types";
 import { useAppSelector } from "store/store";
 
 import "./_login.scss";
@@ -75,7 +76,7 @@ export default function LogIn({ children }: PropsWithChildren) {
           <FadeUpIn isActive={!userIsLoggedIn}>
             <div className="login__inner p-card--highlighted">
               <Logo className="login__logo" dark isJuju={isJuju} />
-              {config?.identityProviderAvailable ? (
+              {config?.authMethod === AuthMethod.CANDID ? (
                 <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />
               ) : (
                 <UserPassForm />

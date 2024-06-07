@@ -2,6 +2,7 @@ import { vi } from "vitest";
 
 import { actions as appActions } from "store/app";
 import { actions as generalActions } from "store/general";
+import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -67,7 +68,7 @@ describe("thunks", () => {
       rootStateFactory.build({
         general: generalStateFactory.build({
           config: configFactory.build({
-            identityProviderAvailable: true,
+            authMethod: AuthMethod.CANDID,
           }),
         }),
       }),
@@ -91,7 +92,9 @@ describe("thunks", () => {
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
       appActions.connectAndPollControllers({
-        controllers: [["wss://controller.example.com", undefined, false]],
+        controllers: [
+          ["wss://controller.example.com", undefined, AuthMethod.LOCAL],
+        ],
         isJuju: true,
       }),
     );
@@ -112,7 +115,9 @@ describe("thunks", () => {
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
       appActions.connectAndPollControllers({
-        controllers: [["wss://controller.example.com", undefined, false]],
+        controllers: [
+          ["wss://controller.example.com", undefined, AuthMethod.LOCAL],
+        ],
         isJuju: true,
       }),
     );
@@ -141,7 +146,9 @@ describe("thunks", () => {
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
       appActions.connectAndPollControllers({
-        controllers: [["wss://controller.example.com", undefined, false]],
+        controllers: [
+          ["wss://controller.example.com", undefined, AuthMethod.LOCAL],
+        ],
         isJuju: true,
       }),
     );
@@ -171,7 +178,9 @@ describe("thunks", () => {
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
       appActions.connectAndPollControllers({
-        controllers: [["wss://controller.example.com", undefined, false]],
+        controllers: [
+          ["wss://controller.example.com", undefined, AuthMethod.LOCAL],
+        ],
         isJuju: true,
       }),
     );

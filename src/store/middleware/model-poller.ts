@@ -16,6 +16,7 @@ import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import { isLoggedIn } from "store/general/selectors";
+import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
@@ -71,8 +72,7 @@ export const modelPollerMiddleware: Middleware<
       // first clean up any old auth requests:
       reduxStore.dispatch(generalActions.clearVisitURLs());
       for (const controllerData of action.payload.controllers) {
-        const [wsControllerURL, credentials, identityProviderAvailable] =
-          controllerData;
+        const [wsControllerURL, credentials, authMethod] = controllerData;
         let conn: ConnectionWithFacades | undefined;
         let juju: Client | undefined;
         let error: unknown;
@@ -81,7 +81,7 @@ export const modelPollerMiddleware: Middleware<
           ({ conn, error, juju, intervalId } = await loginWithBakery(
             wsControllerURL,
             credentials,
-            identityProviderAvailable,
+            authMethod,
           ));
           if (conn) {
             controllers.set(wsControllerURL, conn);
@@ -190,7 +190,7 @@ export const modelPollerMiddleware: Middleware<
           reduxStore.dispatch,
           reduxStore.getState,
         );
-        if (identityProviderAvailable) {
+        if (authMethod === AuthMethod.CANDID) {
           // This call will be a noop if the user isn't an administrator
           // on the JIMM controller we're connected to.
           try {
