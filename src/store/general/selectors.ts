@@ -13,7 +13,7 @@ const slice = (state: RootState) => state.general;
 */
 export const getConfig = createSelector(
   [slice],
-  (sliceState) => sliceState?.config,
+  (sliceState) => sliceState.config,
 );
 
 /**

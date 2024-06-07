@@ -122,7 +122,6 @@ controllerAPIEndpoint: "wss://[controller.ip]:17070/api",
 To use a local/non-JAAS controller you will need to set:
 
 ```shell
-identityProviderAvailable: false,
 isJuju: true,
 ```
 
@@ -535,7 +534,6 @@ Change the configuration as follows:
 
 ```shell
 controllerAPIEndpoint: "ws://jimm.localhost:17070/api",
-identityProviderAvailable: false,
 ```
 
 Now you can start the dashboard with:

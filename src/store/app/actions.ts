@@ -1,6 +1,6 @@
 import { createAction } from "@reduxjs/toolkit";
 
-import type { Credential } from "store/general/types";
+import type { AuthMethod, Credential } from "store/general/types";
 
 export const updatePermissions = createAction<{
   action: string;
@@ -16,8 +16,8 @@ export type ControllerArgs = [
   string,
   // credentials
   Credential | undefined,
-  // identityProviderAvailable
-  boolean | undefined,
+  // authMethod
+  AuthMethod,
 ];
 
 export const connectAndPollControllers = createAction<{

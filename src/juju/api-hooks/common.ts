@@ -30,8 +30,7 @@ export const useModelConnectionCallback = (modelUUID?: string) => {
   const wsControllerURL = useAppSelector((state) =>
     getModelByUUID(state, modelUUID),
   )?.wsControllerURL;
-  const identityProviderAvailable =
-    useAppSelector(getConfig)?.identityProviderAvailable;
+  const authMethod = useAppSelector(getConfig)?.authMethod;
   const credentials = useAppSelector((state) =>
     getUserPass(state, wsControllerURL),
   );
@@ -43,12 +42,7 @@ export const useModelConnectionCallback = (modelUUID?: string) => {
         // are available.
         return;
       }
-      connectToModel(
-        modelUUID,
-        wsControllerURL,
-        credentials,
-        identityProviderAvailable,
-      )
+      connectToModel(modelUUID, wsControllerURL, credentials, authMethod)
         .then((connection) => {
           if (!connection) {
             response({ error: Label.NO_CONNECTION_ERROR });
@@ -61,7 +55,7 @@ export const useModelConnectionCallback = (modelUUID?: string) => {
           response({ error: toErrorString(error) });
         });
     },
-    [credentials, identityProviderAvailable, modelUUID, wsControllerURL],
+    [credentials, authMethod, modelUUID, wsControllerURL],
   );
 };
 

@@ -10,6 +10,7 @@ import {
   getUserPass,
   getWSControllerURL,
 } from "store/general/selectors";
+import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 
@@ -23,8 +24,7 @@ export const logOut = createAsyncThunk<
   }
 >("app/logout", async (_, thunkAPI) => {
   const state = thunkAPI.getState();
-  const identityProviderAvailable =
-    state?.general?.config?.identityProviderAvailable;
+  const authMethod = state?.general?.config?.authMethod ?? AuthMethod.LOCAL;
   const pingerIntervalIds = getPingerIntervalIds(state);
   bakery.storage.clear();
   Object.entries(pingerIntervalIds ?? {}).forEach((pingerIntervalId) =>
@@ -33,7 +33,7 @@ export const logOut = createAsyncThunk<
   thunkAPI.dispatch(jujuActions.clearModelData());
   thunkAPI.dispatch(jujuActions.clearControllerData());
   thunkAPI.dispatch(generalActions.logOut());
-  if (identityProviderAvailable) {
+  if (authMethod === AuthMethod.CANDID) {
     // To enable users to log back in after logging out we have to re-connect
     // to the controller to get another wait url and start polling on it
     // again.
@@ -62,7 +62,7 @@ export const connectAndStartPolling = createAsyncThunk<
       controllerList.push([
         wsControllerURL,
         credentials,
-        config?.identityProviderAvailable,
+        config?.authMethod ?? AuthMethod.LOCAL,
       ]);
     }
     const connectedControllers = Object.keys(controllerConnections);

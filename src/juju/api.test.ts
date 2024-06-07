@@ -5,6 +5,7 @@ import { waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { actions as generalActions } from "store/general";
+import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -102,7 +103,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        false,
+        AuthMethod.LOCAL,
       );
       expect(response).toStrictEqual({
         conn,
@@ -132,7 +133,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        true,
+        AuthMethod.CANDID,
       );
       expect(juju.login).toHaveBeenCalledWith({}, CLIENT_VERSION);
     });
@@ -150,7 +151,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        false,
+        AuthMethod.LOCAL,
       );
       expect(response).toStrictEqual({
         error: "Could not log into controller",
@@ -177,7 +178,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        false,
+        AuthMethod.LOCAL,
       );
       expect(ping).not.toHaveBeenCalled();
       vi.advanceTimersByTime(PING_TIME);
@@ -209,7 +210,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        false,
+        AuthMethod.LOCAL,
       );
       vi.advanceTimersByTime(PING_TIME);
       await waitFor(() => {
@@ -243,7 +244,7 @@ describe("Juju API", () => {
           password: "123",
         },
         generateConnectionOptions(false),
-        false,
+        AuthMethod.LOCAL,
       );
       expect(response).toStrictEqual(juju);
     });
@@ -262,7 +263,7 @@ describe("Juju API", () => {
           password: "123",
         },
         generateConnectionOptions(false),
-        false,
+        AuthMethod.LOCAL,
       );
       vi.advanceTimersByTime(LOGIN_TIMEOUT);
       await expect(response).rejects.toMatchObject(
@@ -283,7 +284,7 @@ describe("Juju API", () => {
           password: "123",
         },
         generateConnectionOptions(false),
-        false,
+        AuthMethod.LOCAL,
       );
       await expect(response).rejects.toMatchObject(new Error("Uh oh!"));
     });
@@ -317,7 +318,7 @@ describe("Juju API", () => {
 
     it("can log in with an external provider", async () => {
       if (state.general.config) {
-        state.general.config.identityProviderAvailable = true;
+        state.general.config.authMethod = AuthMethod.CANDID;
       }
       const loginResponse = {
         conn: {
@@ -1321,7 +1322,7 @@ describe("Juju API", () => {
         "abc123",
         "wss://example.com/api",
         credentials,
-        false,
+        AuthMethod.LOCAL,
       );
       expect(connectAndLogin).toHaveBeenCalledWith(
         "wss://example.com/model/abc123/api",
