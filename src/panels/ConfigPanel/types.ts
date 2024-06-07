@@ -1,3 +1,5 @@
+import type { ConfirmTypes as DefaultConfirmTypes } from "panels/types";
+
 export type ConfigValue = string | number | boolean | undefined;
 
 export type ConfigOption<V, T> = {
@@ -44,3 +46,22 @@ export enum Label {
 export enum TestId {
   PANEL = "config-panel",
 }
+
+export enum InlineErrors {
+  FORM = "form",
+  GET_CONFIG = "get-config",
+  SUBMIT_TO_JUJU = "submit-to-juju",
+}
+
+export enum ConfigConfirmType {
+  GRANT = "grant",
+}
+
+export type ConfirmTypes = DefaultConfirmTypes | ConfigConfirmType;
+
+export type ConfigQueryParams = {
+  panel: string | null;
+  charm: string | null;
+  entity: string | null;
+  modelUUID: string | null;
+};
