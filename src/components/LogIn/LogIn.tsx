@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -20,6 +20,7 @@ import { useAppSelector } from "store/store";
 
 import "./_login.scss";
 import IdentityProviderForm from "./IdentityProviderForm";
+import OIDCForm from "./OIDCForm";
 import UserPassForm from "./UserPassForm";
 import { ErrorResponse, Label } from "./types";
 
@@ -69,6 +70,19 @@ export default function LogIn({ children }: PropsWithChildren) {
     });
   }, [visitURLs]);
 
+  let form: ReactNode = null;
+  switch (config?.authMethod) {
+    case AuthMethod.CANDID:
+      form = <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />;
+      break;
+    case AuthMethod.OIDC:
+      form = <OIDCForm />;
+      break;
+    default:
+      form = <UserPassForm />;
+      break;
+  }
+
   return (
     <>
       {!userIsLoggedIn && (
@@ -76,11 +90,7 @@ export default function LogIn({ children }: PropsWithChildren) {
           <FadeUpIn isActive={!userIsLoggedIn}>
             <div className="login__inner p-card--highlighted">
               <Logo className="login__logo" dark isJuju={isJuju} />
-              {config?.authMethod === AuthMethod.CANDID ? (
-                <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />
-              ) : (
-                <UserPassForm />
-              )}
+              {form}
               {generateErrorMessage(loginError)}
             </div>
           </FadeUpIn>

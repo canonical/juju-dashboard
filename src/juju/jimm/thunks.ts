@@ -1,3 +1,4 @@
+import type { LoginResult } from "@canonical/jujulib/dist/api/facades/admin/AdminV3";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import type { RootState } from "store/store";
@@ -29,7 +30,7 @@ export const logout = createAsyncThunk<
   Get the authenticated user from the JIMM API.
 */
 export const whoami = createAsyncThunk<
-  void,
+  LoginResult | null,
   void,
   {
     state: RootState;

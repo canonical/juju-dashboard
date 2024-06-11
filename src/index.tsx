@@ -146,7 +146,7 @@ function bootstrap() {
   reduxStore.dispatch(generalActions.storeConfig(config));
   reduxStore.dispatch(generalActions.storeVersion(appVersion));
 
-  if (config.authMethod === AuthMethod.CANDID) {
+  if ([AuthMethod.CANDID, AuthMethod.OIDC].includes(config.authMethod)) {
     // If using Candid authentication then try and connect automatically
     // If not then wait for the login UI to trigger this
     reduxStore

@@ -7,7 +7,9 @@ import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
+import { IdentityProviderFormTestId } from "./IdentityProviderForm";
 import LogIn from "./LogIn";
+import { OIDCFormTestId } from "./OIDCForm";
 import { ErrorResponse, Label } from "./types";
 
 describe("LogIn", () => {
@@ -49,7 +51,24 @@ describe("LogIn", () => {
     renderComponent(<LogIn>App content</LogIn>, { state });
     expect(
       screen.getByRole("link", { name: Label.LOGIN_TO_DASHBOARD }),
-    ).toBeInTheDocument();
+    ).toHaveAttribute("data-testid", IdentityProviderFormTestId.CANDID_LOGIN);
+    expect(
+      screen.queryByRole("textbox", { name: "Username" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders an OIDC login UI if the user is not logged in", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.withConfig().build({
+        config: configFactory.build({
+          authMethod: AuthMethod.OIDC,
+        }),
+      }),
+    });
+    renderComponent(<LogIn>App content</LogIn>, { state });
+    expect(
+      screen.getByRole("link", { name: Label.LOGIN_TO_DASHBOARD }),
+    ).toHaveAttribute("data-testid", OIDCFormTestId.OIDC_LOGIN);
     expect(
       screen.queryByRole("textbox", { name: "Username" }),
     ).not.toBeInTheDocument();
