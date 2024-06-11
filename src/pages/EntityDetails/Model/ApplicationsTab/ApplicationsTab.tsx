@@ -1,10 +1,7 @@
-import { MainTable } from "@canonical/react-components";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import type { Chip } from "components/ChipGroup";
-import ChipGroup from "components/ChipGroup";
 import ContentReveal from "components/ContentReveal";
 import type { EntityDetailsRoute } from "components/Routes";
 import useModelStatus from "hooks/useModelStatus";
@@ -13,11 +10,6 @@ import {
   getModelApplications,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-import { pluralize } from "store/juju/utils/models";
-import {
-  appsOffersTableHeaders,
-  remoteApplicationTableHeaders,
-} from "tables/tableHeaders";
 import {
   generateAppOffersRows,
   generateRemoteApplicationRows,
@@ -25,25 +17,11 @@ import {
 
 import { renderCounts } from "../../counts";
 
+import AppOffersTable from "./AppOffersTable";
+import ContentRevealTitle from "./ContentRevealTitle";
 import LocalAppsTable from "./LocalAppsTable";
+import RemoteAppsTable from "./RemoteAppsTable";
 import SearchResults from "./SearchResults/SearchResults";
-
-const ContentRevealTitle = ({
-  count,
-  subject,
-  chips,
-}: {
-  count: number;
-  subject: "Offer" | "Local application" | "Remote application";
-  chips: Chip | null;
-}) => (
-  <>
-    <span>
-      {count} {pluralize(count, subject)}
-    </span>
-    <ChipGroup chips={chips} className="u-no-margin" descriptor={null} />
-  </>
-);
 
 export default function ApplicationsTab() {
   const [queryParams] = useQueryParams<{
@@ -92,35 +70,6 @@ export default function ApplicationsTab() {
     appOffersTableLength,
   ]);
 
-  const AppOffersTable = () => (
-    <>
-      {!!appOffersTableLength && (
-        <>
-          <MainTable
-            headers={appsOffersTableHeaders}
-            rows={appOffersRows}
-            className="entity-details__offers p-main-table"
-            sortable
-            emptyStateMsg={"There are no offers associated with this model"}
-          />
-        </>
-      )}
-    </>
-  );
-
-  const RemoteAppsTable = () => (
-    <>
-      {!!remoteAppsTableLength && (
-        <MainTable
-          headers={remoteApplicationTableHeaders}
-          rows={remoteApplicationTableRows}
-          className="entity-details__remote-apps p-main-table"
-          sortable
-          emptyStateMsg={"There are no remote applications in this model"}
-        />
-      )}
-    </>
-  );
   const getContentReveals = () => {
     return (
       <>
@@ -189,8 +138,8 @@ export default function ApplicationsTab() {
     return (
       <>
         <LocalAppsTable applications={applications} />
-        <AppOffersTable />
-        <RemoteAppsTable />
+        {!!appOffersTableLength && <AppOffersTable />}
+        {!!remoteAppsTableLength && <RemoteAppsTable />}
       </>
     );
   }
