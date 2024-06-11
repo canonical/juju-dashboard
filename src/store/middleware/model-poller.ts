@@ -1,4 +1,5 @@
 import type { Client } from "@canonical/jujulib";
+import { unwrapResult } from "@reduxjs/toolkit";
 import * as Sentry from "@sentry/browser";
 import { isAction, type Middleware } from "redux";
 
@@ -12,6 +13,7 @@ import {
   setModelSharingPermissions,
 } from "juju/api";
 import { JIMMRelation } from "juju/jimm/JIMMV4";
+import { whoami } from "juju/jimm/thunks";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -77,6 +79,13 @@ export const modelPollerMiddleware: Middleware<
         let juju: Client | undefined;
         let error: unknown;
         let intervalId: number | null | undefined;
+        if (authMethod === AuthMethod.OIDC) {
+          const whoamiResponse = await reduxStore.dispatch(whoami());
+          const user = unwrapResult(whoamiResponse);
+          if (!user) {
+            return;
+          }
+        }
         try {
           ({ conn, error, juju, intervalId } = await loginWithBakery(
             wsControllerURL,

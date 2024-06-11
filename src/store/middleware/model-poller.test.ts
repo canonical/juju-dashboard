@@ -192,6 +192,43 @@ describe("model poller", () => {
     );
   });
 
+  it("stops when not logged in and is using OIDC", async () => {
+    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    vi.spyOn(fakeStore, "dispatch").mockReturnValue({ type: "whoami" });
+    const loginWithBakerySpy = vi.spyOn(jujuModule, "loginWithBakery");
+    await runMiddleware(
+      appActions.connectAndPollControllers({
+        controllers: [[wsControllerURL, undefined, AuthMethod.OIDC]],
+        isJuju: true,
+        poll: 0,
+      }),
+    );
+    expect(loginWithBakerySpy).not.toHaveBeenCalled();
+  });
+
+  it("continues when not logged in and is using OIDC", async () => {
+    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    vi.spyOn(fakeStore, "dispatch").mockReturnValue({
+      type: "whoami",
+      payload: { user: "user-test@external" },
+    });
+    const loginWithBakerySpy = vi
+      .spyOn(jujuModule, "loginWithBakery")
+      .mockImplementation(async () => ({
+        conn,
+        intervalId,
+        juju,
+      }));
+    await runMiddleware(
+      appActions.connectAndPollControllers({
+        controllers: [[wsControllerURL, undefined, AuthMethod.OIDC]],
+        isJuju: true,
+        poll: 0,
+      }),
+    );
+    expect(loginWithBakerySpy).toHaveBeenCalled();
+  });
+
   it("fetches and stores data", async () => {
     const fetchControllerList = vi.spyOn(jujuModule, "fetchControllerList");
     conn.facades.modelManager.listModels.mockResolvedValue({

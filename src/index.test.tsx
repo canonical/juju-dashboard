@@ -216,9 +216,30 @@ describe("renderApp", () => {
     expect(dispatch).toHaveBeenCalledWith({ type: "connectAndStartPolling" });
   });
 
+  it("connects when using OIDC", async () => {
+    // Mock the result of the thunk a normal action so that it can be tested
+    // for. This is necessary because we don't have a full store set up which
+    // can dispatch thunks (and we don't need to handle the thunk, just know it
+    // was dispatched).
+    vi.spyOn(appThunks, "connectAndStartPolling").mockImplementation(
+      vi.fn().mockReturnValue({ type: "connectAndStartPolling" }),
+    );
+    const dispatch = vi
+      .spyOn(storeModule.default, "dispatch")
+      .mockImplementation(vi.fn().mockResolvedValue({ catch: vi.fn() }));
+    const config = configFactory.build({
+      controllerAPIEndpoint: "wss://example.com/api",
+      isJuju: false,
+    });
+    window.jujuDashboardConfig = config;
+    renderApp();
+    expect(dispatch).toHaveBeenCalledWith({ type: "connectAndStartPolling" });
+  });
+
   it("renders the app", async () => {
     const config = configFactory.build({
       controllerAPIEndpoint: "wss://example.com/api",
+      isJuju: true,
     });
     window.jujuDashboardConfig = config;
     renderApp();

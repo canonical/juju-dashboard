@@ -6,6 +6,8 @@ import type { RootState } from "store/store";
 
 import { Label } from "../types";
 
+import { TestId } from "./types";
+
 type Props = {
   userIsLoggedIn: boolean;
 };
@@ -21,7 +23,11 @@ const IdentityProviderForm = ({ userIsLoggedIn }: Props) => {
   });
 
   return visitURL ? (
-    <AuthenticationButton appearance="positive" visitURL={visitURL}>
+    <AuthenticationButton
+      appearance="positive"
+      visitURL={visitURL}
+      data-testid={TestId.CANDID_LOGIN}
+    >
       {Label.LOGIN_TO_DASHBOARD}
     </AuthenticationButton>
   ) : (
