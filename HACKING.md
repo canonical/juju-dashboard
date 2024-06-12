@@ -34,6 +34,7 @@ contribute and what kinds of contributions are welcome.
     - [Vanilla React Components](#vanilla-react-components)
 - [Juju controllers in Multipass](#juju-controllers-in-multipass)
   - [Juju controller](#juju-controller)
+  - [Juju controller with Candid](#juju-controller-with-candid)
   - [JIMM controller](#jimm-controller)
     - [Set up JIMM](#set-up-jimm)
     - [Forward ports](#forward-ports)
@@ -405,6 +406,90 @@ And if you no longer require the container you can remove it:
 multipass delete juju
 multipass purge
 ```
+
+### Juju controller with Candid
+
+First, create a new Multipass container. You may need to adjust the resources
+depending on your host machine.
+
+```shell
+multipass launch --cpus 2 --disk 15G --memory 8G --name juju-candid
+```
+
+Enter the container:
+
+```shell
+multipass shell juju-candid
+```
+
+Install the prerequisites:
+
+```shell
+sudo snap install juju lxd candid
+```
+
+Initialise LXD with the default configuration:
+
+```shell
+lxd init --auto
+```
+
+Bootstrap Juju with the Ubuntu SSO provider:
+
+```shell
+juju bootstrap --config identity-url=https://api.jujucharms.com/identity --config allow-model-access=true
+```
+
+Get the controller container's instance id ("Inst id")
+
+```shell
+juju switch controller
+juju status
+```
+
+So that the Juju API can be accessed outside the Multipass container the API
+port will need to be forwarded to the controller machine. Using the instance id
+from above, run:
+
+```shell
+lxc config device add [inst-id] portforward17070 proxy listen=tcp:0.0.0.0:17070 connect=tcp:127.0.0.1:17070
+```
+
+To be able to access the controller you will need to allow access to your SSO
+user (check https://login.ubuntu.com/ if you're not sure what your username is):
+
+```shell
+juju grant [your-sso-username]@external superuser
+```
+
+If you wish you can add additional models and deploy applications:
+
+```shell
+juju add-model test
+juju deploy postgresql
+```
+
+Now exit the Multipass container and then run the following to get the IP
+address of the container:
+
+```shell
+multipass info juju-candid
+```
+
+You can now configure your local dashboard by setting the endpoint in
+`config.local.js`:
+
+```shell
+controllerAPIEndpoint: "wss://[container.ip]:17070/api",
+```
+
+You may also need to configure your dashboard to work with a local controller:
+
+```shell
+isJuju: true,
+```
+
+You can now access your local dashboard and log in using your Ubuntu SSO credentials.
 
 ### JIMM controller
 
