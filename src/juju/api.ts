@@ -1,8 +1,4 @@
-import type {
-  ConnectOptions,
-  Credentials,
-  Client as JujuClient,
-} from "@canonical/jujulib";
+import type { ConnectOptions, Client as JujuClient } from "@canonical/jujulib";
 import { connect, connectAndLogin } from "@canonical/jujulib";
 import Action from "@canonical/jujulib/dist/api/facades/action";
 import AllWatcher from "@canonical/jujulib/dist/api/facades/all-watcher";
@@ -80,6 +76,7 @@ export const CLIENT_VERSION = "3.0.0";
   @returns The configuration options.
 */
 export function generateConnectionOptions(
+  authMethod?: AuthMethod,
   usePinger = false,
   onClose: ConnectOptions["closeCallback"] = () => null,
 ) {
@@ -105,6 +102,7 @@ export function generateConnectionOptions(
     closeCallback: onClose,
     debug: false,
     facades,
+    oidcEnabled: authMethod === AuthMethod.OIDC,
     wsclass: WebSocket,
   };
 }
@@ -113,14 +111,12 @@ function determineLoginParams(
   credentials: Credential | null | undefined,
   authMethod?: AuthMethod,
 ) {
-  let loginParams: Credentials = {};
   if (credentials && authMethod === AuthMethod.LOCAL) {
-    loginParams = {
+    return {
       username: credentials.user,
       password: credentials.password,
     };
   }
-  return loginParams;
 }
 
 function startPingerLoop(conn: ConnectionWithFacades) {
@@ -160,7 +156,9 @@ export async function loginWithBakery(
 ) {
   const juju: JujuClient = await connect(
     wsControllerURL,
-    generateConnectionOptions(true, (e) => console.log("controller closed", e)),
+    generateConnectionOptions(authMethod, true, (e) =>
+      console.log("controller closed", e),
+    ),
   );
   const loginParams = determineLoginParams(credentials, authMethod);
   let conn: ConnectionWithFacades | null | undefined = null;
@@ -200,8 +198,8 @@ export async function connectAndLoginWithTimeout(
   const loginParams = determineLoginParams(credentials, authMethod);
   const juju: Promise<LoginResponse> = connectAndLogin(
     modelURL,
-    loginParams,
     options,
+    loginParams,
     CLIENT_VERSION,
   );
   return Promise.race([timeout, juju]);
@@ -233,7 +231,7 @@ export async function fetchModelStatus(
       const { conn, logout } = await connectAndLoginWithTimeout(
         modelURL,
         controllerCredentials,
-        generateConnectionOptions(false),
+        generateConnectionOptions(config?.authMethod, false),
         config?.authMethod,
       );
       if (isLoggedIn(getState(), wsControllerURL)) {
@@ -527,7 +525,7 @@ export async function connectToModel(
   const response = await connectAndLoginWithTimeout(
     modelURL,
     credentials,
-    generateConnectionOptions(true),
+    generateConnectionOptions(authMethod, true),
     authMethod,
   );
   return response.conn;

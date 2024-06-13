@@ -74,7 +74,7 @@ class JIMMV3 {
       const req = {
         type: "JIMM",
         request: "DisableControllerUUIDMasking",
-        version: 3,
+        version: this.version,
         params: {},
       };
       this._transport.write(req, resolve, reject);
@@ -86,7 +86,7 @@ class JIMMV3 {
       const req = {
         type: "JIMM",
         request: "FindAuditEvents",
-        version: 3,
+        version: this.version,
         params: params,
       };
       this._transport.write(req, resolve, reject);
@@ -98,7 +98,7 @@ class JIMMV3 {
       const req = {
         type: "JIMM",
         request: "ListControllers",
-        version: 3,
+        version: this.version,
         params: {},
       };
       this._transport.write(req, resolve, reject);

@@ -135,7 +135,33 @@ describe("Juju API", () => {
         },
         AuthMethod.CANDID,
       );
-      expect(juju.login).toHaveBeenCalledWith({}, CLIENT_VERSION);
+      expect(juju.login).toHaveBeenCalledWith(undefined, CLIENT_VERSION);
+    });
+
+    it("connects and logs in when using OIDC", async () => {
+      const conn = { facades: {}, info: {} };
+      const juju = {
+        login: vi.fn().mockReturnValue(conn),
+      } as unknown as Client;
+      const connectSpy = vi
+        .spyOn(jujuLib, "connect")
+        .mockImplementation(async () => juju);
+      const response = await loginWithBakery(
+        "wss://example.com/api",
+        undefined,
+        AuthMethod.OIDC,
+      );
+      expect(response).toStrictEqual({
+        conn,
+        juju,
+        // This would be a number, but we're using mocked timers.
+        intervalId: expect.any(Object),
+      });
+      expect(connectSpy).toHaveBeenCalledWith(
+        "wss://example.com/api",
+        expect.objectContaining({ oidcEnabled: true }),
+      );
+      expect(juju.login).toHaveBeenCalledWith(undefined, CLIENT_VERSION);
     });
 
     it("handles login errors", async () => {
@@ -243,7 +269,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        generateConnectionOptions(false),
+        generateConnectionOptions(AuthMethod.LOCAL, false),
         AuthMethod.LOCAL,
       );
       expect(response).toStrictEqual(juju);
@@ -262,7 +288,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        generateConnectionOptions(false),
+        generateConnectionOptions(AuthMethod.LOCAL, false),
         AuthMethod.LOCAL,
       );
       vi.advanceTimersByTime(LOGIN_TIMEOUT);
@@ -283,7 +309,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        generateConnectionOptions(false),
+        generateConnectionOptions(AuthMethod.LOCAL, false),
         AuthMethod.LOCAL,
       );
       await expect(response).rejects.toMatchObject(new Error("Uh oh!"));
@@ -336,9 +362,8 @@ describe("Juju API", () => {
       await fetchModelStatus("abc123", "wss://example.com/api", () => state);
       expect(connectAndLoginSpy).toHaveBeenCalledWith(
         expect.any(String),
-        // An empty object is passed when using an external provider.
-        {},
         expect.any(Object),
+        undefined,
         CLIENT_VERSION,
       );
     });
@@ -1295,11 +1320,11 @@ describe("Juju API", () => {
       const response = await connectAndLoginToModel("abc123", state);
       expect(connectAndLogin).toHaveBeenCalledWith(
         "wss://example.com/model/abc123/api",
+        expect.any(Object),
         {
           username: credentials.user,
           password: credentials.password,
         },
-        expect.any(Object),
         CLIENT_VERSION,
       );
       expect(response).toMatchObject(conn);
@@ -1326,11 +1351,11 @@ describe("Juju API", () => {
       );
       expect(connectAndLogin).toHaveBeenCalledWith(
         "wss://example.com/model/abc123/api",
+        expect.any(Object),
         {
           username: credentials.user,
           password: credentials.password,
         },
-        expect.any(Object),
         CLIENT_VERSION,
       );
       expect(response).toMatchObject(conn);
