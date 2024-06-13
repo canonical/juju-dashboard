@@ -43,11 +43,17 @@ type AnnotatedController = Controller & {
   wsControllerURL: string;
 };
 
-function Details() {
+const ControllersIndex = () => {
+  const controllersCount = useSelector(getControllersCount);
+  const modelData = useSelector(getModelData);
+  let modelCount = 0;
+  if (modelData) {
+    modelCount = Object.keys(modelData).length;
+  }
+
   useWindowTitle("Controllers");
   const controllerConnections = useAppSelector(getControllerConnections);
   const controllerData = useSelector(getControllerData);
-  const modelData = useSelector(getModelData);
   const loginErrors = useAppSelector(getLoginErrors);
   const visitURLs = useAppSelector(getVisitURLs);
 
@@ -112,7 +118,7 @@ function Details() {
     { content: "version", sortKey: "version" },
   ];
 
-  function generatePathValue(controllerData: AnnotatedController) {
+  const generatePathValue = (controllerData: AnnotatedController) => {
     const column: MainTableCell = { content: "" };
     // Remove protocol and trailing /api from websocket addresses.
     const controllerAddress = controllerData.wsControllerURL
@@ -147,9 +153,9 @@ function Details() {
       );
     }
     return column;
-  }
+  };
 
-  function generateRow(c: AnnotatedController, authenticated: boolean) {
+  const generateRow = (c: AnnotatedController, authenticated: boolean) => {
     let cloud = "unknown";
     if ("cloud-tag" in c && c["cloud-tag"]) {
       cloud = c["cloud-tag"];
@@ -230,7 +236,7 @@ function Details() {
     return {
       columns,
     };
-  }
+  };
 
   const rows =
     controllerMap &&
@@ -243,43 +249,6 @@ function Details() {
     );
 
   return (
-    <>
-      {visitURLs?.map((visitURL) => (
-        <Notification severity="caution" key={visitURL}>
-          Controller authentication required.{" "}
-          <AuthenticationButton appearance="link" visitURL={visitURL}>
-            Authenticate
-          </AuthenticationButton>
-          .
-        </Notification>
-      ))}
-      <div className="controllers--header">
-        <div className="controllers__heading">
-          Model status across controllers
-        </div>
-      </div>
-      <ControllersOverview />
-      <div className="l-controllers-table">
-        {rows.length > 0 && (
-          <>
-            <h5 className="u-hide--large">{Label.DEFAULT}</h5>
-            <MainTable headers={headers} responsive rows={rows} />
-          </>
-        )}
-      </div>
-    </>
-  );
-}
-
-export default function ControllersIndex() {
-  const controllersCount = useSelector(getControllersCount);
-  const modelData = useSelector(getModelData);
-  let modelCount = 0;
-  if (modelData) {
-    modelCount = Object.keys(modelData).length;
-  }
-
-  return (
     <BaseLayout
       title={
         <>
@@ -289,8 +258,32 @@ export default function ControllersIndex() {
       }
     >
       <div className="controllers">
-        <Details />
+        {visitURLs?.map((visitURL) => (
+          <Notification severity="caution" key={visitURL}>
+            Controller authentication required.{" "}
+            <AuthenticationButton appearance="link" visitURL={visitURL}>
+              Authenticate
+            </AuthenticationButton>
+            .
+          </Notification>
+        ))}
+        <div className="controllers--header">
+          <div className="controllers__heading">
+            Model status across controllers
+          </div>
+        </div>
+        <ControllersOverview />
+        <div className="l-controllers-table">
+          {rows.length > 0 && (
+            <>
+              <h5 className="u-hide--large">{Label.DEFAULT}</h5>
+              <MainTable headers={headers} responsive rows={rows} />
+            </>
+          )}
+        </div>
       </div>
     </BaseLayout>
   );
-}
+};
+
+export default ControllersIndex;
