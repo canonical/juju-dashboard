@@ -483,7 +483,16 @@ You can now configure your local dashboard by setting the endpoint in
 controllerAPIEndpoint: "wss://[container.ip]:17070/api",
 ```
 
-You may also need to configure your dashboard to work with a local controller:
+When deployed by a charm the controller relation will provide the value for
+`identityProviderURL`. The actual value isn't used by the dashboard at this
+time, but rather the existence of the value informs the dashboard that Candid is
+available, so in `config.local.js` you just need to set the URL to any truthy value:
+
+```shell
+identityProviderURL: "/candid",
+```
+
+You also need to configure your dashboard to work with a local controller:
 
 ```shell
 isJuju: true,
