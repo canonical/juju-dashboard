@@ -5,6 +5,8 @@ import useModelStatus from "hooks/useModelStatus";
 import { appsOffersTableHeaders } from "tables/tableHeaders";
 import { generateAppOffersRows } from "tables/tableRows";
 
+import { Label } from "./types";
+
 const AppOffersTable = () => {
   const modelStatusData = useModelStatus();
   const appOffersRows = useMemo(
@@ -18,7 +20,7 @@ const AppOffersTable = () => {
       rows={appOffersRows}
       className="entity-details__offers p-main-table"
       sortable
-      emptyStateMsg={"There are no offers associated with this model"}
+      emptyStateMsg={Label.NO_OFFERS}
     />
   );
 };

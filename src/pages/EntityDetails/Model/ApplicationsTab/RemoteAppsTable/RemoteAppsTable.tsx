@@ -7,6 +7,8 @@ import useModelStatus from "hooks/useModelStatus";
 import { remoteApplicationTableHeaders } from "tables/tableHeaders";
 import { generateRemoteApplicationRows } from "tables/tableRows";
 
+import { Label } from "./types";
+
 const RemoteAppsTable = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelStatusData = useModelStatus();
@@ -22,7 +24,7 @@ const RemoteAppsTable = () => {
       rows={remoteApplicationTableRows}
       className="entity-details__remote-apps p-main-table"
       sortable
-      emptyStateMsg={"There are no remote applications in this model"}
+      emptyStateMsg={Label.NO_REMOTE_APPS}
     />
   );
 };

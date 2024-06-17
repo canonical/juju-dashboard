@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -10,10 +9,6 @@ import {
   getModelApplications,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-import {
-  generateAppOffersRows,
-  generateRemoteApplicationRows,
-} from "tables/tableRows";
 
 import { renderCounts } from "../../counts";
 
@@ -43,23 +38,18 @@ export default function ApplicationsTab() {
     ? Object.keys(applications).length
     : 0;
 
-  const remoteApplicationTableRows = useMemo(() => {
-    return modelName && userName
-      ? generateRemoteApplicationRows(modelStatusData)
-      : [];
-  }, [modelStatusData, modelName, userName]);
-
-  const appOffersRows = useMemo(
-    () => generateAppOffersRows(modelStatusData),
-    [modelStatusData],
-  );
   const LocalAppChips = renderCounts("localApps", modelStatusData);
   const appOffersChips = renderCounts("offers", modelStatusData);
   const remoteAppChips = renderCounts("remoteApps", modelStatusData);
 
-  const appOffersTableLength = appOffersRows?.length;
+  const appOffersTableLength = modelStatusData
+    ? Object.keys(modelStatusData?.offers).length
+    : 0;
 
-  const remoteAppsTableLength = remoteApplicationTableRows?.length;
+  const remoteAppsTableLength =
+    modelName && userName && modelStatusData
+      ? Object.keys(modelStatusData["remote-applications"]).length
+      : 0;
 
   const countVisibleTables = (tablesLengths: number[]) =>
     tablesLengths.filter((rowLength) => rowLength > 0).length;
