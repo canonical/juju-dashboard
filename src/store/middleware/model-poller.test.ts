@@ -24,7 +24,6 @@ import {
   ModelsError,
   modelPollerMiddleware,
 } from "./model-poller";
-import { unwrapResult } from "@reduxjs/toolkit";
 
 vi.mock("juju/api", () => ({
   disableControllerUUIDMasking: vi
