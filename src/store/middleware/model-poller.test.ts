@@ -229,6 +229,35 @@ describe("model poller", () => {
     expect(loginWithBakerySpy).toHaveBeenCalled();
   });
 
+  it("handles whoami errors when logging in with OIDC", async () => {
+    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    vi.spyOn(fakeStore, "dispatch").mockImplementation((action) => {
+      if (typeof action === "function") {
+        // This is a thunk so the action name is not accessible, so this just
+        // throws on the first thunk that is dispatched. If this test is
+        // failing then check if another thunk is being dispatched before the
+        // whoami() thunk.
+        throw new Error();
+      }
+      return { type: "not-whoami" };
+    });
+    const loginWithBakerySpy = vi.spyOn(jujuModule, "loginWithBakery");
+    await runMiddleware(
+      appActions.connectAndPollControllers({
+        controllers: [[wsControllerURL, undefined, AuthMethod.OIDC]],
+        isJuju: true,
+        poll: 0,
+      }),
+    );
+    expect(loginWithBakerySpy).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.storeLoginError({
+        wsControllerURL: "wss://example.com",
+        error: LoginError.WHOAMI,
+      }),
+    );
+  });
+
   it("fetches and stores data", async () => {
     const fetchControllerList = vi.spyOn(jujuModule, "fetchControllerList");
     conn.facades.modelManager.listModels.mockResolvedValue({
