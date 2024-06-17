@@ -31,6 +31,7 @@ export enum AuditLogsError {
 export enum LoginError {
   LOG = "Unable to log into controller.",
   NO_INFO = "Unable to retrieve controller details.",
+  WHOAMI = "Unable to check authentication status. You can attempt to log in anyway.",
 }
 
 export enum ModelsError {
@@ -80,9 +81,22 @@ export const modelPollerMiddleware: Middleware<
         let error: unknown;
         let intervalId: number | null | undefined;
         if (authMethod === AuthMethod.OIDC) {
-          const whoamiResponse = await reduxStore.dispatch(whoami());
-          const user = unwrapResult(whoamiResponse);
-          if (!user) {
+          try {
+            const whoamiResponse = await reduxStore.dispatch(whoami());
+            const user = unwrapResult(whoamiResponse);
+            if (!user) {
+              // If there's no response that means the user is not
+              // authenticated, so halt the connection attempt.
+              return;
+            }
+          } catch (error) {
+            reduxStore.dispatch(
+              generalActions.storeLoginError({
+                wsControllerURL,
+                error: LoginError.WHOAMI,
+              }),
+            );
+            // Halt the connection attempt.
             return;
           }
         }
