@@ -625,15 +625,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/jujulib@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@canonical/jujulib@npm:6.0.0"
+"@canonical/jujulib@npm:7.0.0":
+  version: 7.0.0
+  resolution: "@canonical/jujulib@npm:7.0.0"
   dependencies:
     "@canonical/macaroon-bakery": "npm:1.3.2"
     btoa: "npm:1.2.1"
     websocket: "npm:1.0.34"
     xhr2: "npm:0.2.1"
-  checksum: 10c0/3d25504d136fc5e103e3547b252b7ac51ce1df4b9d9afac3b1c2df7233fad1903e2b46b82e6d2a02d730d6ef4f195e82f5581140aacc06dc287450951e9f129a
+  checksum: 10c0/1ddfb5338ea6b4446ce3dd64b39a1d53bd5a736035f2478193879510c623f76faa225e6971b759ad5c9dc7e1412dc5f74aea0b16ef2a03869d1a48a4198c644d
   languageName: node
   linkType: hard
 
@@ -7513,7 +7513,7 @@ __metadata:
   resolution: "juju-dashboard@workspace:."
   dependencies:
     "@babel/plugin-proposal-private-property-in-object": "npm:7.21.11"
-    "@canonical/jujulib": "npm:6.0.0"
+    "@canonical/jujulib": "npm:7.0.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
     "@canonical/react-components": "npm:0.52.0"
     "@reduxjs/toolkit": "npm:2.2.4"
