@@ -406,9 +406,9 @@ export async function fetchAllModelStatuses(
   });
   return new Promise<void>((resolve, reject) => {
     queue.onDone(() => {
-      // If errors appear in more than 10% of models, the promise should be
+      // If errors exist and appear in more than 10% of models, the promise is
       // rejected and the error further handled in modelPollerMiddleware().
-      modelErrorCount >= 0.1 * modelUUIDList.length
+      modelErrorCount && modelErrorCount >= 0.1 * modelUUIDList.length
         ? reject(
             new Error(
               modelErrorCount === modelUUIDList.length
