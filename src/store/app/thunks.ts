@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import bakery from "juju/bakery";
+import { logout } from "juju/jimm/thunks";
 import { actions as appActions } from "store/app";
 import { actions as generalActions } from "store/general";
 import {
@@ -15,6 +16,10 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 
 import type { ControllerArgs } from "./actions";
+
+export enum Label {
+  OIDC_LOGOUT_ERROR = "Unable to log out.",
+}
 
 export const logOut = createAsyncThunk<
   void,
@@ -38,6 +43,13 @@ export const logOut = createAsyncThunk<
     // to the controller to get another wait url and start polling on it
     // again.
     await thunkAPI.dispatch(connectAndStartPolling());
+  } else if (authMethod === AuthMethod.OIDC) {
+    const response = await thunkAPI.dispatch(logout());
+    if ("error" in response) {
+      thunkAPI.dispatch(
+        generalActions.storeConnectionError(Label.OIDC_LOGOUT_ERROR),
+      );
+    }
   }
 });
 
