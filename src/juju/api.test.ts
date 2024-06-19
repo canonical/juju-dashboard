@@ -806,6 +806,26 @@ describe("Juju API", () => {
       );
     });
 
+    it("should fetch model statuses successfully when there are 0 models", async () => {
+      state.juju.models = {};
+      const dispatch = vi.fn();
+      const conn = {
+        facades: {
+          modelManager: {
+            modelInfo: vi.fn(),
+          },
+        },
+      } as unknown as Connection;
+      const response = fetchAllModelStatuses(
+        "wss://example.com/api",
+        [],
+        conn,
+        dispatch,
+        () => state,
+      );
+      await expect(response).resolves.toBeUndefined();
+    });
+
     it("updates controller cloud and region", async () => {
       const dispatch = vi.fn().mockReturnValue({
         then: vi.fn().mockReturnValue({ catch: vi.fn() }),
