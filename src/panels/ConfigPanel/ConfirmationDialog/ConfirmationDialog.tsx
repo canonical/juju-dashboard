@@ -81,126 +81,119 @@ const ConfirmationDialog = ({
     }
   }
 
-  if (confirmType && appName) {
-    if (confirmType === DefaultConfirmType.SUBMIT) {
-      // Render the submit confirmation modal.
-      return (
-        <Portal>
-          <ConfirmationModal
-            // Prevent clicks inside this panel from closing the parent panel.
-            // This is handled in `checkCanClose`.
-            className="prevent-panel-close"
-            title={Label.SAVE_CONFIRM}
-            confirmExtra={
-              <p className="u-text--muted p-text--small u-align--left">
-                You can revert back to the applications default settings by
-                clicking the “Reset all values” button; or reset each edited
-                field by clicking “Use default”.
-              </p>
-            }
-            cancelButtonLabel={Label.SAVE_CONFIRM_CANCEL_BUTTON}
-            confirmButtonLabel={Label.SAVE_CONFIRM_CONFIRM_BUTTON}
-            confirmButtonAppearance="positive"
-            onConfirm={() => {
-              setConfirmType(null);
-              // Clear the form errors if there were any from a previous submit.
-              setInlineError(InlineErrors.FORM, null);
-              _submitToJuju().catch((error) => {
-                setInlineError(
-                  InlineErrors.SUBMIT_TO_JUJU,
-                  Label.SUBMIT_TO_JUJU_ERROR,
-                );
-                console.error(Label.SUBMIT_TO_JUJU_ERROR, error);
-              });
-            }}
-            close={() => setConfirmType(null)}
-          >
-            <ChangedKeyValues appName={appName} config={config} />
-          </ConfirmationModal>
-        </Portal>
-      );
-    }
-    if (confirmType === ConfigConfirmType.GRANT) {
-      // Render the grant confirmation modal.
-      const requiredGrants = getRequiredGrants(appName, config, secrets);
-      return (
-        <Portal>
-          <ConfirmationModal
-            // Prevent clicks inside this panel from closing the parent panel.
-            // This is handled in `checkCanClose`.
-            className="prevent-panel-close"
-            title={Label.GRANT_CONFIRM}
-            cancelButtonLabel={Label.GRANT_CANCEL_BUTTON}
-            confirmButtonLabel={Label.GRANT_CONFIRM_BUTTON}
-            confirmButtonAppearance="positive"
-            onConfirm={() => {
-              setConfirmType(null);
-              // Clear the form errors if there were any from a previous submit.
-              setInlineError(InlineErrors.FORM, null);
-              if (!appName || !requiredGrants) {
-                // It is not possible to get to this point if these
-                // variables aren't set.
-                return;
-              }
-              void (async () => {
-                try {
-                  for (const secretURI of requiredGrants) {
-                    await grantSecret(secretURI, [appName]);
-                  }
-                  setConfirmType(null);
-                  handleRemovePanelQueryParams();
-                } catch (error) {
-                  setInlineError(
-                    InlineErrors.SUBMIT_TO_JUJU,
-                    Label.GRANT_ERROR,
-                  );
-                  console.error(Label.GRANT_ERROR, error);
-                }
-              })();
-            }}
-            close={() => {
-              setConfirmType(null);
-              handleRemovePanelQueryParams();
-            }}
-          >
-            <p>
-              Would you like to grant access to this application for the
-              following secrets?
+  if (appName && confirmType === DefaultConfirmType.SUBMIT) {
+    // Render the submit confirmation modal.
+    return (
+      <Portal>
+        <ConfirmationModal
+          // Prevent clicks inside this panel from closing the parent panel.
+          // This is handled in `checkCanClose`.
+          className="prevent-panel-close"
+          title={Label.SAVE_CONFIRM}
+          confirmExtra={
+            <p className="u-text--muted p-text--small u-align--left">
+              You can revert back to the applications default settings by
+              clicking the “Reset all values” button; or reset each edited field
+              by clicking “Use default”.
             </p>
-            <ul>
-              {requiredGrants?.map((secretURI) => {
-                const secret = secrets?.find(({ uri }) => uri === secretURI);
-                return (
-                  <li key={secretURI}>
-                    {secret ? <SecretLabel secret={secret} /> : secretURI}
-                  </li>
-                );
-              })}
-            </ul>
-          </ConfirmationModal>
-        </Portal>
-      );
-    }
-    if (confirmType === DefaultConfirmType.CANCEL) {
-      // Render the cancel confirmation modal.
-      return (
-        <Portal>
-          <ConfirmationModal
-            className="prevent-panel-close"
-            title={Label.CANCEL_CONFIRM}
-            cancelButtonLabel={Label.CANCEL_CONFIRM_CANCEL_BUTTON}
-            confirmButtonLabel={Label.CANCEL_CONFIRM_CONFIRM_BUTTON}
-            onConfirm={() => {
-              setConfirmType(null);
-              handleRemovePanelQueryParams();
-            }}
-            close={() => setConfirmType(null)}
-          >
-            <ChangedKeyValues appName={appName} config={config} />
-          </ConfirmationModal>
-        </Portal>
-      );
-    }
+          }
+          cancelButtonLabel={Label.SAVE_CONFIRM_CANCEL_BUTTON}
+          confirmButtonLabel={Label.SAVE_CONFIRM_CONFIRM_BUTTON}
+          confirmButtonAppearance="positive"
+          onConfirm={() => {
+            setConfirmType(null);
+            // Clear the form errors if there were any from a previous submit.
+            setInlineError(InlineErrors.FORM, null);
+            _submitToJuju().catch((error) => {
+              setInlineError(
+                InlineErrors.SUBMIT_TO_JUJU,
+                Label.SUBMIT_TO_JUJU_ERROR,
+              );
+              console.error(Label.SUBMIT_TO_JUJU_ERROR, error);
+            });
+          }}
+          close={() => setConfirmType(null)}
+        >
+          <ChangedKeyValues appName={appName} config={config} />
+        </ConfirmationModal>
+      </Portal>
+    );
+  } else if (appName && confirmType === ConfigConfirmType.GRANT) {
+    // Render the grant confirmation modal.
+    const requiredGrants = getRequiredGrants(appName, config, secrets);
+    return (
+      <Portal>
+        <ConfirmationModal
+          // Prevent clicks inside this panel from closing the parent panel.
+          // This is handled in `checkCanClose`.
+          className="prevent-panel-close"
+          title={Label.GRANT_CONFIRM}
+          cancelButtonLabel={Label.GRANT_CANCEL_BUTTON}
+          confirmButtonLabel={Label.GRANT_CONFIRM_BUTTON}
+          confirmButtonAppearance="positive"
+          onConfirm={() => {
+            setConfirmType(null);
+            // Clear the form errors if there were any from a previous submit.
+            setInlineError(InlineErrors.FORM, null);
+            if (!appName || !requiredGrants) {
+              // It is not possible to get to this point if these
+              // variables aren't set.
+              return;
+            }
+            void (async () => {
+              try {
+                for (const secretURI of requiredGrants) {
+                  await grantSecret(secretURI, [appName]);
+                }
+                setConfirmType(null);
+                handleRemovePanelQueryParams();
+              } catch (error) {
+                setInlineError(InlineErrors.SUBMIT_TO_JUJU, Label.GRANT_ERROR);
+                console.error(Label.GRANT_ERROR, error);
+              }
+            })();
+          }}
+          close={() => {
+            setConfirmType(null);
+            handleRemovePanelQueryParams();
+          }}
+        >
+          <p>
+            Would you like to grant access to this application for the following
+            secrets?
+          </p>
+          <ul>
+            {requiredGrants?.map((secretURI) => {
+              const secret = secrets?.find(({ uri }) => uri === secretURI);
+              return (
+                <li key={secretURI}>
+                  {secret ? <SecretLabel secret={secret} /> : secretURI}
+                </li>
+              );
+            })}
+          </ul>
+        </ConfirmationModal>
+      </Portal>
+    );
+  } else if (appName && confirmType === DefaultConfirmType.CANCEL) {
+    // Render the cancel confirmation modal.
+    return (
+      <Portal>
+        <ConfirmationModal
+          className="prevent-panel-close"
+          title={Label.CANCEL_CONFIRM}
+          cancelButtonLabel={Label.CANCEL_CONFIRM_CANCEL_BUTTON}
+          confirmButtonLabel={Label.CANCEL_CONFIRM_CONFIRM_BUTTON}
+          onConfirm={() => {
+            setConfirmType(null);
+            handleRemovePanelQueryParams();
+          }}
+          close={() => setConfirmType(null)}
+        >
+          <ChangedKeyValues appName={appName} config={config} />
+        </ConfirmationModal>
+      </Portal>
+    );
   }
   return null;
 };
