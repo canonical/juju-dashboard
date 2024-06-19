@@ -1,10 +1,14 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import * as applicationHooks from "juju/api-hooks/application";
 import { ConfirmType as DefaultConfirmType } from "panels/types";
 import type { RootState } from "store/store";
+import {
+  applicationGetFactory,
+  configFactory,
+} from "testing/factories/juju/Application";
 import {
   secretsStateFactory,
   listSecretResultFactory,
@@ -14,7 +18,7 @@ import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import type { Config } from "../types";
-import { ConfigConfirmType, Label } from "../types";
+import { ConfigConfirmType, Label, InlineErrors } from "../types";
 
 import ConfirmationDialog from "./ConfirmationDialog";
 
@@ -236,5 +240,77 @@ describe("ConfirmationDialog", () => {
     expect(container.tagName).toBe("DIV");
     expect(container.children.length).toBe(1);
     expect(container.firstChild).toBeEmptyDOMElement();
+  });
+
+  it("should console log error when trying to submit", async () => {
+    const consoleError = console.error;
+    const mockSetConfirmType = vi.fn();
+    const mockSetInlineError = vi.fn();
+    console.error = vi.fn();
+    const getApplicationConfig = vi.fn().mockImplementationOnce(() =>
+      Promise.resolve(
+        applicationGetFactory.build({
+          config: {
+            email: configFactory.build({ default: "" }),
+            name: configFactory.build({ default: "eggman" }),
+          },
+        }),
+      ),
+    );
+    vi.spyOn(applicationHooks, "useGetApplicationConfig").mockImplementation(
+      () => getApplicationConfig,
+    );
+    const setApplicationConfig = vi
+      .fn()
+      .mockImplementation(() =>
+        Promise.reject(new Error("Error while trying to save")),
+      );
+    vi.spyOn(applicationHooks, "useSetApplicationConfig").mockImplementation(
+      () => setApplicationConfig,
+    );
+    renderComponent(
+      <ConfirmationDialog
+        confirmType={DefaultConfirmType.SUBMIT}
+        queryParams={mockQueryParams}
+        setEnableSave={vi.fn()}
+        setSavingConfig={vi.fn()}
+        setConfirmType={mockSetConfirmType}
+        setInlineError={mockSetInlineError}
+        config={mockConfig}
+        handleRemovePanelQueryParams={vi.fn()}
+      />,
+      {
+        url,
+        state,
+      },
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+    );
+    expect(mockSetConfirmType).toHaveBeenCalledWith(null);
+    expect(mockSetInlineError).toHaveBeenCalledWith(InlineErrors.FORM, null);
+    expect(setApplicationConfig).toHaveBeenCalledWith("easyrsa", {
+      email: configFactory.build({
+        error: null,
+        name: "email",
+        default: "",
+        newValue: "secret:aabbccdd",
+      }),
+      name: configFactory.build({
+        name: "name",
+        default: "eggman",
+      }),
+    });
+    await waitFor(() =>
+      expect(console.error).toHaveBeenCalledWith(
+        Label.SUBMIT_TO_JUJU_ERROR,
+        new Error("Error while trying to save"),
+      ),
+    );
+    expect(mockSetInlineError).toHaveBeenCalledWith(
+      InlineErrors.SUBMIT_TO_JUJU,
+      Label.SUBMIT_TO_JUJU_ERROR,
+    );
+    console.error = consoleError;
   });
 });
