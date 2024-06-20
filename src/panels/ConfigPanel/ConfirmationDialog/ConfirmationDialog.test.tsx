@@ -18,9 +18,10 @@ import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import type { Config } from "../types";
-import { ConfigConfirmType, Label, InlineErrors } from "../types";
+import { ConfigConfirmType } from "../types";
 
 import ConfirmationDialog from "./ConfirmationDialog";
+import { InlineErrors, Label } from "./types";
 
 describe("ConfirmationDialog", () => {
   let state: RootState;

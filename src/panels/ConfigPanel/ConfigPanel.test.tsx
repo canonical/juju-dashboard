@@ -34,7 +34,8 @@ import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import ConfigPanel from "./ConfigPanel";
-import { Label } from "./types";
+import { Label as ConfirmationDialogLabel } from "./ConfirmationDialog/types";
+import { Label as ConfigPanelLabel } from "./types";
 
 vi.mock("juju/api-hooks/application", () => ({
   useGetApplicationConfig: vi.fn(),
@@ -154,7 +155,7 @@ describe("ConfigPanel", () => {
     );
     renderComponent(<ConfigPanel />, { state, path, url });
     // Use findBy to wait for the async events to finish
-    await screen.findByText(Label.NONE);
+    await screen.findByText(ConfigPanelLabel.NONE);
     expect(document.querySelector(".config-panel__message")).toMatchSnapshot();
   });
 
@@ -205,7 +206,7 @@ describe("ConfigPanel", () => {
     expect(email).toHaveTextContent("eggman@example.com");
     expect(name).toHaveTextContent("not eggman");
     await userEvent.click(
-      screen.getByRole("button", { name: Label.RESET_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.RESET_BUTTON }),
     );
     expect(email).toHaveTextContent("");
     expect(name).toHaveTextContent("eggman");
@@ -221,10 +222,10 @@ describe("ConfigPanel", () => {
     expect(
       within(
         screen.getByRole("dialog", {
-          name: Label.CANCEL_CONFIRM,
+          name: ConfirmationDialogLabel.CANCEL_CONFIRM,
         }),
       ).getByRole("heading", {
-        name: Label.CANCEL_CONFIRM,
+        name: ConfirmationDialogLabel.CANCEL_CONFIRM,
       }),
     ).toBeInTheDocument();
     expect(router.state.location.search).toBe(`?${params.toString()}`);
@@ -235,7 +236,7 @@ describe("ConfigPanel", () => {
     await userEvent.click(document.body);
     expect(
       within(screen.getByRole("dialog", { name: "" })).queryByRole("heading", {
-        name: Label.CANCEL_CONFIRM,
+        name: ConfirmationDialogLabel.CANCEL_CONFIRM,
       }),
     ).not.toBeInTheDocument();
     expect(router.state.location.search).toBeFalsy();
@@ -248,15 +249,15 @@ describe("ConfigPanel", () => {
       "eggman@example.com",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CANCEL_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.CANCEL_BUTTON }),
     );
     expect(
       within(
         screen.getByRole("dialog", {
-          name: Label.CANCEL_CONFIRM,
+          name: ConfirmationDialogLabel.CANCEL_CONFIRM,
         }),
       ).getByRole("heading", {
-        name: Label.CANCEL_CONFIRM,
+        name: ConfirmationDialogLabel.CANCEL_CONFIRM,
       }),
     ).toBeInTheDocument();
     expect(router.state.location.search).toBe(`?${params.toString()}`);
@@ -269,20 +270,22 @@ describe("ConfigPanel", () => {
       "eggman@example.com",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CANCEL_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.CANCEL_BUTTON }),
     );
     expect(
       within(
         screen.getByRole("dialog", {
-          name: Label.CANCEL_CONFIRM,
+          name: ConfirmationDialogLabel.CANCEL_CONFIRM,
         }),
       ).getByRole("heading", {
-        name: Label.CANCEL_CONFIRM,
+        name: ConfirmationDialogLabel.CANCEL_CONFIRM,
       }),
     ).toBeInTheDocument();
     expect(router.state.location.search).toBe(`?${params.toString()}`);
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CANCEL_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.CANCEL_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     expect(router.state.location.search).toBeFalsy();
   });
@@ -294,20 +297,22 @@ describe("ConfigPanel", () => {
       "eggman@example.com",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CANCEL_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.CANCEL_BUTTON }),
     );
     expect(
       within(
         screen.getByRole("dialog", {
-          name: Label.CANCEL_CONFIRM,
+          name: ConfirmationDialogLabel.CANCEL_CONFIRM,
         }),
       ).getByRole("heading", {
-        name: Label.CANCEL_CONFIRM,
+        name: ConfirmationDialogLabel.CANCEL_CONFIRM,
       }),
     ).toBeInTheDocument();
     expect(router.state.location.search).toBe(`?${params.toString()}`);
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CANCEL_CONFIRM_CANCEL_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.CANCEL_CONFIRM_CANCEL_BUTTON,
+      }),
     );
     expect(router.state.location.search).toBe(`?${params.toString()}`);
   });
@@ -315,11 +320,13 @@ describe("ConfigPanel", () => {
   it("closes when cancelling and there are no unsaved changes", async () => {
     const { router } = renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CANCEL_BUTTON }),
+      await screen.findByRole("button", {
+        name: ConfigPanelLabel.CANCEL_BUTTON,
+      }),
     );
     expect(
       within(screen.getByRole("dialog", { name: "" })).queryByRole("heading", {
-        name: Label.CANCEL_CONFIRM,
+        name: ConfirmationDialogLabel.CANCEL_CONFIRM,
       }),
     ).not.toBeInTheDocument();
     expect(router.state.location.search).toBeFalsy();
@@ -336,15 +343,15 @@ describe("ConfigPanel", () => {
       "noteggman",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     expect(
       within(
         screen.getByRole("dialog", {
-          name: Label.SAVE_CONFIRM,
+          name: ConfirmationDialogLabel.SAVE_CONFIRM,
         }),
       ).getByRole("heading", {
-        name: Label.SAVE_CONFIRM,
+        name: ConfirmationDialogLabel.SAVE_CONFIRM,
       }),
     ).toBeInTheDocument();
   });
@@ -366,24 +373,24 @@ describe("ConfigPanel", () => {
       "noteggman",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     expect(
       within(
         screen.getByRole("dialog", {
-          name: Label.SAVE_CONFIRM,
+          name: ConfirmationDialogLabel.SAVE_CONFIRM,
         }),
       ).getByRole("heading", {
-        name: Label.SAVE_CONFIRM,
+        name: ConfirmationDialogLabel.SAVE_CONFIRM,
       }),
     ).toBeInTheDocument();
     await userEvent.click(
       within(
         screen.getByRole("dialog", {
-          name: Label.SAVE_CONFIRM,
+          name: ConfirmationDialogLabel.SAVE_CONFIRM,
         }),
       ).getByRole("button", {
-        name: Label.SAVE_CONFIRM_CANCEL_BUTTON,
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CANCEL_BUTTON,
       }),
     );
     expect(screen.queryByRole("dialog", { name: "" })).not.toBeInTheDocument();
@@ -408,10 +415,12 @@ describe("ConfigPanel", () => {
       "noteggman",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     expect(setApplicationConfig).toHaveBeenCalledWith("easyrsa", {
       email: configFactory.build({
@@ -448,10 +457,12 @@ describe("ConfigPanel", () => {
       "noteggman",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     expect(screen.getByText("That's not a name")).toBeInTheDocument();
     expect(getApplicationConfig).toHaveBeenCalledTimes(1);
@@ -470,13 +481,16 @@ describe("ConfigPanel", () => {
     expect(getApplicationConfig).toHaveBeenCalledTimes(1);
     await waitFor(() => {
       expect(console.error).toHaveBeenCalledWith(
-        Label.GET_CONFIG_ERROR,
+        ConfigPanelLabel.GET_CONFIG_ERROR,
         new Error("Error while calling getApplicationConfig"),
       );
     });
-    const configErrorNotification = screen.getByText(Label.GET_CONFIG_ERROR, {
-      exact: false,
-    });
+    const configErrorNotification = screen.getByText(
+      ConfigPanelLabel.GET_CONFIG_ERROR,
+      {
+        exact: false,
+      },
+    );
     expect(configErrorNotification).toBeInTheDocument();
     expect(configErrorNotification.childElementCount).toBe(1);
     const refetchButton = configErrorNotification.children[0];
@@ -518,10 +532,12 @@ describe("ConfigPanel", () => {
       "noteggman",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     expect(setApplicationConfig).toHaveBeenCalledWith("easyrsa", {
       email: configFactory.build({
@@ -537,12 +553,14 @@ describe("ConfigPanel", () => {
     });
     await waitFor(() =>
       expect(console.error).toHaveBeenCalledWith(
-        Label.SUBMIT_TO_JUJU_ERROR,
+        ConfirmationDialogLabel.SUBMIT_TO_JUJU_ERROR,
         new Error("Error while trying to save"),
       ),
     );
     expect(
-      screen.getByText(Label.SUBMIT_TO_JUJU_ERROR, { exact: false }),
+      screen.getByText(ConfirmationDialogLabel.SUBMIT_TO_JUJU_ERROR, {
+        exact: false,
+      }),
     ).toBeInTheDocument();
   });
 
@@ -561,14 +579,16 @@ describe("ConfigPanel", () => {
       "secret:aabbccdd",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     expect(
       screen.getByRole("dialog", {
-        name: Label.GRANT_CONFIRM,
+        name: ConfirmationDialogLabel.GRANT_CONFIRM,
       }),
     ).toBeInTheDocument();
   });
@@ -601,14 +621,16 @@ describe("ConfigPanel", () => {
       "secret:aabbccdd",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     expect(
       screen.getByRole("dialog", {
-        name: Label.GRANT_CONFIRM,
+        name: ConfirmationDialogLabel.GRANT_CONFIRM,
       }),
     ).toBeInTheDocument();
   });
@@ -620,14 +642,16 @@ describe("ConfigPanel", () => {
       "notasecret",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     expect(
       screen.queryByRole("dialog", {
-        name: Label.GRANT_CONFIRM,
+        name: ConfirmationDialogLabel.GRANT_CONFIRM,
       }),
     ).not.toBeInTheDocument();
   });
@@ -654,14 +678,16 @@ describe("ConfigPanel", () => {
       "secret:aabbccdd",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     expect(
       screen.queryByRole("dialog", {
-        name: Label.GRANT_CONFIRM,
+        name: ConfirmationDialogLabel.GRANT_CONFIRM,
       }),
     ).not.toBeInTheDocument();
   });
@@ -686,14 +712,16 @@ describe("ConfigPanel", () => {
       "secret:aabbccdd",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     expect(
       screen.queryByRole("dialog", {
-        name: Label.GRANT_CONFIRM,
+        name: ConfirmationDialogLabel.GRANT_CONFIRM,
       }),
     ).not.toBeInTheDocument();
   });
@@ -714,17 +742,21 @@ describe("ConfigPanel", () => {
       "secret:aabbccdd",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.GRANT_CANCEL_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.GRANT_CANCEL_BUTTON,
+      }),
     );
     expect(
       screen.queryByRole("dialog", {
-        name: Label.GRANT_CONFIRM,
+        name: ConfirmationDialogLabel.GRANT_CONFIRM,
       }),
     ).not.toBeInTheDocument();
     expect(router.state.location.search).toBe("");
@@ -757,17 +789,21 @@ describe("ConfigPanel", () => {
       "secret:eeffgghh",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.GRANT_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.GRANT_CONFIRM_BUTTON,
+      }),
     );
     expect(
       screen.queryByRole("dialog", {
-        name: Label.GRANT_CONFIRM,
+        name: ConfirmationDialogLabel.GRANT_CONFIRM,
       }),
     ).not.toBeInTheDocument();
     expect(grantSecret).toHaveBeenCalledWith("secret:aabbccdd", ["easyrsa"]);
@@ -802,17 +838,21 @@ describe("ConfigPanel", () => {
       "secret:aabbccdd",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.GRANT_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.GRANT_CONFIRM_BUTTON,
+      }),
     );
     expect(
       screen.queryByRole("dialog", {
-        name: Label.GRANT_CONFIRM,
+        name: ConfirmationDialogLabel.GRANT_CONFIRM,
       }),
     ).not.toBeInTheDocument();
     expect(grantSecret).toHaveBeenCalledTimes(1);
@@ -841,24 +881,28 @@ describe("ConfigPanel", () => {
       "secret:aabbccdd",
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.GRANT_CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.GRANT_CONFIRM_BUTTON,
+      }),
     );
     expect(
       screen.queryByRole("dialog", {
-        name: Label.GRANT_CONFIRM,
+        name: ConfirmationDialogLabel.GRANT_CONFIRM,
       }),
     ).not.toBeInTheDocument();
     expect(router.state.location.search).toBe(`?${params.toString()}`);
     await waitFor(() => {
       expect(
         document.querySelector(".p-notification--negative"),
-      ).toHaveTextContent(Label.GRANT_ERROR);
+      ).toHaveTextContent(ConfirmationDialogLabel.GRANT_ERROR);
     });
   });
 
@@ -889,16 +933,16 @@ describe("ConfigPanel", () => {
       "textbox",
     );
     await userEvent.type(input, "notasecret:aabbccdd");
-    expect(screen.getByText(Label.SECRET_PREFIX_ERROR)).toHaveClass(
+    expect(screen.getByText(ConfigPanelLabel.SECRET_PREFIX_ERROR)).toHaveClass(
       "p-form-validation__message",
     );
     expect(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     ).toBeDisabled();
     await userEvent.clear(input);
     await userEvent.type(input, "secret:aabbccdd");
     expect(
-      screen.queryByText(Label.SECRET_PREFIX_ERROR),
+      screen.queryByText(ConfigPanelLabel.SECRET_PREFIX_ERROR),
     ).not.toBeInTheDocument();
   });
 
@@ -916,16 +960,16 @@ describe("ConfigPanel", () => {
       "textbox",
     );
     await userEvent.type(input, "secret:nothing");
-    expect(screen.getByText(Label.INVALID_SECRET_ERROR)).toHaveClass(
+    expect(screen.getByText(ConfigPanelLabel.INVALID_SECRET_ERROR)).toHaveClass(
       "p-form-validation__message",
     );
     expect(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     ).toBeDisabled();
     await userEvent.clear(input);
     await userEvent.type(input, "secret:aabbccdd");
     expect(
-      screen.queryByText(Label.INVALID_SECRET_ERROR),
+      screen.queryByText(ConfigPanelLabel.INVALID_SECRET_ERROR),
     ).not.toBeInTheDocument();
   });
 
@@ -947,11 +991,11 @@ describe("ConfigPanel", () => {
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "secret:aabbccdd",
     );
-    expect(screen.getByText(Label.INVALID_SECRET_ERROR)).toHaveClass(
+    expect(screen.getByText(ConfigPanelLabel.INVALID_SECRET_ERROR)).toHaveClass(
       "p-form-validation__message",
     );
     expect(
-      screen.getByRole("button", { name: Label.SAVE_BUTTON }),
+      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     ).toBeDisabled();
   });
 });

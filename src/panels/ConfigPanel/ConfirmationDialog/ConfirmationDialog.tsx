@@ -15,8 +15,10 @@ import { useAppSelector } from "store/store";
 
 import ChangedKeyValues from "../ChangedKeyValues";
 import type { Config, ConfigQueryParams, ConfirmTypes } from "../types";
-import { ConfigConfirmType, InlineErrors, Label } from "../types";
+import { ConfigConfirmType } from "../types";
 import { getRequiredGrants } from "../utils";
+
+import { InlineErrors, Label } from "./types";
 
 type Props = {
   confirmType: ConfirmTypes;
