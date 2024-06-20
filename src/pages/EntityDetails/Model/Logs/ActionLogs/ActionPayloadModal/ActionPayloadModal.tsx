@@ -15,9 +15,12 @@ type Props = {
   onClose: () => void;
 };
 
-const ActionPayloadModal = ({ payload, onClose }: Props): JSX.Element => {
+const ActionPayloadModal = ({
+  payload,
+  onClose,
+}: Props): JSX.Element | null => {
   if (!payload) {
-    return <></>;
+    return null;
   }
   const json = JSON.stringify(payload, null, 2);
   return (

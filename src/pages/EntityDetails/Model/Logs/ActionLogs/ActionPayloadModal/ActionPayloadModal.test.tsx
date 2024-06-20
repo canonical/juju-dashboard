@@ -19,7 +19,7 @@ vi.mock("components/utils", async () => {
 describe("ActionPayloadModal", () => {
   const mockPayload = { key1: "value1", test: 123 };
 
-  it("should return empty fragment if payload is null", () => {
+  it("should return null if payload is null", () => {
     const {
       result: { container },
     } = renderComponent(
