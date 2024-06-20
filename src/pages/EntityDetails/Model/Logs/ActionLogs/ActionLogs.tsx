@@ -4,11 +4,8 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 import {
   Button,
-  CodeSnippet,
-  CodeSnippetBlockAppearance,
   ContextualMenu,
   Icon,
-  Modal,
   ModularTable,
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
@@ -23,7 +20,6 @@ import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import RelativeDate from "components/RelativeDate";
 import type { EntityDetailsRoute } from "components/Routes";
 import Status from "components/Status";
-import { copyToClipboard } from "components/utils";
 import useInlineErrors from "hooks/useInlineErrors";
 import { useQueryActionsList, useQueryOperationsList } from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
@@ -33,6 +29,7 @@ import type { RootState } from "store/store";
 import urls from "urls";
 
 import "./_action-logs.scss";
+import ActionPayloadModal from "./ActionPayloadModal";
 import { Label, Output } from "./types";
 
 type Operations = OperationResult[];
@@ -66,18 +63,6 @@ enum InlineErrors {
   FETCH = "fetch",
 }
 
-function generateLinkToApp(
-  appName: string,
-  userName: string,
-  modelName: string,
-) {
-  return (
-    <Link to={urls.model.app.index({ userName, modelName, appName })}>
-      {appName}
-    </Link>
-  );
-}
-
 function generateAppIcon(
   application: ApplicationData | undefined,
   appName: string,
@@ -91,41 +76,13 @@ function generateAppIcon(
     return (
       <>
         <CharmIcon name={appName} charmId={application.charm} />
-        {generateLinkToApp(appName, userName, modelName)}
+        <Link to={urls.model.app.index({ userName, modelName, appName })}>
+          {appName}
+        </Link>
       </>
     );
   }
   return <>{appName}</>;
-}
-
-function ActionPayloadModal(props: {
-  payload: ActionResult["output"] | null;
-  onClose: () => void;
-}) {
-  if (!props.payload) return <></>;
-  const json = JSON.stringify(props.payload, null, 2);
-  return (
-    <Modal
-      close={props.onClose}
-      title="Action result payload"
-      buttonRow={
-        <Button appearance="neutral" onClick={() => copyToClipboard(json)}>
-          {Label.COPY}
-        </Button>
-      }
-      data-testid="action-payload-modal"
-    >
-      <CodeSnippet
-        blocks={[
-          {
-            appearance: CodeSnippetBlockAppearance.NUMBERED,
-            wrapLines: true,
-            code: json,
-          },
-        ]}
-      />
-    </Modal>
-  );
 }
 
 const compare = (a: string | number, b: string | number) =>

@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { add } from "date-fns";
 import { vi } from "vitest";
 
-import * as componentUtils from "components/utils";
 import * as actionsHooks from "juju/api-hooks/actions";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -26,14 +25,6 @@ import { renderComponent } from "testing/utils";
 
 import ActionLogs from "./ActionLogs";
 import { Label, Output } from "./types";
-
-vi.mock("components/utils", async () => {
-  const utils = await vi.importActual("components/utils");
-  return {
-    ...utils,
-    copyToClipboard: vi.fn(),
-  };
-});
 
 const completed = new Date();
 completed.setMonth(completed.getMonth() - 18);
@@ -362,16 +353,6 @@ describe("Action Logs", () => {
     expect(modal).toBeInTheDocument();
     await userEvent.click(screen.getByLabelText("Close active modal"));
     expect(modal).not.toBeInTheDocument();
-  });
-
-  it("can copy the action result", async () => {
-    renderComponent(<ActionLogs />, { path, url, state });
-    await userEvent.click(await screen.findByTestId("show-output"));
-    await userEvent.click(screen.getByRole("button", { name: Label.COPY }));
-    expect(componentUtils.copyToClipboard).toHaveBeenCalledWith(`{
-  "key1": "value1",
-  "test": 123
-}`);
   });
 
   it("should show error when fetching action logs and refetch action logs", async () => {
