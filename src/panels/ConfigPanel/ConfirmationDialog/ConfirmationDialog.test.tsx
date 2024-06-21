@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import * as applicationHooks from "juju/api-hooks/application";
+import * as secretHooks from "juju/api-hooks/secrets";
 import { ConfirmType as DefaultConfirmType } from "panels/types";
 import type { RootState } from "store/store";
 import {
@@ -21,7 +22,7 @@ import type { Config } from "../types";
 import { ConfigConfirmType } from "../types";
 
 import ConfirmationDialog from "./ConfirmationDialog";
-import { InlineErrors, Label } from "./types";
+import { InlineErrors, Label, Label as ConfirmationDialogLabel } from "./types";
 
 describe("ConfirmationDialog", () => {
   let state: RootState;
@@ -243,7 +244,7 @@ describe("ConfirmationDialog", () => {
     expect(container.firstChild).toBeEmptyDOMElement();
   });
 
-  it("should console log error when trying to submit", async () => {
+  it("should console error when trying to submit", async () => {
     const consoleError = console.error;
     const mockSetConfirmType = vi.fn();
     const mockSetInlineError = vi.fn();
@@ -311,6 +312,62 @@ describe("ConfirmationDialog", () => {
     expect(mockSetInlineError).toHaveBeenCalledWith(
       InlineErrors.SUBMIT_TO_JUJU,
       Label.SUBMIT_TO_JUJU_ERROR,
+    );
+    console.error = consoleError;
+  });
+
+  it("should console error when trying to grant access", async () => {
+    const consoleError = console.error;
+    const mockSetConfirmType = vi.fn();
+    const mockSetInlineError = vi.fn();
+    console.error = vi.fn();
+    const grantSecret = vi
+      .fn()
+      .mockImplementation(() => Promise.reject(new Error("Caught error")));
+    vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
+      () => grantSecret,
+    );
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [
+          listSecretResultFactory.build({ access: [], uri: "secret:aabbccdd" }),
+        ],
+        loaded: true,
+      }),
+    });
+    renderComponent(
+      <ConfirmationDialog
+        confirmType={ConfigConfirmType.GRANT}
+        queryParams={mockQueryParams}
+        setEnableSave={vi.fn()}
+        setSavingConfig={vi.fn()}
+        setConfirmType={mockSetConfirmType}
+        setInlineError={mockSetInlineError}
+        config={mockConfig}
+        handleRemovePanelQueryParams={vi.fn()}
+      />,
+      {
+        url,
+        state,
+      },
+    );
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.GRANT_CONFIRM_BUTTON,
+      }),
+    );
+    expect(mockSetConfirmType).toHaveBeenCalledWith(null);
+    expect(mockSetInlineError).toHaveBeenCalledWith(InlineErrors.FORM, null);
+    expect(grantSecret).toHaveBeenCalledWith("secret:aabbccdd", ["easyrsa"]);
+    await waitFor(() =>
+      expect(console.error).toHaveBeenCalledWith(
+        Label.GRANT_ERROR,
+        new Error("Caught error"),
+      ),
+    );
+    expect(mockSetInlineError).toHaveBeenCalledWith(
+      InlineErrors.SUBMIT_TO_JUJU,
+      Label.GRANT_ERROR,
     );
     console.error = consoleError;
   });
