@@ -1,7 +1,9 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { Mock } from "vitest";
 import { vi } from "vitest";
 
+import * as useCanManageSecrets from "hooks/useCanManageSecrets";
 import * as applicationHooks from "juju/api-hooks/application";
 import * as secretHooks from "juju/api-hooks/secrets";
 import { ConfirmType as DefaultConfirmType } from "panels/types";
@@ -33,6 +35,10 @@ describe("ConfirmationDialog", () => {
     panel: "config",
   });
   const url = `/models/eggman@external/hadoopspark?${params.toString()}`;
+  const consoleError = console.error;
+  let mockSetConfirmType: Mock;
+  let mockSetInlineError: Mock;
+  let mockHandleRemovePanelQueryParams: Mock;
 
   const mockConfig = {
     email: {
@@ -69,6 +75,9 @@ describe("ConfirmationDialog", () => {
 
   beforeEach(() => {
     console.error = vi.fn();
+    mockSetConfirmType = vi.fn();
+    mockSetInlineError = vi.fn();
+    mockHandleRemovePanelQueryParams = vi.fn();
     vi.resetModules();
     state = rootStateFactory.build();
     const setApplicationConfig = vi
@@ -80,11 +89,11 @@ describe("ConfirmationDialog", () => {
   });
 
   afterEach(() => {
+    console.error = consoleError;
     vi.restoreAllMocks();
   });
 
   it("should display submit confirmation dialog and can cancel submit", async () => {
-    const mockSetConfirmType = vi.fn();
     renderComponent(
       <ConfirmationDialog
         confirmType={DefaultConfirmType.SUBMIT}
@@ -125,9 +134,102 @@ describe("ConfirmationDialog", () => {
     expect(mockSetConfirmType).toHaveBeenCalledWith(null);
   });
 
+  it("should submit successfully and remove panel query params", async () => {
+    const setApplicationConfig = vi
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+    vi.spyOn(applicationHooks, "useSetApplicationConfig").mockImplementation(
+      () => setApplicationConfig,
+    );
+    renderComponent(
+      <ConfirmationDialog
+        confirmType={DefaultConfirmType.SUBMIT}
+        queryParams={mockQueryParams}
+        setEnableSave={vi.fn()}
+        setSavingConfig={vi.fn()}
+        setConfirmType={mockSetConfirmType}
+        setInlineError={vi.fn()}
+        config={mockConfig}
+        handleRemovePanelQueryParams={mockHandleRemovePanelQueryParams}
+      />,
+      {
+        url,
+        state,
+      },
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+    );
+    expect(mockSetConfirmType).toHaveBeenCalledWith(null);
+    expect(setApplicationConfig).toHaveBeenCalledWith("easyrsa", {
+      email: configFactory.build({
+        error: null,
+        name: "email",
+        default: "",
+        newValue: "secret:aabbccdd",
+      }),
+      name: configFactory.build({
+        name: "name",
+        default: "eggman",
+      }),
+    });
+    expect(console.error).not.toHaveBeenCalled();
+    expect(mockHandleRemovePanelQueryParams).toHaveBeenCalledOnce();
+  });
+
+  it("should submit successfully and open up grant confirmation dialog", async () => {
+    const setApplicationConfig = vi
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+    vi.spyOn(applicationHooks, "useSetApplicationConfig").mockImplementation(
+      () => setApplicationConfig,
+    );
+    vi.spyOn(useCanManageSecrets, "default").mockImplementation(() => true);
+    state.juju.secrets = secretsStateFactory.build({
+      abc123: modelSecretsFactory.build({
+        items: [
+          listSecretResultFactory.build({ access: [], uri: "secret:aabbccdd" }),
+        ],
+        loaded: true,
+      }),
+    });
+    renderComponent(
+      <ConfirmationDialog
+        confirmType={DefaultConfirmType.SUBMIT}
+        queryParams={mockQueryParams}
+        setEnableSave={vi.fn()}
+        setSavingConfig={vi.fn()}
+        setConfirmType={mockSetConfirmType}
+        setInlineError={vi.fn()}
+        config={mockConfig}
+        handleRemovePanelQueryParams={vi.fn()}
+      />,
+      {
+        url,
+        state,
+      },
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.SAVE_CONFIRM_CONFIRM_BUTTON }),
+    );
+    expect(mockSetConfirmType).toHaveBeenCalledWith(null);
+    expect(setApplicationConfig).toHaveBeenCalledWith("easyrsa", {
+      email: configFactory.build({
+        error: null,
+        name: "email",
+        default: "",
+        newValue: "secret:aabbccdd",
+      }),
+      name: configFactory.build({
+        name: "name",
+        default: "eggman",
+      }),
+    });
+    expect(console.error).not.toHaveBeenCalled();
+    expect(mockSetConfirmType).toHaveBeenCalledWith(ConfigConfirmType.GRANT);
+  });
+
   it("should display grant confirmation dialog and can cancel grant", async () => {
-    const mockSetConfirmType = vi.fn();
-    const mockHandleRemovePanelQueryParams = vi.fn();
     state.juju.secrets = secretsStateFactory.build({
       abc123: modelSecretsFactory.build({
         items: [
@@ -179,7 +281,6 @@ describe("ConfirmationDialog", () => {
   });
 
   it("should display cancel confirmation dialog and can cancel", async () => {
-    const mockSetConfirmType = vi.fn();
     renderComponent(
       <ConfirmationDialog
         confirmType={DefaultConfirmType.CANCEL}
@@ -245,23 +346,6 @@ describe("ConfirmationDialog", () => {
   });
 
   it("should console error when trying to submit", async () => {
-    const consoleError = console.error;
-    const mockSetConfirmType = vi.fn();
-    const mockSetInlineError = vi.fn();
-    console.error = vi.fn();
-    const getApplicationConfig = vi.fn().mockImplementationOnce(() =>
-      Promise.resolve(
-        applicationGetFactory.build({
-          config: {
-            email: configFactory.build({ default: "" }),
-            name: configFactory.build({ default: "eggman" }),
-          },
-        }),
-      ),
-    );
-    vi.spyOn(applicationHooks, "useGetApplicationConfig").mockImplementation(
-      () => getApplicationConfig,
-    );
     const setApplicationConfig = vi
       .fn()
       .mockImplementation(() =>
@@ -313,14 +397,9 @@ describe("ConfirmationDialog", () => {
       InlineErrors.SUBMIT_TO_JUJU,
       Label.SUBMIT_TO_JUJU_ERROR,
     );
-    console.error = consoleError;
   });
 
   it("should console error when trying to grant access", async () => {
-    const consoleError = console.error;
-    const mockSetConfirmType = vi.fn();
-    const mockSetInlineError = vi.fn();
-    console.error = vi.fn();
     const grantSecret = vi
       .fn()
       .mockImplementation(() => Promise.reject(new Error("Caught error")));
@@ -369,6 +448,5 @@ describe("ConfirmationDialog", () => {
       InlineErrors.SUBMIT_TO_JUJU,
       Label.GRANT_ERROR,
     );
-    console.error = consoleError;
   });
 });
