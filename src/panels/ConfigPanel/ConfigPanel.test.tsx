@@ -375,15 +375,6 @@ describe("ConfigPanel", () => {
     await userEvent.click(
       screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
-    expect(
-      within(
-        screen.getByRole("dialog", {
-          name: ConfirmationDialogLabel.SAVE_CONFIRM,
-        }),
-      ).getByRole("heading", {
-        name: ConfirmationDialogLabel.SAVE_CONFIRM,
-      }),
-    ).toBeInTheDocument();
     await userEvent.click(
       within(
         screen.getByRole("dialog", {
