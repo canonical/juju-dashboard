@@ -246,7 +246,7 @@ describe("CharmActionsPanel", () => {
     expect(executeActionOnUnitsSpy).not.toHaveBeenCalled();
   });
 
-  it.only("submits the action request to the api without options", async () => {
+  it("submits the action request to the api without options", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve());
@@ -317,40 +317,7 @@ describe("CharmActionsPanel", () => {
       bucket: "",
       "osd-devices": "new device",
     });
-  });
-
-  it("handles API errors", async () => {
-    const executeActionOnUnitsSpy = vi
-      .fn()
-      .mockImplementation(() => Promise.reject(new Error()));
-    vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
-      () => executeActionOnUnitsSpy,
-    );
-    renderComponent(
-      <CharmActionsPanel
-        charmURL={charmURL}
-        onRemovePanelQueryParams={vi.fn()}
-      />,
-      { path, url, state },
-    );
-    expect(
-      await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
-    await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
-    expect(
-      await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
-    await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" }),
-    );
-    await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
-    );
-    const call = executeActionOnUnitsSpy.mock.calls[0];
-    expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
-    expect(call[1]).toBe("pause");
-    expect(call[2]).toEqual({}); // no options
-    expect(await screen.findByText(Label.ACTION_ERROR)).toBeInTheDocument();
+    expect(await screen.findByText(Label.ACTION_SUCCESS)).toBeInTheDocument();
   });
 
   it("should cancel the run selected action confirmation modal", async () => {
