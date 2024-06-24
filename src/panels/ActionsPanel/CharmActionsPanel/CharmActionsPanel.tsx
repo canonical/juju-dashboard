@@ -127,7 +127,11 @@ export default function CharmActionsPanel({
           selectedAction={selectedAction}
           selectedApplications={selectedApplications}
           setConfirmType={setConfirmType}
-          actionOptionsValues={actionOptionsValues}
+          selectedActionOptionValue={
+            selectedAction
+              ? actionOptionsValues.current[selectedAction]
+              : undefined
+          }
           onRemovePanelQueryParams={onRemovePanelQueryParams}
         />
       </LoadingHandler>

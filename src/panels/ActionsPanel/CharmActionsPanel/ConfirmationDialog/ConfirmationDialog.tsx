@@ -7,17 +7,17 @@ import ToastCard from "components/ToastCard";
 import useAnalytics from "hooks/useAnalytics";
 import { useExecuteActionOnUnits } from "juju/api-hooks";
 import type { ApplicationInfo } from "juju/types";
-import type { ActionOptionValues } from "panels/ActionsPanel/types";
+import type { ActionOptionValue } from "panels/ActionsPanel/types";
 import { ConfirmType, type ConfirmTypes } from "panels/types";
 
-import { Label } from "../types";
+import { Label } from "./types";
 
 type Props = {
   confirmType: ConfirmTypes;
   selectedAction: string | undefined;
   selectedApplications: ApplicationInfo[];
   setConfirmType: React.Dispatch<React.SetStateAction<ConfirmTypes>>;
-  actionOptionsValues: React.MutableRefObject<ActionOptionValues>;
+  selectedActionOptionValue: ActionOptionValue | undefined;
   onRemovePanelQueryParams: () => void;
 };
 
@@ -26,7 +26,7 @@ const ConfirmationDialog = ({
   selectedAction,
   selectedApplications,
   setConfirmType,
-  actionOptionsValues,
+  selectedActionOptionValue,
   onRemovePanelQueryParams,
 }: Props): JSX.Element | null => {
   const { Portal } = usePortal();
@@ -40,7 +40,9 @@ const ConfirmationDialog = ({
       action: "Run action (final step)",
     });
 
-    if (!selectedAction) return;
+    if (!selectedAction || !selectedActionOptionValue) {
+      return;
+    }
     executeActionOnUnits(
       // transform applications to unit list for the API
       selectedApplications
@@ -52,7 +54,7 @@ const ConfirmationDialog = ({
         )
         .flat(),
       selectedAction,
-      actionOptionsValues.current[selectedAction],
+      selectedActionOptionValue,
     )
       .then((payload) => {
         const error = payload?.actions?.find((e) => e.error);

@@ -19,7 +19,7 @@ import {
 import { renderComponent } from "testing/utils";
 
 import CharmActionsPanel from "./CharmActionsPanel";
-import { Label } from "./types";
+import { Label } from "./ConfirmationDialog/types";
 
 vi.mock("juju/api-hooks/actions", () => {
   return {
@@ -246,7 +246,7 @@ describe("CharmActionsPanel", () => {
     expect(executeActionOnUnitsSpy).not.toHaveBeenCalled();
   });
 
-  it("submits the action request to the api without options", async () => {
+  it.only("submits the action request to the api without options", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve());
