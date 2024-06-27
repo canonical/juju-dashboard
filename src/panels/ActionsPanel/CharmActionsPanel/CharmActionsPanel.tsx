@@ -128,9 +128,9 @@ export default function CharmActionsPanel({
           selectedApplications={selectedApplications}
           setConfirmType={setConfirmType}
           selectedActionOptionValue={
-            selectedAction
-              ? actionOptionsValues.current[selectedAction]
-              : undefined
+            // {} is a placeholder value, as ConfirmationDialog will not render
+            // if selectedAction is undefined.
+            selectedAction ? actionOptionsValues.current[selectedAction] : {}
           }
           onRemovePanelQueryParams={onRemovePanelQueryParams}
         />

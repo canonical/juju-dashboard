@@ -14,11 +14,57 @@ import { Label } from "./types";
 
 type Props = {
   confirmType: ConfirmTypes;
-  selectedAction: string | undefined;
+  selectedAction?: string;
   selectedApplications: ApplicationInfo[];
   setConfirmType: React.Dispatch<React.SetStateAction<ConfirmTypes>>;
-  selectedActionOptionValue: ActionOptionValue | undefined;
+  selectedActionOptionValue: ActionOptionValue;
   onRemovePanelQueryParams: () => void;
+};
+
+const executeAction = (
+  sendAnalytics: ReturnType<typeof useAnalytics>,
+  selectedAction: string,
+  selectedActionOptionValue: ActionOptionValue,
+  executeActionOnUnits: ReturnType<typeof useExecuteActionOnUnits>,
+  selectedApplications: ApplicationInfo[],
+) => {
+  sendAnalytics({
+    category: "ApplicationSearch",
+    action: "Run action (final step)",
+  });
+
+  executeActionOnUnits(
+    // transform applications to unit list for the API
+    selectedApplications
+      .map((a) =>
+        Array(a["unit-count"])
+          .fill("name" in a ? a.name : null)
+          .filter(Boolean)
+          .map((unit, i) => `${unit}-${i}`),
+      )
+      .flat(),
+    selectedAction,
+    selectedActionOptionValue,
+  )
+    .then((payload) => {
+      const error = payload?.actions?.find((e) => e.error);
+      if (error) {
+        throw error;
+      }
+      reactHotToast.custom((t) => (
+        <ToastCard toastInstance={t} type="positive">
+          {Label.ACTION_SUCCESS}
+        </ToastCard>
+      ));
+      return;
+    })
+    .catch(() => {
+      reactHotToast.custom((t) => (
+        <ToastCard toastInstance={t} type="negative">
+          {Label.ACTION_ERROR}
+        </ToastCard>
+      ));
+    });
 };
 
 const ConfirmationDialog = ({
@@ -34,52 +80,7 @@ const ConfirmationDialog = ({
   const sendAnalytics = useAnalytics();
   const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
 
-  const executeAction = () => {
-    sendAnalytics({
-      category: "ApplicationSearch",
-      action: "Run action (final step)",
-    });
-
-    if (!selectedAction || !selectedActionOptionValue) {
-      return;
-    }
-    executeActionOnUnits(
-      // transform applications to unit list for the API
-      selectedApplications
-        .map((a) =>
-          Array(a["unit-count"])
-            .fill("name" in a ? a.name : null)
-            .filter(Boolean)
-            .map((unit, i) => `${unit}-${i}`),
-        )
-        .flat(),
-      selectedAction,
-      selectedActionOptionValue,
-    )
-      .then((payload) => {
-        const error = payload?.actions?.find((e) => e.error);
-        if (error) {
-          throw error;
-        }
-        reactHotToast.custom((t) => (
-          <ToastCard toastInstance={t} type="positive">
-            {Label.ACTION_SUCCESS}
-          </ToastCard>
-        ));
-        return;
-      })
-      .catch(() => {
-        reactHotToast.custom((t) => (
-          <ToastCard toastInstance={t} type="negative">
-            {Label.ACTION_ERROR}
-          </ToastCard>
-        ));
-      });
-  };
-
   if (selectedAction && confirmType === ConfirmType.SUBMIT) {
-    // Allow for adding more confirmation types, like for cancel
-    // if inputs have been changed.
     const unitCount = selectedApplications.reduce(
       (total, app) => total + (app["unit-count"] || 0),
       0,
@@ -94,7 +95,13 @@ const ConfirmationDialog = ({
           confirmButtonAppearance="positive"
           onConfirm={() => {
             setConfirmType(null);
-            executeAction();
+            executeAction(
+              sendAnalytics,
+              selectedAction,
+              selectedActionOptionValue,
+              executeActionOnUnits,
+              selectedApplications,
+            );
             onRemovePanelQueryParams();
           }}
           close={() => setConfirmType(null)}

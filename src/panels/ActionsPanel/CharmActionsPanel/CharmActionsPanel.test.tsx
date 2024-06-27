@@ -280,7 +280,7 @@ describe("CharmActionsPanel", () => {
     expect(await screen.findByText(Label.ACTION_SUCCESS)).toBeInTheDocument();
   });
 
-  it("submits the action request to the api with options that are required", async () => {
+  it("should pass the selected action form values to the API call", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve());
@@ -317,7 +317,6 @@ describe("CharmActionsPanel", () => {
       bucket: "",
       "osd-devices": "new device",
     });
-    expect(await screen.findByText(Label.ACTION_SUCCESS)).toBeInTheDocument();
   });
 
   it("should cancel the run selected action confirmation modal", async () => {
