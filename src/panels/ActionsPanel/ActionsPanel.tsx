@@ -1,12 +1,7 @@
-import {
-  ActionButton,
-  Button,
-  ConfirmationModal,
-} from "@canonical/react-components";
+import { ActionButton, Button } from "@canonical/react-components";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import usePortal from "react-useportal";
 
 import CharmIcon from "components/CharmIcon";
 import LoadingHandler from "components/LoadingHandler";
@@ -14,10 +9,7 @@ import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox";
 import type { EntityDetailsRoute } from "components/Routes";
 import useInlineErrors from "hooks/useInlineErrors";
-import {
-  useExecuteActionOnUnits,
-  useGetActionsForApplication,
-} from "juju/api-hooks";
+import { useGetActionsForApplication } from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
 import { ConfirmType, type ConfirmTypes } from "panels/types";
@@ -27,12 +19,13 @@ import type { RootState } from "store/store";
 import { useAppStore } from "store/store";
 
 import ActionOptions from "./ActionOptions";
+import ConfirmationDialog from "./ConfirmationDialog";
 import type {
   ActionData,
   ActionOptionValue,
   ActionOptionValues,
 } from "./types";
-import { Label, TestId } from "./types";
+import { InlineErrors, Label, TestId } from "./types";
 import { enableSubmit, onValuesChange } from "./utils";
 
 type SetSelectedAction = (actionName: string) => void;
@@ -41,11 +34,6 @@ type ActionsQueryParams = {
   panel?: string | null;
   units?: string[];
 };
-
-enum InlineErrors {
-  GET_ACTION = "get-action",
-  EXECUTE_ACTION = "execute-action",
-}
 
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
@@ -66,7 +54,6 @@ export default function ActionsPanel(): JSX.Element {
     userName,
     modelName,
   );
-  const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
   const [selectedAction, setSelectedAction]: [
     string | undefined,
     SetSelectedAction,
@@ -89,7 +76,6 @@ export default function ActionsPanel(): JSX.Element {
   });
   const [isExecutingAction, setIsExecutingAction] = useState<boolean>(false);
   const scrollArea = useRef<HTMLDivElement>(null);
-  const { Portal } = usePortal();
 
   const actionOptionsValues = useRef<ActionOptionValues>({});
 
@@ -152,16 +138,6 @@ export default function ActionsPanel(): JSX.Element {
     );
   };
 
-  const executeAction = async () => {
-    // You shouldn't be able to get this far without this defined but jic.
-    if (!selectedAction || !modelUUID) return;
-    await executeActionOnUnits(
-      selectedUnits,
-      selectedAction,
-      actionOptionsValues.current[selectedAction],
-    );
-  };
-
   const handleSubmit = () => {
     setConfirmType(ConfirmType.SUBMIT);
   };
@@ -193,58 +169,6 @@ export default function ActionsPanel(): JSX.Element {
     },
     [actionData, selectedUnits],
   );
-
-  const generateConfirmationModal = () => {
-    if (confirmType && selectedAction) {
-      // Allow for adding more confirmation types, like for cancel
-      // if inputs have been changed.
-      if (confirmType === ConfirmType.SUBMIT) {
-        const unitNames = selectedUnits.reduce((acc, unitName) => {
-          return `${acc}, ${unitName.split("/")[1]}`;
-        });
-        // Render the submit confirmation modal.
-        return (
-          <Portal>
-            <ConfirmationModal
-              title={`Run ${selectedAction}?`}
-              cancelButtonLabel={Label.CANCEL_BUTTON}
-              confirmButtonLabel={Label.CONFIRM_BUTTON}
-              confirmButtonAppearance="positive"
-              onConfirm={() => {
-                setConfirmType(null);
-                setIsExecutingAction(true);
-                executeAction()
-                  .then(() => {
-                    handleRemovePanelQueryParams();
-                    return;
-                  })
-                  .catch((error) => {
-                    setInlineErrors(
-                      InlineErrors.EXECUTE_ACTION,
-                      Label.EXECUTE_ACTION_ERROR,
-                    );
-                    setIsExecutingAction(false);
-                    console.error(Label.EXECUTE_ACTION_ERROR, error);
-                  });
-              }}
-              close={() => setConfirmType(null)}
-            >
-              <h4 className="p-muted-heading u-no-margin--bottom">
-                UNIT COUNT
-              </h4>
-              <p data-testid="confirmation-modal-unit-count">
-                {selectedUnits.length}
-              </p>
-              <h4 className="p-muted-heading u-no-margin--bottom u-no-padding--top">
-                UNIT NAME
-              </h4>
-              <p data-testid="confirmation-modal-unit-names">{unitNames}</p>
-            </ConfirmationModal>
-          </Portal>
-        );
-      }
-    }
-  };
 
   const data = Object.keys(actionData).length > 0 ? actionData : null;
 
@@ -298,7 +222,20 @@ export default function ActionsPanel(): JSX.Element {
           </RadioInputBox>
         ))}
       </LoadingHandler>
-      {generateConfirmationModal()}
+      {selectedAction && confirmType && (
+        <ConfirmationDialog
+          confirmType={confirmType}
+          selectedAction={selectedAction}
+          selectedUnits={selectedUnits}
+          setConfirmType={setConfirmType}
+          setIsExecutingAction={setIsExecutingAction}
+          selectedActionOptionValue={
+            actionOptionsValues.current[selectedAction]
+          }
+          handleRemovePanelQueryParams={handleRemovePanelQueryParams}
+          setInlineErrors={setInlineErrors}
+        />
+      )}
     </Panel>
   );
 }
