@@ -222,7 +222,7 @@ export default function ActionsPanel(): JSX.Element {
           </RadioInputBox>
         ))}
       </LoadingHandler>
-      {selectedAction && confirmType && (
+      {selectedAction && confirmType ? (
         <ConfirmationDialog
           confirmType={confirmType}
           selectedAction={selectedAction}
@@ -235,7 +235,7 @@ export default function ActionsPanel(): JSX.Element {
           handleRemovePanelQueryParams={handleRemovePanelQueryParams}
           setInlineErrors={setInlineErrors}
         />
-      )}
+      ) : null}
     </Panel>
   );
 }
