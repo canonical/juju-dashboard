@@ -23,18 +23,6 @@ type Props = {
   setInlineErrors: SetError;
 };
 
-const executeAction = async (
-  executeActionOnUnits: ReturnType<typeof useExecuteActionOnUnits>,
-  selectedUnits: string[],
-  selectedAction: string,
-  selectedActionOptionValue: ActionOptionValue,
-) =>
-  await executeActionOnUnits(
-    selectedUnits,
-    selectedAction,
-    selectedActionOptionValue,
-  );
-
 const ConfirmationDialog = ({
   confirmType,
   selectedAction,
@@ -49,7 +37,7 @@ const ConfirmationDialog = ({
   const { modelName, userName } = useParams<EntityDetailsRoute>();
   const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
 
-  if (confirmType === ConfirmType.SUBMIT) {
+  if (confirmType === ConfirmType.SUBMIT && selectedAction) {
     const unitNames = selectedUnits.reduce((acc, unitName) => {
       return `${acc}, ${unitName.split("/")[1]}`;
     });
@@ -64,8 +52,7 @@ const ConfirmationDialog = ({
           onConfirm={() => {
             setConfirmType(null);
             setIsExecutingAction(true);
-            executeAction(
-              executeActionOnUnits,
+            executeActionOnUnits(
               selectedUnits,
               selectedAction,
               selectedActionOptionValue,
