@@ -14,7 +14,7 @@ import { Label } from "./types";
 
 type Props = {
   confirmType: ConfirmTypes;
-  selectedAction?: string;
+  selectedAction: string;
   selectedApplications: ApplicationInfo[];
   setConfirmType: React.Dispatch<React.SetStateAction<ConfirmTypes>>;
   selectedActionOptionValue: ActionOptionValue;

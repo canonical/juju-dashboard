@@ -122,18 +122,18 @@ export default function CharmActionsPanel({
             />
           </RadioInputBox>
         ))}
-        <ConfirmationDialog
-          confirmType={confirmType}
-          selectedAction={selectedAction}
-          selectedApplications={selectedApplications}
-          setConfirmType={setConfirmType}
-          selectedActionOptionValue={
-            // {} is a placeholder value, as ConfirmationDialog will not render
-            // if selectedAction is undefined.
-            selectedAction ? actionOptionsValues.current[selectedAction] : {}
-          }
-          onRemovePanelQueryParams={onRemovePanelQueryParams}
-        />
+        {selectedAction ? (
+          <ConfirmationDialog
+            confirmType={confirmType}
+            selectedAction={selectedAction}
+            selectedApplications={selectedApplications}
+            setConfirmType={setConfirmType}
+            selectedActionOptionValue={
+              actionOptionsValues.current[selectedAction]
+            }
+            onRemovePanelQueryParams={onRemovePanelQueryParams}
+          />
+        ) : null}
       </LoadingHandler>
     </Panel>
   );

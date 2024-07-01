@@ -70,7 +70,7 @@ describe("ConfirmationDialog", () => {
     } = renderComponent(
       <ConfirmationDialog
         confirmType={ConfirmType.SUBMIT}
-        selectedAction={undefined}
+        selectedAction=""
         selectedApplications={[]}
         setConfirmType={vi.fn()}
         selectedActionOptionValue={{}}
