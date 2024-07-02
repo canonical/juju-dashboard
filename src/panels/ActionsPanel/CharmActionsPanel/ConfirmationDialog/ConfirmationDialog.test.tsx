@@ -69,7 +69,7 @@ describe("ConfirmationDialog", () => {
       result: { container },
     } = renderComponent(
       <ConfirmationDialog
-        confirmType={ConfirmType.SUBMIT}
+        confirmType={ConfirmType.CANCEL}
         selectedAction=""
         selectedApplications={[]}
         setConfirmType={vi.fn()}

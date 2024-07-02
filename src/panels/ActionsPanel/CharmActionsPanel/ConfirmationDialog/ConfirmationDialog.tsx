@@ -80,7 +80,8 @@ const ConfirmationDialog = ({
   const sendAnalytics = useAnalytics();
   const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
 
-  if (selectedAction && confirmType === ConfirmType.SUBMIT) {
+  if (confirmType === ConfirmType.SUBMIT) {
+    console.log("here");
     const unitCount = selectedApplications.reduce(
       (total, app) => total + (app["unit-count"] || 0),
       0,
