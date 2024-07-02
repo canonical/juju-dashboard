@@ -19,7 +19,7 @@ import {
 import { renderComponent } from "testing/utils";
 
 import CharmActionsPanel from "./CharmActionsPanel";
-import { Label } from "./types";
+import { ConfirmationDialogLabel } from "./ConfirmationDialog";
 
 vi.mock("juju/api-hooks/actions", () => {
   return {
@@ -271,16 +271,20 @@ describe("CharmActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
+      await screen.findByRole("button", {
+        name: ConfirmationDialogLabel.CONFIRM_BUTTON,
+      }),
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
     expect(call[1]).toBe("pause");
     expect(call[2]).toEqual({}); // no options
-    expect(await screen.findByText(Label.ACTION_SUCCESS)).toBeInTheDocument();
+    expect(
+      await screen.findByText(ConfirmationDialogLabel.ACTION_SUCCESS),
+    ).toBeInTheDocument();
   });
 
-  it("submits the action request to the api with options that are required", async () => {
+  it("should pass the selected action form values to the API call", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve());
@@ -308,7 +312,9 @@ describe("CharmActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
+      await screen.findByRole("button", {
+        name: ConfirmationDialogLabel.CONFIRM_BUTTON,
+      }),
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
@@ -317,40 +323,6 @@ describe("CharmActionsPanel", () => {
       bucket: "",
       "osd-devices": "new device",
     });
-  });
-
-  it("handles API errors", async () => {
-    const executeActionOnUnitsSpy = vi
-      .fn()
-      .mockImplementation(() => Promise.reject(new Error()));
-    vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
-      () => executeActionOnUnitsSpy,
-    );
-    renderComponent(
-      <CharmActionsPanel
-        charmURL={charmURL}
-        onRemovePanelQueryParams={vi.fn()}
-      />,
-      { path, url, state },
-    );
-    expect(
-      await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
-    await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
-    expect(
-      await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
-    await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" }),
-    );
-    await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
-    );
-    const call = executeActionOnUnitsSpy.mock.calls[0];
-    expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
-    expect(call[1]).toBe("pause");
-    expect(call[2]).toEqual({}); // no options
-    expect(await screen.findByText(Label.ACTION_ERROR)).toBeInTheDocument();
   });
 
   it("should cancel the run selected action confirmation modal", async () => {
@@ -375,7 +347,9 @@ describe("CharmActionsPanel", () => {
       screen.queryByRole("dialog", { name: "Run pause?" }),
     ).toBeInTheDocument();
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CANCEL_BUTTON }),
+      await screen.findByRole("button", {
+        name: ConfirmationDialogLabel.CANCEL_BUTTON,
+      }),
     );
     expect(
       screen.queryByRole("dialog", { name: "Run pause?" }),
@@ -409,9 +383,13 @@ describe("CharmActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.CONFIRM_BUTTON }),
+      screen.getByRole("button", {
+        name: ConfirmationDialogLabel.CONFIRM_BUTTON,
+      }),
     );
     expect(executeActionOnUnitsSpy).toHaveBeenCalledTimes(1);
-    expect(screen.getByText(Label.ACTION_ERROR)).toBeInTheDocument();
+    expect(
+      screen.getByText(ConfirmationDialogLabel.ACTION_ERROR),
+    ).toBeInTheDocument();
   });
 });

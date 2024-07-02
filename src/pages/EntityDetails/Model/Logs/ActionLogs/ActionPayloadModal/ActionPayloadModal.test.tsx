@@ -25,7 +25,6 @@ describe("ActionPayloadModal", () => {
     } = renderComponent(
       <ActionPayloadModal payload={null} onClose={vi.fn()} />,
     );
-    expect(container.tagName).toBe("DIV");
     expect(container.children.length).toBe(1);
     expect(container.firstChild).toBeEmptyDOMElement();
   });
