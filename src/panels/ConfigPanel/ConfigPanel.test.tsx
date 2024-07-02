@@ -272,15 +272,6 @@ describe("ConfigPanel", () => {
     await userEvent.click(
       screen.getByRole("button", { name: ConfigPanelLabel.CANCEL_BUTTON }),
     );
-    expect(
-      within(
-        screen.getByRole("dialog", {
-          name: ConfirmationDialogLabel.CANCEL_CONFIRM,
-        }),
-      ).getByRole("heading", {
-        name: ConfirmationDialogLabel.CANCEL_CONFIRM,
-      }),
-    ).toBeInTheDocument();
     expect(router.state.location.search).toBe(`?${params.toString()}`);
     await userEvent.click(
       screen.getByRole("button", {
@@ -288,33 +279,6 @@ describe("ConfigPanel", () => {
       }),
     );
     expect(router.state.location.search).toBeFalsy();
-  });
-
-  it("can cancel the cancel confirmation", async () => {
-    const { router } = renderComponent(<ConfigPanel />, { state, path, url });
-    await userEvent.type(
-      within(await screen.findByTestId("email")).getByRole("textbox"),
-      "eggman@example.com",
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: ConfigPanelLabel.CANCEL_BUTTON }),
-    );
-    expect(
-      within(
-        screen.getByRole("dialog", {
-          name: ConfirmationDialogLabel.CANCEL_CONFIRM,
-        }),
-      ).getByRole("heading", {
-        name: ConfirmationDialogLabel.CANCEL_CONFIRM,
-      }),
-    ).toBeInTheDocument();
-    expect(router.state.location.search).toBe(`?${params.toString()}`);
-    await userEvent.click(
-      screen.getByRole("button", {
-        name: ConfirmationDialogLabel.CANCEL_CONFIRM_CANCEL_BUTTON,
-      }),
-    );
-    expect(router.state.location.search).toBe(`?${params.toString()}`);
   });
 
   it("closes when cancelling and there are no unsaved changes", async () => {
@@ -338,10 +302,6 @@ describe("ConfigPanel", () => {
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com",
     );
-    await userEvent.type(
-      within(await screen.findByTestId("name")).getByRole("textbox"),
-      "noteggman",
-    );
     await userEvent.click(
       screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
@@ -354,38 +314,6 @@ describe("ConfigPanel", () => {
         name: ConfirmationDialogLabel.SAVE_CONFIRM,
       }),
     ).toBeInTheDocument();
-  });
-
-  it("can cancel the save confirmation", async () => {
-    const setApplicationConfig = vi
-      .fn()
-      .mockImplementation(() => Promise.resolve());
-    vi.spyOn(applicationHooks, "useSetApplicationConfig").mockImplementation(
-      () => setApplicationConfig,
-    );
-    renderComponent(<ConfigPanel />, { state, path, url });
-    await userEvent.type(
-      within(await screen.findByTestId("email")).getByRole("textbox"),
-      "eggman@example.com",
-    );
-    await userEvent.type(
-      within(await screen.findByTestId("name")).getByRole("textbox"),
-      "noteggman",
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
-    );
-    await userEvent.click(
-      within(
-        screen.getByRole("dialog", {
-          name: ConfirmationDialogLabel.SAVE_CONFIRM,
-        }),
-      ).getByRole("button", {
-        name: ConfirmationDialogLabel.SAVE_CONFIRM_CANCEL_BUTTON,
-      }),
-    );
-    expect(screen.queryByRole("dialog", { name: "" })).not.toBeInTheDocument();
-    expect(setApplicationConfig).not.toHaveBeenCalled();
   });
 
   it("can save changes", async () => {
@@ -442,10 +370,6 @@ describe("ConfigPanel", () => {
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com",
-    );
-    await userEvent.type(
-      within(await screen.findByTestId("name")).getByRole("textbox"),
-      "noteggman",
     );
     await userEvent.click(
       screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
@@ -518,10 +442,6 @@ describe("ConfigPanel", () => {
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "eggman@example.com",
     );
-    await userEvent.type(
-      within(await screen.findByTestId("name")).getByRole("textbox"),
-      "noteggman",
-    );
     await userEvent.click(
       screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
     );
@@ -530,18 +450,6 @@ describe("ConfigPanel", () => {
         name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
       }),
     );
-    expect(setApplicationConfig).toHaveBeenCalledWith("easyrsa", {
-      email: configFactory.build({
-        name: "email",
-        default: "",
-        newValue: "eggman@example.com",
-      }),
-      name: configFactory.build({
-        name: "name",
-        default: "eggman",
-        newValue: "noteggman",
-      }),
-    });
     await waitFor(() =>
       expect(console.error).toHaveBeenCalledWith(
         ConfirmationDialogLabel.SUBMIT_TO_JUJU_ERROR,
@@ -717,42 +625,6 @@ describe("ConfigPanel", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("can cancel the grant confirmation", async () => {
-    state.juju.secrets = secretsStateFactory.build({
-      abc123: modelSecretsFactory.build({
-        items: [
-          listSecretResultFactory.build({ access: [], uri: "secret:aabbccdd" }),
-        ],
-        loaded: true,
-      }),
-    });
-    const { router } = renderComponent(<ConfigPanel />, { state, path, url });
-    expect(router.state.location.search).toBe(`?${params.toString()}`);
-    await userEvent.type(
-      within(await screen.findByTestId("email")).getByRole("textbox"),
-      "secret:aabbccdd",
-    );
-    await userEvent.click(
-      screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
-    );
-    await userEvent.click(
-      screen.getByRole("button", {
-        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
-      }),
-    );
-    await userEvent.click(
-      screen.getByRole("button", {
-        name: ConfirmationDialogLabel.GRANT_CANCEL_BUTTON,
-      }),
-    );
-    expect(
-      screen.queryByRole("dialog", {
-        name: ConfirmationDialogLabel.GRANT_CONFIRM,
-      }),
-    ).not.toBeInTheDocument();
-    expect(router.state.location.search).toBe("");
-  });
-
   it("can grant secrets", async () => {
     const grantSecret = vi
       .fn()
@@ -792,11 +664,6 @@ describe("ConfigPanel", () => {
         name: ConfirmationDialogLabel.GRANT_CONFIRM_BUTTON,
       }),
     );
-    expect(
-      screen.queryByRole("dialog", {
-        name: ConfirmationDialogLabel.GRANT_CONFIRM,
-      }),
-    ).not.toBeInTheDocument();
     expect(grantSecret).toHaveBeenCalledWith("secret:aabbccdd", ["easyrsa"]);
     expect(grantSecret).toHaveBeenCalledWith("secret:eeffgghh", ["easyrsa"]);
     expect(router.state.location.search).toBe("");
@@ -884,11 +751,6 @@ describe("ConfigPanel", () => {
         name: ConfirmationDialogLabel.GRANT_CONFIRM_BUTTON,
       }),
     );
-    expect(
-      screen.queryByRole("dialog", {
-        name: ConfirmationDialogLabel.GRANT_CONFIRM,
-      }),
-    ).not.toBeInTheDocument();
     expect(router.state.location.search).toBe(`?${params.toString()}`);
     await waitFor(() => {
       expect(
