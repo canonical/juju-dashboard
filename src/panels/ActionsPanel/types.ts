@@ -1,12 +1,9 @@
 import type { ActionSpec } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 
 export enum Label {
-  CANCEL_BUTTON = "Cancel",
-  CONFIRM_BUTTON = "Confirm",
   NO_UNITS_SELECTED = "0 units selected",
   NO_ACTIONS_PROVIDED = "This charm has not provided any actions.",
   GET_ACTIONS_ERROR = "Unable to get actions for application.",
-  EXECUTE_ACTION_ERROR = "Couldn't start the action.",
 }
 
 export enum TestId {
@@ -53,3 +50,8 @@ export type OnValuesChange = (
   actionName: string,
   options: ActionOptionValue,
 ) => void;
+
+export enum InlineErrors {
+  GET_ACTION = "get-action",
+  EXECUTE_ACTION = "execute-action",
+}
