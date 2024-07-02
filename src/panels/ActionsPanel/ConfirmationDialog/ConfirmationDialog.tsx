@@ -37,7 +37,7 @@ const ConfirmationDialog = ({
   const { modelName, userName } = useParams<EntityDetailsRoute>();
   const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
 
-  if (confirmType === ConfirmType.SUBMIT && selectedAction) {
+  if (confirmType === ConfirmType.SUBMIT) {
     const unitNames = selectedUnits.reduce((acc, unitName) => {
       return `${acc}, ${unitName.split("/")[1]}`;
     });

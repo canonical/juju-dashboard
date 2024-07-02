@@ -21,13 +21,13 @@ describe("ConfirmationDialog", () => {
     vi.restoreAllMocks();
   });
 
-  it("should return null if there is no selected action", async () => {
+  it("should return null if confirm type is not submit", async () => {
     const {
       result: { container },
     } = renderComponent(
       <ConfirmationDialog
-        confirmType={ConfirmType.SUBMIT}
-        selectedAction=""
+        confirmType={ConfirmType.CANCEL}
+        selectedAction="pause"
         selectedUnits={[]}
         setConfirmType={vi.fn()}
         setIsExecutingAction={vi.fn()}
