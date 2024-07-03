@@ -50,10 +50,7 @@ const ConfirmationDialog = ({
   const sendAnalytics = useAnalytics();
   const secrets = useAppSelector((state) => getModelSecrets(state, modelUUID));
 
-  async function _submitToJuju() {
-    if (!modelUUID || !appName) {
-      return;
-    }
+  async function _submitToJuju(appName: string) {
     setSavingConfig(true);
     const response = await setApplicationConfig(appName, config);
     const errors = response?.results?.reduce<string[]>((collection, result) => {
@@ -82,8 +79,9 @@ const ConfirmationDialog = ({
       handleRemovePanelQueryParams();
     }
   }
-
-  if (appName && confirmType === DefaultConfirmType.SUBMIT) {
+  if (!appName) {
+    return null;
+  } else if (confirmType === DefaultConfirmType.SUBMIT) {
     // Render the submit confirmation modal.
     return (
       <Portal>
@@ -106,7 +104,7 @@ const ConfirmationDialog = ({
             setConfirmType(null);
             // Clear the form errors if there were any from a previous submit.
             setInlineError(InlineErrors.FORM, null);
-            _submitToJuju().catch((error) => {
+            _submitToJuju(appName).catch((error) => {
               setInlineError(
                 InlineErrors.SUBMIT_TO_JUJU,
                 Label.SUBMIT_TO_JUJU_ERROR,
@@ -120,7 +118,7 @@ const ConfirmationDialog = ({
         </ConfirmationModal>
       </Portal>
     );
-  } else if (appName && confirmType === ConfigConfirmType.GRANT) {
+  } else if (confirmType === ConfigConfirmType.GRANT) {
     // Render the grant confirmation modal.
     const requiredGrants = getRequiredGrants(appName, config, secrets);
     return (
@@ -137,7 +135,7 @@ const ConfirmationDialog = ({
             setConfirmType(null);
             // Clear the form errors if there were any from a previous submit.
             setInlineError(InlineErrors.FORM, null);
-            if (!appName || !requiredGrants) {
+            if (!requiredGrants) {
               // It is not possible to get to this point if these
               // variables aren't set.
               return;
@@ -177,7 +175,7 @@ const ConfirmationDialog = ({
         </ConfirmationModal>
       </Portal>
     );
-  } else if (appName && confirmType === DefaultConfirmType.CANCEL) {
+  } else if (confirmType === DefaultConfirmType.CANCEL) {
     // Render the cancel confirmation modal.
     return (
       <Portal>
