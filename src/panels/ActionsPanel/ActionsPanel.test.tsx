@@ -19,7 +19,8 @@ import {
 import { renderComponent } from "testing/utils";
 
 import ActionsPanel from "./ActionsPanel";
-import { Label } from "./types";
+import { ConfirmationDialogLabel } from "./ConfirmationDialog";
+import { Label as ActionsPanelLabel } from "./types";
 
 const mockResponse = applicationsCharmActionsResultsFactory.build({
   results: [
@@ -120,11 +121,13 @@ describe("ActionsPanel", () => {
       state,
     });
     expect(await screen.findByRole("heading")).toHaveTextContent(
-      Label.NO_UNITS_SELECTED,
+      ActionsPanelLabel.NO_UNITS_SELECTED,
     );
     expect(
       await screen.findByTestId("actions-panel-unit-list"),
-    ).toHaveTextContent(`Run action on: ${Label.NO_UNITS_SELECTED}`);
+    ).toHaveTextContent(
+      `Run action on: ${ActionsPanelLabel.NO_UNITS_SELECTED}`,
+    );
   });
 
   it("disables the submit button if no units are selected", async () => {
@@ -262,7 +265,9 @@ describe("ActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
+      await screen.findByRole("button", {
+        name: ConfirmationDialogLabel.CONFIRM_BUTTON,
+      }),
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0", "ceph/1"]);
@@ -293,7 +298,9 @@ describe("ActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
+      await screen.findByRole("button", {
+        name: ConfirmationDialogLabel.CONFIRM_BUTTON,
+      }),
     );
     const call = executeActionOnUnitsSpy.mock.calls[0];
     expect(call[0]).toEqual(["ceph/0", "ceph/1"]);
@@ -303,32 +310,6 @@ describe("ActionsPanel", () => {
       "osd-devices": "new device",
     });
     executeActionOnUnitsSpy.mockRestore();
-  });
-
-  it("should cancel the run selected action confirmation modal", async () => {
-    renderComponent(<ActionsPanel />, { path, url, state });
-    await userEvent.click(
-      await screen.findByRole("radio", { name: "add-disk" }),
-    );
-    await userEvent.type(
-      await screen.findByRole("textbox", { name: "osd-devices" }),
-      "new device",
-    );
-    expect(
-      await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
-    await userEvent.click(
-      await screen.findByRole("button", { name: "Run action" }),
-    );
-    expect(
-      screen.queryByRole("dialog", { name: "Run add-disk?" }),
-    ).toBeInTheDocument();
-    await userEvent.click(
-      await screen.findByRole("button", { name: Label.CANCEL_BUTTON }),
-    );
-    expect(
-      screen.queryByRole("dialog", { name: "Run add-disk?" }),
-    ).not.toBeInTheDocument();
   });
 
   it("should display error when trying to get actions for application", async () => {
@@ -348,12 +329,12 @@ describe("ActionsPanel", () => {
       expect(getActionsForApplicationSpy).toHaveBeenCalledTimes(1),
     );
     expect(console.error).toHaveBeenCalledWith(
-      Label.GET_ACTIONS_ERROR,
+      ActionsPanelLabel.GET_ACTIONS_ERROR,
       new Error("Error while trying to get actions for application!"),
     );
     await waitFor(() =>
       expect(
-        screen.getByText(Label.GET_ACTIONS_ERROR, { exact: false }),
+        screen.getByText(ActionsPanelLabel.GET_ACTIONS_ERROR, { exact: false }),
       ).toBeInTheDocument(),
     );
     await userEvent.click(
@@ -387,18 +368,18 @@ describe("ActionsPanel", () => {
       await screen.findByRole("button", { name: "Run action" }),
     );
     await userEvent.click(
-      await screen.findByRole("button", { name: Label.CONFIRM_BUTTON }),
+      await screen.findByRole("button", {
+        name: ConfirmationDialogLabel.CONFIRM_BUTTON,
+      }),
     );
     await waitFor(() =>
       expect(executeActionOnUnitsSpy).toHaveBeenCalledTimes(1),
     );
-    expect(console.error).toHaveBeenCalledWith(
-      Label.EXECUTE_ACTION_ERROR,
-      new Error("Error while trying to execute action on units!"),
-    );
     await waitFor(() =>
       expect(
-        screen.getByText(Label.EXECUTE_ACTION_ERROR, { exact: false }),
+        screen.getByText(ConfirmationDialogLabel.EXECUTE_ACTION_ERROR, {
+          exact: false,
+        }),
       ).toBeInTheDocument(),
     );
   });
