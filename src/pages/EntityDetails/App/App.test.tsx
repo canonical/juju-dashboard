@@ -210,10 +210,14 @@ describe("Entity Details App", () => {
 
   it("enable the action button row when a unit is selected", async () => {
     renderComponent(<App />, { path, url, state });
-    expect(screen.getByTestId(TestId.RUN_ACTION_BUTTON)).toBeDisabled();
+    expect(screen.getByTestId(TestId.RUN_ACTION_BUTTON)).toHaveAttribute(
+      "aria-disabled",
+    );
     const firstInput = screen.getByTestId("table-checkbox-0");
     await userEvent.click(firstInput);
-    expect(screen.getByTestId(TestId.RUN_ACTION_BUTTON)).not.toBeDisabled();
+    expect(screen.getByTestId(TestId.RUN_ACTION_BUTTON)).not.toHaveAttribute(
+      "aria-disabled",
+    );
   });
 
   it("updates the url when units are selected and deselected", async () => {

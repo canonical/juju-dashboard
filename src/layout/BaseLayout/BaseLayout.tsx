@@ -1,3 +1,5 @@
+import { ApplicationLayout, Panel } from "@canonical/react-components";
+import type { PanelProps } from "@canonical/react-components";
 import type { PropsWithChildren, ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -7,9 +9,6 @@ import FadeIn from "animations/FadeIn";
 import Banner from "components/Banner";
 import Logo from "components/Logo";
 import PrimaryNav from "components/PrimaryNav";
-import ApplicationLayout from "components/upstream/ApplicationLayout";
-import type { PanelProps } from "components/upstream/Panel";
-import Panel from "components/upstream/Panel";
 import { DARK_THEME } from "consts";
 import useOffline from "hooks/useOffline";
 import Panels from "panels";
@@ -66,7 +65,6 @@ const BaseLayout = ({
             to={isJuju ? "https://juju.is" : urls.index}
           />
         }
-        navPanelClassName="p-primary-nav"
         sideNavigation={<PrimaryNav />}
         status={status}
       >

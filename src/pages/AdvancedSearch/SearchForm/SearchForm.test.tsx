@@ -97,7 +97,7 @@ describe("SearchForm", () => {
       screen.getByRole("button", {
         name: Label.COPY_JSON,
       }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
   });
 
   it("should have the copy json button dissabled when cross model query is loading", () => {
@@ -108,7 +108,7 @@ describe("SearchForm", () => {
       screen.getByRole("button", {
         name: Label.COPY_JSON,
       }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
   });
 
   it("should have the copy json button dissabled when cross model query returns error", () => {
@@ -120,7 +120,7 @@ describe("SearchForm", () => {
       screen.getByRole("button", {
         name: Label.COPY_JSON,
       }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
   });
 
   it("should copy the cross-model query results", async () => {

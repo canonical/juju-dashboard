@@ -394,7 +394,7 @@ describe("LocalAppsTable", () => {
     );
     expect(
       screen.queryByRole("button", { name: /run action/i }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
   });
 
   it("enables the run action button when there is at least one application selected", () => {
@@ -411,7 +411,7 @@ describe("LocalAppsTable", () => {
     );
     expect(
       screen.queryByRole("button", { name: /run action/i }),
-    ).not.toBeDisabled();
+    ).not.toHaveAttribute("aria-disabled");
   });
 
   it("opens the choose-charm panel when clicking the run action button", async () => {
