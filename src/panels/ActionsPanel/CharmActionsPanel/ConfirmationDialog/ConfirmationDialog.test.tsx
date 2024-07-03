@@ -64,7 +64,7 @@ describe("ConfirmationDialog", () => {
     vi.restoreAllMocks();
   });
 
-  it("should return null if there is no selected action", () => {
+  it("should return null if the confirm type is not 'submit'", () => {
     const {
       result: { container },
     } = renderComponent(
