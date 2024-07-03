@@ -63,7 +63,9 @@ describe("AuditLogsFilterPanel", () => {
     renderComponent(<AuditLogsFilterPanel />, {
       url: "/",
     });
-    expect(screen.getByRole("button", { name: Label.CLEAR })).toBeDisabled();
+    expect(screen.getByRole("button", { name: Label.CLEAR })).toHaveAttribute(
+      "aria-disabled",
+    );
   });
 
   it("can update the filters", async () => {

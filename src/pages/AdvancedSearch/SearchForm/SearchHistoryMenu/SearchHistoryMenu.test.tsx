@@ -22,7 +22,9 @@ describe("SearchHistoryMenu", () => {
       </Formik>,
       { url: "/?q=.applications" },
     );
-    expect(screen.getByRole("button", { name: Label.HISTORY })).toBeDisabled();
+    expect(screen.getByRole("button", { name: Label.HISTORY })).toHaveAttribute(
+      "aria-disabled",
+    );
   });
 
   it("should disable the items while loading", async () => {
@@ -47,7 +49,7 @@ describe("SearchHistoryMenu", () => {
     await userEvent.click(screen.getByRole("button", { name: Label.HISTORY }));
     expect(
       screen.getByRole("button", { name: ".applications" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
   });
 
   it("should display the history in the menu", async () => {

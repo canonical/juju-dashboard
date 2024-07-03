@@ -110,7 +110,7 @@ describe("CharmActionsPanel", () => {
     );
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
   });
 
   it("disables the submit button if no units are selected", async () => {
@@ -129,11 +129,11 @@ describe("CharmActionsPanel", () => {
     );
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" }),
     );
@@ -152,7 +152,7 @@ describe("CharmActionsPanel", () => {
     );
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" }),
     );
@@ -204,7 +204,7 @@ describe("CharmActionsPanel", () => {
     );
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("checkbox", { name: "osd-devices" }),
     );
@@ -231,11 +231,11 @@ describe("CharmActionsPanel", () => {
     );
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
+    ).not.toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" }),
     );
@@ -262,11 +262,11 @@ describe("CharmActionsPanel", () => {
     );
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
+    ).not.toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" }),
     );
@@ -307,7 +307,7 @@ describe("CharmActionsPanel", () => {
     );
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
+    ).not.toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" }),
     );
@@ -335,11 +335,11 @@ describe("CharmActionsPanel", () => {
     );
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
+    ).not.toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" }),
     );
@@ -374,11 +374,11 @@ describe("CharmActionsPanel", () => {
     );
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
+    ).not.toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" }),
     );

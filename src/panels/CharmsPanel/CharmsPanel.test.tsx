@@ -89,7 +89,9 @@ describe("CharmsPanel", () => {
         state,
       },
     );
-    expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Next" })).toHaveAttribute(
+      "aria-disabled",
+    );
   });
 
   it("next button is enabled when a charm is selected", () => {

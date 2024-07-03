@@ -78,7 +78,7 @@ describe("AuditLogsTablePagination", () => {
     const { router } = renderComponent(<AuditLogsTablePagination />, { state });
     expect(
       screen.getByRole("button", { name: Label.FIRST_PAGE }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(screen.getByRole("button", { name: "Next page" }));
     expect(router.state.location.search).toEqual("?page=2");
     await userEvent.click(

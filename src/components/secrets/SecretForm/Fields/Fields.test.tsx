@@ -59,7 +59,9 @@ describe("Fields", () => {
         <Fields />
       </Formik>,
     );
-    expect(screen.getByRole("button", { name: Label.REMOVE })).toBeDisabled();
+    expect(screen.getByRole("button", { name: Label.REMOVE })).toHaveAttribute(
+      "aria-disabled",
+    );
   });
 
   it("allows you to remove pairs if there are more than one", async () => {
@@ -73,10 +75,10 @@ describe("Fields", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: Label.ADD }));
     const removeButtons = screen.getAllByRole("button", { name: Label.REMOVE });
-    expect(removeButtons[0]).not.toBeDisabled();
-    expect(removeButtons[1]).not.toBeDisabled();
+    expect(removeButtons[0]).not.toHaveAttribute("aria-disabled");
+    expect(removeButtons[1]).not.toHaveAttribute("aria-disabled");
     await userEvent.click(removeButtons[1]);
-    expect(removeButtons[0]).toBeDisabled();
+    expect(removeButtons[0]).toHaveAttribute("aria-disabled");
   });
 
   it("displays an auto-prune option when editing", async () => {

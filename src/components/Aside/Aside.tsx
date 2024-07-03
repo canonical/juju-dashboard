@@ -1,12 +1,12 @@
-import type { PropsWithSpread } from "@canonical/react-components";
-import { Spinner } from "@canonical/react-components";
+import { AppAside, Spinner } from "@canonical/react-components";
+import type {
+  AppAsideProps,
+  PanelProps,
+  PropsWithSpread,
+} from "@canonical/react-components";
 import classnames from "classnames";
 import { useAnimate, usePresence } from "framer-motion";
 import { useEffect, type PropsWithChildren } from "react";
-
-import { AppAside } from "components/upstream/ApplicationLayout";
-import type { AppAsideProps } from "components/upstream/ApplicationLayout/AppAside";
-import type { PanelProps } from "components/upstream/Panel";
 
 import "./_aside.scss";
 

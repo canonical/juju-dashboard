@@ -1,16 +1,19 @@
 import { dashboardUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
-import { Icon, StatusLabel, Tooltip } from "@canonical/react-components";
+import {
+  Icon,
+  StatusLabel,
+  Tooltip,
+  SideNavigation,
+  SideNavigationText,
+} from "@canonical/react-components";
+import type { NavItem } from "@canonical/react-components/dist/components/SideNavigation/SideNavigation";
 import type { HTMLProps, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import type { NavLinkProps } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
-import UserMenu from "components/UserMenu";
-import SideNavigation, {
-  SideNavigationText,
-} from "components/upstream/SideNavigation";
-import type { NavItem } from "components/upstream/SideNavigation/SideNavigation";
+import UserMenu from "components/UserMenu/UserMenu";
 import { DARK_THEME } from "consts";
 import {
   getAppVersion,
@@ -142,12 +145,14 @@ const PrimaryNav = () => {
       <span className="version">Version {appVersion}</span>
     </SideNavigationText>,
   ];
-  const groupedItems: NavItem<NavLinkProps | HTMLProps<HTMLAnchorElement>>[][] =
-    [navigation, extraNav];
 
   return (
     <>
-      <SideNavigation dark={DARK_THEME} items={groupedItems} />
+      <SideNavigation<NavLinkProps | HTMLProps<HTMLAnchorElement>>
+        dark={DARK_THEME}
+        items={[{ items: navigation }, { items: extraNav }]}
+        className="p-primary-nav"
+      />
       <UserMenu />
     </>
   );
