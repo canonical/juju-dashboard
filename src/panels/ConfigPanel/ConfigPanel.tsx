@@ -1,34 +1,21 @@
 import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
-import {
-  ActionButton,
-  Button,
-  ConfirmationModal,
-} from "@canonical/react-components";
+import { ActionButton, Button } from "@canonical/react-components";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
 import type { MouseEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import usePortal from "react-useportal";
 
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon";
 import Panel from "components/Panel";
 import type { EntityDetailsRoute } from "components/Routes";
-import SecretLabel from "components/secrets/SecretLabel";
 import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
-import useCanManageSecrets from "hooks/useCanManageSecrets";
 import useInlineErrors, { type SetError } from "hooks/useInlineErrors";
-import {
-  useListSecrets,
-  useGrantSecret,
-  useSetApplicationConfig,
-  useGetApplicationConfig,
-} from "juju/api-hooks";
+import { useListSecrets, useGetApplicationConfig } from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
-import type { ConfirmTypes as DefaultConfirmTypes } from "panels/types";
 import { ConfirmType as DefaultConfirmType } from "panels/types";
 import bulbImage from "static/images/bulb.svg";
 import boxImage from "static/images/no-config-params.svg";
@@ -38,39 +25,21 @@ import { useAppSelector, useAppDispatch } from "store/store";
 import { secretIsAppOwned } from "utils";
 
 import BooleanConfig from "./BooleanConfig";
-import ChangedKeyValues from "./ChangedKeyValues";
 import type { SetNewValue, SetSelectedConfig } from "./ConfigField";
+import ConfirmationDialog from "./ConfirmationDialog";
 import NumberConfig from "./NumberConfig";
 import TextAreaConfig from "./TextAreaConfig";
+import type { ConfigQueryParams, ConfirmTypes } from "./types";
 import {
+  InlineErrors,
   Label,
   TestId,
   type Config,
   type ConfigData,
   type ConfigValue,
 } from "./types";
-import { getRequiredGrants } from "./utils";
 
 import "./_config-panel.scss";
-
-enum InlineErrors {
-  FORM = "form",
-  GET_CONFIG = "get-config",
-  SUBMIT_TO_JUJU = "submit-to-juju",
-}
-
-enum ConfigConfirmType {
-  GRANT = "grant",
-}
-
-type ConfirmTypes = DefaultConfirmTypes | ConfigConfirmType;
-
-type ConfigQueryParams = {
-  panel: string | null;
-  charm: string | null;
-  entity: string | null;
-  modelUUID: string | null;
-};
 
 const hasChangedFields = (newConfig: Config): boolean => {
   return Object.keys(newConfig).some(
@@ -113,7 +82,6 @@ export default function ConfigPanel(): JSX.Element {
   });
   const scrollArea = useRef<HTMLDivElement>(null);
   const sendAnalytics = useAnalytics();
-  const { Portal } = usePortal();
   const updateConfig = useCallback((newConfig: Config) => {
     setConfig(newConfig);
     checkAllDefaults(newConfig);
@@ -135,11 +103,8 @@ export default function ConfigPanel(): JSX.Element {
   const wsControllerURL = useAppSelector((state) =>
     getModelByUUID(state, modelUUID),
   )?.wsControllerURL;
-  const canManageSecrets = useCanManageSecrets();
-  const grantSecret = useGrantSecret(userName, modelName);
   const listSecrets = useListSecrets(userName, modelName);
   const getApplicationConfig = useGetApplicationConfig(userName, modelName);
-  const setApplicationConfig = useSetApplicationConfig(userName, modelName);
 
   useEffect(() => {
     listSecrets();
@@ -222,164 +187,6 @@ export default function ConfigPanel(): JSX.Element {
   function checkEnableSave(newConfig: Config) {
     const fieldChanged = hasChangedFields(newConfig);
     setEnableSave(fieldChanged);
-  }
-
-  async function _submitToJuju() {
-    if (!modelUUID || !appName) {
-      return;
-    }
-    setSavingConfig(true);
-    const response = await setApplicationConfig(appName, config);
-    const errors = response?.results?.reduce<string[]>((collection, result) => {
-      if (result.error) {
-        collection.push(result.error.message);
-      }
-      return collection;
-    }, []);
-    setSavingConfig(false);
-    setEnableSave(false);
-    setConfirmType(null);
-    if (errors?.length) {
-      setInlineError(InlineErrors.FORM, errors);
-      return;
-    }
-    sendAnalytics({
-      category: "User",
-      action: "Config values updated",
-    });
-    if (
-      canManageSecrets &&
-      getRequiredGrants(appName, config, secrets)?.length
-    ) {
-      setConfirmType(ConfigConfirmType.GRANT);
-    } else {
-      handleRemovePanelQueryParams();
-    }
-  }
-
-  function generateConfirmationDialog(): JSX.Element | null {
-    if (confirmType && appName) {
-      if (confirmType === DefaultConfirmType.SUBMIT) {
-        // Render the submit confirmation modal.
-        return (
-          <Portal>
-            <ConfirmationModal
-              // Prevent clicks inside this panel from closing the parent panel.
-              // This is handled in `checkCanClose`.
-              className="prevent-panel-close"
-              title={Label.SAVE_CONFIRM}
-              confirmExtra={
-                <p className="u-text--muted p-text--small u-align--left">
-                  You can revert back to the applications default settings by
-                  clicking the “Reset all values” button; or reset each edited
-                  field by clicking “Use default”.
-                </p>
-              }
-              cancelButtonLabel={Label.SAVE_CONFIRM_CANCEL_BUTTON}
-              confirmButtonLabel={Label.SAVE_CONFIRM_CONFIRM_BUTTON}
-              confirmButtonAppearance="positive"
-              onConfirm={() => {
-                setConfirmType(null);
-                // Clear the form errors if there were any from a previous submit.
-                setInlineError(InlineErrors.FORM, null);
-                _submitToJuju().catch((error) => {
-                  setInlineError(
-                    InlineErrors.SUBMIT_TO_JUJU,
-                    Label.SUBMIT_TO_JUJU_ERROR,
-                  );
-                  console.error(Label.SUBMIT_TO_JUJU_ERROR, error);
-                });
-              }}
-              close={() => setConfirmType(null)}
-            >
-              <ChangedKeyValues appName={appName} config={config} />
-            </ConfirmationModal>
-          </Portal>
-        );
-      }
-      if (confirmType === ConfigConfirmType.GRANT) {
-        // Render the grant confirmation modal.
-        const requiredGrants = getRequiredGrants(appName, config, secrets);
-        return (
-          <Portal>
-            <ConfirmationModal
-              // Prevent clicks inside this panel from closing the parent panel.
-              // This is handled in `checkCanClose`.
-              className="prevent-panel-close"
-              title={Label.GRANT_CONFIRM}
-              cancelButtonLabel={Label.GRANT_CANCEL_BUTTON}
-              confirmButtonLabel={Label.GRANT_CONFIRM_BUTTON}
-              confirmButtonAppearance="positive"
-              onConfirm={() => {
-                setConfirmType(null);
-                // Clear the form errors if there were any from a previous submit.
-                setInlineError(InlineErrors.FORM, null);
-                if (!appName || !requiredGrants) {
-                  // It is not possible to get to this point if these
-                  // variables aren't set.
-                  return;
-                }
-                void (async () => {
-                  try {
-                    for (const secretURI of requiredGrants) {
-                      await grantSecret(secretURI, [appName]);
-                    }
-                    setConfirmType(null);
-                    handleRemovePanelQueryParams();
-                  } catch (error) {
-                    setInlineError(
-                      InlineErrors.SUBMIT_TO_JUJU,
-                      Label.GRANT_ERROR,
-                    );
-                    console.error(Label.GRANT_ERROR, error);
-                  }
-                })();
-              }}
-              close={() => {
-                setConfirmType(null);
-                handleRemovePanelQueryParams();
-              }}
-            >
-              <p>
-                Would you like to grant access to this application for the
-                following secrets?
-              </p>
-              <ul>
-                {requiredGrants?.map((secretURI) => {
-                  const secret = secrets?.find(({ uri }) => uri === secretURI);
-                  return (
-                    <li key={secretURI}>
-                      {secret ? <SecretLabel secret={secret} /> : secretURI}
-                    </li>
-                  );
-                })}
-              </ul>
-            </ConfirmationModal>
-          </Portal>
-        );
-      }
-      if (confirmType === "cancel") {
-        // Render the cancel confirmation modal.
-        return (
-          <Portal>
-            <ConfirmationModal
-              className="prevent-panel-close"
-              title={Label.CANCEL_CONFIRM}
-              cancelButtonLabel={Label.CANCEL_CONFIRM_CANCEL_BUTTON}
-              confirmButtonLabel={Label.CANCEL_CONFIRM_CONFIRM_BUTTON}
-              onConfirm={() => {
-                setConfirmType(null);
-                handleRemovePanelQueryParams();
-              }}
-              close={() => setConfirmType(null)}
-            >
-              <ChangedKeyValues appName={appName} config={config} />
-            </ConfirmationModal>
-          </Portal>
-        );
-      }
-    }
-    return null;
   }
 
   function checkCanClose(event: KeyboardEvent | MouseEvent) {
@@ -503,7 +310,16 @@ export default function ConfigPanel(): JSX.Element {
                 secrets,
               )}
             </div>
-            {generateConfirmationDialog()}
+            <ConfirmationDialog
+              confirmType={confirmType}
+              queryParams={queryParams}
+              setEnableSave={setEnableSave}
+              setSavingConfig={setSavingConfig}
+              setConfirmType={setConfirmType}
+              setInlineError={setInlineError}
+              config={config}
+              handleRemovePanelQueryParams={handleRemovePanelQueryParams}
+            />
           </>
         ) : (
           <FadeIn isActive={true} className="u-align--center">
