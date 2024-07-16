@@ -218,6 +218,9 @@ describe("Entity Details Container", () => {
   });
 
   it("shows the CLI in juju 2.9", async () => {
+    state.general.config = configFactory.build({
+      isJuju: true,
+    });
     renderComponent(<EntityDetails />, { path, url, state });
     await waitFor(() => {
       expect(screen.queryByTestId("webcli")).toBeInTheDocument();
@@ -225,6 +228,9 @@ describe("Entity Details Container", () => {
   });
 
   it("shows the CLI in juju higher than 2.9", async () => {
+    state.general.config = configFactory.build({
+      isJuju: true,
+    });
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
         applications: {
@@ -244,7 +250,33 @@ describe("Entity Details Container", () => {
     });
   });
 
+  it("does not show the CLI in JAAS", async () => {
+    state.general.config = configFactory.build({
+      isJuju: false,
+    });
+    state.juju.modelWatcherData = {
+      abc123: modelWatcherModelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationInfoFactory.build(),
+        },
+        model: modelWatcherModelInfoFactory.build({
+          name: "enterprise",
+          owner: "kirk@external",
+          version: "3.0.7",
+          "controller-uuid": "controller123",
+        }),
+      }),
+    };
+    renderComponent(<EntityDetails />, { path, url, state });
+    await waitFor(() => {
+      expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
+    });
+  });
+
   it("does not show the webCLI in juju 2.8", async () => {
+    state.general.config = configFactory.build({
+      isJuju: true,
+    });
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
         applications: {
@@ -264,6 +296,9 @@ describe("Entity Details Container", () => {
   });
 
   it("passes the controller details to the webCLI", () => {
+    state.general.config = configFactory.build({
+      isJuju: true,
+    });
     const cliComponent = vi
       .spyOn(WebCLIModule, "default")
       .mockImplementation(vi.fn());

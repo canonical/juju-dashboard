@@ -99,14 +99,14 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   };
 
   useEffect(() => {
-    if (getMajorMinorVersion(modelInfo?.version) >= 2.9) {
+    if (isJuju && getMajorMinorVersion(modelInfo?.version) >= 2.9) {
       // The Web CLI is only available in Juju controller versions 2.9 and
       // above. This will allow us to only show the shell on multi-controller
       // setups with different versions where the correct controller version
       // is available.
       setShowWebCLI(true);
     }
-  }, [modelInfo]);
+  }, [modelInfo, isJuju]);
 
   useWindowTitle(modelInfo?.name ? `Model: ${modelInfo?.name}` : "...");
 

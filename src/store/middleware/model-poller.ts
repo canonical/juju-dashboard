@@ -13,6 +13,7 @@ import {
   setModelSharingPermissions,
 } from "juju/api";
 import { JIMMRelation } from "juju/jimm/JIMMV4";
+import { pollWhoamiStart } from "juju/jimm/listeners";
 import { whoami } from "juju/jimm/thunks";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
@@ -84,7 +85,11 @@ export const modelPollerMiddleware: Middleware<
           try {
             const whoamiResponse = await reduxStore.dispatch(whoami());
             const user = unwrapResult(whoamiResponse);
-            if (!user) {
+            if (user) {
+              // Start polling the whoami endpoint to handle refresh tokens
+              // and revoked sessions.
+              reduxStore.dispatch(pollWhoamiStart());
+            } else {
               // If there's no response that means the user is not
               // authenticated, so halt the connection attempt.
               return;

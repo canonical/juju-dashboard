@@ -10,6 +10,8 @@ import checkAuth from "store/middleware/check-auth";
 import { modelPollerMiddleware } from "store/middleware/model-poller";
 import uiReducer from "store/ui";
 
+import { listenerMiddleware } from "./listenerMiddleware";
+
 let preloadedState: Record<string, unknown> | undefined;
 if (!import.meta.env.PROD && process.env.VITE_APP_MOCK_STORE) {
   try {
@@ -28,6 +30,7 @@ const store = configureStore({
     const middleware = getDefaultMiddleware();
     // The checkAuth middleware must be first.
     middleware.unshift(checkAuth);
+    middleware.push(listenerMiddleware.middleware);
     middleware.push(modelPollerMiddleware);
     return middleware;
   },
