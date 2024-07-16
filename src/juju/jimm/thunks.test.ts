@@ -47,6 +47,14 @@ describe("thunks", () => {
     expect(unwrapResult(response)).toBeNull();
   });
 
+  it("whoami handles non-authenticated user", async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({}), { status: 401 });
+    const action = whoami();
+    const response = await action(vi.fn(), vi.fn(), null);
+    expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami);
+    expect(unwrapResult(response)).toBeNull();
+  });
+
   it("whoami unsuccessful requests", async () => {
     fetchMock.mockResponse(JSON.stringify({}), { status: 500 });
     const action = whoami();

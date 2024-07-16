@@ -7,6 +7,7 @@ import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 
 import App from "components/App";
+import { addWhoamiListener } from "juju/jimm/listeners";
 import reduxStore from "store";
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -14,6 +15,8 @@ import { AuthMethod } from "store/general/types";
 import type { WindowConfig } from "types";
 
 import packageJSON from "../package.json";
+
+import { listenerMiddleware } from "./store/listenerMiddleware";
 
 export const ROOT_ID = "root";
 export const RECHECK_TIME = 500;
@@ -146,8 +149,12 @@ function bootstrap() {
   reduxStore.dispatch(generalActions.storeConfig(config));
   reduxStore.dispatch(generalActions.storeVersion(appVersion));
 
+  if (config.authMethod === AuthMethod.OIDC) {
+    addWhoamiListener(listenerMiddleware.startListening);
+  }
+
   if ([AuthMethod.CANDID, AuthMethod.OIDC].includes(config.authMethod)) {
-    // If using Candid authentication then try and connect automatically
+    // If using Candid or OIDC authentication then try and connect automatically
     // If not then wait for the login UI to trigger this
     reduxStore
       .dispatch(appThunks.connectAndStartPolling())

@@ -5,6 +5,7 @@
 
 import { isAction, type Middleware } from "redux";
 
+import * as jimmListeners from "juju/jimm/listeners";
 import * as jimmThunks from "juju/jimm/thunks";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -72,6 +73,8 @@ export const checkAuthMiddleware: Middleware<
       generalActions.storeVisitURL.type,
       generalActions.updateControllerConnection.type,
       generalActions.updatePingerIntervalId.type,
+      jimmListeners.pollWhoamiStart.type,
+      jimmListeners.pollWhoamiStop.type,
       jujuActions.populateMissingAllWatcherData.type,
       jujuActions.processAllWatcherDeltas.type,
       jujuActions.updateAuditEvents.type,

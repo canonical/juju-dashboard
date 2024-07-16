@@ -5,6 +5,7 @@ import { vi } from "vitest";
 
 import * as jujuModule from "juju/api";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
+import { pollWhoamiStart } from "juju/jimm/listeners";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import type { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
@@ -226,6 +227,7 @@ describe("model poller", () => {
         poll: 0,
       }),
     );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(pollWhoamiStart());
     expect(loginWithBakerySpy).toHaveBeenCalled();
   });
 

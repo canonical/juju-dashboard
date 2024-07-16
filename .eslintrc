@@ -63,6 +63,7 @@
     "default-case": 0,
     "no-param-reassign": 0,
     "no-case-declarations": 0,
+    "no-constant-condition": ["error", { "checkLoops": false }],
     "prefer-destructuring": 0,
     "react/no-unescaped-entities": 0,
     "react/display-name": 0,

@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import bakery from "juju/bakery";
+import { pollWhoamiStop } from "juju/jimm/listeners";
 import { logout } from "juju/jimm/thunks";
 import { actions as appActions } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -16,10 +17,6 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 
 import type { ControllerArgs } from "./actions";
-
-export enum Label {
-  OIDC_LOGOUT_ERROR = "Unable to log out.",
-}
 
 export const logOut = createAsyncThunk<
   void,
@@ -44,12 +41,8 @@ export const logOut = createAsyncThunk<
     // again.
     await thunkAPI.dispatch(connectAndStartPolling());
   } else if (authMethod === AuthMethod.OIDC) {
-    const response = await thunkAPI.dispatch(logout());
-    if ("error" in response) {
-      thunkAPI.dispatch(
-        generalActions.storeConnectionError(Label.OIDC_LOGOUT_ERROR),
-      );
-    }
+    thunkAPI.dispatch(pollWhoamiStop());
+    await thunkAPI.dispatch(logout());
   }
 });
 
@@ -82,7 +75,6 @@ export const connectAndStartPolling = createAsyncThunk<
       // remove controllers we're already connected to.
       return !connectedControllers.includes(controllerData[0]);
     });
-
     thunkAPI.dispatch(
       appActions.connectAndPollControllers({
         controllers: controllerList,

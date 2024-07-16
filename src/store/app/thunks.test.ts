@@ -1,5 +1,6 @@
 import { vi } from "vitest";
 
+import { pollWhoamiStop } from "juju/jimm/listeners";
 import { actions as appActions } from "store/app";
 import { actions as generalActions } from "store/general";
 import { AuthMethod } from "store/general/types";
@@ -16,7 +17,7 @@ import {
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 
-import { logOut, connectAndStartPolling, Label } from "./thunks";
+import { logOut, connectAndStartPolling } from "./thunks";
 
 describe("thunks", () => {
   const consoleError = console.error;
@@ -103,43 +104,13 @@ describe("thunks", () => {
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearModelData());
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearControllerData());
     expect(dispatch).toHaveBeenCalledWith(generalActions.logOut());
-    const dispatchedThunk = await dispatch.mock.calls[4][0](
+    expect(dispatch).toHaveBeenCalledWith(pollWhoamiStop());
+    const dispatchedThunk = await dispatch.mock.calls[5][0](
       dispatch,
       getState,
       null,
     );
     expect(dispatchedThunk.type).toBe("jimm/logout/fulfilled");
-  });
-
-  it("handles OIDC log out errors", async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}), { status: 400 });
-    const action = logOut();
-    const dispatch = vi.fn().mockImplementation((action) => {
-      if (typeof action === "function") {
-        // This is a thunk so the action name is not accessible, so this just
-        // throws on the first thunk that is dispatched. If this test is
-        // failing then check if another thunk is being dispatched before the
-        // logout() thunk.
-        return { type: "jimm/logout/rejected", error: "Uh oh" };
-      }
-      return action;
-    });
-    const getState = vi.fn(() =>
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({
-            authMethod: AuthMethod.OIDC,
-          }),
-        }),
-      }),
-    );
-    await action(dispatch, getState, null);
-    expect(dispatch).toHaveBeenCalledWith(jujuActions.clearModelData());
-    expect(dispatch).toHaveBeenCalledWith(jujuActions.clearControllerData());
-    expect(dispatch).toHaveBeenCalledWith(generalActions.logOut());
-    expect(dispatch).toHaveBeenCalledWith(
-      generalActions.storeConnectionError(Label.OIDC_LOGOUT_ERROR),
-    );
   });
 
   it("connectAndStartPolling", async () => {
