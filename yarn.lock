@@ -647,9 +647,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:0.59.0":
-  version: 0.59.0
-  resolution: "@canonical/react-components@npm:0.59.0"
+"@canonical/react-components@npm:0.59.1":
+  version: 0.59.1
+  resolution: "@canonical/react-components@npm:0.59.1"
   dependencies:
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:20.12.11"
@@ -669,7 +669,7 @@ __metadata:
     react: ^17.0.2 || ^18.0.0
     react-dom: ^17.0.2 || ^18.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 10c0/4d1dfee4e0a48280f13d3c425d07a10c2291f75c6d6745ff0b1c6d296366d033ed8e6f3bf686c632ce09c479e8861429e0fefdee379edc8131f3e64e96c30708
+  checksum: 10c0/31cf7952b554039edd8e2fc0967012f9e27970f6d83eda5c6ca65e16afc9351628695417de6c0dd51194c9445dcc0eb5d53e6ec7948ed431a50cbc62fd507680
   languageName: node
   linkType: hard
 
@@ -7486,7 +7486,7 @@ __metadata:
     "@babel/plugin-proposal-private-property-in-object": "npm:7.21.11"
     "@canonical/jujulib": "npm:7.0.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
-    "@canonical/react-components": "npm:0.59.0"
+    "@canonical/react-components": "npm:0.59.1"
     "@reduxjs/toolkit": "npm:2.2.4"
     "@sentry/browser": "npm:7.114.0"
     "@testing-library/jest-dom": "npm:6.4.5"
@@ -7556,7 +7556,7 @@ __metadata:
     stylelint-config-standard-scss: "npm:13.1.0"
     stylelint-order: "npm:6.0.4"
     typescript: "npm:5.4.5"
-    vanilla-framework: "npm:4.14.0"
+    vanilla-framework: "npm:4.15.0"
     vite: "npm:5.2.6"
     vite-plugin-html: "npm:3.2.2"
     vite-plugin-node-polyfills: "npm:0.22.0"
@@ -11392,10 +11392,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.14.0":
-  version: 4.14.0
-  resolution: "vanilla-framework@npm:4.14.0"
-  checksum: 10c0/5c5bca2c24df400adfd45ecbcc59dca220775f4e0e8ff767114f5c74525620500455c23598f4ad2489d66e8683b762c065eb002cae93c2ffcaf55fccdd331a84
+"vanilla-framework@npm:4.15.0":
+  version: 4.15.0
+  resolution: "vanilla-framework@npm:4.15.0"
+  checksum: 10c0/a4346eb6600ed93a1159a3bfcc6410338e13e8c884c91342264173c856ab62688ff0fb43c20ac1a717790e3079e55768fae22603ab2b54e2a6edc1bcf107834f
   languageName: node
   linkType: hard
 
