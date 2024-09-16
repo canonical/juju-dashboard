@@ -4595,10 +4595,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:3.1.2":
-  version: 3.1.2
-  resolution: "dompurify@npm:3.1.2"
-  checksum: 10c0/6f072da177ba850c196184d76a277933a19831e59313edd90f094e8884579c8193b21ea105889d89059771f058f4b2e0c14fc5a58f19f7dad2a6756be807d091
+"dompurify@npm:3.1.3":
+  version: 3.1.3
+  resolution: "dompurify@npm:3.1.3"
+  checksum: 10c0/d71f65b5cc0a36474acdf3f26388860ea639749530ef32cd58810cbbecd12f8cef7f974ec330a7d603ebd1e35d330ef408fcdcc1e20245b95caad77a747d0c1f
   languageName: node
   linkType: hard
 
@@ -7514,7 +7514,7 @@ __metadata:
     clone-deep: "npm:4.0.1"
     d3: "npm:7.9.0"
     date-fns: "npm:3.6.0"
-    dompurify: "npm:3.1.2"
+    dompurify: "npm:3.1.3"
     eslint: "npm:8.57.0"
     eslint-config-prettier: "npm:9.1.0"
     eslint-plugin-import: "npm:2.29.1"
