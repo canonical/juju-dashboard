@@ -33,7 +33,9 @@ export const addWhoamiListener = (
         try {
           while (true) {
             await forkApi.delay(OIDC_POLL_INTERVAL);
-            const response = await forkApi.pause(fetch(endpoints.whoami));
+            const response = await forkApi.pause(
+              fetch(endpoints.whoami, { credentials: "include" }),
+            );
             // Handle the user no longer logged in:
             if (response.status === 401 || response.status === 403) {
               throw new Error(Label.ERROR_LOGGED_OUT);
