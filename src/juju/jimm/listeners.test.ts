@@ -95,7 +95,9 @@ describe("listeners", () => {
     expect(global.fetch).not.toHaveBeenCalled();
     store.dispatch(pollWhoamiStart());
     await waitFor(() =>
-      expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami),
+      expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami, {
+        credentials: "include",
+      }),
     );
   });
 

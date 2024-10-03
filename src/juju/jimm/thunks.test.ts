@@ -12,7 +12,9 @@ describe("thunks", () => {
   it("logout", async () => {
     const action = logout();
     await action(vi.fn(), vi.fn(), null);
-    expect(global.fetch).toHaveBeenCalledWith(endpoints.logout);
+    expect(global.fetch).toHaveBeenCalledWith(endpoints.logout, {
+      credentials: "include",
+    });
   });
 
   it("logout handles unsuccessful requests", async () => {
@@ -36,14 +38,18 @@ describe("thunks", () => {
   it("whoami returns a user", async () => {
     const action = whoami();
     await action(vi.fn(), vi.fn(), null);
-    expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami);
+    expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami, {
+      credentials: "include",
+    });
   });
 
   it("whoami handles non-authenticated user", async () => {
     fetchMock.mockResponseOnce(JSON.stringify({}), { status: 403 });
     const action = whoami();
     const response = await action(vi.fn(), vi.fn(), null);
-    expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami);
+    expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami, {
+      credentials: "include",
+    });
     expect(unwrapResult(response)).toBeNull();
   });
 
@@ -51,7 +57,9 @@ describe("thunks", () => {
     fetchMock.mockResponseOnce(JSON.stringify({}), { status: 401 });
     const action = whoami();
     const response = await action(vi.fn(), vi.fn(), null);
-    expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami);
+    expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami, {
+      credentials: "include",
+    });
     expect(unwrapResult(response)).toBeNull();
   });
 

@@ -17,7 +17,7 @@ export const logout = createAsyncThunk<
   }
 >("jimm/logout", async () => {
   try {
-    const response = await fetch(endpoints.logout);
+    const response = await fetch(endpoints.logout, { credentials: "include" });
     if (!response.ok) {
       throw new Error("non-success response");
     }
@@ -37,7 +37,7 @@ export const whoami = createAsyncThunk<
   }
 >("jimm/whoami", async () => {
   try {
-    const response = await fetch(endpoints.whoami);
+    const response = await fetch(endpoints.whoami, { credentials: "include" });
     if (response.status === 401 || response.status === 403) {
       // The user is not authenticated so return null instead of throwing an error.
       return null;
