@@ -7,7 +7,9 @@
     }
 
     &-item {
+      min-width: 0;
       overflow-wrap: anywhere;
+      width: 100%;
 
       .p-muted-heading {
         font-size: 0.75rem;

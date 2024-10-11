@@ -41,7 +41,7 @@ const SearchHelp = ({ search }: Props): JSX.Element => {
           <li>
             Get all available models:{" "}
             <QueryLink
-              query={`. | select(."model-status".current=="available")`}
+              query={`. | select(.model."model-status".current=="available")`}
               handleQuery={handleQuery}
             />
           </li>
