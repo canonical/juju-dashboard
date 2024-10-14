@@ -1,8 +1,7 @@
 name: Upload TICS report
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: "0 22 * * 5"
 
 jobs:
   TICS:
