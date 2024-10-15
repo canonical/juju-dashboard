@@ -25,6 +25,7 @@ describe("Entity info", () => {
         url: "/models/user-eggman@external/group-test",
       },
     );
-    expect(screen.getByText("eu1")).toHaveAttribute("data-name", "region");
+    expect(screen.getByText("region")).toBeInTheDocument();
+    expect(screen.getByText("eu1")).toBeInTheDocument();
   });
 });
