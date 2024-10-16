@@ -71,4 +71,26 @@ describe("TruncatedTooltip", () => {
     });
     expect(screen.getByTestId("tooltip-portal")).not.toHaveClass("u-hide");
   });
+
+  it("should render an inner div by default", () => {
+    const content = "Some content";
+    render(
+      <TruncatedTooltip message="Tooltip content">{content}</TruncatedTooltip>,
+    );
+    const innerElement = screen.getByText(content);
+    expect(innerElement.tagName.toLowerCase()).toBe("div");
+    expect(innerElement).toHaveClass("u-truncate");
+  });
+
+  it("should render an inner custom element type", () => {
+    const content = "Some content";
+    render(
+      <TruncatedTooltip message="Tooltip content" element="button">
+        {content}
+      </TruncatedTooltip>,
+    );
+    expect(screen.getByRole("button", { name: content })).toHaveClass(
+      "u-truncate",
+    );
+  });
 });

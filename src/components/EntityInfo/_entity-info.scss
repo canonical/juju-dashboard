@@ -2,12 +2,10 @@
   &__grid {
     display: grid;
 
-    @media (width >= 1580px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
     &-item {
+      min-width: 0;
       overflow-wrap: anywhere;
+      width: 100%;
 
       .p-muted-heading {
         font-size: 0.75rem;

@@ -16,7 +16,7 @@ describe("Entity info", () => {
       <EntityInfo
         data={{
           name: "model1",
-          controller: "controller1",
+          controller: <span>controller1</span>,
           region: "eu1",
         }}
       />,
@@ -25,6 +25,8 @@ describe("Entity info", () => {
         url: "/models/user-eggman@external/group-test",
       },
     );
-    expect(screen.getByText("eu1")).toHaveAttribute("data-name", "region");
+    expect(screen.getByText("model1")).toHaveClass("u-truncate");
+    expect(screen.getByText("controller1")).not.toHaveClass("u-truncate");
+    expect(screen.getByText("eu1")).toHaveClass("u-truncate");
   });
 });
