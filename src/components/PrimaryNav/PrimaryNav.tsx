@@ -7,6 +7,7 @@ import {
   SideNavigationText,
 } from "@canonical/react-components";
 import type { NavItem } from "@canonical/react-components/dist/components/SideNavigation/SideNavigation";
+import { urls as generateReBACURLS } from "@canonical/rebac-admin";
 import type { HTMLProps, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -31,6 +32,8 @@ import urls, { externalURLs } from "urls";
 
 import "./_primary-nav.scss";
 import { Label } from "./types";
+
+const rebacURLS = generateReBACURLS(urls.permissions);
 
 const useControllersLink = () => {
   const controllers: Controllers | null = useSelector(getControllerData);
@@ -123,6 +126,35 @@ const PrimaryNav = () => {
       label: <>{Label.ADVANCED_SEARCH}</>,
     });
   }
+  // TODO: only display for JAAS admins (WD-16027).
+  const rebacNav: NavItem<NavLinkProps>[] = [
+    {
+      icon: "user",
+      label: <>{Label.PERMISSIONS}</>,
+      nonInteractive: true,
+    },
+    // TODO: display in subnav (WD-16060).
+    {
+      component: NavLink,
+      to: rebacURLS.users.index,
+      label: <>{Label.USERS}</>,
+    },
+    {
+      component: NavLink,
+      to: rebacURLS.groups.index,
+      label: <>{Label.GROUPS}</>,
+    },
+    {
+      component: NavLink,
+      to: rebacURLS.entitlements,
+      label: <>{Label.ENTITLEMENTS}</>,
+    },
+    {
+      component: NavLink,
+      to: rebacURLS.resources.index,
+      label: <>{Label.RESOURCES}</>,
+    },
+  ];
   const extraNav = [
     {
       href: externalURLs.newIssue,
@@ -150,7 +182,11 @@ const PrimaryNav = () => {
     <>
       <SideNavigation<NavLinkProps | HTMLProps<HTMLAnchorElement>>
         dark={DARK_THEME}
-        items={[{ items: navigation }, { items: extraNav }]}
+        items={[
+          { items: navigation },
+          { items: rebacNav },
+          { items: extraNav },
+        ]}
         className="p-primary-nav"
       />
       <UserMenu />

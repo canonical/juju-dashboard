@@ -58,6 +58,7 @@ const BaseLayout = ({
       <ApplicationLayout
         aside={<Panels />}
         dark={DARK_THEME}
+        id="app-layout"
         logo={
           <Logo
             component={Link}

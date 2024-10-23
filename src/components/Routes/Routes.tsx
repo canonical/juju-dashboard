@@ -12,6 +12,7 @@ import Logs from "pages/Logs";
 import ModelDetails from "pages/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex";
 import PageNotFound from "pages/PageNotFound";
+import Permissions from "pages/Permissions";
 import {
   isCrossModelQueriesEnabled,
   isAuditLogsEnabled,
@@ -53,6 +54,12 @@ export function Routes() {
       element: <AdvancedSearch />,
     });
   }
+
+  // TODO: only display for JAAS admins (WD-16027).
+  authenticatedRoutes.push({
+    path: `${urls.permissions}/*`,
+    element: <Permissions />,
+  });
 
   const router = createBrowserRouter(
     [
