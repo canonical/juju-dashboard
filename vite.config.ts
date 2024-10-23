@@ -39,6 +39,9 @@ export default defineConfig(({ mode }) => {
         "/auth": {
           target: env.VITE_JIMM_API_URL ?? "/",
         },
+        "/rebac/v1": {
+          target: env.VITE_JIMM_API_URL ?? "/",
+        },
       },
     },
     test: {
