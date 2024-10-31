@@ -535,7 +535,7 @@ Start by making a small configuration change so that the login process redirects
 to the development dashboard URL:
 
 ```shell
-nano compose-common.yaml
+nano docker-compose.common.yaml
 ```
 
 Find `JIMM_DASHBOARD_FINAL_REDIRECT_URL` and set it to `"http://jimm.localhost:8036"`.
