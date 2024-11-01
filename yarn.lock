@@ -2640,10 +2640,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"anchorme@npm:^3.0.5":
-  version: 3.0.5
-  resolution: "anchorme@npm:3.0.5"
-  checksum: 10c0/54840f8f5370cc2ece8d77c74131bc203004cbbde8fa52aab8375db717f03f13c6f88797d671964133c568a37e3b73498172e916774a939a75ca07ac46b23d70
+"anchorme@npm:^3.0.8":
+  version: 3.0.8
+  resolution: "anchorme@npm:3.0.8"
+  checksum: 10c0/87b0c1cb119a405d6836f48f36ad5447d37f06dbdcd48792be5c34411cda4ce2d5dfa228a47d952f37af1ec7e8836b3d3d52f5ca8e7122cf1f61f674cb765e47
   languageName: node
   linkType: hard
 
