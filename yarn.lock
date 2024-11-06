@@ -6191,14 +6191,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:14.11.0":
-  version: 14.11.0
-  resolution: "happy-dom@npm:14.11.0"
+"happy-dom@npm:15.10.1":
+  version: 15.10.1
+  resolution: "happy-dom@npm:15.10.1"
   dependencies:
     entities: "npm:^4.5.0"
     webidl-conversions: "npm:^7.0.0"
     whatwg-mimetype: "npm:^3.0.0"
-  checksum: 10c0/64e798c3add9576e37bb2a1d52777d315642fb951fccc83f59c2d27cb473a202aeea18812040df04595cdc91984f371004ea348f8b14944b19d74ed647ae2549
+  checksum: 10c0/2951f40e8051b7c031a5887098b772a729c677322b8ebf4918111e2abb65ad451cf93cf1925cb86c1ab8b2fe922f4e5d746104bb3e4caa6a6a31b67f7bb71bab
   languageName: node
   linkType: hard
 
@@ -7529,7 +7529,7 @@ __metadata:
     formik: "npm:2.4.6"
     framer-motion: "npm:11.1.9"
     fuse.js: "npm:7.0.0"
-    happy-dom: "npm:14.11.0"
+    happy-dom: "npm:15.10.1"
     jest-websocket-mock: "npm:2.5.0"
     lodash.isequal: "npm:4.5.0"
     lodash.mergewith: "npm:4.6.2"
