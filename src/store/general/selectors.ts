@@ -181,3 +181,9 @@ export const isCrossModelQueriesEnabled = createSelector(
     !isJuju &&
     getControllerFeatureEnabled(state, wsControllerURL, "crossModelQueries"),
 );
+
+export const isReBACEnabled = createSelector(
+  [getIsJuju, getWSControllerURL, (state) => state],
+  (isJuju, wsControllerURL, state) =>
+    !isJuju && getControllerFeatureEnabled(state, wsControllerURL, "rebac"),
+);

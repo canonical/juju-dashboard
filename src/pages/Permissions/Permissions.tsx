@@ -4,12 +4,13 @@ import { NavLink } from "react-router-dom";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 import urls from "urls";
 
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 const rebacURLS = generateReBACURLS(urls.permissions);
 
 const Permissions = (): JSX.Element => (
   <BaseLayout
+    data-testid={TestId.COMPONENT}
     secondaryNav={{
       title: "Permissions",
       items: [

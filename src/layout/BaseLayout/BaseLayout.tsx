@@ -39,6 +39,7 @@ const BaseLayout = ({
   title,
   titleClassName,
   titleComponent,
+  ...props
 }: Props) => {
   const location = useLocation();
   const isOffline = useOffline();
@@ -98,7 +99,7 @@ const BaseLayout = ({
             stickyHeader
             title={title}
           >
-            <div className="l-content">
+            <div className="l-content" {...props}>
               <FadeIn isActive={true}>{children}</FadeIn>
             </div>
           </Panel>

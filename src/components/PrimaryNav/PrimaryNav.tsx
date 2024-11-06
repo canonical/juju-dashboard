@@ -21,6 +21,7 @@ import {
   isAuditLogsEnabled,
   isCrossModelQueriesEnabled,
   getVisitURLs,
+  isReBACEnabled,
 } from "store/general/selectors";
 import {
   getControllerData,
@@ -86,6 +87,7 @@ const PrimaryNav = () => {
   const versionRequested = useRef(false);
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
   const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
+  const rebacEnabled = useAppSelector(isReBACEnabled);
   const { blocked: blockedModels } = useSelector(getGroupedModelStatusCounts);
   const controllersLink = useControllersLink();
 
@@ -126,13 +128,15 @@ const PrimaryNav = () => {
       label: <>{Label.ADVANCED_SEARCH}</>,
     });
   }
-  // TODO: only display for JAAS admins (WD-16027).
-  navigation.push({
-    component: NavLink,
-    icon: "user",
-    label: <>{Label.PERMISSIONS}</>,
-    to: rebacURLS.users.index,
-  });
+  if (rebacEnabled) {
+    navigation.push({
+      component: NavLink,
+      icon: "user",
+      label: <>{Label.PERMISSIONS}</>,
+      to: rebacURLS.users.index,
+    });
+  }
+
   const extraNav = [
     {
       href: externalURLs.newIssue,

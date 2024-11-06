@@ -673,14 +673,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/rebac-admin@npm:0.0.1-alpha.7":
-  version: 0.0.1-alpha.7
-  resolution: "@canonical/rebac-admin@npm:0.0.1-alpha.7"
+"@canonical/rebac-admin@npm:0.0.1-alpha.8":
+  version: 0.0.1-alpha.8
+  resolution: "@canonical/rebac-admin@npm:0.0.1-alpha.8"
   dependencies:
     classnames: "npm:2.5.1"
     clone-deep: "npm:4.0.1"
     lodash.isequal: "npm:4.5.0"
-    loglevel: "npm:1.9.1"
+    loglevel: "npm:1.9.2"
     react-hot-toast: "npm:2.4.1"
   peerDependencies:
     "@canonical/react-components": ^1.2.1
@@ -694,7 +694,7 @@ __metadata:
     react-router-dom: ^6.18.0
     vanilla-framework: ^4.0.0
     yup: ^1.4.0
-  checksum: 10c0/5665b9d80f039d0bbf88edb179cdf17ab1f0e079fa48e336c4e0ec4e727062a5d5eff9c6db6b896faf2a7ff58549528171e5528e62045eebae1702d316d2f150
+  checksum: 10c0/2e3942e7ea07bfd989c561ba608b5a7c8ff955947601c0988537bb142569bd9e67ee5a11730886c01ea6b3a65d346e556d54cfe2feefedf61e7c14dbb82b6d1b
   languageName: node
   linkType: hard
 
@@ -7512,7 +7512,7 @@ __metadata:
     "@canonical/jujulib": "npm:7.0.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
     "@canonical/react-components": "npm:0.59.0"
-    "@canonical/rebac-admin": "npm:0.0.1-alpha.7"
+    "@canonical/rebac-admin": "npm:0.0.1-alpha.8"
     "@reduxjs/toolkit": "npm:2.2.4"
     "@sentry/browser": "npm:7.114.0"
     "@testing-library/jest-dom": "npm:6.4.5"
@@ -7771,10 +7771,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loglevel@npm:1.9.1":
-  version: 1.9.1
-  resolution: "loglevel@npm:1.9.1"
-  checksum: 10c0/152f0501cea367cf998c844a38b19f0b5af555756ad7d8650214a1f8c6a5b045e31b8cf5dae27d28339a061624ce3f618aadb333aed386cac041d6ddc5101a39
+"loglevel@npm:1.9.2":
+  version: 1.9.2
+  resolution: "loglevel@npm:1.9.2"
+  checksum: 10c0/1e317fa4648fe0b4a4cffef6de037340592cee8547b07d4ce97a487abe9153e704b98451100c799b032c72bb89c9366d71c9fb8192ada8703269263ae77acdc7
   languageName: node
   linkType: hard
 
