@@ -5,3 +5,7 @@ export enum Label {
   ROLES = "Roles",
   USERS = "Users",
 }
+
+export enum TestId {
+  COMPONENT = "Permissions",
+}

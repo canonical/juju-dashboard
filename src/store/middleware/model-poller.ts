@@ -165,38 +165,50 @@ export const modelPollerMiddleware: Middleware<
         );
         const jimmVersion = conn.facades.jimM?.version ?? 0;
         const auditLogsAvailable = jimmVersion >= 4;
+        const rebacAvailable = jimmVersion >= 4;
         const identity = conn.info.user?.identity;
+        let isJIMMAdmin = false;
         let auditLogsAllowed = false;
-        if (auditLogsAvailable && identity) {
+        let rebacAllowed = false;
+        if (identity) {
           try {
-            auditLogsAllowed = await checkJIMMRelation(
+            isJIMMAdmin = await checkJIMMRelation(
               conn,
               identity,
-              JIMMRelation.AUDIT_LOG_VIEWER,
+              JIMMRelation.ADMINISTRATOR,
             );
-            if (!auditLogsAllowed) {
+          } catch (error) {
+            console.error(error);
+          }
+          rebacAllowed = rebacAvailable && isJIMMAdmin;
+          if (auditLogsAvailable) {
+            try {
               auditLogsAllowed = await checkJIMMRelation(
                 conn,
                 identity,
-                JIMMRelation.ADMINISTRATOR,
+                JIMMRelation.AUDIT_LOG_VIEWER,
               );
+              if (!auditLogsAllowed) {
+                auditLogsAllowed = isJIMMAdmin;
+              }
+              reduxStore.dispatch(jujuActions.updateAuditEventsErrors(null));
+            } catch (error) {
+              reduxStore.dispatch(
+                jujuActions.updateAuditEventsErrors(
+                  AuditLogsError.CHECK_PERMISSIONS,
+                ),
+              );
+              console.error(AuditLogsError.CHECK_PERMISSIONS, error);
             }
-            reduxStore.dispatch(jujuActions.updateAuditEventsErrors(null));
-          } catch (error) {
-            reduxStore.dispatch(
-              jujuActions.updateAuditEventsErrors(
-                AuditLogsError.CHECK_PERMISSIONS,
-              ),
-            );
-            console.error(AuditLogsError.CHECK_PERMISSIONS, error);
           }
         }
         reduxStore.dispatch(
           generalActions.updateControllerFeatures({
             wsControllerURL,
             features: {
-              crossModelQueries: jimmVersion >= 4,
               auditLogs: auditLogsAllowed && auditLogsAvailable,
+              crossModelQueries: jimmVersion >= 4,
+              rebac: rebacAllowed,
             },
           }),
         );

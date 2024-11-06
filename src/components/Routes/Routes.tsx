@@ -17,12 +17,14 @@ import {
   isCrossModelQueriesEnabled,
   isAuditLogsEnabled,
   getConfig,
+  isReBACEnabled,
 } from "store/general/selectors";
 import { useAppSelector } from "store/store";
 import urls from "urls";
 
 export function Routes() {
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
+  const rebacEnabled = useAppSelector(isReBACEnabled);
   const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
   const config = useAppSelector(getConfig);
 
@@ -55,11 +57,12 @@ export function Routes() {
     });
   }
 
-  // TODO: only display for JAAS admins (WD-16027).
-  authenticatedRoutes.push({
-    path: `${urls.permissions}/*`,
-    element: <Permissions />,
-  });
+  if (rebacEnabled) {
+    authenticatedRoutes.push({
+      path: `${urls.permissions}/*`,
+      element: <Permissions />,
+    });
+  }
 
   const router = createBrowserRouter(
     [
