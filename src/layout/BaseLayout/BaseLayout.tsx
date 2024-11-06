@@ -1,5 +1,6 @@
 import { ApplicationLayout, Panel } from "@canonical/react-components";
 import type { PanelProps } from "@canonical/react-components";
+import classNames from "classnames";
 import type { PropsWithChildren, ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -9,6 +10,8 @@ import FadeIn from "animations/FadeIn";
 import Banner from "components/Banner";
 import Logo from "components/Logo";
 import PrimaryNav from "components/PrimaryNav";
+import SecondaryNavigation from "components/SecondaryNavigation";
+import type { SecondaryNavigationProps } from "components/SecondaryNavigation/index";
 import { DARK_THEME } from "consts";
 import useOffline from "hooks/useOffline";
 import Panels from "panels";
@@ -19,6 +22,10 @@ import "./_base-layout.scss";
 import { Label, TestId } from "./types";
 
 type Props = {
+  secondaryNav?: {
+    title: ReactNode;
+    items: SecondaryNavigationProps["items"];
+  };
   status?: ReactNode;
   title?: ReactNode;
   titleClassName?: PanelProps["titleClassName"];
@@ -27,6 +34,7 @@ type Props = {
 
 const BaseLayout = ({
   children,
+  secondaryNav,
   status,
   title,
   titleClassName,
@@ -35,6 +43,7 @@ const BaseLayout = ({
   const location = useLocation();
   const isOffline = useOffline();
   const isJuju = useSelector(getIsJuju);
+  const hasSecondaryNav = !!secondaryNav?.items.length;
 
   return (
     <>
@@ -69,8 +78,20 @@ const BaseLayout = ({
         sideNavigation={<PrimaryNav />}
         status={status}
       >
-        <div id="main-content">
+        <div
+          id="main-content"
+          className={classNames("l-main__content", {
+            "l-main__content--has-secondary-nav": hasSecondaryNav,
+          })}
+        >
+          {hasSecondaryNav ? (
+            <SecondaryNavigation
+              items={secondaryNav.items}
+              title={secondaryNav.title}
+            />
+          ) : null}
           <Panel
+            className="l-main__panel"
             data-testid={TestId.MAIN}
             titleClassName={titleClassName}
             titleComponent={titleComponent}

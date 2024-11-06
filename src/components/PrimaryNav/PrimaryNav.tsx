@@ -127,34 +127,12 @@ const PrimaryNav = () => {
     });
   }
   // TODO: only display for JAAS admins (WD-16027).
-  const rebacNav: NavItem<NavLinkProps>[] = [
-    {
-      icon: "user",
-      label: <>{Label.PERMISSIONS}</>,
-      nonInteractive: true,
-    },
-    // TODO: display in subnav (WD-16060).
-    {
-      component: NavLink,
-      to: rebacURLS.users.index,
-      label: <>{Label.USERS}</>,
-    },
-    {
-      component: NavLink,
-      to: rebacURLS.groups.index,
-      label: <>{Label.GROUPS}</>,
-    },
-    {
-      component: NavLink,
-      to: rebacURLS.entitlements,
-      label: <>{Label.ENTITLEMENTS}</>,
-    },
-    {
-      component: NavLink,
-      to: rebacURLS.resources.index,
-      label: <>{Label.RESOURCES}</>,
-    },
-  ];
+  navigation.push({
+    component: NavLink,
+    icon: "user",
+    label: <>{Label.PERMISSIONS}</>,
+    to: rebacURLS.users.index,
+  });
   const extraNav = [
     {
       href: externalURLs.newIssue,
@@ -182,11 +160,7 @@ const PrimaryNav = () => {
     <>
       <SideNavigation<NavLinkProps | HTMLProps<HTMLAnchorElement>>
         dark={DARK_THEME}
-        items={[
-          { items: navigation },
-          { items: rebacNav },
-          { items: extraNav },
-        ]}
+        items={[{ items: navigation }, { items: extraNav }]}
         className="p-primary-nav"
       />
       <UserMenu />

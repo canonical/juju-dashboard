@@ -1,5 +1,15 @@
 @import "vanilla-framework/scss/vanilla";
 
+.l-main__content {
+  &--has-secondary-nav {
+    @media (min-width: $breakpoint-small) {
+      .l-main__panel {
+        padding-left: $application-layout--side-nav-width-expanded;
+      }
+    }
+  }
+}
+
 .l-content {
-  padding: 0 $sph--x-large;
+  padding: 20px $sph--x-large;
 }
