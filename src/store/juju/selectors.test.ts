@@ -35,6 +35,7 @@ import {
   unitAgentStatusFactory,
   unitChangeDeltaFactory,
   workloadStatusFactory,
+  modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
 
 import { modelSecretsContentFactory } from "../../testing/factories/juju/juju";
@@ -111,6 +112,7 @@ import {
   getSecretsContentErrors,
   getSecretsContentLoaded,
   getSecretsContentLoading,
+  isKubernetesModel,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -2029,6 +2031,64 @@ describe("selectors", () => {
         d4: modelData.d4,
         e5: modelData.e5,
       });
+    });
+  });
+
+  describe("isKubernetesModel", () => {
+    it("handles non-kubernetes models", () => {
+      const modelWatcherData = {
+        abc123: modelWatcherModelDataFactory.build(),
+      };
+      expect(
+        isKubernetesModel(
+          rootStateFactory.build({
+            juju: jujuStateFactory.build({
+              modelWatcherData,
+            }),
+          }),
+          "abc123",
+        ),
+      ).toBe(false);
+    });
+
+    it("handles kubernetes in model watcher info", () => {
+      const modelWatcherData = {
+        abc123: modelWatcherModelDataFactory.build({
+          model: modelWatcherModelInfoFactory.build({
+            type: "kubernetes",
+          }),
+        }),
+      };
+      expect(
+        isKubernetesModel(
+          rootStateFactory.build({
+            juju: jujuStateFactory.build({
+              modelWatcherData,
+            }),
+          }),
+          "abc123",
+        ),
+      ).toBe(true);
+    });
+
+    it("handles kubernetes in model data", () => {
+      const modelData = {
+        abc123: modelDataFactory.build({
+          info: modelDataInfoFactory.build({
+            "provider-type": "kubernetes",
+          }),
+        }),
+      };
+      expect(
+        isKubernetesModel(
+          rootStateFactory.build({
+            juju: jujuStateFactory.build({
+              modelData,
+            }),
+          }),
+          "abc123",
+        ),
+      ).toBe(true);
     });
   });
 });
