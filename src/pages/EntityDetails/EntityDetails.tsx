@@ -21,6 +21,7 @@ import {
   getModelInfo,
   getModelListLoaded,
   getModelUUIDFromList,
+  isKubernetesModel,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import urls from "urls";
@@ -51,6 +52,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   const modelsLoaded = useAppSelector(getModelListLoaded);
   const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
   const modelInfo = useSelector(getModelInfo(modelUUID));
+  const isK8s = useAppSelector((state) => isKubernetesModel(state, modelUUID));
   const { isNestedEntityPage } = useEntityDetailsParams();
 
   const isJuju = useSelector(getIsJuju);
@@ -148,7 +150,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
       });
     }
 
-    if (modelInfo?.type !== "kubernetes") {
+    if (!isK8s) {
       items.push({
         active: activeView === ModelTab.MACHINES,
         label: "Machines",

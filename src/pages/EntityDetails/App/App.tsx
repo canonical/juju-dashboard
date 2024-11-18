@@ -23,8 +23,10 @@ import {
   getModelMachines,
   getModelUnits,
   getModelUUIDFromList,
+  isKubernetesModel,
 } from "store/juju/selectors";
 import { extractRevisionNumber } from "store/juju/utils/models";
+import { useAppSelector } from "store/store";
 import {
   generateSelectableUnitTableHeaders,
   machineTableHeaders,
@@ -63,6 +65,9 @@ export default function App(): JSX.Element {
   const units = useSelector(getModelUnits(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));
   const modelData = useSelector(getModelInfo(modelUUID));
+  const hideMachines = useAppSelector((state) =>
+    isKubernetesModel(state, modelUUID),
+  );
   const canConfigureModel = useCanConfigureModel();
 
   const filteredMachineList = useMemo(() => {
@@ -91,8 +96,6 @@ export default function App(): JSX.Element {
         : [],
     [filteredMachineList, units, modelName, userName],
   );
-
-  const hideMachines = modelData?.type === "kubernetes";
 
   const unitTableHeaders = useMemo(() => {
     const fieldID = "unit-list-select-all";
@@ -307,6 +310,7 @@ export default function App(): JSX.Element {
                   : "",
             }))}
             buttonComponent={Link}
+            className="u-sv2"
             activeButton={query.tableView}
           />
         )}

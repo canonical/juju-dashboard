@@ -1042,3 +1042,13 @@ export function getSelectedCharm(charmURL: string) {
     return sliceState.charms.find((charm) => charm.url === charmURL);
   });
 }
+
+export const isKubernetesModel = createSelector(
+  [
+    getModelDataByUUID,
+    (state, uuid?: string | null) => (uuid ? getModelInfo(uuid)(state) : null),
+  ],
+  (modelData, modelInfo) =>
+    modelData?.info?.["provider-type"] === "kubernetes" ||
+    modelInfo?.type === "kubernetes",
+);

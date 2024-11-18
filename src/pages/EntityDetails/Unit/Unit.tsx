@@ -10,12 +10,13 @@ import type { ApplicationData, MachineData } from "juju/types";
 import {
   getAllModelApplicationStatus,
   getModelApplications,
-  getModelInfo,
   getModelMachines,
   getModelUnits,
   getModelUUIDFromList,
+  isKubernetesModel,
 } from "store/juju/selectors";
 import { extractRevisionNumber } from "store/juju/utils/models";
+import { useAppSelector } from "store/store";
 import {
   generateLocalApplicationTableHeaders,
   machineTableHeaders,
@@ -35,7 +36,7 @@ export default function Unit() {
   const applications = useSelector(getModelApplications(modelUUID));
   const units = useSelector(getModelUnits(modelUUID));
   const machines = useSelector(getModelMachines(modelUUID));
-  const modelData = useSelector(getModelInfo(modelUUID));
+  const isK8s = useAppSelector((state) => isKubernetesModel(state, modelUUID));
 
   const filteredMachineList = useMemo(() => {
     const filteredMachines: MachineData = {};
@@ -102,7 +103,7 @@ export default function Unit() {
         <EntityInfo data={unitEntityData} />
       </div>
       <div className="entity-details__main">
-        {modelData?.type !== "kubernetes" && (
+        {!isK8s && (
           <MainTable
             headers={machineTableHeaders}
             rows={machineRows}
