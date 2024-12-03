@@ -647,9 +647,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:0.59.0":
-  version: 0.59.0
-  resolution: "@canonical/react-components@npm:0.59.0"
+"@canonical/react-components@npm:0.60.0":
+  version: 0.60.0
+  resolution: "@canonical/react-components@npm:0.60.0"
   dependencies:
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:20.12.11"
@@ -669,7 +669,7 @@ __metadata:
     react: ^17.0.2 || ^18.0.0
     react-dom: ^17.0.2 || ^18.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 10c0/4d1dfee4e0a48280f13d3c425d07a10c2291f75c6d6745ff0b1c6d296366d033ed8e6f3bf686c632ce09c479e8861429e0fefdee379edc8131f3e64e96c30708
+  checksum: 10c0/8ed1e63784fe803404e9ddf0105c14fe5f6b78eaa80a1f2fb9a33fe56f953f94ca4dd21405f014fba5ba6bf0c244868adb6630a03acfd783043ceba99512e2eb
   languageName: node
   linkType: hard
 
@@ -7486,7 +7486,7 @@ __metadata:
     "@babel/plugin-proposal-private-property-in-object": "npm:7.21.11"
     "@canonical/jujulib": "npm:7.0.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
-    "@canonical/react-components": "npm:0.59.0"
+    "@canonical/react-components": "npm:0.60.0"
     "@reduxjs/toolkit": "npm:2.2.4"
     "@sentry/browser": "npm:7.114.0"
     "@testing-library/jest-dom": "npm:6.4.5"
@@ -7556,7 +7556,7 @@ __metadata:
     stylelint-config-standard-scss: "npm:13.1.0"
     stylelint-order: "npm:6.0.4"
     typescript: "npm:5.4.5"
-    vanilla-framework: "npm:4.14.0"
+    vanilla-framework: "npm:4.18.3"
     vite: "npm:5.2.6"
     vite-plugin-html: "npm:3.2.2"
     vite-plugin-node-polyfills: "npm:0.22.0"
@@ -11392,10 +11392,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.14.0":
-  version: 4.14.0
-  resolution: "vanilla-framework@npm:4.14.0"
-  checksum: 10c0/5c5bca2c24df400adfd45ecbcc59dca220775f4e0e8ff767114f5c74525620500455c23598f4ad2489d66e8683b762c065eb002cae93c2ffcaf55fccdd331a84
+"vanilla-framework@npm:4.18.3":
+  version: 4.18.3
+  resolution: "vanilla-framework@npm:4.18.3"
+  peerDependencies:
+    sass: ^1.79.0
+  checksum: 10c0/b6aef1cfe4d908d9f690660aaf15057dcc23fa64ec833b8a131a50fbd70809d5ecd43990224336c77cb21f116ef449b1be8517f4bff7099cfb58615336c8250b
   languageName: node
   linkType: hard
 
