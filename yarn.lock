@@ -7557,7 +7557,7 @@ __metadata:
     stylelint-order: "npm:6.0.4"
     typescript: "npm:5.4.5"
     vanilla-framework: "npm:4.14.0"
-    vite: "npm:5.2.6"
+    vite: "npm:5.2.14"
     vite-plugin-html: "npm:3.2.2"
     vite-plugin-node-polyfills: "npm:0.22.0"
     vite-tsconfig-paths: "npm:4.3.2"
@@ -8987,7 +8987,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.4.38, postcss@npm:^8.4.36, postcss@npm:^8.4.38":
+"postcss@npm:8.4.38, postcss@npm:^8.4.38":
   version: 8.4.38
   resolution: "postcss@npm:8.4.38"
   dependencies:
@@ -11464,13 +11464,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:5.2.6":
-  version: 5.2.6
-  resolution: "vite@npm:5.2.6"
+"vite@npm:5.2.14":
+  version: 5.2.14
+  resolution: "vite@npm:5.2.14"
   dependencies:
     esbuild: "npm:^0.20.1"
     fsevents: "npm:~2.3.3"
-    postcss: "npm:^8.4.36"
+    postcss: "npm:^8.4.38"
     rollup: "npm:^4.13.0"
   peerDependencies:
     "@types/node": ^18.0.0 || >=20.0.0
@@ -11500,7 +11500,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/9ccaa65521b738ed5d6ad9cd118584a833191d29649eaa77ccb8096a60ded2ca9014193b8b866ad76054d0c89443f7b68b578686e4e2ef83147273e7788408c2
+  checksum: 10c0/0ed7a8f8274d14bbd01be2ca5c7c539f915e75d884a97f6051cdf494997832bc02c7db9fc9c5ba8f057d5fece28a3bf215761815e6014e843abe2c38a9424fb7
   languageName: node
   linkType: hard
 
