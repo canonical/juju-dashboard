@@ -73,7 +73,7 @@
     "react-router": "7.1.1",
     "react-useportal": "1.0.19",
     "redux": "5.0.1",
-    "vanilla-framework": "4.14.0",
+    "vanilla-framework": "4.18.5",
     "yup": "1.6.1"
   },
   "devDependencies": {
