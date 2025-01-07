@@ -1,6 +1,6 @@
 import { List, Tooltip } from "@canonical/react-components";
 import type { ListItem } from "@canonical/react-components/dist/components/List/List";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import ModelDetailsLink from "components/ModelDetailsLink";
 import type { ModelData } from "store/juju/types";

@@ -1,7 +1,7 @@
 import { Notification, Button, Icon } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
 import useCanManageSecrets from "hooks/useCanManageSecrets";

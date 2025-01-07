@@ -7,7 +7,7 @@ import {
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import AppLink from "components/AppLink";
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";

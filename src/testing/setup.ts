@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom/vitest";
-import type { Window as HappyDOMWindow } from "happy-dom";
+import type { DetachedWindowAPI } from "happy-dom";
 import { vi } from "vitest";
 import createFetchMock from "vitest-fetch-mock";
 
@@ -10,7 +10,9 @@ const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
 
 declare global {
-  interface Window extends HappyDOMWindow {}
+  interface Window {
+    happyDOM: DetachedWindowAPI;
+  }
   // eslint-disable-next-line no-var
   var jest: object;
 }

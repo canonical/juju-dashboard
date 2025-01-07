@@ -1,7 +1,7 @@
 import Fuse from "fuse.js";
 import { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
 import { useQueryParams } from "hooks/useQueryParams";

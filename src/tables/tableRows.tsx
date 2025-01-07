@@ -11,7 +11,7 @@ import type {
 import cloneDeep from "clone-deep";
 import { Field } from "formik";
 import { Anchorme } from "react-anchorme";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import CharmIcon from "components/CharmIcon/CharmIcon";
 import EntityIdentifier from "components/EntityIdentifier/EntityIdentifier";

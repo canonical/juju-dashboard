@@ -9,7 +9,7 @@ import type {
   MainTableHeader,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import AuthenticationButton from "components/AuthenticationButton";
 import Status from "components/Status";

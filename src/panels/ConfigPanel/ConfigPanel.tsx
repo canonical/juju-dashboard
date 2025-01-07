@@ -4,7 +4,7 @@ import classnames from "classnames";
 import cloneDeep from "clone-deep";
 import type { MouseEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon";

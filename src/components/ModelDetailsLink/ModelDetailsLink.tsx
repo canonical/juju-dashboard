@@ -1,7 +1,7 @@
 import type { PropsWithSpread } from "@canonical/react-components";
 import type * as React from "react";
-import { Link } from "react-router-dom";
-import type { LinkProps } from "react-router-dom";
+import { Link } from "react-router";
+import type { LinkProps } from "react-router";
 
 import { useModelByUUIDDetails } from "components/hooks";
 import type { ModelTab } from "urls";

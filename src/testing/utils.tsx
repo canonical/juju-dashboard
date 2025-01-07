@@ -1,22 +1,23 @@
 /* eslint-disable react-refresh/only-export-components */
-import type { Router as RemixRouter } from "@remix-run/router";
 import { render, renderHook } from "@testing-library/react";
 import { useEffect, type PropsWithChildren, type ReactNode } from "react";
 import reactHotToast, { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
-import type { RouteObject } from "react-router-dom";
+import type { RouteObject } from "react-router";
 import {
   BrowserRouter,
   Route,
   RouterProvider,
   Routes,
   createMemoryRouter,
-} from "react-router-dom";
+} from "react-router";
 import type { MockStoreEnhanced } from "redux-mock-store";
 import configureStore from "redux-mock-store";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
+
+type Router = ReturnType<typeof createMemoryRouter>;
 
 type OptionsWithStore = {
   store: MockStoreEnhanced<RootState, unknown>;
@@ -121,11 +122,11 @@ export const renderWrappedHook = <Result, Props>(
   hook: (initialProps: Props) => Result,
   options?: Options | null,
 ): {
-  router: RemixRouter | null;
+  router: Router | null;
   result: { current: Result };
   store: OptionsWithStore["store"] | null;
 } => {
-  let router: RemixRouter | null = null;
+  let router: Router | null = null;
   let store: OptionsWithStore["store"] | null = null;
   const { result } = renderHook(hook, {
     wrapper: ({ children }: PropsWithChildren) => {

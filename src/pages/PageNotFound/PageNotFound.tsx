@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import NotFound from "components/NotFound";
 import useWindowTitle from "hooks/useWindowTitle";

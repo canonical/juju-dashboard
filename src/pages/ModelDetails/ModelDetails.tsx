@@ -1,7 +1,7 @@
 import type { AllWatcherId } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes, useParams } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
 import { startModelWatcher, stopModelWatcher } from "juju/api";

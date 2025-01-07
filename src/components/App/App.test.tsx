@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import * as reactGA from "react-ga";
 import { Provider } from "react-redux";
-import * as reactRouterDOM from "react-router-dom";
+import * as reactRouterDOM from "react-router";
 import configureStore from "redux-mock-store";
 import { vi } from "vitest";
 
@@ -19,6 +19,13 @@ vi.mock("react-ga", () => ({
   initialize: vi.fn(),
   pageview: vi.fn(),
 }));
+
+vi.mock("react-router", async () => {
+  const actual = await vi.importActual("react-router");
+  return {
+    ...actual,
+  };
+});
 
 const mockStore = configureStore([]);
 

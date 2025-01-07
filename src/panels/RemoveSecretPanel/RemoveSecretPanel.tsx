@@ -3,7 +3,7 @@ import { ActionButton, Button, Spinner } from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import { useId, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import Panel from "components/Panel";
 import type { EntityDetailsRoute } from "components/Routes";

@@ -5,7 +5,7 @@ import {
   Strip,
 } from "@canonical/react-components";
 import * as Sentry from "@sentry/browser";
-import type { Extras } from "@sentry/types";
+import type { Extras } from "@sentry/core";
 import type { PropsWithChildren } from "react";
 import { Component } from "react";
 

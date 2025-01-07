@@ -10,8 +10,8 @@ import type { NavItem } from "@canonical/react-components/dist/components/SideNa
 import type { HTMLProps, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import type { NavLinkProps } from "react-router-dom";
-import { NavLink } from "react-router-dom";
+import type { NavLinkProps } from "react-router";
+import { NavLink } from "react-router";
 
 import UserMenu from "components/UserMenu/UserMenu";
 import { DARK_THEME } from "consts";

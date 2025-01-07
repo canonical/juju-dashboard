@@ -3,7 +3,7 @@ import classNames from "classnames";
 import type { ReactNode, MouseEvent } from "react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams, Link, Outlet } from "react-router-dom";
+import { useParams, Link, Outlet } from "react-router";
 
 import Breadcrumb from "components/Breadcrumb";
 import LoadingSpinner from "components/LoadingSpinner";

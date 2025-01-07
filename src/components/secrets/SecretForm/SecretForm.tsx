@@ -8,7 +8,7 @@ import { Spinner } from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import * as Yup from "yup";
 
 import type { EntityDetailsRoute } from "components/Routes";

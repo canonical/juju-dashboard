@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import ContentReveal from "components/ContentReveal";
 import type { EntityDetailsRoute } from "components/Routes";
