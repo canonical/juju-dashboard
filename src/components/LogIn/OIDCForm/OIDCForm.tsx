@@ -11,7 +11,7 @@ const OIDCForm = () => {
     <Button
       appearance="positive"
       element="a"
-      href={endpoints.login}
+      href={endpoints().login}
       data-testid={TestId.OIDC_LOGIN}
     >
       {Label.LOGIN_TO_DASHBOARD}

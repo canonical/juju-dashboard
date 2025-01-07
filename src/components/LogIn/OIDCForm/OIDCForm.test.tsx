@@ -12,6 +12,6 @@ describe("OIDCForm", () => {
     renderComponent(<OIDCForm />);
     expect(
       screen.getByRole("link", { name: Label.LOGIN_TO_DASHBOARD }),
-    ).toHaveAttribute("href", endpoints.login);
+    ).toHaveAttribute("href", endpoints().login);
   });
 });

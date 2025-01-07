@@ -1,18 +1,27 @@
 import { unwrapResult } from "@reduxjs/toolkit";
 import { vi } from "vitest";
 
+import type { WindowConfig } from "types";
+
 import { endpoints } from "./api";
 import { logout, whoami } from "./thunks";
 
 describe("thunks", () => {
   beforeEach(() => {
     fetchMock.resetMocks();
+    window.jujuDashboardConfig = {
+      controllerAPIEndpoint: "wss://example.com/api",
+    } as WindowConfig;
+  });
+
+  afterEach(() => {
+    delete window.jujuDashboardConfig;
   });
 
   it("logout", async () => {
     const action = logout();
     await action(vi.fn(), vi.fn(), null);
-    expect(global.fetch).toHaveBeenCalledWith(endpoints.logout, {
+    expect(global.fetch).toHaveBeenCalledWith(endpoints().logout, {
       credentials: "include",
     });
   });
@@ -38,7 +47,7 @@ describe("thunks", () => {
   it("whoami returns a user", async () => {
     const action = whoami();
     await action(vi.fn(), vi.fn(), null);
-    expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami, {
+    expect(global.fetch).toHaveBeenCalledWith(endpoints().whoami, {
       credentials: "include",
     });
   });
@@ -47,7 +56,7 @@ describe("thunks", () => {
     fetchMock.mockResponseOnce(JSON.stringify({}), { status: 403 });
     const action = whoami();
     const response = await action(vi.fn(), vi.fn(), null);
-    expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami, {
+    expect(global.fetch).toHaveBeenCalledWith(endpoints().whoami, {
       credentials: "include",
     });
     expect(unwrapResult(response)).toBeNull();
@@ -57,7 +66,7 @@ describe("thunks", () => {
     fetchMock.mockResponseOnce(JSON.stringify({}), { status: 401 });
     const action = whoami();
     const response = await action(vi.fn(), vi.fn(), null);
-    expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami, {
+    expect(global.fetch).toHaveBeenCalledWith(endpoints().whoami, {
       credentials: "include",
     });
     expect(unwrapResult(response)).toBeNull();

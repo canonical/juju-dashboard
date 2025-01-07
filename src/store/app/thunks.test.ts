@@ -16,6 +16,7 @@ import {
   controllerFactory,
   jujuStateFactory,
 } from "testing/factories/juju/juju";
+import type { WindowConfig } from "types";
 
 import { logOut, connectAndStartPolling } from "./thunks";
 
@@ -24,6 +25,9 @@ describe("thunks", () => {
   let state: RootState;
 
   beforeEach(() => {
+    window.jujuDashboardConfig = {
+      controllerAPIEndpoint: "wss://example.com/api",
+    } as WindowConfig;
     console.error = vi.fn();
     fetchMock.resetMocks();
     state = rootStateFactory.build({
@@ -61,6 +65,7 @@ describe("thunks", () => {
 
   afterEach(() => {
     console.error = consoleError;
+    delete window.jujuDashboardConfig;
   });
 
   it("logOut", async () => {

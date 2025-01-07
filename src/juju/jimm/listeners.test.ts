@@ -17,6 +17,7 @@ import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import type { RootState, AppDispatch } from "store/store";
 import { rootStateFactory } from "testing/factories";
+import type { WindowConfig } from "types";
 
 import { endpoints } from "./api";
 import {
@@ -69,6 +70,9 @@ describe("listeners", () => {
 
   beforeEach(() => {
     fetchMock.resetMocks();
+    window.jujuDashboardConfig = {
+      controllerAPIEndpoint: "wss://controller.example.com",
+    } as WindowConfig;
     listenerMiddleware = createListenerMiddleware<RootState, AppDispatch>();
     const slice = createSlice({
       name: "root",
@@ -88,6 +92,7 @@ describe("listeners", () => {
 
   afterEach(() => {
     listenerMiddleware.clearListeners();
+    delete window.jujuDashboardConfig;
   });
 
   it("starts polling when start action is dispatched", async () => {
@@ -95,7 +100,7 @@ describe("listeners", () => {
     expect(global.fetch).not.toHaveBeenCalled();
     store.dispatch(pollWhoamiStart());
     await waitFor(() =>
-      expect(global.fetch).toHaveBeenCalledWith(endpoints.whoami, {
+      expect(global.fetch).toHaveBeenCalledWith(endpoints().whoami, {
         credentials: "include",
       }),
     );

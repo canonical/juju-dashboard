@@ -4,7 +4,7 @@ import JIMMV3 from "./JIMMV3";
 
 describe("JIMMV3", () => {
   let transport: Transport;
-  let connectionInfo: ConnectionInfo;
+  const connectionInfo: ConnectionInfo = {};
 
   beforeEach(() => {
     transport = {

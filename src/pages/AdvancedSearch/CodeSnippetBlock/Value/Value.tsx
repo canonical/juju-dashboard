@@ -1,4 +1,5 @@
 import { isValid, parseISO } from "date-fns";
+import type { ReactNode } from "react";
 import type { KeyPath, ValueRenderer } from "react-json-tree";
 
 import AppLink from "components/AppLink";
@@ -146,7 +147,7 @@ const Value = ({
       </AppLink>
     );
   }
-  return <>{valueAsString}</>;
+  return <>{valueAsString as ReactNode}</>;
 };
 
 export default Value;
