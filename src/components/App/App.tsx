@@ -1,5 +1,5 @@
 import { initialize, pageview } from "react-ga";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router";
 
 import ConnectionError from "components/ConnectionError";
 import ErrorBoundary from "components/ErrorBoundary";

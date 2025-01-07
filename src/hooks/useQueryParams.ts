@@ -1,8 +1,8 @@
 import cloneDeep from "clone-deep";
 import DOMPurify from "dompurify";
 import { useCallback } from "react";
-import type { NavigateOptions } from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
+import type { NavigateOptions } from "react-router";
+import { useSearchParams } from "react-router";
 
 export type SetParams<P> = (
   params?: Partial<P> | null,

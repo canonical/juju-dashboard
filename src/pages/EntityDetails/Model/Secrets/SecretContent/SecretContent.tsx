@@ -8,7 +8,7 @@ import {
   Notification,
 } from "@canonical/react-components";
 import { Form, Formik } from "formik";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import usePortal from "react-useportal";
 
 import type { EntityDetailsRoute } from "components/Routes";

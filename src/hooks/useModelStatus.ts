@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import { useQueryParams } from "hooks/useQueryParams";
 import { getModelUUID, getModelStatus } from "store/juju/selectors";

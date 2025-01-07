@@ -94,7 +94,7 @@ describe("CharmsPanel", () => {
     );
   });
 
-  it("next button is enabled when a charm is selected", () => {
+  it("next button is enabled when a charm is selected", async () => {
     renderComponent(
       <CharmsPanel
         onCharmURLChange={vi.fn()}
@@ -108,7 +108,7 @@ describe("CharmsPanel", () => {
         state,
       },
     );
-    act(() => screen.getAllByRole("radio")[0].click());
+    await userEventWithTimers.click(screen.getAllByRole("radio")[0]);
     expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
   });
 

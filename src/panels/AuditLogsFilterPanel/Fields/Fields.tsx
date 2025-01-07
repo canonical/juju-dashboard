@@ -2,7 +2,7 @@ import { Input } from "@canonical/react-components";
 import { format } from "date-fns";
 import { Field, useFormikContext } from "formik";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import AutocompleteInput from "components/AutocompleteInput";
 import type { EntityDetailsRoute } from "components/Routes";

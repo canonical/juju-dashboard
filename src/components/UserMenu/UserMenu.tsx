@@ -8,7 +8,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import reactHotToast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import ToastCard from "components/ToastCard";
 import { DARK_THEME } from "consts";

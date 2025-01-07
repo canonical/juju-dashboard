@@ -2,21 +2,47 @@
 
 exports[`OptionInputs > renders the supplied list of options 1`] = `
 <div>
-  bound HTMLFormElement {
-    "0": <input
-      class="radio-input-box__input"
-      id="MyAction-fruit"
-      name="MyAction-fruit"
-      type="text"
-      value=""
-    />,
-    "1": <input
-      class="radio-input-box__input"
-      id="MyAction-veg"
-      name="MyAction-veg"
-      type="text"
-      value=""
-    />,
-  }
+  <form>
+    <div
+      class="radio-input-box__input-group"
+    >
+      <label
+        class="radio-input-box__label is-required"
+        for="MyAction-fruit"
+      >
+        fruit
+      </label>
+      <input
+        class="radio-input-box__input"
+        id="MyAction-fruit"
+        name="MyAction-fruit"
+        type="text"
+        value=""
+      />
+      <span>
+        yum
+      </span>
+    </div>
+    <div
+      class="radio-input-box__input-group"
+    >
+      <label
+        class="radio-input-box__label"
+        for="MyAction-veg"
+      >
+        veg
+      </label>
+      <input
+        class="radio-input-box__input"
+        id="MyAction-veg"
+        name="MyAction-veg"
+        type="text"
+        value=""
+      />
+      <span>
+        ehhh
+      </span>
+    </div>
+  </form>
 </div>
 `;

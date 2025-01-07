@@ -6,7 +6,7 @@ import {
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import type { ReactNode } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
 import LoadingSpinner from "components/LoadingSpinner";

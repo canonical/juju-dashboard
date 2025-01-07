@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -58,7 +58,7 @@ describe("Info Panel", () => {
   it("renders the expanded topology on click", async () => {
     renderComponent(<InfoPanel />, { state, url, path });
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    act(() => screen.getByRole("button").click());
+    await userEvent.click(screen.getByRole("button"));
     await waitFor(() => expect(screen.getByRole("dialog")).toBeInTheDocument());
   });
 

@@ -1,7 +1,7 @@
 import { ConfirmationModal, FormikField } from "@canonical/react-components";
 import { useFormikContext } from "formik";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import usePortal from "react-useportal";
 
 import type { EntityDetailsRoute } from "components/Routes";

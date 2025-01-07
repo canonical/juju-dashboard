@@ -4,7 +4,7 @@ import {
   Route,
   Routes as ReactRouterRoutes,
   useLocation,
-} from "react-router-dom";
+} from "react-router";
 
 import Login from "components/LogIn";
 import useAnalytics from "hooks/useAnalytics";

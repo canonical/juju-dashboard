@@ -66,8 +66,8 @@ exports[`WebCLI > renders correctly 1`] = `
     >
       $ juju
     </div>
-    bound HTMLFormElement {
-      "0": <input
+    <form>
+      <input
         autocapitalize="none"
         autocomplete="off"
         autocorrect="off"
@@ -76,8 +76,8 @@ exports[`WebCLI > renders correctly 1`] = `
         placeholder="enter command"
         spellcheck="false"
         type="text"
-      />,
-    }
+      />
+    </form>
     <div
       class="webcli__input-help"
     >

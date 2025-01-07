@@ -14,7 +14,7 @@ import {
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useId, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import usePortal from "react-useportal";
 
 import type { EntityDetailsRoute } from "components/Routes";

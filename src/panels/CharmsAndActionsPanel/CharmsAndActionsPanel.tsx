@@ -1,7 +1,7 @@
 import { Button } from "@canonical/react-components";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
 import { isSet } from "components/utils";

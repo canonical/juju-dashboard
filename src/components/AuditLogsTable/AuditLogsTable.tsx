@@ -1,7 +1,7 @@
 import { ModularTable } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import LoadingSpinner from "components/LoadingSpinner/LoadingSpinner";
 import RelativeDate from "components/RelativeDate";

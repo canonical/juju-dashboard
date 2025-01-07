@@ -3,7 +3,7 @@ import type { PanelProps } from "@canonical/react-components";
 import type { PropsWithChildren, ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router";
 
 import FadeIn from "animations/FadeIn";
 import Banner from "components/Banner";

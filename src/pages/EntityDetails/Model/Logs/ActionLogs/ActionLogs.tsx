@@ -11,7 +11,7 @@ import {
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 import type { Row } from "react-table";
 
 import FadeIn from "animations/FadeIn";

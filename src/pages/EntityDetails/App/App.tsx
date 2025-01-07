@@ -4,7 +4,7 @@ import { Field, Formik } from "formik";
 import type { MouseEvent } from "react";
 import { useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
 import EntityInfo from "components/EntityInfo";

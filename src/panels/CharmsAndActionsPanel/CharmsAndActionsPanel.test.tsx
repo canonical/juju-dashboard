@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -109,7 +109,7 @@ describe("CharmsAndActionsPanel", () => {
     );
     const charmActionsOptions = screen.getAllByRole("radio");
     expect(charmActionsOptions).toHaveLength(2);
-    act(() => charmActionsOptions[0].click());
+    await userEvent.click(charmActionsOptions[0]);
     expect(
       await screen.findByRole("button", { name: "Run action" }),
     ).toBeEnabled();
@@ -145,7 +145,7 @@ describe("CharmsAndActionsPanel", () => {
     );
     const charmOptions = screen.getAllByRole("radio");
     expect(charmOptions).toHaveLength(2);
-    act(() => charmOptions[1].click());
+    await userEvent.click(charmOptions[1]);
     expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
   });
 
