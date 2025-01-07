@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => {
         "src/**/*.{test,spec}.?(c|m)[jt]s?(x)",
         "demo/**/*.{test,spec}.?(c|m)[jt]s?(x)",
       ],
-      mockReset: true,
+      mockRestore: true,
       setupFiles: "src/testing/setup.ts",
     },
   };

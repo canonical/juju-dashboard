@@ -134,9 +134,9 @@ const SecretForm = ({
         <Formik<FormFields>
           initialValues={{
             autoPrune: false,
-            description: update ? secret?.description ?? "" : "",
-            label: update ? secret?.label ?? "" : "",
-            pairs: update ? existingPairs ?? defaultPairs : defaultPairs,
+            description: update ? (secret?.description ?? "") : "",
+            label: update ? (secret?.label ?? "") : "",
+            pairs: update ? (existingPairs ?? defaultPairs) : defaultPairs,
           }}
           onSubmit={(values) => {
             setSaving(true);

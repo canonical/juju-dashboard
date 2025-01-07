@@ -781,7 +781,7 @@ export const getModelUUID = (name: string) => {
   */
 export const getModelStatus = (modelUUID?: string | null) => {
   return createSelector(getModelData, (modelData) =>
-    modelUUID ? modelData?.[modelUUID] ?? null : null,
+    modelUUID ? (modelData?.[modelUUID] ?? null) : null,
   );
 };
 
