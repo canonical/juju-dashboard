@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 
 import FadeUpIn from "animations/FadeUpIn";
 import AuthenticationButton from "components/AuthenticationButton";

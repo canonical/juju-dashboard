@@ -1,5 +1,5 @@
 import { fireEvent, screen, within } from "@testing-library/react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories/root";

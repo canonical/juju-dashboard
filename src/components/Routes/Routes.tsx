@@ -1,8 +1,4 @@
-import {
-  Navigate,
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { Navigate, createBrowserRouter, RouterProvider } from "react-router";
 
 import CaptureRoutes from "components/CaptureRoutes";
 import Login from "components/LogIn";

@@ -1,5 +1,5 @@
 import { ReBACAdmin, urls as generateReBACURLS } from "@canonical/rebac-admin";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 import urls from "urls";

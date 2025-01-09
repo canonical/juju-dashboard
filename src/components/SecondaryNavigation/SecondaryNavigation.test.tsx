@@ -1,5 +1,5 @@
 import { screen } from "@testing-library/react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 
 import { renderComponent } from "testing/utils";
 

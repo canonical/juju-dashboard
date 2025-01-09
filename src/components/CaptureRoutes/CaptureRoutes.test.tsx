@@ -1,5 +1,5 @@
 import * as reactGA from "react-ga";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router";
 import type { MockInstance } from "vitest";
 import { vi } from "vitest";
 
