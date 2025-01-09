@@ -315,6 +315,7 @@ describe("model poller", () => {
         features: {
           auditLogs: false,
           crossModelQueries: false,
+          rebac: false,
         },
       }),
     );
@@ -343,6 +344,7 @@ describe("model poller", () => {
         features: {
           auditLogs: true,
           crossModelQueries: true,
+          rebac: true,
         },
       }),
     );
@@ -377,6 +379,7 @@ describe("model poller", () => {
         features: {
           auditLogs: true,
           crossModelQueries: true,
+          rebac: false,
         },
       }),
     );
@@ -416,6 +419,40 @@ describe("model poller", () => {
         features: {
           auditLogs: true,
           crossModelQueries: true,
+          rebac: true,
+        },
+      }),
+    );
+  });
+
+  it("enables ReBAC if the user is an administrator", async () => {
+    conn.facades.modelManager.listModels.mockResolvedValue({
+      "user-models": [],
+    });
+    conn.facades.jimM = {
+      checkRelation: vi
+        .fn()
+        .mockImplementation(async (payload: RelationshipTuple) => {
+          return {
+            allowed: payload.relation === "administrator",
+          };
+        }),
+      version: 4,
+    };
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    await runMiddleware();
+    expect(next).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.updateControllerFeatures({
+        wsControllerURL,
+        features: {
+          auditLogs: true,
+          crossModelQueries: true,
+          rebac: true,
         },
       }),
     );

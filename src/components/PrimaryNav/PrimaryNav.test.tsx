@@ -234,3 +234,37 @@ describe("Primary Nav", () => {
     ).toBeInTheDocument();
   });
 });
+
+it("should not show Permissions navigation button under Juju", () => {
+  const state = rootStateFactory.build({
+    general: generalStateFactory.build({
+      config: configFactory.build({
+        isJuju: true,
+      }),
+    }),
+  });
+  renderComponent(<PrimaryNav />, { state });
+  expect(
+    screen.queryByRole("link", { name: Label.PERMISSIONS }),
+  ).not.toBeInTheDocument();
+});
+
+it("should show Permissions navigation button if the controller supports it", () => {
+  const state = rootStateFactory.build({
+    general: generalStateFactory.build({
+      config: configFactory.build({
+        controllerAPIEndpoint: "wss://controller.example.com",
+        isJuju: false,
+      }),
+      controllerFeatures: controllerFeaturesStateFactory.build({
+        "wss://controller.example.com": controllerFeaturesFactory.build({
+          rebac: true,
+        }),
+      }),
+    }),
+  });
+  renderComponent(<PrimaryNav />, { state });
+  expect(
+    screen.getByRole("link", { name: Label.PERMISSIONS }),
+  ).toBeInTheDocument();
+});

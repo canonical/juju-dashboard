@@ -1,0 +1,19 @@
+@import "vanilla-framework/scss/vanilla";
+@import "vanilla-framework/scss/base_placeholders";
+@import "vanilla-framework/scss/base_typography-definitions";
+@include vf-b-placeholders;
+@include vf-b-typography-definitions;
+
+.secondary-navigation {
+  background-color: #373737;
+
+  @media (min-width: $breakpoint-small) {
+    height: 100%;
+    position: fixed;
+    width: $application-layout--side-nav-width-expanded;
+  }
+
+  &__title {
+    @extend %vf-heading-4;
+  }
+}

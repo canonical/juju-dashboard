@@ -7,6 +7,7 @@ import {
   SideNavigationText,
 } from "@canonical/react-components";
 import type { NavItem } from "@canonical/react-components/dist/components/SideNavigation/SideNavigation";
+import { urls as generateReBACURLS } from "@canonical/rebac-admin";
 import type { HTMLProps, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -20,6 +21,7 @@ import {
   isAuditLogsEnabled,
   isCrossModelQueriesEnabled,
   getVisitURLs,
+  isReBACEnabled,
 } from "store/general/selectors";
 import {
   getControllerData,
@@ -31,6 +33,8 @@ import urls, { externalURLs } from "urls";
 
 import "./_primary-nav.scss";
 import { Label } from "./types";
+
+const rebacURLS = generateReBACURLS(urls.permissions);
 
 const useControllersLink = () => {
   const controllers: Controllers | null = useSelector(getControllerData);
@@ -83,6 +87,7 @@ const PrimaryNav = () => {
   const versionRequested = useRef(false);
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
   const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
+  const rebacEnabled = useAppSelector(isReBACEnabled);
   const { blocked: blockedModels } = useSelector(getGroupedModelStatusCounts);
   const controllersLink = useControllersLink();
 
@@ -123,6 +128,15 @@ const PrimaryNav = () => {
       label: <>{Label.ADVANCED_SEARCH}</>,
     });
   }
+  if (rebacEnabled) {
+    navigation.push({
+      component: NavLink,
+      icon: "user",
+      label: <>{Label.PERMISSIONS}</>,
+      to: rebacURLS.users.index,
+    });
+  }
+
   const extraNav = [
     {
       href: externalURLs.newIssue,
