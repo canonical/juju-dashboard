@@ -53,6 +53,7 @@ const urls = {
     }>("/models?groupedby=:groupedby"),
   },
   logs: "/logs",
+  permissions: "/permissions",
   search: "/search",
 };
 

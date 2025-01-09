@@ -1,4 +1,5 @@
 import { fireEvent, screen, within } from "@testing-library/react";
+import { NavLink } from "react-router";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories/root";
@@ -57,5 +58,49 @@ describe("Base Layout", () => {
     expect(
       screen.getByText(/Your dashboard is now back online/),
     ).toBeInTheDocument();
+  });
+
+  it("renders without secondary nav", () => {
+    renderComponent(
+      <BaseLayout>
+        <p>foo</p>
+      </BaseLayout>,
+      { state },
+    );
+    expect(document.querySelector(".l-main__content")).not.toHaveClass(
+      "l-main__content--has-secondary-nav",
+    );
+    expect(
+      document.querySelector(".secondary-navigation"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders with secondary nav", () => {
+    renderComponent(
+      <BaseLayout
+        secondaryNav={{
+          title: "Second menu",
+          items: [
+            {
+              items: [
+                {
+                  component: NavLink,
+                  to: "/settings",
+                  label: "Settings",
+                },
+              ],
+            },
+          ],
+        }}
+      >
+        <p>foo</p>
+      </BaseLayout>,
+      { state },
+    );
+    expect(document.querySelector(".l-main__content")).toHaveClass(
+      "l-main__content--has-secondary-nav",
+    );
+    expect(document.querySelector(".secondary-navigation")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Settings" })).toBeInTheDocument();
   });
 });

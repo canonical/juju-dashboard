@@ -33,6 +33,7 @@ export type ControllerFeatures = {
   // production JAAS.
   auditLogs?: boolean;
   crossModelQueries?: boolean;
+  rebac?: boolean;
 };
 
 export type ControllerFeaturesState = Record<string, ControllerFeatures>;

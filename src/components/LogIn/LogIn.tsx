@@ -1,7 +1,8 @@
-import type { PropsWithChildren, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import reactHotToast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { Outlet } from "react-router";
 
 import FadeUpIn from "animations/FadeUpIn";
 import AuthenticationButton from "components/AuthenticationButton";
@@ -24,7 +25,7 @@ import OIDCForm from "./OIDCForm";
 import UserPassForm from "./UserPassForm";
 import { ErrorResponse, Label } from "./types";
 
-export default function LogIn({ children }: PropsWithChildren) {
+export default function LogIn() {
   const viewedAuthRequests = useRef<string[]>([]);
   const config = useSelector(getConfig);
   const isJuju = useSelector(getIsJuju);
@@ -96,7 +97,9 @@ export default function LogIn({ children }: PropsWithChildren) {
           </FadeUpIn>
         </div>
       )}
-      <div className="app-content">{children}</div>
+      <div className="app-content">
+        <Outlet />
+      </div>
     </>
   );
 }

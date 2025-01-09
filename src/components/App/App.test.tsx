@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import * as reactGA from "react-ga";
 import { Provider } from "react-redux";
-import * as reactRouterDOM from "react-router";
 import configureStore from "redux-mock-store";
 import { vi } from "vitest";
 
@@ -43,20 +42,6 @@ describe("App", () => {
     console.error = consoleError;
     vi.resetAllMocks();
     vi.unstubAllEnvs();
-  });
-
-  it("properly sets up Router", () => {
-    const BrowserRouterSpy = vi
-      .spyOn(reactRouterDOM, "BrowserRouter")
-      .mockImplementation(() => <div></div>);
-    const store = mockStore(rootStateFactory.withGeneralConfig().build());
-    render(
-      <Provider store={store}>
-        <App />
-      </Provider>,
-    );
-    expect(BrowserRouterSpy.mock.calls[0][0].basename).toBe("/");
-    BrowserRouterSpy.mockRestore();
   });
 
   it("catches and displays errors", () => {

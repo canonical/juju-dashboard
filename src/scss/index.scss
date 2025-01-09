@@ -5,6 +5,8 @@
 $increase-font-size-on-larger-screens: false;
 $color-link-visited: $color-link;
 
+@import "@canonical/rebac-admin/dist/rebac-admin.css";
+
 // Import settings
 @import "settings";
 

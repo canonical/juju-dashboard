@@ -3,8 +3,10 @@ import AuditLogsTable from "components/AuditLogsTable/AuditLogsTable";
 import AuditLogsTableActions from "components/AuditLogsTable/AuditLogsTableActions";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
+import { TestId } from "./types";
+
 const Logs = (): JSX.Element => (
-  <BaseLayout title="Audit logs">
+  <BaseLayout data-testid={TestId.COMPONENT} title="Audit logs">
     <ActionBar>
       <AuditLogsTableActions />
     </ActionBar>

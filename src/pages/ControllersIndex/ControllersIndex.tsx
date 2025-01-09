@@ -33,7 +33,7 @@ import { breakLines } from "utils";
 
 import ControllersOverview from "./ControllerOverview";
 import "./_controllers.scss";
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 type AnnotatedController = Controller & {
   models: number;
@@ -250,6 +250,7 @@ const ControllersIndex = () => {
 
   return (
     <BaseLayout
+      data-testid={TestId.COMPONENT}
       title={
         <>
           {controllersCount} controllers,{" "}

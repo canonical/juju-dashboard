@@ -29,7 +29,7 @@ import { ModelTab } from "urls";
 import { getMajorMinorVersion } from "utils";
 
 import "./_entity-details.scss";
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 type Props = {
   modelWatcherError?: string | null;
@@ -200,6 +200,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
 
   return (
     <BaseLayout
+      data-testid={TestId.COMPONENT}
       status={
         showWebCLI &&
         controllerWSHost && (

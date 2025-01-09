@@ -29,7 +29,7 @@ import type { ModelsGroupedBy } from "urls";
 import urls from "urls";
 
 import "./_models.scss";
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 export default function Models() {
   useWindowTitle("Models");
@@ -125,6 +125,7 @@ export default function Models() {
 
   return (
     <BaseLayout
+      data-testid={TestId.COMPONENT}
       title={
         <div className="models__header" data-disabled={modelCount === 0}>
           <span className="u-hide u-show--large">

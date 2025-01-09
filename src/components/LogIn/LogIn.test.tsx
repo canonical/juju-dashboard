@@ -32,7 +32,11 @@ describe("LogIn", () => {
         },
       }),
     });
-    renderComponent(<LogIn>App content</LogIn>, { state });
+    renderComponent(<LogIn />, {
+      state,
+      path: "*",
+      routeChildren: [{ path: "", element: <>App content</> }],
+    });
     expect(document.querySelector(".login")).not.toBeInTheDocument();
     const content = screen.getByText("App content");
     expect(content).toBeInTheDocument();
@@ -48,7 +52,7 @@ describe("LogIn", () => {
         }),
       }),
     });
-    renderComponent(<LogIn>App content</LogIn>, { state });
+    renderComponent(<LogIn />, { state });
     expect(
       screen.getByRole("link", { name: Label.LOGIN_TO_DASHBOARD }),
     ).toHaveAttribute("data-testid", IdentityProviderFormTestId.CANDID_LOGIN);
@@ -65,7 +69,7 @@ describe("LogIn", () => {
         }),
       }),
     });
-    renderComponent(<LogIn>App content</LogIn>, { state });
+    renderComponent(<LogIn />, { state });
     expect(
       screen.getByRole("link", { name: Label.LOGIN_TO_DASHBOARD }),
     ).toHaveAttribute("data-testid", OIDCFormTestId.OIDC_LOGIN);
@@ -82,7 +86,7 @@ describe("LogIn", () => {
         }),
       }),
     });
-    renderComponent(<LogIn>App content</LogIn>, { state });
+    renderComponent(<LogIn />, { state });
     expect(screen.getByRole("button")).toHaveTextContent(
       Label.LOGIN_TO_DASHBOARD,
     );
@@ -102,7 +106,7 @@ describe("LogIn", () => {
         }),
       }),
     });
-    renderComponent(<LogIn>App content</LogIn>, { state });
+    renderComponent(<LogIn />, { state });
     const error = screen.getByText("Controller rejected request");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("error-message");
@@ -119,7 +123,7 @@ describe("LogIn", () => {
         }),
       }),
     });
-    renderComponent(<LogIn>App content</LogIn>, { state });
+    renderComponent(<LogIn />, { state });
     expect(screen.getByText(Label.INVALID_NAME)).toBeInTheDocument();
   });
 
@@ -134,7 +138,7 @@ describe("LogIn", () => {
         }),
       }),
     });
-    renderComponent(<LogIn>App content</LogIn>, { state });
+    renderComponent(<LogIn />, { state });
     expect(screen.getByText(Label.INVALID_FIELD)).toBeInTheDocument();
   });
 
@@ -147,7 +151,7 @@ describe("LogIn", () => {
         visitURLs: ["http://example.com/log-in"],
       }),
     });
-    renderComponent(<LogIn>App content</LogIn>, { state });
+    renderComponent(<LogIn />, { state });
     const card = await screen.findByTestId("toast-card");
     expect(
       await within(card).findByText("Controller authentication required"),
@@ -170,7 +174,7 @@ describe("LogIn", () => {
         visitURLs: ["http://example.com/log-in"],
       }),
     });
-    renderComponent(<LogIn>App content</LogIn>, { state });
+    renderComponent(<LogIn />, { state });
     const card = await screen.findByTestId("toast-card");
     expect(card).toBeInTheDocument();
     await userEvent.click(

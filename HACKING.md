@@ -143,7 +143,7 @@ developing Juju Dashboard.
 
 ### React
 
-Juju Dashboard uses [React](https://react.dev/) for it's component based UI.
+Juju Dashboard uses [React](https://react.dev/) for its component based UI.
 
 #### Components
 
@@ -535,32 +535,22 @@ Start by making a small configuration change so that the login process redirects
 to the development dashboard URL:
 
 ```shell
-nano compose-common.yaml
+nano docker-compose.common.yaml
 ```
 
-Find `JIMM_DASHBOARD_FINAL_REDIRECT_URL` and set it to `"http://jimm.localhost:8036"`.
+Set `JIMM_DASHBOARD_FINAL_REDIRECT_URL` and `CORS_ALLOWED_ORIGINS` to `"http://jimm.localhost:8036"`.
 
-Next follow the steps in the [Starting the
+Next follow the first three steps in the [Starting the
 environment](https://github.com/canonical/jimm/tree/v3/local#starting-the-environment)
 section of the JIMM docs.
-
-Once the environment is running it will be steadily
-outputting openfga health checks like the following, at which
-point you can move on to the next steps:
-
-```shell
-openfga                      | 2024-06-03T02:25:47.168Z	INFO	grpc_req_complete	{"grpc_service": "grpc.health.v1.Health", "grpc_method": "Check", "grpc_type": "unary", "request_id": "db6a8859-f296-44b3-b150-a1dff5be93fe", "raw_request": {"service":""}, "raw_response": {"status":"SERVING"}, "peer.address": "127.0.0.1:49320", "grpc_code": 0}
-```
-
-In a new terminal, enter the container, this time following the [port forward
-instructions](#forward-ports) and then go to the JIMM directory.
-```shell
-cd jimm
-```
 
 Now follow the [Q/A Using
 jimmctl](https://github.com/canonical/jimm/tree/v3/local#qa-using-jimmctl)
 steps.
+
+Then you can run the LXD environment with the [`make qa-lxd`](https://github.com/canonical/jimm/tree/v3/local#all-in-one-commands) script.
+
+_NOTE: `make qa-lxd` may not succeed on the first run._
 
 #### Forward ports
 
@@ -648,16 +638,9 @@ To log in you need to use the username and password listed in: [Controller set u
 
 Each time you start the multipass container you need to do the following:
 
-1. Follow steps 4 and 5 of the [Starting the
-environment](https://github.com/canonical/jimm/tree/v3/local#starting-the-environment)
-instructions (doing the cleanup first and then start the env).
-2. [Forward ports](#forward-ports)
-3. Follow the steps in [Controller set
-   up](https://github.com/canonical/jimm/tree/v3/local#controller-set-up) (you
-   can skip the `setup-controller.sh` step and
-   may need to run `sudo iptables -F FORWARD && sudo iptables -P FORWARD ACCEPT`
-   before these steps).
-4. Now you can start the dashboard as normal.
+1. [Forward ports](#forward-ports)
+2. Recreate the JIMM environment with `make qa-lxd`.
+3. Now you can start the dashboard as normal.
 
 
 
