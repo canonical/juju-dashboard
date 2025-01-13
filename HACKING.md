@@ -35,7 +35,8 @@ contribute and what kinds of contributions are welcome.
 - [Juju controllers in Multipass](#juju-controllers-in-multipass)
   - [Juju controller](#juju-controller)
   - [Juju controller with Candid](#juju-controller-with-candid)
-  - [JIMM controller](#jimm-controller)
+  - [Deployed JIMM controller](#deployed-jimm-controller)
+  - [Local JIMM controller](#local-jimm-controller)
     - [Set up JIMM](#set-up-jimm)
     - [Forward ports](#forward-ports)
     - [Set up Juju Dashboard](#set-up-juju-dashboard)
@@ -500,7 +501,51 @@ isJuju: true,
 
 You can now access your local dashboard and log in using your Ubuntu SSO credentials.
 
-### JIMM controller
+### Deployed JIMM controller
+
+To access the demo deployment of JIMM you need to be connected to the VPN. Note: you
+don't need to be connected to the VPN until you want to connect to JIMM.
+
+To allow the JIMM authentication to authenticate your local dashboard you need
+to access the dashboard at the same address as the deployed dashboard.
+
+First on your host machine edit your `/etc/hosts`:
+
+```shell
+nano /etc/hosts
+```
+
+Enter the dashboard hostname so that it points to localhost:
+
+```shell
+127.0.0.1      jimm-dashboard.k8s.dev.canonical.com
+```
+
+Next, if your local dashboard is deployed inside a Multipass container you will
+need to port forward from localhost into your container (otherwise skip this step):
+
+```shell
+ssh -L :443:0.0.0.0:8036 ubuntu@[container.ip]
+```
+
+Now, inside your Multipass container start the server:
+
+```shell
+yarn start-jaas
+```
+
+If your local dashboard is not inside a container then you'll need to run it at
+port `443` (requires `sudo`):
+
+```shell
+sudo yarn start-jaas --port 443
+```
+
+Now you can connect to the VPN and then you should be able to access the dashboard (note: https only):
+
+https://jimm-dashboard.k8s.dev.canonical.com
+
+### Local JIMM controller
 
 First, create a new Multipass container. You may need to adjust the resources
 depending on your host machine, but you will need to allocate at least 20GB of
