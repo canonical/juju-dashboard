@@ -62,13 +62,6 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "0.0.0.0",
       port: Number(env.PORT),
-      proxy: {
-        "/rebac/v1": {
-          target: env.VITE_JIMM_API_URL ?? "/",
-          secure: false,
-          changeOrigin: false,
-        },
-      },
     },
     test: {
       coverage: {

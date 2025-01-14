@@ -7,6 +7,7 @@ export const endpoints = () => {
   return {
     login: `${jimmEndpoint}/auth/login`,
     logout: `${jimmEndpoint}/auth/logout`,
+    rebac: `${jimmEndpoint}/rebac/v1`,
     whoami: `${jimmEndpoint}/auth/whoami`,
   };
 };
