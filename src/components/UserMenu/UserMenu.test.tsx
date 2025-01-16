@@ -10,7 +10,6 @@ import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import UserMenu from "./UserMenu";
-import { Label } from "./types";
 
 describe("User Menu", () => {
   let state: RootState;
@@ -74,49 +73,6 @@ describe("User Menu", () => {
     expect(appThunks.logOut).toHaveBeenCalledTimes(1);
     expect(mockUseAppDispatch.mock.calls[0][0]).toMatchObject({
       type: "logOut",
-    });
-  });
-
-  it("should show error when trying to logout and refresh page", async () => {
-    const location = window.location;
-    Object.defineProperty(window, "location", {
-      value: { ...location, reload: vi.fn() },
-    });
-
-    vi.spyOn(appThunks, "logOut").mockImplementation(
-      vi.fn().mockReturnValue({ type: "logOut" }),
-    );
-    vi.spyOn(dashboardStore, "useAppDispatch").mockImplementation(
-      vi
-        .fn()
-        .mockReturnValue((action: unknown) =>
-          action instanceof Object &&
-          "type" in action &&
-          action.type === "logOut"
-            ? Promise.reject(new Error("Error while dispatching logOut!"))
-            : null,
-        ),
-    );
-
-    renderComponent(<UserMenu />, { state });
-    await userEvent.click(screen.getByRole("link", { name: "Log out" }));
-    expect(appThunks.logOut).toHaveBeenCalledTimes(1);
-    expect(console.error).toHaveBeenCalledWith(
-      Label.LOGOUT_ERROR,
-      new Error("Error while dispatching logOut!"),
-    );
-    const logoutErrorNotification = screen.getByText(
-      new RegExp(Label.LOGOUT_ERROR),
-    );
-    expect(logoutErrorNotification).toBeInTheDocument();
-    expect(logoutErrorNotification.childElementCount).toBe(1);
-    const refreshButton = logoutErrorNotification.children[0];
-    expect(refreshButton).toHaveTextContent("refreshing");
-    await userEvent.click(refreshButton, { pointerEventsCheck: 0 });
-    expect(window.location.reload).toHaveBeenCalledTimes(1);
-
-    Object.defineProperty(window, "location", {
-      value: location,
     });
   });
 });

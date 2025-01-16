@@ -1,30 +1,25 @@
 import {
-  Button,
   Icon,
   SideNavigation,
   SideNavigationText,
 } from "@canonical/react-components";
-import { unwrapResult } from "@reduxjs/toolkit";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
-import reactHotToast from "react-hot-toast";
 import { Link } from "react-router";
 
-import ToastCard from "components/ToastCard";
 import { DARK_THEME } from "consts";
 import useAnalytics from "hooks/useAnalytics";
-import { thunks as appThunks } from "store/app";
+import useLogout from "hooks/useLogout";
 import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 import { extractOwnerName } from "store/juju/utils/models";
-import { useAppDispatch, useAppSelector } from "store/store";
+import { useAppSelector } from "store/store";
 import urls from "urls";
 
 import "./_user-menu.scss";
-import { Label } from "./types";
 
 const UserMenu = () => {
   const sendAnalytics = useAnalytics();
-  const dispatch = useAppDispatch();
+  const logout = useLogout();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const activeUser = useAppSelector((state) =>
     getActiveUserTag(state, wsControllerURL),
@@ -72,27 +67,7 @@ const UserMenu = () => {
                     component: Link,
                     to: urls.index,
                     label: "Log out",
-                    onClick: () => {
-                      dispatch(appThunks.logOut())
-                        .then(unwrapResult)
-                        .catch((error) => {
-                          reactHotToast.custom((t) => (
-                            <ToastCard toastInstance={t} type="negative">
-                              <>
-                                {Label.LOGOUT_ERROR} Try{" "}
-                                <Button
-                                  appearance="link"
-                                  onClick={() => window.location.reload()}
-                                >
-                                  refreshing
-                                </Button>{" "}
-                                the page.
-                              </>
-                            </ToastCard>
-                          ));
-                          console.error(Label.LOGOUT_ERROR, error);
-                        });
-                    },
+                    onClick: logout,
                   },
                 ],
               },
