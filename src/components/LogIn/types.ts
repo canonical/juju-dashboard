@@ -9,3 +9,7 @@ export enum Label {
   POLLING_ERROR = "Error when trying to connect and start polling models.",
   LOGIN_TO_DASHBOARD = "Log in to the dashboard",
 }
+
+export enum TestId {
+  LOGIN_FORM = "login-form",
+}

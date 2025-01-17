@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 
+import { LogInTestId } from "components/LogIn";
 import { AdvancedSearchTestId } from "pages/AdvancedSearch";
 import { ControllersIndexTestId } from "pages/ControllersIndex/index";
 import { EntityDetailsTestId } from "pages/EntityDetails";
@@ -87,6 +88,23 @@ describe("Routes", () => {
     ).toBeInTheDocument();
   });
 
+  it("displays login for audit logs", async () => {
+    state.general.controllerConnections = {};
+    if (state.general.config) {
+      state.general.config.isJuju = false;
+    }
+    const store = mockStore(state);
+    changeURL(urls.logs);
+    render(
+      <Provider store={store}>
+        <Routes />
+      </Provider>,
+    );
+    expect(
+      await screen.findByTestId(LogInTestId.LOGIN_FORM),
+    ).toBeInTheDocument();
+  });
+
   it("handles audit logs if enabled", async () => {
     state.general.controllerFeatures = controllerFeaturesStateFactory.build({
       "wss://example.com/api": controllerFeaturesFactory.build({
@@ -117,6 +135,23 @@ describe("Routes", () => {
       </Provider>,
     );
     expect(screen.queryByTestId(LogsTestId.COMPONENT)).not.toBeInTheDocument();
+  });
+
+  it("displays login for cross model queries", async () => {
+    state.general.controllerConnections = {};
+    if (state.general.config) {
+      state.general.config.isJuju = false;
+    }
+    const store = mockStore(state);
+    changeURL(urls.search);
+    render(
+      <Provider store={store}>
+        <Routes />
+      </Provider>,
+    );
+    expect(
+      await screen.findByTestId(LogInTestId.LOGIN_FORM),
+    ).toBeInTheDocument();
   });
 
   it("handles cross model queries if enabled", async () => {
@@ -153,6 +188,23 @@ describe("Routes", () => {
     expect(
       screen.queryByTestId(AdvancedSearchTestId.COMPONENT),
     ).not.toBeInTheDocument();
+  });
+
+  it("displays login for permissions", async () => {
+    state.general.controllerConnections = {};
+    if (state.general.config) {
+      state.general.config.isJuju = false;
+    }
+    const store = mockStore(state);
+    changeURL(urls.permissions);
+    render(
+      <Provider store={store}>
+        <Routes />
+      </Provider>,
+    );
+    expect(
+      await screen.findByTestId(LogInTestId.LOGIN_FORM),
+    ).toBeInTheDocument();
   });
 
   it("handles permissions if enabled", async () => {
