@@ -14,6 +14,9 @@ import {
   isAuditLogsEnabled,
   getConfig,
   isReBACEnabled,
+  getActiveUserTag,
+  getWSControllerURL,
+  getIsJuju,
 } from "store/general/selectors";
 import { useAppSelector } from "store/store";
 import urls from "urls";
@@ -23,6 +26,17 @@ export function Routes() {
   const rebacEnabled = useAppSelector(isReBACEnabled);
   const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
   const config = useAppSelector(getConfig);
+  const wsControllerURL = useAppSelector(getWSControllerURL);
+  const activeUser = useAppSelector((state) =>
+    getActiveUserTag(state, wsControllerURL),
+  );
+  const isJuju = useAppSelector(getIsJuju);
+  const isAuthenticated = !!activeUser;
+  // Some JAAS routes require authentication to determine if they should be displayed.
+  // To support this we initially include the route which will allow the authentication to
+  // occur and then determine if the 404 page should be displayed. Without this
+  // the 404 page will be displayed immediately and won't attempt to authenticate.
+  const requiresAuthentication = !isJuju && !isAuthenticated;
 
   const authenticatedRoutes = [
     {
@@ -39,21 +53,21 @@ export function Routes() {
     },
   ];
 
-  if (auditLogsEnabled) {
+  if (requiresAuthentication || auditLogsEnabled) {
     authenticatedRoutes.push({
       path: urls.logs,
       element: <Logs />,
     });
   }
 
-  if (crossModelQueriesEnabled) {
+  if (requiresAuthentication || crossModelQueriesEnabled) {
     authenticatedRoutes.push({
       path: urls.search,
       element: <AdvancedSearch />,
     });
   }
 
-  if (rebacEnabled) {
+  if (requiresAuthentication || rebacEnabled) {
     authenticatedRoutes.push({
       path: `${urls.permissions}/*`,
       element: <Permissions />,

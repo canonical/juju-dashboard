@@ -23,7 +23,7 @@ import "./_login.scss";
 import IdentityProviderForm from "./IdentityProviderForm";
 import OIDCForm from "./OIDCForm";
 import UserPassForm from "./UserPassForm";
-import { ErrorResponse, Label } from "./types";
+import { ErrorResponse, Label, TestId } from "./types";
 
 export default function LogIn() {
   const viewedAuthRequests = useRef<string[]>([]);
@@ -87,7 +87,7 @@ export default function LogIn() {
   return (
     <>
       {!userIsLoggedIn && (
-        <div className="login">
+        <div className="login" data-testid={TestId.LOGIN_FORM}>
           <FadeUpIn isActive={!userIsLoggedIn}>
             <div className="login__inner p-card--highlighted">
               <Logo className="login__logo" dark isJuju={isJuju} />
