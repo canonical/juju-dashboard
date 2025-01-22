@@ -1,6 +1,7 @@
 import { ReBACAdmin, urls as generateReBACURLS } from "@canonical/rebac-admin";
 import { NavLink } from "react-router";
 
+import { axiosInstance } from "axios-instance";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 import urls from "urls";
 
@@ -42,7 +43,7 @@ const Permissions = (): JSX.Element => (
       ],
     }}
   >
-    <ReBACAdmin apiURL="/rebac/v1" asidePanelId="app-layout" />
+    <ReBACAdmin axiosInstance={axiosInstance} asidePanelId="app-layout" />
   </BaseLayout>
 );
 
