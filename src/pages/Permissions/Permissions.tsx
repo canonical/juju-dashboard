@@ -13,6 +13,29 @@ import { Label, TestId } from "./types";
 
 const rebacURLS = generateReBACURLS(urls.permissions);
 
+const navItems = [
+  {
+    component: NavLink,
+    to: rebacURLS.users.index,
+    label: <>{Label.USERS}</>,
+  },
+  {
+    component: NavLink,
+    to: rebacURLS.groups.index,
+    label: <>{Label.GROUPS}</>,
+  },
+  {
+    component: NavLink,
+    to: rebacURLS.entitlements,
+    label: <>{Label.ENTITLEMENTS}</>,
+  },
+  {
+    component: NavLink,
+    to: rebacURLS.resources.index,
+    label: <>{Label.RESOURCES}</>,
+  },
+];
+
 const Permissions = (): JSX.Element => {
   const logout = useLogout();
 
@@ -44,28 +67,7 @@ const Permissions = (): JSX.Element => {
         items: [
           {
             className: "menu-one",
-            items: [
-              {
-                component: NavLink,
-                to: rebacURLS.users.index,
-                label: <>{Label.USERS}</>,
-              },
-              {
-                component: NavLink,
-                to: rebacURLS.groups.index,
-                label: <>{Label.GROUPS}</>,
-              },
-              {
-                component: NavLink,
-                to: rebacURLS.entitlements,
-                label: <>{Label.ENTITLEMENTS}</>,
-              },
-              {
-                component: NavLink,
-                to: rebacURLS.resources.index,
-                label: <>{Label.RESOURCES}</>,
-              },
-            ],
+            items: navItems,
           },
         ],
       }}
