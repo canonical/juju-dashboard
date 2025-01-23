@@ -68,7 +68,8 @@ export default defineConfig(({ mode }) => {
         exclude: [
           "src/testing/**",
           "src/**/*.d.ts",
-          "src/**/{index,types,test}.ts",
+          "src/**/*.test.[jt]s?(x)",
+          "src/**/{index,types}.ts",
         ],
         include: ["src/**/*.[jt]s?(x)"],
         reporter: ["text", "json-summary", "json", "cobertura"],
