@@ -65,7 +65,11 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       coverage: {
-        exclude: ["src/testing/**", "src/**/*.d.ts", "src/**/{index,types}.ts"],
+        exclude: [
+          "src/testing/**",
+          "src/**/*.d.ts",
+          "src/**/{index,types,test}.ts",
+        ],
         include: ["src/**/*.[jt]s?(x)"],
         reporter: ["text", "json-summary", "json", "cobertura"],
         reportOnFailure: true,
