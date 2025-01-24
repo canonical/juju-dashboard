@@ -8,7 +8,6 @@ import generalReducer from "store/general";
 import jujuReducer from "store/juju";
 import checkAuth from "store/middleware/check-auth";
 import { modelPollerMiddleware } from "store/middleware/model-poller";
-import uiReducer from "store/ui";
 
 import { listenerMiddleware } from "./listenerMiddleware";
 
@@ -38,7 +37,6 @@ const store = configureStore({
   reducer: combineReducers({
     general: generalReducer,
     juju: jujuReducer,
-    ui: uiReducer,
   }),
 });
 
