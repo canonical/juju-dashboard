@@ -8,7 +8,7 @@ import { Label } from "../types";
 import { TestId } from "./types";
 
 const OIDCForm = () => {
-  const [firstVisit, setFirstTimeVisit] = useLocalStorage<boolean>(
+  const [firstVisit, setFirstVisit] = useLocalStorage<boolean>(
     "firstVisit",
     true,
   );
@@ -18,7 +18,7 @@ const OIDCForm = () => {
       appearance="positive"
       element="a"
       href={endpoints().login}
-      onClick={() => setFirstTimeVisit(false)}
+      onClick={() => setFirstVisit(false)}
       data-testid={TestId.OIDC_LOGIN}
       disabled={!firstVisit}
     >
