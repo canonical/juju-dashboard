@@ -6,7 +6,6 @@
 
 <br />
 
-[![codecov](https://codecov.io/github/canonical/juju-dashboard/branch/main/graph/badge.svg?token=jpxOQiONwS)](https://codecov.io/github/canonical/juju-dashboard)
 [![Licence: LGPLv3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](/LICENSE.md)
 
 <br />

@@ -212,10 +212,6 @@ should be used.
 The dashboard is unit tested and interaction tested using [Vitest](https://vitest.dev/) and [React
 Testing Library](https://testing-library.com/).
 
-[Codecov](https://codecov.io/) is used to monitor test coverage on PRs and is
-currently set to allow 90% coverage across the codebase, so new code should have
-strong test coverage to maintain this amount.
-
 #### Test factories
 
 The dashboard uses test factories instead of data dumps to allow each test to
@@ -268,6 +264,7 @@ remove controllers as necessary and provides a way to have multiple controllers
 running at once (with different Juju versions if needed).
 
 There are three main types of deployment:
+
 - [Juju controller](#juju-controller)
 - [Juju with Kubernetes](./docs/multipass-microk8s.md)
 - [JIMM controller](#jimm-controller)
@@ -655,6 +652,7 @@ cp public/config.js public/config.local.js
 ```
 
 Edit the file:
+
 ```shell
 nano public/config.local.js
 ```
@@ -686,8 +684,6 @@ Each time you start the multipass container you need to do the following:
 1. [Forward ports](#forward-ports)
 2. Recreate the JIMM environment with `make qa-lxd`.
 3. Now you can start the dashboard as normal.
-
-
 
 ### Self signed certificates
 

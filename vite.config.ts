@@ -74,6 +74,12 @@ export default defineConfig(({ mode }) => {
         include: ["src/**/*.[jt]s?(x)"],
         reporter: ["text", "json-summary", "json", "cobertura"],
         reportOnFailure: true,
+        thresholds: {
+          lines: 95,
+          statements: 95,
+          functions: 95,
+          branches: 90,
+        },
       },
       environment: "happy-dom",
       globals: true,
