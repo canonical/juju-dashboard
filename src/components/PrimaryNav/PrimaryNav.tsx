@@ -113,7 +113,8 @@ const PrimaryNav = () => {
   );
   const controllersLink = useControllersLink();
   const rebacAllowed = rebacEnabled && isJIMMControllerAdmin;
-  const auditLogsAllowed = auditLogsPermitted && isJIMMControllerAdmin;
+  const auditLogsAllowed =
+    auditLogsEnabled && auditLogsPermitted && isJIMMControllerAdmin;
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {
@@ -125,7 +126,9 @@ const PrimaryNav = () => {
   }, [appVersion]);
 
   useEffect(() => {
-    if (wsControllerURL && activeUser && (rebacEnabled || auditLogsEnabled)) {
+    const hasAPIData = wsControllerURL && activeUser;
+    // Only check the relation if the controller supports audit logs or ReBAC.
+    if (hasAPIData && (rebacEnabled || auditLogsEnabled)) {
       dispatch(
         jujuActions.checkRelation({
           tuple: {
@@ -140,7 +143,9 @@ const PrimaryNav = () => {
   }, [activeUser, auditLogsEnabled, dispatch, rebacEnabled, wsControllerURL]);
 
   useEffect(() => {
-    if (wsControllerURL && activeUser && auditLogsEnabled) {
+    const hasAPIData = wsControllerURL && activeUser;
+    // Only check the relation if the controller supports audit logs.
+    if (hasAPIData && auditLogsEnabled) {
       dispatch(
         jujuActions.checkRelation({
           tuple: {

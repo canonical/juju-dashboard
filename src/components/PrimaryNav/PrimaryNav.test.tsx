@@ -228,7 +228,9 @@ describe("Primary Nav", () => {
       }),
     });
     renderComponent(<PrimaryNav />, { state });
-    expect(screen.getByRole("link", { name: Label.LOGS })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: Label.LOGS }),
+    ).not.toBeInTheDocument();
   });
 
   it("should show LogsLink navigation button if the user has permission", () => {
@@ -348,7 +350,7 @@ it("should not show Permissions navigation button if the controller doesn't supp
       },
       controllerFeatures: controllerFeaturesStateFactory.build({
         "wss://controller.example.com": controllerFeaturesFactory.build({
-          rebac: true,
+          rebac: false,
         }),
       }),
     }),
@@ -367,8 +369,8 @@ it("should not show Permissions navigation button if the controller doesn't supp
   });
   renderComponent(<PrimaryNav />, { state });
   expect(
-    screen.getByRole("link", { name: Label.PERMISSIONS }),
-  ).toBeInTheDocument();
+    screen.queryByRole("link", { name: Label.PERMISSIONS }),
+  ).not.toBeInTheDocument();
 });
 
 it("should show Permissions navigation button if the controller supports it", () => {
