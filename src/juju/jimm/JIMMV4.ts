@@ -17,24 +17,37 @@ export type CrossModelQueryResponse = {
   errors: Record<string, string[]>;
 };
 
+// As typed in JIMM
+// https://github.com/canonical/jimm/blob/v3/internal/jimmhttp/rebac_admin/entitlements.go
 export enum JIMMRelation {
-  AUDIT_LOG_VIEWER = "audit_log_viewer",
   ADMINISTRATOR = "administrator",
+  AUDIT_LOG_VIEWER = "audit_log_viewer",
+  CAN_ADDMODEL = "can_addmodel",
+  CONSUMER = "consumer",
+  MEMBER = "member",
+  READER = "reader",
+  WRITER = "writer",
+}
+
+export enum JIMMTarget {
+  JIMM_CONTROLLER = "controller-jimm",
 }
 
 // As typed in JIMM:
 // https://github.com/canonical/jimm/blob/c1e1642ac701bcbef2fdd8f4e347de9dcf16ac50/api/params/params.go#L296
 export type RelationshipTuple = {
   object: string;
-  relation: JIMMRelation | string;
-  target_object: string;
+  relation: JIMMRelation;
+  target_object: JIMMTarget | string;
 };
 
 // As typed in JIMM:
 // https://github.com/canonical/jimm/blob/c1e1642ac701bcbef2fdd8f4e347de9dcf16ac50/api/params/params.go#L324
-export type CheckRelationResponse = {
-  allowed: boolean;
-};
+export type CheckRelationResponse =
+  | {
+      allowed: boolean;
+    }
+  | { error: string };
 
 class JIMMV4 extends JIMMV3 {
   static NAME: string;

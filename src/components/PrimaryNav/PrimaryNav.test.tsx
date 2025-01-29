@@ -2,7 +2,12 @@ import * as versionsAPI from "@canonical/jujulib/dist/api/versions";
 import { screen, waitFor, within } from "@testing-library/react";
 import { vi } from "vitest";
 
-import { configFactory, generalStateFactory } from "testing/factories/general";
+import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
+import {
+  authUserInfoFactory,
+  configFactory,
+  generalStateFactory,
+} from "testing/factories/general";
 import {
   controllerFeaturesFactory,
   controllerFeaturesStateFactory,
@@ -13,6 +18,8 @@ import {
   jujuStateFactory,
   modelDataApplicationFactory,
   modelDataFactory,
+  rebacRelationFactory,
+  relationshipTupleFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -176,18 +183,96 @@ describe("Primary Nav", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("should show LogsLink navigation button if the controller supports it", () => {
+  it("should not show LogsLink navigation button if the controller doesn't support it", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
           controllerAPIEndpoint: "wss://controller.example.com",
           isJuju: false,
         }),
+        controllerConnections: {
+          "wss://controller.example.com": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
+        controllerFeatures: controllerFeaturesStateFactory.build({
+          "wss://controller.example.com": controllerFeaturesFactory.build({
+            auditLogs: false,
+          }),
+        }),
+      }),
+      juju: jujuStateFactory.build({
+        rebacRelations: [
+          rebacRelationFactory.build({
+            tuple: relationshipTupleFactory.build({
+              object: "user-eggman@external",
+              relation: JIMMRelation.AUDIT_LOG_VIEWER,
+              target_object: JIMMTarget.JIMM_CONTROLLER,
+            }),
+            allowed: true,
+          }),
+          rebacRelationFactory.build({
+            tuple: relationshipTupleFactory.build({
+              object: "user-eggman@external",
+              relation: JIMMRelation.ADMINISTRATOR,
+              target_object: JIMMTarget.JIMM_CONTROLLER,
+            }),
+            allowed: true,
+          }),
+        ],
+      }),
+    });
+    renderComponent(<PrimaryNav />, { state });
+    expect(screen.getByRole("link", { name: Label.LOGS })).toBeInTheDocument();
+  });
+
+  it("should show LogsLink navigation button if the user has permission", () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://controller.example.com",
+          isJuju: false,
+        }),
+        controllerConnections: {
+          "wss://controller.example.com": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
         controllerFeatures: controllerFeaturesStateFactory.build({
           "wss://controller.example.com": controllerFeaturesFactory.build({
             auditLogs: true,
           }),
         }),
+      }),
+      juju: jujuStateFactory.build({
+        rebacRelations: [
+          rebacRelationFactory.build({
+            tuple: relationshipTupleFactory.build({
+              object: "user-eggman@external",
+              relation: JIMMRelation.AUDIT_LOG_VIEWER,
+              target_object: JIMMTarget.JIMM_CONTROLLER,
+            }),
+            allowed: true,
+          }),
+          rebacRelationFactory.build({
+            tuple: relationshipTupleFactory.build({
+              object: "user-eggman@external",
+              relation: JIMMRelation.ADMINISTRATOR,
+              target_object: JIMMTarget.JIMM_CONTROLLER,
+            }),
+            allowed: true,
+          }),
+        ],
       }),
     });
     renderComponent(<PrimaryNav />, { state });
@@ -249,6 +334,43 @@ it("should not show Permissions navigation button under Juju", () => {
   ).not.toBeInTheDocument();
 });
 
+it("should not show Permissions navigation button if the controller doesn't support it", () => {
+  const state = rootStateFactory.build({
+    general: generalStateFactory.build({
+      config: configFactory.build({
+        controllerAPIEndpoint: "wss://controller.example.com",
+        isJuju: false,
+      }),
+      controllerConnections: {
+        "wss://controller.example.com": {
+          user: authUserInfoFactory.build(),
+        },
+      },
+      controllerFeatures: controllerFeaturesStateFactory.build({
+        "wss://controller.example.com": controllerFeaturesFactory.build({
+          rebac: true,
+        }),
+      }),
+    }),
+    juju: jujuStateFactory.build({
+      rebacRelations: [
+        rebacRelationFactory.build({
+          tuple: relationshipTupleFactory.build({
+            object: "user-eggman@external",
+            relation: JIMMRelation.ADMINISTRATOR,
+            target_object: JIMMTarget.JIMM_CONTROLLER,
+          }),
+          allowed: true,
+        }),
+      ],
+    }),
+  });
+  renderComponent(<PrimaryNav />, { state });
+  expect(
+    screen.getByRole("link", { name: Label.PERMISSIONS }),
+  ).toBeInTheDocument();
+});
+
 it("should show Permissions navigation button if the controller supports it", () => {
   const state = rootStateFactory.build({
     general: generalStateFactory.build({
@@ -256,11 +378,28 @@ it("should show Permissions navigation button if the controller supports it", ()
         controllerAPIEndpoint: "wss://controller.example.com",
         isJuju: false,
       }),
+      controllerConnections: {
+        "wss://controller.example.com": {
+          user: authUserInfoFactory.build(),
+        },
+      },
       controllerFeatures: controllerFeaturesStateFactory.build({
         "wss://controller.example.com": controllerFeaturesFactory.build({
           rebac: true,
         }),
       }),
+    }),
+    juju: jujuStateFactory.build({
+      rebacRelations: [
+        rebacRelationFactory.build({
+          tuple: relationshipTupleFactory.build({
+            object: "user-eggman@external",
+            relation: JIMMRelation.ADMINISTRATOR,
+            target_object: JIMMTarget.JIMM_CONTROLLER,
+          }),
+          allowed: true,
+        }),
+      ],
     }),
   });
   renderComponent(<PrimaryNav />, { state });

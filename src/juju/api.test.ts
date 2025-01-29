@@ -51,8 +51,6 @@ import {
   setModelSharingPermissions,
   startModelWatcher,
   stopModelWatcher,
-  findAuditEvents,
-  crossModelQuery,
   connectToModel,
   Label,
 } from "./api";
@@ -1820,123 +1818,6 @@ describe("Juju API", () => {
           charms: [etcd, mysql],
           wsControllerURL: "wss://example.com/api",
         }),
-      );
-    });
-  });
-
-  describe("findAuditEvents", () => {
-    it("fetches audit events", async () => {
-      const events = { events: [] };
-      const conn = {
-        facades: {
-          jimM: {
-            findAuditEvents: vi
-              .fn()
-              .mockImplementation(() => Promise.resolve(events)),
-          },
-        },
-      } as unknown as Connection;
-      const response = await findAuditEvents(conn);
-      expect(conn.facades.jimM.findAuditEvents).toHaveBeenCalled();
-      expect(response).toMatchObject(events);
-    });
-
-    it("fetches audit events with supplied params", async () => {
-      const events = { events: [] };
-      const conn = {
-        facades: {
-          jimM: {
-            findAuditEvents: vi
-              .fn()
-              .mockImplementation(() => Promise.resolve(events)),
-          },
-        },
-      } as unknown as Connection;
-      const response = await findAuditEvents(conn, {
-        "user-tag": "user-eggman@external",
-      });
-      expect(conn.facades.jimM.findAuditEvents).toHaveBeenCalledWith({
-        "user-tag": "user-eggman@external",
-      });
-      expect(response).toMatchObject(events);
-    });
-
-    it("handles errors", async () => {
-      const error = new Error("Request failed");
-      const conn = {
-        facades: {
-          jimM: {
-            findAuditEvents: vi.fn().mockImplementation(() => {
-              throw error;
-            }),
-          },
-        },
-      } as unknown as Connection;
-      await expect(findAuditEvents(conn)).rejects.toBe(error);
-    });
-
-    it("handles no JIMM connection", async () => {
-      const conn = {
-        facades: {},
-      } as unknown as Connection;
-      await expect(findAuditEvents(conn)).rejects.toEqual(
-        new Error("Not connected to JIMM."),
-      );
-    });
-  });
-
-  describe("crossModelQuery", () => {
-    it("fetches cross model query result with supplied params", async () => {
-      const result = { results: {}, errors: {} };
-      const conn = {
-        facades: {
-          jimM: {
-            crossModelQuery: vi.fn(() => Promise.resolve(result)),
-          },
-        },
-      } as unknown as Connection;
-      const response = await crossModelQuery(conn, ".");
-      expect(conn.facades.jimM.crossModelQuery).toHaveBeenCalledWith(".");
-      expect(response).toMatchObject(result);
-    });
-
-    it("handles errors", async () => {
-      const error = new Error("Request failed");
-      const conn = {
-        facades: {
-          jimM: {
-            crossModelQuery: vi.fn().mockImplementation(() => {
-              throw error;
-            }),
-          },
-        },
-      } as unknown as Connection;
-      await expect(crossModelQuery(conn, ".")).rejects.toBe(error);
-    });
-
-    it("handles no JIMM connection", async () => {
-      const conn = {
-        facades: {},
-      } as unknown as Connection;
-      await expect(crossModelQuery(conn, ".")).rejects.toMatchObject(
-        new Error("Not connected to JIMM."),
-      );
-    });
-
-    it("should handle exceptions", async () => {
-      const conn = {
-        facades: {
-          jimM: {
-            crossModelQuery: vi.fn(() =>
-              Promise.reject(
-                new Error("Error while trying to run cross model query!"),
-              ),
-            ),
-          },
-        },
-      } as unknown as Connection;
-      await expect(crossModelQuery(conn, ".")).rejects.toMatchObject(
-        new Error("Error while trying to run cross model query!"),
       );
     });
   });

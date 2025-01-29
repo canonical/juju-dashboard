@@ -10,11 +10,13 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
+import isEqual from "lodash.isequal";
 
 import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm/JIMMV3";
-import {
-  type CrossModelQueryRequest,
-  type CrossModelQueryResponse,
+import type {
+  CrossModelQueryRequest,
+  CrossModelQueryResponse,
+  RelationshipTuple,
 } from "juju/jimm/JIMMV4";
 import type {
   AllWatcherDelta,
@@ -30,6 +32,7 @@ import type {
   ModelFeatures,
   ModelSecrets,
   SecretsContent,
+  ReBACRelation,
 } from "./types";
 
 export const DEFAULT_AUDIT_EVENTS_LIMIT = 50;
@@ -93,6 +96,7 @@ const slice = createSlice({
     modelFeatures: {},
     modelWatcherData: {},
     charms: [],
+    rebacRelations: [],
     secrets: {},
     selectedApplications: [],
   } as JujuState,
@@ -429,6 +433,75 @@ const slice = createSlice({
       const secrets = state.secrets[action.payload.modelUUID];
       if (secrets) {
         delete secrets.content;
+      }
+    },
+    checkRelation: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{ tuple: RelationshipTuple } & WsControllerURLParam>,
+    ) => {
+      const tuple = payload.tuple;
+      const relationState: ReBACRelation = {
+        errors: null,
+        loaded: false,
+        loading: true,
+        tuple,
+      };
+      const existingIndex = state.rebacRelations.findIndex((relation) =>
+        isEqual(relation.tuple, tuple),
+      );
+      if (existingIndex >= 0) {
+        state.rebacRelations[existingIndex] = relationState;
+      } else {
+        state.rebacRelations.push(relationState);
+      }
+    },
+    addCheckRelation: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{ tuple: RelationshipTuple; allowed: boolean }>,
+    ) => {
+      const existingIndex = state.rebacRelations.findIndex((relation) =>
+        isEqual(relation.tuple, payload.tuple),
+      );
+      if (existingIndex >= 0) {
+        state.rebacRelations[existingIndex] = {
+          ...state.rebacRelations[existingIndex],
+          allowed: payload.allowed,
+          errors: null,
+          loaded: true,
+          loading: false,
+        };
+      }
+    },
+    addCheckRelationErrors: (
+      state,
+      { payload }: PayloadAction<{ tuple: RelationshipTuple; errors: string }>,
+    ) => {
+      const existingIndex = state.rebacRelations.findIndex((relation) =>
+        isEqual(relation.tuple, payload.tuple),
+      );
+      if (existingIndex >= 0) {
+        state.rebacRelations[existingIndex] = {
+          ...state.rebacRelations[existingIndex],
+          allowed: null,
+          errors: payload.errors,
+          loaded: false,
+          loading: false,
+        };
+      }
+    },
+    removeCheckRelation: (
+      state,
+      { payload }: PayloadAction<{ tuple: RelationshipTuple }>,
+    ) => {
+      const existingIndex = state.rebacRelations.findIndex((relation) =>
+        isEqual(relation.tuple, payload.tuple),
+      );
+      if (existingIndex >= 0) {
+        state.rebacRelations.splice(existingIndex, 1);
       }
     },
   },

@@ -5,8 +5,11 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { createSelector } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
+import isEqual from "lodash.isequal";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
+import type { RelationshipTuple } from "juju/jimm/JIMMV4";
+import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
 import type {
   AnnotationData,
   ApplicationData,
@@ -18,6 +21,7 @@ import type {
 import {
   getActiveUserTag,
   getActiveUserControllerAccess,
+  getControllerUserTag,
 } from "store/general/selectors";
 import type { RootState } from "store/store";
 import { getUserName } from "utils";
@@ -1051,4 +1055,31 @@ export const isKubernetesModel = createSelector(
   (modelData, modelInfo) =>
     modelData?.info?.["provider-type"] === "kubernetes" ||
     modelInfo?.type === "kubernetes",
+);
+
+export const getReBACRelationsState = createSelector(
+  [slice],
+  (sliceState) => sliceState.rebacRelations,
+);
+
+export const hasReBACPermission = createSelector(
+  [getReBACRelationsState, (_state, tuple: RelationshipTuple) => tuple],
+  (rebacRelations, tuple) => {
+    const relation = rebacRelations.find((relation) =>
+      isEqual(relation.tuple, tuple),
+    );
+    return relation?.allowed ?? false;
+  },
+);
+
+export const isJIMMAdmin = createSelector(
+  [(state) => state, getControllerUserTag],
+  (state, user) =>
+    user
+      ? hasReBACPermission(state, {
+          object: user,
+          relation: JIMMRelation.ADMINISTRATOR,
+          target_object: JIMMTarget.JIMM_CONTROLLER,
+        })
+      : false,
 );

@@ -13,6 +13,8 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import { Factory } from "fishery";
 
+import type { RelationshipTuple } from "juju/jimm/JIMMV4";
+import { JIMMRelation } from "juju/jimm/JIMMV4";
 import { DEFAULT_AUDIT_EVENTS_LIMIT } from "store/juju/slice";
 import type {
   AuditEventsState,
@@ -25,6 +27,7 @@ import type {
   ModelFeaturesState,
   ModelListInfo,
   ModelSecrets,
+  ReBACRelation,
   SecretsState,
 } from "store/juju/types";
 import type { SecretsContent } from "store/juju/types";
@@ -232,6 +235,21 @@ export const modelFeaturesStateFactory = Factory.define<ModelFeaturesState>(
   () => ({}),
 );
 
+export const relationshipTupleFactory = Factory.define<RelationshipTuple>(
+  () => ({
+    object: "user-eggman@external",
+    relation: JIMMRelation.MEMBER,
+    target_object: "admins",
+  }),
+);
+
+export const rebacRelationFactory = Factory.define<ReBACRelation>(() => ({
+  errors: null,
+  loaded: false,
+  loading: false,
+  tuple: relationshipTupleFactory.build(),
+}));
+
 export const jujuStateFactory = Factory.define<JujuState>(() => ({
   auditEvents: auditEventsStateFactory.build(),
   crossModelQuery: crossModelQueryStateFactory.build(),
@@ -243,6 +261,7 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   modelFeatures: {},
   modelWatcherData: {},
   charms: [],
+  rebacRelations: [],
   secrets: {},
   selectedApplications: [],
 }));

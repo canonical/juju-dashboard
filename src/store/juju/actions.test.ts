@@ -4,7 +4,10 @@ import {
 } from "testing/factories/juju/Charms";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 import { auditEventFactory } from "testing/factories/juju/jimm";
-import { listSecretResultFactory } from "testing/factories/juju/juju";
+import {
+  listSecretResultFactory,
+  relationshipTupleFactory,
+} from "testing/factories/juju/juju";
 
 import { actions } from "./slice";
 
@@ -418,6 +421,48 @@ describe("actions", () => {
         modelUUID: "abc123",
         wsControllerURL: "wss://test.example.com",
       },
+    });
+  });
+
+  it("checkRelation", () => {
+    const tuple = relationshipTupleFactory.build();
+    expect(
+      actions.checkRelation({
+        tuple,
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/checkRelation",
+      payload: {
+        tuple,
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
+  it("addCheckRelation", () => {
+    const tuple = relationshipTupleFactory.build();
+    expect(actions.addCheckRelation({ tuple, allowed: true })).toStrictEqual({
+      type: "juju/addCheckRelation",
+      payload: { tuple, allowed: true },
+    });
+  });
+
+  it("addCheckRelationErrors", () => {
+    const tuple = relationshipTupleFactory.build();
+    expect(
+      actions.addCheckRelationErrors({ tuple, errors: "oops!" }),
+    ).toStrictEqual({
+      type: "juju/addCheckRelationErrors",
+      payload: { tuple, errors: "oops!" },
+    });
+  });
+
+  it("removeCheckRelation", () => {
+    const tuple = relationshipTupleFactory.build();
+    expect(actions.removeCheckRelation({ tuple })).toStrictEqual({
+      type: "juju/removeCheckRelation",
+      payload: { tuple },
     });
   });
 });

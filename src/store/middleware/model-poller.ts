@@ -7,12 +7,10 @@ import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
   fetchControllerList,
-  findAuditEvents,
-  crossModelQuery,
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
-import { JIMMRelation } from "juju/jimm/JIMMV4";
+import { checkRelation, crossModelQuery, findAuditEvents } from "juju/jimm/api";
 import { pollWhoamiStart } from "juju/jimm/listeners";
 import { whoami } from "juju/jimm/thunks";
 import type { ConnectionWithFacades } from "juju/types";
@@ -24,10 +22,6 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 import { toErrorString } from "utils";
-
-export enum AuditLogsError {
-  CHECK_PERMISSIONS = "Unable to check Audit Logs user permission.",
-}
 
 export enum LoginError {
   LOG = "Unable to log into controller.",
@@ -41,19 +35,6 @@ export enum ModelsError {
   LOAD_LATEST_MODELS = "Unable to load latest model data.",
   LIST_OR_UPDATE_MODELS = "Unable to list or update models.",
 }
-
-const checkJIMMRelation = async (
-  conn: ConnectionWithFacades,
-  identity: string,
-  relation: string,
-) => {
-  const response = await conn.facades.jimM?.checkRelation({
-    object: identity,
-    relation: relation,
-    target_object: "controller-jimm",
-  });
-  return !!response?.allowed;
-};
 
 export const modelPollerMiddleware: Middleware<
   void,
@@ -164,51 +145,13 @@ export const modelPollerMiddleware: Middleware<
           }),
         );
         const jimmVersion = conn.facades.jimM?.version ?? 0;
-        const auditLogsAvailable = jimmVersion >= 4;
-        const rebacAvailable = jimmVersion >= 4;
-        const identity = conn.info.user?.identity;
-        let isJIMMAdmin = false;
-        let auditLogsAllowed = false;
-        let rebacAllowed = false;
-        if (identity) {
-          try {
-            isJIMMAdmin = await checkJIMMRelation(
-              conn,
-              identity,
-              JIMMRelation.ADMINISTRATOR,
-            );
-          } catch (error) {
-            console.error(error);
-          }
-          rebacAllowed = rebacAvailable && isJIMMAdmin;
-          if (auditLogsAvailable) {
-            try {
-              auditLogsAllowed = await checkJIMMRelation(
-                conn,
-                identity,
-                JIMMRelation.AUDIT_LOG_VIEWER,
-              );
-              if (!auditLogsAllowed) {
-                auditLogsAllowed = isJIMMAdmin;
-              }
-              reduxStore.dispatch(jujuActions.updateAuditEventsErrors(null));
-            } catch (error) {
-              reduxStore.dispatch(
-                jujuActions.updateAuditEventsErrors(
-                  AuditLogsError.CHECK_PERMISSIONS,
-                ),
-              );
-              console.error(AuditLogsError.CHECK_PERMISSIONS, error);
-            }
-          }
-        }
         reduxStore.dispatch(
           generalActions.updateControllerFeatures({
             wsControllerURL,
             features: {
-              auditLogs: auditLogsAllowed && auditLogsAvailable,
+              auditLogs: jimmVersion >= 4,
               crossModelQueries: jimmVersion >= 4,
-              rebac: rebacAllowed,
+              rebac: jimmVersion >= 4,
             },
           }),
         );
@@ -344,7 +287,6 @@ export const modelPollerMiddleware: Middleware<
     ) {
       // Intercept fetchAuditEvents actions and fetch and store audit events via the
       // controller connection.
-
       const { wsControllerURL, ...params } = action.payload;
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
@@ -373,7 +315,6 @@ export const modelPollerMiddleware: Middleware<
     ) {
       // Intercept fetchCrossModelQuery actions and fetch and store
       // cross model query via the controller connection.
-
       const { wsControllerURL, query } = action.payload;
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
@@ -401,6 +342,47 @@ export const modelPollerMiddleware: Middleware<
             : "Unable to perform search. Please try again later.";
         reduxStore.dispatch(
           jujuActions.updateCrossModelQueryErrors(errorMessage),
+        );
+      }
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
+    } else if (
+      isSpecificAction<ReturnType<typeof jujuActions.checkRelation>>(
+        action,
+        jujuActions.checkRelation.type,
+      )
+    ) {
+      // Intercept checkRelation actions and fetch and store
+      // the relation via the controller connection.
+      const { wsControllerURL, tuple } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+      try {
+        const response = await checkRelation(conn, tuple);
+        reduxStore.dispatch(
+          "error" in response
+            ? jujuActions.addCheckRelationErrors({
+                tuple,
+                errors: response.error,
+              })
+            : jujuActions.addCheckRelation({
+                tuple,
+                allowed: response.allowed,
+              }),
+        );
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Could not check permissions.";
+        reduxStore.dispatch(
+          jujuActions.addCheckRelationErrors({ tuple, errors: errorMessage }),
         );
       }
       // The action has already been passed to the next middleware

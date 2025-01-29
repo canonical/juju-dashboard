@@ -1,5 +1,10 @@
+import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
 import { rootStateFactory } from "testing/factories";
-import { generalStateFactory } from "testing/factories/general";
+import {
+  generalStateFactory,
+  authUserInfoFactory,
+  configFactory,
+} from "testing/factories/general";
 import {
   charmApplicationFactory,
   charmInfoFactory,
@@ -26,6 +31,8 @@ import {
   modelSecretsFactory,
   modelFeaturesFactory,
   modelFeaturesStateFactory,
+  rebacRelationFactory,
+  relationshipTupleFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -113,6 +120,9 @@ import {
   getSecretsContentLoaded,
   getSecretsContentLoading,
   isKubernetesModel,
+  getReBACRelationsState,
+  hasReBACPermission,
+  isJIMMAdmin,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -624,6 +634,121 @@ describe("selectors", () => {
         }),
       ),
     ).toStrictEqual(controllers);
+  });
+
+  it("getReBACRelationsState", () => {
+    const rebacRelations = [
+      rebacRelationFactory.build({
+        tuple: relationshipTupleFactory.build({
+          object: "user-eggman@external",
+          relation: JIMMRelation.ADMINISTRATOR,
+          target_object: JIMMTarget.JIMM_CONTROLLER,
+        }),
+        allowed: true,
+      }),
+    ];
+    expect(
+      getReBACRelationsState(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebacRelations,
+          }),
+        }),
+      ),
+    ).toStrictEqual(rebacRelations);
+  });
+
+  it("hasReBACPermission exists", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      hasReBACPermission(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebacRelations: [
+              rebacRelationFactory.build({
+                tuple,
+                allowed: true,
+              }),
+            ],
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("hasReBACPermission doesn't exist", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      hasReBACPermission(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebacRelations: [],
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(false);
+  });
+
+  it("isJIMMAdmin exists", () => {
+    expect(
+      isJIMMAdmin(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            config: configFactory.build({
+              controllerAPIEndpoint: "wss://controller.example.com",
+            }),
+            controllerConnections: {
+              "wss://controller.example.com": {
+                user: authUserInfoFactory.build({
+                  identity: "user-eggman@external",
+                }),
+              },
+            },
+          }),
+          juju: jujuStateFactory.build({
+            rebacRelations: [
+              rebacRelationFactory.build({
+                tuple: relationshipTupleFactory.build({
+                  object: "user-eggman@external",
+                  relation: JIMMRelation.ADMINISTRATOR,
+                  target_object: JIMMTarget.JIMM_CONTROLLER,
+                }),
+                allowed: true,
+              }),
+            ],
+          }),
+        }),
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("isJIMMAdmin doesn't exist", () => {
+    expect(
+      isJIMMAdmin(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            controllerConnections: {
+              "wss://controller.example.com": {
+                user: authUserInfoFactory.build(),
+              },
+            },
+          }),
+          juju: jujuStateFactory.build({
+            rebacRelations: [],
+          }),
+        }),
+      ),
+    ).toStrictEqual(false);
   });
 
   describe("getControllersCount", () => {

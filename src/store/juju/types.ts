@@ -7,7 +7,10 @@ import type {
 
 import type { ControllerInfo } from "juju/jimm/JIMMV3";
 import type { AuditEvent } from "juju/jimm/JIMMV3";
-import type { CrossModelQueryResponse } from "juju/jimm/JIMMV4";
+import type {
+  CrossModelQueryResponse,
+  RelationshipTuple,
+} from "juju/jimm/JIMMV4";
 import type {
   ApplicationInfo,
   FullStatusWithAnnotations,
@@ -89,6 +92,11 @@ export type ModelFeatures = {
 
 export type ModelFeaturesState = Record<string, ModelFeatures>;
 
+export type ReBACRelation = GenericState<string> & {
+  tuple: RelationshipTuple;
+  allowed?: boolean | null;
+};
+
 export type JujuState = {
   auditEvents: AuditEventsState;
   crossModelQuery: CrossModelQueryState;
@@ -100,6 +108,7 @@ export type JujuState = {
   modelFeatures: ModelFeaturesState;
   modelWatcherData?: ModelWatcherData;
   charms: Charm[];
+  rebacRelations: ReBACRelation[];
   secrets: SecretsState;
   selectedApplications: ApplicationInfo[];
 };

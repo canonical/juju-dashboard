@@ -10,28 +10,35 @@ import type { NavItem } from "@canonical/react-components/dist/components/SideNa
 import { urls as generateReBACURLS } from "@canonical/rebac-admin";
 import type { HTMLProps, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import type { NavLinkProps } from "react-router";
 import { NavLink } from "react-router";
 
 import UserMenu from "components/UserMenu/UserMenu";
 import { DARK_THEME } from "consts";
+import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
 import {
   getAppVersion,
   isAuditLogsEnabled,
   isCrossModelQueriesEnabled,
   getVisitURLs,
   isReBACEnabled,
+  getActiveUserTag,
+  getWSControllerURL,
 } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
 import {
   getControllerData,
   getGroupedModelStatusCounts,
+  hasReBACPermission,
+  isJIMMAdmin,
 } from "store/juju/selectors";
 import type { Controllers } from "store/juju/types";
 import { useAppSelector } from "store/store";
 import urls, { externalURLs } from "urls";
 
 import "./_primary-nav.scss";
+
 import { Label } from "./types";
 
 const rebacURLS = generateReBACURLS(urls.permissions);
@@ -82,6 +89,7 @@ const useControllersLink = () => {
 };
 
 const PrimaryNav = () => {
+  const dispatch = useDispatch();
   const appVersion = useSelector(getAppVersion);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const versionRequested = useRef(false);
@@ -89,7 +97,23 @@ const PrimaryNav = () => {
   const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
   const rebacEnabled = useAppSelector(isReBACEnabled);
   const { blocked: blockedModels } = useSelector(getGroupedModelStatusCounts);
+  const wsControllerURL = useAppSelector(getWSControllerURL);
+  const isJIMMControllerAdmin = useAppSelector(isJIMMAdmin);
+  const activeUser = useAppSelector((state) =>
+    getActiveUserTag(state, wsControllerURL),
+  );
+  const auditLogsPermitted = useAppSelector(
+    (state) =>
+      activeUser &&
+      hasReBACPermission(state, {
+        object: activeUser,
+        relation: JIMMRelation.AUDIT_LOG_VIEWER,
+        target_object: JIMMTarget.JIMM_CONTROLLER,
+      }),
+  );
   const controllersLink = useControllersLink();
+  const rebacAllowed = rebacEnabled && isJIMMControllerAdmin;
+  const auditLogsAllowed = auditLogsPermitted && isJIMMControllerAdmin;
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {
@@ -99,6 +123,36 @@ const PrimaryNav = () => {
       versionRequested.current = true;
     }
   }, [appVersion]);
+
+  useEffect(() => {
+    if (wsControllerURL && activeUser && (rebacEnabled || auditLogsEnabled)) {
+      dispatch(
+        jujuActions.checkRelation({
+          tuple: {
+            object: activeUser,
+            relation: JIMMRelation.ADMINISTRATOR,
+            target_object: JIMMTarget.JIMM_CONTROLLER,
+          },
+          wsControllerURL,
+        }),
+      );
+    }
+  }, [activeUser, auditLogsEnabled, dispatch, rebacEnabled, wsControllerURL]);
+
+  useEffect(() => {
+    if (wsControllerURL && activeUser && auditLogsEnabled) {
+      dispatch(
+        jujuActions.checkRelation({
+          tuple: {
+            object: activeUser,
+            relation: JIMMRelation.AUDIT_LOG_VIEWER,
+            target_object: JIMMTarget.JIMM_CONTROLLER,
+          },
+          wsControllerURL,
+        }),
+      );
+    }
+  }, [activeUser, auditLogsEnabled, dispatch, wsControllerURL]);
 
   const navigation: NavItem<NavLinkProps>[] = [
     {
@@ -112,7 +166,7 @@ const PrimaryNav = () => {
     },
     controllersLink,
   ];
-  if (auditLogsEnabled) {
+  if (auditLogsAllowed) {
     navigation.push({
       component: NavLink,
       to: urls.logs,
@@ -128,7 +182,7 @@ const PrimaryNav = () => {
       label: <>{Label.ADVANCED_SEARCH}</>,
     });
   }
-  if (rebacEnabled) {
+  if (rebacAllowed) {
     navigation.push({
       component: NavLink,
       icon: "user",

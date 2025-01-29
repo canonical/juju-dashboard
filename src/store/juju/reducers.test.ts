@@ -18,6 +18,8 @@ import {
   modelSecretsFactory,
   modelFeaturesStateFactory,
   modelSecretsContentFactory,
+  relationshipTupleFactory,
+  rebacRelationFactory,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -1024,6 +1026,142 @@ describe("reducers", () => {
           }),
         }),
       }),
+    });
+  });
+
+  it("checkRelation", () => {
+    const tuple = relationshipTupleFactory.build();
+    const state = jujuStateFactory.build({
+      rebacRelations: [],
+    });
+    expect(
+      reducer(
+        state,
+        actions.checkRelation({
+          tuple,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      rebacRelations: [
+        rebacRelationFactory.build({
+          tuple,
+          loading: true,
+        }),
+      ],
+    });
+  });
+
+  it("checkRelation already exists", () => {
+    const tuple = relationshipTupleFactory.build();
+    const state = jujuStateFactory.build({
+      rebacRelations: [
+        rebacRelationFactory.build({
+          tuple,
+          loaded: true,
+        }),
+      ],
+    });
+    expect(
+      reducer(
+        state,
+        actions.checkRelation({
+          tuple,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      rebacRelations: [
+        rebacRelationFactory.build({
+          tuple,
+          loading: true,
+          loaded: false,
+        }),
+      ],
+    });
+  });
+
+  it("addCheckRelation", () => {
+    const tuple = relationshipTupleFactory.build();
+    const state = jujuStateFactory.build({
+      rebacRelations: [
+        rebacRelationFactory.build({
+          tuple,
+          loading: true,
+        }),
+      ],
+    });
+    expect(
+      reducer(state, actions.addCheckRelation({ tuple, allowed: true })),
+    ).toStrictEqual({
+      ...state,
+      rebacRelations: [
+        rebacRelationFactory.build({
+          allowed: true,
+          tuple,
+          loading: false,
+          loaded: true,
+        }),
+      ],
+    });
+  });
+
+  it("addCheckRelationErrors", () => {
+    const tuple = relationshipTupleFactory.build();
+    const state = jujuStateFactory.build({
+      rebacRelations: [
+        rebacRelationFactory.build({
+          tuple,
+          loading: true,
+        }),
+      ],
+    });
+    expect(
+      reducer(
+        state,
+        actions.addCheckRelationErrors({ tuple, errors: "Oops!" }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      rebacRelations: [
+        rebacRelationFactory.build({
+          tuple,
+          allowed: null,
+          errors: "Oops!",
+          loading: false,
+          loaded: false,
+        }),
+      ],
+    });
+  });
+
+  it("removeCheckRelation", () => {
+    const tuple = relationshipTupleFactory.build();
+    const state = jujuStateFactory.build({
+      rebacRelations: [
+        rebacRelationFactory.build({
+          tuple,
+        }),
+        rebacRelationFactory.build({
+          tuple: relationshipTupleFactory.build({
+            object: "model-1234",
+          }),
+        }),
+      ],
+    });
+    expect(
+      reducer(state, actions.removeCheckRelation({ tuple })),
+    ).toStrictEqual({
+      ...state,
+      rebacRelations: [
+        rebacRelationFactory.build({
+          tuple: relationshipTupleFactory.build({
+            object: "model-1234",
+          }),
+        }),
+      ],
     });
   });
 });

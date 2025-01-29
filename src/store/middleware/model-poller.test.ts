@@ -4,7 +4,7 @@ import type { Mock } from "vitest";
 import { vi } from "vitest";
 
 import * as jujuModule from "juju/api";
-import type { RelationshipTuple } from "juju/jimm/JIMMV4";
+import * as jimmModule from "juju/jimm/api";
 import { pollWhoamiStart } from "juju/jimm/listeners";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import type { ControllerArgs } from "store/app/actions";
@@ -17,14 +17,10 @@ import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
   controllerFactory,
   jujuStateFactory,
+  relationshipTupleFactory,
 } from "testing/factories/juju/juju";
 
-import {
-  AuditLogsError,
-  LoginError,
-  ModelsError,
-  modelPollerMiddleware,
-} from "./model-poller";
+import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
 
 vi.mock("juju/api", () => ({
   disableControllerUUIDMasking: vi
@@ -36,8 +32,12 @@ vi.mock("juju/api", () => ({
   loginWithBakery: vi.fn(),
   fetchAllModelStatuses: vi.fn(),
   setModelSharingPermissions: vi.fn(),
-  findAuditEvents: vi.fn(),
+}));
+
+vi.mock("juju/jimm/api", () => ({
+  checkRelation: vi.fn(),
   crossModelQuery: vi.fn(),
+  findAuditEvents: vi.fn(),
 }));
 
 describe("model poller", () => {
@@ -329,114 +329,6 @@ describe("model poller", () => {
       checkRelation: vi.fn().mockImplementation(async () => ({
         allowed: true,
       })),
-      version: 4,
-    };
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    await runMiddleware();
-    expect(next).not.toHaveBeenCalled();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.updateControllerFeatures({
-        wsControllerURL,
-        features: {
-          auditLogs: true,
-          crossModelQueries: true,
-          rebac: true,
-        },
-      }),
-    );
-  });
-
-  it("enables audit logs if the user has audit log permissions", async () => {
-    conn.facades.modelManager.listModels.mockResolvedValue({
-      "user-models": [],
-    });
-    conn.facades.jimM = {
-      checkRelation: vi
-        .fn()
-        .mockImplementation(async (payload: RelationshipTuple) => {
-          if (payload.relation === "audit_log_viewer") {
-            return {
-              allowed: true,
-            };
-          }
-        }),
-      version: 4,
-    };
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    await runMiddleware();
-    expect(next).not.toHaveBeenCalled();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.updateControllerFeatures({
-        wsControllerURL,
-        features: {
-          auditLogs: true,
-          crossModelQueries: true,
-          rebac: false,
-        },
-      }),
-    );
-  });
-
-  it("enables audit logs if the user is an administrator", async () => {
-    conn.facades.modelManager.listModels.mockResolvedValue({
-      "user-models": [],
-    });
-    conn.facades.jimM = {
-      checkRelation: vi
-        .fn()
-        .mockImplementation(async (payload: RelationshipTuple) => {
-          if (payload.relation === "audit_log_viewer") {
-            return {
-              allowed: false,
-            };
-          }
-          if (payload.relation === "administrator") {
-            return {
-              allowed: true,
-            };
-          }
-        }),
-      version: 4,
-    };
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    await runMiddleware();
-    expect(next).not.toHaveBeenCalled();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.updateControllerFeatures({
-        wsControllerURL,
-        features: {
-          auditLogs: true,
-          crossModelQueries: true,
-          rebac: true,
-        },
-      }),
-    );
-  });
-
-  it("enables ReBAC if the user is an administrator", async () => {
-    conn.facades.modelManager.listModels.mockResolvedValue({
-      "user-models": [],
-    });
-    conn.facades.jimM = {
-      checkRelation: vi
-        .fn()
-        .mockImplementation(async (payload: RelationshipTuple) => {
-          return {
-            allowed: payload.relation === "administrator",
-          };
-        }),
       version: 4,
     };
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
@@ -784,7 +676,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "findAuditEvents").mockImplementation(() =>
+    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(() =>
       Promise.resolve(events),
     );
     const middleware = await runMiddleware();
@@ -793,7 +685,7 @@ describe("model poller", () => {
       wsControllerURL: "wss://example.com",
     });
     await middleware(next)(action);
-    expect(jujuModule.findAuditEvents).toHaveBeenCalledWith(
+    expect(jimmModule.findAuditEvents).toHaveBeenCalledWith(
       expect.any(Object),
       { "user-tag": "user-eggman@external" },
     );
@@ -810,7 +702,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "findAuditEvents").mockImplementation(() =>
+    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(() =>
       Promise.resolve(events),
     );
     const middleware = await runMiddleware();
@@ -819,27 +711,7 @@ describe("model poller", () => {
       wsControllerURL: "nothing",
     });
     await middleware(next)(action);
-    expect(jujuModule.findAuditEvents).not.toHaveBeenCalled();
-  });
-
-  it("should handle Audit Logs user permission error", async () => {
-    conn.facades.jimM = {
-      checkRelation: vi.fn().mockRejectedValue(new Error("Oops!")),
-      version: 4,
-    };
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    await runMiddleware();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateAuditEventsErrors(AuditLogsError.CHECK_PERMISSIONS),
-    );
-    expect(console.error).toHaveBeenCalledWith(
-      AuditLogsError.CHECK_PERMISSIONS,
-      new Error("Oops!"),
-    );
+    expect(jimmModule.findAuditEvents).not.toHaveBeenCalled();
   });
 
   it("should handle Audit Logs error", async () => {
@@ -848,7 +720,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "findAuditEvents").mockImplementation(() =>
+    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(() =>
       Promise.reject(new Error("Uh oh!")),
     );
     const middleware = await runMiddleware();
@@ -873,7 +745,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "crossModelQuery").mockImplementation(() =>
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(() =>
       Promise.resolve(crossModelQueryResponse),
     );
     const middleware = await runMiddleware();
@@ -882,7 +754,7 @@ describe("model poller", () => {
       query: ".",
     });
     await middleware(next)(action);
-    expect(jujuModule.crossModelQuery).toHaveBeenCalledWith(
+    expect(jimmModule.crossModelQuery).toHaveBeenCalledWith(
       expect.any(Object),
       ".",
     );
@@ -899,7 +771,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "crossModelQuery").mockImplementation(() =>
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(() =>
       Promise.resolve(crossModelQueryResponse),
     );
     const middleware = await runMiddleware();
@@ -908,7 +780,7 @@ describe("model poller", () => {
       query: ".",
     });
     await middleware(next)(action);
-    expect(jujuModule.crossModelQuery).not.toHaveBeenCalled();
+    expect(jimmModule.crossModelQuery).not.toHaveBeenCalled();
   });
 
   it("handles errors object from response when fetching cross model query results", async () => {
@@ -921,7 +793,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "crossModelQuery").mockImplementation(() =>
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(() =>
       Promise.resolve(crossModelQueryResponse),
     );
     const middleware = await runMiddleware();
@@ -941,7 +813,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "crossModelQuery").mockImplementation(() =>
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(() =>
       Promise.reject(new Error("Uh oh!")),
     );
     const middleware = await runMiddleware();
@@ -965,7 +837,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "crossModelQuery")
+    vi.spyOn(jimmModule, "crossModelQuery")
       // eslint-disable-next-line prefer-promise-reject-errors
       .mockImplementation(() => Promise.reject("Uh oh!"));
     const middleware = await runMiddleware();
@@ -982,6 +854,104 @@ describe("model poller", () => {
       jujuActions.updateCrossModelQueryErrors(
         "Unable to perform search. Please try again later.",
       ),
+    );
+  });
+
+  it("handles checking relations", async () => {
+    const tuple = relationshipTupleFactory.build();
+    const checkRelationResponse = { allowed: true };
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jimmModule, "checkRelation").mockImplementation(() =>
+      Promise.resolve(checkRelationResponse),
+    );
+    const middleware = await runMiddleware();
+    const action = jujuActions.checkRelation({
+      wsControllerURL: "wss://example.com",
+      tuple,
+    });
+    await middleware(next)(action);
+    expect(jimmModule.checkRelation).toHaveBeenCalledWith(
+      expect.any(Object),
+      tuple,
+    );
+    expect(next).toHaveBeenCalledWith(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.addCheckRelation({ tuple, allowed: true }),
+    );
+  });
+
+  it("handles no controller when checking relations", async () => {
+    const tuple = relationshipTupleFactory.build();
+    const checkRelationResponse = { allowed: true };
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jimmModule, "checkRelation").mockImplementation(() =>
+      Promise.resolve(checkRelationResponse),
+    );
+    const middleware = await runMiddleware();
+    const action = jujuActions.checkRelation({
+      wsControllerURL: "nothing",
+      tuple,
+    });
+    await middleware(next)(action);
+    expect(jimmModule.checkRelation).not.toHaveBeenCalled();
+  });
+
+  it("handles errors from response when checking relations", async () => {
+    const tuple = relationshipTupleFactory.build();
+    const checkRelationResponse = {
+      error: "target not found",
+    };
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jimmModule, "checkRelation").mockImplementation(() =>
+      Promise.resolve(checkRelationResponse),
+    );
+    const middleware = await runMiddleware();
+    const action = jujuActions.checkRelation({
+      wsControllerURL: "wss://example.com",
+      tuple,
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.addCheckRelationErrors({
+        tuple,
+        errors: checkRelationResponse.error,
+      }),
+    );
+  });
+
+  it("handles non-standard errors when checking relations", async () => {
+    const tuple = relationshipTupleFactory.build();
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jimmModule, "checkRelation")
+      // eslint-disable-next-line prefer-promise-reject-errors
+      .mockImplementation(() => Promise.reject("Uh oh!"));
+    const middleware = await runMiddleware();
+    const action = jujuActions.checkRelation({
+      wsControllerURL: "wss://example.com",
+      tuple,
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.addCheckRelationErrors({
+        tuple,
+        errors: "Could not check permissions.",
+      }),
     );
   });
 });
