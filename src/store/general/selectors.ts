@@ -67,7 +67,17 @@ export const getConnectionError = createSelector(
 */
 export const getLoginErrors = createSelector(
   [slice],
-  (sliceState) => sliceState?.loginErrors,
+  (sliceState) => sliceState?.login?.errors,
+);
+
+/**
+  Fetches login loading state from state
+  @param state The application state.
+  @returns The collection of error messages if any.
+*/
+export const getLoadingState = createSelector(
+  [slice],
+  (sliceState) => sliceState?.login?.loading,
 );
 
 /**

@@ -112,8 +112,9 @@ describe("Controllers table", () => {
   });
 
   it("displays login errors", async () => {
-    state.general.loginErrors = {
-      "wss://jimm.jujucharms.com/api": "Uh oh!",
+    state.general.login = {
+      errors: { "wss://jimm.jujucharms.com/api": "Uh oh!" },
+      loading: false,
     };
 
     state.juju = jujuStateFactory.build({

@@ -64,6 +64,7 @@ export const modelPollerMiddleware: Middleware<
         let intervalId: number | null | undefined;
         if (authMethod === AuthMethod.OIDC) {
           try {
+            reduxStore.dispatch(generalActions.updateLoginLoading(true));
             const whoamiResponse = await reduxStore.dispatch(whoami());
             const user = unwrapResult(whoamiResponse);
             if (user) {

@@ -62,6 +62,8 @@ export const addWhoamiListener = (
           }
           // If the user no longer has access then clean up state and display the login screen.
           await listenerApi.dispatch(appThunks.logOut());
+        } finally {
+          listenerApi.dispatch(generalActions.updateLoginLoading(false));
         }
       });
       await listenerApi.condition(pollWhoamiStop.match);

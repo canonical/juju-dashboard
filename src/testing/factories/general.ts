@@ -56,7 +56,7 @@ export const generalStateFactory = GeneralStateFactory.define(() => ({
   controllerConnections: null,
   controllerFeatures: null,
   credentials: null,
-  loginErrors: null,
+  login: null,
   pingerIntervalIds: null,
   visitURLs: null,
 }));

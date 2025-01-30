@@ -12,13 +12,13 @@ const slice = createSlice({
     controllerConnections: null,
     controllerFeatures: null,
     credentials: null,
-    loginErrors: null,
+    login: null,
     pingerIntervalIds: null,
     visitURLs: null,
   } as GeneralState,
   reducers: {
     cleanupLoginErrors: (state) => {
-      state.loginErrors = null;
+      state.login = null;
     },
     updateControllerConnection: (state, action) => {
       const connections = state.controllerConnections ?? {};
@@ -46,10 +46,13 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ wsControllerURL: string; error: string }>,
     ) => {
-      if (!state.loginErrors) {
-        state.loginErrors = {};
+      if (!state.login) {
+        state.login = {
+          errors: {},
+          loading: false,
+        };
       }
-      state.loginErrors[action.payload.wsControllerURL] = action.payload.error;
+      state.login.errors[action.payload.wsControllerURL] = action.payload.error;
     },
     storeUserPass: (state, action) => {
       const credentials = state.credentials ?? {};
@@ -85,6 +88,15 @@ const slice = createSlice({
       const intervals = state.pingerIntervalIds ?? {};
       intervals[action.payload.wsControllerURL] = action.payload.intervalId;
       state.pingerIntervalIds = intervals;
+    },
+    updateLoginLoading: (state, action: PayloadAction<boolean>) => {
+      if (!state.login) {
+        state.login = {
+          errors: {},
+          loading: false,
+        };
+      }
+      state.login.loading = action.payload;
     },
   },
 });

@@ -98,8 +98,10 @@ describe("LogIn", () => {
   it("renders a login error if one exists", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
-        loginErrors: {
-          "wss://controller.example.com": "Controller rejected request",
+        login: {
+          errors: {
+            "wss://controller.example.com": "Controller rejected request",
+          },
         },
         config: configFactory.build({
           authMethod: AuthMethod.LOCAL,
@@ -115,8 +117,8 @@ describe("LogIn", () => {
   it("renders invalid username login errors", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
-        loginErrors: {
-          "wss://controller.example.com": ErrorResponse.INVALID_TAG,
+        login: {
+          errors: { "wss://controller.example.com": ErrorResponse.INVALID_TAG },
         },
         config: configFactory.build({
           authMethod: AuthMethod.LOCAL,
@@ -130,8 +132,10 @@ describe("LogIn", () => {
   it("renders invalid field errors", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
-        loginErrors: {
-          "wss://controller.example.com": ErrorResponse.INVALID_FIELD,
+        login: {
+          errors: {
+            "wss://controller.example.com": ErrorResponse.INVALID_FIELD,
+          },
         },
         config: configFactory.build({
           authMethod: AuthMethod.LOCAL,
