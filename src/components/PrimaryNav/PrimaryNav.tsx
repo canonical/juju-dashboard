@@ -126,9 +126,8 @@ const PrimaryNav = () => {
   }, [appVersion]);
 
   useEffect(() => {
-    const hasAPIData = wsControllerURL && activeUser;
     // Only check the relation if the controller supports audit logs or ReBAC.
-    if (hasAPIData && (rebacEnabled || auditLogsEnabled)) {
+    if (wsControllerURL && activeUser && (rebacEnabled || auditLogsEnabled)) {
       dispatch(
         jujuActions.checkRelation({
           tuple: {
@@ -143,9 +142,8 @@ const PrimaryNav = () => {
   }, [activeUser, auditLogsEnabled, dispatch, rebacEnabled, wsControllerURL]);
 
   useEffect(() => {
-    const hasAPIData = wsControllerURL && activeUser;
     // Only check the relation if the controller supports audit logs.
-    if (hasAPIData && auditLogsEnabled) {
+    if (wsControllerURL && activeUser && auditLogsEnabled) {
       dispatch(
         jujuActions.checkRelation({
           tuple: {
