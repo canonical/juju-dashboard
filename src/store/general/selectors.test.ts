@@ -5,6 +5,7 @@ import {
   controllerFeaturesStateFactory,
   credentialFactory,
   generalStateFactory,
+  authUserInfoFactory,
 } from "testing/factories/general";
 
 import {
@@ -29,6 +30,7 @@ import {
   isAuditLogsEnabled,
   getAnalyticsEnabled,
   isReBACEnabled,
+  getControllerUserTag,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -420,5 +422,24 @@ describe("selectors", () => {
         }),
       ),
     ).toBe("wss://controller.example.com");
+  });
+
+  it("getControllerUserTag", () => {
+    expect(
+      getControllerUserTag(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            config: configFactory.build({
+              controllerAPIEndpoint: "wss://controller.example.com",
+            }),
+            controllerConnections: {
+              "wss://controller.example.com": {
+                user: authUserInfoFactory.build(),
+              },
+            },
+          }),
+        }),
+      ),
+    ).toBe("user-eggman@external");
   });
 });

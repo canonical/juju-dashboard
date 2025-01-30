@@ -1,3 +1,4 @@
+import type { AuthUserInfo } from "@canonical/jujulib/dist/api/facades/admin/AdminV3";
 import { Factory } from "fishery";
 
 import {
@@ -32,6 +33,13 @@ export const controllerFeaturesFactory = Factory.define<ControllerFeatures>(
 
 export const controllerFeaturesStateFactory =
   Factory.define<ControllerFeaturesState>(() => ({}));
+
+export const authUserInfoFactory = Factory.define<AuthUserInfo>(() => ({
+  "display-name": "eggman",
+  identity: "user-eggman@external",
+  "controller-access": "",
+  "model-access": "",
+}));
 
 class GeneralStateFactory extends Factory<GeneralState> {
   withConfig() {

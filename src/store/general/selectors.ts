@@ -169,6 +169,11 @@ export const getWSControllerURL = createSelector(
   (config) => config?.controllerAPIEndpoint,
 );
 
+export const getControllerUserTag = createSelector(
+  [(state) => state, getWSControllerURL],
+  getActiveUserTag,
+);
+
 export const isAuditLogsEnabled = createSelector(
   [getIsJuju, getWSControllerURL, (state) => state],
   (isJuju, wsControllerURL, state) =>

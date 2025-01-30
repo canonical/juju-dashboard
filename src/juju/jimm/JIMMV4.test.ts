@@ -2,7 +2,7 @@ import type { ConnectionInfo, Transport } from "@canonical/jujulib";
 
 import { connectionInfoFactory } from "testing/factories/juju/jujulib";
 
-import JIMMV4 from "./JIMMV4";
+import JIMMV4, { JIMMRelation } from "./JIMMV4";
 
 describe("JIMMV4", () => {
   let transport: Transport;
@@ -19,7 +19,7 @@ describe("JIMMV4", () => {
     const jimm = new JIMMV4(transport, connectionInfo);
     const params = {
       object: "user-eggman@external",
-      relation: "member",
+      relation: JIMMRelation.MEMBER,
       target_object: "group-administrators",
     };
     void jimm.checkRelation(params);
