@@ -1062,13 +1062,16 @@ export const getReBACRelationsState = createSelector(
   (sliceState) => sliceState.rebacRelations,
 );
 
-export const hasReBACPermission = createSelector(
+export const getReBACPermission = createSelector(
   [getReBACRelationsState, (_state, tuple: RelationshipTuple) => tuple],
-  (rebacRelations, tuple) => {
-    const relation = rebacRelations.find((relation) =>
-      isEqual(relation.tuple, tuple),
-    );
-    return relation?.allowed ?? false;
+  (rebacRelations, tuple) =>
+    rebacRelations.find((relation) => isEqual(relation.tuple, tuple)),
+);
+
+export const hasReBACPermission = createSelector(
+  [(state, tuple: RelationshipTuple) => getReBACPermission(state, tuple)],
+  (permission) => {
+    return permission?.allowed ?? false;
   },
 );
 
