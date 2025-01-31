@@ -59,6 +59,16 @@ describe("reducers", () => {
     });
   });
 
+  it("updateLoginLoading", () => {
+    const state = generalStateFactory.build({
+      login: null,
+    });
+    expect(reducer(state, actions.updateLoginLoading(true))).toStrictEqual({
+      ...state,
+      login: { loading: true },
+    });
+  });
+
   it("storeConfig", () => {
     const state = generalStateFactory.build();
     const newConfig = configFactory.build({
@@ -72,7 +82,7 @@ describe("reducers", () => {
 
   it("storeLoginError", () => {
     const state = generalStateFactory.build({
-      loginErrors: { "wss://example.com": "old error" },
+      login: { errors: { "wss://example.com": "old error" } },
     });
     expect(
       reducer(
@@ -84,13 +94,13 @@ describe("reducers", () => {
       ),
     ).toStrictEqual({
       ...state,
-      loginErrors: { "wss://example.com": "new error" },
+      login: { errors: { "wss://example.com": "new error" }, loading: false },
     });
   });
 
   it("storeLoginError creates login errors object if it is null", () => {
     const state = generalStateFactory.build({
-      loginErrors: null,
+      login: null,
     });
     expect(
       reducer(
@@ -102,7 +112,7 @@ describe("reducers", () => {
       ),
     ).toStrictEqual({
       ...state,
-      loginErrors: { "wss://example.com": "new error" },
+      login: { errors: { "wss://example.com": "new error" }, loading: false },
     });
   });
 
@@ -205,11 +215,13 @@ describe("reducers", () => {
 
   it("cleanupLoginErrors", () => {
     const state = generalStateFactory.build({
-      loginErrors: { "wss://example.com": "Uh oh!" },
+      login: { errors: { "wss://example.com": "Uh oh!" } },
     });
     expect(reducer(state, actions.cleanupLoginErrors())).toStrictEqual({
       ...state,
-      loginErrors: null,
+      login: {
+        errors: {},
+      },
     });
   });
 

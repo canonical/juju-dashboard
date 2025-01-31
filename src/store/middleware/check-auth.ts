@@ -73,6 +73,7 @@ export const checkAuthMiddleware: Middleware<
       generalActions.storeVisitURL.type,
       generalActions.updateControllerConnection.type,
       generalActions.updatePingerIntervalId.type,
+      generalActions.updateLoginLoading.type,
       jimmListeners.pollWhoamiStart.type,
       jimmListeners.pollWhoamiStop.type,
       jujuActions.populateMissingAllWatcherData.type,

@@ -31,6 +31,7 @@ import {
   getAnalyticsEnabled,
   isReBACEnabled,
   getControllerUserTag,
+  getLoginLoading,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -120,7 +121,7 @@ describe("selectors", () => {
       getLoginErrors(
         rootStateFactory.build({
           general: generalStateFactory.build({
-            loginErrors: { "wss://example.com": "error" },
+            login: { errors: { "wss://example.com": "error" } },
           }),
         }),
       ),
@@ -132,12 +133,24 @@ describe("selectors", () => {
       getLoginError(
         rootStateFactory.build({
           general: generalStateFactory.build({
-            loginErrors: { "wss://example.com": "error" },
+            login: { errors: { "wss://example.com": "error" } },
           }),
         }),
         "wss://example.com",
       ),
     ).toBe("error");
+  });
+
+  it("getLoginLoading", () => {
+    expect(
+      getLoginLoading(
+        rootStateFactory.build({
+          general: generalStateFactory.build({
+            login: { loading: true },
+          }),
+        }),
+      ),
+    ).toStrictEqual(true);
   });
 
   it("getPingerIntervalIds", () => {
