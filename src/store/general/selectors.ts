@@ -75,7 +75,7 @@ export const getLoginErrors = createSelector(
   @param state The application state.
   @returns The collection of error messages if any.
 */
-export const getLoadingState = createSelector(
+export const getLoginLoading = createSelector(
   [slice],
   (sliceState) => sliceState?.login?.loading,
 );

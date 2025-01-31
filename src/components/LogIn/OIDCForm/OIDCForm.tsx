@@ -2,7 +2,7 @@ import { Button, Spinner } from "@canonical/react-components";
 
 import { endpoints } from "juju/jimm/api";
 import { actions as generalActions } from "store/general";
-import { getLoadingState } from "store/general/selectors";
+import { getLoginLoading } from "store/general/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
 import { Label } from "../types";
@@ -11,9 +11,9 @@ import { TestId } from "./types";
 
 const OIDCForm = () => {
   const dispatch = useAppDispatch();
-  const loadingState = useAppSelector(getLoadingState);
+  const loginLoading = useAppSelector(getLoginLoading);
 
-  return loadingState ? (
+  return loginLoading ? (
     <button className="p-button--neutral" disabled>
       <Spinner text="Connecting..." />
     </button>
@@ -21,6 +21,7 @@ const OIDCForm = () => {
     <Button
       appearance="positive"
       element="a"
+      // this is so that a spinner is shown as soon as user interacts with the button
       onClick={() => dispatch(generalActions.updateLoginLoading(true))}
       href={endpoints().login}
       data-testid={TestId.OIDC_LOGIN}

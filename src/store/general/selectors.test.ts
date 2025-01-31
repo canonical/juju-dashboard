@@ -31,7 +31,7 @@ import {
   getAnalyticsEnabled,
   isReBACEnabled,
   getControllerUserTag,
-  getLoadingState,
+  getLoginLoading,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -141,9 +141,9 @@ describe("selectors", () => {
     ).toBe("error");
   });
 
-  it("getLoadingState", () => {
+  it("getLoginLoading", () => {
     expect(
-      getLoadingState(
+      getLoginLoading(
         rootStateFactory.build({
           general: generalStateFactory.build({
             login: { loading: true },

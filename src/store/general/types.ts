@@ -39,8 +39,8 @@ export type ControllerFeatures = {
 export type ControllerFeaturesState = Record<string, ControllerFeatures>;
 
 export type Login = {
-  errors: Record<string, string>;
-  loading: boolean;
+  errors?: Record<string, string>;
+  loading?: boolean;
 };
 
 export type GeneralState = {

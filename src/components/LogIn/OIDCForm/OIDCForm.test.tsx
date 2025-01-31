@@ -12,10 +12,6 @@ import { Label } from "../types";
 import OIDCForm from "./OIDCForm";
 
 describe("OIDCForm", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it("should render a login link", () => {
     renderComponent(<OIDCForm />);
     expect(

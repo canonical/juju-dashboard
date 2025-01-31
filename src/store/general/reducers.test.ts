@@ -65,7 +65,7 @@ describe("reducers", () => {
     });
     expect(reducer(state, actions.updateLoginLoading(true))).toStrictEqual({
       ...state,
-      login: { errors: {}, loading: true },
+      login: { loading: true },
     });
   });
 
@@ -94,7 +94,7 @@ describe("reducers", () => {
       ),
     ).toStrictEqual({
       ...state,
-      login: { errors: { "wss://example.com": "new error" } },
+      login: { errors: { "wss://example.com": "new error" }, loading: false },
     });
   });
 
@@ -219,7 +219,9 @@ describe("reducers", () => {
     });
     expect(reducer(state, actions.cleanupLoginErrors())).toStrictEqual({
       ...state,
-      login: null,
+      login: {
+        errors: {},
+      },
     });
   });
 

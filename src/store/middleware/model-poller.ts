@@ -74,6 +74,7 @@ export const modelPollerMiddleware: Middleware<
             } else {
               // If there's no response that means the user is not
               // authenticated, so halt the connection attempt.
+              reduxStore.dispatch(generalActions.updateLoginLoading(false));
               return;
             }
           } catch (error) {
@@ -114,6 +115,10 @@ export const modelPollerMiddleware: Middleware<
             }),
           );
           return console.log(LoginError.LOG, e, controllerData);
+        } finally {
+          if (authMethod === AuthMethod.OIDC) {
+            reduxStore.dispatch(generalActions.updateLoginLoading(false));
+          }
         }
 
         if (!conn?.info || !Object.keys(conn.info).length) {
