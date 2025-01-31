@@ -3,6 +3,7 @@ import { screen, waitFor, within } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
+import { actions as jujuActions } from "store/juju";
 import {
   authUserInfoFactory,
   configFactory,
@@ -31,11 +32,14 @@ vi.mock("@canonical/jujulib/dist/api/versions", () => ({
   dashboardUpdateAvailable: vi.fn(),
 }));
 
-describe("Primary Nav", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
+vi.mock("store/juju", async () => {
+  const actual = await vi.importActual("store/juju");
+  return {
+    ...actual,
+  };
+});
 
+describe("PrimaryNav", () => {
   it("displays correct number of blocked models", () => {
     const state = rootStateFactory.withGeneralConfig().build({
       juju: jujuStateFactory.build({
@@ -408,4 +412,112 @@ it("should show Permissions navigation button if the controller supports it", ()
   expect(
     screen.getByRole("link", { name: Label.PERMISSIONS }),
   ).toBeInTheDocument();
+});
+
+it("should fetch permissions", () => {
+  vi.spyOn(jujuActions, "checkRelation").mockReturnValue({
+    type: "juju/checkRelation",
+    payload: {
+      tuple: {
+        object: "user-eggman@external",
+        relation: JIMMRelation.AUDIT_LOG_VIEWER,
+        target_object: JIMMTarget.JIMM_CONTROLLER,
+      },
+      wsControllerURL: "wss://controller.example.com",
+    },
+  });
+  const state = rootStateFactory.build({
+    general: generalStateFactory.build({
+      config: configFactory.build({
+        controllerAPIEndpoint: "wss://controller.example.com",
+        isJuju: false,
+      }),
+      controllerConnections: {
+        "wss://controller.example.com": {
+          user: authUserInfoFactory.build(),
+        },
+      },
+      controllerFeatures: controllerFeaturesStateFactory.build({
+        "wss://controller.example.com": controllerFeaturesFactory.build({
+          auditLogs: true,
+          rebac: true,
+        }),
+      }),
+    }),
+    juju: jujuStateFactory.build({
+      rebacRelations: [],
+    }),
+  });
+  renderComponent(<PrimaryNav />, { state });
+  expect(jujuActions.checkRelation).toHaveBeenCalledWith({
+    tuple: {
+      object: "user-eggman@external",
+      relation: JIMMRelation.AUDIT_LOG_VIEWER,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    },
+    wsControllerURL: "wss://controller.example.com",
+  });
+  expect(jujuActions.checkRelation).toHaveBeenCalledWith({
+    tuple: {
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    },
+    wsControllerURL: "wss://controller.example.com",
+  });
+});
+
+it("should not fetch permissions if they've already been loaded", () => {
+  vi.spyOn(jujuActions, "checkRelation").mockReturnValue({
+    type: "juju/checkRelation",
+    payload: {
+      tuple: {
+        object: "user-eggman@external",
+        relation: JIMMRelation.AUDIT_LOG_VIEWER,
+        target_object: JIMMTarget.JIMM_CONTROLLER,
+      },
+      wsControllerURL: "wss://controller.example.com",
+    },
+  });
+  const state = rootStateFactory.build({
+    general: generalStateFactory.build({
+      config: configFactory.build({
+        controllerAPIEndpoint: "wss://controller.example.com",
+        isJuju: false,
+      }),
+      controllerConnections: {
+        "wss://controller.example.com": {
+          user: authUserInfoFactory.build(),
+        },
+      },
+      controllerFeatures: controllerFeaturesStateFactory.build({
+        "wss://controller.example.com": controllerFeaturesFactory.build({
+          auditLogs: true,
+          rebac: true,
+        }),
+      }),
+    }),
+    juju: jujuStateFactory.build({
+      rebacRelations: [
+        rebacRelationFactory.build({
+          tuple: relationshipTupleFactory.build({
+            object: "user-eggman@external",
+            relation: JIMMRelation.AUDIT_LOG_VIEWER,
+            target_object: JIMMTarget.JIMM_CONTROLLER,
+          }),
+          allowed: true,
+        }),
+        rebacRelationFactory.build({
+          tuple: relationshipTupleFactory.build({
+            object: "user-eggman@external",
+            relation: JIMMRelation.ADMINISTRATOR,
+            target_object: JIMMTarget.JIMM_CONTROLLER,
+          }),
+          allowed: true,
+        }),
+      ],
+    }),
+  });
+  renderComponent(<PrimaryNav />, { state });
+  expect(jujuActions.checkRelation).not.toHaveBeenCalled();
 });
