@@ -24,7 +24,7 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
-import { secretIsAppOwned } from "utils";
+import { getLatestRevision, secretIsAppOwned } from "utils";
 
 import SecretContent from "../SecretContent";
 
@@ -55,6 +55,7 @@ const SecretsTable = () => {
       return [];
     }
     return secrets.map((secret) => {
+      const latestRevision = getLatestRevision(secret);
       const id = secret.uri.replace(/^secret:/, "");
       let owner: ReactNode = secret["owner-tag"];
       if (secret["owner-tag"]?.startsWith("model-")) {
@@ -139,7 +140,7 @@ const SecretsTable = () => {
             </div>
           </div>
         ),
-        revision: secret["latest-revision"],
+        revision: latestRevision,
         description: secret.description,
         granted: <span data-testid={TestId.GRANTED_TO}>{granted}</span>,
         owner,

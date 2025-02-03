@@ -5,7 +5,7 @@ import type {
 } from "@canonical/react-components";
 import { FormikField, Select } from "@canonical/react-components";
 
-import { getSecretByURI } from "store/juju/selectors";
+import { getSecretByURI, getSecretLatestRevision } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
 import { Label } from "./types";
@@ -22,6 +22,9 @@ const RevisionField = ({ modelUUID, secretURI, ...props }: Props) => {
   const secret = useAppSelector((state) =>
     getSecretByURI(state, modelUUID, secretURI),
   );
+  const latestRevision = useAppSelector((state) =>
+    getSecretLatestRevision(state, modelUUID, secretURI),
+  );
   return (
     <FormikField
       label={Label.REVISION}
@@ -29,7 +32,7 @@ const RevisionField = ({ modelUUID, secretURI, ...props }: Props) => {
       component={Select}
       options={
         [...(secret?.revisions ?? [])].reverse().map(({ revision }) => ({
-          label: `${revision}${revision === secret?.["latest-revision"] ? " (latest)" : ""}`,
+          label: `${revision}${revision === latestRevision ? " (latest)" : ""}`,
           value: revision.toString(),
         })) ?? []
       }

@@ -28,6 +28,7 @@ import {
   getSecretsContentLoaded,
   getSecretsContentLoading,
   getModelByUUID,
+  getSecretLatestRevision,
 } from "store/juju/selectors";
 import { useAppSelector, useAppDispatch } from "store/store";
 import { toErrorString } from "utils";
@@ -75,6 +76,9 @@ const SecretForm = ({
   const secret = useAppSelector((state) =>
     getSecretByURI(state, modelUUID, secretURI),
   );
+  const latestRevision = useAppSelector((state) =>
+    getSecretLatestRevision(state, modelUUID, secretURI),
+  );
   const wsControllerURL = useAppSelector((state) =>
     getModelByUUID(state, modelUUID),
   )?.wsControllerURL;
@@ -105,10 +109,10 @@ const SecretForm = ({
   const defaultPairs = [{ key: "", value: "", isBase64: false }];
 
   useEffect(() => {
-    if (secretURI) {
-      getSecretContent(secretURI);
+    if (secretURI && latestRevision) {
+      getSecretContent(secretURI, latestRevision);
     }
-  }, [getSecretContent, secretURI]);
+  }, [getSecretContent, secretURI, latestRevision]);
 
   useEffect(
     () => () => {

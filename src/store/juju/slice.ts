@@ -69,6 +69,7 @@ const getOrSetContentState = (state: JujuState, modelUUID: string) => {
       ...DEFAULT_MODEL_SECRETS_CONTENT,
     };
   }
+  // console.log("**", state.secrets[modelUUID].content?.errors); //issue
   return content;
 };
 
@@ -416,6 +417,7 @@ const slice = createSlice({
         } & WsControllerURLParam
       >,
     ) => {
+      console.log("**", action.payload.errors);
       const content = getOrSetContentState(state, action.payload.modelUUID);
       content.content = null;
       content.errors = action.payload.errors;

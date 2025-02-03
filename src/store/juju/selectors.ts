@@ -24,7 +24,7 @@ import {
   getControllerUserTag,
 } from "store/general/selectors";
 import type { RootState } from "store/store";
-import { getUserName } from "utils";
+import { getLatestRevision, getUserName } from "utils";
 
 import type {
   Controllers,
@@ -215,6 +215,11 @@ export const getSecretByURI = createSelector(
   ],
   (secrets, secretURI) =>
     secretURI ? secrets?.find(({ uri }) => uri === secretURI) : null,
+);
+
+export const getSecretLatestRevision = createSelector(
+  [getSecretByURI],
+  (secret) => getLatestRevision(secret),
 );
 
 export const getSecretsContentState = createSelector(
