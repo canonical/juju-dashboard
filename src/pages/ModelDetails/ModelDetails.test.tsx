@@ -1,6 +1,7 @@
 import type { Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
 import { screen, waitFor } from "@testing-library/react";
+import log from "loglevel";
 import { vi } from "vitest";
 
 import * as juju from "juju/api";
@@ -37,6 +38,14 @@ vi.mock("@canonical/jujulib", () => ({
   connectAndLogin: vi.fn(),
 }));
 
+vi.mock("loglevel", async () => {
+  const actual = await vi.importActual("loglevel");
+  return {
+    ...actual,
+    error: vi.fn(),
+  };
+});
+
 describe("ModelDetails", () => {
   let state: RootState;
   let client: {
@@ -50,6 +59,7 @@ describe("ModelDetails", () => {
   });
 
   beforeEach(() => {
+    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
     state = rootStateFactory.withGeneralConfig().build({
       juju: jujuStateFactory.build({
         models: {
@@ -213,8 +223,6 @@ describe("ModelDetails", () => {
   });
 
   it("should display console error when trying to stop model watcher", async () => {
-    const consoleError = console.error;
-    console.error = vi.fn();
     vi.spyOn(juju, "startModelWatcher").mockImplementation(
       vi.fn().mockResolvedValue({
         conn: client.conn,
@@ -234,10 +242,9 @@ describe("ModelDetails", () => {
     );
     unmount();
     await waitFor(() => expect(juju.stopModelWatcher).toHaveBeenCalledTimes(1));
-    expect(console.error).toHaveBeenCalledWith(
+    expect(log.error).toHaveBeenCalledWith(
       ModelDetailsLabel.MODEL_WATCHER_ERROR,
       new Error("Failed to stop model watcher!"),
     );
-    console.error = consoleError;
   });
 });

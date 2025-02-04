@@ -1,4 +1,5 @@
 import { screen, waitFor } from "@testing-library/dom";
+import log from "loglevel";
 import type { UnknownAction } from "redux";
 import { vi } from "vitest";
 
@@ -33,11 +34,18 @@ vi.mock("store", () => {
   };
 });
 
+vi.mock("loglevel", async () => {
+  const actual = await vi.importActual("loglevel");
+  return {
+    ...actual,
+    error: vi.fn(),
+  };
+});
+
 const appVersion = packageJSON.version;
 
 describe("renderApp", () => {
   let rootNode: HTMLElement;
-  const consoleError = console.error;
   const windowLocation = window.location;
 
   beforeEach(() => {
@@ -47,7 +55,7 @@ describe("renderApp", () => {
       value: new URL(window.location.href),
     });
     // Hide the config errors from the test output.
-    console.error = vi.fn();
+    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
     rootNode = document.createElement("div");
     rootNode.setAttribute("id", ROOT_ID);
     document.body.appendChild(rootNode);
@@ -59,7 +67,6 @@ describe("renderApp", () => {
       enumerable: true,
       value: windowLocation,
     });
-    console.error = consoleError;
     if (rootNode) {
       document.body.removeChild(rootNode);
     }
@@ -250,14 +257,8 @@ describe("renderApp", () => {
 });
 
 describe("getControllerAPIEndpointErrors", () => {
-  const consoleError = console.error;
-
   beforeEach(() => {
-    console.error = vi.fn();
-  });
-
-  afterEach(() => {
-    console.error = consoleError;
+    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
   });
 
   it("should handle secure protocol", () => {
@@ -329,7 +330,7 @@ describe("getControllerAPIEndpointErrors", () => {
     renderApp();
     expect(appThunks.connectAndStartPolling).toHaveBeenCalledTimes(1);
     await waitFor(() =>
-      expect(console.error).toHaveBeenCalledWith(
+      expect(log.error).toHaveBeenCalledWith(
         Label.POLLING_ERROR,
         new Error("Error while dispatching connectAndStartPolling!"),
       ),

@@ -1,4 +1,5 @@
 import { Button } from "@canonical/react-components";
+import log from "loglevel";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -76,7 +77,7 @@ const CharmsAndActionsPanel = () => {
       })
       .catch((error) => {
         setInlineErrors(InlineErrors.GET_URL, Label.GET_URL_ERROR);
-        console.error(Label.GET_URL_ERROR, error);
+        log.error(Label.GET_URL_ERROR, error);
       });
   }, [dispatch, getState, modelUUID, selectedApplications, setInlineErrors]);
 

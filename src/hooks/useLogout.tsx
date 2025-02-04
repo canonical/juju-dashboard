@@ -1,5 +1,6 @@
 import { Button } from "@canonical/react-components";
 import { unwrapResult } from "@reduxjs/toolkit";
+import log from "loglevel";
 import reactHotToast from "react-hot-toast";
 
 import ToastCard from "components/ToastCard";
@@ -30,7 +31,7 @@ const useLogout = () => {
             </>
           </ToastCard>
         ));
-        console.error(Label.LOGOUT_ERROR, error);
+        log.error(Label.LOGOUT_ERROR, error);
       });
   };
 };

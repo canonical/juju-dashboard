@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import log from "loglevel";
 import { vi } from "vitest";
 
 import { Label } from "hooks/useLogout";
@@ -9,15 +10,17 @@ import { renderComponent, renderWrappedHook } from "testing/utils";
 
 import useLogout from "./useLogout";
 
+vi.mock("loglevel", async () => {
+  const actual = await vi.importActual("loglevel");
+  return {
+    ...actual,
+    error: vi.fn(),
+  };
+});
+
 describe("useLogout", () => {
-  const consoleError = console.error;
-
   beforeEach(() => {
-    console.error = vi.fn();
-  });
-
-  afterEach(() => {
-    console.error = consoleError;
+    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
   });
 
   it("should logout", async () => {

@@ -1,5 +1,6 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import log from "loglevel";
 import type { Mock } from "vitest";
 import { vi } from "vitest";
 
@@ -23,6 +24,14 @@ import { ConfigConfirmType } from "../types";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { InlineErrors, Label, Label as ConfirmationDialogLabel } from "./types";
 
+vi.mock("loglevel", async () => {
+  const actual = await vi.importActual("loglevel");
+  return {
+    ...actual,
+    error: vi.fn(),
+  };
+});
+
 describe("ConfirmationDialog", () => {
   let state: RootState;
   const params = new URLSearchParams({
@@ -32,7 +41,6 @@ describe("ConfirmationDialog", () => {
     panel: "config",
   });
   const url = `/models/eggman@external/hadoopspark?${params.toString()}`;
-  const consoleError = console.error;
   let mockSetConfirmType: Mock;
   let mockSetInlineError: Mock;
   let mockHandleRemovePanelQueryParams: Mock;
@@ -71,7 +79,7 @@ describe("ConfirmationDialog", () => {
   };
 
   beforeEach(() => {
-    console.error = vi.fn();
+    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
     mockSetConfirmType = vi.fn();
     mockSetInlineError = vi.fn();
     mockHandleRemovePanelQueryParams = vi.fn();
@@ -86,7 +94,6 @@ describe("ConfirmationDialog", () => {
   });
 
   afterEach(() => {
-    console.error = consoleError;
     vi.restoreAllMocks();
   });
 
@@ -170,7 +177,7 @@ describe("ConfirmationDialog", () => {
         default: "eggman",
       }),
     });
-    expect(console.error).not.toHaveBeenCalled();
+    expect(log.error).not.toHaveBeenCalled();
     expect(mockHandleRemovePanelQueryParams).toHaveBeenCalledOnce();
   });
 
@@ -222,7 +229,7 @@ describe("ConfirmationDialog", () => {
         default: "eggman",
       }),
     });
-    expect(console.error).not.toHaveBeenCalled();
+    expect(log.error).not.toHaveBeenCalled();
     expect(mockSetConfirmType).toHaveBeenCalledWith(ConfigConfirmType.GRANT);
   });
 
@@ -269,7 +276,7 @@ describe("ConfirmationDialog", () => {
       }),
     });
     await waitFor(() =>
-      expect(console.error).toHaveBeenCalledWith(
+      expect(log.error).toHaveBeenCalledWith(
         Label.SUBMIT_TO_JUJU_ERROR,
         new Error("Error while trying to save"),
       ),
@@ -368,7 +375,7 @@ describe("ConfirmationDialog", () => {
     expect(mockSetConfirmType).toHaveBeenCalledWith(null);
     expect(mockSetInlineError).toHaveBeenCalledWith(InlineErrors.FORM, null);
     expect(grantSecret).toHaveBeenCalledWith("secret:aabbccdd", ["easyrsa"]);
-    expect(console.error).not.toHaveBeenCalled();
+    expect(log.error).not.toHaveBeenCalled();
     expect(mockHandleRemovePanelQueryParams).toHaveBeenCalledOnce();
   });
 
@@ -412,7 +419,7 @@ describe("ConfirmationDialog", () => {
     expect(mockSetInlineError).toHaveBeenCalledWith(InlineErrors.FORM, null);
     expect(grantSecret).toHaveBeenCalledWith("secret:aabbccdd", ["easyrsa"]);
     await waitFor(() =>
-      expect(console.error).toHaveBeenCalledWith(
+      expect(log.error).toHaveBeenCalledWith(
         Label.GRANT_ERROR,
         new Error("Caught error"),
       ),

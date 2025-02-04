@@ -1,4 +1,5 @@
 import { ActionButton, Button } from "@canonical/react-components";
+import log from "loglevel";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -100,7 +101,7 @@ export default function ActionsPanel(): JSX.Element {
         })
         .catch((error) => {
           setInlineErrors(InlineErrors.GET_ACTION, Label.GET_ACTIONS_ERROR);
-          console.error(Label.GET_ACTIONS_ERROR, error);
+          log.error(Label.GET_ACTIONS_ERROR, error);
         })
         .finally(() => {
           setFetchingActionData(false);

@@ -1,4 +1,5 @@
 import { ConfirmationModal } from "@canonical/react-components";
+import log from "loglevel";
 import { useParams } from "react-router";
 import usePortal from "react-useportal";
 
@@ -109,7 +110,7 @@ const ConfirmationDialog = ({
                 InlineErrors.SUBMIT_TO_JUJU,
                 Label.SUBMIT_TO_JUJU_ERROR,
               );
-              console.error(Label.SUBMIT_TO_JUJU_ERROR, error);
+              log.error(Label.SUBMIT_TO_JUJU_ERROR, error);
             });
           }}
           close={() => setConfirmType(null)}
@@ -149,7 +150,7 @@ const ConfirmationDialog = ({
                 handleRemovePanelQueryParams();
               } catch (error) {
                 setInlineError(InlineErrors.SUBMIT_TO_JUJU, Label.GRANT_ERROR);
-                console.error(Label.GRANT_ERROR, error);
+                log.error(Label.GRANT_ERROR, error);
               }
             })();
           }}

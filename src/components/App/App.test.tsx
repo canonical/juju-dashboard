@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import log from "loglevel";
 import * as reactGA from "react-ga";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
@@ -26,20 +27,22 @@ vi.mock("react-router", async () => {
   };
 });
 
+vi.mock("loglevel", async () => {
+  const actual = await vi.importActual("loglevel");
+  return {
+    ...actual,
+    error: vi.fn(),
+  };
+});
+
 const mockStore = configureStore([]);
 
 describe("App", () => {
-  let consoleError: Console["error"];
-
   beforeEach(() => {
-    consoleError = console.error;
-    // Even though the error boundary catches the error, there is still a
-    // console.error in the test output.
-    console.error = vi.fn();
+    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
   });
 
   afterEach(() => {
-    console.error = consoleError;
     vi.resetAllMocks();
     vi.unstubAllEnvs();
   });

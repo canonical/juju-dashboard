@@ -1,4 +1,5 @@
 import { ConfirmationModal } from "@canonical/react-components";
+import log from "loglevel";
 import { useParams } from "react-router";
 import usePortal from "react-useportal";
 
@@ -67,7 +68,7 @@ const ConfirmationDialog = ({
                   Label.EXECUTE_ACTION_ERROR,
                 );
                 setIsExecutingAction(false);
-                console.error(Label.EXECUTE_ACTION_ERROR, error);
+                log.error(Label.EXECUTE_ACTION_ERROR, error);
               });
           }}
           close={() => setConfirmType(null)}

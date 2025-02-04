@@ -1,6 +1,7 @@
 import type { Client } from "@canonical/jujulib";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as Sentry from "@sentry/browser";
+import log from "loglevel";
 import { isAction, type Middleware } from "redux";
 
 import {
@@ -235,7 +236,7 @@ export const modelPollerMiddleware: Middleware<
               } else {
                 errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
               }
-              console.error(errorMessage, error);
+              log.error(errorMessage, error);
               reduxStore.dispatch(
                 jujuActions.updateModelsError({
                   modelsError: errorMessage,
@@ -305,7 +306,7 @@ export const modelPollerMiddleware: Middleware<
         const auditEvents = await findAuditEvents(conn, params);
         reduxStore.dispatch(jujuActions.updateAuditEvents(auditEvents.events));
       } catch (error) {
-        console.error("Could not fetch audit events.", error);
+        log.error("Could not fetch audit events.", error);
         reduxStore.dispatch(
           jujuActions.updateAuditEventsErrors(toErrorString(error)),
         );
@@ -341,7 +342,7 @@ export const modelPollerMiddleware: Middleware<
               ),
         );
       } catch (error) {
-        console.error("Could not perform cross model query.", error);
+        log.error("Could not perform cross model query.", error);
         const errorMessage =
           error instanceof Error
             ? error.message

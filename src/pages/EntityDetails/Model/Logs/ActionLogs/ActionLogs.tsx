@@ -8,6 +8,7 @@ import {
   Icon,
   ModularTable,
 } from "@canonical/react-components";
+import log from "loglevel";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -113,10 +114,7 @@ const generateApplicationRow = (
   const appName = parts && parts[1];
   if (!appName) {
     // Not shown in UI. Logged for debugging purposes.
-    console.error(
-      "Unable to parse action receiver",
-      actionData.action?.receiver,
-    );
+    log.error("Unable to parse action receiver", actionData.action?.receiver);
     return null;
   }
   return {
@@ -195,7 +193,7 @@ export default function ActionLogs() {
       setInlineErrors(InlineErrors.FETCH, null);
     } catch (error) {
       setInlineErrors(InlineErrors.FETCH, Label.FETCH_ERROR);
-      console.error(Label.FETCH_ERROR, error);
+      log.error(Label.FETCH_ERROR, error);
     } finally {
       setFetchedOperations(true);
     }

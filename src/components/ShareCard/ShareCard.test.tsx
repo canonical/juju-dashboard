@@ -1,11 +1,24 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import log from "loglevel";
 import { vi } from "vitest";
 
 import ShareCard from "./ShareCard";
 import { Label } from "./types";
 
+vi.mock("loglevel", async () => {
+  const actual = await vi.importActual("loglevel");
+  return {
+    ...actual,
+    error: vi.fn(),
+  };
+});
+
 describe("Share Card", () => {
+  beforeEach(() => {
+    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
+  });
+
   it("should display appropriate text", () => {
     render(
       <ShareCard
@@ -74,10 +87,7 @@ describe("Share Card", () => {
     expect(accessSelectChangeFn).toHaveBeenCalled();
   });
 
-  it("should display console error when trying to change access", async () => {
-    const consoleError = console.error;
-    console.error = vi.fn();
-
+  it("should log error when trying to change access", async () => {
     const removeUserFn = vi.fn();
     const accessSelectChangeFn = vi.fn(() => Promise.reject(new Error()));
     render(
@@ -91,11 +101,9 @@ describe("Share Card", () => {
       />,
     );
     await userEvent.selectOptions(screen.getByRole("combobox"), "write");
-    expect(console.error).toHaveBeenCalledWith(
+    expect(log.error).toHaveBeenCalledWith(
       Label.ACCESS_CHANGE_ERROR,
       new Error(),
     );
-
-    console.error = consoleError;
   });
 });

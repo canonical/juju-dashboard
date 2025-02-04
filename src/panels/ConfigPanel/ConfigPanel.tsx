@@ -2,6 +2,7 @@ import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secre
 import { ActionButton, Button } from "@canonical/react-components";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
+import log from "loglevel";
 import type { MouseEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
@@ -361,7 +362,7 @@ function getConfig(
     })
     .catch((error) => {
       setInlineError(InlineErrors.GET_CONFIG, Label.GET_CONFIG_ERROR);
-      console.error(Label.GET_CONFIG_ERROR, error);
+      log.error(Label.GET_CONFIG_ERROR, error);
     })
     .finally(() => setIsLoading(false));
 }

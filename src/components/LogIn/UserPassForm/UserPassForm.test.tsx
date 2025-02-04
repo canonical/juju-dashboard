@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import log from "loglevel";
 import { vi } from "vitest";
 
 import { thunks as appThunks } from "store/app";
@@ -13,7 +14,19 @@ import { Label } from "../types";
 
 import UserPassForm from "./UserPassForm";
 
+vi.mock("loglevel", async () => {
+  const actual = await vi.importActual("loglevel");
+  return {
+    ...actual,
+    error: vi.fn(),
+  };
+});
+
 describe("UserPassForm", () => {
+  beforeEach(() => {
+    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
+  });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -59,9 +72,6 @@ describe("UserPassForm", () => {
   });
 
   it("should display console error when trying to log in", async () => {
-    const consoleError = console.error;
-    console.error = vi.fn();
-
     vi.spyOn(appThunks, "connectAndStartPolling").mockImplementation(
       vi.fn().mockReturnValue({ type: "connectAndStartPolling" }),
     );
@@ -82,11 +92,9 @@ describe("UserPassForm", () => {
     renderComponent(<UserPassForm />);
     await userEvent.click(screen.getByRole("button"));
     expect(appThunks.connectAndStartPolling).toHaveBeenCalledTimes(1);
-    expect(console.error).toHaveBeenCalledWith(
+    expect(log.error).toHaveBeenCalledWith(
       Label.POLLING_ERROR,
       new Error("Error while dispatching connectAndStartPolling!"),
     );
-
-    console.error = consoleError;
   });
 });

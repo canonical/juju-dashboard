@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import log from "loglevel";
 import { vi } from "vitest";
 
 import * as actionsHooks from "juju/api-hooks/actions";
@@ -11,10 +12,22 @@ import { InlineErrors } from "../types";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { Label } from "./types";
 
+vi.mock("loglevel", async () => {
+  const actual = await vi.importActual("loglevel");
+  return {
+    ...actual,
+    error: vi.fn(),
+  };
+});
+
 describe("ConfirmationDialog", () => {
   const path = "/models/:userName/:modelName/app/:appName";
   const url =
     "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&units=ceph%2F0,ceph%2F1";
+
+  beforeEach(() => {
+    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
+  });
 
   afterEach(() => {
     vi.resetModules();
@@ -106,8 +119,6 @@ describe("ConfirmationDialog", () => {
   });
 
   it("should set inline error if execute action fails", async () => {
-    const consoleError = console.error;
-    console.error = vi.fn();
     const mockSetInlineErrors = vi.fn();
     const executeActionOnUnitsSpy = vi
       .fn()
@@ -135,10 +146,9 @@ describe("ConfirmationDialog", () => {
       InlineErrors.EXECUTE_ACTION,
       Label.EXECUTE_ACTION_ERROR,
     );
-    expect(console.error).toHaveBeenCalledWith(
+    expect(log.error).toHaveBeenCalledWith(
       Label.EXECUTE_ACTION_ERROR,
       new Error("mock error"),
     );
-    console.error = consoleError;
   });
 });

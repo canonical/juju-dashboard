@@ -1,6 +1,7 @@
 import { Notification, Strip } from "@canonical/react-components";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as Sentry from "@sentry/browser";
+import log from "loglevel";
 import { StrictMode } from "react";
 import type { Root } from "react-dom/client";
 import { createRoot } from "react-dom/client";
@@ -124,7 +125,7 @@ function bootstrap() {
         </Notification>
       </Strip>,
     );
-    console.error(error);
+    log.error(error);
     return;
   }
   // It's possible that the charm is generating a relative path for the
@@ -159,7 +160,7 @@ function bootstrap() {
     reduxStore
       .dispatch(appThunks.connectAndStartPolling())
       .then(unwrapResult)
-      .catch((error) => console.error(Label.POLLING_ERROR, error));
+      .catch((error) => log.error(Label.POLLING_ERROR, error));
   }
 
   getRoot()?.render(

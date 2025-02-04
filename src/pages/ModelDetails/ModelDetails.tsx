@@ -1,4 +1,5 @@
 import type { AllWatcherId } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import log from "loglevel";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes, useParams } from "react-router";
@@ -70,7 +71,7 @@ export default function ModelDetails() {
         ).catch((error) =>
           // Error doesn’t interfere with the user’s interaction with the
           // dashboard. Not shown in UI. Logged for debugging purposes.
-          console.error(Label.MODEL_WATCHER_ERROR, error),
+          log.error(Label.MODEL_WATCHER_ERROR, error),
         );
       }
     };

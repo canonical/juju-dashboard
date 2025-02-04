@@ -1,5 +1,6 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import log from "loglevel";
 import { vi } from "vitest";
 
 import * as juju from "juju/api";
@@ -25,8 +26,15 @@ import { CharmsPanelLabel } from "../CharmsPanel";
 import CharmsAndActionsPanel from "./CharmsAndActionsPanel";
 import { Label as CharmsAndActionsPanelLabel } from "./types";
 
+vi.mock("loglevel", async () => {
+  const actual = await vi.importActual("loglevel");
+  return {
+    ...actual,
+    error: vi.fn(),
+  };
+});
+
 describe("CharmsAndActionsPanel", () => {
-  const consoleError = console.error;
   let state: RootState;
   const path = urls.model.index(null);
   const url = urls.model.index({
@@ -35,7 +43,7 @@ describe("CharmsAndActionsPanel", () => {
   });
 
   beforeEach(() => {
-    console.error = vi.fn();
+    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
     vi.resetAllMocks();
 
     state = rootStateFactory.build({
@@ -58,10 +66,6 @@ describe("CharmsAndActionsPanel", () => {
         ],
       }),
     });
-  });
-
-  afterEach(() => {
-    console.error = consoleError;
   });
 
   it("should display the spinner before loading the panel", async () => {
@@ -163,7 +167,7 @@ describe("CharmsAndActionsPanel", () => {
     } = renderComponent(<CharmsAndActionsPanel />, { path, url, state });
     expect(juju.getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
     await waitFor(() =>
-      expect(console.error).toHaveBeenCalledWith(
+      expect(log.error).toHaveBeenCalledWith(
         CharmsAndActionsPanelLabel.GET_URL_ERROR,
         new Error("Error while calling getCharmsURLFromApplications"),
       ),
