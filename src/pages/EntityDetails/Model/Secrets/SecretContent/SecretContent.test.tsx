@@ -186,6 +186,20 @@ describe("SecretContent", () => {
     expect(screen.getByText("a value")).toBeInTheDocument();
   });
 
+  it("can display content when no secrets", async () => {
+    state.juju.secrets = secretsStateFactory.build();
+    renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
+      state,
+      path,
+      url,
+    });
+    await userEvent.click(screen.getByRole("button", { name: Label.SHOW }));
+    expect(screen.queryByRole("heading", { name: "a key" })).toBeNull();
+    expect(
+      document.querySelector(".p-code-snippet__block"),
+    ).not.toBeInTheDocument();
+  });
+
   it("can display content errors", async () => {
     state.juju.secrets.abc123.content = modelSecretsContentFactory.build({
       loaded: true,

@@ -177,6 +177,30 @@ describe("Fields", () => {
     ).toBeInTheDocument();
   });
 
+  it("displays a message if secret does not exist", async () => {
+    state.juju.secrets.abc123 = modelSecretsFactory.build();
+    const handleRemoveSecret = vi.fn();
+    renderComponent(
+      <Formik<FormFields>
+        initialValues={{ removeAll: false, revision: "" }}
+        onSubmit={vi.fn()}
+      >
+        <Fields
+          secretURI="secret:aabbccdd"
+          hideConfirm={vi.fn()}
+          handleRemoveSecret={handleRemoveSecret}
+          showConfirm={true}
+        />
+      </Formik>,
+      { state, path, url },
+    );
+    expect(
+      screen.getByText(
+        /This secret has one revision and will be completely removed./,
+      ),
+    ).toBeInTheDocument();
+  });
+
   it("can cancel the confirmation", async () => {
     const hideConfirm = vi.fn();
     renderComponent(
