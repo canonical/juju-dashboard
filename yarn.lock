@@ -8357,7 +8357,7 @@ __metadata:
     jest-websocket-mock: "npm:2.5.0"
     lodash.isequal: "npm:4.5.0"
     lodash.mergewith: "npm:4.6.2"
-    loglevel: "npm:^1.9.2"
+    loglevel: "npm:1.9.2"
     npm-package-json-lint: "npm:8.0.0"
     postcss: "npm:8.4.49"
     prettier: "npm:3.4.2"
@@ -8535,7 +8535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loglevel@npm:1.9.2, loglevel@npm:^1.9.2":
+"loglevel@npm:1.9.2":
   version: 1.9.2
   resolution: "loglevel@npm:1.9.2"
   checksum: 10c0/1e317fa4648fe0b4a4cffef6de037340592cee8547b07d4ce97a487abe9153e704b98451100c799b032c72bb89c9366d71c9fb8192ada8703269263ae77acdc7

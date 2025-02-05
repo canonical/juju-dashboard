@@ -8,7 +8,6 @@ import {
   Icon,
   ModularTable,
 } from "@canonical/react-components";
-import log from "loglevel";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -28,6 +27,7 @@ import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
 import type { RootState } from "store/store";
 import urls from "urls";
+import { logger } from "utils/logger";
 
 import "./_action-logs.scss";
 import ActionPayloadModal from "./ActionPayloadModal";
@@ -114,7 +114,10 @@ const generateApplicationRow = (
   const appName = parts && parts[1];
   if (!appName) {
     // Not shown in UI. Logged for debugging purposes.
-    log.error("Unable to parse action receiver", actionData.action?.receiver);
+    logger.error(
+      "Unable to parse action receiver",
+      actionData.action?.receiver,
+    );
     return null;
   }
   return {
@@ -193,7 +196,7 @@ export default function ActionLogs() {
       setInlineErrors(InlineErrors.FETCH, null);
     } catch (error) {
       setInlineErrors(InlineErrors.FETCH, Label.FETCH_ERROR);
-      log.error(Label.FETCH_ERROR, error);
+      logger.error(Label.FETCH_ERROR, error);
     } finally {
       setFetchedOperations(true);
     }

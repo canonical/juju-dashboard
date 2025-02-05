@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import log from "loglevel";
 import * as reactGA from "react-ga";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
@@ -27,21 +26,9 @@ vi.mock("react-router", async () => {
   };
 });
 
-vi.mock("loglevel", async () => {
-  const actual = await vi.importActual("loglevel");
-  return {
-    ...actual,
-    error: vi.fn(),
-  };
-});
-
 const mockStore = configureStore([]);
 
 describe("App", () => {
-  beforeEach(() => {
-    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
-  });
-
   afterEach(() => {
     vi.resetAllMocks();
     vi.unstubAllEnvs();

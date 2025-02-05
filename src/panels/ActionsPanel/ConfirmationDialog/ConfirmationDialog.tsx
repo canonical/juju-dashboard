@@ -1,5 +1,4 @@
 import { ConfirmationModal } from "@canonical/react-components";
-import log from "loglevel";
 import { useParams } from "react-router";
 import usePortal from "react-useportal";
 
@@ -8,6 +7,7 @@ import { type SetError } from "hooks/useInlineErrors";
 import { useExecuteActionOnUnits } from "juju/api-hooks";
 import type { ConfirmTypes } from "panels/types";
 import { ConfirmType } from "panels/types";
+import { logger } from "utils/logger";
 
 import { InlineErrors, type ActionOptionValue } from "../types";
 
@@ -68,7 +68,7 @@ const ConfirmationDialog = ({
                   Label.EXECUTE_ACTION_ERROR,
                 );
                 setIsExecutingAction(false);
-                log.error(Label.EXECUTE_ACTION_ERROR, error);
+                logger.error(Label.EXECUTE_ACTION_ERROR, error);
               });
           }}
           close={() => setConfirmType(null)}

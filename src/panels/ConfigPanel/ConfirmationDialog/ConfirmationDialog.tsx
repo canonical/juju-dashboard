@@ -1,5 +1,4 @@
 import { ConfirmationModal } from "@canonical/react-components";
-import log from "loglevel";
 import { useParams } from "react-router";
 import usePortal from "react-useportal";
 
@@ -13,6 +12,7 @@ import type { usePanelQueryParams } from "panels/hooks";
 import { ConfirmType as DefaultConfirmType } from "panels/types";
 import { getModelSecrets } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { logger } from "utils/logger";
 
 import ChangedKeyValues from "../ChangedKeyValues";
 import type { Config, ConfigQueryParams, ConfirmTypes } from "../types";
@@ -110,7 +110,7 @@ const ConfirmationDialog = ({
                 InlineErrors.SUBMIT_TO_JUJU,
                 Label.SUBMIT_TO_JUJU_ERROR,
               );
-              log.error(Label.SUBMIT_TO_JUJU_ERROR, error);
+              logger.error(Label.SUBMIT_TO_JUJU_ERROR, error);
             });
           }}
           close={() => setConfirmType(null)}
@@ -150,7 +150,7 @@ const ConfirmationDialog = ({
                 handleRemovePanelQueryParams();
               } catch (error) {
                 setInlineError(InlineErrors.SUBMIT_TO_JUJU, Label.GRANT_ERROR);
-                log.error(Label.GRANT_ERROR, error);
+                logger.error(Label.GRANT_ERROR, error);
               }
             })();
           }}

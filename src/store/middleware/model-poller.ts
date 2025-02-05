@@ -1,7 +1,6 @@
 import type { Client } from "@canonical/jujulib";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as Sentry from "@sentry/browser";
-import log from "loglevel";
 import { isAction, type Middleware } from "redux";
 
 import {
@@ -23,6 +22,7 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 import { toErrorString } from "utils";
+import { logger } from "utils/logger";
 
 export enum LoginError {
   LOG = "Unable to log into controller.",
@@ -236,7 +236,7 @@ export const modelPollerMiddleware: Middleware<
               } else {
                 errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
               }
-              log.error(errorMessage, error);
+              logger.error(errorMessage, error);
               reduxStore.dispatch(
                 jujuActions.updateModelsError({
                   modelsError: errorMessage,
@@ -306,7 +306,7 @@ export const modelPollerMiddleware: Middleware<
         const auditEvents = await findAuditEvents(conn, params);
         reduxStore.dispatch(jujuActions.updateAuditEvents(auditEvents.events));
       } catch (error) {
-        log.error("Could not fetch audit events.", error);
+        logger.error("Could not fetch audit events.", error);
         reduxStore.dispatch(
           jujuActions.updateAuditEventsErrors(toErrorString(error)),
         );
@@ -342,7 +342,7 @@ export const modelPollerMiddleware: Middleware<
               ),
         );
       } catch (error) {
-        log.error("Could not perform cross model query.", error);
+        logger.error("Could not perform cross model query.", error);
         const errorMessage =
           error instanceof Error
             ? error.message

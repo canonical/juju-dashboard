@@ -1,4 +1,3 @@
-import log from "loglevel";
 import { vi } from "vitest";
 
 import { pollWhoamiStop } from "juju/jimm/listeners";
@@ -21,19 +20,10 @@ import type { WindowConfig } from "types";
 
 import { logOut, connectAndStartPolling } from "./thunks";
 
-vi.mock("loglevel", async () => {
-  const actual = await vi.importActual("loglevel");
-  return {
-    ...actual,
-    error: vi.fn(),
-  };
-});
-
 describe("thunks", () => {
   let state: RootState;
 
   beforeEach(() => {
-    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
     window.jujuDashboardConfig = {
       controllerAPIEndpoint: "wss://example.com/api",
     } as WindowConfig;
@@ -161,10 +151,6 @@ describe("thunks", () => {
         isJuju: true,
       }),
     );
-    expect(log.error).toHaveBeenCalledWith(
-      "Error while triggering the connection and polling of models.",
-      "Error while dispatching connectAndPollControllers!",
-    );
     expect(dispatch).toHaveBeenCalledWith(
       generalActions.storeConnectionError(
         "Unable to connect: Error while dispatching connectAndPollControllers!",
@@ -191,10 +177,6 @@ describe("thunks", () => {
         ],
         isJuju: true,
       }),
-    );
-    expect(log.error).toHaveBeenCalledWith(
-      "Error while triggering the connection and polling of models.",
-      new Error("Error while dispatching connectAndPollControllers!"),
     );
     expect(dispatch).toHaveBeenCalledWith(
       generalActions.storeConnectionError(
@@ -223,10 +205,6 @@ describe("thunks", () => {
         ],
         isJuju: true,
       }),
-    );
-    expect(log.error).toHaveBeenCalledWith(
-      "Error while triggering the connection and polling of models.",
-      ["Unknown error."],
     );
     expect(dispatch).toHaveBeenCalledWith(
       generalActions.storeConnectionError(

@@ -3,6 +3,8 @@ import type { DetachedWindowAPI } from "happy-dom";
 import { vi } from "vitest";
 import createFetchMock from "vitest-fetch-mock";
 
+import { logger } from "utils/logger";
+
 vi.mock("react-ga");
 
 const fetchMocker = createFetchMock(vi);
@@ -16,6 +18,8 @@ declare global {
   // eslint-disable-next-line no-var
   var jest: object;
 }
+
+logger.setDefaultLevel(logger.levels.SILENT);
 
 // Fix for RTL using fake timers:
 // https://github.com/testing-library/user-event/issues/1115#issuecomment-1565730917

@@ -1,11 +1,11 @@
 import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { Button, Select } from "@canonical/react-components";
-import log from "loglevel";
 import { useEffect, useState } from "react";
 
 import SlideDownFadeOut from "animations/SlideDownFadeOut";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { formatFriendlyDateToNow } from "components/utils";
+import { logger } from "utils/logger";
 
 import "./_share-card.scss";
 import { Label } from "./types";
@@ -118,7 +118,7 @@ export default function ShareCard({
                           return;
                         })
                         .catch((error) =>
-                          log.error(Label.ACCESS_CHANGE_ERROR, error),
+                          logger.error(Label.ACCESS_CHANGE_ERROR, error),
                         );
                     }}
                     value={access}

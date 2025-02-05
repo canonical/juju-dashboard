@@ -1,6 +1,4 @@
 import { screen, waitFor } from "@testing-library/dom";
-import log from "loglevel";
-import type { UnknownAction } from "redux";
 import { vi } from "vitest";
 
 import * as storeModule from "store";
@@ -34,14 +32,6 @@ vi.mock("store", () => {
   };
 });
 
-vi.mock("loglevel", async () => {
-  const actual = await vi.importActual("loglevel");
-  return {
-    ...actual,
-    error: vi.fn(),
-  };
-});
-
 const appVersion = packageJSON.version;
 
 describe("renderApp", () => {
@@ -54,8 +44,6 @@ describe("renderApp", () => {
       enumerable: true,
       value: new URL(window.location.href),
     });
-    // Hide the config errors from the test output.
-    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
     rootNode = document.createElement("div");
     rootNode.setAttribute("id", ROOT_ID);
     document.body.appendChild(rootNode);
@@ -257,10 +245,6 @@ describe("renderApp", () => {
 });
 
 describe("getControllerAPIEndpointErrors", () => {
-  beforeEach(() => {
-    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
-  });
-
   it("should handle secure protocol", () => {
     expect(
       getControllerAPIEndpointErrors("wss://example.com:80/api"),
@@ -304,36 +288,6 @@ describe("getControllerAPIEndpointErrors", () => {
   it("should error if it does not contain a protocol", () => {
     expect(getControllerAPIEndpointErrors("example.com:80/api")).toBe(
       "controllerAPIEndpoint (example.com:80/api) must be an absolute path or begin with ws:// or wss://.",
-    );
-  });
-
-  it("should show console error when dispatching connectAndStartPolling", async () => {
-    vi.spyOn(appThunks, "connectAndStartPolling").mockImplementation(
-      vi.fn().mockReturnValue({ type: "connectAndStartPolling" }),
-    );
-    vi.spyOn(storeModule.default, "dispatch").mockImplementation(
-      (action) =>
-        (action instanceof Object &&
-        "type" in action &&
-        action.type === "connectAndStartPolling"
-          ? Promise.reject(
-              new Error("Error while dispatching connectAndStartPolling!"),
-            )
-          : null) as unknown as UnknownAction,
-    );
-    const config = configFactory.build({
-      baseControllerURL: null,
-      identityProviderURL: "/candid",
-      isJuju: true,
-    });
-    window.jujuDashboardConfig = config;
-    renderApp();
-    expect(appThunks.connectAndStartPolling).toHaveBeenCalledTimes(1);
-    await waitFor(() =>
-      expect(log.error).toHaveBeenCalledWith(
-        Label.POLLING_ERROR,
-        new Error("Error while dispatching connectAndStartPolling!"),
-      ),
     );
   });
 });

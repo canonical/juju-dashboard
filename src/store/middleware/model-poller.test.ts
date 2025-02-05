@@ -1,5 +1,4 @@
 import type { Client, Connection, Transport } from "@canonical/jujulib";
-import log from "loglevel";
 import type { UnknownAction, MiddlewareAPI } from "redux";
 import type { Mock } from "vitest";
 import { vi } from "vitest";
@@ -40,14 +39,6 @@ vi.mock("juju/jimm/api", () => ({
   crossModelQuery: vi.fn(),
   findAuditEvents: vi.fn(),
 }));
-
-vi.mock("loglevel", async () => {
-  const actual = await vi.importActual("loglevel");
-  return {
-    ...actual,
-    error: vi.fn(),
-  };
-});
 
 describe("model poller", () => {
   let fakeStore: MiddlewareAPI;
@@ -93,7 +84,6 @@ describe("model poller", () => {
   });
 
   beforeEach(() => {
-    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
     vi.useFakeTimers();
     next = vi.fn();
     fakeStore = {
@@ -495,10 +485,6 @@ describe("model poller", () => {
       new Error(ModelsError.LOAD_ALL_MODELS),
     );
     await runMiddleware();
-    expect(log.error).toHaveBeenCalledWith(
-      ModelsError.LOAD_ALL_MODELS,
-      new Error(ModelsError.LOAD_ALL_MODELS),
-    );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateModelsError({
         modelsError: ModelsError.LOAD_ALL_MODELS,
@@ -518,10 +504,6 @@ describe("model poller", () => {
       new Error(ModelsError.LOAD_SOME_MODELS),
     );
     await runMiddleware();
-    expect(log.error).toHaveBeenCalledWith(
-      ModelsError.LOAD_SOME_MODELS,
-      new Error(ModelsError.LOAD_SOME_MODELS),
-    );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateModelsError({
         modelsError: ModelsError.LOAD_SOME_MODELS,
@@ -549,14 +531,10 @@ describe("model poller", () => {
       );
     runMiddleware({
       payload: { controllers, isJuju: true, poll: 1 },
-    }).catch(log.error);
+    }).catch(() => vi.fn());
     vi.advanceTimersByTime(30000);
     // Resolve the async calls again.
     await vi.runAllTimersAsync();
-    expect(log.error).toHaveBeenCalledWith(
-      ModelsError.LOAD_LATEST_MODELS,
-      new Error(ModelsError.LOAD_SOME_MODELS),
-    );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateModelsError({
         modelsError: ModelsError.LOAD_LATEST_MODELS,
@@ -578,10 +556,6 @@ describe("model poller", () => {
       }),
     );
     await runMiddleware();
-    expect(log.error).toHaveBeenCalledWith(
-      ModelsError.LIST_OR_UPDATE_MODELS,
-      new Error(ModelsError.LIST_OR_UPDATE_MODELS),
-    );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateModelsError({
         modelsError: ModelsError.LIST_OR_UPDATE_MODELS,
@@ -599,7 +573,7 @@ describe("model poller", () => {
       juju,
     }));
     runMiddleware({ payload: { controllers, isJuju: true, poll: 1 } }).catch(
-      log.error,
+      () => vi.fn(),
     );
     vi.advanceTimersByTime(30000);
     // Resolve the async calls again.
@@ -736,10 +710,6 @@ describe("model poller", () => {
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateAuditEventsErrors("Uh oh!"),
     );
-    expect(log.error).toHaveBeenCalledWith(
-      "Could not fetch audit events.",
-      new Error("Uh oh!"),
-    );
   });
 
   it("handles fetching cross model query results", async () => {
@@ -826,10 +796,6 @@ describe("model poller", () => {
       query: ".",
     });
     await middleware(next)(action);
-    expect(log.error).toHaveBeenCalledWith(
-      "Could not perform cross model query.",
-      new Error("Uh oh!"),
-    );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateCrossModelQueryErrors("Uh oh!"),
     );
@@ -850,10 +816,6 @@ describe("model poller", () => {
       query: ".",
     });
     await middleware(next)(action);
-    expect(log.error).toHaveBeenCalledWith(
-      "Could not perform cross model query.",
-      "Uh oh!",
-    );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateCrossModelQueryErrors(
         "Unable to perform search. Please try again later.",

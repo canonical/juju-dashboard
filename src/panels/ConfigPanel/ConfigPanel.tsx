@@ -2,7 +2,6 @@ import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secre
 import { ActionButton, Button } from "@canonical/react-components";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
-import log from "loglevel";
 import type { MouseEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
@@ -24,6 +23,7 @@ import { actions as jujuActions } from "store/juju";
 import { getModelSecrets, getModelByUUID } from "store/juju/selectors";
 import { useAppSelector, useAppDispatch } from "store/store";
 import { secretIsAppOwned } from "utils";
+import { logger } from "utils/logger";
 
 import BooleanConfig from "./BooleanConfig";
 import type { SetNewValue, SetSelectedConfig } from "./ConfigField";
@@ -362,7 +362,7 @@ function getConfig(
     })
     .catch((error) => {
       setInlineError(InlineErrors.GET_CONFIG, Label.GET_CONFIG_ERROR);
-      log.error(Label.GET_CONFIG_ERROR, error);
+      logger.error(Label.GET_CONFIG_ERROR, error);
     })
     .finally(() => setIsLoading(false));
 }

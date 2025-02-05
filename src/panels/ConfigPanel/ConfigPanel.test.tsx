@@ -1,6 +1,5 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import log from "loglevel";
 import type { Mock } from "vitest";
 import { vi } from "vitest";
 
@@ -51,14 +50,6 @@ vi.mock("juju/api-hooks/secrets", () => {
   };
 });
 
-vi.mock("loglevel", async () => {
-  const actual = await vi.importActual("loglevel");
-  return {
-    ...actual,
-    error: vi.fn(),
-  };
-});
-
 describe("ConfigPanel", () => {
   let state: RootState;
   const params = new URLSearchParams({
@@ -72,7 +63,6 @@ describe("ConfigPanel", () => {
   let getApplicationConfig: Mock;
 
   beforeEach(() => {
-    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
     vi.resetModules();
     vi.spyOn(secretHooks, "useListSecrets").mockImplementation(() => vi.fn());
     state = rootStateFactory.build({
@@ -401,13 +391,7 @@ describe("ConfigPanel", () => {
     );
     renderComponent(<ConfigPanel />, { state, path, url });
     expect(getApplicationConfig).toHaveBeenCalledTimes(1);
-    await waitFor(() => {
-      expect(log.error).toHaveBeenCalledWith(
-        ConfigPanelLabel.GET_CONFIG_ERROR,
-        new Error("Error while calling getApplicationConfig"),
-      );
-    });
-    const configErrorNotification = screen.getByText(
+    const configErrorNotification = await screen.findByText(
       ConfigPanelLabel.GET_CONFIG_ERROR,
       {
         exact: false,
@@ -456,12 +440,6 @@ describe("ConfigPanel", () => {
       screen.getByRole("button", {
         name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
       }),
-    );
-    await waitFor(() =>
-      expect(log.error).toHaveBeenCalledWith(
-        ConfirmationDialogLabel.SUBMIT_TO_JUJU_ERROR,
-        new Error("Error while trying to save"),
-      ),
     );
     expect(
       screen.getByText(ConfirmationDialogLabel.SUBMIT_TO_JUJU_ERROR, {

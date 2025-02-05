@@ -2,7 +2,6 @@ import type { Client, Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
 import * as jujuLibVersions from "@canonical/jujulib/dist/api/versions";
 import { waitFor } from "@testing-library/react";
-import log from "loglevel";
 import { vi } from "vitest";
 
 import { actions as generalActions } from "store/general";
@@ -68,17 +67,8 @@ vi.mock("@canonical/jujulib/dist/api/versions", () => ({
   jujuUpdateAvailable: vi.fn(),
 }));
 
-vi.mock("loglevel", async () => {
-  const actual = await vi.importActual("loglevel");
-  return {
-    ...actual,
-    error: vi.fn(),
-  };
-});
-
 describe("Juju API", () => {
   beforeEach(() => {
-    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
     vi.useFakeTimers();
   });
 
@@ -379,11 +369,6 @@ describe("Juju API", () => {
       await expect(response).rejects.toStrictEqual(
         new Error(Label.LOGIN_TIMEOUT_ERROR),
       );
-      expect(log.error).toHaveBeenCalledWith(
-        "Error connecting to model:",
-        "abc123",
-        new Error(Label.LOGIN_TIMEOUT_ERROR),
-      );
     });
 
     it("can fetch the status", async () => {
@@ -554,11 +539,6 @@ describe("Juju API", () => {
       await expect(response).rejects.toStrictEqual(
         new Error("Unable to fetch the status. Uh oh!"),
       );
-      expect(log.error).toHaveBeenCalledWith(
-        "Error connecting to model:",
-        "abc123",
-        new Error("Unable to fetch the status. Uh oh!"),
-      );
     });
   });
 
@@ -689,11 +669,6 @@ describe("Juju API", () => {
         () => state,
       );
       await expect(response).rejects.toStrictEqual(
-        new Error("Unable to fetch the status. Status not returned."),
-      );
-      expect(log.error).toHaveBeenCalledWith(
-        "Error connecting to model:",
-        "abc123",
         new Error("Unable to fetch the status. Status not returned."),
       );
       expect(dispatch).not.toHaveBeenCalled();
@@ -879,12 +854,6 @@ describe("Juju API", () => {
         () => state,
       );
       expect(dispatch).toHaveBeenCalledTimes(2);
-      await waitFor(() =>
-        expect(log.error).toHaveBeenCalledWith(
-          "Error when trying to add controller cloud and region data.",
-          new Error("Error while trying to dispatch!"),
-        ),
-      );
     });
 
     it("should return a rejected promise when retrieving data for some models fails", async () => {

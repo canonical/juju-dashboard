@@ -1,5 +1,6 @@
-import log from "loglevel";
 import { useState } from "react";
+
+import { logger } from "utils/logger";
 
 function useLocalStorage<V>(
   key: string,
@@ -13,7 +14,7 @@ function useLocalStorage<V>(
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       // Not shown in UI. Logged for debugging purposes.
-      log.error("Unable to parse local storage:", error);
+      logger.error("Unable to parse local storage:", error);
       return initialValue;
     }
   });
@@ -27,7 +28,7 @@ function useLocalStorage<V>(
       window.localStorage.setItem(key, stringified);
     } catch (error) {
       // Not shown in UI. Logged for debugging purposes.
-      log.error(error);
+      logger.error(error);
     }
   };
 

@@ -1,7 +1,6 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { add } from "date-fns";
-import log from "loglevel";
 import { vi } from "vitest";
 
 import * as actionsHooks from "juju/api-hooks/actions";
@@ -23,6 +22,7 @@ import {
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
+import { logger } from "utils/logger";
 
 import ActionLogs from "./ActionLogs";
 import { Label, Output } from "./types";
@@ -103,21 +103,13 @@ vi.mock("juju/api-hooks/actions", () => {
   };
 });
 
-vi.mock("loglevel", async () => {
-  const actual = await vi.importActual("loglevel");
-  return {
-    ...actual,
-    error: vi.fn(),
-  };
-});
-
 describe("Action Logs", () => {
   let state: RootState;
   const path = "/models/:userName/:modelName";
   const url = "/models/eggman@external/group-test?activeView=action-logs";
 
   beforeEach(() => {
-    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
+    vi.spyOn(logger, "error").mockImplementation(() => vi.fn());
     vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(() =>
       vi.fn().mockImplementation(() => Promise.resolve(mockOperationResults)),
     );
@@ -377,7 +369,7 @@ describe("Action Logs", () => {
     renderComponent(<ActionLogs />, { path, url, state });
     expect(queryOperationsListSpy).toHaveBeenCalledTimes(1);
     await waitFor(() => {
-      expect(log.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         Label.FETCH_ERROR,
         new Error("Error while querying operations list."),
       );

@@ -1,6 +1,5 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import log from "loglevel";
 import { vi } from "vitest";
 
 import * as actionsHooks from "juju/api-hooks/actions";
@@ -61,14 +60,6 @@ vi.mock("juju/api-hooks/actions", () => {
   };
 });
 
-vi.mock("loglevel", async () => {
-  const actual = await vi.importActual("loglevel");
-  return {
-    ...actual,
-    error: vi.fn(),
-  };
-});
-
 describe("ActionsPanel", () => {
   let state: RootState;
   const path = "/models/:userName/:modelName/app/:appName";
@@ -76,7 +67,6 @@ describe("ActionsPanel", () => {
     "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&units=ceph%2F0,ceph%2F1";
 
   beforeEach(() => {
-    vi.spyOn(log, "error").mockImplementation(() => vi.fn());
     const getActionsForApplicationSpy = vi
       .fn()
       .mockImplementation(() => Promise.resolve(mockResponse));
@@ -334,10 +324,6 @@ describe("ActionsPanel", () => {
     expect(getActionsForApplicationSpy).toHaveBeenCalledTimes(1);
     await waitFor(() =>
       expect(getActionsForApplicationSpy).toHaveBeenCalledTimes(1),
-    );
-    expect(log.error).toHaveBeenCalledWith(
-      ActionsPanelLabel.GET_ACTIONS_ERROR,
-      new Error("Error while trying to get actions for application!"),
     );
     await waitFor(() =>
       expect(

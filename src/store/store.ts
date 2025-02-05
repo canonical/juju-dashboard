@@ -1,6 +1,5 @@
 import type { UnknownAction } from "@reduxjs/toolkit";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import log from "loglevel";
 import { useCallback } from "react";
 import type { TypedUseSelectorHook } from "react-redux";
 import { useDispatch, useSelector, useStore } from "react-redux";
@@ -9,6 +8,7 @@ import generalReducer from "store/general";
 import jujuReducer from "store/juju";
 import checkAuth from "store/middleware/check-auth";
 import { modelPollerMiddleware } from "store/middleware/model-poller";
+import { logger } from "utils/logger";
 
 import { listenerMiddleware } from "./listenerMiddleware";
 
@@ -17,7 +17,7 @@ if (!import.meta.env.PROD && process.env.VITE_APP_MOCK_STORE) {
   try {
     preloadedState = JSON.parse(process.env.VITE_APP_MOCK_STORE);
   } catch (error) {
-    log.error("VITE_APP_MOCK_STORE could not be parsed");
+    logger.error("VITE_APP_MOCK_STORE could not be parsed");
   }
 }
 

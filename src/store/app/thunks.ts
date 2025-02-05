@@ -1,5 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import log from "loglevel";
 
 import bakery from "juju/bakery";
 import { pollWhoamiStop } from "juju/jimm/listeners";
@@ -16,6 +15,7 @@ import {
 import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
+import { logger } from "utils/logger";
 
 import type { ControllerArgs } from "./actions";
 
@@ -85,7 +85,7 @@ export const connectAndStartPolling = createAsyncThunk<
   } catch (error) {
     // a common error logged to the console by this is:
     // Error while triggering the connection and polling of models. cannot send request {"type":"ModelManager","request":"ListModels","version":5,"params":...}: connection state 3 is not open
-    log.error(
+    logger.error(
       "Error while triggering the connection and polling of models.",
       error,
     );

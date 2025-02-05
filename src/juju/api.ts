@@ -17,7 +17,6 @@ import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import type { ValueOf } from "@canonical/react-components";
 import { unwrapResult } from "@reduxjs/toolkit";
 import Limiter from "async-limiter";
-import log from "loglevel";
 import type { Dispatch } from "redux";
 
 import bakery from "juju/bakery";
@@ -41,6 +40,7 @@ import type {
 import { ModelsError } from "store/middleware/model-poller";
 import type { RootState, Store } from "store/store";
 import { toErrorString } from "utils";
+import { logger } from "utils/logger";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
@@ -124,7 +124,7 @@ function startPingerLoop(conn: ConnectionWithFacades) {
     conn.facades.pinger?.ping(null).catch((e) => {
       // If the pinger fails for whatever reason then cancel the ping.
       // Not shown in UI. Logged for debugging purposes.
-      log.error("pinger stopped,", e);
+      logger.error("pinger stopped,", e);
       stopPingerLoop(intervalId);
     });
   }, PING_TIME);
@@ -271,7 +271,7 @@ export async function fetchModelStatus(
       }
       logout();
     } catch (error) {
-      log.error("Error connecting to model:", modelUUID, error);
+      logger.error("Error connecting to model:", modelUUID, error);
       throw error;
     }
   }
@@ -390,7 +390,7 @@ export async function fetchAllModelStatuses(
               .then(unwrapResult)
               .catch((error) =>
                 // Not shown in UI. Logged for debugging purposes.
-                log.error(
+                logger.error(
                   "Error when trying to add controller cloud and region data.",
                   error,
                 ),

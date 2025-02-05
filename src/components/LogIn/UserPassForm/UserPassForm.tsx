@@ -1,5 +1,4 @@
 import { unwrapResult } from "@reduxjs/toolkit";
-import log from "loglevel";
 import type { FormEvent } from "react";
 
 import bakery from "juju/bakery";
@@ -7,6 +6,7 @@ import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import { getWSControllerURL } from "store/general/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { logger } from "utils/logger";
 
 import { Label } from "../types";
 
@@ -36,7 +36,7 @@ const UserPassForm = () => {
     if (bakery) {
       dispatch(appThunks.connectAndStartPolling())
         .then(unwrapResult)
-        .catch((error) => log.error(Label.POLLING_ERROR, error));
+        .catch((error) => logger.error(Label.POLLING_ERROR, error));
     }
   }
 
