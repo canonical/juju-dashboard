@@ -33,6 +33,7 @@ import {
   modelFeaturesStateFactory,
   rebacRelationFactory,
   relationshipTupleFactory,
+  secretRevisionFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -123,6 +124,7 @@ import {
   getReBACRelationsState,
   hasReBACPermission,
   isJIMMAdmin,
+  getSecretLatestRevision,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -369,6 +371,47 @@ describe("selectors", () => {
         "secret:aabbccdd",
       ),
     ).toStrictEqual(items[0]);
+  });
+
+  it("getSecretLatestRevision", () => {
+    const items = [
+      listSecretResultFactory.build({ uri: "secret:eeffgghh" }),
+      listSecretResultFactory.build({
+        uri: "secret:aabbccdd",
+        label: "other-model",
+        "latest-revision": 3,
+        revisions: [
+          secretRevisionFactory.build({ revision: 1 }),
+          secretRevisionFactory.build({ revision: 2 }),
+        ],
+      }),
+    ];
+    expect(
+      getSecretLatestRevision(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            secrets: secretsStateFactory.build({
+              abc123: modelSecretsFactory.build({ items }),
+              def456: modelSecretsFactory.build({
+                items: [
+                  listSecretResultFactory.build({
+                    uri: "secret:aabbccdd",
+                    label: "other-model",
+                    "latest-revision": 3,
+                    revisions: [
+                      secretRevisionFactory.build({ revision: 1 }),
+                      secretRevisionFactory.build({ revision: 2 }),
+                    ],
+                  }),
+                ],
+              }),
+            }),
+          }),
+        }),
+        "abc123",
+        "secret:aabbccdd",
+      ),
+    ).toStrictEqual(2);
   });
 
   it("getSecretsErrors", () => {

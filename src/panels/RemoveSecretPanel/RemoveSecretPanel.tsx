@@ -11,7 +11,11 @@ import SecretLabel from "components/secrets/SecretLabel";
 import { useRemoveSecrets, useListSecrets } from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { usePanelQueryParams } from "panels/hooks";
-import { getSecretByURI, getModelUUIDFromList } from "store/juju/selectors";
+import {
+  getSecretByURI,
+  getModelUUIDFromList,
+  getSecretLatestRevision,
+} from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { toErrorString } from "utils";
 
@@ -33,6 +37,9 @@ const RemoveSecretPanel = () => {
   const secretURI = queryParams.secret;
   const secret = useAppSelector((state) =>
     getSecretByURI(state, modelUUID, secretURI),
+  );
+  const latestRevision = useAppSelector((state) =>
+    getSecretLatestRevision(state, modelUUID, secretURI),
   );
   const [inlineError, setInlineError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -109,7 +116,7 @@ const RemoveSecretPanel = () => {
             <Formik<FormFields>
               initialValues={{
                 removeAll: false,
-                revision: secret["latest-revision"].toString(),
+                revision: (latestRevision ?? "").toString(),
               }}
               onSubmit={() => {
                 setShowConfirm(true);

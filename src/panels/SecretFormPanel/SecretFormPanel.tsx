@@ -24,39 +24,35 @@ const SecretFormPanel = ({ update }: Props) => {
   const [saving, setSaving] = useState<boolean>(false);
 
   return (
-    <>
-      <Panel
-        data-testid={TestId.PANEL}
-        drawer={
-          <>
-            <Button onClick={handleRemovePanelQueryParams}>
-              {Label.CANCEL}
-            </Button>
-            <ActionButton
-              appearance="positive"
-              disabled={saving}
-              form={formId}
-              loading={saving}
-              type="submit"
-            >
-              {update ? Label.SUBMIT_UPDATE : Label.SUBMIT_ADD}
-            </ActionButton>
-          </>
-        }
-        onRemovePanelQueryParams={handleRemovePanelQueryParams}
-        ref={scrollArea}
-        title={update ? Label.TITLE_UPDATE : Label.TITLE_ADD}
-        width="narrow"
-      >
-        <SecretForm
-          formId={formId}
-          onSuccess={() => handleRemovePanelQueryParams()}
-          secretURI={queryParams.secret}
-          setSaving={setSaving}
-          update={update}
-        />
-      </Panel>
-    </>
+    <Panel
+      data-testid={TestId.PANEL}
+      drawer={
+        <>
+          <Button onClick={handleRemovePanelQueryParams}>{Label.CANCEL}</Button>
+          <ActionButton
+            appearance="positive"
+            disabled={saving}
+            form={formId}
+            loading={saving}
+            type="submit"
+          >
+            {update ? Label.SUBMIT_UPDATE : Label.SUBMIT_ADD}
+          </ActionButton>
+        </>
+      }
+      onRemovePanelQueryParams={handleRemovePanelQueryParams}
+      ref={scrollArea}
+      title={update ? Label.TITLE_UPDATE : Label.TITLE_ADD}
+      width="narrow"
+    >
+      <SecretForm
+        formId={formId}
+        onSuccess={() => handleRemovePanelQueryParams()}
+        secretURI={queryParams.secret}
+        setSaving={setSaving}
+        update={update}
+      />
+    </Panel>
   );
 };
 

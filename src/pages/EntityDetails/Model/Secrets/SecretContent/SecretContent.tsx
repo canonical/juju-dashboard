@@ -24,6 +24,7 @@ import {
   getSecretsContentLoading,
   getModelUUIDFromList,
   getModelByUUID,
+  getSecretLatestRevision,
 } from "store/juju/selectors";
 import { useAppSelector, useAppDispatch } from "store/store";
 
@@ -42,6 +43,9 @@ const SecretContent = ({ secretURI }: Props) => {
   )?.wsControllerURL;
   const secret = useAppSelector((state) =>
     getSecretByURI(state, modelUUID, secretURI),
+  );
+  const latestRevision = useAppSelector((state) =>
+    getSecretLatestRevision(state, modelUUID, secretURI),
   );
   const content = useAppSelector((state) =>
     getSecretsContent(state, modelUUID),
@@ -90,9 +94,7 @@ const SecretContent = ({ secretURI }: Props) => {
           >
             {secret ? (
               <Formik<{ revision: string }>
-                initialValues={{
-                  revision: secret["latest-revision"].toString(),
-                }}
+                initialValues={{ revision: (latestRevision ?? "").toString() }}
                 onSubmit={(values) => {
                   getSecretContent(secretURI, Number(values.revision));
                 }}

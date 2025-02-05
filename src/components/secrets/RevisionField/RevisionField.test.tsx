@@ -89,4 +89,17 @@ describe("RevisionField", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "1" })).toBeInTheDocument();
   });
+
+  it("does not list revisions if they are empty", async () => {
+    renderComponent(
+      <Formik<{ revision: string }>
+        initialValues={{ revision: "" }}
+        onSubmit={vi.fn()}
+      >
+        <RevisionField secretURI="secret:anothersecret" modelUUID="abc123" />
+      </Formik>,
+      { state, path, url },
+    );
+    expect(screen.queryAllByRole("option")).toStrictEqual([]);
+  });
 });
