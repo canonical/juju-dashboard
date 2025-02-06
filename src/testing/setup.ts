@@ -35,7 +35,7 @@ const animateMock = () => {
 if (!window.HTMLDivElement.prototype.animate) {
   window.HTMLDivElement.prototype.animate = animateMock;
 } else {
-  logger.error(
+  console.error(
     "JSDOM appears to support the web animations api",
     "you may now remove the mock",
   );
