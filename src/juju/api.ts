@@ -156,7 +156,7 @@ export async function loginWithBakery(
   const juju: JujuClient = await connect(
     wsControllerURL,
     generateConnectionOptions(authMethod, true, (e) =>
-      console.log("controller closed", e),
+      logger.log("controller closed", e),
     ),
   );
   const loginParams = determineLoginParams(credentials, authMethod);

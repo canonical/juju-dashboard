@@ -5,6 +5,7 @@ import cloneDeep from "clone-deep";
 import { actions as jujuActions } from "store/juju";
 import { checkLoggedIn } from "store/middleware/check-auth";
 import type { RootState } from "store/store";
+import { logger } from "utils/logger";
 
 /**
   Updates the correct controller entry with a cloud and region fetched from
@@ -53,7 +54,7 @@ export const addControllerCloudRegion = createAsyncThunk<
         }),
       );
     } else {
-      console.log(
+      logger.log(
         "attempting to update non-existent controller:",
         wsControllerURL,
       );

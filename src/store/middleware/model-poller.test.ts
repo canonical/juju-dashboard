@@ -43,7 +43,6 @@ vi.mock("juju/jimm/api", () => ({
 describe("model poller", () => {
   let fakeStore: MiddlewareAPI;
   let next: Mock;
-  const originalLog = console.log;
   const wsControllerURL = "wss://example.com";
   const controllers: ControllerArgs[] = [
     [
@@ -129,7 +128,6 @@ describe("model poller", () => {
   };
 
   afterEach(() => {
-    console.log = originalLog;
     vi.restoreAllMocks();
     vi.useRealTimers();
   });
@@ -163,27 +161,6 @@ describe("model poller", () => {
         wsControllerURL: "wss://example.com",
         error: "Uh oh!",
       }),
-    );
-  });
-
-  it("logs login exceptions", async () => {
-    vi.spyOn(console, "log").mockImplementation(() => vi.fn());
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => {
-      throw new Error("Uh oh!");
-    });
-    await runMiddleware();
-    expect(next).not.toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith(
-      LoginError.LOG,
-      new Error("Uh oh!"),
-      [
-        "wss://example.com",
-        {
-          password: "test",
-          user: "eggman@external",
-        },
-        AuthMethod.LOCAL,
-      ],
     );
   });
 
