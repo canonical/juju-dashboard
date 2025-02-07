@@ -1,10 +1,6 @@
 import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
 import { rootStateFactory } from "testing/factories";
-import {
-  generalStateFactory,
-  authUserInfoFactory,
-  configFactory,
-} from "testing/factories/general";
+import { generalStateFactory } from "testing/factories/general";
 import {
   charmApplicationFactory,
   charmInfoFactory,
@@ -123,8 +119,9 @@ import {
   isKubernetesModel,
   getReBACRelationsState,
   hasReBACPermission,
-  isJIMMAdmin,
   getSecretLatestRevision,
+  getReBACPermissionLoading,
+  getReBACPermissionLoaded,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -701,6 +698,88 @@ describe("selectors", () => {
     ).toStrictEqual(rebacRelations);
   });
 
+  it("getReBACPermissionLoading exists", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      getReBACPermissionLoading(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebacRelations: [
+              rebacRelationFactory.build({
+                tuple,
+                loading: true,
+              }),
+            ],
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("getReBACPermissionLoading doesn't exist", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      getReBACPermissionLoading(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebacRelations: [],
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(false);
+  });
+
+  it("getReBACPermissionLoaded exists", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      getReBACPermissionLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebacRelations: [
+              rebacRelationFactory.build({
+                tuple,
+                loaded: true,
+              }),
+            ],
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("getReBACPermissionLoaded doesn't exist", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      getReBACPermissionLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebacRelations: [],
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(false);
+  });
+
   it("hasReBACPermission exists", () => {
     const tuple = relationshipTupleFactory.build({
       object: "user-eggman@external",
@@ -738,58 +817,6 @@ describe("selectors", () => {
           }),
         }),
         tuple,
-      ),
-    ).toStrictEqual(false);
-  });
-
-  it("isJIMMAdmin exists", () => {
-    expect(
-      isJIMMAdmin(
-        rootStateFactory.build({
-          general: generalStateFactory.build({
-            config: configFactory.build({
-              controllerAPIEndpoint: "wss://controller.example.com",
-            }),
-            controllerConnections: {
-              "wss://controller.example.com": {
-                user: authUserInfoFactory.build({
-                  identity: "user-eggman@external",
-                }),
-              },
-            },
-          }),
-          juju: jujuStateFactory.build({
-            rebacRelations: [
-              rebacRelationFactory.build({
-                tuple: relationshipTupleFactory.build({
-                  object: "user-eggman@external",
-                  relation: JIMMRelation.ADMINISTRATOR,
-                  target_object: JIMMTarget.JIMM_CONTROLLER,
-                }),
-                allowed: true,
-              }),
-            ],
-          }),
-        }),
-      ),
-    ).toStrictEqual(true);
-  });
-
-  it("isJIMMAdmin doesn't exist", () => {
-    expect(
-      isJIMMAdmin(
-        rootStateFactory.build({
-          general: generalStateFactory.build({
-            controllerConnections: {
-              "wss://controller.example.com": {
-                user: authUserInfoFactory.build(),
-              },
-            },
-          }),
-          juju: jujuStateFactory.build({
-            rebacRelations: [],
-          }),
-        }),
       ),
     ).toStrictEqual(false);
   });

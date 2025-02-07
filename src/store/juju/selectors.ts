@@ -9,7 +9,6 @@ import isEqual from "lodash.isequal";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
-import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
 import type {
   AnnotationData,
   ApplicationData,
@@ -21,7 +20,6 @@ import type {
 import {
   getActiveUserTag,
   getActiveUserControllerAccess,
-  getControllerUserTag,
 } from "store/general/selectors";
 import type { RootState } from "store/store";
 import { getLatestRevision, getUserName } from "utils";
@@ -1068,26 +1066,37 @@ export const getReBACRelationsState = createSelector(
 );
 
 export const getReBACPermission = createSelector(
-  [getReBACRelationsState, (_state, tuple: RelationshipTuple) => tuple],
+  [getReBACRelationsState, (_state, tuple?: RelationshipTuple | null) => tuple],
   (rebacRelations, tuple) =>
     rebacRelations.find((relation) => isEqual(relation.tuple, tuple)),
 );
 
-export const hasReBACPermission = createSelector(
-  [(state, tuple: RelationshipTuple) => getReBACPermission(state, tuple)],
+export const getReBACPermissionLoading = createSelector(
+  [
+    (state, tuple?: RelationshipTuple | null) =>
+      getReBACPermission(state, tuple),
+  ],
   (permission) => {
-    return permission?.allowed ?? false;
+    return permission?.loading ?? false;
   },
 );
 
-export const isJIMMAdmin = createSelector(
-  [(state) => state, getControllerUserTag],
-  (state, user) =>
-    user
-      ? hasReBACPermission(state, {
-          object: user,
-          relation: JIMMRelation.ADMINISTRATOR,
-          target_object: JIMMTarget.JIMM_CONTROLLER,
-        })
-      : false,
+export const getReBACPermissionLoaded = createSelector(
+  [
+    (state, tuple?: RelationshipTuple | null) =>
+      getReBACPermission(state, tuple),
+  ],
+  (permission) => {
+    return permission?.loaded ?? false;
+  },
+);
+
+export const hasReBACPermission = createSelector(
+  [
+    (state, tuple?: RelationshipTuple | null) =>
+      getReBACPermission(state, tuple),
+  ],
+  (permission) => {
+    return permission?.allowed ?? false;
+  },
 );

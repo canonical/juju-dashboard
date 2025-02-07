@@ -20,3 +20,4 @@ export {
   useRevokeSecret,
   type Label as SecretsLabel,
 } from "./secrets";
+export { useCheckPermissions } from "./permissions";

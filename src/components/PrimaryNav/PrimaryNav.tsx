@@ -10,27 +10,25 @@ import type { NavItem } from "@canonical/react-components/dist/components/SideNa
 import { urls as generateReBACURLS } from "@canonical/rebac-admin";
 import type { HTMLProps, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import type { NavLinkProps } from "react-router";
 import { NavLink } from "react-router";
 
 import UserMenu from "components/UserMenu/UserMenu";
 import { DARK_THEME } from "consts";
-import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
+import {
+  useAuditLogsPermitted,
+  useIsJIMMAdmin,
+} from "juju/api-hooks/permissions";
 import {
   getAppVersion,
-  isAuditLogsEnabled,
   isCrossModelQueriesEnabled,
   getVisitURLs,
   isReBACEnabled,
-  getActiveUserTag,
-  getWSControllerURL,
 } from "store/general/selectors";
-import { actions as jujuActions } from "store/juju";
 import {
   getControllerData,
   getGroupedModelStatusCounts,
-  getReBACPermission,
 } from "store/juju/selectors";
 import type { Controllers } from "store/juju/types";
 import { useAppSelector } from "store/store";
@@ -88,45 +86,16 @@ const useControllersLink = () => {
 };
 
 const PrimaryNav = () => {
-  const dispatch = useDispatch();
   const appVersion = useSelector(getAppVersion);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const versionRequested = useRef(false);
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
-  const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
   const rebacEnabled = useAppSelector(isReBACEnabled);
   const { blocked: blockedModels } = useSelector(getGroupedModelStatusCounts);
-  const wsControllerURL = useAppSelector(getWSControllerURL);
-  const activeUser = useAppSelector((state) =>
-    getActiveUserTag(state, wsControllerURL),
-  );
-  const jimmControllerAdminPermission = useAppSelector(
-    (state) =>
-      activeUser &&
-      getReBACPermission(state, {
-        object: activeUser,
-        relation: JIMMRelation.ADMINISTRATOR,
-        target_object: JIMMTarget.JIMM_CONTROLLER,
-      }),
-  );
-  const auditLogsPermission = useAppSelector(
-    (state) =>
-      activeUser &&
-      getReBACPermission(state, {
-        object: activeUser,
-        relation: JIMMRelation.AUDIT_LOG_VIEWER,
-        target_object: JIMMTarget.JIMM_CONTROLLER,
-      }),
-  );
+  const { permitted: isJIMMControllerAdmin } = useIsJIMMAdmin();
+  const { permitted: auditLogsAllowed } = useAuditLogsPermitted();
   const controllersLink = useControllersLink();
-  const isJIMMControllerAdmin =
-    jimmControllerAdminPermission && jimmControllerAdminPermission.allowed;
   const rebacAllowed = rebacEnabled && isJIMMControllerAdmin;
-  const auditLogsAllowed =
-    auditLogsEnabled &&
-    auditLogsPermission &&
-    auditLogsPermission.allowed &&
-    isJIMMControllerAdmin;
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {
@@ -136,63 +105,6 @@ const PrimaryNav = () => {
       versionRequested.current = true;
     }
   }, [appVersion]);
-
-  useEffect(() => {
-    if (
-      // Don't fetch it if it's already in the store.
-      !jimmControllerAdminPermission &&
-      wsControllerURL &&
-      activeUser &&
-      // Only check the relation if the controller supports audit logs or ReBAC.
-      (rebacEnabled || auditLogsEnabled)
-    ) {
-      dispatch(
-        jujuActions.checkRelation({
-          tuple: {
-            object: activeUser,
-            relation: JIMMRelation.ADMINISTRATOR,
-            target_object: JIMMTarget.JIMM_CONTROLLER,
-          },
-          wsControllerURL,
-        }),
-      );
-    }
-  }, [
-    activeUser,
-    auditLogsEnabled,
-    dispatch,
-    jimmControllerAdminPermission,
-    rebacEnabled,
-    wsControllerURL,
-  ]);
-
-  useEffect(() => {
-    if (
-      // Don't fetch it if it's already in the store.
-      !auditLogsPermission &&
-      wsControllerURL &&
-      activeUser &&
-      // Only check the relation if the controller supports audit logs.
-      auditLogsEnabled
-    ) {
-      dispatch(
-        jujuActions.checkRelation({
-          tuple: {
-            object: activeUser,
-            relation: JIMMRelation.AUDIT_LOG_VIEWER,
-            target_object: JIMMTarget.JIMM_CONTROLLER,
-          },
-          wsControllerURL,
-        }),
-      );
-    }
-  }, [
-    activeUser,
-    auditLogsEnabled,
-    dispatch,
-    auditLogsPermission,
-    wsControllerURL,
-  ]);
 
   const navigation: NavItem<NavLinkProps>[] = [
     {
