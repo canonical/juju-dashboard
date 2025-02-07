@@ -22,6 +22,7 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 import { toErrorString } from "utils";
+import { logger } from "utils/logger";
 
 export enum LoginError {
   LOG = "Unable to log into controller.",
@@ -114,7 +115,7 @@ export const modelPollerMiddleware: Middleware<
                 "Unable to log into the controller, check that the controller address is correct and that it is online.",
             }),
           );
-          return console.log(LoginError.LOG, e, controllerData);
+          return logger.log(LoginError.LOG, e, controllerData);
         } finally {
           if (authMethod === AuthMethod.OIDC) {
             reduxStore.dispatch(generalActions.updateLoginLoading(false));
@@ -235,7 +236,7 @@ export const modelPollerMiddleware: Middleware<
               } else {
                 errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
               }
-              console.error(errorMessage, error);
+              logger.error(errorMessage, error);
               reduxStore.dispatch(
                 jujuActions.updateModelsError({
                   modelsError: errorMessage,
@@ -305,7 +306,7 @@ export const modelPollerMiddleware: Middleware<
         const auditEvents = await findAuditEvents(conn, params);
         reduxStore.dispatch(jujuActions.updateAuditEvents(auditEvents.events));
       } catch (error) {
-        console.error("Could not fetch audit events.", error);
+        logger.error("Could not fetch audit events.", error);
         reduxStore.dispatch(
           jujuActions.updateAuditEventsErrors(toErrorString(error)),
         );
@@ -341,7 +342,7 @@ export const modelPollerMiddleware: Middleware<
               ),
         );
       } catch (error) {
-        console.error("Could not perform cross model query.", error);
+        logger.error("Could not perform cross model query.", error);
         const errorMessage =
           error instanceof Error
             ? error.message

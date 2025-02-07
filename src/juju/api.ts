@@ -40,6 +40,7 @@ import type {
 import { ModelsError } from "store/middleware/model-poller";
 import type { RootState, Store } from "store/store";
 import { toErrorString } from "utils";
+import { logger } from "utils/logger";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
@@ -123,7 +124,7 @@ function startPingerLoop(conn: ConnectionWithFacades) {
     conn.facades.pinger?.ping(null).catch((e) => {
       // If the pinger fails for whatever reason then cancel the ping.
       // Not shown in UI. Logged for debugging purposes.
-      console.error("pinger stopped,", e);
+      logger.error("pinger stopped,", e);
       stopPingerLoop(intervalId);
     });
   }, PING_TIME);
@@ -155,7 +156,7 @@ export async function loginWithBakery(
   const juju: JujuClient = await connect(
     wsControllerURL,
     generateConnectionOptions(authMethod, true, (e) =>
-      console.log("controller closed", e),
+      logger.log("controller closed", e),
     ),
   );
   const loginParams = determineLoginParams(credentials, authMethod);
@@ -270,7 +271,7 @@ export async function fetchModelStatus(
       }
       logout();
     } catch (error) {
-      console.error("Error connecting to model:", modelUUID, error);
+      logger.error("Error connecting to model:", modelUUID, error);
       throw error;
     }
   }
@@ -389,7 +390,7 @@ export async function fetchAllModelStatuses(
               .then(unwrapResult)
               .catch((error) =>
                 // Not shown in UI. Logged for debugging purposes.
-                console.error(
+                logger.error(
                   "Error when trying to add controller cloud and region data.",
                   error,
                 ),

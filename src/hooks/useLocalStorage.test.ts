@@ -1,18 +1,9 @@
 import { act, renderHook } from "@testing-library/react";
-import { vi } from "vitest";
 
 import useLocalStorage from "./useLocalStorage";
 
 describe("useLocalStorage", () => {
-  let consoleError: Console["error"];
-
-  beforeEach(() => {
-    consoleError = console.error;
-    console.error = vi.fn();
-  });
-
   afterEach(() => {
-    console.error = consoleError;
     localStorage.clear();
   });
 
@@ -37,10 +28,6 @@ describe("useLocalStorage", () => {
     localStorage.setItem("test-key", "not json");
     const { result } = renderHook(() =>
       useLocalStorage("test-key", "init-val"),
-    );
-    expect(console.error).toHaveBeenCalledWith(
-      "Unable to parse local storage:",
-      expect.any(Error),
     );
     const [value] = result.current;
     expect(value).toBe("init-val");
@@ -71,7 +58,6 @@ describe("useLocalStorage", () => {
     act(() => {
       setValue(circular as unknown as string);
     });
-    expect(console.error).toHaveBeenCalledWith(expect.any(Error));
     const [value] = result.current;
     expect(value).toBe("init-val");
     expect(JSON.parse(localStorage.getItem("test-key") ?? "")).toBe("init-val");

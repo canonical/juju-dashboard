@@ -15,7 +15,6 @@ import { renderComponent } from "testing/utils";
 import urls from "urls";
 
 import ModelDetails from "./ModelDetails";
-import { Label as ModelDetailsLabel } from "./types";
 
 vi.mock("pages/EntityDetails/App", () => {
   return { default: () => <div data-testid="app"></div> };
@@ -213,8 +212,6 @@ describe("ModelDetails", () => {
   });
 
   it("should display console error when trying to stop model watcher", async () => {
-    const consoleError = console.error;
-    console.error = vi.fn();
     vi.spyOn(juju, "startModelWatcher").mockImplementation(
       vi.fn().mockResolvedValue({
         conn: client.conn,
@@ -234,10 +231,5 @@ describe("ModelDetails", () => {
     );
     unmount();
     await waitFor(() => expect(juju.stopModelWatcher).toHaveBeenCalledTimes(1));
-    expect(console.error).toHaveBeenCalledWith(
-      ModelDetailsLabel.MODEL_WATCHER_ERROR,
-      new Error("Failed to stop model watcher!"),
-    );
-    console.error = consoleError;
   });
 });

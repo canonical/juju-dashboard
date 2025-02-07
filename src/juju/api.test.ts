@@ -213,8 +213,6 @@ describe("Juju API", () => {
 
     it("stops pinging the connection if there is an error", async () => {
       const clearInterval = vi.spyOn(window, "clearInterval");
-      const consoleError = console.error;
-      console.error = vi.fn();
       const ping = vi.fn().mockRejectedValue("Failed");
       const conn = {
         facades: {
@@ -241,21 +239,10 @@ describe("Juju API", () => {
         expect(clearInterval).toHaveBeenCalled();
       });
       clearInterval.mockRestore();
-      console.error = consoleError;
     });
   });
 
   describe("connectAndLoginWithTimeout", () => {
-    const consoleError = console.error;
-
-    beforeEach(() => {
-      console.error = vi.fn();
-    });
-
-    afterEach(() => {
-      console.error = consoleError;
-    });
-
     it("can connect and log in", async () => {
       const juju = {
         logout: vi.fn(),
@@ -367,8 +354,6 @@ describe("Juju API", () => {
     });
 
     it("handles timeout errors", async () => {
-      const consoleError = console.error;
-      console.error = vi.fn();
       vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
         async () =>
           new Promise((resolve) => {
@@ -384,12 +369,6 @@ describe("Juju API", () => {
       await expect(response).rejects.toStrictEqual(
         new Error(Label.LOGIN_TIMEOUT_ERROR),
       );
-      expect(console.error).toHaveBeenCalledWith(
-        "Error connecting to model:",
-        "abc123",
-        new Error(Label.LOGIN_TIMEOUT_ERROR),
-      );
-      console.error = consoleError;
     });
 
     it("can fetch the status", async () => {
@@ -539,8 +518,6 @@ describe("Juju API", () => {
     });
 
     it("handles status error response", async () => {
-      const consoleError = console.error;
-      console.error = vi.fn();
       const loginResponse = {
         conn: {
           facades: {
@@ -562,12 +539,6 @@ describe("Juju API", () => {
       await expect(response).rejects.toStrictEqual(
         new Error("Unable to fetch the status. Uh oh!"),
       );
-      expect(console.error).toHaveBeenCalledWith(
-        "Error connecting to model:",
-        "abc123",
-        new Error("Unable to fetch the status. Uh oh!"),
-      );
-      console.error = consoleError;
     });
   });
 
@@ -677,8 +648,6 @@ describe("Juju API", () => {
     });
 
     it("handles no model status returned", async () => {
-      const consoleError = console.error;
-      console.error = vi.fn();
       const loginResponse = {
         conn: {
           facades: {
@@ -702,22 +671,14 @@ describe("Juju API", () => {
       await expect(response).rejects.toStrictEqual(
         new Error("Unable to fetch the status. Status not returned."),
       );
-      expect(console.error).toHaveBeenCalledWith(
-        "Error connecting to model:",
-        "abc123",
-        new Error("Unable to fetch the status. Status not returned."),
-      );
       expect(dispatch).not.toHaveBeenCalled();
-      console.error = consoleError;
     });
   });
 
   describe("fetchAllModelStatuses", () => {
     let state: RootState;
-    const consoleError = console.error;
 
     beforeEach(() => {
-      console.error = vi.fn();
       // Need to use real timers so the promises resolve in the tests.
       vi.useRealTimers();
       state = rootStateFactory.build({
@@ -749,7 +710,6 @@ describe("Juju API", () => {
     });
 
     afterEach(() => {
-      console.error = consoleError;
       vi.restoreAllMocks();
     });
 
@@ -865,7 +825,6 @@ describe("Juju API", () => {
     });
 
     it("should console error when trying to update controller cloud and region", async () => {
-      const errorSpy = vi.spyOn(console, "error");
       const dispatch = vi
         .fn()
         .mockReturnValueOnce(null)
@@ -895,12 +854,6 @@ describe("Juju API", () => {
         () => state,
       );
       expect(dispatch).toHaveBeenCalledTimes(2);
-      await waitFor(() =>
-        expect(errorSpy).toHaveBeenCalledWith(
-          "Error when trying to add controller cloud and region data.",
-          new Error("Error while trying to dispatch!"),
-        ),
-      );
     });
 
     it("should return a rejected promise when retrieving data for some models fails", async () => {
@@ -1233,7 +1186,6 @@ describe("Juju API", () => {
 
     it("should handle error when unable to fetch the list of controllers", async () => {
       const dispatch = vi.fn();
-      console.error = vi.fn();
       const conn = {
         facades: {
           jimM: {

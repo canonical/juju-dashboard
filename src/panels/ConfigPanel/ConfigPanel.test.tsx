@@ -61,10 +61,8 @@ describe("ConfigPanel", () => {
   const url = `/models/eggman@external/hadoopspark?${params.toString()}`;
   const path = "/models/:userName/:modelName";
   let getApplicationConfig: Mock;
-  const consoleError = console.error;
 
   beforeEach(() => {
-    console.error = vi.fn();
     vi.resetModules();
     vi.spyOn(secretHooks, "useListSecrets").mockImplementation(() => vi.fn());
     state = rootStateFactory.build({
@@ -140,7 +138,6 @@ describe("ConfigPanel", () => {
   });
 
   afterEach(() => {
-    console.error = consoleError;
     vi.restoreAllMocks();
   });
 
@@ -394,13 +391,7 @@ describe("ConfigPanel", () => {
     );
     renderComponent(<ConfigPanel />, { state, path, url });
     expect(getApplicationConfig).toHaveBeenCalledTimes(1);
-    await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith(
-        ConfigPanelLabel.GET_CONFIG_ERROR,
-        new Error("Error while calling getApplicationConfig"),
-      );
-    });
-    const configErrorNotification = screen.getByText(
+    const configErrorNotification = await screen.findByText(
       ConfigPanelLabel.GET_CONFIG_ERROR,
       {
         exact: false,
@@ -449,12 +440,6 @@ describe("ConfigPanel", () => {
       screen.getByRole("button", {
         name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
       }),
-    );
-    await waitFor(() =>
-      expect(console.error).toHaveBeenCalledWith(
-        ConfirmationDialogLabel.SUBMIT_TO_JUJU_ERROR,
-        new Error("Error while trying to save"),
-      ),
     );
     expect(
       screen.getByText(ConfirmationDialogLabel.SUBMIT_TO_JUJU_ERROR, {

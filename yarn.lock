@@ -8357,6 +8357,7 @@ __metadata:
     jest-websocket-mock: "npm:2.5.0"
     lodash.isequal: "npm:4.5.0"
     lodash.mergewith: "npm:4.6.2"
+    loglevel: "npm:1.9.2"
     npm-package-json-lint: "npm:8.0.0"
     postcss: "npm:8.4.49"
     prettier: "npm:3.4.2"

@@ -5,6 +5,7 @@ import reactHotToast from "react-hot-toast";
 import ToastCard from "components/ToastCard";
 import { thunks as appThunks } from "store/app";
 import { useAppDispatch } from "store/store";
+import { logger } from "utils/logger";
 
 export enum Label {
   LOGOUT_ERROR = "Error when trying to logout.",
@@ -30,7 +31,7 @@ const useLogout = () => {
             </>
           </ToastCard>
         ));
-        console.error(Label.LOGOUT_ERROR, error);
+        logger.error(Label.LOGOUT_ERROR, error);
       });
   };
 };

@@ -13,7 +13,6 @@ import UserMenu from "./UserMenu";
 
 describe("User Menu", () => {
   let state: RootState;
-  const consoleError = console.error;
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -33,12 +32,10 @@ describe("User Menu", () => {
         },
       }),
     });
-    console.error = vi.fn();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    console.error = consoleError;
   });
 
   it("is inactive by default", () => {

@@ -17,14 +17,10 @@ import { checkAuthMiddleware } from "./check-auth";
 describe("model poller", () => {
   let fakeStore: MiddlewareAPI;
   let next: Mock;
-  const originalLog = console.log;
-  const originalError = console.error;
   const wsControllerURL = "wss://example.com";
   let state: RootState;
 
   beforeEach(() => {
-    console.log = vi.fn();
-    console.error = vi.fn();
     vi.useFakeTimers();
     next = vi.fn();
     state = rootStateFactory.build({
@@ -60,8 +56,6 @@ describe("model poller", () => {
   };
 
   afterEach(() => {
-    console.log = originalLog;
-    console.error = originalError;
     vi.restoreAllMocks();
     vi.useRealTimers();
   });

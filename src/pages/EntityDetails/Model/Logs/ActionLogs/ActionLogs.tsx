@@ -27,6 +27,7 @@ import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
 import type { RootState } from "store/store";
 import urls from "urls";
+import { logger } from "utils/logger";
 
 import "./_action-logs.scss";
 import ActionPayloadModal from "./ActionPayloadModal";
@@ -113,7 +114,7 @@ const generateApplicationRow = (
   const appName = parts && parts[1];
   if (!appName) {
     // Not shown in UI. Logged for debugging purposes.
-    console.error(
+    logger.error(
       "Unable to parse action receiver",
       actionData.action?.receiver,
     );
@@ -195,7 +196,7 @@ export default function ActionLogs() {
       setInlineErrors(InlineErrors.FETCH, null);
     } catch (error) {
       setInlineErrors(InlineErrors.FETCH, Label.FETCH_ERROR);
-      console.error(Label.FETCH_ERROR, error);
+      logger.error(Label.FETCH_ERROR, error);
     } finally {
       setFetchedOperations(true);
     }

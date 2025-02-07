@@ -22,6 +22,7 @@ import {
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
+import { logger } from "utils/logger";
 
 import ActionLogs from "./ActionLogs";
 import { Label, Output } from "./types";
@@ -108,6 +109,7 @@ describe("Action Logs", () => {
   const url = "/models/eggman@external/group-test?activeView=action-logs";
 
   beforeEach(() => {
+    vi.spyOn(logger, "error").mockImplementation(() => vi.fn());
     vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(() =>
       vi.fn().mockImplementation(() => Promise.resolve(mockOperationResults)),
     );
@@ -356,9 +358,6 @@ describe("Action Logs", () => {
   });
 
   it("should show error when fetching action logs and refetch action logs", async () => {
-    const consoleError = console.error;
-    console.error = vi.fn();
-
     const queryOperationsListSpy = vi
       .fn()
       .mockImplementation(() =>
@@ -370,7 +369,7 @@ describe("Action Logs", () => {
     renderComponent(<ActionLogs />, { path, url, state });
     expect(queryOperationsListSpy).toHaveBeenCalledTimes(1);
     await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         Label.FETCH_ERROR,
         new Error("Error while querying operations list."),
       );
@@ -384,7 +383,5 @@ describe("Action Logs", () => {
     expect(refetchButton).toHaveTextContent("refetch");
     await userEvent.click(refetchButton);
     expect(queryOperationsListSpy).toHaveBeenCalledTimes(2);
-
-    console.error = consoleError;
   });
 });

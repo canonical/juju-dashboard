@@ -4,6 +4,8 @@ import { useCallback } from "react";
 import type { NavigateOptions } from "react-router";
 import { useSearchParams } from "react-router";
 
+import { logger } from "utils/logger";
+
 export type SetParams<P> = (
   params?: Partial<P> | null,
   options?: NavigateOptions,
@@ -42,7 +44,7 @@ export const useQueryParams = <P extends QueryParams>(
           const sanitizedKey = DOMPurify.sanitize(key);
           if (key !== sanitizedKey) {
             searchParams.delete(key);
-            console.log(
+            logger.log(
               `Query param key "${key}" has been changed to "${sanitizedKey}"` +
                 " in order to prevent potential XSS Attacks.",
             );

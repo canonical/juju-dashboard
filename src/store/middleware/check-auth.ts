@@ -14,10 +14,11 @@ import { actions as jujuActions } from "store/juju";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type { RootState, Store } from "store/store";
 import { isPayloadAction } from "types";
+import { logger } from "utils/logger";
 
 function error(name: string, wsControllerURL?: string | null) {
   // Not shown in UI. Logged for debugging purposes.
-  console.error(
+  logger.error(
     "Unable to perform action: ",
     name,
     wsControllerURL
@@ -32,7 +33,7 @@ function error(name: string, wsControllerURL?: string | null) {
 export const checkLoggedIn = (state: RootState, wsControllerURL: string) => {
   if (!wsControllerURL) {
     // Not shown in UI. Logged for debugging purposes.
-    console.error(
+    logger.error(
       "Unable to determine logged in status. " +
         "'wsControllerURL' was not provided in the action that was dispatched.",
     );

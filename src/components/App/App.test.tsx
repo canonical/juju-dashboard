@@ -29,17 +29,7 @@ vi.mock("react-router", async () => {
 const mockStore = configureStore([]);
 
 describe("App", () => {
-  let consoleError: Console["error"];
-
-  beforeEach(() => {
-    consoleError = console.error;
-    // Even though the error boundary catches the error, there is still a
-    // console.error in the test output.
-    console.error = vi.fn();
-  });
-
   afterEach(() => {
-    console.error = consoleError;
     vi.resetAllMocks();
     vi.unstubAllEnvs();
   });
