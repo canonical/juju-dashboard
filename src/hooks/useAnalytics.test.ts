@@ -1,15 +1,18 @@
-import { renderHook } from "@testing-library/react";
-import * as reactGA from "react-ga";
+import ReactGA from "react-ga4";
 import type { MockInstance } from "vitest";
 import { vi } from "vitest";
 
 import * as store from "store/store";
+import { renderWrappedHook } from "testing/utils";
 
 import useAnalytics from "./useAnalytics";
 
-vi.mock("react-ga", () => ({
-  event: vi.fn(),
-  pageview: vi.fn(),
+vi.mock("react-ga4", () => ({
+  default: {
+    initialize: vi.fn(),
+    send: vi.fn(),
+    event: vi.fn(),
+  },
 }));
 
 describe("useAnalytics", () => {
@@ -18,8 +21,8 @@ describe("useAnalytics", () => {
 
   beforeEach(() => {
     vi.stubEnv("PROD", true);
-    eventSpy = vi.spyOn(reactGA, "event");
-    pageviewSpy = vi.spyOn(reactGA, "pageview");
+    eventSpy = vi.spyOn(ReactGA, "event");
+    pageviewSpy = vi.spyOn(ReactGA, "send");
   });
 
   afterEach(() => {
@@ -35,7 +38,7 @@ describe("useAnalytics", () => {
       vi.fn().mockReturnValue(true),
     );
     vi.stubEnv("PROD", false);
-    const { result } = renderHook(() => useAnalytics());
+    const { result } = renderWrappedHook(() => useAnalytics());
     result.current({ path: "/some/path" });
     expect(eventSpy).not.toHaveBeenCalled();
     expect(pageviewSpy).not.toHaveBeenCalled();
@@ -45,7 +48,7 @@ describe("useAnalytics", () => {
     vi.spyOn(store, "useAppSelector").mockImplementation(
       vi.fn().mockReturnValue(false),
     );
-    const { result } = renderHook(() => useAnalytics());
+    const { result } = renderWrappedHook(() => useAnalytics());
     result.current({ path: "/some/path" });
     expect(eventSpy).not.toHaveBeenCalled();
     expect(pageviewSpy).not.toHaveBeenCalled();
@@ -55,20 +58,26 @@ describe("useAnalytics", () => {
     vi.spyOn(store, "useAppSelector").mockImplementation(
       vi.fn().mockReturnValue(true),
     );
-    const { result } = renderHook(() => useAnalytics());
+    const { result } = renderWrappedHook(() => useAnalytics());
     result.current({ path: "/some/path" });
-    expect(pageviewSpy).toHaveBeenCalledWith("/some/path");
+    expect(pageviewSpy).toHaveBeenCalledWith({
+      hitType: "pageview",
+      page: "/some/path",
+    });
   });
 
   it("can send events", () => {
     vi.spyOn(store, "useAppSelector").mockImplementation(
       vi.fn().mockReturnValue(true),
     );
-    const { result } = renderHook(() => useAnalytics());
+    const { result } = renderWrappedHook(() => useAnalytics());
     result.current({ category: "sidebar", action: "toggle" });
     expect(eventSpy).toHaveBeenCalledWith({
       category: "sidebar",
       action: "toggle",
+      controllerVersion: "",
+      dashboardVersion: "",
+      isJuju: "false",
     });
   });
 });
