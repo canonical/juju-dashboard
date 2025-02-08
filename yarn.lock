@@ -597,29 +597,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:1.7.3":
-  version: 1.7.3
-  resolution: "@canonical/react-components@npm:1.7.3"
+"@canonical/react-components@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@canonical/react-components@npm:2.1.0"
   dependencies:
-    "@types/jest": "npm:29.5.12"
-    "@types/node": "npm:20.16.3"
-    "@types/react": "npm:18.3.5"
-    "@types/react-dom": "npm:18.3.0"
+    "@types/jest": "npm:29.5.14"
+    "@types/node": "npm:20.17.13"
+    "@types/react": "npm:19.0.8"
+    "@types/react-dom": "npm:19.0.3"
     "@types/react-table": "npm:7.7.20"
     classnames: "npm:2.5.1"
     jest-environment-jsdom: "npm:29.7.0"
     lodash.isequal: "npm:4.5.0"
     prop-types: "npm:15.8.1"
     react-table: "npm:7.8.0"
-    react-useportal: "npm:1.0.19"
   peerDependencies:
-    "@types/react": ^18.0.0
-    "@types/react-dom": ^18.0.0
+    "@types/react": ^18.0.0 || ^19.0.0
+    "@types/react-dom": ^18.0.0 || ^19.0.0
     formik: ^2.4.5
-    react: ^18.0.0
-    react-dom: ^18.0.0
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 10c0/c2fb88c0ccbbf9b019f42b56eba772ae9d9eff878e5a9cc63c7e6be9013d065aa5f2d54cea9a85c2c80f2c44907e53db1efb1f13bf9970d6e975158146cb2ab7
+  checksum: 10c0/516c9cdf1730fe2bd6c44a6e5192e2fa8f56f5c7a69cb781fb293c6a3dbb950fd566ad9c04120e87ea0ae144cee864f364a3cb7835f00aeb275b8b2ed43b96a9
   languageName: node
   linkType: hard
 
@@ -2282,13 +2281,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.5.12":
-  version: 29.5.12
-  resolution: "@types/jest@npm:29.5.12"
+"@types/jest@npm:29.5.14":
+  version: 29.5.14
+  resolution: "@types/jest@npm:29.5.14"
   dependencies:
     expect: "npm:^29.0.0"
     pretty-format: "npm:^29.0.0"
-  checksum: 10c0/25fc8e4c611fa6c4421e631432e9f0a6865a8cb07c9815ec9ac90d630271cad773b2ee5fe08066f7b95bebd18bb967f8ce05d018ee9ab0430f9dfd1d84665b6f
+  checksum: 10c0/18e0712d818890db8a8dab3d91e9ea9f7f19e3f83c2e50b312f557017dc81466207a71f3ed79cf4428e813ba939954fa26ffa0a9a7f153181ba174581b1c2aed
   languageName: node
   linkType: hard
 
@@ -2365,12 +2364,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.16.3":
-  version: 20.16.3
-  resolution: "@types/node@npm:20.16.3"
+"@types/node@npm:20.17.13":
+  version: 20.17.13
+  resolution: "@types/node@npm:20.17.13"
   dependencies:
     undici-types: "npm:~6.19.2"
-  checksum: 10c0/907c01d58ae36695fbed0b101e7a14cc2e0c5b9b2ba7904ef21cef093e4aac0649ac2a7a283fc94e19311dd0551d778445dd45fcf2d8bd45c494c9ecd802de69
+  checksum: 10c0/a5ba630b5ead5144e8f605402bc14d77dc3cf6b31708a92c7221de9b06b17724ada661d0f66b6c974830857a79e7f38e976dd105fca330ab706de9e4d75cf8b9
   languageName: node
   linkType: hard
 
@@ -2402,21 +2401,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.3.0":
-  version: 18.3.0
-  resolution: "@types/react-dom@npm:18.3.0"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 10c0/6c90d2ed72c5a0e440d2c75d99287e4b5df3e7b011838cdc03ae5cd518ab52164d86990e73246b9d812eaf02ec351d74e3b4f5bd325bf341e13bf980392fd53b
-  languageName: node
-  linkType: hard
-
 "@types/react-dom@npm:18.3.5":
   version: 18.3.5
   resolution: "@types/react-dom@npm:18.3.5"
   peerDependencies:
     "@types/react": ^18.0.0
   checksum: 10c0/b163d35a6b32a79f5782574a7aeb12a31a647e248792bf437e6d596e2676961c394c5e3c6e91d1ce44ae90441dbaf93158efb4f051c0d61e2612f1cb04ce4faa
+  languageName: node
+  linkType: hard
+
+"@types/react-dom@npm:19.0.3":
+  version: 19.0.3
+  resolution: "@types/react-dom@npm:19.0.3"
+  peerDependencies:
+    "@types/react": ^19.0.0
+  checksum: 10c0/3867427b333cbe8cbba496d7cc20ec9676d32c25ae44f4d1263a4129d42e57cf4adf0039ad263432f1215b88075c27d326e7eb4ed646128235d01a76e661d48f
   languageName: node
   linkType: hard
 
@@ -2450,13 +2449,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.3.5":
-  version: 18.3.5
-  resolution: "@types/react@npm:18.3.5"
+"@types/react@npm:19.0.8":
+  version: 19.0.8
+  resolution: "@types/react@npm:19.0.8"
   dependencies:
-    "@types/prop-types": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 10c0/548b1d3d7c2f0242fbfdbbd658731b4ce69a134be072fa83e6ab516f2840402a3f20e3e7f72e95133b23d4880ef24a6d864050dc8e1f7c68f39fa87ca8445917
+  checksum: 10c0/5fa7236356b1476de03519c66ef65d4fd904826956105619e2ad60cb0b55ae7b251dd5fff02234076225b5e15333d0d936bf9dbe1d461406f8a2ba01c197ddcd
   languageName: node
   linkType: hard
 
@@ -8304,7 +8302,7 @@ __metadata:
     "@babel/plugin-proposal-private-property-in-object": "npm:7.21.11"
     "@canonical/jujulib": "npm:7.0.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
-    "@canonical/react-components": "npm:1.7.3"
+    "@canonical/react-components": "npm:2.1.0"
     "@canonical/rebac-admin": "npm:0.0.1-alpha.9"
     "@reduxjs/toolkit": "npm:2.5.0"
     "@sentry/browser": "npm:8.47.0"
