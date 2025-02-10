@@ -166,9 +166,6 @@ describe("LogIn", () => {
   });
 
   it("should remove the authentication request when clicking the authenticate button", async () => {
-    const consoleError = console.error;
-    console.error = vi.fn();
-
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
@@ -186,7 +183,5 @@ describe("LogIn", () => {
       { pointerEventsCheck: 0 },
     );
     expect(screen.queryByTestId("toast-card")).not.toBeInTheDocument();
-
-    console.error = consoleError;
   });
 });

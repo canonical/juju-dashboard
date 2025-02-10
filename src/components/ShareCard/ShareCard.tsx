@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import SlideDownFadeOut from "animations/SlideDownFadeOut";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { formatFriendlyDateToNow } from "components/utils";
+import { logger } from "utils/logger";
 
 import "./_share-card.scss";
 import { Label } from "./types";
@@ -117,7 +118,7 @@ export default function ShareCard({
                           return;
                         })
                         .catch((error) =>
-                          console.error(Label.ACCESS_CHANGE_ERROR, error),
+                          logger.error(Label.ACCESS_CHANGE_ERROR, error),
                         );
                     }}
                     value={access}

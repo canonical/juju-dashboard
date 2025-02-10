@@ -10,16 +10,6 @@ import { renderComponent, renderWrappedHook } from "testing/utils";
 import useLogout from "./useLogout";
 
 describe("useLogout", () => {
-  const consoleError = console.error;
-
-  beforeEach(() => {
-    console.error = vi.fn();
-  });
-
-  afterEach(() => {
-    console.error = consoleError;
-  });
-
   it("should logout", async () => {
     vi.spyOn(appThunks, "logOut").mockImplementation(
       vi.fn().mockReturnValue({ type: "logOut", catch: vi.fn() }),

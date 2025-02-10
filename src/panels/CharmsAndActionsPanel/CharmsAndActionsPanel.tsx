@@ -15,6 +15,7 @@ import {
   getSelectedApplications,
 } from "store/juju/selectors";
 import { useAppStore } from "store/store";
+import { logger } from "utils/logger";
 
 import { Label } from "./types";
 
@@ -76,7 +77,7 @@ const CharmsAndActionsPanel = () => {
       })
       .catch((error) => {
         setInlineErrors(InlineErrors.GET_URL, Label.GET_URL_ERROR);
-        console.error(Label.GET_URL_ERROR, error);
+        logger.error(Label.GET_URL_ERROR, error);
       });
   }, [dispatch, getState, modelUUID, selectedApplications, setInlineErrors]);
 

@@ -12,10 +12,7 @@ import Permissions from "./Permissions";
 const mock = new MockAdapter(axiosInstance);
 
 describe("Permissions", () => {
-  const consoleError = console.error;
-
   beforeEach(() => {
-    console.error = vi.fn();
     mock.reset();
     mock.onGet(endpoints().whoami).reply(200, {
       data: {
@@ -29,7 +26,6 @@ describe("Permissions", () => {
   });
 
   afterEach(() => {
-    console.error = consoleError;
     vi.restoreAllMocks();
   });
 

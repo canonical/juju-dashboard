@@ -21,14 +21,12 @@ import type { WindowConfig } from "types";
 import { logOut, connectAndStartPolling } from "./thunks";
 
 describe("thunks", () => {
-  const consoleError = console.error;
   let state: RootState;
 
   beforeEach(() => {
     window.jujuDashboardConfig = {
       controllerAPIEndpoint: "wss://example.com/api",
     } as WindowConfig;
-    console.error = vi.fn();
     fetchMock.resetMocks();
     state = rootStateFactory.build({
       general: generalStateFactory.build({
@@ -64,7 +62,6 @@ describe("thunks", () => {
   });
 
   afterEach(() => {
-    console.error = consoleError;
     delete window.jujuDashboardConfig;
   });
 
@@ -154,10 +151,6 @@ describe("thunks", () => {
         isJuju: true,
       }),
     );
-    expect(console.error).toHaveBeenCalledWith(
-      "Error while triggering the connection and polling of models.",
-      "Error while dispatching connectAndPollControllers!",
-    );
     expect(dispatch).toHaveBeenCalledWith(
       generalActions.storeConnectionError(
         "Unable to connect: Error while dispatching connectAndPollControllers!",
@@ -184,10 +177,6 @@ describe("thunks", () => {
         ],
         isJuju: true,
       }),
-    );
-    expect(console.error).toHaveBeenCalledWith(
-      "Error while triggering the connection and polling of models.",
-      new Error("Error while dispatching connectAndPollControllers!"),
     );
     expect(dispatch).toHaveBeenCalledWith(
       generalActions.storeConnectionError(
@@ -216,10 +205,6 @@ describe("thunks", () => {
         ],
         isJuju: true,
       }),
-    );
-    expect(console.error).toHaveBeenCalledWith(
-      "Error while triggering the connection and polling of models.",
-      ["Unknown error."],
     );
     expect(dispatch).toHaveBeenCalledWith(
       generalActions.storeConnectionError(

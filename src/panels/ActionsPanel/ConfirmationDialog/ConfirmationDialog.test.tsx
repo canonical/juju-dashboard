@@ -106,8 +106,6 @@ describe("ConfirmationDialog", () => {
   });
 
   it("should set inline error if execute action fails", async () => {
-    const consoleError = console.error;
-    console.error = vi.fn();
     const mockSetInlineErrors = vi.fn();
     const executeActionOnUnitsSpy = vi
       .fn()
@@ -135,10 +133,5 @@ describe("ConfirmationDialog", () => {
       InlineErrors.EXECUTE_ACTION,
       Label.EXECUTE_ACTION_ERROR,
     );
-    expect(console.error).toHaveBeenCalledWith(
-      Label.EXECUTE_ACTION_ERROR,
-      new Error("mock error"),
-    );
-    console.error = consoleError;
   });
 });

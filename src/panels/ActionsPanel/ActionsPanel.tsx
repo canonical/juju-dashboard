@@ -17,6 +17,7 @@ import { getModelUUID } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 import type { RootState } from "store/store";
 import { useAppStore } from "store/store";
+import { logger } from "utils/logger";
 
 import ActionOptions from "./ActionOptions";
 import ConfirmationDialog from "./ConfirmationDialog";
@@ -100,7 +101,7 @@ export default function ActionsPanel(): JSX.Element {
         })
         .catch((error) => {
           setInlineErrors(InlineErrors.GET_ACTION, Label.GET_ACTIONS_ERROR);
-          console.error(Label.GET_ACTIONS_ERROR, error);
+          logger.error(Label.GET_ACTIONS_ERROR, error);
         })
         .finally(() => {
           setFetchingActionData(false);

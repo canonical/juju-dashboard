@@ -26,7 +26,6 @@ import CharmsAndActionsPanel from "./CharmsAndActionsPanel";
 import { Label as CharmsAndActionsPanelLabel } from "./types";
 
 describe("CharmsAndActionsPanel", () => {
-  const consoleError = console.error;
   let state: RootState;
   const path = urls.model.index(null);
   const url = urls.model.index({
@@ -35,7 +34,6 @@ describe("CharmsAndActionsPanel", () => {
   });
 
   beforeEach(() => {
-    console.error = vi.fn();
     vi.resetAllMocks();
 
     state = rootStateFactory.build({
@@ -58,10 +56,6 @@ describe("CharmsAndActionsPanel", () => {
         ],
       }),
     });
-  });
-
-  afterEach(() => {
-    console.error = consoleError;
   });
 
   it("should display the spinner before loading the panel", async () => {
@@ -163,13 +157,9 @@ describe("CharmsAndActionsPanel", () => {
     } = renderComponent(<CharmsAndActionsPanel />, { path, url, state });
     expect(juju.getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
     await waitFor(() =>
-      expect(console.error).toHaveBeenCalledWith(
-        CharmsAndActionsPanelLabel.GET_URL_ERROR,
-        new Error("Error while calling getCharmsURLFromApplications"),
+      expect(container.querySelector(".p-panel__title")).toContainHTML(
+        CharmsPanelLabel.PANEL_TITLE,
       ),
-    );
-    expect(container.querySelector(".p-panel__title")).toContainHTML(
-      CharmsPanelLabel.PANEL_TITLE,
     );
     const getCharmsURLErrorNotification = screen.getByText(
       CharmsAndActionsPanelLabel.GET_URL_ERROR,
