@@ -116,12 +116,9 @@
 
     .p-tabs {
       .p-tabs__list {
+        // Hide the bottom border.
+        box-shadow: none;
         margin-bottom: 0;
-
-        &::after {
-          // Hide the bottom border.
-          background-color: transparent;
-        }
       }
 
       &__link::before {
