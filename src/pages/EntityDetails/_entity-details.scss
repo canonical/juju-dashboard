@@ -116,9 +116,9 @@
 
     .p-tabs {
       .p-tabs__list {
-        margin-bottom: 0;
         // Hide the bottom border.
         box-shadow: none;
+        margin-bottom: 0;
       }
 
       &__link::before {
