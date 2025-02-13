@@ -597,29 +597,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:1.10.0":
-  version: 1.10.0
-  resolution: "@canonical/react-components@npm:1.10.0"
+"@canonical/react-components@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@canonical/react-components@npm:2.1.0"
   dependencies:
     "@types/jest": "npm:29.5.14"
     "@types/node": "npm:20.17.13"
-    "@types/react": "npm:18.3.18"
-    "@types/react-dom": "npm:18.3.5"
+    "@types/react": "npm:19.0.8"
+    "@types/react-dom": "npm:19.0.3"
     "@types/react-table": "npm:7.7.20"
     classnames: "npm:2.5.1"
     jest-environment-jsdom: "npm:29.7.0"
     lodash.isequal: "npm:4.5.0"
     prop-types: "npm:15.8.1"
     react-table: "npm:7.8.0"
-    react-useportal: "npm:1.0.19"
   peerDependencies:
-    "@types/react": ^18.0.0
-    "@types/react-dom": ^18.0.0
+    "@types/react": ^18.0.0 || ^19.0.0
+    "@types/react-dom": ^18.0.0 || ^19.0.0
     formik: ^2.4.5
-    react: ^18.0.0
-    react-dom: ^18.0.0
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 10c0/ebce0eec861f8a756e76cb366e8ac76f71e10146c9f7050b81412708697b3f5bfabe36197725019f21cc3c12b06c01999c92555912a61dc2fd9a95dbb5dba35d
+  checksum: 10c0/516c9cdf1730fe2bd6c44a6e5192e2fa8f56f5c7a69cb781fb293c6a3dbb950fd566ad9c04120e87ea0ae144cee864f364a3cb7835f00aeb275b8b2ed43b96a9
   languageName: node
   linkType: hard
 
@@ -2420,6 +2419,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-dom@npm:19.0.3":
+  version: 19.0.3
+  resolution: "@types/react-dom@npm:19.0.3"
+  peerDependencies:
+    "@types/react": ^19.0.0
+  checksum: 10c0/3867427b333cbe8cbba496d7cc20ec9676d32c25ae44f4d1263a4129d42e57cf4adf0039ad263432f1215b88075c27d326e7eb4ed646128235d01a76e661d48f
+  languageName: node
+  linkType: hard
+
 "@types/react-table@npm:7.7.20":
   version: 7.7.20
   resolution: "@types/react-table@npm:7.7.20"
@@ -2447,6 +2455,15 @@ __metadata:
     "@types/prop-types": "npm:*"
     csstype: "npm:^3.0.2"
   checksum: 10c0/8fb2b00672072135d0858dc9db07873ea107cc238b6228aaa2a9afd1ef7a64a7074078250db38afbeb19064be8ea6af5eac32d404efdd5f45e093cc4829d87f8
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:19.0.8":
+  version: 19.0.8
+  resolution: "@types/react@npm:19.0.8"
+  dependencies:
+    csstype: "npm:^3.0.2"
+  checksum: 10c0/5fa7236356b1476de03519c66ef65d4fd904826956105619e2ad60cb0b55ae7b251dd5fff02234076225b5e15333d0d936bf9dbe1d461406f8a2ba01c197ddcd
   languageName: node
   linkType: hard
 
@@ -8347,7 +8364,7 @@ __metadata:
     "@babel/plugin-proposal-private-property-in-object": "npm:7.21.11"
     "@canonical/jujulib": "npm:7.0.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
-    "@canonical/react-components": "npm:1.10.0"
+    "@canonical/react-components": "npm:2.1.0"
     "@canonical/rebac-admin": "npm:0.0.1-alpha.9"
     "@reduxjs/toolkit": "npm:2.5.1"
     "@sentry/browser": "npm:8.55.0"
