@@ -1,5 +1,6 @@
 import { screen, within } from "@testing-library/react";
 
+import gceLogo from "static/images/logo/cloud/gce.svg";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
@@ -29,38 +30,28 @@ describe("StatusGroup", () => {
           abc123: modelDataFactory.build({
             applications: {
               easyrsa: modelDataApplicationFactory.build({
-                status: detailedStatusFactory.build({
-                  status: "blocked",
-                }),
+                status: detailedStatusFactory.build({ status: "blocked" }),
               }),
             },
             info: modelDataInfoFactory.build({
               "controller-uuid": "controller123",
               uuid: "abc123",
             }),
-            model: modelStatusInfoFactory.build({
-              "cloud-tag": "cloud-aws",
-            }),
+            model: modelStatusInfoFactory.build({ "cloud-tag": "cloud-aws" }),
             uuid: "abc123",
           }),
           def456: modelDataFactory.build({
             applications: {
               cockroachdb: modelDataApplicationFactory.build({
-                status: detailedStatusFactory.build({
-                  status: "blocked",
-                }),
+                status: detailedStatusFactory.build({ status: "blocked" }),
               }),
             },
-            model: modelStatusInfoFactory.build({
-              "cloud-tag": "cloud-aws",
-            }),
+            model: modelStatusInfoFactory.build({ "cloud-tag": "cloud-aws" }),
           }),
           ghi789: modelDataFactory.build({
             applications: {
               elasticsearch: modelDataApplicationFactory.build({
-                status: detailedStatusFactory.build({
-                  status: "unknown",
-                }),
+                status: detailedStatusFactory.build({ status: "unknown" }),
               }),
             },
             model: modelStatusInfoFactory.build({
@@ -70,9 +61,7 @@ describe("StatusGroup", () => {
           jkl101112: modelDataFactory.build({
             applications: {
               kibana: modelDataApplicationFactory.build({
-                status: detailedStatusFactory.build({
-                  status: "running",
-                }),
+                status: detailedStatusFactory.build({ status: "running" }),
               }),
             },
             model: modelStatusInfoFactory.build({
@@ -106,21 +95,16 @@ describe("StatusGroup", () => {
   });
 
   it("fetches filtered data if filters supplied", () => {
-    const filters = {
-      cloud: ["aws"],
-    };
+    const filters = { cloud: ["aws"] };
     renderComponent(<StatusGroup filters={filters} />, { state });
     expect(screen.getAllByRole("row").length).toBe(3);
   });
 
   it("displays the provider type icon", () => {
     renderComponent(<StatusGroup filters={{}} />, { state });
-    expect(
-      screen
-        .getAllByTestId("provider-logo")[0]
-        .getAttribute("src")
-        ?.endsWith("/gce.svg"),
-    ).toBe(true);
+    expect(screen.getAllByTestId("provider-logo")[0].getAttribute("src")).toBe(
+      gceLogo,
+    );
   });
 
   it("model access button is present in status group", () => {
@@ -149,15 +133,11 @@ describe("StatusGroup", () => {
         }),
       ],
     });
-    const filters = {
-      cloud: ["aws"],
-    };
+    const filters = { cloud: ["aws"] };
     renderComponent(<StatusGroup filters={filters} />, { state });
     const firstContentRow = screen.getAllByRole("row")[1];
     expect(
-      within(firstContentRow).getByRole("button", {
-        name: "Access",
-      }),
+      within(firstContentRow).getByRole("button", { name: "Access" }),
     ).toBeInTheDocument();
     expect(within(firstContentRow).getAllByRole("gridcell")[6]).toHaveClass(
       "lrg-screen-access-cell",

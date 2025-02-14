@@ -2,13 +2,10 @@ import type { PropsWithSpread } from "@canonical/react-components";
 import classNames from "classnames";
 import type { ComponentType, ElementType } from "react";
 
-import jaasDarkText from "static/images/logo/jaas-text-dark.svg";
-import jaasLightText from "static/images/logo/jaas-text.svg";
-import jujuDarkText from "static/images/logo/juju-text-dark.svg";
-import jujuLightText from "static/images/logo/juju-text.svg";
 import logoMark from "static/images/logo/logo-mark.svg";
 
 import "./_logo.scss";
+import { TEXT } from "./text";
 
 type Props<C> = PropsWithSpread<
   {
@@ -19,17 +16,6 @@ type Props<C> = PropsWithSpread<
   },
   C
 >;
-
-const TEXT = {
-  dark: {
-    juju: jujuDarkText,
-    jaas: jaasDarkText,
-  },
-  light: {
-    juju: jujuLightText,
-    jaas: jaasLightText,
-  },
-};
 
 const Logo = <C,>({
   className,
