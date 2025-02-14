@@ -5,7 +5,7 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { createSelector } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
-import isEqual from "lodash.isequal";
+import fastDeepEqual from "fast-deep-equal/es6";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
@@ -1068,7 +1068,7 @@ export const getReBACRelationsState = createSelector(
 export const getReBACPermission = createSelector(
   [getReBACRelationsState, (_state, tuple?: RelationshipTuple | null) => tuple],
   (rebacRelations, tuple) =>
-    rebacRelations.find((relation) => isEqual(relation.tuple, tuple)),
+    rebacRelations.find((relation) => fastDeepEqual(relation.tuple, tuple)),
 );
 
 export const getReBACPermissionLoading = createSelector(
