@@ -33,20 +33,12 @@ vi.mock("consts", () => {
 
 vi.mock("store/general", async () => {
   const actual = await vi.importActual("store/general");
-  return {
-    ...actual,
-    actions: {
-      storeLoginError: vi.fn(),
-    },
-  };
+  return { ...actual, actions: { storeLoginError: vi.fn() } };
 });
 
 vi.mock("store/app/thunks", async () => {
   const actual = await vi.importActual("store/app/thunks");
-  return {
-    ...actual,
-    logOut: vi.fn(),
-  };
+  return { ...actual, logOut: vi.fn() };
 });
 
 describe("listeners", () => {
@@ -58,17 +50,11 @@ describe("listeners", () => {
   let store: EnhancedStore<
     RootState,
     UnknownAction,
-    Tuple<
-      [
-        StoreEnhancer<{
-          dispatch: AppDispatch;
-        }>,
-        StoreEnhancer,
-      ]
-    >
+    Tuple<[StoreEnhancer<{ dispatch: AppDispatch }>, StoreEnhancer]>
   >;
 
   beforeEach(() => {
+    vi.clearAllMocks();
     fetchMock.resetMocks();
     window.jujuDashboardConfig = {
       controllerAPIEndpoint: "wss://controller.example.com",

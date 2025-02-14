@@ -1,3 +1,4 @@
+import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import {
   detailedStatusFactory,
   modelStatusInfoFactory,
@@ -101,7 +102,7 @@ describe("generateIconPath", () => {
   it("should return default charm icon if the charm is local", () => {
     const charmId = "local:my-charm";
     const iconPath = generateIconPath(charmId);
-    expect(iconPath.endsWith("default-charm-icon.svg")).toBe(true);
+    expect(iconPath).toBe(defaultCharmIcon);
   });
 
   it("should return a icon URI for a charmhub charm path", () => {
@@ -116,14 +117,10 @@ describe("getModelStatusGroupData", () => {
     const modelData = modelDataFactory.build({
       applications: {
         easyrsa: modelDataApplicationFactory.build({
-          status: detailedStatusFactory.build({
-            status: "running",
-          }),
+          status: detailedStatusFactory.build({ status: "running" }),
         }),
       },
-      model: modelStatusInfoFactory.build({
-        "cloud-tag": "cloud-aws",
-      }),
+      model: modelStatusInfoFactory.build({ "cloud-tag": "cloud-aws" }),
     });
     const status = getModelStatusGroupData(modelData);
     expect(status.highestStatus).toBe("running");
@@ -133,14 +130,10 @@ describe("getModelStatusGroupData", () => {
     const modelData = modelDataFactory.build({
       applications: {
         easyrsa: modelDataApplicationFactory.build({
-          status: detailedStatusFactory.build({
-            status: "running",
-          }),
+          status: detailedStatusFactory.build({ status: "running" }),
         }),
         etcd: modelDataApplicationFactory.build({
-          status: detailedStatusFactory.build({
-            status: "unknown",
-          }),
+          status: detailedStatusFactory.build({ status: "unknown" }),
         }),
       },
     });
@@ -152,19 +145,13 @@ describe("getModelStatusGroupData", () => {
     const modelData = modelDataFactory.build({
       applications: {
         easyrsa: modelDataApplicationFactory.build({
-          status: detailedStatusFactory.build({
-            status: "running",
-          }),
+          status: detailedStatusFactory.build({ status: "running" }),
         }),
         etcd: modelDataApplicationFactory.build({
-          status: detailedStatusFactory.build({
-            status: "unknown",
-          }),
+          status: detailedStatusFactory.build({ status: "unknown" }),
         }),
         calico: modelDataApplicationFactory.build({
-          status: detailedStatusFactory.build({
-            status: "blocked",
-          }),
+          status: detailedStatusFactory.build({ status: "blocked" }),
         }),
       },
     });
