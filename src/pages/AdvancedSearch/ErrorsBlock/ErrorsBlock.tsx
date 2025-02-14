@@ -1,4 +1,4 @@
-import isEqual from "lodash.isequal";
+import fastDeepEqual from "fast-deep-equal/es6";
 
 import type { CrossModelQueryResponse } from "juju/jimm/JIMMV4";
 import {
@@ -17,7 +17,8 @@ const ErrorsBlock = (): JSX.Element | null => {
   const hasEqualErrors = (errors: CrossModelQueryResponse["errors"]) => {
     const firstError = Object.values(errors)[0].slice().sort();
     return Object.values(errors).reduce(
-      (result, error) => result && isEqual(error.slice().sort(), firstError),
+      (result, error) =>
+        result && fastDeepEqual(error.slice().sort(), firstError),
       true,
     );
   };

@@ -10,7 +10,7 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
-import isEqual from "lodash.isequal";
+import fastDeepEqual from "fast-deep-equal/es6";
 
 import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm/JIMMV3";
 import type {
@@ -37,9 +37,7 @@ import type {
 
 export const DEFAULT_AUDIT_EVENTS_LIMIT = 50;
 
-type WsControllerURLParam = {
-  wsControllerURL: string;
-};
+type WsControllerURLParam = { wsControllerURL: string };
 
 const DEFAULT_MODEL_SECRETS: ModelSecrets = {
   items: null,
@@ -58,16 +56,12 @@ const DEFAULT_MODEL_SECRETS_CONTENT: SecretsContent = {
 const getOrSetContentState = (state: JujuState, modelUUID: string) => {
   let modelSecrets = state.secrets[modelUUID];
   if (!modelSecrets) {
-    modelSecrets = state.secrets[modelUUID] = {
-      ...DEFAULT_MODEL_SECRETS,
-    };
+    modelSecrets = state.secrets[modelUUID] = { ...DEFAULT_MODEL_SECRETS };
   }
 
   let content = modelSecrets.content;
   if (!content) {
-    content = modelSecrets.content = {
-      ...DEFAULT_MODEL_SECRETS_CONTENT,
-    };
+    content = modelSecrets.content = { ...DEFAULT_MODEL_SECRETS_CONTENT };
   }
   return content;
 };
@@ -103,11 +97,7 @@ const slice = createSlice({
   reducers: {
     updateModelList: (
       state,
-      action: PayloadAction<
-        {
-          models: UserModelList;
-        } & WsControllerURLParam
-      >,
+      action: PayloadAction<{ models: UserModelList } & WsControllerURLParam>,
     ) => {
       const modelList = state.models;
       let userModels = action.payload.models["user-models"];
@@ -159,9 +149,7 @@ const slice = createSlice({
     updateModelInfo: (
       state,
       action: PayloadAction<
-        {
-          modelInfo: ModelInfoResults;
-        } & WsControllerURLParam
+        { modelInfo: ModelInfoResults } & WsControllerURLParam
       >,
     ) => {
       const modelInfo = action.payload.modelInfo.results[0].result;
@@ -179,10 +167,7 @@ const slice = createSlice({
     updateModelFeatures: (
       state,
       action: PayloadAction<
-        {
-          modelUUID: string;
-          features: ModelFeatures;
-        } & WsControllerURLParam
+        { modelUUID: string; features: ModelFeatures } & WsControllerURLParam
       >,
     ) => {
       state.modelFeatures[action.payload.modelUUID] = action.payload.features;
@@ -190,9 +175,7 @@ const slice = createSlice({
     updateModelsError: (
       state,
       action: PayloadAction<
-        {
-          modelsError: string | null;
-        } & WsControllerURLParam
+        { modelsError: string | null } & WsControllerURLParam
       >,
     ) => {
       state.modelsError = action.payload.modelsError;
@@ -271,9 +254,7 @@ const slice = createSlice({
     updateControllerList: (
       state,
       action: PayloadAction<
-        {
-          controllers: Controllers[0];
-        } & WsControllerURLParam
+        { controllers: Controllers[0] } & WsControllerURLParam
       >,
     ) => {
       const controllers = state.controllers ?? {};
@@ -328,11 +309,7 @@ const slice = createSlice({
     },
     secretsLoading: (
       state,
-      action: PayloadAction<
-        {
-          modelUUID: string;
-        } & WsControllerURLParam
-      >,
+      action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
     ) => {
       if (!state.secrets[action.payload.modelUUID]) {
         state.secrets[action.payload.modelUUID] = { ...DEFAULT_MODEL_SECRETS };
@@ -358,10 +335,7 @@ const slice = createSlice({
     setSecretsErrors: (
       state,
       action: PayloadAction<
-        {
-          modelUUID: string;
-          errors: string;
-        } & WsControllerURLParam
+        { modelUUID: string; errors: string } & WsControllerURLParam
       >,
     ) => {
       if (!state.secrets[action.payload.modelUUID]) {
@@ -373,21 +347,13 @@ const slice = createSlice({
     },
     clearSecrets: (
       state,
-      action: PayloadAction<
-        {
-          modelUUID: string;
-        } & WsControllerURLParam
-      >,
+      action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
     ) => {
       delete state.secrets[action.payload.modelUUID];
     },
     secretsContentLoading: (
       state,
-      action: PayloadAction<
-        {
-          modelUUID: string;
-        } & WsControllerURLParam
-      >,
+      action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
     ) => {
       const content = getOrSetContentState(state, action.payload.modelUUID);
       content.loading = true;
@@ -410,10 +376,7 @@ const slice = createSlice({
     setSecretsContentErrors: (
       state,
       action: PayloadAction<
-        {
-          modelUUID: string;
-          errors: string;
-        } & WsControllerURLParam
+        { modelUUID: string; errors: string } & WsControllerURLParam
       >,
     ) => {
       const content = getOrSetContentState(state, action.payload.modelUUID);
@@ -424,11 +387,7 @@ const slice = createSlice({
     },
     clearSecretsContent: (
       state,
-      action: PayloadAction<
-        {
-          modelUUID: string;
-        } & WsControllerURLParam
-      >,
+      action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
     ) => {
       const secrets = state.secrets[action.payload.modelUUID];
       if (secrets) {
@@ -449,7 +408,7 @@ const slice = createSlice({
         tuple,
       };
       const existingIndex = state.rebacRelations.findIndex((relation) =>
-        isEqual(relation.tuple, tuple),
+        fastDeepEqual(relation.tuple, tuple),
       );
       if (existingIndex >= 0) {
         state.rebacRelations[existingIndex] = relationState;
@@ -464,7 +423,7 @@ const slice = createSlice({
       }: PayloadAction<{ tuple: RelationshipTuple; allowed: boolean }>,
     ) => {
       const existingIndex = state.rebacRelations.findIndex((relation) =>
-        isEqual(relation.tuple, payload.tuple),
+        fastDeepEqual(relation.tuple, payload.tuple),
       );
       if (existingIndex >= 0) {
         state.rebacRelations[existingIndex] = {
@@ -481,7 +440,7 @@ const slice = createSlice({
       { payload }: PayloadAction<{ tuple: RelationshipTuple; errors: string }>,
     ) => {
       const existingIndex = state.rebacRelations.findIndex((relation) =>
-        isEqual(relation.tuple, payload.tuple),
+        fastDeepEqual(relation.tuple, payload.tuple),
       );
       if (existingIndex >= 0) {
         state.rebacRelations[existingIndex] = {
@@ -498,7 +457,7 @@ const slice = createSlice({
       { payload }: PayloadAction<{ tuple: RelationshipTuple }>,
     ) => {
       const existingIndex = state.rebacRelations.findIndex((relation) =>
-        isEqual(relation.tuple, payload.tuple),
+        fastDeepEqual(relation.tuple, payload.tuple),
       );
       if (existingIndex >= 0) {
         state.rebacRelations.splice(existingIndex, 1);
