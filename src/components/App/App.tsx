@@ -13,12 +13,10 @@ function App() {
   const analyticsEnabled = useAppSelector(getAnalyticsEnabled);
   if (isProduction && analyticsEnabled) {
     ReactGA.initialize("G-JHXHM8VXJ1", {
-      gtagOptions: {
-        custom_map: {
-          dimension1: "dashboardVersion",
-          dimension2: "controllerVersion",
-          dimension3: "isJuju",
-        },
+      gaOptions: {
+        dimension1: "dashboardVersion",
+        dimension2: "controllerVersion",
+        dimension3: "isJuju",
       },
     });
     ReactGA.send({
