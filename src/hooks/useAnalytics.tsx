@@ -33,14 +33,11 @@ export default function useAnalytics() {
     if (path) {
       ReactGA.send({ hitType: "pageview", page: path });
     } else {
-      ReactGA.event({
+      ReactGA.event(action, {
         category,
-        action,
-        ...{
-          dashboardVersion: appVersion ?? "",
-          controllerVersion: controllerVersion ?? "",
-          isJuju: (!!isJuju).toString(),
-        },
+        dashboardVersion: appVersion ?? "",
+        controllerVersion: controllerVersion ?? "",
+        isJuju: (!!isJuju).toString(),
       });
     }
   };

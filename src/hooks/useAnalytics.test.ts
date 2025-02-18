@@ -13,6 +13,7 @@ vi.mock("react-ga4", () => ({
     initialize: vi.fn(),
     send: vi.fn(),
     event: vi.fn(),
+    set: vi.fn(),
   },
 }));
 
@@ -93,9 +94,8 @@ describe("useAnalytics", () => {
       }),
     });
     result.current({ category: "sidebar", action: "toggle" });
-    expect(eventSpy).toHaveBeenCalledWith({
+    expect(eventSpy).toHaveBeenCalledWith("toggle", {
       category: "sidebar",
-      action: "toggle",
       controllerVersion: "",
       dashboardVersion: "",
       isJuju: "false",
