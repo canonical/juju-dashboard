@@ -2,8 +2,6 @@ import type { PropsWithChildren } from "react";
 import type { Renderable, Toast, ValueOrFunction } from "react-hot-toast";
 import reactHotToast from "react-hot-toast";
 
-import "./_toast-card.scss";
-
 export type ToastInstance = {
   createdAt: number;
   duration?: number | undefined;

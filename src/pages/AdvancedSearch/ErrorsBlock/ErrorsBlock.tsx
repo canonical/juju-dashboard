@@ -8,7 +8,6 @@ import {
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
-import "./_errors-block.scss";
 import CodeSnippetBlock from "../CodeSnippetBlock/CodeSnippetBlock";
 
 const ErrorsBlock = (): JSX.Element | null => {

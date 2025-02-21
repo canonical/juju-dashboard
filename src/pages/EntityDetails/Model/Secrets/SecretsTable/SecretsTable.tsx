@@ -28,7 +28,6 @@ import { getLatestRevision, secretIsAppOwned } from "utils";
 
 import SecretContent from "../SecretContent";
 
-import "./_secrets-table.scss";
 import { Label, TestId } from "./types";
 
 const SecretsTable = () => {

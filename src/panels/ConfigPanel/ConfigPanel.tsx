@@ -40,8 +40,6 @@ import {
   type ConfigValue,
 } from "./types";
 
-import "./_config-panel.scss";
-
 const hasChangedFields = (newConfig: Config): boolean => {
   return Object.keys(newConfig).some(
     (key) =>

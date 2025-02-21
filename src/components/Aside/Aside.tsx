@@ -9,8 +9,6 @@ import { useAnimate, usePresence } from "framer-motion";
 import type { JSX } from "react";
 import { useEffect, type PropsWithChildren } from "react";
 
-import "./_aside.scss";
-
 export type Props = PropsWithSpread<
   {
     className?: string;

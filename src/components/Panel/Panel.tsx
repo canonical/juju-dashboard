@@ -8,8 +8,6 @@ import { forwardRef, useId } from "react";
 import Aside from "components/Aside";
 import type { AsideProps } from "components/Aside";
 
-import "./_panel.scss";
-
 type Props = PropsWithSpread<
   {
     checkCanClose?: (e: KeyboardEvent | MouseEvent) => boolean;

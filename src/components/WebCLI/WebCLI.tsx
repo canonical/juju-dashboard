@@ -17,8 +17,6 @@ import Connection from "./connection";
 import { MAX_HISTORY } from "./consts";
 import { Label } from "./types";
 
-import "./_webcli.scss";
-
 enum InlineErrors {
   CONNECTION = "connection",
   AUTHENTICATION = "authentication",

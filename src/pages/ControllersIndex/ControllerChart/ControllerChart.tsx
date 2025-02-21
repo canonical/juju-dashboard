@@ -1,8 +1,6 @@
 import DonutChart from "components/DonutChart";
 import { pluralize } from "store/juju/utils/models";
 
-import "./_controller-chart.scss";
-
 type Props = {
   alert?: number;
   blocked?: number;

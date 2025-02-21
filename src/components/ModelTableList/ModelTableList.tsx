@@ -4,8 +4,6 @@ import CloudGroup from "./CloudGroup";
 import OwnerGroup from "./OwnerGroup";
 import StatusGroup from "./StatusGroup";
 
-import "./_model-table-list.scss";
-
 type Props = {
   groupedBy: string;
   filters: Filters;

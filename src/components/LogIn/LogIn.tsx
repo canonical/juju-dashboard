@@ -20,7 +20,6 @@ import {
 import { AuthMethod } from "store/general/types";
 import { useAppSelector } from "store/store";
 
-import "./_login.scss";
 import IdentityProviderForm from "./IdentityProviderForm";
 import OIDCForm from "./OIDCForm";
 import UserPassForm from "./UserPassForm";

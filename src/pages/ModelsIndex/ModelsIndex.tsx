@@ -28,7 +28,6 @@ import { useAppSelector } from "store/store";
 import type { ModelsGroupedBy } from "urls";
 import urls from "urls";
 
-import "./_models.scss";
 import { Label, TestId } from "./types";
 
 export default function Models() {

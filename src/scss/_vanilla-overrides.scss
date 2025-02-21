@@ -1,5 +1,3 @@
-@import "./functions/z-index";
-
 // Tooltips need to appear above panels and modals.
 .p-tooltip__message {
   z-index: z("zelda") + 3;

@@ -24,7 +24,6 @@ import { useAppSelector } from "store/store";
 import urls from "urls";
 import { getMajorMinorVersion } from "utils";
 
-import "./_entity-details.scss";
 import ModelTabs from "./Model/ModelTabs";
 import { Label, TestId } from "./types";
 

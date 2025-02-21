@@ -7,7 +7,6 @@ import TruncatedTooltip from "components/TruncatedTooltip";
 import { formatFriendlyDateToNow } from "components/utils";
 import { logger } from "utils/logger";
 
-import "./_share-card.scss";
 import { Label } from "./types";
 
 type Props = {

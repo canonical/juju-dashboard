@@ -13,7 +13,6 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 
-import "./_info-panel.scss";
 import { Label, TestId } from "./types";
 
 const expandedTopologyDimensions = () => {

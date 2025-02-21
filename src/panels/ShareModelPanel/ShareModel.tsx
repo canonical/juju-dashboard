@@ -21,7 +21,6 @@ import {
 import { useAppSelector, usePromiseDispatch } from "store/store";
 import { getUserName } from "utils";
 
-import "./share-model.scss";
 import { Label, TestId } from "./types";
 
 type User = {

@@ -1,7 +1,6 @@
 import { Spinner } from "@canonical/react-components";
 import type { JSX, ReactNode } from "react";
 
-import "./_loading-handler.scss";
 import { TestId } from "./types";
 
 type LoadingHandlerProps = {

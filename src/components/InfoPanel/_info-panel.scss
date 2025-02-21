@@ -1,8 +1,3 @@
-@import "../../scss/settings";
-@import "vanilla-framework/scss/vanilla";
-@import "../../scss/functions/z-index";
-@import "../../scss/breakpoints";
-
 .info-panel {
   @include desktop {
     display: block;

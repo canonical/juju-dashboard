@@ -5,8 +5,6 @@ import { useEntityDetailsParams } from "components/hooks";
 import urls from "urls";
 import { ModelTab } from "urls";
 
-import "./_breadcrumbs.scss";
-
 export default function Breadcrumb(): JSX.Element {
   const {
     userName,

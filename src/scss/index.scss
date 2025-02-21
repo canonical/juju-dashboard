@@ -1,5 +1,7 @@
 // Import Vanilla Framework
 @import "vanilla-framework";
+@import "vanilla-framework/scss/base_placeholders";
+@import "vanilla-framework/scss/patterns_icons";
 
 // Vanilla overrides
 $increase-font-size-on-larger-screens: false;
@@ -18,6 +20,7 @@ $color-link-visited: $color-link;
 
 // Import functions
 @import "functions/z-index";
+@import "variables";
 
 // Import custom patterns
 @import "custom/status_icons";
@@ -51,3 +54,38 @@ $color-navigation-background: $color-brand;
 
 // Overrides for Vanilla. This needs to be after the Vanilla includes.
 @import "vanilla-overrides";
+
+// Component SCSS.
+@import "../components/ActionBar/action-bar";
+@import "../components/Aside/aside";
+@import "../components/AuditLogsTable/AuditLogsTablePagination/audit-logs-table-pagination";
+@import "../components/AuditLogsTable/audit-logs-table";
+@import "../components/Banner/banner";
+@import "../components/ChipGroup/chip-group";
+@import "../components/ContentReveal/content-reveal";
+@import "../components/InfoPanel/info-panel";
+@import "../components/LoadingSpinner/loading-spinner";
+@import "../components/LogIn/login";
+@import "../components/Logo/logo";
+@import "../components/ModelTableList/model-table-list";
+@import "../components/Panel/panel";
+@import "../components/PrimaryNav/primary-nav";
+@import "../components/RadioInputBox/radio-input-box";
+@import "../components/SecondaryNavigation/secondary-navigation";
+@import "../components/ShareCard/share-card";
+@import "../components/ToastCard/toast-card";
+@import "../components/UserMenu/user-menu";
+@import "../components/WebCLI/webcli";
+@import "../layout/BaseLayout/base-layout";
+@import "../pages/AdvancedSearch/ErrorsBlock/errors-block";
+@import "../pages/AdvancedSearch/ResultsBlock/results-block";
+@import "../pages/AdvancedSearch/SearchForm/search-form";
+@import "../pages/ControllersIndex/ControllerChart/controller-chart";
+@import "../pages/ControllersIndex/ControllerOverview/controller-overview";
+@import "../pages/ControllersIndex/controllers";
+@import "../pages/EntityDetails/Model/Logs/ActionLogs/action-logs";
+@import "../pages/EntityDetails/Model/Secrets/SecretsTable/secrets-table";
+@import "../pages/EntityDetails/entity-details";
+@import "../pages/ModelsIndex/models";
+@import "../panels/ConfigPanel/config-panel";
+@import "../panels/ShareModelPanel/share-model";
