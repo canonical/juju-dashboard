@@ -18,7 +18,6 @@ type AnalyticMessage = {
 
 export default function useAnalytics() {
   const analyticsEnabled = useAppSelector(getAnalyticsEnabled);
-  const isProduction = import.meta.env.PROD;
   const isJuju = useSelector(getIsJuju);
   const appVersion = useSelector(getAppVersion);
   const wsControllerURL = useAppSelector(getWSControllerURL);
@@ -32,5 +31,5 @@ export default function useAnalytics() {
   };
 
   return (props: AnalyticMessage) =>
-    analytics(!!analyticsEnabled, isProduction, eventParams, props);
+    analytics(!!analyticsEnabled, eventParams, props);
 }

@@ -22,8 +22,8 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 import { toErrorString } from "utils";
-import { logger } from "utils/logger";
 import analytics from "utils/analytics";
+import { logger } from "utils/logger";
 
 export enum LoginError {
   LOG = "Unable to log into controller.",
@@ -133,26 +133,25 @@ export const modelPollerMiddleware: Middleware<
           return;
         }
 
-        // XXX Now that we can register multiple controllers this needs
-        // to be sent per controller.
         const isProduction = import.meta.env.PROD;
         const analyticsEnabled = window.jujuDashboardConfig?.analyticsEnabled;
+        const isJuju = (!!getIsJuju(reduxStore.getState())).toString();
+        const dashboardVersion = getAppVersion(reduxStore.getState()) ?? "";
+        const controllerVersion = conn.info.serverVersion ?? "";
+
+        analytics(
+          !!analyticsEnabled,
+          { dashboardVersion, controllerVersion, isJuju },
+          {
+            category: "Authentication",
+            action: `User Login (${authMethod})`,
+          },
+        );
+
+        // XXX Now that we can register multiple controllers this needs
+        // to be sent per controller.
         if (isProduction && analyticsEnabled) {
-          const isJuju = (!!getIsJuju(reduxStore.getState())).toString();
-          const dashboardVersion = getAppVersion(reduxStore.getState()) ?? "";
-          const controllerVersion = conn.info.serverVersion ?? "";
-
           Sentry.setTag("jujuVersion", conn.info.serverVersion);
-
-          analytics(
-            analyticsEnabled,
-            isProduction,
-            { dashboardVersion, controllerVersion, isJuju },
-            {
-              category: "Authentication",
-              action: `User Login (${authMethod})`,
-            },
-          );
         }
 
         // Remove the getFacade function as this doesn't need to be stored in Redux.
