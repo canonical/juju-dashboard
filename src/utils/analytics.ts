@@ -10,11 +10,10 @@ type AnalyticsMessage = { path?: string; category?: string; action?: string };
 
 const analytics = (
   analyticsEnabled: boolean,
-  isProduction: boolean,
   eventParams: EventParams,
   { path, category = "", action = "" }: AnalyticsMessage,
 ) => {
-  if (!isProduction || !analyticsEnabled) {
+  if (!analyticsEnabled) {
     return;
   }
   if (path) {
