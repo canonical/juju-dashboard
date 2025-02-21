@@ -1,8 +1,6 @@
 import type { JSX, ReactNode } from "react";
 import { useState } from "react";
 
-import "./_content-reveal.scss";
-
 type Props = {
   title: string | ReactNode;
   children: JSX.Element;

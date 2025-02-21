@@ -13,7 +13,6 @@ import { useAppDispatch, useAppSelector } from "store/store";
 
 import CodeSnippetBlock from "../CodeSnippetBlock/CodeSnippetBlock";
 
-import "./_results-block.scss";
 import { Label, TestId } from "./types";
 
 const ResultsBlock = (): JSX.Element | null => {

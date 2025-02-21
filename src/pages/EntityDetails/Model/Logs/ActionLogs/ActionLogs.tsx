@@ -29,7 +29,6 @@ import type { RootState } from "store/store";
 import urls from "urls";
 import { logger } from "utils/logger";
 
-import "./_action-logs.scss";
 import ActionPayloadModal from "./ActionPayloadModal";
 import { Label, Output } from "./types";
 

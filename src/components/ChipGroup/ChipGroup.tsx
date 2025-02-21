@@ -1,6 +1,5 @@
 import classNames from "classnames";
 
-import "./_chip-group.scss";
 import type { Chip } from "./types";
 
 type Props = {

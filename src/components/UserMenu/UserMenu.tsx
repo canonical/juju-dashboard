@@ -15,8 +15,6 @@ import { extractOwnerName } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 import urls from "urls";
 
-import "./_user-menu.scss";
-
 const UserMenu = () => {
   const sendAnalytics = useAnalytics();
   const logout = useLogout();

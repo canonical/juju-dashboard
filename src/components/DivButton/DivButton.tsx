@@ -8,8 +8,6 @@ import type {
 } from "react";
 import { useRef } from "react";
 
-import "./_div-button.scss";
-
 type Props = PropsWithSpread<
   {
     onClick: (event: MouseEvent | KeyboardEvent) => void;

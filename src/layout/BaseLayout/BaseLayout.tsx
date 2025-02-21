@@ -18,7 +18,6 @@ import Panels from "panels";
 import { getIsJuju } from "store/general/selectors";
 import urls from "urls";
 
-import "./_base-layout.scss";
 import { Label, TestId } from "./types";
 
 type Props = {

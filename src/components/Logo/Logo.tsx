@@ -4,7 +4,6 @@ import type { ComponentType, ElementType } from "react";
 
 import logoMark from "static/images/logo/logo-mark.svg";
 
-import "./_logo.scss";
 import { TEXT } from "./text";
 
 type Props<C> = PropsWithSpread<

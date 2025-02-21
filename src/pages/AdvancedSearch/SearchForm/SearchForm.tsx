@@ -25,8 +25,6 @@ import SearchHistoryMenu from "./SearchHistoryMenu";
 import { QUERY_HISTORY_KEY } from "./consts";
 import { Label, type FormFields } from "./types";
 
-import "./_search-form.scss";
-
 const SearchForm = (): JSX.Element => {
   const formikRef = useRef<FormikProps<FormFields>>(null);
   const dispatch = useAppDispatch();

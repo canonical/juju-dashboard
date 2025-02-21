@@ -4,8 +4,6 @@ import classNames from "classnames";
 import type { ComponentType, ElementType, PropsWithChildren } from "react";
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 
-import "./_truncated-tooltip.scss";
-
 type Props = {
   tooltipClassName?: TooltipProps["tooltipClassName"];
   positionElementClassName?: TooltipProps["positionElementClassName"];

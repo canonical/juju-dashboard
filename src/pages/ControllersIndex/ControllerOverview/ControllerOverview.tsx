@@ -8,8 +8,6 @@ import {
 
 import ControllerChart from "../ControllerChart";
 
-import "./_controller-overview.scss";
-
 export default function ControllersOverview() {
   const groupedMachinesDataByStatus = useSelector(
     getGroupedMachinesDataByStatus,

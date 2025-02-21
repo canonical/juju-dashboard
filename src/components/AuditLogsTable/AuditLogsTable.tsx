@@ -24,8 +24,6 @@ import AuditLogsTablePagination from "./AuditLogsTablePagination";
 import { DEFAULT_PAGE } from "./consts";
 import { useFetchAuditEvents } from "./hooks";
 
-import "./_audit-logs-table.scss";
-
 const COLUMN_DATA = [
   {
     Header: "user",

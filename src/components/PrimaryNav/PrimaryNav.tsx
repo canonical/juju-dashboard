@@ -34,8 +34,6 @@ import type { Controllers } from "store/juju/types";
 import { useAppSelector } from "store/store";
 import urls, { externalURLs } from "urls";
 
-import "./_primary-nav.scss";
-
 import { Label } from "./types";
 
 const rebacURLS = generateReBACURLS(urls.permissions);

@@ -2,7 +2,6 @@ import classnames from "classnames";
 import type { JSX, ReactNode } from "react";
 import { useState, useEffect } from "react";
 
-import "./_banner.scss";
 import { Label } from "./types";
 
 type Props = {

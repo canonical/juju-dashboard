@@ -2,8 +2,6 @@ import type { JSX, ReactNode } from "react";
 
 import TruncatedTooltip from "components/TruncatedTooltip";
 
-import "./_entity-info.scss";
-
 type Props = {
   data: { [key: string]: ReactNode };
 };

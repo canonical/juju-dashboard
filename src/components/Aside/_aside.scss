@@ -1,8 +1,3 @@
-@import "vanilla-framework/scss/vanilla";
-@import "../../scss/breakpoints";
-@import "../../scss/functions/z-index";
-@import "../../scss/variables";
-
 // Scope the l-aside within l-application so that it can override the Vanilla styles.
 .l-application .l-aside {
   overflow-x: hidden;

@@ -7,7 +7,6 @@ import { useQueryParams } from "hooks/useQueryParams";
 import { useAuditLogsPermitted } from "juju/api-hooks/permissions";
 import { getIsJuju } from "store/general/selectors";
 
-import "./_logs.scss";
 import ActionLogs from "./ActionLogs";
 import AuditLogs from "./AuditLogs";
 import { Label } from "./types";

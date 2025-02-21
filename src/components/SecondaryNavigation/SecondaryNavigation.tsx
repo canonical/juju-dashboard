@@ -2,7 +2,6 @@ import { SideNavigation } from "@canonical/react-components";
 
 import { DARK_THEME } from "consts";
 
-import "./_secondary-navigation.scss";
 import type { Props } from "./types";
 
 const SecondaryNavigation = ({ items, title }: Props) => {
