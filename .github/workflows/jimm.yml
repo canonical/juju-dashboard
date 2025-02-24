@@ -1,0 +1,55 @@
+name: Integration Test
+
+on:
+  pull_request:
+
+jobs:
+  startjimm:
+    name: Test JIMM with Juju controller
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Checkout Juju Dashboard repo
+        uses: actions/checkout@v4
+      - name: Checkout JIMM repo
+        uses: actions/checkout@v4
+        with:
+          repository: canonical/jimm
+          path: jimm
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: 'jimm/go.mod'
+
+      - name: Go vendor to speed up docker build
+        run: cd jimm && go mod vendor
+
+      - name: Start JIMM (pull request)
+        uses: ./jimm/.github/actions/test-server
+        with:
+          jimm-version: dev
+          juju-channel: "3/stable"
+          ghcr-pat: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create a model, deploy an application and run juju status
+        run: |
+          juju add-model foo && \
+          juju deploy haproxy && \
+          sleep 5 && \
+          juju status
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - name: Install
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build
+      - name: Configure
+        run: sed -i -e 's/controllerAPIEndpoint\:\ \"\"/controllerAPIEndpoint:\ "ws:\/\/jimm.localhost\/api"/g' build/config.js
+      - name: Start
+        run: npx http-server build --port 8000 &
