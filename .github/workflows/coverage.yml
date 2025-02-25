@@ -6,6 +6,7 @@ on:
       - completed
 jobs:
   report:
+    if: false
     runs-on: ubuntu-latest
     permissions:
       actions: read

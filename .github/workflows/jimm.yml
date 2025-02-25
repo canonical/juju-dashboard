@@ -18,6 +18,9 @@ jobs:
         with:
           repository: canonical/jimm
           path: jimm
+      - name: Update dashboard paths
+        run: |
+          sed -i -e 's/JIMM_DASHBOARD_FINAL_REDIRECT_URL: "https:\/\/jaas.ai"/CORS_ALLOWED_ORIGINS: "http:\/\/127.0.0.1:8000"\n      JIMM_DASHBOARD_LOCATION: "http:\/\/127.0.0.1:8000"\n      JIMM_DASHBOARD_FINAL_REDIRECT_URL: "http:\/\/127.0.0.1:8000"/g' jimm/docker-compose.common.yaml
 
       - name: Setup Go
         uses: actions/setup-go@v4
@@ -31,8 +34,9 @@ jobs:
         uses: ./jimm/.github/actions/test-server
         with:
           jimm-version: dev
-          juju-channel: "3/stable"
+          juju-channel: "3.6/edge"
           ghcr-pat: ${{ secrets.GITHUB_TOKEN }}
+          dump-logs: true
 
       - name: Create a model, deploy an application and run juju status
         run: |
@@ -40,6 +44,10 @@ jobs:
           juju deploy haproxy && \
           sleep 5 && \
           juju status
+
+      - name: Restart JIMM
+        if: false
+        run: docker restart jimm
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -50,6 +58,22 @@ jobs:
       - name: Build
         run: yarn build
       - name: Configure
-        run: sed -i -e 's/controllerAPIEndpoint\:\ \"\"/controllerAPIEndpoint:\ "ws:\/\/jimm.localhost\/api"/g' build/config.js
-      - name: Start
-        run: npx http-server build --port 8000 &
+        run: |
+          sed -i -e 's/controllerAPIEndpoint\:\ \"\"/controllerAPIEndpoint:\ "wss:\/\/jimm.localhost\/api"/g' build/config.js
+          sed -i -e 's/analyticsEnabled\:\ true/analyticsEnabled:\ false/g' build/config.js
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+      - name: Run Playwright tests
+        run: yarn playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 1
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: false
+        timeout-minutes: 15
+        with:
+          limit-access-to-actor: true
