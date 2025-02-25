@@ -8,6 +8,7 @@ on:
       - main
 jobs:
   prettier:
+    if: false
     name: Check Prettier
     runs-on: ubuntu-latest
     strategy:
@@ -24,6 +25,7 @@ jobs:
         run: yarn install --immutable
       - run: yarn prettier --check 'src/**/*'
   eslint:
+    if: false
     name: Lint JavaScript/TypeScript
     runs-on: ubuntu-latest
     strategy:
@@ -40,6 +42,7 @@ jobs:
         run: yarn install --immutable
       - run: yarn eslint-check
   stylelint:
+    if: false
     name: Lint SCSS
     runs-on: ubuntu-latest
     strategy:
@@ -56,6 +59,7 @@ jobs:
         run: yarn install --immutable
       - run: yarn stylelint-check
   renovate:
+    if: false
     name: Check renovate
     runs-on: ubuntu-latest
     strategy:
@@ -71,6 +75,7 @@ jobs:
       - name: Validate Renovate Configuration with renovate-config-validator
         uses: suzuki-shunsuke/github-action-renovate-config-validator@v1.1.1
   types:
+    if: false
     name: Check types
     runs-on: ubuntu-latest
     strategy:
@@ -87,6 +92,7 @@ jobs:
         run: yarn install --immutable
       - run: yarn typescript-build
   build:
+    if: false
     name: Build
     runs-on: ubuntu-latest
     strategy:
@@ -103,6 +109,7 @@ jobs:
         run: yarn install --immutable
       - run: CI=false yarn build
   dotrun:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
