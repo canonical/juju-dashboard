@@ -23,3 +23,9 @@ public/config.local.js
 
 .env.local
 .env.*.local
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
