@@ -43,7 +43,10 @@ describe("analytics", () => {
       { path: "/some/path" },
     );
     expect(pageviewSpy).toHaveBeenCalledWith({
+      controllerVersion: "1.0.0",
+      dashboardVersion: "1.0.0",
       hitType: "pageview",
+      isJuju: "true",
       page: "/some/path",
     });
   });

@@ -6,8 +6,13 @@ type EventParams = {
   isJuju: string;
 };
 
-type AnalyticsMessage = { path?: string; category?: string; action?: string };
+export type AnalyticsMessage = {
+  path?: string;
+  category?: string;
+  action?: string;
+};
 
+// In components, the useAnalytics hook can be used to fetch additional event data
 const analytics = (
   analyticsEnabled: boolean,
   eventParams: EventParams,
@@ -17,7 +22,7 @@ const analytics = (
     return;
   }
   if (path) {
-    ReactGA.send({ hitType: "pageview", page: path });
+    ReactGA.send({ hitType: "pageview", page: path, ...eventParams });
   } else {
     ReactGA.event(action, {
       category,

@@ -8,13 +8,7 @@ import {
   getWSControllerURL,
 } from "store/general/selectors";
 import { useAppSelector } from "store/store";
-import analytics from "utils/analytics";
-
-type AnalyticMessage = {
-  path?: string;
-  category?: string;
-  action?: string;
-};
+import analytics, { type AnalyticsMessage } from "utils/analytics";
 
 export default function useAnalytics() {
   const analyticsEnabled = useAppSelector(getAnalyticsEnabled);
@@ -30,6 +24,6 @@ export default function useAnalytics() {
     isJuju: (!!isJuju).toString(),
   };
 
-  return (props: AnalyticMessage) =>
+  return (props: AnalyticsMessage) =>
     analytics(!!analyticsEnabled, eventParams, props);
 }

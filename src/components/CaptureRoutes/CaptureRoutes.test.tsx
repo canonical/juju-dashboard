@@ -44,7 +44,10 @@ describe("CaptureRoutes", () => {
       </BrowserRouter>,
     );
     expect(pageviewSpy).toHaveBeenCalledWith({
+      controllerVersion: "",
+      dashboardVersion: "",
       hitType: "pageview",
+      isJuju: "false",
       page: "/new/path",
     });
   });
