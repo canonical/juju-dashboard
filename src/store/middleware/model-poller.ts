@@ -16,12 +16,18 @@ import { whoami } from "juju/jimm/thunks";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
-import { isLoggedIn } from "store/general/selectors";
+import {
+  getAnalyticsEnabled,
+  getAppVersion,
+  getIsJuju,
+  isLoggedIn,
+} from "store/general/selectors";
 import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 import { toErrorString } from "utils";
+import analytics from "utils/analytics";
 import { logger } from "utils/logger";
 
 export enum LoginError {
@@ -132,12 +138,24 @@ export const modelPollerMiddleware: Middleware<
           return;
         }
 
+        const isProduction = import.meta.env.PROD;
+        const analyticsEnabled = getAnalyticsEnabled(reduxStore.getState());
+        const isJuju = (!!getIsJuju(reduxStore.getState())).toString();
+        const dashboardVersion = getAppVersion(reduxStore.getState()) ?? "";
+        const controllerVersion = conn.info.serverVersion ?? "";
+
+        analytics(
+          !!analyticsEnabled,
+          { dashboardVersion, controllerVersion, isJuju },
+          {
+            category: "Authentication",
+            action: `User Login (${authMethod})`,
+          },
+        );
+
         // XXX Now that we can register multiple controllers this needs
         // to be sent per controller.
-        if (
-          import.meta.env.PROD &&
-          window.jujuDashboardConfig?.analyticsEnabled
-        ) {
+        if (isProduction && analyticsEnabled) {
           Sentry.setTag("jujuVersion", conn.info.serverVersion);
         }
 

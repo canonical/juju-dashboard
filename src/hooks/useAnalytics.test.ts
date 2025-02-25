@@ -1,74 +1,99 @@
-import { renderHook } from "@testing-library/react";
-import * as reactGA from "react-ga";
-import type { MockInstance } from "vitest";
 import { vi } from "vitest";
 
-import * as store from "store/store";
+import { rootStateFactory } from "testing/factories";
+import { configFactory, generalStateFactory } from "testing/factories/general";
+import { connectionInfoFactory } from "testing/factories/juju/jujulib";
+import { renderWrappedHook } from "testing/utils";
+import * as analyticsUtils from "utils/analytics";
 
 import useAnalytics from "./useAnalytics";
 
-vi.mock("react-ga", () => ({
-  event: vi.fn(),
-  pageview: vi.fn(),
-}));
-
 describe("useAnalytics", () => {
-  let pageviewSpy: MockInstance;
-  let eventSpy: MockInstance;
-
   beforeEach(() => {
-    vi.stubEnv("PROD", true);
-    eventSpy = vi.spyOn(reactGA, "event");
-    pageviewSpy = vi.spyOn(reactGA, "pageview");
+    vi.spyOn(analyticsUtils, "default").mockImplementation(() => vi.fn());
   });
 
   afterEach(() => {
     localStorage.clear();
   });
 
-  afterAll(() => {
-    vi.unstubAllEnvs();
-  });
-
-  it("does not send events in development", () => {
-    vi.spyOn(store, "useAppSelector").mockImplementation(
-      vi.fn().mockReturnValue(true),
-    );
-    vi.stubEnv("PROD", false);
-    const { result } = renderHook(() => useAnalytics());
-    result.current({ path: "/some/path" });
-    expect(eventSpy).not.toHaveBeenCalled();
-    expect(pageviewSpy).not.toHaveBeenCalled();
-  });
-
   it("does not send events if analytics are disabled", () => {
-    vi.spyOn(store, "useAppSelector").mockImplementation(
-      vi.fn().mockReturnValue(false),
-    );
-    const { result } = renderHook(() => useAnalytics());
+    const { result } = renderWrappedHook(() => useAnalytics(), {
+      state: rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            analyticsEnabled: false,
+          }),
+        }),
+      }),
+    });
     result.current({ path: "/some/path" });
-    expect(eventSpy).not.toHaveBeenCalled();
-    expect(pageviewSpy).not.toHaveBeenCalled();
+    expect(analyticsUtils.default).toHaveBeenCalledWith(
+      false,
+      { controllerVersion: "", dashboardVersion: "", isJuju: "false" },
+      { path: "/some/path" },
+    );
   });
 
   it("can send pageview events", () => {
-    vi.spyOn(store, "useAppSelector").mockImplementation(
-      vi.fn().mockReturnValue(true),
-    );
-    const { result } = renderHook(() => useAnalytics());
+    const { result } = renderWrappedHook(() => useAnalytics(), {
+      state: rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            analyticsEnabled: true,
+          }),
+        }),
+      }),
+    });
     result.current({ path: "/some/path" });
-    expect(pageviewSpy).toHaveBeenCalledWith("/some/path");
+    expect(analyticsUtils.default).toHaveBeenCalledWith(
+      true,
+      { controllerVersion: "", dashboardVersion: "", isJuju: "false" },
+      { path: "/some/path" },
+    );
   });
 
   it("can send events", () => {
-    vi.spyOn(store, "useAppSelector").mockImplementation(
-      vi.fn().mockReturnValue(true),
-    );
-    const { result } = renderHook(() => useAnalytics());
-    result.current({ category: "sidebar", action: "toggle" });
-    expect(eventSpy).toHaveBeenCalledWith({
-      category: "sidebar",
-      action: "toggle",
+    const { result } = renderWrappedHook(() => useAnalytics(), {
+      state: rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            analyticsEnabled: true,
+          }),
+        }),
+      }),
     });
+    result.current({ category: "sidebar", action: "toggle" });
+    expect(analyticsUtils.default).toHaveBeenCalledWith(
+      true,
+      { controllerVersion: "", dashboardVersion: "", isJuju: "false" },
+      { category: "sidebar", action: "toggle" },
+    );
+  });
+
+  it("can send events with correct event params", () => {
+    const { result } = renderWrappedHook(() => useAnalytics(), {
+      state: rootStateFactory.build({
+        general: generalStateFactory.build({
+          appVersion: "1.0.0",
+          controllerConnections: {
+            "wss://example.com/api": connectionInfoFactory.build({
+              serverVersion: "1.2.3",
+            }),
+          },
+          config: configFactory.build({
+            analyticsEnabled: true,
+            isJuju: true,
+            controllerAPIEndpoint: "wss://example.com/api",
+          }),
+        }),
+      }),
+    });
+    result.current({ category: "sidebar", action: "toggle" });
+    expect(analyticsUtils.default).toHaveBeenCalledWith(
+      true,
+      { controllerVersion: "1.2.3", dashboardVersion: "1.0.0", isJuju: "true" },
+      { category: "sidebar", action: "toggle" },
+    );
   });
 });
