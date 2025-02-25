@@ -16,7 +16,12 @@ import { whoami } from "juju/jimm/thunks";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
-import { getAppVersion, getIsJuju, isLoggedIn } from "store/general/selectors";
+import {
+  getAnalyticsEnabled,
+  getAppVersion,
+  getIsJuju,
+  isLoggedIn,
+} from "store/general/selectors";
 import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
@@ -134,7 +139,7 @@ export const modelPollerMiddleware: Middleware<
         }
 
         const isProduction = import.meta.env.PROD;
-        const analyticsEnabled = window.jujuDashboardConfig?.analyticsEnabled;
+        const analyticsEnabled = getAnalyticsEnabled(reduxStore.getState());
         const isJuju = (!!getIsJuju(reduxStore.getState())).toString();
         const dashboardVersion = getAppVersion(reduxStore.getState()) ?? "";
         const controllerVersion = conn.info.serverVersion ?? "";
