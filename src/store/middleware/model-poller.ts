@@ -170,13 +170,16 @@ export const modelPollerMiddleware: Middleware<
           }),
         );
         const jimmVersion = conn.facades.jimM?.version ?? 0;
+        const rebacFlagEnabled = JSON.parse(
+          window.localStorage.getItem("flags") ?? "[]",
+        ).includes("rebac");
         reduxStore.dispatch(
           generalActions.updateControllerFeatures({
             wsControllerURL,
             features: {
               auditLogs: jimmVersion >= 4,
               crossModelQueries: jimmVersion >= 4,
-              rebac: jimmVersion >= 4,
+              rebac: rebacFlagEnabled && jimmVersion >= 4,
             },
           }),
         );

@@ -7,3 +7,6 @@ export const DATETIME_LOCAL = "yyyy-MM-dd'T'HH:mm";
 // This is set to 5 minutes as that is how long a token is valid for in JIMM, so
 // if access is revoked this will poll and delete the cookie.
 export const OIDC_POLL_INTERVAL = 5 * 60 * 1000;
+
+// The local storage key for enabled feature flags list
+export const ENABLED_FLAGS = "flags";
