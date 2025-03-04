@@ -80,6 +80,9 @@ describe("TruncatedTooltip", () => {
     const innerElement = screen.getByText(content);
     expect(innerElement.tagName.toLowerCase()).toBe("div");
     expect(innerElement).toHaveClass("u-truncate");
+    expect(innerElement.parentElement).toHaveStyle({
+      display: "inline-block",
+    });
   });
 
   it("should render an inner custom element type", () => {
