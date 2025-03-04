@@ -1,3 +1,4 @@
+import fastDeepEqual from "fast-deep-equal/es6";
 import { useState } from "react";
 
 import { logger } from "utils/logger";
@@ -23,9 +24,11 @@ function useLocalStorage<V>(
   // new value to localStorage.
   const setValue = (value: V) => {
     try {
-      const stringified = JSON.stringify(value);
-      setStoredValue(value);
-      window.localStorage.setItem(key, stringified);
+      if (!fastDeepEqual(storedValue, value)) {
+        const stringified = JSON.stringify(value);
+        setStoredValue(value);
+        window.localStorage.setItem(key, stringified);
+      }
     } catch (error) {
       // Not shown in UI. Logged for debugging purposes.
       logger.error(error);

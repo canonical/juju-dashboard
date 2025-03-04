@@ -15,12 +15,10 @@ describe("useFeatureFlags", () => {
   it("should initialize with empty flags from local storage", () => {
     vi.spyOn(LocalStorage, "default").mockReturnValue([[], vi.fn()]);
     vi.spyOn(QueryParams, "useQueryParams").mockReturnValue([
-      { "enable-flag": null, "disable-flag": null },
+      { "enable-flag": [], "disable-flag": [] },
       vi.fn(),
     ]);
-
     renderHook(() => useFeatureFlags());
-
     expect(LocalStorage.default).toHaveBeenCalledWith("flags", []);
   });
 
@@ -28,12 +26,10 @@ describe("useFeatureFlags", () => {
     const setLocalStorage = vi.fn();
     vi.spyOn(LocalStorage, "default").mockReturnValue([[], setLocalStorage]);
     vi.spyOn(QueryParams, "useQueryParams").mockReturnValue([
-      { "enable-flag": ["featureA", "featureB"], "disable-flag": null },
+      { "enable-flag": ["featureA", "featureB"], "disable-flag": [] },
       vi.fn(),
     ]);
-
     renderHook(() => useFeatureFlags());
-
     expect(setLocalStorage).toHaveBeenCalledWith(["featureA", "featureB"]);
   });
 
@@ -44,12 +40,10 @@ describe("useFeatureFlags", () => {
       setLocalStorage,
     ]);
     vi.spyOn(QueryParams, "useQueryParams").mockReturnValue([
-      { "enable-flag": null, "disable-flag": ["featureB"] },
+      { "enable-flag": [], "disable-flag": ["featureB"] },
       vi.fn(),
     ]);
-
     renderHook(() => useFeatureFlags());
-
     expect(setLocalStorage).toHaveBeenCalledWith(["featureA", "featureC"]);
   });
 
@@ -63,9 +57,7 @@ describe("useFeatureFlags", () => {
       { "enable-flag": ["featureD"], "disable-flag": ["featureB"] },
       vi.fn(),
     ]);
-
     renderHook(() => useFeatureFlags());
-
     expect(setLocalStorage).toHaveBeenCalledWith([
       "featureA",
       "featureC",
@@ -80,29 +72,11 @@ describe("useFeatureFlags", () => {
       setLocalStorage,
     ]);
     vi.spyOn(QueryParams, "useQueryParams").mockReturnValue([
-      { "enable-flag": ["featureA", "featureB"], "disable-flag": null },
+      { "enable-flag": ["featureA", "featureB"], "disable-flag": [] },
       vi.fn(),
     ]);
-
     renderHook(() => useFeatureFlags());
-
-    expect(setLocalStorage).not.toHaveBeenCalledTimes(2);
-  });
-
-  it("should handle null query params", () => {
-    const setLocalStorage = vi.fn();
-    vi.spyOn(LocalStorage, "default").mockReturnValue([
-      ["featureA"],
-      setLocalStorage,
-    ]);
-    vi.spyOn(QueryParams, "useQueryParams").mockReturnValue([
-      { "enable-flag": null, "disable-flag": null },
-      vi.fn(),
-    ]);
-
-    renderHook(() => useFeatureFlags());
-
-    expect(setLocalStorage).not.toHaveBeenCalled();
+    expect(setLocalStorage).toHaveBeenCalledTimes(1);
   });
 
   it("should handle empty array query params", () => {
@@ -115,9 +89,9 @@ describe("useFeatureFlags", () => {
       { "enable-flag": [], "disable-flag": [] },
       vi.fn(),
     ]);
-
+    const setItemSpy = vi.spyOn(window.localStorage, "setItem");
     renderHook(() => useFeatureFlags());
-
-    expect(setLocalStorage).not.toHaveBeenCalled();
+    expect(setLocalStorage).toHaveBeenCalledTimes(1);
+    expect(setItemSpy).not.toHaveBeenCalled();
   });
 });

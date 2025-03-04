@@ -35,3 +35,7 @@ export const isSpecificAction = <A extends Action>(
   action: UnknownAction,
   actionType: string,
 ): action is A => isPayloadAction(action) && action.type === actionType;
+
+export enum FeatureFlags {
+  REBAC = "rebac",
+}

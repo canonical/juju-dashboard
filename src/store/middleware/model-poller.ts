@@ -25,9 +25,10 @@ import {
 import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
-import { isSpecificAction } from "types";
+import { isSpecificAction, FeatureFlags } from "types";
 import { toErrorString } from "utils";
 import analytics from "utils/analytics";
+import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
 import { logger } from "utils/logger";
 
 export enum LoginError {
@@ -170,9 +171,7 @@ export const modelPollerMiddleware: Middleware<
           }),
         );
         const jimmVersion = conn.facades.jimM?.version ?? 0;
-        const rebacFlagEnabled = JSON.parse(
-          window.localStorage.getItem("flags") ?? "[]",
-        ).includes("rebac");
+        const rebacFlagEnabled = isFeatureFlagEnabled(FeatureFlags.REBAC);
         reduxStore.dispatch(
           generalActions.updateControllerFeatures({
             wsControllerURL,
