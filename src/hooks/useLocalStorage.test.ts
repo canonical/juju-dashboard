@@ -46,6 +46,16 @@ describe("useLocalStorage", () => {
     expect(JSON.parse(localStorage.getItem("test-key") ?? "")).toBe("new-val");
   });
 
+  it("can handle unchanged value", () => {
+    localStorage.setItem("test-key", JSON.stringify("val"));
+    const setItemSpy = vi.spyOn(window.localStorage, "setItem");
+    const { result } = renderHook(() => useLocalStorage("test-key", "val"));
+    const [value] = result.current;
+    expect(value).toBe("val");
+    expect(JSON.parse(localStorage.getItem("test-key") ?? "")).toBe("val");
+    expect(setItemSpy).not.toHaveBeenCalled();
+  });
+
   it("can handle JSON errors when updating the value", () => {
     localStorage.setItem("test-key", JSON.stringify("init-val"));
     const { result } = renderHook(() =>
