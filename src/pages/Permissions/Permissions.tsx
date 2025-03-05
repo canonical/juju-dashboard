@@ -5,9 +5,13 @@ import { useRef } from "react";
 import { NavLink } from "react-router";
 
 import { axiosInstance } from "axios-instance";
+import CheckPermissions from "components/CheckPermissions";
 import useLogout from "hooks/useLogout";
+import { useIsJIMMAdmin } from "juju/api-hooks/permissions";
 import { endpoints } from "juju/jimm/api";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
+import { isReBACEnabled } from "store/general/selectors";
+import { useAppSelector } from "store/store";
 import { rebacURLS } from "urls";
 
 import { Label, TestId } from "./types";
@@ -37,6 +41,8 @@ const navItems = [
 
 const Permissions = (): JSX.Element => {
   const logout = useLogout();
+  const rebacEnabled = useAppSelector(isReBACEnabled);
+  const { permitted, loading } = useIsJIMMAdmin();
 
   useRef(
     axiosInstance.interceptors.response.use(
@@ -59,20 +65,26 @@ const Permissions = (): JSX.Element => {
   );
 
   return (
-    <BaseLayout
+    <CheckPermissions
+      allowed={rebacEnabled && permitted}
       data-testid={TestId.COMPONENT}
-      secondaryNav={{
-        title: "Permissions",
-        items: [
-          {
-            className: "menu-one",
-            items: navItems,
-          },
-        ],
-      }}
+      loading={loading}
     >
-      <ReBACAdmin axiosInstance={axiosInstance} asidePanelId="app-layout" />
-    </BaseLayout>
+      <BaseLayout
+        data-testid={TestId.COMPONENT}
+        secondaryNav={{
+          title: "Permissions",
+          items: [
+            {
+              className: "menu-one",
+              items: navItems,
+            },
+          ],
+        }}
+      >
+        <ReBACAdmin axiosInstance={axiosInstance} asidePanelId="app-layout" />
+      </BaseLayout>
+    </CheckPermissions>
   );
 };
 

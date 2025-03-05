@@ -9,34 +9,13 @@ import ModelDetails from "pages/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex";
 import PageNotFound from "pages/PageNotFound";
 import Permissions from "pages/Permissions";
-import {
-  isCrossModelQueriesEnabled,
-  isAuditLogsEnabled,
-  getConfig,
-  isReBACEnabled,
-  getActiveUserTag,
-  getWSControllerURL,
-  getIsJuju,
-} from "store/general/selectors";
+import { getConfig, getIsJuju } from "store/general/selectors";
 import { useAppSelector } from "store/store";
 import urls from "urls";
 
 export function Routes() {
-  const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
-  const rebacEnabled = useAppSelector(isReBACEnabled);
-  const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
   const config = useAppSelector(getConfig);
-  const wsControllerURL = useAppSelector(getWSControllerURL);
-  const activeUser = useAppSelector((state) =>
-    getActiveUserTag(state, wsControllerURL),
-  );
   const isJuju = useAppSelector(getIsJuju);
-  const isAuthenticated = !!activeUser;
-  // Some JAAS routes require authentication to determine if they should be displayed.
-  // To support this we initially include the route which will allow the authentication to
-  // occur and then determine if the 404 page should be displayed. Without this
-  // the 404 page will be displayed immediately and won't attempt to authenticate.
-  const requiresAuthentication = !isJuju && !isAuthenticated;
 
   const authenticatedRoutes = [
     {
@@ -53,25 +32,23 @@ export function Routes() {
     },
   ];
 
-  if (requiresAuthentication || auditLogsEnabled) {
-    authenticatedRoutes.push({
-      path: urls.logs,
-      element: <Logs />,
-    });
-  }
-
-  if (requiresAuthentication || crossModelQueriesEnabled) {
-    authenticatedRoutes.push({
-      path: urls.search,
-      element: <AdvancedSearch />,
-    });
-  }
-
-  if (requiresAuthentication || rebacEnabled) {
-    authenticatedRoutes.push({
-      path: `${urls.permissions}/*`,
-      element: <Permissions />,
-    });
+  // These routes are only available for JAAS and the isJuju value can't change
+  // at runtime so they are excluded here.
+  if (!isJuju) {
+    authenticatedRoutes.push(
+      {
+        path: urls.logs,
+        element: <Logs />,
+      },
+      {
+        path: urls.search,
+        element: <AdvancedSearch />,
+      },
+      {
+        path: `${urls.permissions}/*`,
+        element: <Permissions />,
+      },
+    );
   }
 
   const router = createBrowserRouter(

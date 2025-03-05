@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 
+import { PageNotFoundLabel } from "pages/PageNotFound";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -30,6 +31,18 @@ describe("AdvancedSearch", () => {
       }),
     });
   });
+
+  it("shouldn't display the content if the feature is disabled", () => {
+    state.general.controllerFeatures = controllerFeaturesStateFactory.build({
+      "wss://controller.example.com": controllerFeaturesFactory.build({
+        crossModelQueries: false,
+      }),
+    });
+    renderComponent(<AdvancedSearch />, { state });
+    expect(screen.queryByTestId("search-form")).not.toBeInTheDocument();
+    expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
+  });
+
   it("should render the page", () => {
     renderComponent(<AdvancedSearch />, { state });
     expect(screen.getByRole("heading")).toHaveTextContent("Advanced search");
