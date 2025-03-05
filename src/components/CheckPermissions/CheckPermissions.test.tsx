@@ -7,7 +7,7 @@ import { renderComponent } from "testing/utils";
 import CheckPermissions from "./CheckPermissions";
 
 describe("CheckPermissions", () => {
-  it("displays the loading state", async () => {
+  it("displays the loading state", () => {
     renderComponent(
       <CheckPermissions loading>secret content</CheckPermissions>,
     );
@@ -16,14 +16,14 @@ describe("CheckPermissions", () => {
     ).toBeInTheDocument();
   });
 
-  it("displays a page not found message if it's not allowed", async () => {
+  it("displays a page not found message if it's not allowed", () => {
     renderComponent(
       <CheckPermissions allowed={false}>secret content</CheckPermissions>,
     );
     expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
   });
 
-  it("displays a page not found message if it's not allowed", async () => {
+  it("displays a page not found message if it's not allowed", () => {
     renderComponent(
       <CheckPermissions allowed>secret content</CheckPermissions>,
     );

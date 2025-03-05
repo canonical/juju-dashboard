@@ -79,7 +79,7 @@ describe("Logs", () => {
     vi.restoreAllMocks();
   });
 
-  it("doesn't display logs if the feature is disabled", async () => {
+  it("doesn't display logs if the feature is disabled", () => {
     state.general.controllerFeatures = controllerFeaturesStateFactory.build({
       "wss://controller.example.com": controllerFeaturesFactory.build({
         rebac: false,
@@ -90,7 +90,7 @@ describe("Logs", () => {
     expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
   });
 
-  it("doesn't display logs if the user doesn't have permission", async () => {
+  it("doesn't display logs if the user doesn't have permission", () => {
     state.juju.rebacRelations = [
       rebacRelationFactory.build({
         tuple: relationshipTupleFactory.build({
@@ -112,7 +112,7 @@ describe("Logs", () => {
     expect(await screen.findAllByRole("cell")).toHaveLength(6);
   });
 
-  it("should display the actions", async () => {
+  it("should display the actions", () => {
     renderComponent(<Logs />, { state });
     expect(
       screen.getByRole("button", { name: AuditLogsTableActionsLabel.FILTER }),
