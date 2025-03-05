@@ -1,38 +1,27 @@
 import { ApplicationLayout, Panel } from "@canonical/react-components";
-import type { PanelProps } from "@canonical/react-components";
 import classNames from "classnames";
-import type { PropsWithChildren, ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router";
 
 import FadeIn from "animations/FadeIn";
 import Banner from "components/Banner";
+import LoadingSpinner from "components/LoadingSpinner";
 import Logo from "components/Logo";
 import PrimaryNav from "components/PrimaryNav";
 import SecondaryNavigation from "components/SecondaryNavigation";
-import type { SecondaryNavigationProps } from "components/SecondaryNavigation/index";
 import { DARK_THEME } from "consts";
 import useOffline from "hooks/useOffline";
 import Panels from "panels";
 import { getIsJuju } from "store/general/selectors";
 import urls from "urls";
 
+import type { Props } from "./types";
 import { Label, TestId } from "./types";
-
-type Props = {
-  secondaryNav?: {
-    title: ReactNode;
-    items: SecondaryNavigationProps["items"];
-  };
-  status?: ReactNode;
-  title?: ReactNode;
-  titleClassName?: PanelProps["titleClassName"];
-  titleComponent?: PanelProps["titleComponent"];
-} & PropsWithChildren;
 
 const BaseLayout = ({
   children,
+  loading,
   secondaryNav,
   status,
   title,
@@ -84,24 +73,28 @@ const BaseLayout = ({
             "l-main__content--has-secondary-nav": hasSecondaryNav,
           })}
         >
-          {hasSecondaryNav ? (
-            <SecondaryNavigation
-              items={secondaryNav.items}
-              title={secondaryNav.title}
-            />
-          ) : null}
-          <Panel
-            className="l-main__panel"
-            data-testid={TestId.MAIN}
-            titleClassName={titleClassName}
-            titleComponent={titleComponent}
-            stickyHeader
-            title={title}
-          >
-            <div className="l-content" {...props}>
-              <FadeIn isActive={true}>{children}</FadeIn>
-            </div>
-          </Panel>
+          <>
+            {hasSecondaryNav && !loading ? (
+              <SecondaryNavigation
+                items={secondaryNav.items}
+                title={secondaryNav.title}
+              />
+            ) : null}
+            <Panel
+              className="l-main__panel"
+              data-testid={TestId.MAIN}
+              titleClassName={titleClassName}
+              titleComponent={titleComponent}
+              stickyHeader
+              title={title}
+            >
+              <div className="l-content" {...props}>
+                <FadeIn isActive={true}>
+                  {loading ? <LoadingSpinner /> : children}
+                </FadeIn>
+              </div>
+            </Panel>
+          </>
         </div>
       </ApplicationLayout>
       <Toaster

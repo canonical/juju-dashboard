@@ -1,6 +1,7 @@
 import { fireEvent, screen, within } from "@testing-library/react";
 import { NavLink } from "react-router";
 
+import { LoadingSpinnerTestId } from "components/LoadingSpinner";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -47,7 +48,7 @@ describe("Base Layout", () => {
     expect(screen.getByText(Label.OFFLINE)).toBeInTheDocument();
   });
 
-  it("displays a message if the dashboard comes back on line", () => {
+  it("displays a message if the dashboard comes back online", () => {
     renderComponent(
       <BaseLayout>
         <p>foo</p>
@@ -102,5 +103,21 @@ describe("Base Layout", () => {
     );
     expect(document.querySelector(".secondary-navigation")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Settings" })).toBeInTheDocument();
+  });
+
+  it("can display a loading state", () => {
+    renderComponent(
+      <BaseLayout loading>
+        <p>children</p>
+      </BaseLayout>,
+      { state },
+    );
+    expect(
+      screen.getByTestId(LoadingSpinnerTestId.LOADING),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("children")).not.toBeInTheDocument();
+    expect(
+      document.querySelector(".secondary-navigation"),
+    ).not.toBeInTheDocument();
   });
 });

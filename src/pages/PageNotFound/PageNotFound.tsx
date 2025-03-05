@@ -2,15 +2,16 @@ import { Link } from "react-router";
 
 import NotFound from "components/NotFound";
 import useWindowTitle from "hooks/useWindowTitle";
+import type { BaseLayoutProps } from "layout/BaseLayout";
 import BaseLayout from "layout/BaseLayout";
 import urls from "urls";
 
 import { Label } from "./types";
 
-export default function PageNotFound() {
+export default function PageNotFound(props: Partial<BaseLayoutProps>) {
   useWindowTitle("404 - Page not found");
   return (
-    <BaseLayout>
+    <BaseLayout {...props}>
       <div className="p-strip">
         <div className="row">
           <NotFound message={Label.NOT_FOUND}>

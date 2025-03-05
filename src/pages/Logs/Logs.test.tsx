@@ -2,11 +2,22 @@ import { screen } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { AuditLogsTableActionsLabel } from "components/AuditLogsTable/AuditLogsTableActions";
+import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
+import { PageNotFoundLabel } from "pages/PageNotFound";
 import type { RootState } from "store/store";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
-import { generalStateFactory, configFactory } from "testing/factories/general";
+import {
+  generalStateFactory,
+  configFactory,
+  controllerFeaturesFactory,
+  controllerFeaturesStateFactory,
+} from "testing/factories/general";
 import { auditEventFactory } from "testing/factories/juju/jimm";
-import { auditEventsStateFactory } from "testing/factories/juju/juju";
+import {
+  auditEventsStateFactory,
+  rebacRelationFactory,
+  relationshipTupleFactory,
+} from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import Logs from "./Logs";
@@ -19,6 +30,7 @@ describe("Logs", () => {
       general: generalStateFactory.build({
         config: configFactory.build({
           controllerAPIEndpoint: "wss://example.com/api",
+          isJuju: false,
         }),
         controllerConnections: {
           "wss://example.com/api": {
@@ -30,12 +42,35 @@ describe("Logs", () => {
             },
           },
         },
+        controllerFeatures: controllerFeaturesStateFactory.build({
+          "wss://example.com/api": controllerFeaturesFactory.build({
+            auditLogs: true,
+          }),
+        }),
       }),
       juju: jujuStateFactory.build({
         auditEvents: auditEventsStateFactory.build({
           items: [auditEventFactory.build()],
           loaded: true,
         }),
+        rebacRelations: [
+          rebacRelationFactory.build({
+            tuple: relationshipTupleFactory.build({
+              object: "user-eggman@external",
+              relation: JIMMRelation.AUDIT_LOG_VIEWER,
+              target_object: JIMMTarget.JIMM_CONTROLLER,
+            }),
+            allowed: true,
+          }),
+          rebacRelationFactory.build({
+            tuple: relationshipTupleFactory.build({
+              object: "user-eggman@external",
+              relation: JIMMRelation.ADMINISTRATOR,
+              target_object: JIMMTarget.JIMM_CONTROLLER,
+            }),
+            allowed: true,
+          }),
+        ],
       }),
     });
   });
@@ -44,13 +79,40 @@ describe("Logs", () => {
     vi.restoreAllMocks();
   });
 
+  it("doesn't display logs if the feature is disabled", () => {
+    state.general.controllerFeatures = controllerFeaturesStateFactory.build({
+      "wss://controller.example.com": controllerFeaturesFactory.build({
+        rebac: false,
+      }),
+    });
+    renderComponent(<Logs />, { state });
+    expect(screen.queryByText("Audit logs")).not.toBeInTheDocument();
+    expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
+  });
+
+  it("doesn't display logs if the user doesn't have permission", () => {
+    state.juju.rebacRelations = [
+      rebacRelationFactory.build({
+        tuple: relationshipTupleFactory.build({
+          object: "user-eggman@external",
+          relation: JIMMRelation.AUDIT_LOG_VIEWER,
+          target_object: JIMMTarget.JIMM_CONTROLLER,
+        }),
+        allowed: false,
+      }),
+    ];
+    renderComponent(<Logs />, { state });
+    expect(screen.queryByText("Audit logs")).not.toBeInTheDocument();
+    expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
+  });
+
   it("should render the page", async () => {
     renderComponent(<Logs />, { state });
     expect(screen.getByText("Audit logs")).toBeVisible();
     expect(await screen.findAllByRole("cell")).toHaveLength(6);
   });
 
-  it("should display the actions", async () => {
+  it("should display the actions", () => {
     renderComponent(<Logs />, { state });
     expect(
       screen.getByRole("button", { name: AuditLogsTableActionsLabel.FILTER }),
