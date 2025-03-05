@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => {
       outDir: "build",
     },
     css: {
+      devSourcemap: true,
       preprocessorOptions: {
         scss: {
           api: "modern-compiler",
