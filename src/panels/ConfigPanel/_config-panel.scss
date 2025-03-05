@@ -8,9 +8,10 @@
     background-color: inherit;
     border: none;
     padding: 0;
+
     // extra styles
     white-space: pre-wrap;
-    word-break: keep-all;
+    word-break: break-word;
   }
 
   .config-panel__hide-button {
