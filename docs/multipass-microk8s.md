@@ -52,7 +52,7 @@ sudo microk8s status --wait-ready
 Install Juju:
 
 ```shell
-sudo snap install juju --channel=latest
+sudo snap install juju --channel=30/stable
 mkdir -p ~/.local/share
 ```
 
@@ -86,13 +86,14 @@ Now move on to the [post deployment](#post-deployment) instructions.
 
 You will need to [install Docker
 Engine](https://docs.docker.com/engine/install/ubuntu/). The simplest method is
-to use the install script:
+to use the `docker` snap:
 
 ```shell
-sudo apt update && sudo apt-get install uidmap -y
-curl -sSL https://get.docker.com/ | sh
-dockerd-rootless-setuptool.sh install
-sudo usermod -aG docker $USER
+sudo snap install docker
+sudo addgroup --system docker
+sudo adduser $USER docker
+sudo snap disable docker
+sudo snap enable docker
 ```
 
 Now exit and then enter the shell to reload your groups:
@@ -140,6 +141,12 @@ Get the ID of the Docker image you built earlier:
 
 ```shell
 docker image inspect juju-dashboard | grep "Id"
+```
+
+If you're on ARM (e.g. an M1 Mac) then run:
+
+```shell
+juju set-model-constraints arch=arm64
 ```
 
 Then deploy the charm using the image ID:
