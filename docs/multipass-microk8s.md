@@ -52,7 +52,7 @@ sudo microk8s status --wait-ready
 Install Juju:
 
 ```shell
-sudo snap install juju --channel=30/stable
+sudo snap install juju --channel=3/stable
 mkdir -p ~/.local/share
 ```
 
@@ -137,22 +137,16 @@ Build the charm:
 charmcraft pack
 ```
 
-Get the ID of the Docker image you built earlier:
-
-```shell
-docker image inspect juju-dashboard | grep "Id"
-```
-
 If you're on ARM (e.g. an M1 Mac) then run:
 
 ```shell
 juju set-model-constraints arch=arm64
 ```
 
-Then deploy the charm using the image ID:
+Then deploy the charm:
 
 ```shell
-juju deploy --resource dashboard-image=[docker-image-id] ./juju-dashboard*.charm dashboard
+juju deploy --resource dashboard-image=$(docker image inspect juju-dashboard --format "{{.ID}}") ./juju-dashboard*.charm dashboard
 ```
 
 Now you can move on to the post deployment steps.
