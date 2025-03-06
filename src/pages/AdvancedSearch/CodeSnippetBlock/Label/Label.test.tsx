@@ -67,7 +67,7 @@ describe("Label", () => {
         userName: "eggman@external",
         modelName: "test-model",
         appName: "easyrsa",
-        unitId: "0",
+        unitId: "easyrsa-0",
       }),
     );
   });
@@ -92,7 +92,7 @@ describe("Label", () => {
         userName: "eggman@external",
         modelName: "test-model",
         appName: "easyrsa",
-        unitId: "0",
+        unitId: "easyrsa-0",
       }),
     );
   });

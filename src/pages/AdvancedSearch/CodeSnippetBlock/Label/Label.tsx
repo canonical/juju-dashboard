@@ -32,7 +32,9 @@ const Label = ({ keyPath }: Props): ReturnType<LabelRenderer> => {
   }
   // Link units[unit-key] to unit in model details.
   if (parentKey === "units" && typeof currentKey === "string") {
-    const [appName, unitId] = currentKey.split("/");
+    // NOTE: See `generateUnitURL@tableRows.tsx` for a similar implementation
+    const [appName, index] = currentKey.split("/");
+    const unitId = `${appName}-${index}`;
     return (
       <UnitLink uuid={modelUUID} appName={appName} unitId={unitId}>
         {currentKey}:

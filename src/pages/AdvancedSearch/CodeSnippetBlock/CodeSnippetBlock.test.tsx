@@ -214,7 +214,7 @@ describe("CodeSnippetBlock", () => {
         userName: "eggman@external",
         modelName: "test-model",
         appName: "easyrsa",
-        unitId: "0",
+        unitId: "easyrsa-0",
       }),
     );
   });
