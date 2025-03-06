@@ -50,7 +50,10 @@
 
     @include desktop {
       gap: 1rem;
-      grid-template-columns: 230px 1fr;
+
+      &:not(:has(> .full-width)) {
+        grid-template-columns: 230px 1fr;
+      }
     }
 
     @include mobile {

@@ -1,10 +1,11 @@
 import { MainTable } from "@canonical/react-components";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 
 import EntityInfo from "components/EntityInfo";
 import InfoPanel from "components/InfoPanel";
+import NotFound from "components/NotFound";
 import type { EntityDetailsRoute } from "components/Routes";
 import type { ApplicationData, MachineData } from "juju/types";
 import {
@@ -25,9 +26,13 @@ import {
   generateLocalApplicationRows,
   generateMachineRows,
 } from "tables/tableRows";
+import urls from "urls";
+
+import { Label } from "./types";
 
 export default function Unit() {
-  const { modelName, userName, unitId } = useParams<EntityDetailsRoute>();
+  const { modelName, userName, unitId, appName } =
+    useParams<EntityDetailsRoute>();
   // The unit name might have a dash in it so we need to grab only the last one
   // ex) content-cache-0.
   const unitIdentifier = unitId?.replace(/-(\d+)$/, "/$1");
@@ -38,23 +43,25 @@ export default function Unit() {
   const machines = useSelector(getModelMachines(modelUUID));
   const isK8s = useAppSelector((state) => isKubernetesModel(state, modelUUID));
 
+  const unit = unitIdentifier && units?.[unitIdentifier];
+
   const filteredMachineList = useMemo(() => {
     const filteredMachines: MachineData = {};
-    if (machines && units && unitIdentifier) {
-      const machineId = units[unitIdentifier]["machine-id"];
+    if (machines && unit) {
+      const machineId = unit["machine-id"];
       filteredMachines[machineId] = machines[machineId];
     }
     return filteredMachines;
-  }, [machines, units, unitIdentifier]);
+  }, [machines, unit]);
 
   const filteredApplicationList = useMemo(() => {
     const filteredApps: ApplicationData = {};
-    if (applications && units && unitIdentifier) {
-      const appName = units[unitIdentifier].application;
+    if (applications && unit) {
+      const appName = unit.application;
       filteredApps[appName] = applications[appName];
     }
     return filteredApps;
-  }, [applications, units, unitIdentifier]);
+  }, [applications, unit]);
 
   const applicationStatuses = useSelector(
     getAllModelApplicationStatus(modelUUID),
@@ -83,18 +90,45 @@ export default function Unit() {
     [filteredApplicationList, applicationStatuses, modelName, userName],
   );
 
-  const unit = unitIdentifier ? units?.[unitIdentifier] : null;
-  let unitEntityData = {};
-  if (unit) {
-    const charm = unit?.["charm-url"] || "-";
-    unitEntityData = {
-      charm,
-      os: "-",
-      revision: extractRevisionNumber(charm) || "-",
-      version: unit?.["workload-status"].version || "-",
-      message: unit?.["workload-status"].message || "-",
-    };
+  if (!unit) {
+    return (
+      <div className="full-width row">
+        <NotFound message={Label.NOT_FOUND}>
+          <>
+            <p>
+              Could not find a unit with ID "{unitId}" for the user "{userName}
+              ". If this is a model that belongs to another user then check that
+              you have been{" "}
+              <a href="https://canonical-juju.readthedocs-hosted.com/en/latest/user/howto/manage-users/#manage-access-at-the-controller-model-application-or-offer-level">
+                granted access
+              </a>
+              .
+            </p>
+            <p>
+              <Link
+                to={urls.model.app.index({
+                  userName: userName ?? "",
+                  modelName: modelName ?? "",
+                  appName: appName ?? "",
+                })}
+              >
+                {Label.VIEW_ALL_UNITS}
+              </Link>
+            </p>
+          </>
+        </NotFound>
+      </div>
+    );
   }
+
+  const charm = unit?.["charm-url"] || "-";
+  const unitEntityData = {
+    charm,
+    os: "-",
+    revision: extractRevisionNumber(charm) || "-",
+    version: unit?.["workload-status"].version || "-",
+    message: unit?.["workload-status"].message || "-",
+  };
 
   return (
     <>
