@@ -16,6 +16,7 @@ import { renderComponent } from "testing/utils";
 import urls from "urls";
 
 import Unit from "./Unit";
+import { Label } from "./types";
 
 vi.mock("components/Topology", () => {
   const Topology = () => <div className="topology"></div>;
@@ -94,5 +95,30 @@ describe("Unit", () => {
     expect(
       document.querySelector(".entity-details__machines"),
     ).not.toBeInTheDocument();
+  });
+
+  it("handles invalid unit", async () => {
+    renderComponent(<Unit />, {
+      path: urls.model.unit(null),
+      url: urls.model.unit({
+        appName: "etcd",
+        modelName: "canonical-kubernetes",
+        unitId: "0",
+        userName: "eggman@external",
+      }),
+    });
+    expect(
+      screen.getByRole("heading", { name: Label.NOT_FOUND }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: Label.VIEW_ALL_UNITS }),
+    ).toHaveAttribute(
+      "href",
+      urls.model.app.index({
+        appName: "etcd",
+        modelName: "canonical-kubernetes",
+        userName: "eggman@external",
+      }),
+    );
   });
 });
