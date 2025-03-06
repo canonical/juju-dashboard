@@ -290,7 +290,7 @@ multipass shell juju
 Install Juju:
 
 ```shell
-sudo snap install juju --channel=latest/stable
+sudo snap install juju --channel=3/stable
 ```
 
 Generate SSH keys (the defaults should be fine for testing):
