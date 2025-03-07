@@ -93,7 +93,7 @@ export default function Models() {
 
   const modelCount = blocked + alert + running;
 
-  let content: ReactNode = <></>;
+  let content: ReactNode = null;
   if (!modelsError) {
     if (!modelsLoaded) {
       return <LoadingSpinner />;

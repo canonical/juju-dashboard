@@ -17,6 +17,8 @@ import configureStore from "redux-mock-store";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 
+import queries from "./queries";
+
 type Router = ReturnType<typeof createMemoryRouter>;
 
 type OptionsWithStore = {
@@ -113,6 +115,7 @@ export const renderComponent = (
     options,
   );
   const result = render(<Component />, {
+    queries,
     wrapper: Wrapper,
   });
   return { router, result, store };
@@ -129,6 +132,7 @@ export const renderWrappedHook = <Result, Props>(
   let router: Router | null = null;
   let store: OptionsWithStore["store"] | null = null;
   const { result } = renderHook(hook, {
+    queries,
     wrapper: ({ children }: PropsWithChildren) => {
       const {
         router: returnedRouter,
