@@ -19,7 +19,7 @@ import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import ModelsIndex from "./ModelsIndex";
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 describe("Models Index page", () => {
   let state: RootState;
@@ -185,6 +185,17 @@ describe("Models Index page", () => {
     state.juju.modelsError = "Oops!";
     renderComponent(<ModelsIndex />, { state });
     expect(screen.getByText(/Oops!/)).toBeInTheDocument();
+  });
+
+  it("clears spinner if initial error occurs", async () => {
+    state.juju.modelsLoaded = false;
+    state.juju.modelsError = "An error occured";
+    renderComponent(<ModelsIndex />, { state });
+    expect(
+      screen.queryByTestId(LoadingSpinnerTestId.LOADING),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText(/An error occured/)).toBeInTheDocument();
+    expect(screen.getByTestId(TestId.COMPONENT).childElementCount).toEqual(1);
   });
 
   it("should refresh the window when pressing the button in error notification", async () => {
