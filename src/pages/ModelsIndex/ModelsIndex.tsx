@@ -93,33 +93,35 @@ export default function Models() {
 
   const modelCount = blocked + alert + running;
 
-  let content: ReactNode;
-  if (!modelsLoaded) {
-    return <LoadingSpinner />;
-  } else if (!hasSomeModels) {
-    content = (
-      <div className="models">
-        <h3>{Label.NOT_FOUND}</h3>
-        <p>
-          Learn about{" "}
-          <a href="https://juju.is/docs/olm/manage-models#heading--add-a-model">
-            adding models
-          </a>{" "}
-          or{" "}
-          <a href="https://juju.is/docs/olm/manage-users#heading--model-access">
-            granting access
-          </a>{" "}
-          to existing models.
-        </p>
-      </div>
-    );
-  } else {
-    content = (
-      <div className="models">
-        <ChipGroup chips={{ blocked, alert, running }} />
-        <ModelTableList groupedBy={queryParams.groupedby} filters={filters} />
-      </div>
-    );
+  let content: ReactNode = <></>;
+  if (!modelsError) {
+    if (!modelsLoaded) {
+      return <LoadingSpinner />;
+    } else if (!hasSomeModels) {
+      content = (
+        <div className="models">
+          <h3>{Label.NOT_FOUND}</h3>
+          <p>
+            Learn about{" "}
+            <a href="https://juju.is/docs/olm/manage-models#heading--add-a-model">
+              adding models
+            </a>{" "}
+            or{" "}
+            <a href="https://juju.is/docs/olm/manage-users#heading--model-access">
+              granting access
+            </a>{" "}
+            to existing models.
+          </p>
+        </div>
+      );
+    } else {
+      content = (
+        <div className="models">
+          <ChipGroup chips={{ blocked, alert, running }} />
+          <ModelTableList groupedBy={queryParams.groupedby} filters={filters} />
+        </div>
+      );
+    }
   }
 
   return (
