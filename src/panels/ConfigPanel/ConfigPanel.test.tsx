@@ -719,7 +719,10 @@ describe("ConfigPanel", () => {
         loaded: true,
       }),
     });
-    const { router } = renderComponent(<ConfigPanel />, { state, path, url });
+    const {
+      router,
+      result: { getNotificationByText },
+    } = renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
       "secret:aabbccdd",
@@ -740,8 +743,8 @@ describe("ConfigPanel", () => {
     expect(router.state.location.search).toBe(`?${params.toString()}`);
     await waitFor(() => {
       expect(
-        document.querySelector(".p-notification--negative"),
-      ).toHaveTextContent(ConfirmationDialogLabel.GRANT_ERROR);
+        getNotificationByText(ConfirmationDialogLabel.GRANT_ERROR),
+      ).toBeInTheDocument();
     });
   });
 

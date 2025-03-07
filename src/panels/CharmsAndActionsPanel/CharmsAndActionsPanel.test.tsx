@@ -63,11 +63,9 @@ describe("CharmsAndActionsPanel", () => {
       Promise.resolve([]),
     );
     const {
-      result: { container },
+      result: { getSpinnerByLabel },
     } = renderComponent(<CharmsAndActionsPanel />, { path, url, state });
-    expect(
-      container.querySelector(".l-aside")?.querySelector(".p-icon--spinner"),
-    ).toBeVisible();
+    expect(getSpinnerByLabel("Loading")).toBeVisible();
     await waitFor(() => {
       expect(getCharmsURLFromApplications).toHaveBeenCalledTimes(1);
     });

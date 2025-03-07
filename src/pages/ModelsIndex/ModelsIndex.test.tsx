@@ -190,10 +190,10 @@ describe("Models Index page", () => {
   it("clears spinner if initial error occurs", async () => {
     state.juju.modelsLoaded = false;
     state.juju.modelsError = "An error occured";
-    renderComponent(<ModelsIndex />, { state });
-    expect(
-      screen.queryByTestId(LoadingSpinnerTestId.LOADING),
-    ).not.toBeInTheDocument();
+    const {
+      result: { queryAllSpinnersByLabel },
+    } = renderComponent(<ModelsIndex />, { state });
+    expect(queryAllSpinnersByLabel("Loading")).toHaveLength(0);
     expect(screen.getByText(/An error occured/)).toBeInTheDocument();
     expect(screen.getByTestId(TestId.COMPONENT).childElementCount).toEqual(1);
   });

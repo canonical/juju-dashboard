@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { add } from "date-fns";
 import { vi } from "vitest";
 
@@ -9,6 +9,7 @@ import { rootStateFactory, jujuStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import { auditEventsStateFactory } from "testing/factories/juju/juju";
+import { customWithin } from "testing/queries/within";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -112,18 +113,29 @@ describe("AuditLogsTable", () => {
       }),
     ];
     renderComponent(<AuditLogsTable />, { state });
-    expect(await screen.findByRole("table")).toBeInTheDocument();
+    const table = await screen.findByRole("table");
+    expect(table).toBeInTheDocument();
     expect(
       screen.queryByTestId(LoadingSpinnerTestId.LOADING),
     ).not.toBeInTheDocument();
-    const row = screen.getAllByRole("row")[1];
-    const cells = within(row).getAllByRole("cell");
-    expect(cells[0]).toHaveTextContent("eggman");
-    expect(cells[1]).toHaveTextContent("microk8s");
-    expect(cells[2]).toHaveTextContent("1 day ago");
-    expect(cells[3]).toHaveTextContent("ModelManager");
-    expect(cells[4]).toHaveTextContent("AddModel");
-    expect(cells[5]).toHaveTextContent("3");
+    expect(customWithin(table).getCellByHeader("user")).toHaveTextContent(
+      "eggman",
+    );
+    expect(customWithin(table).getCellByHeader("model")).toHaveTextContent(
+      "microk8s",
+    );
+    expect(customWithin(table).getCellByHeader("time")).toHaveTextContent(
+      "1 day ago",
+    );
+    expect(
+      customWithin(table).getCellByHeader("facade name"),
+    ).toHaveTextContent("ModelManager");
+    expect(
+      customWithin(table).getCellByHeader("facade method"),
+    ).toHaveTextContent("AddModel");
+    expect(
+      customWithin(table).getCellByHeader("facade version"),
+    ).toHaveTextContent("3");
   });
 
   it("should display filters", async () => {
