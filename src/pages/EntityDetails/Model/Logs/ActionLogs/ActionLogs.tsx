@@ -7,6 +7,7 @@ import {
   ContextualMenu,
   Icon,
   ModularTable,
+  usePortal,
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -403,6 +404,8 @@ export default function ActionLogs() {
     [],
   );
 
+  const { Portal } = usePortal();
+
   const emptyMsg = `There are no action logs available yet for ${modelName}`;
 
   return (
@@ -420,12 +423,17 @@ export default function ActionLogs() {
           sortable
         />
       )}
-      <FadeIn isActive={Boolean(modalDetails)}>
-        <ActionPayloadModal
-          payload={modalDetails}
-          onClose={() => setModalDetails(null)}
-        />
-      </FadeIn>
+      <Portal>
+        <FadeIn
+          className="entity-details__payload-modal"
+          isActive={Boolean(modalDetails)}
+        >
+          <ActionPayloadModal
+            payload={modalDetails}
+            onClose={() => setModalDetails(null)}
+          />
+        </FadeIn>
+      </Portal>
     </div>
   );
 }

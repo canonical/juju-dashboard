@@ -28,6 +28,21 @@
     }
   }
 
+  .entity-details__payload-modal {
+    /* 
+     * Elements with opacity != 1 create a new stacking context, which occurs during modal
+     * transitions. To avoid the modal breaking out, position the parent so it creates it's own
+     * stacking context, which we can manually control the z-index of.
+     */
+    position: relative;
+
+    /*
+     * Pulled from Vanilla's Modal backdrop:
+     * https://github.com/canonical/vanilla-framework/blob/21fb5bbc409764a6c39b53a4de2a00eb489f15c8/scss/_patterns_modal.scss#L20
+     */
+    z-index: 150;
+  }
+
   .action-logs__stdout {
     display: block;
   }
