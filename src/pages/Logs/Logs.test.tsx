@@ -15,7 +15,7 @@ import {
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
   auditEventsStateFactory,
-  rebacRelationFactory,
+  rebacAllowedFactory,
   relationshipTupleFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
@@ -53,24 +53,26 @@ describe("Logs", () => {
           items: [auditEventFactory.build()],
           loaded: true,
         }),
-        rebacRelations: [
-          rebacRelationFactory.build({
-            tuple: relationshipTupleFactory.build({
-              object: "user-eggman@external",
-              relation: JIMMRelation.AUDIT_LOG_VIEWER,
-              target_object: JIMMTarget.JIMM_CONTROLLER,
+        rebac: {
+          allowed: [
+            rebacAllowedFactory.build({
+              tuple: relationshipTupleFactory.build({
+                object: "user-eggman@external",
+                relation: JIMMRelation.AUDIT_LOG_VIEWER,
+                target_object: JIMMTarget.JIMM_CONTROLLER,
+              }),
+              allowed: true,
             }),
-            allowed: true,
-          }),
-          rebacRelationFactory.build({
-            tuple: relationshipTupleFactory.build({
-              object: "user-eggman@external",
-              relation: JIMMRelation.ADMINISTRATOR,
-              target_object: JIMMTarget.JIMM_CONTROLLER,
+            rebacAllowedFactory.build({
+              tuple: relationshipTupleFactory.build({
+                object: "user-eggman@external",
+                relation: JIMMRelation.ADMINISTRATOR,
+                target_object: JIMMTarget.JIMM_CONTROLLER,
+              }),
+              allowed: true,
             }),
-            allowed: true,
-          }),
-        ],
+          ],
+        },
       }),
     });
   });
@@ -91,8 +93,8 @@ describe("Logs", () => {
   });
 
   it("doesn't display logs if the user doesn't have permission", () => {
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: relationshipTupleFactory.build({
           object: "user-eggman@external",
           relation: JIMMRelation.AUDIT_LOG_VIEWER,

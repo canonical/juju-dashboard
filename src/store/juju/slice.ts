@@ -32,7 +32,7 @@ import type {
   ModelFeatures,
   ModelSecrets,
   SecretsContent,
-  ReBACRelation,
+  ReBACAllowed,
 } from "./types";
 
 export const DEFAULT_AUDIT_EVENTS_LIMIT = 50;
@@ -90,7 +90,9 @@ const slice = createSlice({
     modelFeatures: {},
     modelWatcherData: {},
     charms: [],
-    rebacRelations: [],
+    rebac: {
+      allowed: [],
+    },
     secrets: {},
     selectedApplications: [],
   } as JujuState,
@@ -401,19 +403,19 @@ const slice = createSlice({
       }: PayloadAction<{ tuple: RelationshipTuple } & WsControllerURLParam>,
     ) => {
       const tuple = payload.tuple;
-      const relationState: ReBACRelation = {
+      const relationState: ReBACAllowed = {
         errors: null,
         loaded: false,
         loading: true,
         tuple,
       };
-      const existingIndex = state.rebacRelations.findIndex((relation) =>
+      const existingIndex = state.rebac.allowed.findIndex((relation) =>
         fastDeepEqual(relation.tuple, tuple),
       );
       if (existingIndex >= 0) {
-        state.rebacRelations[existingIndex] = relationState;
+        state.rebac.allowed[existingIndex] = relationState;
       } else {
-        state.rebacRelations.push(relationState);
+        state.rebac.allowed.push(relationState);
       }
     },
     addCheckRelation: (
@@ -422,12 +424,12 @@ const slice = createSlice({
         payload,
       }: PayloadAction<{ tuple: RelationshipTuple; allowed: boolean }>,
     ) => {
-      const existingIndex = state.rebacRelations.findIndex((relation) =>
+      const existingIndex = state.rebac.allowed.findIndex((relation) =>
         fastDeepEqual(relation.tuple, payload.tuple),
       );
       if (existingIndex >= 0) {
-        state.rebacRelations[existingIndex] = {
-          ...state.rebacRelations[existingIndex],
+        state.rebac.allowed[existingIndex] = {
+          ...state.rebac.allowed[existingIndex],
           allowed: payload.allowed,
           errors: null,
           loaded: true,
@@ -439,12 +441,12 @@ const slice = createSlice({
       state,
       { payload }: PayloadAction<{ tuple: RelationshipTuple; errors: string }>,
     ) => {
-      const existingIndex = state.rebacRelations.findIndex((relation) =>
+      const existingIndex = state.rebac.allowed.findIndex((relation) =>
         fastDeepEqual(relation.tuple, payload.tuple),
       );
       if (existingIndex >= 0) {
-        state.rebacRelations[existingIndex] = {
-          ...state.rebacRelations[existingIndex],
+        state.rebac.allowed[existingIndex] = {
+          ...state.rebac.allowed[existingIndex],
           allowed: null,
           errors: payload.errors,
           loaded: false,
@@ -456,11 +458,11 @@ const slice = createSlice({
       state,
       { payload }: PayloadAction<{ tuple: RelationshipTuple }>,
     ) => {
-      const existingIndex = state.rebacRelations.findIndex((relation) =>
+      const existingIndex = state.rebac.allowed.findIndex((relation) =>
         fastDeepEqual(relation.tuple, payload.tuple),
       );
       if (existingIndex >= 0) {
-        state.rebacRelations.splice(existingIndex, 1);
+        state.rebac.allowed.splice(existingIndex, 1);
       }
     },
   },

@@ -13,7 +13,7 @@ import {
   controllerFeaturesStateFactory,
   authUserInfoFactory,
 } from "testing/factories/general";
-import { rebacRelationFactory } from "testing/factories/juju/juju";
+import { rebacAllowedFactory } from "testing/factories/juju/juju";
 import { ComponentProviders } from "testing/utils";
 
 import {
@@ -73,8 +73,8 @@ describe("useCheckPermissions", () => {
       relation: JIMMRelation.MEMBER,
       target_object: "group-admins",
     };
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: tuple,
         loading: true,
         loaded: true,
@@ -149,8 +149,8 @@ describe("useCheckPermissions", () => {
       relation: JIMMRelation.MEMBER,
       target_object: "group-admins",
     };
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: tuple,
         loading: true,
       }),
@@ -176,8 +176,8 @@ describe("useCheckPermissions", () => {
       relation: JIMMRelation.MEMBER,
       target_object: "group-admins",
     };
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: tuple,
         loaded: true,
       }),
@@ -203,8 +203,8 @@ describe("useCheckPermissions", () => {
       relation: JIMMRelation.MEMBER,
       target_object: "group-admins",
     };
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: tuple,
         loaded: true,
       }),
@@ -258,8 +258,8 @@ describe("useCheckPermissions", () => {
       relation: JIMMRelation.MEMBER,
       target_object: "group-admins",
     };
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: tuple,
         loaded: true,
       }),
@@ -366,8 +366,8 @@ describe("useIsJIMMAdmin", () => {
       relation: JIMMRelation.ADMINISTRATOR,
       target_object: JIMMTarget.JIMM_CONTROLLER,
     };
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: tuple,
         loading: true,
         loaded: true,
@@ -410,8 +410,8 @@ describe("useIsJIMMAdmin", () => {
       relation: JIMMRelation.ADMINISTRATOR,
       target_object: JIMMTarget.JIMM_CONTROLLER,
     };
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: tuple,
         loaded: true,
       }),
@@ -502,14 +502,14 @@ describe("useAuditLogsPermitted", () => {
       relation: JIMMRelation.AUDIT_LOG_VIEWER,
       target_object: JIMMTarget.JIMM_CONTROLLER,
     };
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: tuple,
         loading: true,
         loaded: true,
         allowed: true,
       }),
-      rebacRelationFactory.build({
+      rebacAllowedFactory.build({
         tuple: {
           object: "user-eggman@external",
           relation: JIMMRelation.ADMINISTRATOR,
@@ -583,8 +583,8 @@ describe("useAuditLogsPermitted", () => {
       relation: JIMMRelation.AUDIT_LOG_VIEWER,
       target_object: JIMMTarget.JIMM_CONTROLLER,
     };
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: tuple,
         loaded: true,
       }),

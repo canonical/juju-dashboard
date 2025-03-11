@@ -18,7 +18,7 @@ import {
 } from "testing/factories/general";
 import {
   jujuStateFactory,
-  rebacRelationFactory,
+  rebacAllowedFactory,
   relationshipTupleFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
@@ -58,16 +58,18 @@ describe("Permissions", () => {
         },
       }),
       juju: jujuStateFactory.build({
-        rebacRelations: [
-          rebacRelationFactory.build({
-            tuple: relationshipTupleFactory.build({
-              object: "user-eggman@external",
-              relation: JIMMRelation.ADMINISTRATOR,
-              target_object: JIMMTarget.JIMM_CONTROLLER,
+        rebac: {
+          allowed: [
+            rebacAllowedFactory.build({
+              tuple: relationshipTupleFactory.build({
+                object: "user-eggman@external",
+                relation: JIMMRelation.ADMINISTRATOR,
+                target_object: JIMMTarget.JIMM_CONTROLLER,
+              }),
+              allowed: true,
             }),
-            allowed: true,
-          }),
-        ],
+          ],
+        },
       }),
     });
   });
@@ -88,8 +90,8 @@ describe("Permissions", () => {
   });
 
   it("it doesn't display ReBAC Admin if the user does not have permission", () => {
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: relationshipTupleFactory.build({
           object: "user-eggman@external",
           relation: JIMMRelation.ADMINISTRATOR,

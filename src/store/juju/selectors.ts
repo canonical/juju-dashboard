@@ -1060,15 +1060,15 @@ export const isKubernetesModel = createSelector(
     modelInfo?.type === "kubernetes",
 );
 
-export const getReBACRelationsState = createSelector(
+export const getReBACAllowedState = createSelector(
   [slice],
-  (sliceState) => sliceState.rebacRelations,
+  (sliceState) => sliceState.rebac.allowed,
 );
 
 export const getReBACPermission = createSelector(
-  [getReBACRelationsState, (_state, tuple?: RelationshipTuple | null) => tuple],
-  (rebacRelations, tuple) =>
-    rebacRelations.find((relation) => fastDeepEqual(relation.tuple, tuple)),
+  [getReBACAllowedState, (_state, tuple?: RelationshipTuple | null) => tuple],
+  (allowed, tuple) =>
+    allowed.find((relation) => fastDeepEqual(relation.tuple, tuple)),
 );
 
 export const getReBACPermissionLoading = createSelector(

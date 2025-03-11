@@ -32,7 +32,7 @@ import {
   modelListInfoFactory,
   modelFeaturesStateFactory,
   modelFeaturesFactory,
-  rebacRelationFactory,
+  rebacAllowedFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -373,8 +373,8 @@ describe("Model", () => {
         user: authUserInfoFactory.build(),
       },
     };
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: {
           object: "user-eggman@external",
           relation: JIMMRelation.AUDIT_LOG_VIEWER,
@@ -382,7 +382,7 @@ describe("Model", () => {
         },
         allowed: true,
       }),
-      rebacRelationFactory.build({
+      rebacAllowedFactory.build({
         tuple: {
           object: "user-eggman@external",
           relation: JIMMRelation.ADMINISTRATOR,

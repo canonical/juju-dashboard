@@ -14,7 +14,7 @@ import {
 } from "testing/factories/general";
 import {
   modelListInfoFactory,
-  rebacRelationFactory,
+  rebacAllowedFactory,
 } from "testing/factories/juju/juju";
 import {
   modelFeaturesStateFactory,
@@ -120,8 +120,8 @@ describe("ModelTabs", () => {
         auditLogs: true,
       }),
     });
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: {
           object: "user-eggman@external",
           relation: JIMMRelation.AUDIT_LOG_VIEWER,
@@ -129,7 +129,7 @@ describe("ModelTabs", () => {
         },
         allowed: true,
       }),
-      rebacRelationFactory.build({
+      rebacAllowedFactory.build({
         tuple: {
           object: "user-eggman@external",
           relation: JIMMRelation.ADMINISTRATOR,
