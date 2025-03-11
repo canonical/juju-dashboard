@@ -182,6 +182,7 @@ export default function ActionsPanel(): JSX.Element {
           loading={isExecutingAction}
           disabled={disableSubmit || isExecutingAction}
           onClick={handleSubmit}
+          className="u-no-margin--bottom"
         >
           Run action
         </ActionButton>
