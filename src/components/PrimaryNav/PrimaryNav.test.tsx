@@ -18,7 +18,7 @@ import {
   jujuStateFactory,
   modelDataApplicationFactory,
   modelDataFactory,
-  rebacRelationFactory,
+  rebacAllowedFactory,
   relationshipTupleFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
@@ -210,24 +210,26 @@ describe("PrimaryNav", () => {
         }),
       }),
       juju: jujuStateFactory.build({
-        rebacRelations: [
-          rebacRelationFactory.build({
-            tuple: relationshipTupleFactory.build({
-              object: "user-eggman@external",
-              relation: JIMMRelation.AUDIT_LOG_VIEWER,
-              target_object: JIMMTarget.JIMM_CONTROLLER,
+        rebac: {
+          allowed: [
+            rebacAllowedFactory.build({
+              tuple: relationshipTupleFactory.build({
+                object: "user-eggman@external",
+                relation: JIMMRelation.AUDIT_LOG_VIEWER,
+                target_object: JIMMTarget.JIMM_CONTROLLER,
+              }),
+              allowed: true,
             }),
-            allowed: true,
-          }),
-          rebacRelationFactory.build({
-            tuple: relationshipTupleFactory.build({
-              object: "user-eggman@external",
-              relation: JIMMRelation.ADMINISTRATOR,
-              target_object: JIMMTarget.JIMM_CONTROLLER,
+            rebacAllowedFactory.build({
+              tuple: relationshipTupleFactory.build({
+                object: "user-eggman@external",
+                relation: JIMMRelation.ADMINISTRATOR,
+                target_object: JIMMTarget.JIMM_CONTROLLER,
+              }),
+              allowed: true,
             }),
-            allowed: true,
-          }),
-        ],
+          ],
+        },
       }),
     });
     renderComponent(<PrimaryNav />, { state });
@@ -260,24 +262,26 @@ describe("PrimaryNav", () => {
         }),
       }),
       juju: jujuStateFactory.build({
-        rebacRelations: [
-          rebacRelationFactory.build({
-            tuple: relationshipTupleFactory.build({
-              object: "user-eggman@external",
-              relation: JIMMRelation.AUDIT_LOG_VIEWER,
-              target_object: JIMMTarget.JIMM_CONTROLLER,
+        rebac: {
+          allowed: [
+            rebacAllowedFactory.build({
+              tuple: relationshipTupleFactory.build({
+                object: "user-eggman@external",
+                relation: JIMMRelation.AUDIT_LOG_VIEWER,
+                target_object: JIMMTarget.JIMM_CONTROLLER,
+              }),
+              allowed: true,
             }),
-            allowed: true,
-          }),
-          rebacRelationFactory.build({
-            tuple: relationshipTupleFactory.build({
-              object: "user-eggman@external",
-              relation: JIMMRelation.ADMINISTRATOR,
-              target_object: JIMMTarget.JIMM_CONTROLLER,
+            rebacAllowedFactory.build({
+              tuple: relationshipTupleFactory.build({
+                object: "user-eggman@external",
+                relation: JIMMRelation.ADMINISTRATOR,
+                target_object: JIMMTarget.JIMM_CONTROLLER,
+              }),
+              allowed: true,
             }),
-            allowed: true,
-          }),
-        ],
+          ],
+        },
       }),
     });
     renderComponent(<PrimaryNav />, { state });
@@ -358,16 +362,18 @@ it("should not show Permissions navigation button if the controller doesn't supp
       }),
     }),
     juju: jujuStateFactory.build({
-      rebacRelations: [
-        rebacRelationFactory.build({
-          tuple: relationshipTupleFactory.build({
-            object: "user-eggman@external",
-            relation: JIMMRelation.ADMINISTRATOR,
-            target_object: JIMMTarget.JIMM_CONTROLLER,
+      rebac: {
+        allowed: [
+          rebacAllowedFactory.build({
+            tuple: relationshipTupleFactory.build({
+              object: "user-eggman@external",
+              relation: JIMMRelation.ADMINISTRATOR,
+              target_object: JIMMTarget.JIMM_CONTROLLER,
+            }),
+            allowed: true,
           }),
-          allowed: true,
-        }),
-      ],
+        ],
+      },
     }),
   });
   renderComponent(<PrimaryNav />, { state });
@@ -395,16 +401,18 @@ it("should show Permissions navigation button if the controller supports it", ()
       }),
     }),
     juju: jujuStateFactory.build({
-      rebacRelations: [
-        rebacRelationFactory.build({
-          tuple: relationshipTupleFactory.build({
-            object: "user-eggman@external",
-            relation: JIMMRelation.ADMINISTRATOR,
-            target_object: JIMMTarget.JIMM_CONTROLLER,
+      rebac: {
+        allowed: [
+          rebacAllowedFactory.build({
+            tuple: relationshipTupleFactory.build({
+              object: "user-eggman@external",
+              relation: JIMMRelation.ADMINISTRATOR,
+              target_object: JIMMTarget.JIMM_CONTROLLER,
+            }),
+            allowed: true,
           }),
-          allowed: true,
-        }),
-      ],
+        ],
+      },
     }),
   });
   renderComponent(<PrimaryNav />, { state });

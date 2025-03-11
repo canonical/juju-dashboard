@@ -27,7 +27,8 @@ import type {
   ModelFeaturesState,
   ModelListInfo,
   ModelSecrets,
-  ReBACRelation,
+  ReBACAllowed,
+  ReBACState,
   SecretsState,
 } from "store/juju/types";
 import type { SecretsContent } from "store/juju/types";
@@ -243,11 +244,15 @@ export const relationshipTupleFactory = Factory.define<RelationshipTuple>(
   }),
 );
 
-export const rebacRelationFactory = Factory.define<ReBACRelation>(() => ({
+export const rebacAllowedFactory = Factory.define<ReBACAllowed>(() => ({
   errors: null,
   loaded: false,
   loading: false,
   tuple: relationshipTupleFactory.build(),
+}));
+
+export const rebacState = Factory.define<ReBACState>(() => ({
+  allowed: [],
 }));
 
 export const jujuStateFactory = Factory.define<JujuState>(() => ({
@@ -261,7 +266,7 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   modelFeatures: {},
   modelWatcherData: {},
   charms: [],
-  rebacRelations: [],
+  rebac: rebacState.build(),
   secrets: {},
   selectedApplications: [],
 }));

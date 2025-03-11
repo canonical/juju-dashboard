@@ -92,9 +92,13 @@ export type ModelFeatures = {
 
 export type ModelFeaturesState = Record<string, ModelFeatures>;
 
-export type ReBACRelation = GenericState<string> & {
+export type ReBACAllowed = GenericState<string> & {
   tuple: RelationshipTuple;
   allowed?: boolean | null;
+};
+
+export type ReBACState = {
+  allowed: ReBACAllowed[];
 };
 
 export type JujuState = {
@@ -108,7 +112,7 @@ export type JujuState = {
   modelFeatures: ModelFeaturesState;
   modelWatcherData?: ModelWatcherData;
   charms: Charm[];
-  rebacRelations: ReBACRelation[];
+  rebac: ReBACState;
   secrets: SecretsState;
   selectedApplications: ApplicationInfo[];
 };

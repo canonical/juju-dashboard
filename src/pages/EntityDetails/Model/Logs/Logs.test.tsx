@@ -11,7 +11,7 @@ import {
   controllerFeaturesStateFactory,
   authUserInfoFactory,
 } from "testing/factories/general";
-import { rebacRelationFactory } from "testing/factories/juju/juju";
+import { rebacAllowedFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import Logs from "./Logs";
@@ -53,24 +53,26 @@ describe("Logs", () => {
         },
       }),
       juju: jujuStateFactory.build({
-        rebacRelations: [
-          rebacRelationFactory.build({
-            tuple: {
-              object: "user-eggman@external",
-              relation: JIMMRelation.AUDIT_LOG_VIEWER,
-              target_object: JIMMTarget.JIMM_CONTROLLER,
-            },
-            allowed: true,
-          }),
-          rebacRelationFactory.build({
-            tuple: {
-              object: "user-eggman@external",
-              relation: JIMMRelation.ADMINISTRATOR,
-              target_object: JIMMTarget.JIMM_CONTROLLER,
-            },
-            allowed: true,
-          }),
-        ],
+        rebac: {
+          allowed: [
+            rebacAllowedFactory.build({
+              tuple: {
+                object: "user-eggman@external",
+                relation: JIMMRelation.AUDIT_LOG_VIEWER,
+                target_object: JIMMTarget.JIMM_CONTROLLER,
+              },
+              allowed: true,
+            }),
+            rebacAllowedFactory.build({
+              tuple: {
+                object: "user-eggman@external",
+                relation: JIMMRelation.ADMINISTRATOR,
+                target_object: JIMMTarget.JIMM_CONTROLLER,
+              },
+              allowed: true,
+            }),
+          ],
+        },
       }),
     });
     renderComponent(<Logs />, {

@@ -27,7 +27,7 @@ import {
   modelSecretsFactory,
   modelFeaturesFactory,
   modelFeaturesStateFactory,
-  rebacRelationFactory,
+  rebacAllowedFactory,
   relationshipTupleFactory,
   secretRevisionFactory,
 } from "testing/factories/juju/juju";
@@ -117,7 +117,7 @@ import {
   getSecretsContentLoaded,
   getSecretsContentLoading,
   isKubernetesModel,
-  getReBACRelationsState,
+  getReBACAllowedState,
   hasReBACPermission,
   getSecretLatestRevision,
   getReBACPermissionLoading,
@@ -676,9 +676,9 @@ describe("selectors", () => {
     ).toStrictEqual(controllers);
   });
 
-  it("getReBACRelationsState", () => {
-    const rebacRelations = [
-      rebacRelationFactory.build({
+  it("getReBACAllowedState", () => {
+    const allowed = [
+      rebacAllowedFactory.build({
         tuple: relationshipTupleFactory.build({
           object: "user-eggman@external",
           relation: JIMMRelation.ADMINISTRATOR,
@@ -688,14 +688,16 @@ describe("selectors", () => {
       }),
     ];
     expect(
-      getReBACRelationsState(
+      getReBACAllowedState(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            rebacRelations,
+            rebac: {
+              allowed,
+            },
           }),
         }),
       ),
-    ).toStrictEqual(rebacRelations);
+    ).toStrictEqual(allowed);
   });
 
   it("getReBACPermissionLoading exists", () => {
@@ -708,12 +710,14 @@ describe("selectors", () => {
       getReBACPermissionLoading(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            rebacRelations: [
-              rebacRelationFactory.build({
-                tuple,
-                loading: true,
-              }),
-            ],
+            rebac: {
+              allowed: [
+                rebacAllowedFactory.build({
+                  tuple,
+                  loading: true,
+                }),
+              ],
+            },
           }),
         }),
         tuple,
@@ -731,7 +735,7 @@ describe("selectors", () => {
       getReBACPermissionLoading(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            rebacRelations: [],
+            rebac: { allowed: [] },
           }),
         }),
         tuple,
@@ -749,12 +753,14 @@ describe("selectors", () => {
       getReBACPermissionLoaded(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            rebacRelations: [
-              rebacRelationFactory.build({
-                tuple,
-                loaded: true,
-              }),
-            ],
+            rebac: {
+              allowed: [
+                rebacAllowedFactory.build({
+                  tuple,
+                  loaded: true,
+                }),
+              ],
+            },
           }),
         }),
         tuple,
@@ -772,7 +778,7 @@ describe("selectors", () => {
       getReBACPermissionLoaded(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            rebacRelations: [],
+            rebac: { allowed: [] },
           }),
         }),
         tuple,
@@ -790,12 +796,14 @@ describe("selectors", () => {
       hasReBACPermission(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            rebacRelations: [
-              rebacRelationFactory.build({
-                tuple,
-                allowed: true,
-              }),
-            ],
+            rebac: {
+              allowed: [
+                rebacAllowedFactory.build({
+                  tuple,
+                  allowed: true,
+                }),
+              ],
+            },
           }),
         }),
         tuple,
@@ -813,7 +821,7 @@ describe("selectors", () => {
       hasReBACPermission(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            rebacRelations: [],
+            rebac: { allowed: [] },
           }),
         }),
         tuple,

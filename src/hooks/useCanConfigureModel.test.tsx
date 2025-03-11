@@ -22,7 +22,7 @@ import {
   modelDataFactory,
   modelDataInfoFactory,
   modelListInfoFactory,
-  rebacRelationFactory,
+  rebacAllowedFactory,
 } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderWrappedHook } from "testing/utils";
@@ -182,8 +182,8 @@ describe("useModelStatus", () => {
     if (state.general.config) {
       state.general.config.isJuju = false;
     }
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: {
           object: "user-eggman@external",
           relation: JIMMRelation.WRITER,
@@ -202,8 +202,8 @@ describe("useModelStatus", () => {
     if (state.general.config) {
       state.general.config.isJuju = false;
     }
-    state.juju.rebacRelations = [
-      rebacRelationFactory.build({
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
         tuple: {
           object: "user-eggman@external",
           relation: JIMMRelation.WRITER,
