@@ -1,9 +1,28 @@
 .radio-input-box {
-  border: 1px solid $color-mid-light;
+  $border-width: 1px;
+  $v-padding: 0.5rem;
+
+  // This is the default for `label` in Vanilla.
+  $line-height: 1.5rem;
+
+  // Calculate the vertical spacing on this item, which will comprise of the border width, plus the
+  // vertical padding.
+  $v-spacing: #{calc(2 * ($v-padding + $border-width))};
+
+  border: $border-width solid $color-mid-light;
   border-radius: 2px;
   margin-bottom: 0.5rem;
   overflow: hidden;
-  padding: 0.5rem 1rem 0.5rem 0.5rem;
+  padding: $v-padding 1rem $v-padding 0.5rem;
+
+  // 'Export' variables so they can be used in the animation from JS.
+  --v-spacing: #{$v-spacing};
+  --initial-height: #{calc($line-height + $v-spacing)};
+
+  // Set the collapsed height of the item when it's not expanded.
+  &:not([aria-expanded="true"]) {
+    height: var(--initial-height);
+  }
 
   @include vf-animation(#{border, background-color}, sleepy, linear);
 
