@@ -20,6 +20,8 @@ import {
   modelSecretsContentFactory,
   relationshipTupleFactory,
   rebacAllowedFactory,
+  rebacRelationshipFactory,
+  rebacState,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -1032,7 +1034,7 @@ describe("reducers", () => {
   it("checkRelation", () => {
     const tuple = relationshipTupleFactory.build();
     const state = jujuStateFactory.build({
-      rebac: { allowed: [] },
+      rebac: rebacState.build({ allowed: [] }),
     });
     expect(
       reducer(
@@ -1044,28 +1046,28 @@ describe("reducers", () => {
       ),
     ).toStrictEqual({
       ...state,
-      rebac: {
+      rebac: rebacState.build({
         allowed: [
           rebacAllowedFactory.build({
             tuple,
             loading: true,
           }),
         ],
-      },
+      }),
     });
   });
 
   it("checkRelation already exists", () => {
     const tuple = relationshipTupleFactory.build();
     const state = jujuStateFactory.build({
-      rebac: {
+      rebac: rebacState.build({
         allowed: [
           rebacAllowedFactory.build({
             tuple,
             loaded: true,
           }),
         ],
-      },
+      }),
     });
     expect(
       reducer(
@@ -1077,7 +1079,7 @@ describe("reducers", () => {
       ),
     ).toStrictEqual({
       ...state,
-      rebac: {
+      rebac: rebacState.build({
         allowed: [
           rebacAllowedFactory.build({
             tuple,
@@ -1085,27 +1087,27 @@ describe("reducers", () => {
             loaded: false,
           }),
         ],
-      },
+      }),
     });
   });
 
   it("addCheckRelation", () => {
     const tuple = relationshipTupleFactory.build();
     const state = jujuStateFactory.build({
-      rebac: {
+      rebac: rebacState.build({
         allowed: [
           rebacAllowedFactory.build({
             tuple,
             loading: true,
           }),
         ],
-      },
+      }),
     });
     expect(
       reducer(state, actions.addCheckRelation({ tuple, allowed: true })),
     ).toStrictEqual({
       ...state,
-      rebac: {
+      rebac: rebacState.build({
         allowed: [
           rebacAllowedFactory.build({
             allowed: true,
@@ -1114,21 +1116,21 @@ describe("reducers", () => {
             loaded: true,
           }),
         ],
-      },
+      }),
     });
   });
 
   it("addCheckRelationErrors", () => {
     const tuple = relationshipTupleFactory.build();
     const state = jujuStateFactory.build({
-      rebac: {
+      rebac: rebacState.build({
         allowed: [
           rebacAllowedFactory.build({
             tuple,
             loading: true,
           }),
         ],
-      },
+      }),
     });
     expect(
       reducer(
@@ -1137,7 +1139,7 @@ describe("reducers", () => {
       ),
     ).toStrictEqual({
       ...state,
-      rebac: {
+      rebac: rebacState.build({
         allowed: [
           rebacAllowedFactory.build({
             tuple,
@@ -1147,14 +1149,14 @@ describe("reducers", () => {
             loaded: false,
           }),
         ],
-      },
+      }),
     });
   });
 
   it("removeCheckRelation", () => {
     const tuple = relationshipTupleFactory.build();
     const state = jujuStateFactory.build({
-      rebac: {
+      rebac: rebacState.build({
         allowed: [
           rebacAllowedFactory.build({
             tuple,
@@ -1165,13 +1167,13 @@ describe("reducers", () => {
             }),
           }),
         ],
-      },
+      }),
     });
     expect(
       reducer(state, actions.removeCheckRelation({ tuple })),
     ).toStrictEqual({
       ...state,
-      rebac: {
+      rebac: rebacState.build({
         allowed: [
           rebacAllowedFactory.build({
             tuple: relationshipTupleFactory.build({
@@ -1179,7 +1181,169 @@ describe("reducers", () => {
             }),
           }),
         ],
-      },
+      }),
+    });
+  });
+
+  it("listRelationshipTuples", () => {
+    const tuple = relationshipTupleFactory.build();
+    const state = jujuStateFactory.build({
+      rebac: rebacState.build({ allowed: [] }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.listRelationshipTuples({
+          tuple,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      rebac: rebacState.build({
+        relationships: [
+          rebacRelationshipFactory.build({
+            tuple,
+            loading: true,
+          }),
+        ],
+      }),
+    });
+  });
+
+  it("listRelationshipTuples already exists", () => {
+    const tuple = relationshipTupleFactory.build();
+    const state = jujuStateFactory.build({
+      rebac: rebacState.build({
+        relationships: [
+          rebacRelationshipFactory.build({
+            tuple,
+            loaded: true,
+          }),
+        ],
+      }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.listRelationshipTuples({
+          tuple,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      rebac: rebacState.build({
+        relationships: [
+          rebacRelationshipFactory.build({
+            tuple,
+            loading: true,
+            loaded: false,
+          }),
+        ],
+      }),
+    });
+  });
+
+  it("addListRelationshipTuples", () => {
+    const tuple = relationshipTupleFactory.build();
+    const relationships = [
+      relationshipTupleFactory.build(),
+      relationshipTupleFactory.build(),
+    ];
+    const state = jujuStateFactory.build({
+      rebac: rebacState.build({
+        relationships: [
+          rebacRelationshipFactory.build({
+            tuple,
+            loading: true,
+            relationships,
+          }),
+        ],
+      }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.addListRelationshipTuples({ tuple, relationships }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      rebac: rebacState.build({
+        relationships: [
+          rebacRelationshipFactory.build({
+            tuple,
+            loading: false,
+            loaded: true,
+            relationships,
+          }),
+        ],
+      }),
+    });
+  });
+
+  it("addListRelationshipTuplesErrors", () => {
+    const tuple = relationshipTupleFactory.build();
+    const state = jujuStateFactory.build({
+      rebac: rebacState.build({
+        relationships: [
+          rebacRelationshipFactory.build({
+            tuple,
+            loading: true,
+          }),
+        ],
+      }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.addListRelationshipTuplesErrors({ tuple, errors: ["Oops!"] }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      rebac: rebacState.build({
+        relationships: [
+          rebacRelationshipFactory.build({
+            tuple,
+            relationships: null,
+            errors: ["Oops!"],
+            loading: false,
+            loaded: false,
+          }),
+        ],
+      }),
+    });
+  });
+
+  it("removeListRelationshipTuples", () => {
+    const tuple = relationshipTupleFactory.build();
+    const state = jujuStateFactory.build({
+      rebac: rebacState.build({
+        relationships: [
+          rebacRelationshipFactory.build({
+            tuple,
+          }),
+          rebacRelationshipFactory.build({
+            tuple: relationshipTupleFactory.build({
+              object: "model-1234",
+            }),
+          }),
+        ],
+      }),
+    });
+    expect(
+      reducer(state, actions.removeListRelationshipTuples({ tuple })),
+    ).toStrictEqual({
+      ...state,
+      rebac: rebacState.build({
+        relationships: [
+          rebacRelationshipFactory.build({
+            tuple: relationshipTupleFactory.build({
+              object: "model-1234",
+            }),
+          }),
+        ],
+      }),
     });
   });
 });

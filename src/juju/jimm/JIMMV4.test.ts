@@ -96,4 +96,25 @@ describe("JIMMV4", () => {
       expect.any(Function),
     );
   });
+
+  it("listRelationshipTuples", async () => {
+    const jimm = new JIMMV4(transport, connectionInfo);
+    const params = {
+      object: "user-eggman@external",
+      target_object: "group-administrators",
+    };
+    void jimm.listRelationshipTuples(params);
+    expect(transport.write).toHaveBeenCalledWith(
+      {
+        type: "JIMM",
+        request: "ListRelationshipTuples",
+        version: 4,
+        params: {
+          tuple: params,
+        },
+      },
+      expect.any(Function),
+      expect.any(Function),
+    );
+  });
 });

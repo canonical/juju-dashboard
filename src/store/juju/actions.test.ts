@@ -465,4 +465,52 @@ describe("actions", () => {
       payload: { tuple },
     });
   });
+
+  it("listRelationshipTuples", () => {
+    const tuple = relationshipTupleFactory.build();
+    expect(
+      actions.listRelationshipTuples({
+        tuple,
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/listRelationshipTuples",
+      payload: {
+        tuple,
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
+  it("addListRelationshipTuples", () => {
+    const tuple = relationshipTupleFactory.build();
+    const relationships = [
+      relationshipTupleFactory.build(),
+      relationshipTupleFactory.build(),
+    ];
+    expect(
+      actions.addListRelationshipTuples({ tuple, relationships }),
+    ).toStrictEqual({
+      type: "juju/addListRelationshipTuples",
+      payload: { tuple, relationships },
+    });
+  });
+
+  it("addListRelationshipTuplesErrors", () => {
+    const tuple = relationshipTupleFactory.build();
+    expect(
+      actions.addListRelationshipTuplesErrors({ tuple, errors: ["oops!"] }),
+    ).toStrictEqual({
+      type: "juju/addListRelationshipTuplesErrors",
+      payload: { tuple, errors: ["oops!"] },
+    });
+  });
+
+  it("removeListRelationshipTuples", () => {
+    const tuple = relationshipTupleFactory.build();
+    expect(actions.removeListRelationshipTuples({ tuple })).toStrictEqual({
+      type: "juju/removeListRelationshipTuples",
+      payload: { tuple },
+    });
+  });
 });

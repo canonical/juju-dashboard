@@ -13,13 +13,18 @@ import {
   controllerFeaturesStateFactory,
   authUserInfoFactory,
 } from "testing/factories/general";
-import { rebacAllowedFactory } from "testing/factories/juju/juju";
+import {
+  rebacAllowedFactory,
+  rebacRelationshipFactory,
+  relationshipTupleFactory,
+} from "testing/factories/juju/juju";
 import { ComponentProviders } from "testing/utils";
 
 import {
   useCheckPermissions,
   useIsJIMMAdmin,
   useAuditLogsPermitted,
+  useGetRelationships,
 } from "./permissions";
 
 const mockStore = configureStore<RootState, unknown>([]);
@@ -619,6 +624,310 @@ describe("useAuditLogsPermitted", () => {
       expect(dispatched).toEqual(
         expect.arrayContaining([adminAction, auditLogAction]),
       );
+    });
+  });
+});
+
+describe("useGetRelationships", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://example.com/api",
+        }),
+        controllerFeatures: controllerFeaturesStateFactory.build({
+          "wss://example.com/api": controllerFeaturesFactory.build({
+            rebac: true,
+          }),
+        }),
+      }),
+    });
+  });
+
+  it("fetches relationships", async () => {
+    const tuple = {
+      object: "user-eggman@external",
+      target_object: "group-admins",
+    };
+    const store = mockStore(state);
+    renderHook(() => useGetRelationships(tuple), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    const action = jujuActions.listRelationshipTuples({
+      tuple,
+      wsControllerURL: "wss://example.com/api",
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find(
+            (dispatch) =>
+              dispatch.type === jujuActions.listRelationshipTuples.type,
+          ),
+      ).toMatchObject(action);
+    });
+  });
+
+  it("returns the relationships", async () => {
+    const tuple = {
+      object: "user-eggman@external",
+      target_object: "group-admins",
+    };
+    const relationships = rebacRelationshipFactory.build({
+      loading: true,
+      loaded: true,
+      relationships: [
+        relationshipTupleFactory.build(),
+        relationshipTupleFactory.build(),
+      ],
+    });
+    // Manually set the tuple so it doesn't get merged with the defaults.
+    relationships.tuple = tuple;
+    state.juju.rebac.relationships = [relationships];
+    const store = mockStore(state);
+    const { result } = renderHook(() => useGetRelationships(tuple), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    expect(result.current).toMatchObject({
+      loading: true,
+      loaded: true,
+      relationships: relationships.relationships,
+    });
+  });
+
+  it("does not try and fetch the relationships if the tuple is not provided", async () => {
+    const store = mockStore(state);
+    renderHook(() => useGetRelationships(), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find(
+            (dispatch) =>
+              dispatch.type === jujuActions.listRelationshipTuples.type,
+          ),
+      ).toBeUndefined();
+    });
+  });
+
+  it("does not try and fetch the relationships if the tuple object has a new reference", async () => {
+    const tuple = {
+      object: "user-eggman@external",
+      target_object: "group-admins",
+    };
+    const store = mockStore(state);
+    const { rerender } = renderHook(() => useGetRelationships(tuple), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .filter(
+            (dispatch) =>
+              dispatch.type === jujuActions.listRelationshipTuples.type,
+          ),
+      ).toHaveLength(1);
+    });
+    rerender({ ...tuple });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .filter(
+            (dispatch) =>
+              dispatch.type === jujuActions.listRelationshipTuples.type,
+          ),
+      ).toHaveLength(1);
+    });
+  });
+
+  it("does not fetch the relationships that are already loading", async () => {
+    const tuple = {
+      object: "user-eggman@external",
+      target_object: "group-admins",
+    };
+    const relationships = rebacRelationshipFactory.build({
+      loading: true,
+    });
+    // Manually set the tuple so it doesn't get merged with the defaults.
+    relationships.tuple = tuple;
+    state.juju.rebac.relationships = [relationships];
+    const store = mockStore(state);
+    renderHook(() => useGetRelationships(tuple), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find(
+            (dispatch) =>
+              dispatch.type === jujuActions.listRelationshipTuples.type,
+          ),
+      ).toBeUndefined();
+    });
+  });
+
+  it("does not fetch the relationships that have already loaded", async () => {
+    const tuple = {
+      object: "user-eggman@external",
+      target_object: "group-admins",
+    };
+    const relationships = rebacRelationshipFactory.build({
+      loaded: true,
+    });
+    // Manually set the tuple so it doesn't get merged with the defaults.
+    relationships.tuple = tuple;
+    state.juju.rebac.relationships = [relationships];
+    const store = mockStore(state);
+    renderHook(() => useGetRelationships(tuple), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find(
+            (dispatch) =>
+              dispatch.type === jujuActions.listRelationshipTuples.type,
+          ),
+      ).toBeUndefined();
+    });
+  });
+
+  it("cleans up previous relationships if the tuple changes", async () => {
+    const tuple = {
+      object: "user-eggman@external",
+      target_object: "group-admins",
+    };
+    const relationships = rebacRelationshipFactory.build({
+      loaded: true,
+    });
+    // Manually set the tuple so it doesn't get merged with the defaults.
+    relationships.tuple = tuple;
+    state.juju.rebac.relationships = [relationships];
+    const store = mockStore(state);
+    const { rerender } = renderHook<
+      {
+        relationships?: RelationshipTuple[] | null;
+        loading: boolean;
+        loaded: boolean;
+      },
+      {
+        tupleObject: Partial<RelationshipTuple>;
+        cleanup: boolean;
+      }
+    >(
+      ({ tupleObject, cleanup } = { tupleObject: tuple, cleanup: true }) =>
+        useGetRelationships(tupleObject, cleanup),
+      {
+        wrapper: (props) => (
+          <ComponentProviders {...props} path="/" store={store} />
+        ),
+      },
+    );
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find(
+            (dispatch) =>
+              dispatch.type === jujuActions.listRelationshipTuples.type,
+          ),
+      ).toBeUndefined();
+    });
+    rerender({ tupleObject: { ...tuple, object: "newobject" }, cleanup: true });
+    const action = jujuActions.removeListRelationshipTuples({
+      tuple,
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find(
+            (dispatch) =>
+              dispatch.type === jujuActions.removeListRelationshipTuples.type,
+          ),
+      ).toMatchObject(action);
+    });
+  });
+
+  it("can clean up the relationships", async () => {
+    const tuple = {
+      object: "user-eggman@external",
+      target_object: "group-admins",
+    };
+    const relationships = rebacRelationshipFactory.build({
+      loaded: true,
+    });
+    // Manually set the tuple so it doesn't get merged with the defaults.
+    relationships.tuple = tuple;
+    state.juju.rebac.relationships = [relationships];
+    const store = mockStore(state);
+    const { unmount } = renderHook(() => useGetRelationships(tuple, true), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    const action = jujuActions.removeListRelationshipTuples({
+      tuple,
+    });
+    unmount();
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find(
+            (dispatch) =>
+              dispatch.type === jujuActions.removeListRelationshipTuples.type,
+          ),
+      ).toMatchObject(action);
+    });
+  });
+
+  it("does not fetch the relationships if rebac is not enabled", async () => {
+    const tuple = {
+      object: "user-eggman@external",
+      target_object: "group-admins",
+    };
+    state.general.controllerFeatures = controllerFeaturesStateFactory.build({
+      "wss://example.com/api": controllerFeaturesFactory.build({
+        rebac: false,
+      }),
+    });
+    const store = mockStore(state);
+    renderHook(() => useGetRelationships(tuple), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    await waitFor(() => {
+      expect(
+        store
+          .getActions()
+          .find(
+            (dispatch) =>
+              dispatch.type === jujuActions.listRelationshipTuples.type,
+          ),
+      ).toBeUndefined();
     });
   });
 });

@@ -38,6 +38,7 @@ vi.mock("juju/jimm/api", () => ({
   checkRelation: vi.fn(),
   crossModelQuery: vi.fn(),
   findAuditEvents: vi.fn(),
+  listRelationshipTuples: vi.fn(),
 }));
 
 describe("model poller", () => {
@@ -928,6 +929,114 @@ describe("model poller", () => {
       jujuActions.addCheckRelationErrors({
         tuple,
         errors: "Could not check permissions.",
+      }),
+    );
+  });
+
+  it("handles listing relationship tuples", async () => {
+    const tuple = relationshipTupleFactory.build();
+    const listRelationshipTuplesResponse = {
+      tuples: [
+        relationshipTupleFactory.build(),
+        relationshipTupleFactory.build(),
+      ],
+    };
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jimmModule, "listRelationshipTuples").mockImplementation(() =>
+      Promise.resolve(listRelationshipTuplesResponse),
+    );
+    const middleware = await runMiddleware();
+    const action = jujuActions.listRelationshipTuples({
+      wsControllerURL: "wss://example.com",
+      tuple,
+    });
+    await middleware(next)(action);
+    expect(jimmModule.listRelationshipTuples).toHaveBeenCalledWith(
+      expect.any(Object),
+      tuple,
+    );
+    expect(next).toHaveBeenCalledWith(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.addListRelationshipTuples({
+        tuple,
+        relationships: listRelationshipTuplesResponse.tuples,
+      }),
+    );
+  });
+
+  it("handles no controller when listing relationship tuples", async () => {
+    const tuple = relationshipTupleFactory.build();
+    const listRelationshipTuplesResponse = {
+      tuples: [],
+    };
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jimmModule, "listRelationshipTuples").mockImplementation(() =>
+      Promise.resolve(listRelationshipTuplesResponse),
+    );
+    const middleware = await runMiddleware();
+    const action = jujuActions.listRelationshipTuples({
+      wsControllerURL: "nothing",
+      tuple,
+    });
+    await middleware(next)(action);
+    expect(jimmModule.listRelationshipTuples).not.toHaveBeenCalled();
+  });
+
+  it("handles errors from response when listing relationship tuples", async () => {
+    const tuple = relationshipTupleFactory.build();
+    const listRelationshipTuplesResponse = {
+      error: ["target not found"],
+    };
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jimmModule, "listRelationshipTuples").mockImplementation(() =>
+      Promise.resolve(listRelationshipTuplesResponse),
+    );
+    const middleware = await runMiddleware();
+    const action = jujuActions.listRelationshipTuples({
+      wsControllerURL: "wss://example.com",
+      tuple,
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.addListRelationshipTuplesErrors({
+        tuple,
+        errors: listRelationshipTuplesResponse.error,
+      }),
+    );
+  });
+
+  it("handles non-standard errors when listing relationship tuples", async () => {
+    const tuple = relationshipTupleFactory.build();
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jimmModule, "listRelationshipTuples")
+      // eslint-disable-next-line prefer-promise-reject-errors
+      .mockImplementation(() => Promise.reject("Uh oh!"));
+    const middleware = await runMiddleware();
+    const action = jujuActions.listRelationshipTuples({
+      wsControllerURL: "wss://example.com",
+      tuple,
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.addListRelationshipTuplesErrors({
+        tuple,
+        errors: ["Could not get relationships."],
       }),
     );
   });
