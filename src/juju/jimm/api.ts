@@ -62,3 +62,13 @@ export const checkRelation = async (
   }
   return await conn.facades.jimM.checkRelation(tuple);
 };
+
+export const listRelationshipTuples = async (
+  conn: ConnectionWithFacades,
+  tuple: Partial<RelationshipTuple>,
+) => {
+  if (!conn.facades.jimM) {
+    throw new Error(Label.NO_JIMM);
+  }
+  return await conn.facades.jimM.listRelationshipTuples(tuple);
+};

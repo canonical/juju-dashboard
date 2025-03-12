@@ -1100,3 +1100,41 @@ export const hasReBACPermission = createSelector(
     return permission?.allowed ?? false;
   },
 );
+
+export const getReBACRelationshipsState = createSelector(
+  [slice],
+  (sliceState) => sliceState.rebac.relationships,
+);
+
+export const getReBACRelationships = createSelector(
+  [
+    getReBACRelationshipsState,
+    (_state, tuple?: Partial<RelationshipTuple> | null) => tuple,
+  ],
+  (relationships, tuple) =>
+    relationships.find((relation) => fastDeepEqual(relation.tuple, tuple)),
+);
+
+export const getReBACRelationshipsRelations = createSelector(
+  [
+    (state, tuple?: Partial<RelationshipTuple> | null) =>
+      getReBACRelationships(state, tuple),
+  ],
+  (permission) => permission?.relationships,
+);
+
+export const getReBACRelationshipsLoading = createSelector(
+  [
+    (state, tuple?: Partial<RelationshipTuple> | null) =>
+      getReBACRelationships(state, tuple),
+  ],
+  (permission) => permission?.loading ?? false,
+);
+
+export const getReBACRelationshipsLoaded = createSelector(
+  [
+    (state, tuple?: Partial<RelationshipTuple> | null) =>
+      getReBACRelationships(state, tuple),
+  ],
+  (permission) => permission?.loaded ?? false,
+);

@@ -33,6 +33,9 @@ import {
   modelFeaturesStateFactory,
   modelFeaturesFactory,
   rebacAllowedFactory,
+  rebacState,
+  relationshipTupleFactory,
+  rebacRelationshipFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -134,6 +137,55 @@ describe("Model", () => {
   it("renders the info panel data", () => {
     renderComponent(<Model />, { state, url, path });
     expect(screen.getByTestId(InfoPanelTestId.INFO_PANEL)).toBeInTheDocument();
+  });
+
+  it("displays model access for Juju controllers", () => {
+    if (state.general.config) {
+      state.general.config.isJuju = true;
+    }
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
+          users: [
+            modelUserInfoFactory.build({
+              user: "eggman@external",
+              access: "read",
+            }),
+          ],
+        }),
+      }),
+    };
+    renderComponent(<Model />, { state, url, path });
+    expect(screen.getByLabelText("access")).toHaveTextContent("read");
+  });
+
+  it("displays model access for JIMM controllers", () => {
+    if (state.general.config) {
+      state.general.config.isJuju = false;
+    }
+    const relationship = rebacRelationshipFactory.build({
+      loaded: true,
+      relationships: [
+        relationshipTupleFactory.build({
+          object: "user-eggman@external",
+          relation: JIMMRelation.WRITER,
+          target_object: "model-abc123",
+        }),
+      ],
+    });
+    // Have to manually override the tuple so that it doesn't have a 'relation'
+    // attribute. This is required otherwise the factory will merge it with the
+    // defaults.
+    relationship.tuple = {
+      object: "user-eggman@external",
+      target_object: "model-abc123",
+    };
+    state.juju.rebac = rebacState.build({
+      relationships: [relationship],
+    });
+    renderComponent(<Model />, { state, url, path });
+    expect(screen.getByTestId(InfoPanelTestId.INFO_PANEL)).toBeInTheDocument();
+    expect(screen.getByLabelText("access")).toHaveTextContent("writer");
   });
 
   it("renders the main table", () => {
