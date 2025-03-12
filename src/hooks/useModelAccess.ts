@@ -48,7 +48,7 @@ const useModelAccess = (modelUUID?: string | null, cleanup?: boolean) => {
   if (isJuju) {
     return jujuAccess;
   }
-  return relationships?.length ? getHighestAccess(relationships) : null;
+  return getHighestAccess(relationships ?? []);
 };
 
 export default useModelAccess;
