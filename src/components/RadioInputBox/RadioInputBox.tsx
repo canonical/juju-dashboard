@@ -20,67 +20,64 @@ export default function RadioInputBox({
   const inputBoxRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 20, 40 are magic numbers that align nicely with the heights.
-  const initialHeight = 40;
-  const paddingNumber = 20;
-
-  useEffect(() => {
-    if (inputBoxRef.current !== null) {
-      // Due to the 'closed' hook animation running on initial load we cannot
-      // set the initial height in the css but have to do it on the first load.
-      inputBoxRef.current.style.height = initialHeight + "px";
-    }
-  }, [inputBoxRef]);
+  // Used to track whether this radio box has been opened before. See its usage for more
+  // information.
+  const hasBeenOpened = useRef(false);
 
   useEffect(() => {
     setOpened(selectedInput === name);
   }, [selectedInput, name]);
 
+  // Control the open/close animation based on `opened`. This hook will trigger an animation
+  // between the collapsed and maximum height. Since it's not possible to transition to/from
+  // `initial` height (where the height is set by the content), we have to capture the content's
+  // height and manually set it from JS.
+  //
+  // The 'base' height is controlled in CSS via the `:not([aria-expanded="true"])` selector,
+  // enforcing the collapsed height without any JS (prevents the flash). This also means that once
+  // the animation is complete (and therefore no longer enforcing the height), the CSS will still
+  // be controlling the actual element height.
   useEffect(() => {
     const wrapper = inputBoxRef.current;
     const container = containerRef.current;
 
     if (wrapper === null || container === null) return;
 
-    let startHeight = 0;
-    let endHeight = 0;
-    let duration = 0;
+    if (!hasBeenOpened.current) {
+      // If this radio box hasn't been opened, and isn't about to be opened, then don't bother
+      // animating anything. This ensures that the close animation doesn't play when the first
+      // component is first mounted.
+      if (!opened) {
+        return;
+      }
 
-    if (opened) {
-      startHeight = wrapper.offsetHeight;
-      // To be used when we're closing so we know what the original value was.
-      endHeight = container.offsetHeight + paddingNumber;
-      duration = endHeight;
-      // Set the height of the wrapper element to the end height to
-      // override the height set in css for the collapsed size.
-      wrapper.style.height = endHeight + "px";
-    } else if (wrapper.offsetHeight !== initialHeight) {
-      // Do not animate if the wrapper height is already in the closed state
-      // and this hook runs for the closed state again.
-      endHeight = initialHeight;
-      startHeight = container.offsetHeight + paddingNumber;
-      duration = startHeight;
+      // An open attempt has been made, indicate that this has happened.
+      hasBeenOpened.current = true;
     }
-    const animation = wrapper.animate(
+
+    // Default animation points start collapsed, and expand to content height.
+    const points = [
+      // Collapsed height.
+      "var(--initial-height)",
+      // Maximum content height (inner content + vertical spacing).
+      `calc(${container.offsetHeight}px + var(--v-spacing))`,
+    ];
+    if (!opened) {
+      points.reverse();
+    }
+
+    wrapper.animate(
       {
-        height: [startHeight + "px", endHeight + "px"],
+        height: points,
       },
       {
-        // Set the duration to be the number of pixels that it has to animate
-        // so that it's a consistent animation regardless of the height.
-        duration,
+        // Corresponds with the 'fast' animation duration in Vanilla:
+        // https://vanillaframework.io/docs/settings/animation-settings#duration
+        duration: 165,
         easing: "ease-out",
       },
     );
-
-    animation.onfinish = () => {
-      if (opened === false) {
-        wrapper.style.height = initialHeight + "px";
-      } else {
-        wrapper.style.height = "";
-      }
-    };
-  }, [opened, initialHeight]);
+  }, [opened]);
 
   const handleSelect = () => {
     onSelect(name);
