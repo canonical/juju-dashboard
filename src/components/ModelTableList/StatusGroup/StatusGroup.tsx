@@ -1,6 +1,5 @@
 import { MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import { useSelector } from "react-redux";
 
 import ModelDetailsLink from "components/ModelDetailsLink";
 import TruncatedTooltip from "components/TruncatedTooltip";
@@ -12,6 +11,7 @@ import {
 import type { Controllers, ModelData } from "store/juju/types";
 import type { Filters, Status } from "store/juju/utils/models";
 import { canAdministerModel, extractOwnerName } from "store/juju/utils/models";
+import { useAppSelector } from "store/store";
 
 import AccessButton from "../AccessButton/AccessButton";
 import CloudCell from "../CloudCell/CloudCell";
@@ -161,11 +161,11 @@ function generateModelTableDataByStatus(
 }
 
 export default function StatusGroup({ filters }: { filters: Filters }) {
-  const groupedAndFilteredData = useSelector(
-    getGroupedByStatusAndFilteredModelData(filters),
+  const groupedAndFilteredData = useAppSelector((state) =>
+    getGroupedByStatusAndFilteredModelData(state, filters),
   );
-  const controllers = useSelector(getControllerData);
-  const activeUsers = useSelector(getActiveUsers);
+  const controllers = useAppSelector(getControllerData);
+  const activeUsers = useAppSelector(getActiveUsers);
 
   const { blockedRows, alertRows, runningRows } =
     generateModelTableDataByStatus(

@@ -1,6 +1,5 @@
 import { MainTable } from "@canonical/react-components";
 import { useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 import AccessButton from "components/AccessButton";
@@ -80,11 +79,19 @@ const Model = () => {
     activeView: "apps",
   });
 
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const applications = useSelector(getModelApplications(modelUUID));
-  const relations = useSelector(getModelRelations(modelUUID));
-  const machines = useSelector(getModelMachines(modelUUID));
-  const units = useSelector(getModelUnits(modelUUID));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
+  const applications = useAppSelector((state) =>
+    getModelApplications(state, modelUUID),
+  );
+  const relations = useAppSelector((state) =>
+    getModelRelations(state, modelUUID),
+  );
+  const machines = useAppSelector((state) =>
+    getModelMachines(state, modelUUID),
+  );
+  const units = useAppSelector((state) => getModelUnits(state, modelUUID));
   const canListSecrets = useAppSelector((state) =>
     getCanListSecrets(state, modelUUID),
   );
@@ -115,7 +122,9 @@ const Model = () => {
     [modelStatusData],
   );
 
-  const modelInfoData = useSelector(getModelInfo(modelUUID));
+  const modelInfoData = useAppSelector((state) =>
+    getModelInfo(state, modelUUID),
+  );
   const credential = useAppSelector((state) =>
     getModelCredential(state, modelUUID),
   );

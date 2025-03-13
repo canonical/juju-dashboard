@@ -1,6 +1,6 @@
 import { Button } from "@canonical/react-components";
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
@@ -14,7 +14,7 @@ import {
   getModelUUIDFromList,
   getSelectedApplications,
 } from "store/juju/selectors";
-import { useAppStore } from "store/store";
+import { useAppSelector, useAppStore } from "store/store";
 import { logger } from "utils/logger";
 
 import { Label } from "./types";
@@ -35,11 +35,13 @@ const CharmsAndActionsPanel = () => {
   const [, , handleRemovePanelQueryParams] =
     usePanelQueryParams<CharmsAndActionsQueryParams>(defaultQueryParams);
 
-  const selectedApplications = useSelector(getSelectedApplications());
+  const selectedApplications = useAppSelector(getSelectedApplications);
   const getState = useAppStore().getState;
   const dispatch = useDispatch();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const [inlineErrors, setInlineErrors, hasInlineError] = useInlineErrors({
     [InlineErrors.GET_URL]: (error) => (
       <>

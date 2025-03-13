@@ -5,7 +5,6 @@ import {
 } from "@canonical/react-components";
 import { useFormikContext } from "formik";
 import type { JSX } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
@@ -35,7 +34,9 @@ const Fields = ({
   showConfirm,
 }: Props): JSX.Element => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const { values } = useFormikContext<FormFields>();
   const secret = useAppSelector((state) =>
     getSecretByURI(state, modelUUID, secretURI),

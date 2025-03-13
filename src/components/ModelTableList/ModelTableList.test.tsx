@@ -76,8 +76,10 @@ describe("ModelTableList", () => {
     tables.forEach((table) => {
       renderComponent(
         <ModelTableList groupedBy={table.groupedBy} filters={filters} />,
+        { state },
       );
       expect(getGroupedByStatusAndFilteredModelData).toHaveBeenCalledWith(
+        state,
         filters,
       );
     });

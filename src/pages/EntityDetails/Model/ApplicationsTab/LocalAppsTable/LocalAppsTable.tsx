@@ -3,7 +3,6 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import classnames from "classnames";
 import type { MouseEvent } from "react";
 import { useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
@@ -16,6 +15,7 @@ import {
   getModelUUIDFromList,
   getSelectedApplications,
 } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 import { generateLocalApplicationTableHeaders } from "tables/tableHeaders";
 import { generateLocalApplicationRows } from "tables/tableRows";
 
@@ -34,11 +34,13 @@ type Props = {
 const LocalAppsTable = ({ applications }: Props) => {
   const sendAnalytics = useAnalytics();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const applicationStatuses = useSelector(
-    getAllModelApplicationStatus(modelUUID),
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
   );
-  const selectedApplications = useSelector(getSelectedApplications());
+  const applicationStatuses = useAppSelector((state) =>
+    getAllModelApplicationStatus(state, modelUUID),
+  );
+  const selectedApplications = useAppSelector(getSelectedApplications);
   const canConfigureModel = useCanConfigureModel();
   const [queryParams, setQueryParams] = useQueryParams<{
     entity: string | null;

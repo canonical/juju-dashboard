@@ -1,11 +1,10 @@
-import { useSelector } from "react-redux";
-
 import ActionBar from "components/ActionBar";
 import AuditLogsTableActions from "components/AuditLogsTable/AuditLogsTableActions";
 import SegmentedControl from "components/SegmentedControl";
 import { useQueryParams } from "hooks/useQueryParams";
 import { useAuditLogsPermitted } from "juju/api-hooks/permissions";
 import { getIsJuju } from "store/general/selectors";
+import { useAppSelector } from "store/store";
 
 import ActionLogs from "./ActionLogs";
 import AuditLogs from "./AuditLogs";
@@ -17,7 +16,7 @@ const BUTTON_DETAILS = [
 ];
 
 const Logs = () => {
-  const isJuju = useSelector(getIsJuju);
+  const isJuju = useAppSelector(getIsJuju);
   const { permitted: auditLogsAllowed } = useAuditLogsPermitted();
   const [{ tableView }, setQueryParams] = useQueryParams<{
     activeView: string | null;

@@ -42,7 +42,9 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const [saving, setSaving] = useState<boolean>(false);
   const formId = useId();
-  const modelUUID = useAppSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const secretsErrors = useAppSelector((state) =>
     getSecretsErrors(state, modelUUID),
   );

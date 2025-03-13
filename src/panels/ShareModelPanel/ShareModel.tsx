@@ -4,7 +4,6 @@ import cloneDeep from "clone-deep";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import reactHotToast from "react-hot-toast";
-import { useSelector } from "react-redux";
 
 import Panel from "components/Panel";
 import ShareCard from "components/ShareCard";
@@ -72,10 +71,9 @@ export default function ShareModel() {
   const modelUUID = modelStatusData?.info?.uuid;
   const modelName = modelStatusData?.info?.name;
 
-  const modelControllerDataByUUID =
-    getModelControllerDataByUUID(controllerUUID);
-
-  const modelControllerData = useSelector(modelControllerDataByUUID);
+  const modelControllerData = useAppSelector((state) =>
+    getModelControllerDataByUUID(state, controllerUUID),
+  );
   const allUserDomains = useAppSelector(getUserDomains);
   const modelUserDomains = useAppSelector((state) =>
     getUserDomainsInModel(state, modelUUID),

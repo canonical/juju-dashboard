@@ -1,6 +1,6 @@
 import type { AllWatcherId } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Route, Routes, useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
@@ -13,7 +13,7 @@ import Model from "pages/EntityDetails/Model";
 import Unit from "pages/EntityDetails/Unit";
 import { actions as jujuActions } from "store/juju";
 import { getModelUUIDFromList } from "store/juju/selectors";
-import { useAppStore } from "store/store";
+import { useAppSelector, useAppStore } from "store/store";
 import urls from "urls";
 import { getMajorMinorVersion, toErrorString } from "utils";
 import { logger } from "utils/logger";
@@ -24,7 +24,9 @@ export default function ModelDetails() {
   const appState = useAppStore().getState();
   const dispatch = useDispatch();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const [modelWatcherError, setModelWatcherError] = useState<string | null>(
     null,
   );

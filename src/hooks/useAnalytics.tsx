@@ -1,5 +1,3 @@
-import { useSelector } from "react-redux";
-
 import {
   getAnalyticsEnabled,
   getAppVersion,
@@ -12,8 +10,8 @@ import analytics, { type AnalyticsMessage } from "utils/analytics";
 
 export default function useAnalytics() {
   const analyticsEnabled = useAppSelector(getAnalyticsEnabled);
-  const isJuju = useSelector(getIsJuju);
-  const appVersion = useSelector(getAppVersion);
+  const isJuju = useAppSelector(getIsJuju);
+  const appVersion = useAppSelector(getAppVersion);
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const controllerVersion = useAppSelector((state) =>
     getControllerConnection(state, wsControllerURL),
