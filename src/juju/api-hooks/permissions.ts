@@ -1,4 +1,5 @@
 import { usePrevious } from "@canonical/react-components";
+import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import fastDeepEqual from "fast-deep-equal/es6";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
@@ -16,22 +17,22 @@ import {
   getReBACPermissionLoaded,
   getReBACPermissionLoading,
   hasReBACPermission,
+  getReBACRelationshipsRelations,
+  getReBACRelationshipsLoaded,
+  getReBACRelationshipsLoading,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
-export const useCheckPermissions = (
-  tuple?: RelationshipTuple | null,
+export const useReBAC = <T extends Partial<RelationshipTuple>>(
+  fetchAction: ActionCreatorWithPayload<{ tuple: T; wsControllerURL: string }>,
+  cleanupAction: ActionCreatorWithPayload<{ tuple: T }>,
+  loading: boolean,
+  loaded: boolean,
+  tuple?: T | null,
   cleanup?: boolean,
 ) => {
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
-  const permitted = useAppSelector((state) => hasReBACPermission(state, tuple));
-  const loaded = useAppSelector((state) =>
-    getReBACPermissionLoaded(state, tuple),
-  );
-  const loading = useAppSelector((state) =>
-    getReBACPermissionLoading(state, tuple),
-  );
   const rebacEnabled = useAppSelector(isReBACEnabled);
   const previousTuple = usePrevious(tuple, false);
   const tupleChanged = !fastDeepEqual(tuple, previousTuple);
@@ -49,12 +50,7 @@ export const useCheckPermissions = (
       // Only check the relation if the controller supports rebac.
       rebacEnabled
     ) {
-      dispatch(
-        jujuActions.checkRelation({
-          tuple,
-          wsControllerURL,
-        }),
-      );
+      dispatch(fetchAction({ tuple, wsControllerURL }));
     }
   }, [
     dispatch,
@@ -64,36 +60,54 @@ export const useCheckPermissions = (
     tuple,
     wsControllerURL,
     tupleChanged,
+    fetchAction,
   ]);
 
+  // Clean up the store if the tuple changes.
   useEffect(() => {
     if (cleanup && tupleChanged && previousTuple) {
-      dispatch(
-        jujuActions.removeCheckRelation({
-          tuple: previousTuple,
-        }),
-      );
+      dispatch(cleanupAction({ tuple: previousTuple }));
     }
-  }, [cleanup, dispatch, previousTuple, tupleChanged]);
+  }, [cleanup, cleanupAction, dispatch, previousTuple, tupleChanged]);
 
   const cleanupTuple = useRef<(() => void) | null>(null);
 
+  // Store the cleanup action in a ref, this is required otherwise the cleanup
+  // action will get called whenever any of the args change instead of when the
+  // component is unmounted.
   useEffect(() => {
     if (cleanup && tupleChanged && tuple) {
-      cleanupTuple.current = () =>
-        dispatch(
-          jujuActions.removeCheckRelation({
-            tuple,
-          }),
-        );
+      cleanupTuple.current = () => dispatch(cleanupAction({ tuple }));
     }
-  }, [cleanup, dispatch, tuple, tupleChanged]);
+  }, [cleanup, cleanupAction, dispatch, tuple, tupleChanged]);
 
+  // Clean up the store when the component that is using the hook gets unmounted.
   useEffect(
     () => () => {
       cleanupTuple.current?.();
     },
     [],
+  );
+};
+
+export const useCheckPermissions = (
+  tuple?: RelationshipTuple | null,
+  cleanup?: boolean,
+) => {
+  const permitted = useAppSelector((state) => hasReBACPermission(state, tuple));
+  const loaded = useAppSelector((state) =>
+    getReBACPermissionLoaded(state, tuple),
+  );
+  const loading = useAppSelector((state) =>
+    getReBACPermissionLoading(state, tuple),
+  );
+  useReBAC(
+    jujuActions.checkRelation,
+    jujuActions.removeCheckRelation,
+    loading,
+    loaded,
+    tuple,
+    cleanup,
   );
 
   return {
@@ -138,5 +152,34 @@ export const useAuditLogsPermitted = (cleanup?: boolean) => {
       auditLogsEnabled &&
       auditLogPermissions.permitted &&
       jimmAdminPermissions.permitted,
+  };
+};
+
+export const useGetRelationships = (
+  tuple?: Partial<RelationshipTuple> | null,
+  cleanup?: boolean,
+) => {
+  const relationships = useAppSelector((state) =>
+    getReBACRelationshipsRelations(state, tuple),
+  );
+  const loaded = useAppSelector((state) =>
+    getReBACRelationshipsLoaded(state, tuple),
+  );
+  const loading = useAppSelector((state) =>
+    getReBACRelationshipsLoading(state, tuple),
+  );
+  useReBAC(
+    jujuActions.listRelationshipTuples,
+    jujuActions.removeListRelationshipTuples,
+    loading,
+    loaded,
+    tuple,
+    cleanup,
+  );
+
+  return {
+    relationships: loaded && !relationships?.length ? null : relationships,
+    loading,
+    loaded,
   };
 };

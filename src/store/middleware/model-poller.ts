@@ -10,7 +10,12 @@ import {
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
-import { checkRelation, crossModelQuery, findAuditEvents } from "juju/jimm/api";
+import {
+  checkRelation,
+  crossModelQuery,
+  findAuditEvents,
+  listRelationshipTuples,
+} from "juju/jimm/api";
 import { pollWhoamiStart } from "juju/jimm/listeners";
 import { whoami } from "juju/jimm/thunks";
 import type { ConnectionWithFacades } from "juju/types";
@@ -410,6 +415,50 @@ export const modelPollerMiddleware: Middleware<
             : "Could not check permissions.";
         reduxStore.dispatch(
           jujuActions.addCheckRelationErrors({ tuple, errors: errorMessage }),
+        );
+      }
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
+    } else if (
+      isSpecificAction<ReturnType<typeof jujuActions.listRelationshipTuples>>(
+        action,
+        jujuActions.listRelationshipTuples.type,
+      )
+    ) {
+      // Intercept listRelationshipTuples actions and fetch and store
+      // the tuples via the controller connection.
+      const { wsControllerURL, tuple } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+      try {
+        const response = await listRelationshipTuples(conn, tuple);
+        reduxStore.dispatch(
+          "error" in response && response.error
+            ? jujuActions.addListRelationshipTuplesErrors({
+                tuple,
+                errors: response.error,
+              })
+            : jujuActions.addListRelationshipTuples({
+                tuple,
+                relationships: response.tuples,
+              }),
+        );
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Could not get relationships.";
+        reduxStore.dispatch(
+          jujuActions.addListRelationshipTuplesErrors({
+            tuple,
+            errors: [errorMessage],
+          }),
         );
       }
       // The action has already been passed to the next middleware

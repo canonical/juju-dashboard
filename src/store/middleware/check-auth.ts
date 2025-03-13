@@ -96,6 +96,10 @@ export const checkAuthMiddleware: Middleware<
       jujuActions.clearModelData.type,
       jujuActions.clearCrossModelQuery.type,
       jujuActions.updateSelectedApplications.type,
+      jujuActions.addListRelationshipTuplesErrors.type,
+      jujuActions.addListRelationshipTuples.type,
+      jujuActions.listRelationshipTuples.type,
+      jujuActions.removeListRelationshipTuples.type,
     ];
 
     const thunkAllowlist = [

@@ -49,6 +49,14 @@ export type CheckRelationResponse =
     }
   | { error: string };
 
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/197f97f212fa9b8eb9977dd33650b87d10492ca5/pkg/api/params/params.go#L372
+export type ListRelationshipTuplesResponse = {
+  tuples?: RelationshipTuple[];
+  error?: string[];
+  continuation_token?: string;
+};
+
 class JIMMV4 extends JIMMV3 {
   static NAME: string;
   static VERSION: number;
@@ -85,6 +93,20 @@ class JIMMV4 extends JIMMV3 {
         request: "CrossModelQuery",
         version: 4,
         params: { type: "jq", query }, // API currently only supports "jq" type.
+      };
+      this._transport.write(req, resolve, reject);
+    });
+  }
+
+  listRelationshipTuples(
+    tuple: Partial<RelationshipTuple>,
+  ): Promise<ListRelationshipTuplesResponse> {
+    return new Promise((resolve, reject) => {
+      const req = {
+        type: "JIMM",
+        request: "ListRelationshipTuples",
+        version: 4,
+        params: { tuple },
       };
       this._transport.write(req, resolve, reject);
     });

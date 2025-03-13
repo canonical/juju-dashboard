@@ -30,6 +30,9 @@ import {
   rebacAllowedFactory,
   relationshipTupleFactory,
   secretRevisionFactory,
+  modelSecretsContentFactory,
+  rebacState,
+  rebacRelationshipFactory,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -41,8 +44,6 @@ import {
   workloadStatusFactory,
   modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
-
-import { modelSecretsContentFactory } from "../../testing/factories/juju/juju";
 
 import {
   getActiveUser,
@@ -122,6 +123,11 @@ import {
   getSecretLatestRevision,
   getReBACPermissionLoading,
   getReBACPermissionLoaded,
+  getReBACRelationshipsState,
+  getReBACRelationships,
+  getReBACRelationshipsRelations,
+  getReBACRelationshipsLoading,
+  getReBACRelationshipsLoaded,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -822,6 +828,202 @@ describe("selectors", () => {
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             rebac: { allowed: [] },
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(false);
+  });
+
+  it("getReBACRelationshipsState", () => {
+    const relationships = [rebacRelationshipFactory.build()];
+    expect(
+      getReBACRelationshipsState(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebac: rebacState.build({
+              relationships,
+            }),
+          }),
+        }),
+      ),
+    ).toStrictEqual(relationships);
+  });
+
+  it("getReBACRelationships exists", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    const relationship = rebacRelationshipFactory.build({
+      tuple,
+    });
+    expect(
+      getReBACRelationships(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebac: rebacState.build({
+              relationships: [relationship],
+            }),
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(relationship);
+  });
+
+  it("getReBACRelationships doesn't exist", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      getReBACRelationships(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebac: rebacState.build({
+              relationships: [],
+            }),
+          }),
+        }),
+        tuple,
+      ),
+    ).toBeUndefined();
+  });
+
+  it("getReBACRelationshipsRelations exists", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    const relationships = [
+      relationshipTupleFactory.build(),
+      relationshipTupleFactory.build(),
+      relationshipTupleFactory.build(),
+    ];
+    expect(
+      getReBACRelationshipsRelations(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebac: rebacState.build({
+              relationships: [
+                rebacRelationshipFactory.build({
+                  tuple,
+                  relationships,
+                }),
+              ],
+            }),
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(relationships);
+  });
+
+  it("getReBACRelationshipsRelations doesn't exist", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      getReBACRelationshipsRelations(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebac: rebacState.build({
+              relationships: [],
+            }),
+          }),
+        }),
+        tuple,
+      ),
+    ).toBeUndefined();
+  });
+
+  it("getReBACRelationshipsLoading exists", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      getReBACRelationshipsLoading(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebac: rebacState.build({
+              relationships: [
+                rebacRelationshipFactory.build({
+                  tuple,
+                  loading: true,
+                }),
+              ],
+            }),
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("getReBACRelationshipsLoading doesn't exist", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      getReBACRelationshipsLoading(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebac: rebacState.build({
+              relationships: [],
+            }),
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(false);
+  });
+
+  it("getReBACRelationshipsLoaded exists", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      getReBACRelationshipsLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebac: rebacState.build({
+              relationships: [
+                rebacRelationshipFactory.build({
+                  tuple,
+                  loaded: true,
+                }),
+              ],
+            }),
+          }),
+        }),
+        tuple,
+      ),
+    ).toStrictEqual(true);
+  });
+
+  it("getReBACRelationshipsLoaded doesn't exist", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      getReBACRelationshipsLoaded(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebac: rebacState.build({
+              relationships: [],
+            }),
           }),
         }),
         tuple,
