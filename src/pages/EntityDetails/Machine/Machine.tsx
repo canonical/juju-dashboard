@@ -1,6 +1,5 @@
 import { MainTable } from "@canonical/react-components";
 import { useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 import EntityInfo from "components/EntityInfo";
@@ -14,6 +13,7 @@ import {
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 import {
   generateLocalApplicationTableHeaders,
   unitTableHeaders,
@@ -25,14 +25,20 @@ import {
 
 export default function Machine() {
   const { machineId, modelName, userName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const applications = useSelector(getModelApplications(modelUUID));
-  const units = useSelector(getModelUnits(modelUUID));
-  const machines = useSelector(getModelMachines(modelUUID));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
+  const applications = useAppSelector((state) =>
+    getModelApplications(state, modelUUID),
+  );
+  const units = useAppSelector((state) => getModelUnits(state, modelUUID));
+  const machines = useAppSelector((state) =>
+    getModelMachines(state, modelUUID),
+  );
   const machine = machineId ? machines?.[machineId] : null;
 
-  const applicationStatuses = useSelector(
-    getAllModelApplicationStatus(modelUUID),
+  const applicationStatuses = useAppSelector((state) =>
+    getAllModelApplicationStatus(state, modelUUID),
   );
 
   const filteredApplicationList = useMemo(() => {

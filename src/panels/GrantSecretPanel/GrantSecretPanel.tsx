@@ -7,7 +7,6 @@ import {
 } from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import { useId, useState, useRef } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 import Panel from "components/Panel";
@@ -48,8 +47,12 @@ const handleErrors = (response: ErrorResults) => {
 
 const GrantSecretPanel = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const applications = useSelector(getModelApplications(modelUUID));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
+  const applications = useAppSelector((state) =>
+    getModelApplications(state, modelUUID),
+  );
   const scrollArea = useRef<HTMLDivElement>(null);
   const formId = useId();
   const groupId = useId();

@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import reactHotToast from "react-hot-toast";
-import { useSelector } from "react-redux";
 import { Outlet } from "react-router";
 
 import FadeUpIn from "animations/FadeUpIn";
@@ -27,8 +26,8 @@ import { ErrorResponse, Label, TestId } from "./types";
 
 export default function LogIn() {
   const viewedAuthRequests = useRef<string[]>([]);
-  const config = useSelector(getConfig);
-  const isJuju = useSelector(getIsJuju);
+  const config = useAppSelector(getConfig);
+  const isJuju = useAppSelector(getIsJuju);
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const userIsLoggedIn = useAppSelector((state) =>
     isLoggedIn(state, wsControllerURL),

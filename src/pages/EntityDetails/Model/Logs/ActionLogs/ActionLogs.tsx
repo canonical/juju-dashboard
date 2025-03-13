@@ -11,7 +11,6 @@ import {
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router";
 import type { Row } from "react-table";
 
@@ -26,7 +25,7 @@ import { useQueryActionsList, useQueryOperationsList } from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
-import type { RootState } from "store/store";
+import { useAppSelector } from "store/store";
 import urls from "urls";
 import { logger } from "utils/logger";
 
@@ -162,14 +161,10 @@ export default function ActionLogs() {
   }>({});
   const queryOperationsList = useQueryOperationsList(userName, modelName);
   const queryActionsList = useQueryActionsList(userName, modelName);
-  const getModelUUIDMemo = useMemo(
-    () => (modelName ? getModelUUID(modelName) : null),
-    [modelName],
+  const modelUUID = useAppSelector((state) => getModelUUID(state, modelName));
+  const modelStatusData = useAppSelector((state) =>
+    getModelStatus(state, modelUUID),
   );
-  const modelUUID = useSelector((state: RootState) =>
-    getModelUUIDMemo?.(state),
-  );
-  const modelStatusData = useSelector(getModelStatus(modelUUID));
 
   const applicationList = Object.keys(modelStatusData?.applications ?? {});
 

@@ -1,7 +1,6 @@
 import type { TabsProps } from "@canonical/react-components";
 import { Tabs } from "@canonical/react-components";
 import type { MouseEvent } from "react";
-import { useSelector } from "react-redux";
 import type { LinkProps } from "react-router";
 import { useParams, Link } from "react-router";
 
@@ -21,7 +20,9 @@ import { Label } from "./types";
 
 const ModelTabs = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const isK8s = useAppSelector((state) => isKubernetesModel(state, modelUUID));
   const canListSecrets = useAppSelector((state) =>
     getCanListSecrets(state, modelUUID),

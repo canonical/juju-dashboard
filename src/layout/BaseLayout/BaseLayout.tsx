@@ -1,7 +1,6 @@
 import { ApplicationLayout, Panel } from "@canonical/react-components";
 import classNames from "classnames";
 import { Toaster } from "react-hot-toast";
-import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router";
 
 import FadeIn from "animations/FadeIn";
@@ -14,6 +13,7 @@ import { DARK_THEME } from "consts";
 import useOffline from "hooks/useOffline";
 import Panels from "panels";
 import { getIsJuju } from "store/general/selectors";
+import { useAppSelector } from "store/store";
 import urls from "urls";
 
 import type { Props } from "./types";
@@ -31,7 +31,7 @@ const BaseLayout = ({
 }: Props) => {
   const location = useLocation();
   const isOffline = useOffline();
-  const isJuju = useSelector(getIsJuju);
+  const isJuju = useAppSelector(getIsJuju);
   const hasSecondaryNav = !!secondaryNav?.items.length;
 
   return (

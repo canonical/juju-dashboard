@@ -2,7 +2,6 @@ import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/secrets/S
 import { ActionButton, Button, Spinner } from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import { useId, useState, useRef, useCallback } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 import Panel from "components/Panel";
@@ -24,7 +23,9 @@ import { Label, TestId, type FormFields } from "./types";
 
 const RemoveSecretPanel = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const scrollArea = useRef<HTMLDivElement>(null);
   const formId = useId();
   const [queryParams, , handleRemovePanelQueryParams] = usePanelQueryParams<{

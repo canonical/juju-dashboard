@@ -881,12 +881,13 @@ describe("selectors", () => {
       abc123: modelWatcherModelDataFactory.build(),
     };
     expect(
-      getModelWatcherDataByUUID("abc123")(
+      getModelWatcherDataByUUID(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
         }),
+        "abc123",
       ),
     ).toStrictEqual(modelWatcherData.abc123);
   });
@@ -896,19 +897,20 @@ describe("selectors", () => {
       abc123: modelWatcherModelDataFactory.build(),
     };
     expect(
-      getModelInfo("abc123")(
+      getModelInfo(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
         }),
+        "abc123",
       ),
     ).toStrictEqual(modelWatcherData.abc123.model);
   });
 
   it("getModelUUID from model name", () => {
     expect(
-      getModelUUID("test-model")(
+      getModelUUID(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelData: {
@@ -920,13 +922,14 @@ describe("selectors", () => {
             },
           }),
         }),
+        "test-model",
       ),
     ).toStrictEqual("abc123");
   });
 
   it("getModelUUID from model and owner names", () => {
     expect(
-      getModelUUID("eggman/test-model")(
+      getModelUUID(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelData: {
@@ -939,13 +942,14 @@ describe("selectors", () => {
             },
           }),
         }),
+        "eggman/test-model",
       ),
     ).toStrictEqual("abc123");
   });
 
   it("getModelUUID handles incorrect owner name", () => {
     expect(
-      getModelUUID("eggman/test-model")(
+      getModelUUID(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelData: {
@@ -958,6 +962,7 @@ describe("selectors", () => {
             },
           }),
         }),
+        "eggman/test-model",
       ),
     ).toBeNull();
   });
@@ -965,7 +970,7 @@ describe("selectors", () => {
   it("getModelStatus handles incorrect owner name", () => {
     const model = modelDataFactory.build();
     expect(
-      getModelStatus("abc123")(
+      getModelStatus(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelData: {
@@ -973,6 +978,7 @@ describe("selectors", () => {
             },
           }),
         }),
+        "abc123",
       ),
     ).toStrictEqual(model);
   });
@@ -1013,9 +1019,9 @@ describe("selectors", () => {
       }),
     });
     expect(
-      getGroupedByStatusAndFilteredModelData({ cloud: ["aws", "google"] })(
-        state,
-      ),
+      getGroupedByStatusAndFilteredModelData(state, {
+        cloud: ["aws", "google"],
+      }),
     ).toStrictEqual({
       alert: [modelData.ghi789],
       blocked: [modelData.def456],
@@ -1047,9 +1053,9 @@ describe("selectors", () => {
       }),
     });
     expect(
-      getGroupedByCloudAndFilteredModelData({ cloud: ["aws", "google"] })(
-        state,
-      ),
+      getGroupedByCloudAndFilteredModelData(state, {
+        cloud: ["aws", "google"],
+      }),
     ).toStrictEqual({
       aws: [modelData.abc123],
       gce: [modelData.def456],
@@ -1081,9 +1087,9 @@ describe("selectors", () => {
       }),
     });
     expect(
-      getGroupedByOwnerAndFilteredModelData({ cloud: ["aws", "google"] })(
-        state,
-      ),
+      getGroupedByOwnerAndFilteredModelData(state, {
+        cloud: ["aws", "google"],
+      }),
     ).toStrictEqual({
       eggman: [modelData.abc123],
       spaceman: [modelData.def456],
@@ -1315,7 +1321,7 @@ describe("selectors", () => {
         },
       }),
     });
-    expect(getControllerDataByUUID("controller123")(state)).toStrictEqual([
+    expect(getControllerDataByUUID(state, "controller123")).toStrictEqual([
       "wss://example.com",
       [controller],
     ]);
@@ -1339,7 +1345,7 @@ describe("selectors", () => {
         ],
       }),
     });
-    expect(getCharms()(state)).toStrictEqual([
+    expect(getCharms(state)).toStrictEqual([
       charmInfoFactory.build({
         meta: { name: "Redis k8s" },
         url: "ch:amd64/focal/redis-k8s",
@@ -1358,7 +1364,7 @@ describe("selectors", () => {
         ],
       }),
     });
-    expect(getSelectedApplications()(state)).toStrictEqual(
+    expect(getSelectedApplications(state)).toStrictEqual(
       state.juju.selectedApplications,
     );
   });
@@ -1375,7 +1381,7 @@ describe("selectors", () => {
       }),
     });
     expect(
-      getSelectedApplications("ch:amd64/focal/redis-k8s")(state),
+      getSelectedApplications(state, "ch:amd64/focal/redis-k8s"),
     ).toStrictEqual([
       charmApplicationFactory.build({
         "charm-url": "ch:amd64/focal/redis-k8s",
@@ -1395,7 +1401,7 @@ describe("selectors", () => {
         ],
       }),
     });
-    expect(getSelectedCharm("ch:amd64/focal/redis-k8s")(state)).toStrictEqual(
+    expect(getSelectedCharm(state, "ch:amd64/focal/redis-k8s")).toStrictEqual(
       charmInfoFactory.build({
         meta: { name: "Redis k8s" },
         url: "ch:amd64/focal/redis-k8s",
@@ -1406,9 +1412,6 @@ describe("selectors", () => {
   it("getModelUUIDFromList", () => {
     expect(
       getModelUUIDFromList(
-        "a model",
-        "eggman@external",
-      )(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             models: {
@@ -1420,6 +1423,8 @@ describe("selectors", () => {
             },
           }),
         }),
+        "a model",
+        "eggman@external",
       ),
     ).toStrictEqual("abc123");
   });
@@ -1436,12 +1441,13 @@ describe("selectors", () => {
       }),
     };
     expect(
-      getModelAnnotations("abc123")(
+      getModelAnnotations(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
         }),
+        "abc123",
       ),
     ).toStrictEqual(modelWatcherData.abc123.annotations);
   });
@@ -1455,12 +1461,13 @@ describe("selectors", () => {
       }),
     };
     expect(
-      getModelApplications("abc123")(
+      getModelApplications(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
         }),
+        "abc123",
       ),
     ).toStrictEqual(modelWatcherData.abc123.applications);
   });
@@ -1689,12 +1696,13 @@ describe("selectors", () => {
       "wss://test.com/api": [controllerFactory.build({ uuid: "def456" })],
     };
     expect(
-      getModelControllerDataByUUID("def456")(
+      getModelControllerDataByUUID(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             controllers,
           }),
         }),
+        "def456",
       ),
     ).toStrictEqual({
       ...controllerFactory.build({ uuid: "def456" }),
@@ -1723,12 +1731,13 @@ describe("selectors", () => {
       }),
     };
     expect(
-      getModelUnits("abc123")(
+      getModelUnits(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
         }),
+        "abc123",
       ),
     ).toStrictEqual(modelWatcherData.abc123.units);
   });
@@ -1742,12 +1751,13 @@ describe("selectors", () => {
       }),
     };
     expect(
-      getModelRelations("abc123")(
+      getModelRelations(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
         }),
+        "abc123",
       ),
     ).toStrictEqual(modelWatcherData.abc123.relations);
   });
@@ -1759,12 +1769,13 @@ describe("selectors", () => {
       }),
     };
     expect(
-      getModelMachines("abc123")(
+      getModelMachines(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
         }),
+        "abc123",
       ),
     ).toStrictEqual(modelWatcherData.abc123.machines);
   });
@@ -1822,12 +1833,13 @@ describe("selectors", () => {
       }),
     };
     expect(
-      getAllModelApplicationStatus("abc123")(
+      getAllModelApplicationStatus(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelWatcherData,
           }),
         }),
+        "abc123",
       ),
     ).toStrictEqual({
       "ceph-mon": "blocked",
@@ -2087,7 +2099,7 @@ describe("selectors", () => {
         }),
       });
       expect(
-        getFilteredModelData({ cloud: ["aws", "google"] })(state),
+        getFilteredModelData(state, { cloud: ["aws", "google"] }),
       ).toStrictEqual({
         abc123: modelData.abc123,
         def456: modelData.def456,
@@ -2118,9 +2130,9 @@ describe("selectors", () => {
         }),
       });
       expect(
-        getFilteredModelData({ credential: ["eggman", "eggman@external"] })(
-          state,
-        ),
+        getFilteredModelData(state, {
+          credential: ["eggman", "eggman@external"],
+        }),
       ).toStrictEqual({
         abc123: modelData.abc123,
         ghi789: modelData.ghi789,
@@ -2151,7 +2163,7 @@ describe("selectors", () => {
         }),
       });
       expect(
-        getFilteredModelData({ region: ["west", "north"] })(state),
+        getFilteredModelData(state, { region: ["west", "north"] }),
       ).toStrictEqual({
         def456: modelData.def456,
         ghi789: modelData.ghi789,
@@ -2182,7 +2194,7 @@ describe("selectors", () => {
         }),
       });
       expect(
-        getFilteredModelData({ owner: ["eggman", "eggman@external"] })(state),
+        getFilteredModelData(state, { owner: ["eggman", "eggman@external"] }),
       ).toStrictEqual({
         abc123: modelData.abc123,
         ghi789: modelData.ghi789,
@@ -2227,7 +2239,7 @@ describe("selectors", () => {
           modelData,
         }),
       });
-      expect(getFilteredModelData({ custom: ["match"] })(state)).toStrictEqual({
+      expect(getFilteredModelData(state, { custom: ["match"] })).toStrictEqual({
         a1: modelData.a1,
         b2: modelData.b2,
         c3: modelData.c3,

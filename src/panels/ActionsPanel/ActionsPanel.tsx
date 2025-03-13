@@ -1,7 +1,6 @@
 import { ActionButton, Button } from "@canonical/react-components";
 import type { JSX } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 import CharmIcon from "components/CharmIcon";
@@ -17,7 +16,7 @@ import { ConfirmType, type ConfirmTypes } from "panels/types";
 import { getModelUUID } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 import type { RootState } from "store/store";
-import { useAppStore } from "store/store";
+import { useAppStore, useAppSelector } from "store/store";
 import { logger } from "utils/logger";
 
 import ActionOptions from "./ActionOptions";
@@ -41,12 +40,8 @@ export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
   const appState = appStore.getState();
   const { appName, modelName, userName } = useParams<EntityDetailsRoute>();
-  const getModelUUIDMemo = useMemo(
-    () => (modelName ? getModelUUID(modelName) : null),
-    [modelName],
-  );
-  const modelUUID = useSelector((state: RootState) =>
-    getModelUUIDMemo?.(state),
+  const modelUUID = useAppSelector((state: RootState) =>
+    getModelUUID(state, modelName),
   );
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [actionData, setActionData] = useState<ActionData>({});

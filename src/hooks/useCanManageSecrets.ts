@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 import useCanConfigureModel from "hooks/useCanConfigureModel";
@@ -11,7 +10,9 @@ import { useAppSelector } from "store/store";
 const useCanManageSecrets = () => {
   const routeParams = useParams();
   const { userName, modelName } = routeParams;
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const canManageSecrets = useAppSelector((state) =>
     getCanManageSecrets(state, modelUUID),
   );

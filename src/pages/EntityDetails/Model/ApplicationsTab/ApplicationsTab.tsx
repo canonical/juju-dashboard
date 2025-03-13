@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 import ContentReveal from "components/ContentReveal";
@@ -9,6 +8,7 @@ import {
   getModelApplications,
   getModelUUIDFromList,
 } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 import { renderCounts } from "../../counts";
 
@@ -32,8 +32,12 @@ export default function ApplicationsTab() {
   });
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelStatusData = useModelStatus();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const applications = useSelector(getModelApplications(modelUUID));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
+  const applications = useAppSelector((state) =>
+    getModelApplications(state, modelUUID),
+  );
   const localAppTableLength = applications
     ? Object.keys(applications).length
     : 0;

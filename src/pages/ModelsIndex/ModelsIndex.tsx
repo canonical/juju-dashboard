@@ -5,7 +5,6 @@ import {
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import type { ReactNode } from "react";
-import { useSelector } from "react-redux";
 import { Link } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
@@ -58,9 +57,9 @@ export default function Models() {
 
   const modelsError = useAppSelector(getModelsError);
   const modelsLoaded = useAppSelector(getModelListLoaded);
-  const hasSomeModels = useSelector(hasModels);
+  const hasSomeModels = useAppSelector(hasModels);
   // loop model data and pull out filter panel data
-  const modelData = useSelector(getModelData);
+  const modelData = useAppSelector(getModelData);
   const { clouds, regions, owners, credentials } =
     useModelAttributes(modelData);
 
@@ -73,7 +72,9 @@ export default function Models() {
     return chipValues;
   };
 
-  const { blocked, alert, running } = useSelector(getGroupedModelStatusCounts);
+  const { blocked, alert, running } = useAppSelector(
+    getGroupedModelStatusCounts,
+  );
 
   let activeFilters: Record<string, string[]> = {};
 
