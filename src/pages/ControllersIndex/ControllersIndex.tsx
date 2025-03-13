@@ -8,7 +8,6 @@ import type {
   MainTableCell,
   MainTableHeader,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import { useSelector } from "react-redux";
 import { Link } from "react-router";
 
 import AuthenticationButton from "components/AuthenticationButton";
@@ -43,8 +42,8 @@ type AnnotatedController = Controller & {
 };
 
 const ControllersIndex = () => {
-  const controllersCount = useSelector(getControllersCount);
-  const modelData = useSelector(getModelData);
+  const controllersCount = useAppSelector(getControllersCount);
+  const modelData = useAppSelector(getModelData);
   let modelCount = 0;
   if (modelData) {
     modelCount = Object.keys(modelData).length;
@@ -52,7 +51,7 @@ const ControllersIndex = () => {
 
   useWindowTitle("Controllers");
   const controllerConnections = useAppSelector(getControllerConnections);
-  const controllerData = useSelector(getControllerData);
+  const controllerData = useAppSelector(getControllerData);
   const loginErrors = useAppSelector(getLoginErrors);
   const visitURLs = useAppSelector(getVisitURLs);
 

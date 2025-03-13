@@ -1,6 +1,5 @@
 import { MainTable } from "@canonical/react-components";
 import { useMemo } from "react";
-import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router";
 
 import EntityInfo from "components/EntityInfo";
@@ -37,10 +36,16 @@ export default function Unit() {
   // ex) content-cache-0.
   const unitIdentifier = unitId?.replace(/-(\d+)$/, "/$1");
 
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const applications = useSelector(getModelApplications(modelUUID));
-  const units = useSelector(getModelUnits(modelUUID));
-  const machines = useSelector(getModelMachines(modelUUID));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
+  const applications = useAppSelector((state) =>
+    getModelApplications(state, modelUUID),
+  );
+  const units = useAppSelector((state) => getModelUnits(state, modelUUID));
+  const machines = useAppSelector((state) =>
+    getModelMachines(state, modelUUID),
+  );
   const isK8s = useAppSelector((state) => isKubernetesModel(state, modelUUID));
 
   const unit = unitIdentifier && units?.[unitIdentifier];
@@ -63,8 +68,8 @@ export default function Unit() {
     return filteredApps;
   }, [applications, unit]);
 
-  const applicationStatuses = useSelector(
-    getAllModelApplicationStatus(modelUUID),
+  const applicationStatuses = useAppSelector((state) =>
+    getAllModelApplicationStatus(state, modelUUID),
   );
 
   const machineRows = useMemo(

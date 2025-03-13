@@ -1,7 +1,6 @@
 import { MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import type { ReactNode } from "react";
-import { useSelector } from "react-redux";
 
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
@@ -16,6 +15,7 @@ import {
   canAdministerModel,
   getModelStatusGroupData,
 } from "store/juju/utils/models";
+import { useAppSelector } from "store/store";
 
 import AccessButton from "../AccessButton";
 import CloudCell from "../CloudCell/CloudCell";
@@ -35,11 +35,11 @@ type Props = {
 };
 
 export default function OwnerGroup({ filters }: Props) {
-  const groupedAndFilteredData = useSelector(
-    getGroupedByOwnerAndFilteredModelData(filters),
+  const groupedAndFilteredData = useAppSelector((state) =>
+    getGroupedByOwnerAndFilteredModelData(state, filters),
   );
-  const activeUsers = useSelector(getActiveUsers);
-  const controllers = useSelector(getControllerData);
+  const activeUsers = useAppSelector(getActiveUsers);
+  const controllers = useAppSelector(getControllerData);
 
   const ownerTables: ReactNode[] = [];
   for (const owner in groupedAndFilteredData) {

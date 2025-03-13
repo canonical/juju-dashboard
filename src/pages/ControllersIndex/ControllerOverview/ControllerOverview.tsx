@@ -1,21 +1,20 @@
-import { useSelector } from "react-redux";
-
 import {
   getGroupedMachinesDataByStatus,
   getGroupedApplicationsDataByStatus,
   getGroupedUnitsDataByStatus,
 } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 import ControllerChart from "../ControllerChart";
 
 export default function ControllersOverview() {
-  const groupedMachinesDataByStatus = useSelector(
+  const groupedMachinesDataByStatus = useAppSelector(
     getGroupedMachinesDataByStatus,
   );
-  const groupedApplicationsDataByStatus = useSelector(
+  const groupedApplicationsDataByStatus = useAppSelector(
     getGroupedApplicationsDataByStatus,
   );
-  const groupedUnitsDataByStatus = useSelector(getGroupedUnitsDataByStatus);
+  const groupedUnitsDataByStatus = useAppSelector(getGroupedUnitsDataByStatus);
 
   return (
     <div className="p-strip is-shallow controllers-overview">

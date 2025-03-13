@@ -1,7 +1,6 @@
 import { MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import type { ReactNode } from "react";
-import { useSelector } from "react-redux";
 
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
@@ -17,6 +16,7 @@ import {
   extractOwnerName,
   getModelStatusGroupData,
 } from "store/juju/utils/models";
+import { useAppSelector } from "store/store";
 
 import AccessButton from "../AccessButton/AccessButton";
 import ModelSummary from "../ModelSummary";
@@ -35,11 +35,11 @@ type Props = {
 };
 
 export default function CloudGroup({ filters }: Props) {
-  const activeUsers = useSelector(getActiveUsers);
-  const controllers = useSelector(getControllerData);
+  const activeUsers = useAppSelector(getActiveUsers);
+  const controllers = useAppSelector(getControllerData);
 
-  const groupedAndFilteredData = useSelector(
-    getGroupedByCloudAndFilteredModelData(filters),
+  const groupedAndFilteredData = useAppSelector((state) =>
+    getGroupedByCloudAndFilteredModelData(state, filters),
   );
 
   const cloudTables: ReactNode[] = [];

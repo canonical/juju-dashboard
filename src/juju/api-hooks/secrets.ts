@@ -8,7 +8,6 @@ import type {
   ListSecretResults,
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import { useCallback } from "react";
-import { useSelector } from "react-redux";
 
 import type { ConnectionWithFacades } from "juju/types";
 import { getWSControllerURL } from "store/general/selectors";
@@ -24,7 +23,9 @@ export enum Label {
 
 export const useListSecrets = (userName?: string, modelName?: string) => {
   const dispatch = useAppDispatch();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const onError = useCallback(
     (error: string) => {
@@ -85,7 +86,9 @@ export const useListSecrets = (userName?: string, modelName?: string) => {
 
 export const useGetSecretContent = (userName?: string, modelName?: string) => {
   const dispatch = useAppDispatch();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const wsControllerURL = useAppSelector(getWSControllerURL);
 
   const onError = useCallback(

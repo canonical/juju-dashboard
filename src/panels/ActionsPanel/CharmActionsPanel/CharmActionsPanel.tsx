@@ -2,7 +2,6 @@
 import { Button } from "@canonical/react-components";
 import type { JSX } from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 
 import LoadingHandler from "components/LoadingHandler";
 import Panel from "components/Panel";
@@ -20,6 +19,7 @@ import {
   getSelectedApplications,
   getSelectedCharm,
 } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 import ConfirmationDialog from "./ConfirmationDialog";
 
@@ -39,8 +39,12 @@ export default function CharmActionsPanel({
   const [selectedAction, setSelectedAction] = useState<string>();
   const actionOptionsValues = useRef<ActionOptionValues>({});
 
-  const selectedApplications = useSelector(getSelectedApplications(charmURL));
-  const selectedCharm = useSelector(getSelectedCharm(charmURL));
+  const selectedApplications = useAppSelector((state) =>
+    getSelectedApplications(state, charmURL),
+  );
+  const selectedCharm = useAppSelector((state) =>
+    getSelectedCharm(state, charmURL),
+  );
   const actionData = useMemo(
     () => selectedCharm?.actions?.specs || {},
     [selectedCharm],
