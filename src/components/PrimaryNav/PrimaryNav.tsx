@@ -9,7 +9,6 @@ import {
 import type { NavItem } from "@canonical/react-components/dist/components/SideNavigation/SideNavigation";
 import type { HTMLProps, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 import type { NavLinkProps } from "react-router";
 import { NavLink } from "react-router";
 
@@ -36,7 +35,7 @@ import urls, { externalURLs, rebacURLS } from "urls";
 import { Label } from "./types";
 
 const useControllersLink = () => {
-  const controllers: Controllers | null = useSelector(getControllerData);
+  const controllers: Controllers | null = useAppSelector(getControllerData);
   const authenticationRequired =
     (useAppSelector(getVisitURLs)?.length ?? 0) > 0;
 
@@ -81,12 +80,14 @@ const useControllersLink = () => {
 };
 
 const PrimaryNav = () => {
-  const appVersion = useSelector(getAppVersion);
+  const appVersion = useAppSelector(getAppVersion);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const versionRequested = useRef(false);
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
   const rebacEnabled = useAppSelector(isReBACEnabled);
-  const { blocked: blockedModels } = useSelector(getGroupedModelStatusCounts);
+  const { blocked: blockedModels } = useAppSelector(
+    getGroupedModelStatusCounts,
+  );
   const { permitted: isJIMMControllerAdmin } = useIsJIMMAdmin();
   const { permitted: auditLogsAllowed } = useAuditLogsPermitted();
   const controllersLink = useControllersLink();

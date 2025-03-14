@@ -2,7 +2,6 @@ import { Button, Notification, Strip } from "@canonical/react-components";
 import classNames from "classnames";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useParams, Link, Outlet } from "react-router";
 
 import Breadcrumb from "components/Breadcrumb";
@@ -47,8 +46,10 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   const routeParams = useParams<EntityDetailsRoute>();
   const { userName, modelName } = routeParams;
   const modelsLoaded = useAppSelector(getModelListLoaded);
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const modelInfo = useSelector(getModelInfo(modelUUID));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
+  const modelInfo = useAppSelector((state) => getModelInfo(state, modelUUID));
   const { isNestedEntityPage } = useEntityDetailsParams();
 
   // Cleanup is set for this hook, but not for the instances of
@@ -57,7 +58,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   // away from the model.
   useCanConfigureModel(true);
 
-  const isJuju = useSelector(getIsJuju);
+  const isJuju = useAppSelector(getIsJuju);
 
   const [showWebCLI, setShowWebCLI] = useState(false);
 
@@ -68,8 +69,8 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   // to. In the case of a normally bootstrapped controller this will be the
   // same as the model controller, however in a JAAS environment, this primary
   // controller will be JAAS and the model controller will be different.
-  const primaryControllerData = useSelector(
-    getControllerDataByUUID(controllerUUID),
+  const primaryControllerData = useAppSelector((state) =>
+    getControllerDataByUUID(state, controllerUUID),
   );
   const entityType = getEntityType(routeParams);
   const credentials = useAppSelector((state) =>

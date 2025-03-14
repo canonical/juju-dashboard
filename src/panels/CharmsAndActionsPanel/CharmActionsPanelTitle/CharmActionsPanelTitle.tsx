@@ -1,5 +1,4 @@
 import type { JSX } from "react";
-import { useSelector } from "react-redux";
 
 import CharmIcon from "components/CharmIcon";
 import {
@@ -7,6 +6,7 @@ import {
   getSelectedCharm,
 } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
+import { useAppSelector } from "store/store";
 
 import { Label } from "./types";
 
@@ -15,8 +15,12 @@ type Props = {
 };
 
 const CharmActionsPanelTitle = ({ charmURL }: Props): JSX.Element => {
-  const selectedApplications = useSelector(getSelectedApplications(charmURL));
-  const selectedCharm = useSelector(getSelectedCharm(charmURL));
+  const selectedApplications = useAppSelector((state) =>
+    getSelectedApplications(state, charmURL),
+  );
+  const selectedCharm = useAppSelector((state) =>
+    getSelectedCharm(state, charmURL),
+  );
 
   if (!selectedApplications.length || !selectedCharm)
     return <>{Label.NONE_SELECTED_TITLE}</>;

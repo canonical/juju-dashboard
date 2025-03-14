@@ -104,7 +104,7 @@ export const useCheckPermissions = (
 };
 
 export const useIsJIMMAdmin = (cleanup?: boolean) => {
-  const activeUser = useAppSelector((state) => getControllerUserTag(state));
+  const activeUser = useAppSelector(getControllerUserTag);
   return useCheckPermissions(
     activeUser
       ? {
@@ -118,7 +118,7 @@ export const useIsJIMMAdmin = (cleanup?: boolean) => {
 };
 
 export const useAuditLogsPermitted = (cleanup?: boolean) => {
-  const activeUser = useAppSelector((state) => getControllerUserTag(state));
+  const activeUser = useAppSelector(getControllerUserTag);
   const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
   const jimmAdminPermissions = useIsJIMMAdmin(cleanup);
   const auditLogPermissions = useCheckPermissions(

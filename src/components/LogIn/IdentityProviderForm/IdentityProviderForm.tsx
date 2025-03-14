@@ -1,8 +1,7 @@
 import { Spinner } from "@canonical/react-components";
-import { useSelector } from "react-redux";
 
 import AuthenticationButton from "components/AuthenticationButton";
-import type { RootState } from "store/store";
+import { useAppSelector } from "store/store";
 
 import { Label } from "../types";
 
@@ -13,7 +12,7 @@ type Props = {
 };
 
 const IdentityProviderForm = ({ userIsLoggedIn }: Props) => {
-  const visitURL = useSelector((state: RootState) => {
+  const visitURL = useAppSelector((state) => {
     if (!userIsLoggedIn) {
       // This form only gets displayed on the main login page, at which point
       // there can only be one authentication request, so just return the

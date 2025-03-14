@@ -209,7 +209,8 @@ export const getSecretsLoading = createSelector(
 export const getSecretByURI = createSelector(
   [
     getModelSecrets,
-    (_state, _modelUUID: string, secretURI?: string | null) => secretURI,
+    (_state: RootState, _modelUUID: string, secretURI?: string | null) =>
+      secretURI,
   ],
   (secrets, secretURI) =>
     secretURI ? secrets?.find(({ uri }) => uri === secretURI) : null,
@@ -500,32 +501,36 @@ export const hasModels = createSelector(
   (modelList) => Object.keys(modelList).length > 0,
 );
 
-export function getModelWatcherDataByUUID(modelUUID: string) {
-  return createSelector(getModelWatcherData, (modelWatcherData) => {
+export const getModelWatcherDataByUUID = createSelector(
+  [getModelWatcherData, (_state: RootState, modelUUID: string) => modelUUID],
+  (modelWatcherData, modelUUID) => {
     if (modelWatcherData?.[modelUUID]) {
       return modelWatcherData[modelUUID];
     }
+
     return null;
-  });
-}
+  },
+);
 
-export function getModelInfo(modelUUID: string) {
-  return createSelector(
-    getModelWatcherDataByUUID(modelUUID),
-    (modelWatcherData): WatcherModelInfo | null => {
-      if (modelWatcherData) {
-        return modelWatcherData.model;
-      }
-      return null;
-    },
-  );
-}
+export const getModelInfo = createSelector(
+  getModelWatcherDataByUUID,
+  (modelWatcherData): WatcherModelInfo | null => {
+    if (modelWatcherData) {
+      return modelWatcherData.model;
+    }
 
-export function getModelUUIDFromList(
-  modelName?: string | null,
-  ownerName?: string | null,
-) {
-  return createSelector(getModelList, (modelList: ModelsList) => {
+    return null;
+  },
+);
+
+export const getModelUUIDFromList = createSelector(
+  [
+    getModelList,
+    (_state: RootState, modelName?: string | null) => modelName || null,
+    (_state: RootState, _modelName, ownerName?: string | null) =>
+      ownerName || null,
+  ],
+  (modelList: ModelsList, modelName, ownerName) => {
     let modelUUID = "";
     if (!modelList || !modelName || !ownerName) {
       return modelUUID;
@@ -538,68 +543,58 @@ export function getModelUUIDFromList(
       return false;
     });
     return modelUUID;
-  });
-}
+  },
+);
 
-export function getModelAnnotations(modelUUID: string) {
-  return createSelector(
-    getModelWatcherDataByUUID(modelUUID),
-    (modelWatcherData): AnnotationData | null => {
-      if (modelWatcherData) {
-        return modelWatcherData.annotations;
-      }
-      return null;
-    },
-  );
-}
+export const getModelAnnotations = createSelector(
+  getModelWatcherDataByUUID,
+  (modelWatcherData): AnnotationData | null => {
+    if (modelWatcherData) {
+      return modelWatcherData.annotations;
+    }
+    return null;
+  },
+);
 
-export function getModelApplications(modelUUID: string) {
-  return createSelector(
-    getModelWatcherDataByUUID(modelUUID),
-    (modelWatcherData): ApplicationData | null => {
-      if (modelWatcherData) {
-        return modelWatcherData.applications;
-      }
-      return null;
-    },
-  );
-}
+export const getModelApplications = createSelector(
+  getModelWatcherDataByUUID,
+  (modelWatcherData): ApplicationData | null => {
+    if (modelWatcherData) {
+      return modelWatcherData.applications;
+    }
+    return null;
+  },
+);
 
-export function getModelUnits(modelUUID: string) {
-  return createSelector(
-    getModelWatcherDataByUUID(modelUUID),
-    (modelWatcherData): UnitData | null => {
-      if (modelWatcherData) {
-        return modelWatcherData.units;
-      }
-      return null;
-    },
-  );
-}
+export const getModelUnits = createSelector(
+  getModelWatcherDataByUUID,
+  (modelWatcherData): UnitData | null => {
+    if (modelWatcherData) {
+      return modelWatcherData.units;
+    }
+    return null;
+  },
+);
 
-export function getModelRelations(modelUUID: string) {
-  return createSelector(
-    getModelWatcherDataByUUID(modelUUID),
-    (modelWatcherData): RelationData | null => {
-      if (modelWatcherData) {
-        return modelWatcherData.relations;
-      }
-      return null;
-    },
-  );
-}
+export const getModelRelations = createSelector(
+  getModelWatcherDataByUUID,
+  (modelWatcherData): RelationData | null => {
+    if (modelWatcherData) {
+      return modelWatcherData.relations;
+    }
+    return null;
+  },
+);
 
-export function getModelMachines(modelUUID: string) {
-  return createSelector(
-    getModelWatcherDataByUUID(modelUUID),
-    (modelWatcherData): MachineData | null => {
-      if (modelWatcherData) {
-        return modelWatcherData.machines;
-      }
-      return null;
-    },
-  );
-}
+export const getModelMachines = createSelector(
+  getModelWatcherDataByUUID,
+  (modelWatcherData): MachineData | null => {
+    if (modelWatcherData) {
+      return modelWatcherData.machines;
+    }
+    return null;
+  },
+);
 
 // The order of this enum is important. It needs to be organized in order of
 // best to worst status.
@@ -619,64 +614,64 @@ export interface StatusData {
   Returns an object of key value pairs indicating an
   applications aggregate unit status.
 */
-export function getAllModelApplicationStatus(modelUUID: string) {
-  return createSelector(
-    getModelUnits(modelUUID),
-    (units): StatusData | null => {
-      if (!units) {
-        return null;
+export const getAllModelApplicationStatus = createSelector(
+  getModelUnits,
+  (units): StatusData | null => {
+    if (!units) {
+      return null;
+    }
+
+    const applicationStatuses: StatusData = {};
+    // Convert the various unit statuses into our three current
+    // status types "blocked", "alert", "running".
+    Object.entries(units).forEach(([_unitId, unitData]) => {
+      let workloadStatus = Statuses.running;
+      switch (unitData["workload-status"].current) {
+        case "maintenance":
+        case "waiting":
+          workloadStatus = Statuses.alert;
+          break;
+        case "blocked":
+          workloadStatus = Statuses.blocked;
+          break;
       }
 
-      const applicationStatuses: StatusData = {};
-      // Convert the various unit statuses into our three current
-      // status types "blocked", "alert", "running".
-      Object.entries(units).forEach(([_unitId, unitData]) => {
-        let workloadStatus = Statuses.running;
-        switch (unitData["workload-status"].current) {
-          case "maintenance":
-          case "waiting":
-            workloadStatus = Statuses.alert;
-            break;
-          case "blocked":
-            workloadStatus = Statuses.blocked;
-            break;
-        }
+      let agentStatus = Statuses.running;
+      switch (unitData["agent-status"].current) {
+        case "allocating":
+        case "executing":
+        case "rebooting":
+          agentStatus = Statuses.alert;
+          break;
+        case "failed":
+        case "lost":
+          agentStatus = Statuses.blocked;
+          break;
+      }
+      // Use the enum index to determine the worst status value.
+      const worstStatusIndex = Math.max(
+        workloadStatus,
+        agentStatus,
+        Statuses.running,
+      );
 
-        let agentStatus = Statuses.running;
-        switch (unitData["agent-status"].current) {
-          case "allocating":
-          case "executing":
-          case "rebooting":
-            agentStatus = Statuses.alert;
-            break;
-          case "failed":
-          case "lost":
-            agentStatus = Statuses.blocked;
-            break;
-        }
-        // Use the enum index to determine the worst status value.
-        const worstStatusIndex = Math.max(
-          workloadStatus,
-          agentStatus,
-          Statuses.running,
-        );
+      applicationStatuses[unitData.application] = Statuses[
+        worstStatusIndex
+      ] as keyof typeof Statuses;
+    });
 
-        applicationStatuses[unitData.application] = Statuses[
-          worstStatusIndex
-        ] as keyof typeof Statuses;
-      });
+    return applicationStatuses;
+  },
+);
 
-      return applicationStatuses;
-    },
-  );
-}
 /**
   Returns a selector for the filtered model data.
   @param filters The filters to filter the model data by.
   @returns A selector for the filtered model data.
 */
-export const getFilteredModelData = (filters: Filters) =>
-  createSelector([getModelData], (modelData) => {
+export const getFilteredModelData = createSelector(
+  [getModelData, (_state: RootState, filters: Filters) => filters],
+  (modelData, filters) => {
     const clonedModelData: ModelDataList = cloneDeep(modelData);
     const filterSegments: Record<string, string[][]> = {};
 
@@ -741,7 +736,8 @@ export const getFilteredModelData = (filters: Filters) =>
       }
     });
     return clonedModelData;
-  });
+  },
+);
 
 /**
   Gets the model UUID from the supplied name using a memoized selector
@@ -753,8 +749,9 @@ export const getFilteredModelData = (filters: Filters) =>
   @param name The name of the model.
   @returns The memoized selector to return a modelUUID.
 */
-export const getModelUUID = (name: string) => {
-  return createSelector(getModelData, (modelData) => {
+export const getModelUUID = createSelector(
+  [getModelData, (_state: RootState, name?: string | null) => name ?? null],
+  (modelData, name) => {
     let owner = null;
     let modelName = null;
     if (name?.includes("/")) {
@@ -778,35 +775,38 @@ export const getModelUUID = (name: string) => {
       }
     }
     return null;
-  });
-};
+  },
+);
 
 /**
     Returns a model status for the supplied modelUUID.
     @param modelUUID The model UUID to fetch the status for
     @returns The memoized selector to return the model status.
   */
-export const getModelStatus = (modelUUID?: string | null) => {
-  return createSelector(getModelData, (modelData) =>
+export const getModelStatus = createSelector(
+  [getModelData, (_state: RootState, modelUUID?: string | null) => modelUUID],
+  (modelData, modelUUID) =>
     modelUUID ? (modelData?.[modelUUID] ?? null) : null,
-  );
-};
+);
 
 /**
     Returns the model data filtered and grouped by status.
     @param filters The filters to filter the model data by.
     @returns The filtered and grouped model data.
   */
-export const getGroupedByStatusAndFilteredModelData = (filters: Filters) =>
-  createSelector(getFilteredModelData(filters), groupModelsByStatus);
+export const getGroupedByStatusAndFilteredModelData = createSelector(
+  getFilteredModelData,
+  groupModelsByStatus,
+);
 
 /**
     Returns the model data filtered and grouped by cloud.
     @param filters The filters to filter the model data by.
     @returns The filtered and grouped model data.
   */
-export const getGroupedByCloudAndFilteredModelData = (filters: Filters) =>
-  createSelector(getFilteredModelData(filters), (modelData) => {
+export const getGroupedByCloudAndFilteredModelData = createSelector(
+  getFilteredModelData,
+  (modelData) => {
     const grouped: Record<string, ModelData[]> = {};
     if (!modelData) {
       return grouped;
@@ -822,15 +822,17 @@ export const getGroupedByCloudAndFilteredModelData = (filters: Filters) =>
       }
     }
     return grouped;
-  });
+  },
+);
 
 /**
     Returns the model data filtered and grouped by owner.
     @param filters The filters to filter the model data by.
     @returns The filtered and grouped model data.
   */
-export const getGroupedByOwnerAndFilteredModelData = (filters: Filters) =>
-  createSelector(getFilteredModelData(filters), (modelData) => {
+export const getGroupedByOwnerAndFilteredModelData = createSelector(
+  getFilteredModelData,
+  (modelData) => {
     const grouped: Record<string, ModelData[]> = {};
     if (!modelData) {
       return grouped;
@@ -846,7 +848,8 @@ export const getGroupedByOwnerAndFilteredModelData = (filters: Filters) =>
       }
     }
     return grouped;
-  });
+  },
+);
 
 /**
     Returns the model statuses sorted by status.
@@ -962,8 +965,12 @@ export const getGroupedModelStatusCounts = createSelector(
     @param controllerUUID The full controller UUID.
     @returns The controller data in the format of an Object.entries output.
   */
-export const getControllerDataByUUID = (controllerUUID?: string) => {
-  return createSelector(getControllerData, (controllerData) => {
+export const getControllerDataByUUID = createSelector(
+  [
+    getControllerData,
+    (_state: RootState, controllerUUID?: string) => controllerUUID,
+  ],
+  (controllerData, controllerUUID) => {
     if (!controllerData) return null;
     const found = Object.entries(controllerData).find((controller) => {
       // Loop through the sub controllers for each primary controller.
@@ -975,15 +982,19 @@ export const getControllerDataByUUID = (controllerUUID?: string) => {
       );
     });
     return found;
-  });
-};
+  },
+);
 
 /**
     @param controllerUUID The full controller UUID.
     @returns The controllerData.
   */
-export const getModelControllerDataByUUID = (controllerUUID?: string) => {
-  return createSelector(getControllerData, (controllerData) => {
+export const getModelControllerDataByUUID = createSelector(
+  [
+    getControllerData,
+    (_state: RootState, controllerUUID?: string) => controllerUUID,
+  ],
+  (controllerData, controllerUUID) => {
     if (!controllerData || !controllerUUID) return null;
     let modelController: (Controllers[0][0] & { url?: string }) | null = null;
     let controllerURL;
@@ -1008,28 +1019,27 @@ export const getModelControllerDataByUUID = (controllerUUID?: string) => {
       clonedModelController.url = controllerURL;
     }
     return clonedModelController;
-  });
-};
+  },
+);
 /**
  * @returns A list of charms that are used by the selected applications.
  */
-export function getCharms() {
-  return createSelector([slice], (sliceState) => {
-    return sliceState.charms.filter((charm) => {
-      return sliceState.selectedApplications.some(
-        (application) =>
-          "charm-url" in application && application["charm-url"] === charm.url,
-      );
-    });
+export const getCharms = createSelector(slice, (sliceState) => {
+  return sliceState.charms.filter((charm) => {
+    return sliceState.selectedApplications.some(
+      (application) =>
+        "charm-url" in application && application["charm-url"] === charm.url,
+    );
   });
-}
+});
 
 /**
  * @param charmURL The charm URL to filter by.
  * @returns A list of applications that are selected.
  */
-export function getSelectedApplications(charmURL?: string) {
-  return createSelector([slice], (sliceState) => {
+export const getSelectedApplications = createSelector(
+  [slice, (_state: RootState, charmURL?: string) => charmURL],
+  (sliceState, charmURL) => {
     if (!charmURL) {
       return sliceState.selectedApplications;
     }
@@ -1037,23 +1047,24 @@ export function getSelectedApplications(charmURL?: string) {
       (application) =>
         "charm-url" in application && application["charm-url"] === charmURL,
     );
-  });
-}
+  },
+);
 
 /**
  * @param charmURL The charm URL to filter by.
  * @returns The charm object that matches the charm URL.
  */
-export function getSelectedCharm(charmURL: string) {
-  return createSelector([slice], (sliceState) => {
+export const getSelectedCharm = createSelector(
+  [slice, (_state: RootState, charmURL: string) => charmURL],
+  (sliceState, charmURL) => {
     return sliceState.charms.find((charm) => charm.url === charmURL);
-  });
-}
+  },
+);
 
 export const isKubernetesModel = createSelector(
   [
     getModelDataByUUID,
-    (state, uuid?: string | null) => (uuid ? getModelInfo(uuid)(state) : null),
+    (state, uuid?: string | null) => (uuid ? getModelInfo(state, uuid) : null),
   ],
   (modelData, modelInfo) =>
     modelData?.info?.["provider-type"] === "kubernetes" ||
@@ -1066,7 +1077,10 @@ export const getReBACAllowedState = createSelector(
 );
 
 export const getReBACPermission = createSelector(
-  [getReBACAllowedState, (_state, tuple?: RelationshipTuple | null) => tuple],
+  [
+    getReBACAllowedState,
+    (_state: RootState, tuple?: RelationshipTuple | null) => tuple,
+  ],
   (allowed, tuple) =>
     allowed.find((relation) => fastDeepEqual(relation.tuple, tuple)),
 );

@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useParams } from "react-router";
 
 import { useQueryParams } from "hooks/useQueryParams";
@@ -20,15 +19,7 @@ export default function useModelStatus() {
     modelName = queryParams[0].model;
   }
 
-  const getModelUUIDMemo = useMemo(
-    () => (modelName ? getModelUUID(modelName) : null),
-    [modelName],
-  );
-  const modelUUID = useAppSelector((state) => getModelUUIDMemo?.(state));
-  const getModelStatusMemo = useMemo(
-    () => getModelStatus(modelUUID),
-    [modelUUID],
-  );
+  const modelUUID = useAppSelector((state) => getModelUUID(state, modelName));
 
-  return useAppSelector((state) => getModelStatusMemo?.(state));
+  return useAppSelector((state) => getModelStatus(state, modelUUID));
 }

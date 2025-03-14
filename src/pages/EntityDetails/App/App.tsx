@@ -3,7 +3,6 @@ import classNames from "classnames";
 import { Field, Formik } from "formik";
 import type { JSX, MouseEvent } from "react";
 import { useMemo, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
@@ -60,11 +59,17 @@ export default function App(): JSX.Element {
   const selectedUnits = useRef<string[]>([]);
   const selectAll = useRef<boolean>(false);
 
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const applications = useSelector(getModelApplications(modelUUID));
-  const units = useSelector(getModelUnits(modelUUID));
-  const machines = useSelector(getModelMachines(modelUUID));
-  const modelData = useSelector(getModelInfo(modelUUID));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
+  const applications = useAppSelector((state) =>
+    getModelApplications(state, modelUUID),
+  );
+  const units = useAppSelector((state) => getModelUnits(state, modelUUID));
+  const machines = useAppSelector((state) =>
+    getModelMachines(state, modelUUID),
+  );
+  const modelData = useAppSelector((state) => getModelInfo(state, modelUUID));
   const hideMachines = useAppSelector((state) =>
     isKubernetesModel(state, modelUUID),
   );

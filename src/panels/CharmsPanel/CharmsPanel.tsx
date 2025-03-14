@@ -25,7 +25,7 @@ export default function CharmsPanel({
   inlineErrors,
 }: Props): JSX.Element {
   const [selectedCharm, setSelectedCharm] = useState<string | null>(null);
-  const charms = useAppSelector(getCharms());
+  const charms = useAppSelector(getCharms);
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
