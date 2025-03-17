@@ -172,6 +172,12 @@ Finally, publish the release.
 Juju Dashboard can be deployed using a machine charm or a Kubernetes charm which both
 need updating and releasing.
 
+If you don't have access to publish the charm, ask someone on the Juju Dashboard
+team to be added as a collaborator to both charms:
+
+https://charmhub.io/juju-dashboard/collaboration
+https://charmhub.io/juju-dashboard-k8s/collaboration
+
 ### Machine charm
 
 Fork and clone the [juju-dashboard-charm
@@ -191,6 +197,19 @@ Update the dashboard to the latest release:
 [Build and
 deploy](https://github.com/canonical/juju-dashboard-charm#building-and-testing-the-machine-charm)
 the machine charm and follow the [QA steps](#qa-steps) to confirm it is working.
+
+If you've deployed inside a Multipass container you will need access to the
+dashboard from outside the container. To do this first get the dashboard machine's instance id:
+
+```shell
+juju status
+```
+
+Then, inside the multipass container add a port forward to the dashboard instance:
+
+```shell
+lxc config device add [inst-id] portforward8080 proxy listen=tcp:0.0.0.0:8080 connect=tcp:127.0.0.1:8080
+```
 
 Now create a PR to land the update dashboard package.
 
@@ -221,6 +240,14 @@ cd juju-dashboard-charm
 [Build and
 deploy](https://github.com/canonical/juju-dashboard-charm#building-and-testing-the-k8s-charm)
 the Kubernetes charm and follow the [QA steps](#qa-steps) to confirm it is working.
+
+If you've deployed inside a Multipass container you will need access to the
+dashboard from outside the container. To do this, inside the multipass container
+add a port forward to the dashboard instance:
+
+```shell
+microk8s.kubectl port-forward dashboard-0 8080:8080 --namespace=controller-micro --address=0.0.0.0
+```
 
 The K8s charm does not need to commit any changes to the repo as a
 Docker image is published to Charmhub instead.
