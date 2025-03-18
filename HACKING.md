@@ -356,7 +356,7 @@ Get the dashboard machine's instance id:
 juju status
 ```
 
-Then port forward to the dashboard instance so that the dashboard can be access
+Then port forward to the dashboard instance so that the dashboard can be accessed
 from outside the Multipass container:
 
 ```shell
