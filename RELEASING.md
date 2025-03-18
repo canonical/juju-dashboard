@@ -239,7 +239,9 @@ cd juju-dashboard-charm
 
 [Build and
 deploy](https://github.com/canonical/juju-dashboard-charm#building-and-testing-the-k8s-charm)
-the Kubernetes charm and follow the [QA steps](#qa-steps) to confirm it is working.
+the Kubernetes charm (using the [build from
+source](https://github.com/canonical/juju-dashboard-charm?tab=readme-ov-file#building-from-source)
+steps to build a new Docker image with the latest dashboard code) and follow the [QA steps](#qa-steps) to confirm it is working.
 
 If you've deployed inside a Multipass container you will need access to the
 dashboard from outside the container. To do this, inside the multipass container
