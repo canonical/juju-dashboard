@@ -7542,7 +7542,7 @@ __metadata:
     stylelint-config-standard-scss: "npm:14.0.0"
     stylelint-order: "npm:6.0.4"
     typescript: "npm:5.7.3"
-    vanilla-framework: "npm:4.21.0"
+    vanilla-framework: "npm:4.21.2"
     vite: "npm:6.1.0"
     vite-plugin-html: "npm:3.2.2"
     vite-plugin-node-polyfills: "npm:0.23.0"
@@ -11648,12 +11648,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.21.0":
-  version: 4.21.0
-  resolution: "vanilla-framework@npm:4.21.0"
+"vanilla-framework@npm:4.21.2":
+  version: 4.21.2
+  resolution: "vanilla-framework@npm:4.21.2"
   peerDependencies:
     sass: ^1.79.0
-  checksum: 10c0/8f7eeef1e6d30f7551b74f3691511e3249fbdf9acee3793ee6db33f8a1d29394269cf7483ac18d23e1d11b8e75f9f230d8c541a7980ab8f77615ba1807f81d2c
+  checksum: 10c0/4150052c53ce4a2135c8dfb879e84f67ff3ea4fea3349f587e5fb3f6f78b83be3d742f8352f75ae9559fb022b2359026da22c919609398747a5a457a75d11b7e
   languageName: node
   linkType: hard
 
