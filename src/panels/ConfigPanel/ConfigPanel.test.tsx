@@ -37,19 +37,6 @@ import ConfigPanel from "./ConfigPanel";
 import { Label as ConfirmationDialogLabel } from "./ConfirmationDialog/types";
 import { Label as ConfigPanelLabel } from "./types";
 
-vi.mock("juju/api-hooks/application", () => ({
-  useGetApplicationConfig: vi.fn(),
-  useSetApplicationConfig: vi.fn(),
-}));
-
-vi.mock("juju/api-hooks/secrets", () => {
-  return {
-    useGrantSecret: vi.fn().mockReturnValue(vi.fn()),
-    useListSecrets: vi.fn().mockReturnValue(vi.fn()),
-    useRevokeSecret: vi.fn().mockReturnValue(vi.fn()),
-  };
-});
-
 describe("ConfigPanel", () => {
   let state: RootState;
   const params = new URLSearchParams({
@@ -64,7 +51,6 @@ describe("ConfigPanel", () => {
 
   beforeEach(() => {
     vi.resetModules();
-    vi.spyOn(secretHooks, "useListSecrets").mockImplementation(() => vi.fn());
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({

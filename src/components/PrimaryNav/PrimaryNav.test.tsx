@@ -410,6 +410,7 @@ it("should show Permissions navigation button if the controller supports it", ()
               target_object: JIMMTarget.JIMM_CONTROLLER,
             }),
             allowed: true,
+            loaded: true,
           }),
         ],
       },

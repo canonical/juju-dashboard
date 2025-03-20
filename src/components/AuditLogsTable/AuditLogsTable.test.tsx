@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import { add } from "date-fns";
-import { vi } from "vitest";
+import { type MockInstance, vi } from "vitest";
 
 import { LoadingSpinnerTestId } from "components/LoadingSpinner";
 import { actions as jujuActions } from "store/juju";
@@ -10,16 +10,22 @@ import { configFactory, generalStateFactory } from "testing/factories/general";
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import { auditEventsStateFactory } from "testing/factories/juju/juju";
 import { customWithin } from "testing/queries/within";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import AuditLogsTable from "./AuditLogsTable";
 import { DEFAULT_LIMIT_VALUE } from "./consts";
+import * as hooks from "./hooks";
 
 describe("AuditLogsTable", () => {
   let state: RootState;
+  let useFetchAuditEventsMock: MockInstance;
 
   beforeEach(() => {
+    useFetchAuditEventsMock = vi
+      .spyOn(hooks, "useFetchAuditEvents")
+      .mockReturnValue(vi.fn());
+
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -91,14 +97,16 @@ describe("AuditLogsTable", () => {
   });
 
   it("should fetch audit logs", async () => {
-    const { store } = renderComponent(<AuditLogsTable />, { state });
+    useFetchAuditEventsMock.mockRestore();
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<AuditLogsTable />, { store });
     const action = jujuActions.fetchAuditEvents({
       wsControllerURL: "wss://example.com/api",
       limit: DEFAULT_LIMIT_VALUE + 1,
       offset: 0,
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type),
+      actions.find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 

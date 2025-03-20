@@ -1,7 +1,6 @@
 import * as jujuLib from "@canonical/jujulib";
 import type { Connection } from "@canonical/jujulib";
 import { renderHook, waitFor } from "@testing-library/react";
-import configureStore from "redux-mock-store";
 import { vi } from "vitest";
 
 import type { RootState } from "store/store";
@@ -12,7 +11,7 @@ import {
   generalStateFactory,
 } from "testing/factories/general";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
-import { ComponentProviders, changeURL } from "testing/utils";
+import { ComponentProviders, changeURL, createStore } from "testing/utils";
 
 import { LOGIN_TIMEOUT, Label as APILabel } from "../api";
 
@@ -22,8 +21,6 @@ import {
   useCallWithConnectionPromise,
   Label,
 } from "./common";
-
-const mockStore = configureStore<RootState, unknown>([]);
 
 vi.mock("@canonical/jujulib", () => ({
   connectAndLogin: vi.fn(),
@@ -79,7 +76,7 @@ describe("useModelConnectionCallback", () => {
         <ComponentProviders
           {...props}
           path="/models/:userName/:modelName/app/:appName"
-          store={mockStore(state)}
+          store={createStore(state)}
         />
       ),
     });
@@ -98,7 +95,7 @@ describe("useModelConnectionCallback", () => {
         <ComponentProviders
           {...props}
           path="/models/:userName/:modelName/app/:appName"
-          store={mockStore(rootStateFactory.build())}
+          store={createStore(rootStateFactory.build())}
         />
       ),
     });
@@ -119,7 +116,7 @@ describe("useModelConnectionCallback", () => {
         <ComponentProviders
           {...props}
           path="/models/:userName/:modelName/app/:appName"
-          store={mockStore(state)}
+          store={createStore(state)}
         />
       ),
     });
@@ -145,7 +142,7 @@ describe("useModelConnectionCallback", () => {
         <ComponentProviders
           {...props}
           path="/models/:userName/:modelName/app/:appName"
-          store={mockStore(state)}
+          store={createStore(state)}
         />
       ),
     });
@@ -172,7 +169,7 @@ describe("useModelConnectionCallback", () => {
         <ComponentProviders
           {...props}
           path="/models/:userName/:modelName/app/:appName"
-          store={mockStore(state)}
+          store={createStore(state)}
         />
       ),
     });
@@ -194,7 +191,7 @@ describe("useModelConnectionCallback", () => {
         <ComponentProviders
           {...props}
           path="/models/:userName/:modelName/app/:appName"
-          store={mockStore(state)}
+          store={createStore(state)}
         />
       ),
     });
@@ -225,7 +222,7 @@ describe("useModelConnectionCallback", () => {
         <ComponentProviders
           {...props}
           path="/models/:userName/:modelName/app/:appName"
-          store={mockStore(state)}
+          store={createStore(state)}
         />
       ),
     });
@@ -263,7 +260,7 @@ describe("useCallWithConnectionPromise", () => {
   });
 
   it("calls the handler with args", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {
@@ -293,7 +290,7 @@ describe("useCallWithConnectionPromise", () => {
   });
 
   it("handles a successful call", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {
@@ -322,7 +319,7 @@ describe("useCallWithConnectionPromise", () => {
   });
 
   it("handles errors", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {
@@ -380,7 +377,7 @@ describe("useCallWithConnection", () => {
   });
 
   it("calls the handler with args", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {
@@ -420,7 +417,7 @@ describe("useCallWithConnection", () => {
   });
 
   it("handles a successful call", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {
@@ -460,7 +457,7 @@ describe("useCallWithConnection", () => {
   });
 
   it("handles errors", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {

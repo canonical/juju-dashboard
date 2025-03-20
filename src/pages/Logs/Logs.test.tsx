@@ -2,6 +2,7 @@ import { screen } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { AuditLogsTableActionsLabel } from "components/AuditLogsTable/AuditLogsTableActions";
+import * as auditLogHooks from "components/AuditLogsTable/hooks";
 import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
 import { PageNotFoundLabel } from "pages/PageNotFound";
 import type { RootState } from "store/store";
@@ -26,6 +27,7 @@ describe("Logs", () => {
   let state: RootState;
 
   beforeEach(() => {
+    vi.spyOn(auditLogHooks, "useFetchAuditEvents").mockReturnValue(vi.fn());
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({

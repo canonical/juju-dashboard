@@ -1,5 +1,4 @@
 import { renderHook, waitFor } from "@testing-library/react";
-import configureStore from "redux-mock-store";
 
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
 import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
@@ -14,15 +13,13 @@ import {
   authUserInfoFactory,
 } from "testing/factories/general";
 import { rebacAllowedFactory } from "testing/factories/juju/juju";
-import { ComponentProviders } from "testing/utils";
+import { ComponentProviders, createStore } from "testing/utils";
 
 import {
   useCheckPermissions,
   useIsJIMMAdmin,
   useAuditLogsPermitted,
 } from "./permissions";
-
-const mockStore = configureStore<RootState, unknown>([]);
 
 describe("useCheckPermissions", () => {
   let state: RootState;
@@ -48,7 +45,7 @@ describe("useCheckPermissions", () => {
       relation: JIMMRelation.MEMBER,
       target_object: "group-admins",
     };
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderHook(() => useCheckPermissions(tuple), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -60,9 +57,9 @@ describe("useCheckPermissions", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === jujuActions.checkRelation.type),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
       ).toMatchObject(action);
     });
   });
@@ -81,7 +78,7 @@ describe("useCheckPermissions", () => {
         allowed: true,
       }),
     ];
-    const store = mockStore(state);
+    const store = createStore(state);
     const { result } = renderHook(() => useCheckPermissions(tuple), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -95,7 +92,7 @@ describe("useCheckPermissions", () => {
   });
 
   it("does not try and fetch a relation if the tuple is not provided", async () => {
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderHook(() => useCheckPermissions(), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -103,9 +100,9 @@ describe("useCheckPermissions", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === jujuActions.checkRelation.type),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
       ).toBeUndefined();
     });
   });
@@ -116,7 +113,7 @@ describe("useCheckPermissions", () => {
       relation: JIMMRelation.MEMBER,
       target_object: "group-admins",
     };
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     const { rerender } = renderHook(() => useCheckPermissions(tuple), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -124,21 +121,17 @@ describe("useCheckPermissions", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .filter(
-            (dispatch) => dispatch.type === jujuActions.checkRelation.type,
-          ),
+        actions.filter(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
       ).toHaveLength(1);
     });
     rerender({ ...tuple });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .filter(
-            (dispatch) => dispatch.type === jujuActions.checkRelation.type,
-          ),
+        actions.filter(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
       ).toHaveLength(1);
     });
   });
@@ -155,7 +148,7 @@ describe("useCheckPermissions", () => {
         loading: true,
       }),
     ];
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderHook(() => useCheckPermissions(tuple), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -163,9 +156,9 @@ describe("useCheckPermissions", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === jujuActions.checkRelation.type),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
       ).toBeUndefined();
     });
   });
@@ -182,7 +175,7 @@ describe("useCheckPermissions", () => {
         loaded: true,
       }),
     ];
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderHook(() => useCheckPermissions(tuple), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -190,9 +183,9 @@ describe("useCheckPermissions", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === jujuActions.checkRelation.type),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
       ).toBeUndefined();
     });
   });
@@ -209,7 +202,7 @@ describe("useCheckPermissions", () => {
         loaded: true,
       }),
     ];
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     const { rerender } = renderHook<
       {
         permitted: boolean;
@@ -231,9 +224,9 @@ describe("useCheckPermissions", () => {
     );
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === jujuActions.checkRelation.type),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
       ).toBeUndefined();
     });
     rerender({ tupleObject: { ...tuple, object: "newobject" }, cleanup: true });
@@ -242,12 +235,9 @@ describe("useCheckPermissions", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find(
-            (dispatch) =>
-              dispatch.type === jujuActions.removeCheckRelation.type,
-          ),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.removeCheckRelation.type,
+        ),
       ).toMatchObject(action);
     });
   });
@@ -264,7 +254,7 @@ describe("useCheckPermissions", () => {
         loaded: true,
       }),
     ];
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     const { unmount } = renderHook(() => useCheckPermissions(tuple, true), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -276,12 +266,9 @@ describe("useCheckPermissions", () => {
     unmount();
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find(
-            (dispatch) =>
-              dispatch.type === jujuActions.removeCheckRelation.type,
-          ),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.removeCheckRelation.type,
+        ),
       ).toMatchObject(action);
     });
   });
@@ -297,7 +284,7 @@ describe("useCheckPermissions", () => {
         rebac: false,
       }),
     });
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderHook(() => useCheckPermissions(tuple), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -305,9 +292,9 @@ describe("useCheckPermissions", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === jujuActions.checkRelation.type),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
       ).toBeUndefined();
     });
   });
@@ -337,7 +324,7 @@ describe("useIsJIMMAdmin", () => {
   });
 
   it("checks the relation", async () => {
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderHook(() => useIsJIMMAdmin(), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -353,9 +340,9 @@ describe("useIsJIMMAdmin", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === jujuActions.checkRelation.type),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
       ).toMatchObject(action);
     });
   });
@@ -374,7 +361,7 @@ describe("useIsJIMMAdmin", () => {
         allowed: true,
       }),
     ];
-    const store = mockStore(state);
+    const store = createStore(state);
     const { result } = renderHook(() => useIsJIMMAdmin(), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -389,7 +376,7 @@ describe("useIsJIMMAdmin", () => {
 
   it("does not try and fetch the relation if the user is not found", async () => {
     state.general.controllerConnections = {};
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderHook(() => useIsJIMMAdmin(), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -397,9 +384,9 @@ describe("useIsJIMMAdmin", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === jujuActions.checkRelation.type),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
       ).toBeUndefined();
     });
   });
@@ -416,7 +403,7 @@ describe("useIsJIMMAdmin", () => {
         loaded: true,
       }),
     ];
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     const { unmount } = renderHook(() => useIsJIMMAdmin(true), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -428,12 +415,9 @@ describe("useIsJIMMAdmin", () => {
     unmount();
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find(
-            (dispatch) =>
-              dispatch.type === jujuActions.removeCheckRelation.type,
-          ),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.removeCheckRelation.type,
+        ),
       ).toMatchObject(action);
     });
   });
@@ -464,7 +448,7 @@ describe("useAuditLogsPermitted", () => {
   });
 
   it("checks the relation", async () => {
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderHook(() => useAuditLogsPermitted(), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -487,9 +471,9 @@ describe("useAuditLogsPermitted", () => {
       wsControllerURL: "wss://example.com/api",
     });
     await waitFor(() => {
-      const dispatched = store
-        .getActions()
-        .filter((dispatch) => dispatch.type === jujuActions.checkRelation.type);
+      const dispatched = actions.filter(
+        (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+      );
       expect(dispatched).toEqual(
         expect.arrayContaining([adminAction, auditLogAction]),
       );
@@ -515,10 +499,12 @@ describe("useAuditLogsPermitted", () => {
           relation: JIMMRelation.ADMINISTRATOR,
           target_object: JIMMTarget.JIMM_CONTROLLER,
         },
+        loading: true,
+        loaded: true,
         allowed: true,
       }),
     ];
-    const store = mockStore(state);
+    const store = createStore(state);
     const { result } = renderHook(() => useAuditLogsPermitted(), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -533,7 +519,7 @@ describe("useAuditLogsPermitted", () => {
 
   it("does not try and fetch the relation if the user is not found", async () => {
     state.general.controllerConnections = {};
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderHook(() => useAuditLogsPermitted(), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -541,9 +527,9 @@ describe("useAuditLogsPermitted", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === jujuActions.checkRelation.type),
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
       ).toBeUndefined();
     });
   });
@@ -555,7 +541,7 @@ describe("useAuditLogsPermitted", () => {
         auditLogs: false,
       }),
     });
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderHook(() => useAuditLogsPermitted(), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -570,9 +556,9 @@ describe("useAuditLogsPermitted", () => {
       wsControllerURL: "wss://example.com/api",
     });
     await waitFor(() => {
-      const dispatched = store
-        .getActions()
-        .filter((dispatch) => dispatch.type === jujuActions.checkRelation.type);
+      const dispatched = actions.filter(
+        (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+      );
       expect(dispatched).not.toEqual(expect.arrayContaining([auditLogAction]));
     });
   });
@@ -589,7 +575,7 @@ describe("useAuditLogsPermitted", () => {
         loaded: true,
       }),
     ];
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     const { unmount } = renderHook(() => useAuditLogsPermitted(true), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="/" store={store} />
@@ -611,11 +597,9 @@ describe("useAuditLogsPermitted", () => {
       },
     });
     await waitFor(() => {
-      const dispatched = store
-        .getActions()
-        .filter(
-          (dispatch) => dispatch.type === jujuActions.removeCheckRelation.type,
-        );
+      const dispatched = actions.filter(
+        (dispatch) => dispatch.type === jujuActions.removeCheckRelation.type,
+      );
       expect(dispatched).toEqual(
         expect.arrayContaining([adminAction, auditLogAction]),
       );

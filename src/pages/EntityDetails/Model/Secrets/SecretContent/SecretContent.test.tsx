@@ -1,7 +1,6 @@
 import { Label as ActionButtonLabel } from "@canonical/react-components/dist/components/ActionButton/ActionButton";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import configureStore from "redux-mock-store";
 import { vi } from "vitest";
 
 import { RevisionFieldLabel } from "components/secrets/RevisionField";
@@ -22,13 +21,11 @@ import {
   secretRevisionFactory,
 } from "testing/factories/juju/juju";
 import { modelSecretsContentFactory } from "testing/factories/juju/juju";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import SecretContent from "./SecretContent";
 import { Label } from "./types";
-
-const mockStore = configureStore<RootState, unknown>([]);
 
 vi.mock("juju/api-hooks/secrets", () => {
   return {
@@ -86,7 +83,7 @@ describe("SecretContent", () => {
   });
 
   it("initially hides the modal", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
       store,
       path,
@@ -101,7 +98,7 @@ describe("SecretContent", () => {
   });
 
   it("can open the modal", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
       store,
       path,
@@ -114,7 +111,7 @@ describe("SecretContent", () => {
   });
 
   it("cleans up secrets when closing the modal", async () => {
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(<SecretContent secretURI="secret:aabbccdd" />, {
       store,
       path,
@@ -130,9 +127,7 @@ describe("SecretContent", () => {
     );
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === clearAction.type),
+        actions.find((dispatch) => dispatch.type === clearAction.type),
       ).toMatchObject(clearAction);
     });
   });

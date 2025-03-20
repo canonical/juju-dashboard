@@ -1,9 +1,12 @@
 import "@testing-library/jest-dom/vitest";
+import type { Connection } from "@canonical/jujulib";
 import type { DetachedWindowAPI } from "happy-dom";
 import { vi } from "vitest";
 import createFetchMock from "vitest-fetch-mock";
 
 import { logger } from "utils/logger";
+
+import { listSecretResultFactory } from "./factories/juju/juju";
 
 vi.mock("react-ga4");
 
@@ -40,3 +43,26 @@ if (!window.HTMLDivElement.prototype.animate) {
     "you may now remove the mock",
   );
 }
+
+const connectResponse = {
+  conn: {
+    facades: {
+      secrets: {
+        listSecrets: vi.fn().mockImplementation(async () => ({
+          results: [listSecretResultFactory.build()],
+        })),
+      },
+    },
+  } as unknown as Connection,
+  logout: vi.fn(),
+};
+
+vi.mock("@canonical/jujulib", () => ({
+  connect: vi.fn().mockResolvedValue(connectResponse),
+  connectAndLogin: vi.fn().mockReturnValue(connectResponse),
+  fetchModelStatus: vi.fn(),
+}));
+
+vi.mock("@canonical/jujulib/dist/api/versions", () => ({
+  jujuUpdateAvailable: vi.fn(),
+}));

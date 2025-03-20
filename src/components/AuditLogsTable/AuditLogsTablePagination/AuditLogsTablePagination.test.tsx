@@ -8,7 +8,7 @@ import { rootStateFactory, jujuStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import { auditEventsStateFactory } from "testing/factories/juju/juju";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 
 import AuditLogsTablePagination from "./AuditLogsTablePagination";
 import { Label } from "./types";
@@ -58,8 +58,9 @@ describe("AuditLogsTablePagination", () => {
   });
 
   it("should change amount of logs per page", async () => {
-    const { store } = renderComponent(<AuditLogsTablePagination showLimit />, {
-      state,
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<AuditLogsTablePagination showLimit />, {
+      store,
     });
     const dropdownMenu = screen.getByRole("combobox");
     expect(dropdownMenu).toBeVisible();
@@ -69,7 +70,7 @@ describe("AuditLogsTablePagination", () => {
     expect(dropdownMenu).toHaveTextContent("100/page");
     const action = jujuActions.updateAuditEventsLimit(100);
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type),
+      actions.find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 

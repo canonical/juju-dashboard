@@ -38,9 +38,7 @@ describe("Permissions", () => {
         email: "jimm-test@example.com",
       },
     });
-    vi.spyOn(appThunks, "logOut").mockImplementation(
-      vi.fn().mockReturnValue({ type: "logOut", catch: vi.fn() }),
-    );
+    vi.spyOn(appThunks, "logOut");
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -67,6 +65,8 @@ describe("Permissions", () => {
                 target_object: JIMMTarget.JIMM_CONTROLLER,
               }),
               allowed: true,
+              loading: false,
+              loaded: true,
             }),
           ],
         },
@@ -98,6 +98,8 @@ describe("Permissions", () => {
           target_object: JIMMTarget.JIMM_CONTROLLER,
         }),
         allowed: false,
+        loading: false,
+        loaded: true,
       }),
     ];
     renderComponent(<Permissions />, { state });

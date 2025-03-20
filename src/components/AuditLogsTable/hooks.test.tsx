@@ -1,5 +1,4 @@
 import { renderHook } from "@testing-library/react";
-import configureStore from "redux-mock-store";
 
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
@@ -9,13 +8,11 @@ import {
   controllerFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
-import { ComponentProviders, changeURL } from "testing/utils";
+import { ComponentProviders, changeURL, createStore } from "testing/utils";
 import urls from "urls";
 
 import { DEFAULT_LIMIT_VALUE } from "./consts";
 import { useFetchAuditEvents } from "./hooks";
-
-const mockStore = configureStore<RootState, unknown>([]);
 
 describe("useFetchAuditEvents", () => {
   let state: RootState;
@@ -42,7 +39,7 @@ describe("useFetchAuditEvents", () => {
   });
 
   it("should fetch audit events", () => {
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     const { result } = renderHook(() => useFetchAuditEvents(), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="*" store={store} />
@@ -54,12 +51,12 @@ describe("useFetchAuditEvents", () => {
       wsControllerURL: "wss://example.com/api",
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type),
+      actions.find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 
   it("should filter audit events", () => {
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     const now = new Date().toISOString();
     const params = {
       after: now,
@@ -86,7 +83,7 @@ describe("useFetchAuditEvents", () => {
       method: "Login",
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type),
+      actions.find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 
@@ -103,7 +100,7 @@ describe("useFetchAuditEvents", () => {
         controllerFactory.build({ name: "controller1" }),
       ],
     };
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     changeURL(
       `${urls.model.index({
         userName: "eggman@external",
@@ -127,7 +124,7 @@ describe("useFetchAuditEvents", () => {
       model: "controller1/current-model",
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type),
+      actions.find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 
@@ -135,7 +132,7 @@ describe("useFetchAuditEvents", () => {
     state.general.config = configFactory.build({
       controllerAPIEndpoint: "",
     });
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     const { result } = renderHook(() => useFetchAuditEvents(), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="*" store={store} />
@@ -149,13 +146,13 @@ describe("useFetchAuditEvents", () => {
       offset: 0,
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type),
+      actions.find((dispatch) => dispatch.type === action.type),
     ).toBeUndefined();
   });
 
   it("should not fetch audit logs if there is no controller", () => {
     state.general.controllerConnections = {};
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     const { result } = renderHook(() => useFetchAuditEvents(), {
       wrapper: (props) => (
         <ComponentProviders {...props} path="*" store={store} />
@@ -169,7 +166,7 @@ describe("useFetchAuditEvents", () => {
       offset: 0,
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type),
+      actions.find((dispatch) => dispatch.type === action.type),
     ).toBeUndefined();
   });
 });

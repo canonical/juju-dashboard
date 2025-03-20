@@ -6,7 +6,7 @@ import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import { charmApplicationFactory } from "testing/factories/juju/Charms";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 
 import SearchResults from "./SearchResults";
 
@@ -193,16 +193,17 @@ describe("SearchResults", () => {
         name: "mysql2",
       }),
     ];
-    const { result, store } = renderComponent(<SearchResults />, {
+    const [store, actions] = createStore(state, { trackActions: true });
+    const { result } = renderComponent(<SearchResults />, {
       path,
       url,
-      state,
+      store,
     });
     result.unmount();
     expect(
-      store
-        .getActions()
-        .find((action) => action.type === "juju/updateSelectedApplications"),
+      actions.find(
+        (action) => action.type === "juju/updateSelectedApplications",
+      ),
     ).toMatchObject(
       jujuActions.updateSelectedApplications({
         selectedApplications: [],

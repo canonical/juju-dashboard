@@ -1,4 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
+import type {
+  EnhancedStore,
+  Middleware,
+  UnknownAction,
+} from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { render, renderHook } from "@testing-library/react";
 import { useEffect, type PropsWithChildren, type ReactNode } from "react";
 import reactHotToast, { Toaster } from "react-hot-toast";
@@ -11,9 +17,9 @@ import {
   Routes,
   createMemoryRouter,
 } from "react-router";
-import type { MockStoreEnhanced } from "redux-mock-store";
-import configureStore from "redux-mock-store";
 
+import generalReducer from "store/general";
+import jujuReducer from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 
@@ -22,7 +28,7 @@ import queries from "./queries";
 type Router = ReturnType<typeof createMemoryRouter>;
 
 type OptionsWithStore = {
-  store: MockStoreEnhanced<RootState, unknown>;
+  store: EnhancedStore<RootState>;
 };
 
 type OptionsWithState = {
@@ -38,7 +44,7 @@ type Options = {
 export type ComponentProps = {
   path: string;
   routeChildren?: ReactNode;
-  store: MockStoreEnhanced<RootState, unknown>;
+  store: EnhancedStore<RootState>;
 } & PropsWithChildren;
 
 export const ComponentProviders = ({
@@ -69,9 +75,7 @@ export const wrapComponent = (
   const store =
     options && "store" in options
       ? options.store
-      : configureStore<RootState, unknown>()(
-          options?.state ?? rootStateFactory.build(),
-        );
+      : createStore(options?.state ?? rootStateFactory.build());
   const router = createMemoryRouter(
     [
       {
@@ -151,3 +155,39 @@ export const renderWrappedHook = <Result, Props>(
   });
   return { router, result, store };
 };
+
+export function createStore(
+  state: RootState,
+  options: { trackActions: true },
+): [EnhancedStore<RootState>, UnknownAction[]];
+export function createStore(
+  state: RootState,
+  options?: { trackActions?: false },
+): EnhancedStore<RootState>;
+export function createStore(
+  state: RootState,
+  options: { trackActions?: boolean } = {},
+) {
+  const actions: UnknownAction[] = [];
+  const store = configureStore({
+    middleware: (getDefaultMiddleware) => {
+      const middleware = getDefaultMiddleware();
+      if (options.trackActions) {
+        middleware.push(((_store) => (next) => (action) => {
+          actions.push(action as UnknownAction);
+          return next(action);
+        }) as Middleware<unknown, RootState>);
+      }
+      return middleware;
+    },
+    preloadedState: state,
+    reducer: combineReducers({
+      general: generalReducer,
+      juju: jujuReducer,
+    }),
+  });
+  if (options.trackActions) {
+    return [store, actions] as const;
+  }
+  return store;
+}
