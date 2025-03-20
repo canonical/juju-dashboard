@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
-import configureStore from "redux-mock-store";
 
 import { AdvancedSearchTestId } from "pages/AdvancedSearch";
 import { ControllersIndexTestId } from "pages/ControllersIndex/index";
@@ -11,12 +10,10 @@ import { PermissionsTestId } from "pages/Permissions";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
-import { changeURL } from "testing/utils";
+import { changeURL, createStore } from "testing/utils";
 import urls from "urls";
 
 import Routes from "./Routes";
-
-const mockStore = configureStore<RootState, unknown>([]);
 
 describe("Routes", () => {
   let state: RootState;
@@ -44,7 +41,7 @@ describe("Routes", () => {
 
   it("handles models", async () => {
     state.juju.modelsLoaded = true;
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL(urls.models.index);
     render(
       <Provider store={store}>
@@ -57,7 +54,7 @@ describe("Routes", () => {
   });
 
   it("handles model details", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL(urls.model.index({ userName: "eggman", modelName: "model1" }));
     render(
       <Provider store={store}>
@@ -70,7 +67,7 @@ describe("Routes", () => {
   });
 
   it("handles controllers", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL(urls.controllers);
     render(
       <Provider store={store}>
@@ -86,7 +83,7 @@ describe("Routes", () => {
     if (state.general.config) {
       state.general.config.isJuju = false;
     }
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL(urls.logs);
     render(
       <Provider store={store}>
@@ -100,7 +97,7 @@ describe("Routes", () => {
     if (state.general.config) {
       state.general.config.isJuju = true;
     }
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL(urls.logs);
     render(
       <Provider store={store}>
@@ -114,7 +111,7 @@ describe("Routes", () => {
     if (state.general.config) {
       state.general.config.isJuju = false;
     }
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL(urls.search);
     render(
       <Provider store={store}>
@@ -130,7 +127,7 @@ describe("Routes", () => {
     if (state.general.config) {
       state.general.config.isJuju = true;
     }
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL(urls.search);
     render(
       <Provider store={store}>
@@ -146,7 +143,7 @@ describe("Routes", () => {
     if (state.general.config) {
       state.general.config.isJuju = false;
     }
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL(urls.permissions);
     render(
       <Provider store={store}>
@@ -162,7 +159,7 @@ describe("Routes", () => {
     if (state.general.config) {
       state.general.config.isJuju = true;
     }
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL(urls.permissions);
     render(
       <Provider store={store}>

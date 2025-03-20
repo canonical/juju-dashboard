@@ -1,7 +1,6 @@
 import type { Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
 import { renderHook } from "@testing-library/react";
-import configureStore from "redux-mock-store";
 import { vi } from "vitest";
 
 import type { RootState } from "store/store";
@@ -13,7 +12,7 @@ import {
 } from "testing/factories/general";
 import { applicationsCharmActionsResultsFactory } from "testing/factories/juju/ActionV7";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
-import { ComponentProviders, changeURL } from "testing/utils";
+import { ComponentProviders, changeURL, createStore } from "testing/utils";
 
 import {
   Label,
@@ -22,8 +21,6 @@ import {
   useQueryOperationsList,
   useQueryActionsList,
 } from "./actions";
-
-const mockStore = configureStore<RootState, unknown>([]);
 
 vi.mock("@canonical/jujulib", () => ({
   connectAndLogin: vi.fn(),
@@ -57,7 +54,7 @@ describe("actions", () => {
 
   describe("useGetActionsForApplication", () => {
     it("handles no actions facade", async () => {
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL(url);
       const loginResponse = {
         conn: {
@@ -82,7 +79,7 @@ describe("actions", () => {
     });
 
     it("gets actions for an application", async () => {
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL("/models/eggman@external/group-test/app/etcd");
       const actionList = applicationsCharmActionsResultsFactory.build();
       const loginResponse = {
@@ -123,7 +120,7 @@ describe("actions", () => {
 
   describe("useExecuteActionOnUnits", () => {
     it("handles no actions facade", async () => {
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL(url);
       const loginResponse = {
         conn: {
@@ -148,7 +145,7 @@ describe("actions", () => {
     });
 
     it("can execute actions on units", async () => {
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL("/models/eggman@external/group-test/app/etcd");
       const returnResult = { operation: "rebooting" };
       const loginResponse = {
@@ -204,7 +201,7 @@ describe("actions", () => {
 
   describe("useQueryOperationsList", () => {
     it("handles no actions facade", async () => {
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL(url);
       const loginResponse = {
         conn: {
@@ -231,7 +228,7 @@ describe("actions", () => {
     });
 
     it("get the operations list", async () => {
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL("/models/eggman@external/group-test/app/etcd");
       const returnResult = { results: [], truncated: true };
       const loginResponse = {
@@ -282,7 +279,7 @@ describe("actions", () => {
 
   describe("useQueryActionsList", () => {
     it("handles no actions facade", async () => {
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL(url);
       const loginResponse = {
         conn: {
@@ -309,7 +306,7 @@ describe("actions", () => {
     });
 
     it("can get the actions list", async () => {
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL("/models/eggman@external/group-test/app/etcd");
       const returnResult = { results: [] };
       const loginResponse = {

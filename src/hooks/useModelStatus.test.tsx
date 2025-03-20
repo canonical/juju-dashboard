@@ -2,7 +2,6 @@ import { renderHook } from "@testing-library/react";
 import type { PropsWithChildren } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router";
-import configureStore from "redux-mock-store";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -11,16 +10,15 @@ import {
   modelDataFactory,
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
+import { createStore } from "testing/utils";
 
 import useModelStatus from "./useModelStatus";
-
-const mockStore = configureStore();
 
 const generateContainer =
   (state: RootState, path: string, url: string) =>
   ({ children }: PropsWithChildren) => {
     window.happyDOM.setURL(url);
-    const store = mockStore(state);
+    const store = createStore(state);
     return (
       <Provider store={store}>
         <BrowserRouter>

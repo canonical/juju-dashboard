@@ -11,7 +11,7 @@ import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import ModelDetails from "./ModelDetails";
@@ -104,7 +104,8 @@ describe("ModelDetails", () => {
     client.conn.facades.client.fullStatus.mockReturnValue(status);
     client.conn.info.serverVersion = "3.1.99";
     vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => client);
-    const { store } = renderComponent(<ModelDetails />, { path, url, state });
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<ModelDetails />, { path, url, store });
     const action = jujuActions.populateMissingAllWatcherData({
       uuid: "abc123",
       status,
@@ -112,24 +113,23 @@ describe("ModelDetails", () => {
     // Wait for the component to be rendered so that async methods have completed.
     await screen.findByTestId("model");
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type),
+      actions.find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 
   it("should not load the full status when using Juju 3.2", async () => {
     client.conn.info.serverVersion = "3.2.99";
     vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => client);
-    const { store } = renderComponent(<ModelDetails />, { path, url, state });
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<ModelDetails />, { path, url, store });
     // Wait for the component to be rendered so that async methods have completed.
     await screen.findByTestId("model");
     expect(client.conn.facades.client.fullStatus).not.toHaveBeenCalled();
     expect(
-      store
-        .getActions()
-        .find(
-          (dispatch) =>
-            dispatch.type === jujuActions.populateMissingAllWatcherData.type,
-        ),
+      actions.find(
+        (dispatch) =>
+          dispatch.type === jujuActions.populateMissingAllWatcherData.type,
+      ),
     ).toBeUndefined();
   });
 

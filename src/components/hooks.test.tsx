@@ -1,13 +1,9 @@
 import { renderHook } from "@testing-library/react";
-import configureStore from "redux-mock-store";
 
-import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
-import { ComponentProviders, changeURL } from "testing/utils";
+import { ComponentProviders, changeURL, createStore } from "testing/utils";
 
 import { useEntityDetailsParams } from "./hooks";
-
-const mockStore = configureStore<RootState, unknown>([]);
 
 describe("useEntityDetailsParams", () => {
   it("retrieve entity details from the URL", () => {
@@ -17,7 +13,7 @@ describe("useEntityDetailsParams", () => {
         <ComponentProviders
           {...props}
           path="/models/:userName/:modelName/machine/:machineId"
-          store={mockStore(rootStateFactory.build())}
+          store={createStore(rootStateFactory.build())}
         />
       ),
     });
@@ -38,7 +34,7 @@ describe("useEntityDetailsParams", () => {
         <ComponentProviders
           {...props}
           path="/models/:userName/:modelName/applications"
-          store={mockStore(rootStateFactory.build())}
+          store={createStore(rootStateFactory.build())}
         />
       ),
     });
@@ -52,7 +48,7 @@ describe("useEntityDetailsParams", () => {
         <ComponentProviders
           {...props}
           path="/models/:userName/:modelName/app/:appName"
-          store={mockStore(rootStateFactory.build())}
+          store={createStore(rootStateFactory.build())}
         />
       ),
     });

@@ -1,7 +1,6 @@
 import * as jujuLib from "@canonical/jujulib";
 import type { Connection } from "@canonical/jujulib";
 import { renderHook, waitFor } from "@testing-library/react";
-import configureStore from "redux-mock-store";
 import { vi } from "vitest";
 
 import { actions as jujuActions } from "store/juju";
@@ -16,7 +15,7 @@ import {
   modelListInfoFactory,
   listSecretResultFactory,
 } from "testing/factories/juju/juju";
-import { ComponentProviders, changeURL } from "testing/utils";
+import { ComponentProviders, changeURL, createStore } from "testing/utils";
 
 import {
   useListSecrets,
@@ -28,8 +27,6 @@ import {
   useRevokeSecret,
   Label,
 } from "./secrets";
-
-const mockStore = configureStore<RootState, unknown>([]);
 
 vi.mock("@canonical/jujulib", () => ({
   connectAndLogin: vi.fn(),
@@ -60,7 +57,7 @@ describe("useListSecrets", () => {
   });
 
   it("fetches secrets", async () => {
-    const store = mockStore(state);
+    const [store, storeActions] = createStore(state, { trackActions: true });
     changeURL("/models/eggman@external/group-test/app/etcd");
     const secrets = [listSecretResultFactory.build()];
     const loginResponse = {
@@ -102,20 +99,16 @@ describe("useListSecrets", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === updateAction.type),
+        storeActions.find((dispatch) => dispatch.type === updateAction.type),
       ).toMatchObject(updateAction);
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === loadingAction.type),
+        storeActions.find((dispatch) => dispatch.type === loadingAction.type),
       ).toMatchObject(loadingAction);
     });
   });
 
   it("handles no secrets facade", async () => {
-    const store = mockStore(state);
+    const [store, storeActions] = createStore(state, { trackActions: true });
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {
@@ -146,15 +139,13 @@ describe("useListSecrets", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === updateAction.type),
+        storeActions.find((dispatch) => dispatch.type === updateAction.type),
       ).toMatchObject(updateAction);
     });
   });
 
   it("stores errors from fetching secrets", async () => {
-    const store = mockStore(state);
+    const [store, storeActions] = createStore(state, { trackActions: true });
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {
@@ -191,9 +182,7 @@ describe("useListSecrets", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === updateAction.type),
+        storeActions.find((dispatch) => dispatch.type === updateAction.type),
       ).toMatchObject(updateAction);
     });
   });
@@ -224,7 +213,7 @@ describe("useGetSecretContent", () => {
   });
 
   it("fetches secrets", async () => {
-    const store = mockStore(state);
+    const [store, storeActions] = createStore(state, { trackActions: true });
     changeURL("/models/eggman@external/group-test/app/etcd");
     const data = { key: "val" };
     const secrets = [
@@ -271,20 +260,16 @@ describe("useGetSecretContent", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === updateAction.type),
+        storeActions.find((dispatch) => dispatch.type === updateAction.type),
       ).toMatchObject(updateAction);
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === loadingAction.type),
+        storeActions.find((dispatch) => dispatch.type === loadingAction.type),
       ).toMatchObject(loadingAction);
     });
   });
 
   it("handles value errors", async () => {
-    const store = mockStore(state);
+    const [store, storeActions] = createStore(state, { trackActions: true });
     changeURL("/models/eggman@external/group-test/app/etcd");
     const secrets = [
       listSecretResultFactory.build({
@@ -326,15 +311,13 @@ describe("useGetSecretContent", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === errorAction.type),
+        storeActions.find((dispatch) => dispatch.type === errorAction.type),
       ).toMatchObject(errorAction);
     });
   });
 
   it("handles no data", async () => {
-    const store = mockStore(state);
+    const [store, storeActions] = createStore(state, { trackActions: true });
     changeURL("/models/eggman@external/group-test/app/etcd");
     const secrets = [
       listSecretResultFactory.build({
@@ -376,15 +359,13 @@ describe("useGetSecretContent", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === errorAction.type),
+        storeActions.find((dispatch) => dispatch.type === errorAction.type),
       ).toMatchObject(errorAction);
     });
   });
 
   it("handles no secrets facade", async () => {
-    const store = mockStore(state);
+    const [store, storeActions] = createStore(state, { trackActions: true });
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {
@@ -415,15 +396,13 @@ describe("useGetSecretContent", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === errorAction.type),
+        storeActions.find((dispatch) => dispatch.type === errorAction.type),
       ).toMatchObject(errorAction);
     });
   });
 
   it("stores errors from fetching secrets", async () => {
-    const store = mockStore(state);
+    const [store, storeActions] = createStore(state, { trackActions: true });
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {
@@ -460,9 +439,7 @@ describe("useGetSecretContent", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === errorAction.type),
+        storeActions.find((dispatch) => dispatch.type === errorAction.type),
       ).toMatchObject(errorAction);
     });
   });
@@ -493,7 +470,7 @@ describe("useCreateSecrets", () => {
   });
 
   it("can create secrets", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const secrets = [
       {
@@ -536,7 +513,7 @@ describe("useCreateSecrets", () => {
   });
 
   it("handles no secrets facade", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const secrets = [
       {
@@ -597,7 +574,7 @@ describe("useUpdateSecrets", () => {
   });
 
   it("can update secrets", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const secrets = [
       {
@@ -642,7 +619,7 @@ describe("useUpdateSecrets", () => {
   });
 
   it("handles no secrets facade", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const secrets = [
       {
@@ -705,7 +682,7 @@ describe("useRemoveSecrets", () => {
   });
 
   it("can remove secrets", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const secrets = [
       {
@@ -746,7 +723,7 @@ describe("useRemoveSecrets", () => {
   });
 
   it("handles no secrets facade", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const secrets = [
       {
@@ -805,7 +782,7 @@ describe("useGrantSecret", () => {
   });
 
   it("can grant apps", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const results = { results: [{ result: "secret:def456" }] };
     const grantSecret = vi
@@ -846,7 +823,7 @@ describe("useGrantSecret", () => {
   });
 
   it("handles no secrets facade", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {
@@ -900,7 +877,7 @@ describe("useRevokeSecret", () => {
   });
 
   it("can revoke apps", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const results = { results: [{ result: "secret:def456" }] };
     const revokeSecret = vi
@@ -941,7 +918,7 @@ describe("useRevokeSecret", () => {
   });
 
   it("handles no secrets facade", async () => {
-    const store = mockStore(state);
+    const store = createStore(state);
     changeURL("/models/eggman@external/group-test/app/etcd");
     const loginResponse = {
       conn: {
