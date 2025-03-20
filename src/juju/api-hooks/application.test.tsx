@@ -1,7 +1,6 @@
 import type { Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
 import { renderHook } from "@testing-library/react";
-import configureStore from "redux-mock-store";
 import { vi } from "vitest";
 
 import type { Config } from "panels/ConfigPanel/types";
@@ -17,15 +16,13 @@ import {
   errorResultsFactory,
 } from "testing/factories/juju/Application";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
-import { ComponentProviders, changeURL } from "testing/utils";
+import { ComponentProviders, changeURL, createStore } from "testing/utils";
 
 import {
   Label,
   useGetApplicationConfig,
   useSetApplicationConfig,
 } from "./application";
-
-const mockStore = configureStore<RootState, unknown>([]);
 
 vi.mock("@canonical/jujulib", () => ({
   connectAndLogin: vi.fn(),
@@ -59,7 +56,7 @@ describe("application", () => {
 
   describe("useGetApplicationConfig", () => {
     it("handles no application facade", async () => {
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL(url);
       const loginResponse = {
         conn: {
@@ -85,7 +82,7 @@ describe("application", () => {
 
     it("can get app config", async () => {
       const config = applicationGetFactory.build();
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL(url);
       const loginResponse = {
         conn: {
@@ -127,7 +124,7 @@ describe("application", () => {
           newValue: "new val",
         },
       };
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL(url);
       const loginResponse = {
         conn: {
@@ -167,7 +164,7 @@ describe("application", () => {
           newValue: "new val",
         },
       };
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL(url);
       const configResponse = errorResultsFactory.build();
       const loginResponse = {
@@ -236,7 +233,7 @@ describe("application", () => {
           newValue: 0.0,
         },
       };
-      const store = mockStore(state);
+      const store = createStore(state);
       changeURL(url);
       const configResponse = errorResultsFactory.build();
       const loginResponse = {

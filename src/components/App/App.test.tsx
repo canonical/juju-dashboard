@@ -1,12 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import ReactGA from "react-ga4";
 import { Provider } from "react-redux";
-import configureStore from "redux-mock-store";
 import { vi } from "vitest";
 
 import * as Routes from "components/Routes";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
+import { createStore } from "testing/utils";
 
 import App from "./App";
 
@@ -25,8 +25,6 @@ vi.mock("react-router", async () => {
   };
 });
 
-const mockStore = configureStore([]);
-
 describe("App", () => {
   afterEach(() => {
     vi.resetAllMocks();
@@ -37,7 +35,7 @@ describe("App", () => {
     vi.spyOn(Routes, "default").mockImplementation(() => {
       throw new Error("This is a thrown error");
     });
-    const store = mockStore(rootStateFactory.withGeneralConfig().build());
+    const store = createStore(rootStateFactory.withGeneralConfig().build());
     render(
       <Provider store={store}>
         <App />
@@ -50,7 +48,7 @@ describe("App", () => {
     const state = rootStateFactory
       .withGeneralConfig()
       .build({ general: { connectionError: "Can't connect" } });
-    const store = mockStore(state);
+    const store = createStore(state);
     render(
       <Provider store={store}>
         <App />
@@ -65,7 +63,7 @@ describe("App", () => {
     const initializeSpy = vi.spyOn(ReactGA, "initialize");
     const pageviewSpy = vi.spyOn(ReactGA, "send");
     const state = rootStateFactory.withGeneralConfig().build();
-    const store = mockStore(state);
+    const store = createStore(state);
     render(
       <Provider store={store}>
         <App />
@@ -90,7 +88,7 @@ describe("App", () => {
         }),
       }),
     });
-    const store = mockStore(state);
+    const store = createStore(state);
     render(
       <Provider store={store}>
         <App />

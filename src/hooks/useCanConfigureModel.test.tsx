@@ -2,7 +2,6 @@ import { renderHook, waitFor } from "@testing-library/react";
 import type { PropsWithChildren } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router";
-import configureStore from "redux-mock-store";
 
 import { JIMMRelation } from "juju/jimm/JIMMV4";
 import { actions as jujuActions } from "store/juju";
@@ -25,17 +24,15 @@ import {
   rebacAllowedFactory,
 } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
-import { renderWrappedHook } from "testing/utils";
+import { renderWrappedHook, createStore } from "testing/utils";
 
 import useCanConfigureModel from "./useCanConfigureModel";
-
-const mockStore = configureStore<RootState, unknown>([]);
 
 const generateContainer =
   (state: RootState, path: string, url: string) =>
   ({ children }: PropsWithChildren) => {
     window.happyDOM.setURL(url);
-    const store = mockStore(state);
+    const store = createStore(state);
     return (
       <Provider store={store}>
         <BrowserRouter>
@@ -157,7 +154,7 @@ describe("useModelStatus", () => {
         rebac: true,
       }),
     });
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     renderWrappedHook(() => useCanConfigureModel(), {
       store,
       path,
@@ -173,7 +170,7 @@ describe("useModelStatus", () => {
     });
     await waitFor(() => {
       expect(
-        store.getActions().find((dispatch) => dispatch.type === action.type),
+        actions.find((dispatch) => dispatch.type === action.type),
       ).toMatchObject(action);
     });
   });

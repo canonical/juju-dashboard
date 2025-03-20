@@ -8,7 +8,7 @@ import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import { crossModelQueryFactory } from "testing/factories/juju/jimm";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 
 import SearchForm from "./SearchForm";
 import { QUERY_HISTORY_KEY } from "./consts";
@@ -48,8 +48,9 @@ describe("SearchForm", () => {
   });
 
   it("performs a search if there is a query in the URL", async () => {
-    const { store } = renderComponent(<SearchForm />, {
-      state,
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<SearchForm />, {
+      store,
       url: "/?q=.applications",
     });
     const action = jujuActions.fetchCrossModelQuery({
@@ -57,7 +58,7 @@ describe("SearchForm", () => {
       wsControllerURL: "wss://controller.example.com",
     });
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type),
+      actions.find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 

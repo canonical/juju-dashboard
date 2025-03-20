@@ -1,6 +1,5 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import configureStore from "redux-mock-store";
 import { vi } from "vitest";
 
 import * as secretHooks from "juju/api-hooks/secrets";
@@ -23,14 +22,12 @@ import {
   modelDataFactory,
   modelFeaturesStateFactory,
 } from "testing/factories/juju/juju";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import Secrets from "./Secrets";
 import { TestId as SecretsTableTestId } from "./SecretsTable/types";
 import { Label } from "./types";
-
-const mockStore = configureStore<RootState, unknown>([]);
 
 vi.mock("juju/api-hooks/secrets", () => {
   return {
@@ -116,7 +113,7 @@ describe("Secrets", () => {
   });
 
   it("cleans up secrets when unmounted", async () => {
-    const store = mockStore(state);
+    const [store, actions] = createStore(state, { trackActions: true });
     const { result } = renderComponent(<Secrets />, { store, path, url });
     result.unmount();
     const updateAction = jujuActions.clearSecrets({
@@ -125,15 +122,15 @@ describe("Secrets", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === updateAction.type),
+        actions.find((dispatch) => dispatch.type === updateAction.type),
       ).toMatchObject(updateAction);
     });
   });
 
   it("handles no data when unmounting", async () => {
-    const store = mockStore(rootStateFactory.build());
+    const [store, actions] = createStore(rootStateFactory.build(), {
+      trackActions: true,
+    });
     const { result } = renderComponent(<Secrets />, { store, path, url });
     result.unmount();
     const updateAction = jujuActions.clearSecrets({
@@ -142,9 +139,7 @@ describe("Secrets", () => {
     });
     await waitFor(() => {
       expect(
-        store
-          .getActions()
-          .find((dispatch) => dispatch.type === updateAction.type),
+        actions.find((dispatch) => dispatch.type === updateAction.type),
       ).toBeUndefined();
     });
   });
