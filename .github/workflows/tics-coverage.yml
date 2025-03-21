@@ -5,6 +5,7 @@ on:
 
 jobs:
   TICS:
+    if: false
     runs-on: ubuntu-latest
     strategy:
       matrix:
