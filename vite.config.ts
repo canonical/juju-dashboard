@@ -93,5 +93,8 @@ export default defineConfig(({ mode }) => {
       mockRestore: true,
       setupFiles: "src/testing/setup.ts",
     },
+    resolve: {
+      conditions: ["module-sync"],
+    },
   };
 });
