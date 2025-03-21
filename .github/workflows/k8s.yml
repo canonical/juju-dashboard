@@ -1,0 +1,70 @@
+name: Integration Test
+
+on:
+  pull_request:
+
+jobs:
+  testk8s:
+    name: Test with k8s
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Checkout Juju Dashboard repo
+        uses: actions/checkout@v4
+      - name: Set up microk8s
+        run: |
+          sudo snap install microk8s --channel=1.28-strict/stable
+          sudo microk8s status --wait-ready
+          sudo microk8s.enable hostpath-storage
+          sudo microk8s.enable dns
+          sudo microk8s status --wait-ready
+      - name: Set up Juju
+        run: |
+          sudo snap install juju --channel=3/stable
+          mkdir -p ~/.local/share
+      - name: Bootstrap Juju
+        run: |
+          sudo juju bootstrap microk8s micro
+      - name: Set up access
+        run: echo test | sudo juju change-user-password --no-prompt
+      - name: Create a model, deploy an application and run juju status
+        run: |
+          sudo juju add-model foo && \
+          sudo juju deploy haproxy && \
+          sleep 5 && \
+          sudo juju status
+          sudo juju switch controller
+          sudo juju status
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - name: Install
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build
+      - name: Configure
+        run: |
+          sed -i -e 's/controllerAPIEndpoint\:\ \"\"/controllerAPIEndpoint:\ "wss:\/\/'$(sudo juju show-controller micro | yq '.micro.details.api-endpoints[0]')'\/api"/g' build/config.js
+          sed -i -e 's/analyticsEnabled\:\ true/analyticsEnabled:\ false/g' build/config.js
+          sed -i -e 's/isJuju\:\ false/isJuju:\ true/g' build/config.js
+          cat build/config.js
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+      - name: Run Playwright tests
+        run: yarn playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 1
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: false
+        timeout-minutes: 15
+        with:
+          limit-access-to-actor: true
