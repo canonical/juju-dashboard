@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import { FieldsLabel } from "components/secrets/SecretForm/Fields";
+import * as jujuApiHooks from "juju/api-hooks";
 import * as secretHooks from "juju/api-hooks/secrets";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -98,6 +99,11 @@ describe("SecretsPicker", () => {
         }),
       },
     });
+    vi.spyOn(jujuApiHooks, "useListSecrets").mockReturnValue(vi.fn());
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("displays a spinner while loading secrets the first time", async () => {
