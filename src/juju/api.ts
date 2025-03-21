@@ -99,7 +99,7 @@ export function generateConnectionOptions(
   return {
     bakery,
     closeCallback: onClose,
-    debug: false,
+    debug: true,
     facades,
     oidcEnabled: authMethod === AuthMethod.OIDC,
     wsclass: WebSocket,
