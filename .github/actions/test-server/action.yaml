@@ -1,0 +1,135 @@
+name: JIMM Server Setup
+description: "Create a JIMM environment"
+
+inputs:
+  jimm-version:
+    description: >
+      JIMM version tag to use. This will decide the version of JIMM to start e.g. v3.1.7
+      A special tag of "dev" can be provided to use the current development version of JIMM.
+    required: true
+  juju-channel:
+    description: 'Juju snap channel to pass to charmed-kubernetes/actions-operator'
+    required: false
+  ghcr-pat:
+    description: >
+      PAT Token that has package:read access to canonical/JIMM
+      The PAT token can be left empty when building the development version of JIMM.
+    required: true
+  python-version:
+    description: Python version to install in the setup-python action.
+    default: "3.12"
+    required: false
+  dump-logs:
+    description: 'Dump JIMM container logs at the end of the action.'
+    required: false
+    default: "false"
+
+outputs:
+  url:
+    description: 'URL where JIMM can be reached.'
+    value: "https://jimm.localhost"
+  client-id:
+    description: 'Test client ID to login to JIMM with a service account.'
+    value: "test-client-id"
+  client-secret:
+    description: 'Test client Secret to login to JIMM with a service account.'
+    value: "2M2blFbO4GX4zfggQpivQSxwWX1XGgNf"
+  ca-cert:
+    description: 'The CA certificate used to genereate the JIMM server cert.'
+    value: ${{ steps.fetch-cert.outputs.jimm-ca }}
+  microk8s-controller:
+    description: 'The microk8s controller name'
+    value: ${{ steps.microk8s-controller.outputs.name }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set container name
+      id: set-container-name
+      run: echo "container_name=$([[ '${{ inputs.jimm-version }}' == 'dev' ]] && echo 'jimm' || echo 'jimm-test')" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Login to GitHub Container Registry
+      if: ${{ inputs.jimm-version != 'dev' }}
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ inputs.ghcr-pat }}
+
+    # We can't use a make target here because a composite action
+    # doesn't have a .git folder when checked out.
+    - name: Start server based on released version
+      if: ${{ inputs.jimm-version != 'dev' }}
+      run: |
+        cd local/traefik/certs; ./certs.sh; cd - && \
+        docker compose --profile test up -d --wait
+      shell: bash
+      working-directory: ${{ github.action_path }}/../../../jimm
+      env:
+        JIMM_VERSION: ${{ inputs.jimm-version }}
+
+    - name: Start server based on development version
+      if: ${{ inputs.jimm-version == 'dev' }}
+      working-directory: ${{ github.action_path }}/../../../jimm
+      run: make dev-env
+      shell: bash
+
+    # See: https://github.com/charmed-kubernetes/actions-operator/issues/82
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Setup Juju Controller
+      uses: charmed-kubernetes/actions-operator@main
+      with:
+        provider: "microk8s"
+        channel: 1.28-strict/stable
+        microk8s-addons: "storage dns rbac host-access metallb:10.64.140.43-10.64.140.49"
+        juju-channel: 3.6/stable
+        microk8s-group: snap_microk8s
+        bootstrap-options: "--config login-token-refresh-url=http://10.0.1.1:17070/.well-known/jwks.json"
+
+    # As described in https://github.com/charmed-kubernetes/actions-operator grab the newly setup controller name
+    - name: Save microk8s controller name
+      id: microk8s-controller
+      run: echo "name=$CONTROLLER_NAME" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Install jimmctl, jaas plugin and yq
+      run: |
+        sudo snap install jimmctl --channel=3/stable && \
+        sudo snap install jaas --channel=3/stable &&
+        sudo snap install yq
+      shell: bash
+
+    - name: Authenticate Juju CLI
+      run: chmod -R 666 ~/.local/share/juju/*.yaml && ./local/jimm/setup-cli-auth.sh
+      working-directory: ${{ github.action_path }}/../../../jimm
+      shell: bash
+      # Below is a hardcoded JWT using the same test-secret used in JIMM's docker compose and allows the CLI to authenticate as the jimm-test@canonical.com user.
+      env:
+        JWT: ZXlKMGVYQWlPaUpLVjFRaUxDSmhiR2NpT2lKSVV6STFOaUo5LmV5SnBjM01pT2lKUGJteHBibVVnU2xkVUlFSjFhV3hrWlhJaUxDSnBZWFFpT2pFM01qUXlNamcyTmpBc0ltVjRjQ0k2TXprMk5EYzFNelEyTUN3aVlYVmtJam9pYW1sdGJTSXNJbk4xWWlJNkltcHBiVzB0ZEdWemRFQmpZVzV2Ym1sallXd3VZMjl0SW4wLkpTWVhXcGF6T0FnX1VFZ2hkbjlOZkVQdWxhWWlJQVdaX3BuSmRDbnJvWEk=
+
+    - name: Add microk8s Juju controller to JIMM
+      run: ./local/jimm/add-microk8s-controller.sh
+      working-directory: ${{ github.action_path }}/../../../jimm
+      shell: bash
+      env:
+        JIMM_CONTROLLER_NAME: "jimm"
+        CONTROLLER_NAME: ${{ steps.microk8s-controller.outputs.name }}
+
+    - name: Provide service account with cloud-credentials
+      run: ./local/jimm/setup-service-account.sh
+      working-directory: ${{ github.action_path }}/../../../jimm
+      shell: bash
+      env:
+        CLOUD: microk8s
+        CREDENTIAL_NAME: microk8s
+    
+    - name: Dump JIMM container logs
+      if: true
+      uses: gacts/run-and-post-run@v1
+      with:
+        post: docker logs ${{ env.container_name }}
