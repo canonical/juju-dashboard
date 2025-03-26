@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => {
       nodePolyfills({
         // Whether to polyfill specific globals.
         globals: {
-          // Required by bakeryjs and async-limiter.
+          // Required by bakeryjs.
           process: true,
         },
       }),
