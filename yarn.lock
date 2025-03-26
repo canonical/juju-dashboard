@@ -2647,13 +2647,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async-limiter@npm:2.0.0":
-  version: 2.0.0
-  resolution: "async-limiter@npm:2.0.0"
-  checksum: 10c0/ca56a29bc92b5d52cec7c342a7a28f1b1a755347d104f5c7d95a3d1af367962f009f9f439714810eb80faeba29f91d33dab736a2f8566259d56b85078a591c93
-  languageName: node
-  linkType: hard
-
 "async@npm:^3.2.3":
   version: 3.2.5
   resolution: "async@npm:3.2.5"
@@ -7512,7 +7505,6 @@ __metadata:
     "@vitejs/plugin-react-swc": "npm:3.8.0"
     "@vitest/coverage-v8": "npm:3.0.5"
     ansi-to-html: "npm:0.7.2"
-    async-limiter: "npm:2.0.0"
     axios: "npm:1.7.9"
     axios-mock-adapter: "npm:2.1.0"
     classnames: "npm:2.5.1"

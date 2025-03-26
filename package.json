@@ -54,7 +54,6 @@
     "@sentry/core": "9.1.0",
     "@tanstack/react-query": "5.66.0",
     "ansi-to-html": "0.7.2",
-    "async-limiter": "2.0.0",
     "axios": "1.7.9",
     "classnames": "2.5.1",
     "clone-deep": "4.0.1",

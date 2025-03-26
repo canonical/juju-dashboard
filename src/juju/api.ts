@@ -16,7 +16,6 @@ import Secrets from "@canonical/jujulib/dist/api/facades/secrets";
 import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
 import type { ValueOf } from "@canonical/react-components";
 import { unwrapResult } from "@reduxjs/toolkit";
-import Limiter from "async-limiter";
 import type { Dispatch } from "redux";
 
 import bakery from "juju/bakery";
@@ -344,80 +343,69 @@ export async function fetchAllModelStatuses(
   dispatch: Store["dispatch"],
   getState: () => RootState,
 ) {
-  const queue = new Limiter({ concurrency: 1 });
   let modelErrorCount = 0;
-  modelUUIDList.forEach((modelUUID) => {
-    queue.push(async (done) => {
-      if (isLoggedIn(getState(), wsControllerURL)) {
-        try {
-          const modelWsControllerURL = getModelByUUID(
-            getState(),
+  // Use for/of so that the awaits are blocking so only one model gets polled at a time.
+  for (const modelUUID of modelUUIDList) {
+    if (isLoggedIn(getState(), wsControllerURL)) {
+      try {
+        const modelWsControllerURL = getModelByUUID(
+          getState(),
+          modelUUID,
+        )?.wsControllerURL;
+        if (modelWsControllerURL) {
+          await fetchAndStoreModelStatus(
             modelUUID,
-          )?.wsControllerURL;
-          if (modelWsControllerURL) {
-            await fetchAndStoreModelStatus(
-              modelUUID,
-              modelWsControllerURL,
-              dispatch,
-              getState,
-            );
-          }
-          if (!isLoggedIn(getState(), wsControllerURL)) {
-            // The user may have logged out while the previous call was in
-            // progress.
-            done();
-            return;
-          }
-          const modelInfo = await fetchModelInfo(conn, modelUUID);
-          if (modelInfo) {
-            dispatch(
-              jujuActions.updateModelInfo({
-                modelInfo,
-                wsControllerURL,
-              }),
-            );
-          }
-          if (!isLoggedIn(getState(), wsControllerURL)) {
-            // The user may have logged out while the previous call was in
-            // progress.
-            done();
-            return;
-          }
-          if (modelInfo?.results[0].result?.["is-controller"]) {
-            // If this is a controller model then update the
-            // controller data with this model data.
-            dispatch(addControllerCloudRegion({ wsControllerURL, modelInfo }))
-              .then(unwrapResult)
-              .catch((error) =>
-                // Not shown in UI. Logged for debugging purposes.
-                logger.error(
-                  "Error when trying to add controller cloud and region data.",
-                  error,
-                ),
-              );
-          }
-        } catch (error) {
-          modelErrorCount++;
+            modelWsControllerURL,
+            dispatch,
+            getState,
+          );
         }
+        if (!isLoggedIn(getState(), wsControllerURL)) {
+          // The user may have logged out while the previous call was in
+          // progress.
+          return;
+        }
+        const modelInfo = await fetchModelInfo(conn, modelUUID);
+        if (modelInfo) {
+          dispatch(
+            jujuActions.updateModelInfo({
+              modelInfo,
+              wsControllerURL,
+            }),
+          );
+        }
+        if (!isLoggedIn(getState(), wsControllerURL)) {
+          // The user may have logged out while the previous call was in
+          // progress.
+          return;
+        }
+        if (modelInfo?.results[0].result?.["is-controller"]) {
+          // If this is a controller model then update the
+          // controller data with this model data.
+          dispatch(addControllerCloudRegion({ wsControllerURL, modelInfo }))
+            .then(unwrapResult)
+            .catch((error) =>
+              // Not shown in UI. Logged for debugging purposes.
+              logger.error(
+                "Error when trying to add controller cloud and region data.",
+                error,
+              ),
+            );
+        }
+      } catch (error) {
+        modelErrorCount++;
       }
-      done();
-    });
-  });
-  return new Promise<void>((resolve, reject) => {
-    queue.onDone(() =>
-      // If errors exist and appear in more than 10% of models, the promise is
-      // rejected and the error further handled in modelPollerMiddleware().
-      modelErrorCount && modelErrorCount >= 0.1 * modelUUIDList.length
-        ? reject(
-            new Error(
-              modelErrorCount === modelUUIDList.length
-                ? ModelsError.LOAD_ALL_MODELS
-                : ModelsError.LOAD_SOME_MODELS,
-            ),
-          )
-        : resolve(),
+    }
+  }
+  // If errors exist and appear in more than 10% of models, the promise is
+  // rejected and the error further handled in modelPollerMiddleware().
+  if (modelErrorCount && modelErrorCount >= 0.1 * modelUUIDList.length) {
+    throw new Error(
+      modelErrorCount === modelUUIDList.length
+        ? ModelsError.LOAD_ALL_MODELS
+        : ModelsError.LOAD_SOME_MODELS,
     );
-  });
+  }
 }
 
 /**
