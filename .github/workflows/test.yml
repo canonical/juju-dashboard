@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - main
+      - feat/auth-abstraction
   pull_request:
     branches:
       - main
+      - feat/auth-abstraction
 jobs:
   test:
     name: Test
