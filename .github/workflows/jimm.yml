@@ -1,0 +1,95 @@
+name: Integration Test
+
+on:
+  pull_request:
+
+jobs:
+  startjimm:
+    name: Test JIMM with K8s
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup tmate session
+        if: false
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 20
+        with:
+          limit-access-to-actor: true
+          detached: true
+      - name: Checkout Juju Dashboard repo
+        uses: actions/checkout@v4
+      - name: Checkout JIMM repo
+        uses: actions/checkout@v4
+        with:
+          repository: canonical/jimm
+          path: jimm
+      - name: Update dashboard paths
+        run: |
+          sed -i -e 's/JIMM_DASHBOARD_FINAL_REDIRECT_URL: "https:\/\/jaas.ai"/CORS_ALLOWED_ORIGINS: "http:\/\/jimm.localhost:8000"\n      JIMM_DASHBOARD_LOCATION: "http:\/\/jimm.localhost:8000"\n      JIMM_DASHBOARD_FINAL_REDIRECT_URL: "http:\/\/jimm.localhost:8000"/g' jimm/docker-compose.common.yaml
+      - name: Update setup script
+        run: |
+          sed -i -e 's/qa-microk8s/"${CONTROLLER_NAME}"/g' jimm/local/jimm/add-microk8s-controller.sh
+          sed -i -e 's/microk8s.kubectl/sudo microk8s.kubectl/g' jimm/local/jimm/add-microk8s-controller.sh
+          sed -i -e 's/juju switch jimm-dev/juju switch jimm/' jimm/local/jimm/add-microk8s-controller.sh
+          sed -i -e 's/controller jimm-dev/controller jimm/' jimm/local/jimm/add-microk8s-controller.sh
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: 'jimm/go.mod'
+
+      - name: Go vendor to speed up docker build
+        run: cd jimm && go mod vendor
+
+      - name: Start JIMM (pull request)
+        uses: ./.github/actions/test-server
+        id: test-server
+        with:
+          jimm-version: dev
+          juju-channel: "3.6/edge"
+          ghcr-pat: ${{ secrets.GITHUB_TOKEN }}
+          dump-logs: true
+
+      - name: Create a model, deploy an application and run juju status
+        run: |
+          juju add-model foo && \
+          juju deploy haproxy && \
+          sleep 5 && \
+          juju status
+
+      - name: Restart JIMM
+        run: | 
+          docker restart jimm
+          cd jimm && docker compose exec jimm-dev bash -c "echo '172.17.0.1 juju-apiserver' >> /etc/hosts"
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - name: Install
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build
+      - name: Configure
+        run: |
+          sed -i -e 's/controllerAPIEndpoint\:\ \"\"/controllerAPIEndpoint:\ "wss:\/\/jimm.localhost\/api"/g' build/config.js
+          sed -i -e 's/analyticsEnabled\:\ true/analyticsEnabled:\ false/g' build/config.js
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+      - name: Run Playwright tests
+        run: yarn playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 1
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: false
+        timeout-minutes: 15
+        with:
+          limit-access-to-actor: true
