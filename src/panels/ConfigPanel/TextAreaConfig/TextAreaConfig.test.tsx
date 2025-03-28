@@ -2,6 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
+import * as jujuApiHooks from "juju/api-hooks";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -71,6 +72,11 @@ describe("TextAreaConfig", () => {
         }),
       },
     });
+    vi.spyOn(jujuApiHooks, "useListSecrets").mockReturnValue(vi.fn());
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("displays a text input", async () => {

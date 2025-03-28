@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import { actions as generalActions } from "store/general";
-import { renderComponent } from "testing/utils";
+import { rootStateFactory } from "testing/factories";
+import { createStore, renderComponent } from "testing/utils";
 
 import AuthenticationButton from "./AuthenticationButton";
 
@@ -22,16 +23,20 @@ describe("AuthenticationButton", () => {
 
   it("should remove the URL when clicked", async () => {
     const onClick = vi.fn();
-    const { store } = renderComponent(
+    const [store, actions] = createStore(rootStateFactory.build(), {
+      trackActions: true,
+    });
+    renderComponent(
       <AuthenticationButton onClick={onClick} visitURL="http://example.com">
         Log in
       </AuthenticationButton>,
+      { store },
     );
     await userEvent.click(screen.getByRole("link", { name: "Log in" }));
     expect(onClick).toHaveBeenCalled();
     const action = generalActions.removeVisitURL("http://example.com");
     expect(
-      store.getActions().find((dispatch) => dispatch.type === action.type),
+      actions.find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
   });
 });

@@ -57,16 +57,6 @@ import {
 import type { AllWatcherDelta } from "./types";
 import { DeltaChangeTypes, DeltaEntityTypes } from "./types";
 
-vi.mock("@canonical/jujulib", () => ({
-  connect: vi.fn(),
-  connectAndLogin: vi.fn(),
-  fetchModelStatus: vi.fn(),
-}));
-
-vi.mock("@canonical/jujulib/dist/api/versions", () => ({
-  jujuUpdateAvailable: vi.fn(),
-}));
-
 describe("Juju API", () => {
   beforeEach(() => {
     vi.useFakeTimers();

@@ -12,7 +12,7 @@ import {
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 
 import LocalAppsTable from "./LocalAppsTable";
 import { Label } from "./types";
@@ -188,18 +188,18 @@ describe("LocalAppsTable", () => {
   });
 
   it("can select individual apps", async () => {
-    const { store } = renderComponent(
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(
       <LocalAppsTable
         applications={state.juju.modelWatcherData?.test123.applications}
       />,
       {
         path,
         url: searchURL,
-        state,
+        store,
       },
     );
     await userEvent.click(screen.getByTestId("select-app-db1"));
-    const actions = store.getActions();
     const db1 = state.juju.modelWatcherData?.test123.applications.db1;
     expect(db1).toBeTruthy();
     const expectedAction = jujuActions.updateSelectedApplications({
@@ -230,18 +230,18 @@ describe("LocalAppsTable", () => {
   });
 
   it("can select all apps", async () => {
-    const { store } = renderComponent(
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(
       <LocalAppsTable
         applications={state.juju.modelWatcherData?.test123.applications}
       />,
       {
         path,
         url: searchURL,
-        state,
+        store,
       },
     );
     await userEvent.click(screen.getByTestId("select-all-apps"));
-    const actions = store.getActions();
     const apps = state.juju.modelWatcherData?.test123.applications;
     expect(apps).toBeTruthy();
     const expectedAction = jujuActions.updateSelectedApplications({
@@ -249,7 +249,7 @@ describe("LocalAppsTable", () => {
     });
     const action = actions.find(
       (action) => action.type === expectedAction.type,
-    );
+    ) as typeof expectedAction;
     expect(action.payload.selectedApplications).toHaveLength(
       expectedAction.payload.selectedApplications.length,
     );
@@ -259,31 +259,28 @@ describe("LocalAppsTable", () => {
   });
 
   it("can deselect all apps", async () => {
-    const apps = state.juju.modelWatcherData?.test123.applications;
-    if (apps) {
-      state.juju.selectedApplications = Object.values(apps);
-    }
-    const { store } = renderComponent(
+    const apps = state.juju.modelWatcherData?.test123.applications ?? {};
+    state.juju.selectedApplications = Object.values(apps);
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(
       <LocalAppsTable
         applications={state.juju.modelWatcherData?.test123.applications}
       />,
       {
         path,
         url: searchURL,
-        state,
+        store,
       },
     );
-    await userEvent.click(screen.getByTestId("select-all-apps"));
     expect(screen.getByTestId("select-all-apps")).toBeChecked();
     await userEvent.click(screen.getByTestId("select-all-apps"));
-    const actions = store.getActions();
-    expect(apps).toBeTruthy();
+    expect(screen.getByTestId("select-all-apps")).not.toBeChecked();
     const expectedAction = jujuActions.updateSelectedApplications({
-      selectedApplications: Object.values(apps ?? {}),
+      selectedApplications: Object.values(apps),
     });
     const selectActions = actions.filter(
       (action) => action.type === expectedAction.type,
-    );
+    ) as (typeof expectedAction)[];
     expect(
       selectActions[selectActions.length - 1].payload.selectedApplications,
     ).toHaveLength(0);
