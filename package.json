@@ -76,7 +76,7 @@
     "react-redux": "9.2.0",
     "react-router": "7.1.5",
     "redux": "5.0.1",
-    "vanilla-framework": "4.21.0",
+    "vanilla-framework": "4.22.0",
     "yup": "1.6.1"
   },
   "devDependencies": {
