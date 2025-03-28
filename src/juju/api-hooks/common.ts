@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { useSelector } from "react-redux";
 
 import { connectToModel } from "juju/api";
 import type { ConnectionWithFacades } from "juju/types";
@@ -64,7 +63,9 @@ export const useCallWithConnectionPromise = <R, A extends unknown[]>(
   userName?: string,
   modelName?: string,
 ) => {
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const modelConnectionCallback = useModelConnectionCallback(modelUUID);
   return useCallback(
     (...args: A) => {

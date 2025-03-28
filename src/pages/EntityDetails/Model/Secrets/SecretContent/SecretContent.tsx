@@ -37,7 +37,9 @@ type Props = {
 const SecretContent = ({ secretURI }: Props) => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const dispatch = useAppDispatch();
-  const modelUUID = useAppSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const wsControllerURL = useAppSelector((state) =>
     getModelByUUID(state, modelUUID),
   )?.wsControllerURL;

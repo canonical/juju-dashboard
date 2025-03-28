@@ -2,7 +2,6 @@ import { Input } from "@canonical/react-components";
 import { format } from "date-fns";
 import { Field, useFormikContext } from "formik";
 import type { JSX } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 import AutocompleteInput from "components/AutocompleteInput";
@@ -15,6 +14,7 @@ import {
   getFullModelNames,
   getUsers,
 } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 import type { FormFields } from "../types";
 
@@ -23,15 +23,15 @@ import { Label } from "./types";
 const Fields = (): JSX.Element => {
   const { modelName } = useParams<EntityDetailsRoute>();
   const showModel = !modelName;
-  const auditEventUsers = useSelector(getAuditEventsUsers);
-  const jujuUsers = useSelector(getUsers);
+  const auditEventUsers = useAppSelector(getAuditEventsUsers);
+  const jujuUsers = useAppSelector(getUsers);
   // Get the unique users from the logs and models returned from Juju.
   const users = Array.from(new Set([...auditEventUsers, ...jujuUsers]));
-  const auditEventModels = useSelector(getAuditEventsModels);
-  const jujuModels = useSelector(getFullModelNames);
+  const auditEventModels = useAppSelector(getAuditEventsModels);
+  const jujuModels = useAppSelector(getFullModelNames);
   // Get the unique model names from the logs and models returned from Juju.
   const models = Array.from(new Set([...auditEventModels, ...jujuModels]));
-  const methods = useSelector(getAuditEventsMethods);
+  const methods = useAppSelector(getAuditEventsMethods);
   const { values } = useFormikContext<FormFields>();
 
   return (

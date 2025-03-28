@@ -7,7 +7,6 @@ import type {
 import { Spinner } from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import { useState, useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import * as Yup from "yup";
 
@@ -70,7 +69,9 @@ const SecretForm = ({
   setSaving,
 }: Props) => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const scrollArea = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const secret = useAppSelector((state) =>

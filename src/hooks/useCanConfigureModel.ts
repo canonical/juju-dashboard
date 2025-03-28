@@ -24,7 +24,7 @@ const useCheckJIMMPermissions = (
   enabled?: boolean,
   cleanup?: boolean,
 ) => {
-  const controllerUser = useAppSelector((state) => getControllerUserTag(state));
+  const controllerUser = useAppSelector(getControllerUserTag);
   const { permitted } = useCheckPermissions(
     enabled && controllerUser && modelUUID
       ? {
@@ -41,7 +41,9 @@ const useCheckJIMMPermissions = (
 const useCanConfigureModel = (cleanup?: boolean) => {
   const isJuju = useAppSelector(getIsJuju);
   const { userName, modelName } = useParams<EntityDetailsRoute>();
-  const modelUUID = useAppSelector(getModelUUIDFromList(modelName, userName));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
   const jujuPermissions = useCheckJujuPermissions(modelUUID, isJuju);
   const jimmPermissions = useCheckJIMMPermissions(modelUUID, !isJuju, cleanup);
   return isJuju ? jujuPermissions : jimmPermissions;

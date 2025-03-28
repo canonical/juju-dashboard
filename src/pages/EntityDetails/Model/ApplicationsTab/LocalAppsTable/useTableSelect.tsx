@@ -1,14 +1,15 @@
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import useAnalytics from "hooks/useAnalytics";
 import type { ApplicationData, ApplicationInfo } from "juju/types";
 import { actions as jujuActions } from "store/juju";
 import { getSelectedApplications } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 import type { Header } from "tables/tableHeaders";
 
 export const useTableSelect = (applications: ApplicationInfo[]) => {
-  let selectedApplications = useSelector(getSelectedApplications());
+  let selectedApplications = useAppSelector(getSelectedApplications);
 
   const sendAnalytics = useAnalytics();
 
@@ -89,7 +90,7 @@ const Checkbox = ({
   onSelect: (app: ApplicationInfo) => void;
   app: ApplicationInfo;
 }) => {
-  const selectedApplications = useSelector(getSelectedApplications());
+  const selectedApplications = useAppSelector(getSelectedApplications);
   if (!("name" in app)) {
     return null;
   }

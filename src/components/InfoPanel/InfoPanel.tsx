@@ -1,5 +1,4 @@
 import { usePortal, Modal } from "@canonical/react-components";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
@@ -12,6 +11,7 @@ import {
   getModelRelations,
   getModelUUIDFromList,
 } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 import { Label, TestId } from "./types";
 
@@ -44,10 +44,18 @@ const InfoPanel = () => {
     Portal,
   } = usePortal();
 
-  const modelUUID = useSelector(getModelUUIDFromList(modelName, userName));
-  const annotations = useSelector(getModelAnnotations(modelUUID));
-  const applications = useSelector(getModelApplications(modelUUID));
-  const relations = useSelector(getModelRelations(modelUUID));
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
+  const annotations = useAppSelector((state) =>
+    getModelAnnotations(state, modelUUID),
+  );
+  const applications = useAppSelector((state) =>
+    getModelApplications(state, modelUUID),
+  );
+  const relations = useAppSelector((state) =>
+    getModelRelations(state, modelUUID),
+  );
 
   const applicationsCount = Object.keys(applications || {}).length;
 
