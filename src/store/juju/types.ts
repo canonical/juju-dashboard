@@ -97,8 +97,14 @@ export type ReBACAllowed = GenericState<string> & {
   allowed?: boolean | null;
 };
 
+export type ReBACRelationship = GenericState<string[]> & {
+  tuple: Partial<RelationshipTuple>;
+  relationships?: RelationshipTuple[] | null;
+};
+
 export type ReBACState = {
   allowed: ReBACAllowed[];
+  relationships: ReBACRelationship[];
 };
 
 export type JujuState = {

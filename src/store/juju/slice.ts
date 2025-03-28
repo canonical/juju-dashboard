@@ -33,6 +33,7 @@ import type {
   ModelSecrets,
   SecretsContent,
   ReBACAllowed,
+  ReBACRelationship,
 } from "./types";
 
 export const DEFAULT_AUDIT_EVENTS_LIMIT = 50;
@@ -92,6 +93,7 @@ const slice = createSlice({
     charms: [],
     rebac: {
       allowed: [],
+      relationships: [],
     },
     secrets: {},
     selectedApplications: [],
@@ -463,6 +465,82 @@ const slice = createSlice({
       );
       if (existingIndex >= 0) {
         state.rebac.allowed.splice(existingIndex, 1);
+      }
+    },
+    listRelationshipTuples: (
+      state,
+      {
+        payload,
+      }: PayloadAction<
+        { tuple: Partial<RelationshipTuple> } & WsControllerURLParam
+      >,
+    ) => {
+      const tuple = payload.tuple;
+      const relationState: ReBACRelationship = {
+        errors: null,
+        loaded: false,
+        loading: true,
+        tuple,
+      };
+      const existingIndex = state.rebac.relationships.findIndex((relation) =>
+        fastDeepEqual(relation.tuple, tuple),
+      );
+      if (existingIndex >= 0) {
+        state.rebac.relationships[existingIndex] = relationState;
+      } else {
+        state.rebac.relationships.push(relationState);
+      }
+    },
+    addListRelationshipTuples: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        tuple: Partial<RelationshipTuple>;
+        relationships?: RelationshipTuple[];
+      }>,
+    ) => {
+      const existingIndex = state.rebac.relationships.findIndex((relation) =>
+        fastDeepEqual(relation.tuple, payload.tuple),
+      );
+      if (existingIndex >= 0) {
+        state.rebac.relationships[existingIndex] = {
+          ...state.rebac.relationships[existingIndex],
+          relationships: payload.relationships,
+          errors: null,
+          loaded: true,
+          loading: false,
+        };
+      }
+    },
+    addListRelationshipTuplesErrors: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{ tuple: Partial<RelationshipTuple>; errors: string[] }>,
+    ) => {
+      const existingIndex = state.rebac.relationships.findIndex((relation) =>
+        fastDeepEqual(relation.tuple, payload.tuple),
+      );
+      if (existingIndex >= 0) {
+        state.rebac.relationships[existingIndex] = {
+          ...state.rebac.relationships[existingIndex],
+          relationships: null,
+          errors: payload.errors,
+          loaded: false,
+          loading: false,
+        };
+      }
+    },
+    removeListRelationshipTuples: (
+      state,
+      { payload }: PayloadAction<{ tuple: Partial<RelationshipTuple> }>,
+    ) => {
+      const existingIndex = state.rebac.relationships.findIndex((relation) =>
+        fastDeepEqual(relation.tuple, payload.tuple),
+      );
+      if (existingIndex >= 0) {
+        state.rebac.relationships.splice(existingIndex, 1);
       }
     },
   },

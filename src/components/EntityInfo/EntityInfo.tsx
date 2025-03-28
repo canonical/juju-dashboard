@@ -12,13 +12,21 @@ export default function EntityInfo({ data }: Props): JSX.Element {
       {Object.entries(data).map(([label, value]) => {
         return (
           <div className="entity-info__grid-item" key={label}>
-            <h4 className="p-muted-heading">{label}</h4>
+            <h4 className="p-muted-heading" id={label}>
+              {label}
+            </h4>
             {typeof value === "string" || typeof value === "number" ? (
-              <TruncatedTooltip message={value} element="p">
+              <TruncatedTooltip
+                message={value}
+                element="p"
+                elementProps={{
+                  "aria-labelledby": label,
+                }}
+              >
                 {value}
               </TruncatedTooltip>
             ) : (
-              <p>{value}</p>
+              <p aria-labelledby={label}>{value}</p>
             )}
           </div>
         );
