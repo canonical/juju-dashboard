@@ -226,8 +226,6 @@ steps](https://github.com/canonical/juju-dashboard-charm#machine-charm) again to
 publish the charm to either the beta or stable channel depending on whether this
 release is ready for general use.
 
-https://github.com/canonical/juju-dashboard-charm#building-and-testing-the-k8s-charm
-
 ### Kubernetes charm
 
 Fork and clone the [juju-dashboard-charm
