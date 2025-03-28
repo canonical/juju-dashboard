@@ -1,0 +1,59 @@
+name: Integration Test
+
+on:
+  pull_request:
+
+jobs:
+  testlocal:
+    name: Test with local Juju and user/pass auth
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Checkout Juju Dashboard repo
+        uses: actions/checkout@v4
+      - name: Set up deps
+        run: sudo snap install juju yq
+      - name: Initialise LXD
+        uses: canonical/setup-lxd@main
+      - name: Bootstrap Juju
+        run: juju bootstrap localhost test
+      - name: Set up access
+        run: echo test | juju change-user-password --no-prompt
+      - name: Create a model, deploy an application and run juju status
+        run: |
+          juju add-model foo && \
+          juju deploy haproxy && \
+          sleep 5 && \
+          juju status
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - name: Install
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build
+      - name: Configure
+        run: |
+          sed -i -e 's/controllerAPIEndpoint\:\ \"\"/controllerAPIEndpoint:\ "wss:\/\/'$(juju show-controller test | yq '.test.details.api-endpoints[0]')'\/api"/g' build/config.js
+          sed -i -e 's/analyticsEnabled\:\ true/analyticsEnabled:\ false/g' build/config.js
+          sed -i -e 's/isJuju\:\ false/isJuju:\ true/g' build/config.js
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+      - name: Run Playwright tests
+        run: yarn playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 1
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: false
+        timeout-minutes: 15
+        with:
+          limit-access-to-actor: true
