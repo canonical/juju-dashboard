@@ -142,16 +142,17 @@ Set the title to the same version number.
 
 Attach the release tarball that you created earlier.
 
-Get the changes since the last release. You can get the changes using GitHub at `https://github.com/canonical/juju-dashboard/compare/<last-version-number>...main`
-or run the following command inside the repo:
-
-```shell
-git log $(git describe --tags --abbrev=0)..HEAD  --oneline
-```
+Click the 'Generate release notes' button to show changes since the last release
+and create a full changelog link, but rewrite the changes to help them make
+sense to consumers of the library.
 
 Create the release notes using the following template:
 
 ```markdown
+## Breaking changes:
+
+-
+
 ## New features:
 
 -
