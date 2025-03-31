@@ -1,5 +1,6 @@
 import { vi } from "vitest";
 
+import { Auth, CandidAuth, OIDCAuth } from "auth";
 import { pollWhoamiStop } from "juju/jimm/listeners";
 import { actions as appActions } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -59,6 +60,8 @@ describe("thunks", () => {
 
   afterEach(() => {
     delete window.jujuDashboardConfig;
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("logOut", async () => {
@@ -71,6 +74,8 @@ describe("thunks", () => {
         }),
       }),
     );
+    const logoutSpy = vi.spyOn(CandidAuth.prototype, "logout");
+    new CandidAuth(dispatch);
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearModelData());
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearControllerData());
@@ -81,6 +86,7 @@ describe("thunks", () => {
       null,
     );
     expect(dispatchedThunk.type).toBe("app/connectAndStartPolling/fulfilled");
+    expect(logoutSpy).toHaveBeenCalledOnce();
   });
 
   it("logOut from OIDC", async () => {
@@ -94,6 +100,8 @@ describe("thunks", () => {
         }),
       }),
     );
+    const logoutSpy = vi.spyOn(OIDCAuth.prototype, "logout");
+    new OIDCAuth(dispatch);
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearModelData());
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearControllerData());
@@ -105,6 +113,7 @@ describe("thunks", () => {
       null,
     );
     expect(dispatchedThunk.type).toBe("jimm/logout/fulfilled");
+    expect(logoutSpy).toHaveBeenCalledOnce();
   });
 
   it("connectAndStartPolling", async () => {

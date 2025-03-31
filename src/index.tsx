@@ -1,5 +1,4 @@
 import { Notification, Strip } from "@canonical/react-components";
-import { unwrapResult } from "@reduxjs/toolkit";
 import * as Sentry from "@sentry/browser";
 import type { LogLevelDesc } from "loglevel";
 import { StrictMode } from "react";
@@ -7,18 +6,15 @@ import type { Root } from "react-dom/client";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 
+import { Auth, initialiseAuthFromConfig } from "auth";
 import App from "components/App";
-import { addWhoamiListener } from "juju/jimm/listeners";
 import reduxStore from "store";
-import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import { AuthMethod } from "store/general/types";
 import type { WindowConfig } from "types";
 import { logger } from "utils/logger";
 
 import packageJSON from "../package.json";
-
-import { listenerMiddleware } from "./store/listenerMiddleware";
 
 export const ROOT_ID = "root";
 export const RECHECK_TIME = 500;
@@ -158,18 +154,9 @@ function bootstrap() {
   reduxStore.dispatch(generalActions.storeConfig(config));
   reduxStore.dispatch(generalActions.storeVersion(appVersion));
 
-  if (config.authMethod === AuthMethod.OIDC) {
-    addWhoamiListener(listenerMiddleware.startListening);
-  }
-
-  if ([AuthMethod.CANDID, AuthMethod.OIDC].includes(config.authMethod)) {
-    // If using Candid or OIDC authentication then try and connect automatically
-    // If not then wait for the login UI to trigger this
-    reduxStore
-      .dispatch(appThunks.connectAndStartPolling())
-      .then(unwrapResult)
-      .catch((error) => logger.error(Label.POLLING_ERROR, error));
-  }
+  initialiseAuthFromConfig(config, reduxStore.dispatch);
+  console.log("bootstrapping", Auth.instance);
+  void Auth.instance.bootstrap();
 
   getRoot()?.render(
     <Provider store={reduxStore}>

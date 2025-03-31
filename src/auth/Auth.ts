@@ -98,7 +98,9 @@ export class Auth {
    *
    * @returns Credentials to provide to jujulib for connection.
    */
-  determineCredentials(credential?: Credential): Credentials | undefined {
+  determineCredentials(
+    credential?: Credential | null,
+  ): Credentials | undefined {
     return undefined;
   }
 }

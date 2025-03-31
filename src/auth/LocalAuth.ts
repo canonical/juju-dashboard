@@ -11,7 +11,9 @@ export class LocalAuth extends Auth {
     super(dispatch, AuthMethod.LOCAL);
   }
 
-  determineCredentials(credential?: Credential): Credentials | undefined {
+  determineCredentials(
+    credential?: Credential | null,
+  ): Credentials | undefined {
     if (!credential) {
       return;
     }
