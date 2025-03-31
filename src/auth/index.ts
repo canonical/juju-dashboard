@@ -1,4 +1,5 @@
 export { Auth } from "./Auth";
-export { OIDCAuth } from "./OIDCAuth";
-export { LocalAuth } from "./LocalAuth";
 export { CandidAuth } from "./CandidAuth";
+export { LocalAuth } from "./LocalAuth";
+export { OIDCAuth } from "./OIDCAuth";
+export { initialiseAuthFromConfig } from "./utils";

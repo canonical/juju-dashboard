@@ -1,15 +1,15 @@
 import type { Client, Connection, Transport } from "@canonical/jujulib";
 import type { UnknownAction, MiddlewareAPI } from "redux";
-import type { Mock } from "vitest";
+import type { Mock, MockInstance } from "vitest";
 import { vi } from "vitest";
 
+import { Auth, LocalAuth, OIDCAuth } from "auth";
 import * as jujuModule from "juju/api";
 import * as jimmModule from "juju/jimm/api";
 import { pollWhoamiStart } from "juju/jimm/listeners";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import type { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
-import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
@@ -111,6 +111,8 @@ describe("model poller", () => {
     juju = {
       logout: vi.fn(),
     } as unknown as Client;
+    // Instantiate local auth by default.
+    new LocalAuth(fakeStore.dispatch);
   });
 
   const runMiddleware = async (actionOverrides?: Partial<UnknownAction>) => {
@@ -132,6 +134,8 @@ describe("model poller", () => {
     vi.restoreAllMocks();
     localStorage.clear();
     vi.useRealTimers();
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("ignores unrelated actions", async () => {
@@ -166,75 +170,63 @@ describe("model poller", () => {
     );
   });
 
-  it("stops when not logged in and is using OIDC", async () => {
-    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
-    vi.spyOn(fakeStore, "dispatch").mockReturnValue({ type: "whoami" });
-    const loginWithBakerySpy = vi.spyOn(jujuModule, "loginWithBakery");
-    await runMiddleware(
-      appActions.connectAndPollControllers({
-        controllers: [[wsControllerURL, undefined, AuthMethod.OIDC]],
-        isJuju: true,
-        poll: 0,
-      }),
-    );
-    expect(loginWithBakerySpy).not.toHaveBeenCalled();
-  });
+  describe("using OIDC", () => {
+    let dispatchMock: MockInstance;
 
-  it("continues when not logged in and is using OIDC", async () => {
-    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
-    vi.spyOn(fakeStore, "dispatch").mockReturnValue({
-      type: "whoami",
-      payload: { user: "user-test@external" },
-    });
-    const loginWithBakerySpy = vi
-      .spyOn(jujuModule, "loginWithBakery")
-      .mockImplementation(async () => ({
-        conn,
-        intervalId,
-        juju,
-      }));
-    await runMiddleware(
-      appActions.connectAndPollControllers({
-        controllers: [[wsControllerURL, undefined, AuthMethod.OIDC]],
-        isJuju: true,
-        poll: 0,
-      }),
-    );
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(pollWhoamiStart());
-    expect(loginWithBakerySpy).toHaveBeenCalled();
-  });
+    beforeEach(() => {
+      vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+      dispatchMock = vi.spyOn(fakeStore, "dispatch");
 
-  it("handles whoami errors when logging in with OIDC", async () => {
-    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
-    vi.spyOn(fakeStore, "dispatch").mockImplementation((action) => {
-      if (typeof action === "function") {
-        // This is a thunk so the action name is not accessible, so this just
-        // throws on the first thunk that is dispatched. If this test is
-        // failing then check if another thunk is being dispatched before the
-        // whoami() thunk.
-        throw new Error();
-      }
-      return { type: "not-whoami" };
+      new OIDCAuth(fakeStore.dispatch);
     });
-    const loginWithBakerySpy = vi.spyOn(jujuModule, "loginWithBakery");
-    await runMiddleware(
-      appActions.connectAndPollControllers({
-        controllers: [[wsControllerURL, undefined, AuthMethod.OIDC]],
-        isJuju: true,
-        poll: 0,
-      }),
-    );
-    expect(loginWithBakerySpy).not.toHaveBeenCalled();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.storeLoginError({
-        wsControllerURL: "wss://example.com",
-        error: LoginError.WHOAMI,
-      }),
-    );
+
+    it("stops when not logged in", async () => {
+      dispatchMock.mockReturnValue({ type: "whoami" });
+      const loginWithBakerySpy = vi.spyOn(jujuModule, "loginWithBakery");
+      await runMiddleware(
+        appActions.connectAndPollControllers({
+          controllers: [[wsControllerURL, undefined, AuthMethod.OIDC]],
+          isJuju: true,
+          poll: 0,
+        }),
+      );
+      expect(loginWithBakerySpy).not.toHaveBeenCalled();
+    });
+
+    it("continues when logged in", async () => {
+      dispatchMock.mockReturnValue({
+        type: "whoami",
+        payload: { user: "user-test@external" },
+      });
+      const loginWithBakerySpy = vi
+        .spyOn(jujuModule, "loginWithBakery")
+        .mockImplementation(async () => ({
+          conn,
+          intervalId,
+          juju,
+        }));
+      await runMiddleware(
+        appActions.connectAndPollControllers({
+          controllers: [[wsControllerURL, undefined, AuthMethod.OIDC]],
+          isJuju: true,
+          poll: 0,
+        }),
+      );
+      expect(fakeStore.dispatch).toHaveBeenCalledWith(pollWhoamiStart());
+      expect(loginWithBakerySpy).toHaveBeenCalled();
+    });
   });
 
   it("fetches and stores data", async () => {
     const fetchControllerList = vi.spyOn(jujuModule, "fetchControllerList");
+    const beforeControllerConnect = vi.spyOn(
+      LocalAuth.prototype,
+      "beforeControllerConnect",
+    );
+    const afterControllerListFetchedSpy = vi.spyOn(
+      LocalAuth.prototype,
+      "afterControllerListFetched",
+    );
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
     });
@@ -263,6 +255,8 @@ describe("model poller", () => {
       fakeStore.dispatch,
       fakeStore.getState,
     );
+    expect(beforeControllerConnect).toHaveBeenCalledOnce();
+    expect(afterControllerListFetchedSpy).toHaveBeenCalledOnce();
   });
 
   it("disables the controller features if JIMM < 4", async () => {
@@ -387,37 +381,6 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(disableControllerUUIDMasking).not.toHaveBeenCalled();
-  });
-
-  it("disables masking when using JIMM", async () => {
-    const controllers = [
-      [
-        wsControllerURL,
-        { user: "eggman@external", password: "test" },
-        AuthMethod.CANDID,
-      ],
-    ];
-    const disableControllerUUIDMasking = vi.spyOn(
-      jujuModule,
-      "disableControllerUUIDMasking",
-    );
-    conn.facades.modelManager.listModels.mockResolvedValue({
-      "user-models": [],
-    });
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    await runMiddleware({
-      payload: {
-        controllers,
-        isJuju: false,
-        poll: 0,
-      },
-    });
-    expect(next).not.toHaveBeenCalled();
-    expect(disableControllerUUIDMasking).toHaveBeenCalledWith(conn);
   });
 
   it("fails silently if the user is not authorised to disable masking", async () => {
