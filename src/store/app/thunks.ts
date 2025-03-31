@@ -1,8 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { Auth } from "auth";
 import bakery from "juju/bakery";
-import { pollWhoamiStop } from "juju/jimm/listeners";
-import { logout } from "juju/jimm/thunks";
 import { actions as appActions } from "store/app";
 import { actions as generalActions } from "store/general";
 import {
@@ -27,7 +26,6 @@ export const logOut = createAsyncThunk<
   }
 >("app/logout", async (_, thunkAPI) => {
   const state = thunkAPI.getState();
-  const authMethod = state?.general?.config?.authMethod ?? AuthMethod.LOCAL;
   const pingerIntervalIds = getPingerIntervalIds(state);
   bakery.storage.clear();
   Object.entries(pingerIntervalIds ?? {}).forEach((pingerIntervalId) =>
@@ -36,15 +34,7 @@ export const logOut = createAsyncThunk<
   thunkAPI.dispatch(jujuActions.clearModelData());
   thunkAPI.dispatch(jujuActions.clearControllerData());
   thunkAPI.dispatch(generalActions.logOut());
-  if (authMethod === AuthMethod.CANDID) {
-    // To enable users to log back in after logging out we have to re-connect
-    // to the controller to get another wait url and start polling on it
-    // again.
-    await thunkAPI.dispatch(connectAndStartPolling());
-  } else if (authMethod === AuthMethod.OIDC) {
-    thunkAPI.dispatch(pollWhoamiStop());
-    await thunkAPI.dispatch(logout());
-  }
+  await Auth.instance.logout();
 });
 
 /**

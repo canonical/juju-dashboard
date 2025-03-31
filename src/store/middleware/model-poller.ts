@@ -1,18 +1,15 @@
 import type { Client } from "@canonical/jujulib";
-import { unwrapResult } from "@reduxjs/toolkit";
 import * as Sentry from "@sentry/browser";
 import { isAction, type Middleware } from "redux";
 
+import { Auth } from "auth";
 import {
-  disableControllerUUIDMasking,
   fetchAllModelStatuses,
   fetchControllerList,
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
 import { checkRelation, crossModelQuery, findAuditEvents } from "juju/jimm/api";
-import { pollWhoamiStart } from "juju/jimm/listeners";
-import { whoami } from "juju/jimm/thunks";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -70,37 +67,17 @@ export const modelPollerMiddleware: Middleware<
         let juju: Client | undefined;
         let error: unknown;
         let intervalId: number | null | undefined;
-        if (authMethod === AuthMethod.OIDC) {
-          try {
-            reduxStore.dispatch(generalActions.updateLoginLoading(true));
-            const whoamiResponse = await reduxStore.dispatch(whoami());
-            const user = unwrapResult(whoamiResponse);
-            if (user) {
-              // Start polling the whoami endpoint to handle refresh tokens
-              // and revoked sessions.
-              reduxStore.dispatch(pollWhoamiStart());
-            } else {
-              // If there's no response that means the user is not
-              // authenticated, so halt the connection attempt.
-              reduxStore.dispatch(generalActions.updateLoginLoading(false));
-              return;
-            }
-          } catch (error) {
-            reduxStore.dispatch(
-              generalActions.storeLoginError({
-                wsControllerURL,
-                error: LoginError.WHOAMI,
-              }),
-            );
-            // Halt the connection attempt.
-            return;
-          }
+        const continueConnection = await Auth.instance.beforeControllerConnect({
+          wsControllerURL,
+          credentials,
+        });
+        if (!continueConnection) {
+          return;
         }
         try {
           ({ conn, error, juju, intervalId } = await loginWithBakery(
             wsControllerURL,
             credentials,
-            authMethod,
           ));
           if (conn) {
             controllers.set(wsControllerURL, conn);
@@ -200,16 +177,7 @@ export const modelPollerMiddleware: Middleware<
           reduxStore.dispatch,
           reduxStore.getState,
         );
-        if (authMethod === AuthMethod.CANDID) {
-          // This call will be a noop if the user isn't an administrator
-          // on the JIMM controller we're connected to.
-          try {
-            await disableControllerUUIDMasking(conn);
-          } catch (e) {
-            // Silently fail, if this doesn't work then the user isn't authorized
-            // to perform the action.
-          }
-        }
+        await Auth.instance.afterControllerListFetched(conn);
 
         let pollCount = 0;
         do {

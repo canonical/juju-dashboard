@@ -3,6 +3,7 @@ import type { Connection } from "@canonical/jujulib";
 import { renderHook, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
+import { Auth, LocalAuth } from "auth";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -48,11 +49,14 @@ describe("useModelConnectionCallback", () => {
       },
     });
     vi.useFakeTimers();
+    new LocalAuth(vi.fn());
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
     vi.useRealTimers();
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("can connect and log in", async () => {
@@ -257,6 +261,12 @@ describe("useCallWithConnectionPromise", () => {
         },
       },
     });
+    new LocalAuth(vi.fn());
+  });
+
+  afterEach(() => {
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("calls the handler with args", async () => {
@@ -374,6 +384,12 @@ describe("useCallWithConnection", () => {
         },
       },
     });
+    new LocalAuth(vi.fn());
+  });
+
+  afterEach(() => {
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("calls the handler with args", async () => {

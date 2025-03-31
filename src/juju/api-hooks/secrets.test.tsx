@@ -3,6 +3,7 @@ import type { Connection } from "@canonical/jujulib";
 import { renderHook, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
+import { Auth, LocalAuth } from "auth";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -54,6 +55,12 @@ describe("useListSecrets", () => {
         },
       },
     });
+    new LocalAuth(vi.fn());
+  });
+
+  afterEach(() => {
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("fetches secrets", async () => {
@@ -210,6 +217,12 @@ describe("useGetSecretContent", () => {
         },
       },
     });
+    new LocalAuth(vi.fn());
+  });
+
+  afterEach(() => {
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("fetches secrets", async () => {
@@ -467,6 +480,12 @@ describe("useCreateSecrets", () => {
         },
       },
     });
+    new LocalAuth(vi.fn());
+  });
+
+  afterEach(() => {
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("can create secrets", async () => {
@@ -571,6 +590,12 @@ describe("useUpdateSecrets", () => {
         },
       },
     });
+    new LocalAuth(vi.fn());
+  });
+
+  afterEach(() => {
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("can update secrets", async () => {
@@ -679,6 +704,12 @@ describe("useRemoveSecrets", () => {
         },
       },
     });
+    new LocalAuth(vi.fn());
+  });
+
+  afterEach(() => {
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("can remove secrets", async () => {
@@ -779,6 +810,12 @@ describe("useGrantSecret", () => {
         },
       },
     });
+    new LocalAuth(vi.fn());
+  });
+
+  afterEach(() => {
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("can grant apps", async () => {
@@ -874,6 +911,12 @@ describe("useRevokeSecret", () => {
         },
       },
     });
+    new LocalAuth(vi.fn());
+  });
+
+  afterEach(() => {
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   it("can revoke apps", async () => {

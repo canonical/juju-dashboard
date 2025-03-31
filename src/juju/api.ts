@@ -18,18 +18,17 @@ import type { ValueOf } from "@canonical/react-components";
 import { unwrapResult } from "@reduxjs/toolkit";
 import type { Dispatch } from "redux";
 
+import { Auth } from "auth";
 import bakery from "juju/bakery";
 import JIMM from "juju/jimm";
 import { actions as generalActions } from "store/general";
 import {
-  getConfig,
   getControllerConnection,
   getUserPass,
   getWSControllerURL,
   isLoggedIn,
 } from "store/general/selectors";
 import type { Credential } from "store/general/types";
-import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type {
@@ -74,7 +73,6 @@ export const CLIENT_VERSION = "3.0.0";
   @returns The configuration options.
 */
 export function generateConnectionOptions(
-  authMethod?: AuthMethod,
   usePinger = false,
   onClose: ConnectOptions["closeCallback"] = () => null,
 ) {
@@ -100,21 +98,9 @@ export function generateConnectionOptions(
     closeCallback: onClose,
     debug: false,
     facades,
-    oidcEnabled: authMethod === AuthMethod.OIDC,
     wsclass: WebSocket,
+    ...Auth.instance.jujulibConnectOptions(),
   };
-}
-
-function determineLoginParams(
-  credentials: Credential | null | undefined,
-  authMethod?: AuthMethod,
-) {
-  if (credentials && authMethod === AuthMethod.LOCAL) {
-    return {
-      username: credentials.user,
-      password: credentials.password,
-    };
-  }
 }
 
 function startPingerLoop(conn: ConnectionWithFacades) {
@@ -142,7 +128,6 @@ function stopPingerLoop(intervalId: number) {
   @param wsControllerURL The fully qualified URL of the controller api.
   @param credentials The users credentials in the format
     {user: ..., password: ...}
-  @param authMethod The method to use for authentication.
   @returns
     conn The controller connection instance.
     juju The juju api instance.
@@ -150,15 +135,12 @@ function stopPingerLoop(intervalId: number) {
 export async function loginWithBakery(
   wsControllerURL: string,
   credentials?: Credential,
-  authMethod?: AuthMethod,
 ) {
   const juju: JujuClient = await connect(
     wsControllerURL,
-    generateConnectionOptions(authMethod, true, (e) =>
-      logger.log("controller closed", e),
-    ),
+    generateConnectionOptions(true, (e) => logger.log("controller closed", e)),
   );
-  const loginParams = determineLoginParams(credentials, authMethod);
+  const loginParams = Auth.instance.determineCredentials(credentials);
   let conn: ConnectionWithFacades | null | undefined = null;
   try {
     conn = await juju.login(loginParams, CLIENT_VERSION);
@@ -181,19 +163,17 @@ export type LoginResponse = Awaited<ReturnType<typeof connectAndLogin>> & {
   @param credentials The users credentials in the format
     {user: ..., password: ...}
   @param options The options for the connection.
-  @param authMethod The method to use for authentication.
   @returns The full model status.
 */
 export async function connectAndLoginWithTimeout(
   modelURL: string,
   credentials: Credential | null | undefined,
   options: ConnectOptions,
-  authMethod?: AuthMethod,
 ): Promise<LoginResponse> {
   const timeout: Promise<never> = new Promise((_resolve, reject) => {
     setTimeout(reject, LOGIN_TIMEOUT, new Error(Label.LOGIN_TIMEOUT_ERROR));
   });
-  const loginParams = determineLoginParams(credentials, authMethod);
+  const loginParams = Auth.instance.determineCredentials(credentials);
   const juju: Promise<LoginResponse> = connectAndLogin(
     modelURL,
     options,
@@ -216,8 +196,6 @@ export async function fetchModelStatus(
   wsControllerURL: string,
   getState: () => RootState,
 ) {
-  const appState = getState();
-  const config = getConfig(appState);
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   let status: FullStatusWithAnnotations | null = null;
   let features: ModelFeatures | null = null;
@@ -229,8 +207,7 @@ export async function fetchModelStatus(
       const { conn, logout } = await connectAndLoginWithTimeout(
         modelURL,
         controllerCredentials,
-        generateConnectionOptions(config?.authMethod, false),
-        config?.authMethod,
+        generateConnectionOptions(false),
       );
       if (isLoggedIn(getState(), wsControllerURL)) {
         try {
@@ -506,14 +483,12 @@ export async function connectToModel(
   modelUUID: string,
   wsControllerURL: string,
   credentials?: Credential,
-  authMethod?: AuthMethod,
 ) {
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   const response = await connectAndLoginWithTimeout(
     modelURL,
     credentials,
-    generateConnectionOptions(authMethod, true),
-    authMethod,
+    generateConnectionOptions(true),
   );
   return response.conn;
 }
@@ -532,14 +507,8 @@ export async function connectAndLoginToModel(
   if (!wsControllerURL) {
     return null;
   }
-  const config = getConfig(appState);
   const credentials = getUserPass(appState, wsControllerURL);
-  return connectToModel(
-    modelUUID,
-    wsControllerURL,
-    credentials,
-    config?.authMethod,
-  );
+  return connectToModel(modelUUID, wsControllerURL, credentials);
 }
 
 // A typeguard to narrow the type of the deltas to what we expect. This is

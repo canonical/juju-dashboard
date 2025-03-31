@@ -1,6 +1,7 @@
 import { screen, waitFor } from "@testing-library/dom";
 import { vi } from "vitest";
 
+import { Auth, LocalAuth } from "auth";
 import * as storeModule from "store";
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -59,6 +60,8 @@ describe("renderApp", () => {
       document.body.removeChild(rootNode);
     }
     window.jujuDashboardConfig = undefined;
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
     vi.useRealTimers();
   });
 
@@ -79,10 +82,15 @@ describe("renderApp", () => {
   });
 
   it("bootstraps if the config is found", async () => {
-    window.jujuDashboardConfig = configFactory.build();
+    const bootstrapSpy = vi.spyOn(LocalAuth.prototype, "bootstrap");
+    window.jujuDashboardConfig = configFactory.build({
+      controllerAPIEndpoint: "/api",
+      isJuju: true,
+    });
     renderApp();
     await waitFor(() => {
       expect(document.querySelector(`#${ROOT_ID}`)?.children).toHaveLength(1);
+      expect(bootstrapSpy).toHaveBeenCalledOnce();
     });
   });
 
