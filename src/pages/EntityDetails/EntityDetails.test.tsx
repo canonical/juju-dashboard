@@ -307,16 +307,7 @@ describe("Entity Details Container", () => {
   });
 
   it("should refresh page when pressing pressing Refresh button within error notification", async () => {
-    // Copy of window.location is required in order to mock only its "reload"
-    // method and set window.location back to default value at the end.
-    const location: Location = window.location;
-    // @ts-expect-error test
-    delete window.location;
-    window.location = {
-      ...location,
-      reload: vi.fn(),
-    };
-
+    const reloadSpy = vi.spyOn(window.location, "reload");
     renderComponent(<EntityDetails modelWatcherError="timeout" />, {
       path,
       url,
@@ -324,7 +315,6 @@ describe("Entity Details Container", () => {
     });
     await userEvent.click(screen.getByRole("button", { name: "Refresh" }));
     expect(window.location.reload).toHaveBeenCalledTimes(1);
-
-    window.location = location;
+    reloadSpy.mockReset();
   });
 });
