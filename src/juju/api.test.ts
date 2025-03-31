@@ -4,6 +4,7 @@ import * as jujuLibVersions from "@canonical/jujulib/dist/api/versions";
 import { waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
+import { Auth, CandidAuth, LocalAuth, OIDCAuth } from "auth";
 import { actions as generalActions } from "store/general";
 import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
@@ -60,11 +61,15 @@ import { DeltaChangeTypes, DeltaEntityTypes } from "./types";
 describe("Juju API", () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    new LocalAuth(vi.fn());
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
     vi.useRealTimers();
+
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   describe("loginWithBakery", () => {
@@ -85,14 +90,14 @@ describe("Juju API", () => {
       const connectSpy = vi
         .spyOn(jujuLib, "connect")
         .mockImplementation(async () => juju);
-      const response = await loginWithBakery(
-        "wss://example.com/api",
-        {
-          user: "eggman",
-          password: "123",
-        },
-        AuthMethod.LOCAL,
+      const determineCredentialsSpy = vi.spyOn(
+        LocalAuth.prototype,
+        "determineCredentials",
       );
+      const response = await loginWithBakery("wss://example.com/api", {
+        user: "eggman",
+        password: "123",
+      });
       expect(response).toStrictEqual({
         conn,
         juju,
@@ -107,49 +112,52 @@ describe("Juju API", () => {
         },
         CLIENT_VERSION,
       );
+      expect(determineCredentialsSpy).toHaveBeenCalledOnce();
     });
 
     it("handles login with external provider", async () => {
+      new CandidAuth(vi.fn());
       const conn = { facades: {}, info: {} };
       const juju = {
         login: vi.fn().mockReturnValue(conn),
       } as unknown as Client;
       vi.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
-      await loginWithBakery(
-        "wss://example.com/api",
-        {
-          user: "eggman",
-          password: "123",
-        },
-        AuthMethod.CANDID,
-      );
+      await loginWithBakery("wss://example.com/api", {
+        user: "eggman",
+        password: "123",
+      });
       expect(juju.login).toHaveBeenCalledWith(undefined, CLIENT_VERSION);
     });
 
-    it("connects and logs in when using OIDC", async () => {
-      const conn = { facades: {}, info: {} };
-      const juju = {
-        login: vi.fn().mockReturnValue(conn),
-      } as unknown as Client;
-      const connectSpy = vi
-        .spyOn(jujuLib, "connect")
-        .mockImplementation(async () => juju);
-      const response = await loginWithBakery(
-        "wss://example.com/api",
-        undefined,
-        AuthMethod.OIDC,
-      );
-      expect(response).toStrictEqual({
-        conn,
-        juju,
-        // This would be a number, but we're using mocked timers.
-        intervalId: expect.any(Object),
+    describe("using OIDC", () => {
+      beforeEach(() => {
+        new OIDCAuth(vi.fn());
       });
-      expect(connectSpy).toHaveBeenCalledWith(
-        "wss://example.com/api",
-        expect.objectContaining({ oidcEnabled: true }),
-      );
-      expect(juju.login).toHaveBeenCalledWith(undefined, CLIENT_VERSION);
+
+      it("connects and logs in when using OIDC", async () => {
+        const conn = { facades: {}, info: {} };
+        const juju = {
+          login: vi.fn().mockReturnValue(conn),
+        } as unknown as Client;
+        const connectSpy = vi
+          .spyOn(jujuLib, "connect")
+          .mockImplementation(async () => juju);
+        const response = await loginWithBakery(
+          "wss://example.com/api",
+          undefined,
+        );
+        expect(response).toStrictEqual({
+          conn,
+          juju,
+          // This would be a number, but we're using mocked timers.
+          intervalId: expect.any(Object),
+        });
+        expect(connectSpy).toHaveBeenCalledWith(
+          "wss://example.com/api",
+          expect.objectContaining({ oidcEnabled: true }),
+        );
+        expect(juju.login).toHaveBeenCalledWith(undefined, CLIENT_VERSION);
+      });
     });
 
     it("handles login errors", async () => {
@@ -159,14 +167,10 @@ describe("Juju API", () => {
         }),
       } as unknown as Client;
       vi.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
-      const response = await loginWithBakery(
-        "wss://example.com/api",
-        {
-          user: "eggman",
-          password: "123",
-        },
-        AuthMethod.LOCAL,
-      );
+      const response = await loginWithBakery("wss://example.com/api", {
+        user: "eggman",
+        password: "123",
+      });
       expect(response).toStrictEqual({
         error: "Could not log into controller",
       });
@@ -186,14 +190,10 @@ describe("Juju API", () => {
         login: vi.fn().mockReturnValue(conn),
       } as unknown as Client;
       vi.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
-      await loginWithBakery(
-        "wss://example.com/api",
-        {
-          user: "eggman",
-          password: "123",
-        },
-        AuthMethod.LOCAL,
-      );
+      await loginWithBakery("wss://example.com/api", {
+        user: "eggman",
+        password: "123",
+      });
       expect(ping).not.toHaveBeenCalled();
       vi.advanceTimersByTime(PING_TIME);
       expect(ping).toHaveBeenCalledTimes(1);
@@ -216,14 +216,10 @@ describe("Juju API", () => {
         login: vi.fn().mockReturnValue(conn),
       } as unknown as Client;
       vi.spyOn(jujuLib, "connect").mockImplementation(async () => juju);
-      await loginWithBakery(
-        "wss://example.com/api",
-        {
-          user: "eggman",
-          password: "123",
-        },
-        AuthMethod.LOCAL,
-      );
+      await loginWithBakery("wss://example.com/api", {
+        user: "eggman",
+        password: "123",
+      });
       vi.advanceTimersByTime(PING_TIME);
       await waitFor(() => {
         expect(clearInterval).toHaveBeenCalled();
@@ -238,16 +234,20 @@ describe("Juju API", () => {
         logout: vi.fn(),
       };
       vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => juju);
+      const determineCredentialsSpy = vi.spyOn(
+        LocalAuth.prototype,
+        "determineCredentials",
+      );
       const response = await connectAndLoginWithTimeout(
         "wss://example.com/eggman/test",
         {
           user: "eggman",
           password: "123",
         },
-        generateConnectionOptions(AuthMethod.LOCAL, false),
-        AuthMethod.LOCAL,
+        generateConnectionOptions(false),
       );
       expect(response).toStrictEqual(juju);
+      expect(determineCredentialsSpy).toHaveBeenCalledOnce();
     });
 
     it("can time out while logging in", async () => {
@@ -263,8 +263,7 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        generateConnectionOptions(AuthMethod.LOCAL, false),
-        AuthMethod.LOCAL,
+        generateConnectionOptions(false),
       );
       vi.advanceTimersByTime(LOGIN_TIMEOUT);
       await expect(response).rejects.toMatchObject(
@@ -284,10 +283,20 @@ describe("Juju API", () => {
           user: "eggman",
           password: "123",
         },
-        generateConnectionOptions(AuthMethod.LOCAL, false),
-        AuthMethod.LOCAL,
+        generateConnectionOptions(false),
       );
       await expect(response).rejects.toMatchObject(new Error("Uh oh!"));
+    });
+  });
+
+  describe("generateConnectionOptions", () => {
+    it("calls Auth.instance.jujulibConnectOptions", () => {
+      const jujulibConnectOptionsSpy = vi.spyOn(
+        LocalAuth.prototype,
+        "jujulibConnectOptions",
+      );
+      generateConnectionOptions(false);
+      expect(jujulibConnectOptionsSpy).toHaveBeenCalledOnce();
     });
   });
 
@@ -618,7 +627,6 @@ describe("Juju API", () => {
         .mockImplementationOnce(() => state)
         .mockImplementationOnce(() => state)
         .mockImplementationOnce(() => state)
-        .mockImplementationOnce(() => state)
         .mockImplementationOnce(() => ({
           ...state,
           general: generalStateFactory.build({
@@ -633,7 +641,7 @@ describe("Juju API", () => {
       );
       // This number needs to match the number of times getState is called and
       // `mockImplementationOnce` needs to return the logged out state the last time.
-      expect(getState).toHaveBeenCalledTimes(6);
+      expect(getState).toHaveBeenCalledTimes(5);
       expect(dispatch).not.toHaveBeenCalled();
     });
 
@@ -938,10 +946,11 @@ describe("Juju API", () => {
     });
 
     it("handles logout while fetching model status", async () => {
-      const dispatch = vi.fn();
+      const dispatch = vi
+        .fn()
+        .mockImplementation((...args) => console.log("called with", ...args));
       const getState = vi
         .fn()
-        .mockReturnValueOnce(state)
         .mockReturnValueOnce(state)
         .mockReturnValueOnce(state)
         .mockReturnValueOnce(state)
@@ -977,7 +986,7 @@ describe("Juju API", () => {
       );
       // We need to return the logged out state on the last call, so check that
       // the number of calls is what we expect:
-      expect(getState).toHaveBeenCalledTimes(6);
+      expect(getState).toHaveBeenCalledTimes(5);
       expect(dispatch).not.toHaveBeenCalled();
     });
 
@@ -985,7 +994,6 @@ describe("Juju API", () => {
       const dispatch = vi.fn();
       const getState = vi
         .fn()
-        .mockReturnValueOnce(state)
         .mockReturnValueOnce(state)
         .mockReturnValueOnce(state)
         .mockReturnValueOnce(state)
@@ -1023,7 +1031,7 @@ describe("Juju API", () => {
       );
       // We need to return the logged out state on the last call, so check that
       // the number of calls is what we expect:
-      expect(getState).toHaveBeenCalledTimes(7);
+      expect(getState).toHaveBeenCalledTimes(6);
       // The `updateModelInfo` should be the last dispatch before exiting.
       expect(dispatch).toHaveBeenLastCalledWith(
         jujuActions.updateModelInfo({
@@ -1307,7 +1315,6 @@ describe("Juju API", () => {
         "abc123",
         "wss://example.com/api",
         credentials,
-        AuthMethod.LOCAL,
       );
       expect(connectAndLogin).toHaveBeenCalledWith(
         "wss://example.com/model/abc123/api",

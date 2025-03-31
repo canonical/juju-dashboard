@@ -3,6 +3,7 @@ import * as jujuLib from "@canonical/jujulib";
 import { renderHook } from "@testing-library/react";
 import { vi } from "vitest";
 
+import { Auth, LocalAuth } from "auth";
 import type { Config } from "panels/ConfigPanel/types";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -52,6 +53,12 @@ describe("application", () => {
         },
       },
     });
+    new LocalAuth(vi.fn());
+  });
+
+  afterEach(() => {
+    // @ts-expect-error - Resetting singleton for each test run.
+    delete Auth.instance;
   });
 
   describe("useGetApplicationConfig", () => {
