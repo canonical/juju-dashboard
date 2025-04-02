@@ -154,7 +154,7 @@ describe("Juju API", () => {
         });
         expect(connectSpy).toHaveBeenCalledWith(
           "wss://example.com/api",
-          expect.objectContaining({ oidcEnabled: true }),
+          expect.objectContaining({ loginWithSessionCookie: true }),
         );
         expect(juju.login).toHaveBeenCalledWith(undefined, CLIENT_VERSION);
       });

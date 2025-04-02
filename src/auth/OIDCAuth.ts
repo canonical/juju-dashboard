@@ -65,8 +65,7 @@ export class OIDCAuth extends pollingMixin(Auth) {
 
   override jujulibConnectOptions(): Partial<ConnectOptions> {
     return {
-      // TODO: (WD-20703) Replace with libjuju@8.0.1
-      oidcEnabled: true,
+      loginWithSessionCookie: true,
     };
   }
 }
