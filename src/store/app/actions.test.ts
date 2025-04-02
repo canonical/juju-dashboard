@@ -1,5 +1,3 @@
-import { AuthMethod } from "store/general/types";
-
 import type { ControllerArgs } from "./actions";
 import { updatePermissions, connectAndPollControllers } from "./actions";
 
@@ -23,7 +21,6 @@ describe("actions", () => {
     const controller: ControllerArgs = [
       "wss://example.com",
       { user: "eggman@external", password: "verysecure123" },
-      AuthMethod.LOCAL,
     ];
     const args = {
       controllers: [controller],
