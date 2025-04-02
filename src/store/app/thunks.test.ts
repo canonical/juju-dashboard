@@ -123,9 +123,7 @@ describe("thunks", () => {
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
       appActions.connectAndPollControllers({
-        controllers: [
-          ["wss://controller.example.com", undefined, AuthMethod.LOCAL],
-        ],
+        controllers: [["wss://controller.example.com", undefined]],
         isJuju: true,
       }),
     );
@@ -145,9 +143,7 @@ describe("thunks", () => {
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
       appActions.connectAndPollControllers({
-        controllers: [
-          ["wss://controller.example.com", undefined, AuthMethod.LOCAL],
-        ],
+        controllers: [["wss://controller.example.com", undefined]],
         isJuju: true,
       }),
     );
@@ -172,9 +168,7 @@ describe("thunks", () => {
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
       appActions.connectAndPollControllers({
-        controllers: [
-          ["wss://controller.example.com", undefined, AuthMethod.LOCAL],
-        ],
+        controllers: [["wss://controller.example.com", undefined]],
         isJuju: true,
       }),
     );
@@ -199,9 +193,7 @@ describe("thunks", () => {
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
       appActions.connectAndPollControllers({
-        controllers: [
-          ["wss://controller.example.com", undefined, AuthMethod.LOCAL],
-        ],
+        controllers: [["wss://controller.example.com", undefined]],
         isJuju: true,
       }),
     );
