@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import { connectToModel } from "juju/api";
 import type { ConnectionWithFacades } from "juju/types";
-import { getConfig, getUserPass } from "store/general/selectors";
+import { getUserPass } from "store/general/selectors";
 import { getModelByUUID, getModelUUIDFromList } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { toErrorString } from "utils";
@@ -29,7 +29,6 @@ export const useModelConnectionCallback = (modelUUID?: string) => {
   const wsControllerURL = useAppSelector((state) =>
     getModelByUUID(state, modelUUID),
   )?.wsControllerURL;
-  const authMethod = useAppSelector(getConfig)?.authMethod;
   const credentials = useAppSelector((state) =>
     getUserPass(state, wsControllerURL),
   );
@@ -41,7 +40,7 @@ export const useModelConnectionCallback = (modelUUID?: string) => {
         // are available.
         return;
       }
-      connectToModel(modelUUID, wsControllerURL, credentials, authMethod)
+      connectToModel(modelUUID, wsControllerURL, credentials)
         .then((connection) => {
           if (!connection) {
             response({ error: Label.NO_CONNECTION_ERROR });
@@ -54,7 +53,7 @@ export const useModelConnectionCallback = (modelUUID?: string) => {
           response({ error: toErrorString(error) });
         });
     },
-    [credentials, authMethod, modelUUID, wsControllerURL],
+    [credentials, modelUUID, wsControllerURL],
   );
 };
 

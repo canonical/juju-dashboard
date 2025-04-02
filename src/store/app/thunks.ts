@@ -11,7 +11,6 @@ import {
   getUserPass,
   getWSControllerURL,
 } from "store/general/selectors";
-import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { logger } from "utils/logger";
@@ -55,11 +54,7 @@ export const connectAndStartPolling = createAsyncThunk<
     const controllerConnections = getControllerConnections(storeState) || {};
     let controllerList: ControllerArgs[] = [];
     if (wsControllerURL) {
-      controllerList.push([
-        wsControllerURL,
-        credentials,
-        config?.authMethod ?? AuthMethod.LOCAL,
-      ]);
+      controllerList.push([wsControllerURL, credentials]);
     }
     const connectedControllers = Object.keys(controllerConnections);
     controllerList = controllerList.filter((controllerData) => {

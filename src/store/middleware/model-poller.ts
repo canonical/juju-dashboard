@@ -62,7 +62,7 @@ export const modelPollerMiddleware: Middleware<
       // first clean up any old auth requests:
       reduxStore.dispatch(generalActions.clearVisitURLs());
       for (const controllerData of action.payload.controllers) {
-        const [wsControllerURL, credentials, authMethod] = controllerData;
+        const [wsControllerURL, credentials] = controllerData;
         let conn: ConnectionWithFacades | undefined;
         let juju: Client | undefined;
         let error: unknown;
@@ -101,7 +101,7 @@ export const modelPollerMiddleware: Middleware<
           );
           return logger.log(LoginError.LOG, e, controllerData);
         } finally {
-          if (authMethod === AuthMethod.OIDC) {
+          if (Auth.instance.name === AuthMethod.OIDC) {
             reduxStore.dispatch(generalActions.updateLoginLoading(false));
           }
         }
@@ -127,7 +127,7 @@ export const modelPollerMiddleware: Middleware<
           { dashboardVersion, controllerVersion, isJuju },
           {
             category: "Authentication",
-            action: `User Login (${authMethod})`,
+            action: `User Login (${Auth.instance.name})`,
           },
         );
 

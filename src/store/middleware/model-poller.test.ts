@@ -45,11 +45,7 @@ describe("model poller", () => {
   let next: Mock;
   const wsControllerURL = "wss://example.com";
   const controllers: ControllerArgs[] = [
-    [
-      wsControllerURL,
-      { user: "eggman@external", password: "test" },
-      AuthMethod.LOCAL,
-    ],
+    [wsControllerURL, { user: "eggman@external", password: "test" }],
   ];
   const models = [
     {
@@ -185,7 +181,7 @@ describe("model poller", () => {
       const loginWithBakerySpy = vi.spyOn(jujuModule, "loginWithBakery");
       await runMiddleware(
         appActions.connectAndPollControllers({
-          controllers: [[wsControllerURL, undefined, AuthMethod.OIDC]],
+          controllers: [[wsControllerURL, undefined]],
           isJuju: true,
           poll: 0,
         }),
@@ -207,7 +203,7 @@ describe("model poller", () => {
         }));
       await runMiddleware(
         appActions.connectAndPollControllers({
-          controllers: [[wsControllerURL, undefined, AuthMethod.OIDC]],
+          controllers: [[wsControllerURL, undefined]],
           isJuju: true,
           poll: 0,
         }),
