@@ -19,7 +19,6 @@ import {
   getIsJuju,
   isLoggedIn,
 } from "store/general/selectors";
-import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction, FeatureFlags } from "types";
@@ -67,11 +66,13 @@ export const modelPollerMiddleware: Middleware<
         let juju: Client | undefined;
         let error: unknown;
         let intervalId: number | null | undefined;
+        reduxStore.dispatch(generalActions.updateLoginLoading(true));
         const continueConnection = await Auth.instance.beforeControllerConnect({
           wsControllerURL,
           credentials,
         });
         if (!continueConnection) {
+          reduxStore.dispatch(generalActions.updateLoginLoading(false));
           return;
         }
         try {
@@ -101,9 +102,7 @@ export const modelPollerMiddleware: Middleware<
           );
           return logger.log(LoginError.LOG, e, controllerData);
         } finally {
-          if (Auth.instance.name === AuthMethod.OIDC) {
-            reduxStore.dispatch(generalActions.updateLoginLoading(false));
-          }
+          reduxStore.dispatch(generalActions.updateLoginLoading(false));
         }
 
         if (!conn?.info || !Object.keys(conn.info).length) {

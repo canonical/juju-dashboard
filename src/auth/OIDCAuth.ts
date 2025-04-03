@@ -34,8 +34,6 @@ export class OIDCAuth extends pollingMixin(Auth) {
     wsControllerURL,
   }: ControllerData): Promise<boolean> {
     try {
-      // TODO: (WD-20709) Hoist loading state into model-poller.
-      this.dispatch(generalActions.updateLoginLoading(true));
       const whoamiResponse = await this.dispatch(jimmThunks.whoami());
       const user = unwrapResult(whoamiResponse);
       if (user) {
@@ -45,8 +43,6 @@ export class OIDCAuth extends pollingMixin(Auth) {
       } else {
         // If there's no response that means the user is not
         // authenticated, so halt the connection attempt.
-        // TODO: (WD-20709) Hoist loading state into model-poller.
-        this.dispatch(generalActions.updateLoginLoading(false));
         return false;
       }
     } catch (error) {
