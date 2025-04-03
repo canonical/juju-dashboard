@@ -155,7 +155,6 @@ function bootstrap() {
   reduxStore.dispatch(generalActions.storeVersion(appVersion));
 
   initialiseAuthFromConfig(config, reduxStore.dispatch);
-  console.log("bootstrapping", Auth.instance);
   void Auth.instance.bootstrap();
 
   getRoot()?.render(

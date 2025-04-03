@@ -6,6 +6,7 @@ import reduxStore from "store/store";
 const bakery = new Bakery({
   visitPage: (resp) => {
     reduxStore.dispatch(generalActions.storeVisitURL(resp.Info.VisitURL));
+    reduxStore.dispatch(generalActions.updateLoginLoading(false));
   },
   storage: new BakeryStorage(localStorage, {}),
 });

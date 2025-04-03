@@ -166,6 +166,20 @@ describe("model poller", () => {
     );
   });
 
+  it("stops loading with unhandled bakery error", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockRejectedValue(
+      new Error("some error"),
+    );
+    await runMiddleware();
+    expect(next).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.updateLoginLoading(true),
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      generalActions.updateLoginLoading(false),
+    );
+  });
+
   describe("using OIDC", () => {
     let dispatchMock: MockInstance;
 
@@ -186,7 +200,13 @@ describe("model poller", () => {
           poll: 0,
         }),
       );
+      expect(dispatchMock).toHaveBeenCalledWith(
+        generalActions.updateLoginLoading(true),
+      );
       expect(loginWithBakerySpy).not.toHaveBeenCalled();
+      expect(dispatchMock).toHaveBeenCalledWith(
+        generalActions.updateLoginLoading(false),
+      );
     });
 
     it("continues when logged in", async () => {
@@ -210,6 +230,26 @@ describe("model poller", () => {
       );
       expect(fakeStore.dispatch).toHaveBeenCalledWith(pollWhoamiStart());
       expect(loginWithBakerySpy).toHaveBeenCalled();
+    });
+
+    it("stops loading if connection cancelled", async () => {
+      const beforeControllerConnectMock = vi
+        .spyOn(Auth.instance, "beforeControllerConnect")
+        .mockResolvedValue(false);
+      await runMiddleware(
+        appActions.connectAndPollControllers({
+          controllers: [[wsControllerURL, undefined]],
+          isJuju: true,
+          poll: 0,
+        }),
+      );
+      expect(dispatchMock).toHaveBeenCalledWith(
+        generalActions.updateLoginLoading(true),
+      );
+      expect(beforeControllerConnectMock).toHaveBeenCalledOnce();
+      expect(dispatchMock).toHaveBeenCalledWith(
+        generalActions.updateLoginLoading(false),
+      );
     });
   });
 
