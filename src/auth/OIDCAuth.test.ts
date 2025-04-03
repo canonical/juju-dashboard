@@ -46,14 +46,12 @@ describe("OIDCAuth", () => {
       const pollWhoamiStartMock = vi.spyOn(jimmListeners, "pollWhoamiStart");
       const storeLoginErrorMock = vi.spyOn(generalActions, "storeLoginError");
       dispatch
-        // Loading start
-        .mockResolvedValueOnce({})
         // whoami
         .mockResolvedValueOnce({ payload: {} });
       const connectionContinue = await Auth.instance.beforeControllerConnect({
         wsControllerURL: "wss://1.2.3.4/api",
       });
-      expect(dispatch).toBeCalledTimes(3);
+      expect(dispatch).toBeCalledTimes(2);
       expect(whoamiThunkMock).toHaveBeenCalledOnce();
       expect(pollWhoamiStartMock).toHaveBeenCalledOnce();
       expect(connectionContinue).to.equal(true);
@@ -65,14 +63,12 @@ describe("OIDCAuth", () => {
       const pollWhoamiStartMock = vi.spyOn(jimmListeners, "pollWhoamiStart");
       const storeLoginErrorMock = vi.spyOn(generalActions, "storeLoginError");
       dispatch
-        // Loading start
-        .mockResolvedValueOnce({})
         // whoami
         .mockResolvedValueOnce({ payload: null });
       const connectionContinue = await Auth.instance.beforeControllerConnect({
         wsControllerURL: "wss://1.2.3.4/api",
       });
-      expect(dispatch).toBeCalledTimes(3);
+      expect(dispatch).toBeCalledTimes(1);
       expect(whoamiThunkMock).toHaveBeenCalledOnce();
       expect(pollWhoamiStartMock).not.toHaveBeenCalled();
       expect(connectionContinue).to.equal(false);
@@ -84,8 +80,6 @@ describe("OIDCAuth", () => {
       const pollWhoamiStartMock = vi.spyOn(jimmListeners, "pollWhoamiStart");
       const storeLoginErrorMock = vi.spyOn(generalActions, "storeLoginError");
       dispatch
-        // Loading start
-        .mockResolvedValueOnce({})
         // whoami
         .mockResolvedValueOnce({
           payload: undefined,
@@ -94,7 +88,7 @@ describe("OIDCAuth", () => {
       const connectionContinue = await Auth.instance.beforeControllerConnect({
         wsControllerURL: "wss://1.2.3.4/api",
       });
-      expect(dispatch).toBeCalledTimes(3);
+      expect(dispatch).toBeCalledTimes(2);
       expect(whoamiThunkMock).toHaveBeenCalledOnce();
       expect(pollWhoamiStartMock).not.toHaveBeenCalled();
       expect(connectionContinue).to.equal(false);

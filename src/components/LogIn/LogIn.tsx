@@ -1,3 +1,4 @@
+import { Spinner } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import reactHotToast from "react-hot-toast";
@@ -15,6 +16,7 @@ import {
   getWSControllerURL,
   isLoggedIn,
   getIsJuju,
+  getLoginLoading,
 } from "store/general/selectors";
 import { AuthMethod } from "store/general/types";
 import { useAppSelector } from "store/store";
@@ -36,6 +38,7 @@ export default function LogIn() {
     getLoginError(state, wsControllerURL),
   );
   const visitURLs = useAppSelector(getVisitURLs);
+  const loginLoading = useAppSelector(getLoginLoading);
 
   // This login component wraps all other views, so this useEffect will run each
   // time we get an authentication request.
@@ -71,16 +74,24 @@ export default function LogIn() {
   }, [visitURLs]);
 
   let form: ReactNode = null;
-  switch (config?.authMethod) {
-    case AuthMethod.CANDID:
-      form = <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />;
-      break;
-    case AuthMethod.OIDC:
-      form = <OIDCForm />;
-      break;
-    default:
-      form = <UserPassForm />;
-      break;
+  if (loginLoading) {
+    form = (
+      <button className="p-button--neutral" disabled>
+        <Spinner text="Connecting..." />
+      </button>
+    );
+  } else {
+    switch (config?.authMethod) {
+      case AuthMethod.CANDID:
+        form = <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />;
+        break;
+      case AuthMethod.OIDC:
+        form = <OIDCForm />;
+        break;
+      default:
+        form = <UserPassForm />;
+        break;
+    }
   }
 
   return (

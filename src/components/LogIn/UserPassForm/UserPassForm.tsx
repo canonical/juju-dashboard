@@ -33,6 +33,7 @@ const UserPassForm = () => {
         credential: { user, password },
       }),
     );
+    dispatch(generalActions.updateLoginLoading(true));
     if (bakery) {
       dispatch(appThunks.connectAndStartPolling())
         .then(unwrapResult)

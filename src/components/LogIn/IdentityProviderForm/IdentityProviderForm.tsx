@@ -1,7 +1,8 @@
 import { Spinner } from "@canonical/react-components";
 
 import AuthenticationButton from "components/AuthenticationButton";
-import { useAppSelector } from "store/store";
+import { actions as generalActions } from "store/general";
+import { useAppDispatch, useAppSelector } from "store/store";
 
 import { Label } from "../types";
 
@@ -20,12 +21,14 @@ const IdentityProviderForm = ({ userIsLoggedIn }: Props) => {
       return state?.general?.visitURLs?.[0];
     }
   });
+  const dispatch = useAppDispatch();
 
   return visitURL ? (
     <AuthenticationButton
       appearance="positive"
       visitURL={visitURL}
       data-testid={TestId.CANDID_LOGIN}
+      onClick={() => dispatch(generalActions.updateLoginLoading(true))}
     >
       {Label.LOGIN_TO_DASHBOARD}
     </AuthenticationButton>
