@@ -1,8 +1,8 @@
 import type { Connection } from "@canonical/jujulib";
 import { vi } from "vitest";
 
+import type { Config } from "store/general/types";
 import { relationshipTupleFactory } from "testing/factories/juju/juju";
-import type { WindowConfig } from "types";
 
 import {
   crossModelQuery,
@@ -20,7 +20,7 @@ describe("JIMM API", () => {
   it("generates correct endpoints", () => {
     window.jujuDashboardConfig = {
       controllerAPIEndpoint: "ws://example.com/api",
-    } as WindowConfig;
+    } as Config;
     const { login, logout, whoami } = endpoints();
     expect(login).toEqual("http://example.com/auth/login");
     expect(logout).toEqual("http://example.com/auth/logout");
@@ -30,7 +30,7 @@ describe("JIMM API", () => {
   it("generates correct endpoints for secure controller API", () => {
     window.jujuDashboardConfig = {
       controllerAPIEndpoint: "wss://example.com/api",
-    } as WindowConfig;
+    } as Config;
     const { login, logout, whoami } = endpoints();
     expect(login).toEqual("https://example.com/auth/login");
     expect(logout).toEqual("https://example.com/auth/logout");

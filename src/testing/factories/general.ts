@@ -7,11 +7,9 @@ import {
   type Credential,
   type GeneralState,
   type ControllerFeaturesState,
-  AuthMethod,
 } from "store/general/types";
 
 export const configFactory = Factory.define<Config>(() => ({
-  authMethod: AuthMethod.LOCAL,
   controllerAPIEndpoint: "wss://controller.example.com",
   baseAppURL: "/",
   identityProviderURL: "",

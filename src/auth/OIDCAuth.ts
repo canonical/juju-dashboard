@@ -4,12 +4,13 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import * as jimmListeners from "juju/jimm/listeners";
 import * as jimmThunks from "juju/jimm/thunks";
 import { actions as generalActions } from "store/general";
-import { AuthMethod } from "store/general/types";
 import { listenerMiddleware } from "store/listenerMiddleware";
 import type { AppDispatch } from "store/store";
 
 import { Auth, type ControllerData } from "./Auth";
 import { pollingMixin } from "./mixins";
+
+import { AuthMethod } from ".";
 
 export enum Label {
   WHOAMI = "Unable to check authentication status. You can attempt to log in anyway.",

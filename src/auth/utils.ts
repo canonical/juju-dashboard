@@ -1,5 +1,5 @@
+import type { Config } from "store/general/types";
 import type { AppDispatch } from "store/store";
-import type { WindowConfig } from "types";
 
 import { CandidAuth, LocalAuth, OIDCAuth } from ".";
 
@@ -8,7 +8,7 @@ import { CandidAuth, LocalAuth, OIDCAuth } from ".";
  * implementation.
  */
 export function initialiseAuthFromConfig(
-  config: WindowConfig,
+  config: Config,
   dispatch: AppDispatch,
 ) {
   if (!config.isJuju) {

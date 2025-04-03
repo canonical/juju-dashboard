@@ -1,14 +1,7 @@
 import type { ConnectionInfo } from "@canonical/jujulib";
 
-export enum AuthMethod {
-  CANDID = "candid",
-  LOCAL = "local",
-  OIDC = "oidc",
-}
-
 export type Config = {
   analyticsEnabled: boolean;
-  authMethod: AuthMethod;
   baseAppURL: string;
   // Support for 2.9 configuration.
   baseControllerURL?: string | null;
