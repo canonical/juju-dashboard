@@ -4,7 +4,7 @@ import { Auth, CandidAuth, OIDCAuth } from "auth";
 import { pollWhoamiStop } from "juju/jimm/listeners";
 import { actions as appActions } from "store/app";
 import { actions as generalActions } from "store/general";
-import { AuthMethod } from "store/general/types";
+import type { Config } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -17,7 +17,6 @@ import {
   controllerFactory,
   jujuStateFactory,
 } from "testing/factories/juju/juju";
-import type { WindowConfig } from "types";
 
 import { logOut, connectAndStartPolling } from "./thunks";
 
@@ -27,7 +26,7 @@ describe("thunks", () => {
   beforeEach(() => {
     window.jujuDashboardConfig = {
       controllerAPIEndpoint: "wss://example.com/api",
-    } as WindowConfig;
+    } as Config;
     fetchMock.resetMocks();
     state = rootStateFactory.build({
       general: generalStateFactory.build({
@@ -67,13 +66,7 @@ describe("thunks", () => {
   it("logOut", async () => {
     const action = logOut();
     const dispatch = vi.fn();
-    const getState = vi.fn(() =>
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({ authMethod: AuthMethod.CANDID }),
-        }),
-      }),
-    );
+    const getState = vi.fn(() => rootStateFactory.build());
     const logoutSpy = vi.spyOn(CandidAuth.prototype, "logout");
     new CandidAuth(dispatch);
     await action(dispatch, getState, null);
@@ -93,13 +86,7 @@ describe("thunks", () => {
     fetchMock.mockResponseOnce(JSON.stringify({}), { status: 200 });
     const action = logOut();
     const dispatch = vi.fn();
-    const getState = vi.fn(() =>
-      rootStateFactory.build({
-        general: generalStateFactory.build({
-          config: configFactory.build({ authMethod: AuthMethod.OIDC }),
-        }),
-      }),
-    );
+    const getState = vi.fn(() => rootStateFactory.build());
     const logoutSpy = vi.spyOn(OIDCAuth.prototype, "logout");
     new OIDCAuth(dispatch);
     await action(dispatch, getState, null);

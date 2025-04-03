@@ -1,7 +1,7 @@
 import { unwrapResult } from "@reduxjs/toolkit";
 import { vi } from "vitest";
 
-import type { WindowConfig } from "types";
+import type { Config } from "store/general/types";
 
 import { endpoints } from "./api";
 import { logout, whoami } from "./thunks";
@@ -11,7 +11,7 @@ describe("thunks", () => {
     fetchMock.resetMocks();
     window.jujuDashboardConfig = {
       controllerAPIEndpoint: "wss://example.com/api",
-    } as WindowConfig;
+    } as Config;
   });
 
   afterEach(() => {

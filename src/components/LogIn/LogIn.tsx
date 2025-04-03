@@ -5,12 +5,12 @@ import reactHotToast from "react-hot-toast";
 import { Outlet } from "react-router";
 
 import FadeUpIn from "animations/FadeUpIn";
+import { Auth, AuthMethod } from "auth";
 import AuthenticationButton from "components/AuthenticationButton";
 import Logo from "components/Logo";
 import ToastCard from "components/ToastCard";
 import type { ToastInstance } from "components/ToastCard";
 import {
-  getConfig,
   getLoginError,
   getVisitURLs,
   getWSControllerURL,
@@ -18,7 +18,6 @@ import {
   getIsJuju,
   getLoginLoading,
 } from "store/general/selectors";
-import { AuthMethod } from "store/general/types";
 import { useAppSelector } from "store/store";
 
 import IdentityProviderForm from "./IdentityProviderForm";
@@ -28,7 +27,6 @@ import { ErrorResponse, Label, TestId } from "./types";
 
 export default function LogIn() {
   const viewedAuthRequests = useRef<string[]>([]);
-  const config = useAppSelector(getConfig);
   const isJuju = useAppSelector(getIsJuju);
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const userIsLoggedIn = useAppSelector((state) =>
@@ -81,7 +79,7 @@ export default function LogIn() {
       </button>
     );
   } else {
-    switch (config?.authMethod) {
+    switch (Auth.instance.name) {
       case AuthMethod.CANDID:
         form = <IdentityProviderForm userIsLoggedIn={userIsLoggedIn} />;
         break;

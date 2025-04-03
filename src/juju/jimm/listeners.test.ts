@@ -15,9 +15,9 @@ import { vi } from "vitest";
 
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
+import type { Config } from "store/general/types";
 import type { RootState, AppDispatch } from "store/store";
 import { rootStateFactory } from "testing/factories";
-import type { WindowConfig } from "types";
 
 import { endpoints } from "./api";
 import {
@@ -58,7 +58,7 @@ describe("listeners", () => {
     fetchMock.resetMocks();
     window.jujuDashboardConfig = {
       controllerAPIEndpoint: "wss://controller.example.com",
-    } as WindowConfig;
+    } as Config;
     listenerMiddleware = createListenerMiddleware<RootState, AppDispatch>();
     const slice = createSlice({
       name: "root",

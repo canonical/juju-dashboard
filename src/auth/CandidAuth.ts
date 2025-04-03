@@ -1,11 +1,12 @@
 import * as jujuApi from "juju/api";
 import type { ConnectionWithFacades } from "juju/types";
 import { thunks as appThunks } from "store/app";
-import { AuthMethod } from "store/general/types";
 import type { AppDispatch } from "store/store";
 
 import { Auth } from "./Auth";
 import { pollingMixin } from "./mixins";
+
+import { AuthMethod } from ".";
 
 export class CandidAuth extends pollingMixin(Auth) {
   constructor(dispatch: AppDispatch) {

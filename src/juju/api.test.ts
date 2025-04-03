@@ -6,7 +6,6 @@ import { vi } from "vitest";
 
 import { Auth, CandidAuth, LocalAuth, OIDCAuth } from "auth";
 import { actions as generalActions } from "store/general";
-import { AuthMethod } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -327,9 +326,6 @@ describe("Juju API", () => {
     });
 
     it("can log in with an external provider", async () => {
-      if (state.general.config) {
-        state.general.config.authMethod = AuthMethod.CANDID;
-      }
       const loginResponse = {
         conn: {
           facades: {
