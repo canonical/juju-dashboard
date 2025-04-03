@@ -47,7 +47,10 @@ describe("UserPassForm", () => {
       type: "general/cleanupLoginErrors",
     });
     expect(mockUseAppDispatch.mock.calls[1][0]).toMatchObject(storeAction);
-    expect(mockUseAppDispatch.mock.calls[2][0]).toMatchObject({
+    expect(mockUseAppDispatch.mock.calls[2][0]).toMatchObject(
+      generalActions.updateLoginLoading(true),
+    );
+    expect(mockUseAppDispatch.mock.calls[3][0]).toMatchObject({
       type: "connectAndStartPolling",
     });
   });
