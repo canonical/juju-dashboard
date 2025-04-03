@@ -2,7 +2,6 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { AuthMethod } from "store/general/types";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -48,7 +47,8 @@ describe("LogIn", () => {
       general: generalStateFactory.withConfig().build({
         visitURLs: ["I am a url"],
         config: configFactory.build({
-          authMethod: AuthMethod.CANDID,
+          isJuju: true,
+          identityProviderURL: "/candid",
         }),
       }),
     });
@@ -64,9 +64,7 @@ describe("LogIn", () => {
   it("renders an OIDC login UI if the user is not logged in", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
-        config: configFactory.build({
-          authMethod: AuthMethod.OIDC,
-        }),
+        config: configFactory.build({ isJuju: false }),
       }),
     });
     renderComponent(<LogIn />, { state });
@@ -81,9 +79,7 @@ describe("LogIn", () => {
   it("renders a UserPass login UI if the user is not logged in", () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
-        config: configFactory.build({
-          authMethod: AuthMethod.LOCAL,
-        }),
+        config: configFactory.build({ isJuju: true }),
       }),
     });
     renderComponent(<LogIn />, { state });
@@ -103,9 +99,6 @@ describe("LogIn", () => {
             "wss://controller.example.com": "Controller rejected request",
           },
         },
-        config: configFactory.build({
-          authMethod: AuthMethod.LOCAL,
-        }),
       }),
     });
     renderComponent(<LogIn />, { state });
@@ -120,9 +113,7 @@ describe("LogIn", () => {
         login: {
           errors: { "wss://controller.example.com": ErrorResponse.INVALID_TAG },
         },
-        config: configFactory.build({
-          authMethod: AuthMethod.LOCAL,
-        }),
+        config: configFactory.build(),
       }),
     });
     renderComponent(<LogIn />, { state });
@@ -137,9 +128,6 @@ describe("LogIn", () => {
             "wss://controller.example.com": ErrorResponse.INVALID_FIELD,
           },
         },
-        config: configFactory.build({
-          authMethod: AuthMethod.LOCAL,
-        }),
       }),
     });
     renderComponent(<LogIn />, { state });
@@ -149,9 +137,7 @@ describe("LogIn", () => {
   it("displays authentication request notifications", async () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
-        config: configFactory.build({
-          authMethod: AuthMethod.CANDID,
-        }),
+        config: configFactory.build(),
         visitURLs: ["http://example.com/log-in"],
       }),
     });
@@ -170,7 +156,6 @@ describe("LogIn", () => {
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
           isJuju: true,
-          authMethod: AuthMethod.LOCAL,
         }),
         visitURLs: ["http://example.com/log-in"],
       }),

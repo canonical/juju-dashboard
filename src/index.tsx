@@ -10,8 +10,6 @@ import { Auth, initialiseAuthFromConfig } from "auth";
 import App from "components/App";
 import reduxStore from "store";
 import { actions as generalActions } from "store/general";
-import { AuthMethod } from "store/general/types";
-import type { WindowConfig } from "types";
 import { logger } from "utils/logger";
 
 import packageJSON from "../package.json";
@@ -31,16 +29,6 @@ if (import.meta.env.PROD && window.jujuDashboardConfig?.analyticsEnabled) {
   });
   Sentry.setTag("dashboardVersion", appVersion);
 }
-
-const getAuthMethod = (config: WindowConfig) => {
-  if (!config.isJuju) {
-    return AuthMethod.OIDC;
-  }
-  if (config.identityProviderURL) {
-    return AuthMethod.CANDID;
-  }
-  return AuthMethod.LOCAL;
-};
 
 const addressRegex = new RegExp(/^ws[s]?:\/\/(\S+)\//);
 export const getControllerAPIEndpointErrors = (
@@ -93,13 +81,7 @@ export const renderApp = () => {
 renderApp();
 
 function bootstrap() {
-  const windowConfig = window.jujuDashboardConfig;
-  const config = windowConfig
-    ? {
-        ...windowConfig,
-        authMethod: getAuthMethod(windowConfig),
-      }
-    : null;
+  const config = window.jujuDashboardConfig;
   const isProduction = import.meta.env.PROD;
   const logLevel: LogLevelDesc = isProduction
     ? logger.levels.SILENT

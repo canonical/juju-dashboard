@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 
+import { LocalAuth } from "auth";
 import { AdvancedSearchTestId } from "pages/AdvancedSearch";
 import { ControllersIndexTestId } from "pages/ControllersIndex/index";
 import { EntityDetailsTestId } from "pages/EntityDetails";
@@ -37,6 +38,7 @@ describe("Routes", () => {
         },
       }),
     });
+    new LocalAuth(vi.fn());
   });
 
   it("handles models", async () => {

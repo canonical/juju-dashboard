@@ -4,9 +4,11 @@
 import type { ConnectOptions, Credentials } from "@canonical/jujulib";
 
 import type { ConnectionWithFacades } from "juju/types";
-import type { AuthMethod, Credential } from "store/general/types";
+import type { Credential } from "store/general/types";
 import type { AppDispatch } from "store/store";
 import { logger } from "utils/logger";
+
+import type { AuthMethod } from ".";
 
 export type ControllerData = {
   wsControllerURL: string;

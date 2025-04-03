@@ -1,9 +1,8 @@
 import type { Mock, MockInstance } from "vitest";
 
 import { thunks as appThunks } from "store/app";
-import { AuthMethod } from "store/general/types";
 
-import { Auth } from "../Auth";
+import { Auth, AuthMethod } from "..";
 
 import { pollingMixin } from "./polling";
 

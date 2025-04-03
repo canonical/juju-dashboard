@@ -4,11 +4,9 @@ import { isAction } from "redux";
 
 import type { Config } from "store/general/types";
 
-export type WindowConfig = Omit<Config, "authMethod">;
-
 declare global {
   interface Window {
-    jujuDashboardConfig?: WindowConfig;
+    jujuDashboardConfig?: Config;
   }
 }
 

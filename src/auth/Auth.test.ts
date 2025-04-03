@@ -1,6 +1,4 @@
-import { AuthMethod } from "store/general/types";
-
-import { Auth } from "./Auth";
+import { Auth, AuthMethod } from ".";
 
 describe("Auth base class", () => {
   beforeEach(() => {

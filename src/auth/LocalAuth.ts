@@ -1,10 +1,11 @@
 import type { Credentials } from "@canonical/jujulib";
 
 import type { Credential } from "store/general/types";
-import { AuthMethod } from "store/general/types";
 import type { AppDispatch } from "store/store";
 
 import { Auth } from "./Auth";
+
+import { AuthMethod } from ".";
 
 export class LocalAuth extends Auth {
   constructor(dispatch: AppDispatch) {

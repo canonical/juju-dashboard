@@ -23,7 +23,6 @@ import generalReducer from "store/general";
 import jujuReducer from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
-import type { WindowConfig } from "types";
 
 import { configFactory } from "./factories/general";
 import queries from "./queries";
@@ -80,8 +79,7 @@ export const wrapComponent = (
       ? options.store
       : createStore(options?.state ?? rootStateFactory.build());
   const config = store.getState().general.config || configFactory.build();
-  // TODO: (WD-20710) Remove `WindowConfig` cast once `authMethod` is removed from config.
-  initialiseAuthFromConfig(config as WindowConfig, store.dispatch);
+  initialiseAuthFromConfig(config, store.dispatch);
   const router = createMemoryRouter(
     [
       {
