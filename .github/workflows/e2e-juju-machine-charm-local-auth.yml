@@ -1,0 +1,37 @@
+name: "E2E tests: Juju, machine charm and local auth"
+
+on:
+  workflow_call:
+    inputs:
+      admin-password:
+        required: false
+        type: string
+        description: The password to use when logging in as the admin user.
+        default: password1
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - name: Checkout Juju Dashboard repo
+        uses: actions/checkout@v4
+      - name: Install LXD
+        uses: canonical/setup-lxd@main
+      - name: Set up Juju
+        uses: ./.github/actions/setup-juju
+        with:
+          provider: localhost
+          controller-name: test
+      - name: Set up access
+        run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
+      - name: Set up Juju Dashboard machine charm
+        uses: ./.github/actions/setup-machine-charm
+      - name: Run tests
+        uses: ./.github/actions/run-playwright
+        env:
+          AUTH_MODE: local
+          JUJU_ENV: juju

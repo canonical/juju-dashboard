@@ -1,0 +1,9 @@
+name: End-to-end tests
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  juju-machine-local:
+    name: Test Juju, machine-charm and local-auth
+    uses: ./.github/workflows/e2e-juju-machine-charm-local-auth.yml

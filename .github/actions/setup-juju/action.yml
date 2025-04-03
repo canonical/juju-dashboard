@@ -1,0 +1,27 @@
+name: Set up Juju
+description: Install the Juju snap.
+inputs: 
+  juju-channel:
+    description: Juju snap channel to install.
+    required: false
+    default: "3/stable"
+  bootstrap-options:
+    description: Options to pass to Juju bootstrap.
+    required: false
+  controller-name:
+    description: The name of the controller to bootstrap.
+    required: false
+    default: test
+  provider:
+    description: The type of the Juju provider.
+    required: false
+    default: localhost
+runs:
+  using: "composite"
+  steps:
+    - name: Install snap
+      run: sudo snap install juju --channel ${{ inputs.juju-channel}}
+      shell: bash
+    - name: Bootstrap Juju
+      run: juju bootstrap ${{ inputs.provider }} ${{ inputs.controller-name }} ${{ inputs.bootstrap-options }}
+      shell: bash
