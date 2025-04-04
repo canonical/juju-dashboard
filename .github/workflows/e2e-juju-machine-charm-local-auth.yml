@@ -19,11 +19,6 @@ jobs:
     steps:
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v4
-      - name: Install LXD
-        uses: canonical/setup-lxd@main
-      - name: Disable LXD IPv6
-        run: lxc network set lxdbr0 ipv6.address none
-        shell: bash
       - name: Set up Juju
         uses: ./.github/actions/setup-juju
         with:

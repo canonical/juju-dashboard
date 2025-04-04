@@ -19,6 +19,13 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install LXD
+      if: ${{ inputs.provider == 'localhost' }}
+      uses: canonical/setup-lxd@main
+    - name: Disable LXD IPv6
+      if: ${{ inputs.provider == 'localhost' }}
+      run: lxc network set lxdbr0 ipv6.address none
+      shell: bash
     - name: Install snap
       run: sudo snap install juju --channel ${{ inputs.juju-channel}}
       shell: bash
