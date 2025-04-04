@@ -1,0 +1,46 @@
+name: Set up candid
+description: Set up candid with provided configuration.
+inputs:
+  candid-location:
+    description: Location to run candid, which will be written to candid's configuration.
+    required: false
+    default: http://127.0.0.1:8081
+  controller-name:
+    description: The name of the controller to bootstrap.
+    required: false
+    default: test
+
+runs:
+  using: composite
+  steps:
+    - name: Install candid
+      shell: bash
+      run: |
+        sudo snap install candid
+
+        while [ -n "$(snap changes candid 2>/dev/null | awk '/^[0-9]+/ {if ($2 != "Done") print $2 }')" ]; do
+          echo "Waiting for snap changes on candid to finish"
+          sleep 1
+        done
+
+        sleep 1
+    - name: Configure candid
+      shell: bash
+      run: |
+        sudo yq -i '.location = "${{ inputs.candid-location }}"' /var/snap/candid/current/config.yaml
+    - name: Capture candid key
+      id: candid-key-capture
+      shell: bash
+      run: |
+        CANDID_CONFIG="/var/snap/candid/current/config.yaml"
+        CANDID_KEY="$(sudo cat "$CANDID_CONFIG" | yq '.public-key')"
+        echo "identity-public-key=$CANDID_KEY" >> "$GITHUB_OUTPUT"
+    - name: Set up juju
+      uses: ./.github/actions/setup-juju
+      with:
+        provider: localhost
+        controller-name: ${{ inputs.controller-name }}
+        bootstrap-options: --config identity-url=${{ inputs.candid-location }} --config identity-public-key=${{ steps.candid-key-capture.outputs.identity-public-key }} --config allow-model-access=true
+    - name: Set up access
+      shell: bash
+      run: juju grant user1@external superuser
