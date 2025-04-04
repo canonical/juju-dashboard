@@ -1,0 +1,43 @@
+name: "E2E tests: Juju, k8s charm and local auth"
+
+on:
+  workflow_call:
+    inputs:
+      admin-password:
+        required: false
+        type: string
+        description: The password to use when logging in as the admin user.
+        default: password1
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - name: Checkout Juju Dashboard repo
+        uses: actions/checkout@v4
+      - name: Setup Juju controller on k8s
+        uses: charmed-kubernetes/actions-operator@main
+        with:
+          provider: "microk8s"
+          channel: 1.28-strict/stable
+          juju-channel: 3.6/stable
+          microk8s-group: snap_microk8s
+      - name: Save microk8s controller name
+        id: microk8s-controller
+        run: echo "name=$CONTROLLER_NAME" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Set up access
+        run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
+      - name: Set up Juju Dashboard k8s charm
+        uses: ./.github/actions/setup-k8s-charm
+      - name: Run tests
+        uses: ./.github/actions/run-playwright
+        with:
+          test-identifier: e2e-juju-k8s-charm-local-auth
+        env:
+          AUTH_MODE: local
+          JUJU_ENV: juju
