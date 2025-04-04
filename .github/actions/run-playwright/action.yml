@@ -1,5 +1,9 @@
 name: Run Playwright
 description: Install and run Playwright tests.
+inputs:
+  test-identifier:
+    description: Unique identifier for this test run that will be used for uploading test results.
+    required: true
 
 runs:
   using: "composite"
@@ -26,6 +30,6 @@ runs:
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: test-results
+        name: ${{ inputs.test-identifier }}
         path: test-results/
         retention-days: 30
