@@ -10,3 +10,6 @@ jobs:
   juju-machine-candid:
     name: Test Juju, machine-charm and candid-auth
     uses: ./.github/workflows/e2e-juju-machine-charm-candid-auth.yml
+  juju-k8s-local:
+    name: Test Juju, k8s-charm and local-auth
+    uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml

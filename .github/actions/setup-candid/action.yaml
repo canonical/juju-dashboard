@@ -15,15 +15,11 @@ runs:
   steps:
     - name: Install candid
       shell: bash
-      run: |
-        sudo snap install candid
-
-        while [ -n "$(snap changes candid 2>/dev/null | awk '/^[0-9]+/ {if ($2 != "Done") print $2 }')" ]; do
-          echo "Waiting for snap changes on candid to finish"
-          sleep 1
-        done
-
-        sleep 1
+      run: sudo snap install candid
+    - name: Wait for candid snap
+      uses: ./.github/actions/wait-for-snap
+      with:
+        snap: candid
     - name: Configure candid
       shell: bash
       run: |
