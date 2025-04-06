@@ -1,6 +1,6 @@
 name: Set up Juju
 description: Install the Juju snap.
-inputs: 
+inputs:
   juju-channel:
     description: Juju snap channel to install.
     required: false
@@ -20,15 +20,31 @@ runs:
   using: "composite"
   steps:
     - name: Install LXD
-      if: ${{ inputs.provider == 'localhost' }}
+      if: ${{ inputs.provider == 'localhost' || inputs.provider == 'microk8s' }}
       uses: canonical/setup-lxd@main
     - name: Disable LXD IPv6
-      if: ${{ inputs.provider == 'localhost' }}
+      if: ${{ inputs.provider == 'localhost' || inputs.provider == 'microk8s' }}
       run: lxc network set lxdbr0 ipv6.address none
+      shell: bash
+    - name: Install MicroK8s
+      if: ${{ inputs.provider == 'microk8s' }}
+      run: |
+        sudo snap install microk8s --channel=1.28-strict/stable
+        sudo usermod -a -G snap_microk8s $USER
+        sudo microk8s status --wait-ready
+        sudo microk8s.enable hostpath-storage
+        sudo microk8s.enable dns
+        sudo microk8s status --wait-ready
       shell: bash
     - name: Install snap
       run: sudo snap install juju --channel ${{ inputs.juju-channel}}
       shell: bash
+    - name: Bootstrap Juju with MicroK8s Group
+      if: ${{ inputs.provider == 'microk8s' }}
+      run: |
+        sg snap_microk8s -c "juju bootstrap microk8s ${{ inputs.controller-name }} ${{ inputs.bootstrap-options }}"
+      shell: bash
     - name: Bootstrap Juju
+      if: ${{ inputs.provider != 'microk8s' }}
       run: juju bootstrap ${{ inputs.provider }} ${{ inputs.controller-name }} ${{ inputs.bootstrap-options }}
       shell: bash

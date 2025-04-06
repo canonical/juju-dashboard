@@ -1,4 +1,4 @@
-name: "E2E tests: Juju, machine charm and local auth"
+name: "E2E tests: Juju with MicroK8s"
 
 on:
   workflow_call:
@@ -19,19 +19,26 @@ jobs:
     steps:
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v4
+      - name: Set up Docker
+        run: |
+          sudo snap install docker
+          sudo adduser $USER docker
+          sudo snap disable docker
+          sudo snap enable docker
+        shell: bash
       - name: Set up Juju
         uses: ./.github/actions/setup-juju
         with:
-          provider: localhost
-          controller-name: test
+          provider: microk8s
+          controller-name: micro
       - name: Set up access
         run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
-      - name: Set up Juju Dashboard machine charm
-        uses: ./.github/actions/setup-machine-charm
+      - name: Set up Juju Dashboard k8s charm
+        uses: ./.github/actions/setup-k8s-charm
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:
-          test-identifier: e2e-juju-machine-charm-local-auth
+          test-identifier: e2e-juju-k8s-charm-local-auth
         env:
           AUTH_MODE: local
           JUJU_ENV: juju

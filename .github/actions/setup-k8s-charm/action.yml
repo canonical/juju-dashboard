@@ -1,0 +1,73 @@
+name: Set up Juju Dashboard K8s charm
+description: Set up the Juju Dashboard Kubernetes charm using the supplied versions.
+inputs:
+  dashboard-image-revision:
+    description: When not called from a PR this can be set to a Juju Dashboard Image revision or "latest".
+    required: false
+  charm-channel:
+    description: If set and this is not called from a PR this will run the e2e tests against a published charm. All other options will be ignored.
+    required: false
+    type: choice
+    options:
+      - latest/stable
+      - latest/beta
+      - latest/edge
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set container name
+      run: >
+        if [ "${{ github.event_name }}" == "pull_request" ] || ( [ -z "${{ inputs.dashboard-image-revision }}" ] && [ -z "${{ inputs.charm-channel }}" ] ); then
+          echo "build_type=checkout" >> $GITHUB_ENV
+        elif [ -n "${{ inputs.charm-channel }}" ]; then
+          echo "build_type=charm-release" >> $GITHUB_ENV
+        else
+          echo "build_type=dashboard-release" >> $GITHUB_ENV
+        fi
+      shell: bash
+    - name: Check out Juju Dashboard charm
+      if: ${{ env.build_type == 'checkout' }}
+      uses: actions/checkout@v4
+      with:
+        repository: canonical/juju-dashboard-charm
+        path: juju-dashboard-charm
+    - name: Set up Juju Dashboard release
+      if: ${{ env.build_type == 'checkout' }}
+      shell: bash
+      run: |
+        cd ${{ github.workspace }}
+        yarn install
+        DOCKER_BUILDKIT=1 docker build -t juju-dashboard .
+        docker image save juju-dashboard | sudo microk8s ctr image import -
+    - name: Build the charm
+      if: ${{ env.build_type != 'charm-release' }}
+      run: |
+        sudo snap install charmcraft --classic
+        cd ${{ github.workspace }}/juju-dashboard-charm/k8s-charm
+        charmcraft pack
+      shell: bash
+    - name: Switch to controller
+      run: juju switch controller
+      shell: bash
+    - name: Deploy charm from channel
+      if: ${{ env.build_type == 'charm-release' }}
+      run: juju deploy juju-dashboard dashboard --channel ${{ inputs.charm-channel }}
+      shell: bash
+    - name: Deploy charm using dashboard image revision
+      if: ${{ env.build_type == 'dashboard-release' }}
+      run: juju deploy --resource dashboard-image=${{ inputs.dashboard-image-revision }} ${{ github.workspace }}/juju-dashboard-charm/k8s-charm/juju-dashboard*.charm dashboard
+      shell: bash
+    - name: Deploy locally built charm
+      if: ${{ env.build_type == 'checkout' }}
+      run: juju deploy --resource dashboard-image=$(docker image inspect juju-dashboard --format "{{.ID}}") ${{ github.workspace }}/juju-dashboard-charm/k8s-charm/juju-dashboard*.charm dashboard
+      shell: bash
+    - name: Integrate charm
+      run: juju integrate controller dashboard
+      shell: bash
+    - name: Wait for charm to be ready
+      run: juju wait-for application dashboard
+      shell: bash
+    - name: Disable analytics
+      run: juju config dashboard analytics-enabled=false
+      shell: bash

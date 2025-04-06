@@ -7,3 +7,6 @@ jobs:
   juju-machine-local:
     name: Test Juju, machine-charm and local-auth
     uses: ./.github/workflows/e2e-juju-machine-charm-local-auth.yml
+  juju-microk8s-local:
+    name: Test Juju, k8s-charm and local-auth
+    uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml
