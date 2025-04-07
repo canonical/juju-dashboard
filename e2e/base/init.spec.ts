@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 
-import { test } from "../fixtures/auth-setup";
+import { test } from "../fixtures/setup";
 
 test("Log in", async ({ page, authHelpers }) => {
   await authHelpers.login();

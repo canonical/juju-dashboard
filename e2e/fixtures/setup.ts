@@ -1,14 +1,14 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { test as base } from "@playwright/test";
 
 import { AuthHelpers } from "../helpers/auth-helpers";
 
-type AuthFixtures = {
+type Fixtures = {
   authHelpers: AuthHelpers;
 };
 
-export const test = base.extend<AuthFixtures>({
+export const test = base.extend<Fixtures>({
   authHelpers: async ({ page }, use) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     await use(new AuthHelpers(page));
   },
 });
