@@ -12,6 +12,10 @@ inputs:
       - latest/stable
       - latest/beta
       - latest/edge
+  controller-name:
+    description: Name of controller to run dashboard in.
+    required: false
+    default: test
 
 runs:
   using: "composite"
@@ -64,7 +68,7 @@ runs:
         charmcraft pack
       shell: bash
     - name: Switch to controller
-      run: juju switch controller
+      run: juju switch "${{ inputs.controller-name }}:controller"
       shell: bash
     - name: Deploy charm from channel
       if: ${{ env.build_type == 'charm-release' }}
