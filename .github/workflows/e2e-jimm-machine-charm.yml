@@ -1,15 +1,15 @@
-name: Integration Test
+name: "E2E tests: JIMM machine charm"
 
 on:
-  pull_request:
+  workflow_call:
 
 jobs:
-  startjimm:
-    name: Test JIMM with K8s
+  test:
+    name: Run tests
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
     steps:
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v4
@@ -18,21 +18,14 @@ jobs:
         uses: ./.github/actions/setup-jimm
         with:
           ghcr-secret: ${{ secrets.GITHUB_TOKEN }}
-          provider: microk8s
-          juju-channel: "3.6/stable"
-        env:
-          KUBECTL: sudo microk8s.kubectl
-          YQ: sudo yq
-      - name: Post restart JIMM
-        run: cd jimm && docker compose exec jimm-dev bash -c "echo '172.17.0.1 juju-apiserver' >> /etc/hosts"
-      - name: Set up Juju Dashboard k8s charm
-        uses: ./.github/actions/setup-k8s-charm
+      - name: Set up Juju Dashboard machine charm
+        uses: ./.github/actions/setup-machine-charm
         with:
           controller-name: ${{ steps.jimm.outputs.controller-name }}
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:
-          test-identifier: e2e-jimm-k8s-charm
+          test-identifier: e2e-jimm-machine-charm
         env:
           AUTH_MODE: oidc
           JUJU_ENV: jimm

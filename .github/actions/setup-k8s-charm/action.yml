@@ -1,8 +1,11 @@
-name: Set up Juju Dashboard machine charm
-description: Set up the Juju Dashboard machine charm using the supplied versions.
+name: Set up Juju Dashboard k8s charm
+description: Set up the Juju Dashboard k8s charm using the supplied versions.
 inputs: 
   dashboard-version:
     description: When not called from a PR this can be set to the name of a Juju Dashboard release tag name or "latest".
+    required: false
+  dashboard-resource:
+    description: When not called from a PR this can be set to a dashboard-image revision or "latest" to use a docker image that has been published to Charmhub.
     required: false
   charm-channel:
     description: If set and this is not called from a PR this will run the e2e tests against a published charm. All other options will be ignored.
@@ -26,36 +29,37 @@ runs:
           echo "build_type=checkout" >> $GITHUB_ENV
         elif [ -n "${{ inputs.charm-channel }}" ]; then
           echo "build_type=charm-release" >> $GITHUB_ENV
+        elif [ -n "${{ inputs.dashboard-resource }}" ]; then
+          echo "build_type=dashboard-resource" >> $GITHUB_ENV
         else
           echo "build_type=dashboard-release" >> $GITHUB_ENV
         fi
       shell: bash
+    - name: Install charmcraft
+      if: ${{ env.build_type != 'charm-release' }}
+      run: sudo snap install charmcraft --classic
+      shell: bash
     - name: Check out Juju Dashboard charm
-      if: ${{ env.build_type == 'checkout' }}
+      if: ${{ env.build_type == 'checkout' || env.build_type == 'dashboard-release' }}
       uses: actions/checkout@v4
       with:
         repository: canonical/juju-dashboard-charm
         path: juju-dashboard-charm
     - name: Set up Juju Dashboard release
       if: ${{ env.build_type == 'dashboard-release' }}
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.dashboard-version }}
+        path: juju-dashboard-release
+    - name: Build Juju Dashboard image
+      id: dashboard-image
+      if: ${{ env.build_type == 'checkout' || env.build_type == 'dashboard-release' }}
+      shell: bash
       run: |
-        cd ${{ github.workspace }}/juju-dashboard-charm/machine-charm
-        ./scripts/update-machine-charm-dashboard.sh ${{ inputs.dashboard-version }}
-      shell: bash
-    - name: Set up Juju Dashboard release
-      if: ${{ env.build_type == 'checkout' }}
-      shell: bash
-      run: |
-        cd ${{ github.workspace }}
-        yarn install
-        yarn build
-        cd ${{ github.workspace }}/juju-dashboard-charm/machine-charm
-        rm -rf src/dist/*
-        cp -r ${{ github.workspace }}/build/* src/dist
-    - name: Install charmcraft
-      if: ${{ env.build_type != 'charm-release' }}
-      run: sudo snap install charmcraft --classic
-      shell: bash
+        cd ${{ github.workspace }}${{ env.build_type == 'dashboard-release' && '/juju-dashboard-release' || '' }}
+        DOCKER_BUILDKIT=1 docker build -t juju-dashboard .
+        docker image save juju-dashboard | sudo microk8s ctr image import -
+        echo "id=$(docker image inspect juju-dashboard --format '{{.ID}}')" >> $GITHUB_OUTPUT
     - name: Wait for charmcraft snap
       if: ${{ env.build_type != 'charm-release' }}
       uses: ./.github/actions/wait-for-snap
@@ -64,7 +68,7 @@ runs:
     - name: Build the charm
       if: ${{ env.build_type != 'charm-release' }}
       run: |
-        cd ${{ github.workspace }}/juju-dashboard-charm/machine-charm
+        cd ${{ github.workspace }}/juju-dashboard-charm/k8s-charm
         charmcraft pack
       shell: bash
     - name: Switch to controller
@@ -76,7 +80,7 @@ runs:
       shell: bash
     - name: Deploy built charm
       if: ${{ env.build_type != 'charm-release' }}
-      run: juju deploy ${{ github.workspace }}/juju-dashboard-charm/machine-charm/juju-dashboard*.charm dashboard
+      run: juju deploy ${{ github.workspace }}/juju-dashboard-charm/k8s-charm/juju-dashboard*.charm dashboard --resource 'dashboard-image=${{ env.build_type == 'dashboard-release' && 'canonicalwebteam/juju-dashboard:${{ inputs.dashboard-release }}' || steps.dashboard-image.outputs.id }}'
       shell: bash
     - name: Integrate charm
       run: juju integrate controller dashboard

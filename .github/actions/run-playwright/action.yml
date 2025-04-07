@@ -18,11 +18,12 @@ runs:
       shell: bash
     - name: Get dashboard address
       id: dashboard
-      run: echo "address=http://$(juju show-unit dashboard/0 | yq '.dashboard/0.public-address'):8080" >> $GITHUB_OUTPUT
+      run: echo "address=http://$(address=$(juju show-unit dashboard/0 | yq '.dashboard/0.public-address'); if [ "$address" != "null" ]; then echo $address; else juju show-unit dashboard/0 | yq '.dashboard/0.address'; fi):8080" >> $GITHUB_OUTPUT
       shell: bash
     - name: Run Playwright tests
       run: |
         cd ${{ github.workspace }}
+        yarn install
         yarn playwright test
       shell: bash
       env: 
