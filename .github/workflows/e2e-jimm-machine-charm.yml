@@ -1,0 +1,31 @@
+name: "E2E tests: JIMM machine charm"
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - name: Checkout Juju Dashboard repo
+        uses: actions/checkout@v4
+      - name: Start JIMM
+        id: jimm
+        uses: ./.github/actions/setup-jimm
+        with:
+          ghcr-secret: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Juju Dashboard machine charm
+        uses: ./.github/actions/setup-machine-charm
+        with:
+          controller-name: ${{ steps.jimm.outputs.controller-name }}
+      - name: Run tests
+        uses: ./.github/actions/run-playwright
+        with:
+          test-identifier: e2e-jimm-machine-charm
+        env:
+          AUTH_MODE: oidc
+          JUJU_ENV: jimm
