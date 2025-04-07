@@ -13,3 +13,6 @@ jobs:
   juju-k8s-local:
     name: Test Juju, k8s-charm and local-auth
     uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml
+  jimm-machine:
+    name: Test JIMM machine charm
+    uses: ./.github/workflows/e2e-jimm-machine-charm.yml

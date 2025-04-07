@@ -1,0 +1,62 @@
+name: Set up JIMM
+description: Set up JIMM with provided configuration.
+inputs:
+  jimm-checkout-location:
+    description: Path to checkout the JIMM repository to.
+    required: false
+    default: jimm
+  jimm-version:
+    description: Version of JIMM to use.
+    required: false
+    default: dev
+  juju-channel:
+    description: Channel of Juju to use.
+    required: false
+    default: 3.6/edge
+  dashboard-location:
+    description: URL of the running dashboard.
+    required: false
+    default: http://127.0.0.1:8000
+  ghcr-secret:
+    description: GHCR secret.
+    required: true
+outputs:
+  controller-name:
+    description: Name of the Juju controller
+    value: ${{ steps.test-server.outputs.controller-name }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout JIMM repo
+      uses: actions/checkout@v4
+      with:
+        repository: andogq/jimm # TODO: (canonical/jimm#TODO) Replace this with `canonica/jimm` when PR is merged
+        ref: feat/output-lxd-controller-name
+        path: ${{ inputs.jimm-checkout-location }}
+    - name: Update dashboard location for JIMM
+      shell: bash
+      run:
+        yq -i '
+          .services.jimm-base.environment.JIMM_DASHBOARD_FINAL_REDIRECT_URL = "${{ inputs.dashboard-location }}" |
+          .services.jimm-base.environment.CORS_ALLOWED_ORIGINS = "${{ inputs.dashboard-location }}" |
+          .services.jimm-base.environment.JIMM_DASHBOARD_LOCATION = "${{ inputs.dashboard-location }}"'
+          "${{ inputs.jimm-checkout-location }}/docker-compose.common.yaml"
+    - name: Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version-file: '${{ inputs.jimm-checkout-location }}/go.mod'
+    - name: Go vendor to speed up docker build
+      shell: bash
+      run: cd "${{ inputs.jimm-checkout-location }}" && go mod vendor
+    - name: Start JIMM (pull request)
+      uses: ./jimm/.github/actions/test-server
+      id: test-server
+      with:
+        jimm-version: ${{ inputs.jimm-version }}
+        juju-channel: ${{ inputs.juju-channel }}
+        ghcr-pat: ${{ inputs.ghcr-secret }}
+        dump-logs: true
+    - name: Restart JIMM # NOTE: This is required due to a JIMM bug.
+      shell: bash
+      run: docker restart jimm
