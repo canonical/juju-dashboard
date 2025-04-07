@@ -24,4 +24,9 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
+  webServer: {
+    command: "npx http-server build --port 8000",
+    url: "http://jimm.localhost:8000",
+    reuseExistingServer: !process.env.CI,
+  },
 });

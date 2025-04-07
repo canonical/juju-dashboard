@@ -1,0 +1,82 @@
+name: Integration Test
+
+on:
+  pull_request:
+
+jobs:
+  startjimm:
+    name: Test JIMM with K8s
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Checkout Juju Dashboard repo
+        uses: actions/checkout@v4
+      - name: Checkout JIMM repo
+        uses: actions/checkout@v4
+        with:
+          repository: huwshimi/jimm
+          ref: add-microk8s-action
+          path: jimm
+      - name: Update dashboard paths
+        run: |
+          sed -i -e 's/JIMM_DASHBOARD_FINAL_REDIRECT_URL: "https:\/\/jaas.ai"/CORS_ALLOWED_ORIGINS: "http:\/\/jimm.localhost:8000"\n      JIMM_DASHBOARD_LOCATION: "http:\/\/jimm.localhost:8000"\n      JIMM_DASHBOARD_FINAL_REDIRECT_URL: "http:\/\/jimm.localhost:8000"/g' jimm/docker-compose.common.yaml
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: 'jimm/go.mod'
+
+      - name: Go vendor to speed up docker build
+        run: cd jimm && go mod vendor
+
+      - name: Start JIMM (pull request)
+        uses: ./jimm/.github/actions/test-server
+        id: test-server
+        with:
+          jimm-version: dev
+          juju-channel: "3.6/stable"
+          ghcr-pat: ${{ secrets.GITHUB_TOKEN }}
+          dump-logs: true
+          provider: microk8s
+        env:
+          KUBECTL: sudo microk8s.kubectl
+          YQ: sudo yq
+
+      - name: Create a model, deploy an application and run juju status
+        run: |
+          juju add-model foo && \
+          juju deploy haproxy && \
+          sleep 5 && \
+          juju status
+
+      - name: Restart JIMM
+        run: | 
+          docker restart jimm
+          cd jimm && docker compose exec jimm-dev bash -c "echo '172.17.0.1 juju-apiserver' >> /etc/hosts"
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - name: Install
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build
+      - name: Configure
+        run: |
+          sed -i -e 's/controllerAPIEndpoint\:\ \"\"/controllerAPIEndpoint:\ "wss:\/\/jimm.localhost\/api"/g' build/config.js
+          sed -i -e 's/analyticsEnabled\:\ true/analyticsEnabled:\ false/g' build/config.js
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+      - name: Run Playwright tests
+        run: yarn playwright test
+        env:
+           DASHBOARD_ADDRESS: "http://jimm.localhost:8000"
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 1
