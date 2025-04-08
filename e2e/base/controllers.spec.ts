@@ -7,10 +7,13 @@ test("List Controllers", async ({ page, authHelpers }) => {
   const controllersTab = page.getByRole("link", { name: "Controllers" });
   await expect(controllersTab).toBeInViewport();
   await controllersTab.click();
-  await expect(
-    page.getByText("Model status across controllers"),
-  ).toBeInViewport();
-  await expect(
-    page.getByRole("columnheader", { name: "DEFAULT" }),
-  ).toBeInViewport();
+  if (process.env.CONTROLLER_NAME) {
+    await expect(
+      page
+        .getByRole("gridcell")
+        .filter({ hasText: process.env.CONTROLLER_NAME }),
+    ).toBeInViewport();
+  } else {
+    throw new Error("No controller found");
+  }
 });

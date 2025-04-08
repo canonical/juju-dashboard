@@ -33,5 +33,6 @@ jobs:
         with:
           test-identifier: e2e-juju-machine-charm-local-auth
         env:
+          CONTROLLER_NAME: test
           AUTH_MODE: local
           JUJU_ENV: juju
