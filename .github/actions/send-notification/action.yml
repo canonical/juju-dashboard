@@ -1,0 +1,18 @@
+name: Send Mattermost notification
+description: Sends the provided content to a Mattermost channel.
+inputs:
+  channel:
+    description: Mattermost channel to send message to.
+    required: false
+    default: juju-dashboard-webhook-testing
+  webhook-url:
+    description: Webhook URL to send use.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Send notification
+      shell: bash
+      run: |
+        curl -X POST -F "workflow=${{ github.workflow }}" -F "repo_name=${{ github.repository }}" -F "action_id=${{ github.run_id }}" ${{ inputs.webhook-url }}?room=${{ inputs.channel }}
