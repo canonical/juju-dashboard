@@ -19,6 +19,12 @@ jobs:
     steps:
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v4
+      - name: Send notification
+        uses: ./.github/actions/send-notification
+        with:
+          channel: juju-dashboard-webhook-testing
+          message: "# Webhook notification\nSomething happened."
+          webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
       - name: Set up candid
         uses: ./.github/actions/setup-candid
       - name: Set up Juju Dashboard machine charm

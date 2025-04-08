@@ -1,0 +1,27 @@
+name: Send Mattermost notification
+description: Sends the provided content to a Mattermost channel.
+inputs:
+  channel:
+    description: Mattermost channel to send message to.
+    required: true
+  message:
+    description: Text content to send.
+    required: true
+  webhook-url:
+    description: Webhook URL to send use.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Send notification
+      shell: bash
+      run: |
+        CONTENT=$(cat << EOF
+          {
+            "text": "${{ inputs.message }}",
+            "channel": "${{ inputs.channel }}"
+          }
+        EOF
+        )
+        curl -i -X POST -H 'Content-Type: application/json' -d "$CONTENT" "${{ inputs.webhook-url }}"
