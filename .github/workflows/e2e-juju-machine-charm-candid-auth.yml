@@ -30,3 +30,8 @@ jobs:
         env:
           AUTH_MODE: candid
           JUJU_ENV: juju
+      - name: Send notification on failure
+        if: failure()
+        uses: ./.github/actions/send-notification
+        with:
+          webhook-url: ${{ secrets.WEBBOT_URL }}
