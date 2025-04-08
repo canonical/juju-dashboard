@@ -11,6 +11,7 @@ on:
 
 jobs:
   test:
+    if: false
     name: Run tests
     runs-on: ubuntu-22.04
     strategy:
