@@ -11,67 +11,112 @@ jobs:
       matrix:
         node-version: [20.x]
     steps:
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+          timeout-minutes: 15
+          limit-access-to-actor: true
+      - name: Disable IPv6
+        shell: bash
+        run: |
+          echo "net.ipv6.conf.all.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
+          echo "net.ipv6.conf.default.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
+          echo "net.ipv6.conf.lo.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
+          sudo sysctl -p
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v4
-      - name: Checkout JIMM repo
+      - name: Setup operator environment
+        uses: charmed-kubernetes/actions-operator@main
+        with:
+          channel: 1.32-strict/stable
+          juju-channel: 3/stable
+          provider: microk8s
+          microk8s-group: snap_microk8s
+          microk8s-addons: "ingress hostpath-storage dns host-access metallb:10.64.140.43/30"
+      - name: Wait for charmcraft snap
+        uses: ./.github/actions/wait-for-snap
+        with:
+          snap: charmcraft
+      - name: Setup microk8s for private registry
+        shell: bash
+        run: |
+          read -r -d '' REGISTRY_CONFIG << EOL || true
+            [plugins."io.containerd.grpc.v1.cri".registry.configs."ghcr.io".auth]
+              username = "${{ github.actor }}"
+              password = "${{ secrets.GITHUB_TOKEN }}"
+          EOL
+          echo "$REGISTRY_CONFIG" | sudo tee -a /var/snap/microk8s/current/args/containerd-template.toml
+          sudo snap restart microk8s.daemon-containerd
+      - name: Set up deps
+        shell: bash
+        run: |
+          sudo apt install python3-virtualenv
+          sudo snap install node --classic
+          sudo snap install yq
+          sudo npx playwright install-deps
+      - name: Checkout operator repo
         uses: actions/checkout@v4
         with:
-          repository: huwshimi/jimm
-          ref: add-microk8s-action
-          path: jimm
-      - name: Update dashboard paths
-        run: |
-          sed -i -e 's/JIMM_DASHBOARD_FINAL_REDIRECT_URL: "https:\/\/jaas.ai"/CORS_ALLOWED_ORIGINS: "http:\/\/jimm.localhost:8000"\n      JIMM_DASHBOARD_LOCATION: "http:\/\/jimm.localhost:8000"\n      JIMM_DASHBOARD_FINAL_REDIRECT_URL: "http:\/\/jimm.localhost:8000"/g' jimm/docker-compose.common.yaml
-
-      - name: Setup Go
-        uses: actions/setup-go@v4
+          repository: canonical/jimm-k8s-operator
+          path: jimm-k8s-operator
+      - name: Wait for charmcraft snap
+        uses: ./.github/actions/wait-for-snap
         with:
-          go-version-file: 'jimm/go.mod'
-
-      - name: Go vendor to speed up docker build
-        run: cd jimm && go mod vendor
-
-      - name: Start JIMM (pull request)
-        uses: ./jimm/.github/actions/test-server
-        id: test-server
-        with:
-          jimm-version: dev
-          juju-channel: "3.6/stable"
-          ghcr-pat: ${{ secrets.GITHUB_TOKEN }}
-          dump-logs: true
-          provider: microk8s
-        env:
-          KUBECTL: sudo microk8s.kubectl
-          YQ: sudo yq
-
-      - name: Create a model, deploy an application and run juju status
+          snap: charmcraft
+      - name: Run JIMM
+        shell: bash
         run: |
-          juju add-model foo && \
-          juju deploy haproxy && \
-          sleep 5 && \
+          cd jimm-k8s-operator/
+          virtualenv -p python3 venv
+          source venv/bin/activate
+          pip install tox
+          tox -e integration -- --keep-models || true
+      - name: Get controller
+        id: controller
+        shell: bash
+        run: echo "name=$(juju models --format json | yq '[.models.[] | select(.name | contains("test-charm-browser-login-"))][0].name')" >> $GITHUB_OUTPUT
+      - name: Get status
+        shell: bash
+        run: |
+          juju controllers
+          juju models
+          juju switch ${{ steps.controller.outputs.name }}
           juju status
-
-      - name: Restart JIMM
-        run: | 
-          docker restart jimm
-          cd jimm && docker compose exec jimm-dev bash -c "echo '172.17.0.1 juju-apiserver' >> /etc/hosts"
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "yarn"
-      - name: Install
-        run: yarn install --immutable
-      - name: Build
-        run: yarn build
-      - name: Configure
+      - name: Add controller
+        shell: bash
         run: |
-          sed -i -e 's/controllerAPIEndpoint\:\ \"\"/controllerAPIEndpoint:\ "wss:\/\/jimm.localhost\/api"/g' build/config.js
-          sed -i -e 's/analyticsEnabled\:\ true/analyticsEnabled:\ false/g' build/config.js
-      - name: Install Playwright Browsers
-        run: yarn playwright install --with-deps
-      - name: Run Playwright tests
-        run: yarn playwright test
+          juju run self-signed-certificates/0 get-ca-certificate --quiet | yq .ca-certificate | sudo tee /usr/local/share/ca-certificates/jimm-test.crt
+          sudo update-ca-certificates --fresh
+          CLOUDINIT_FILE="cloudinit-tweak.temp.yaml"
+          CONTROLLER_NAME="workload-lxd"
+          CLOUDINIT_TEMPLATE=$'cloudinit-userdata: |
+            preruncmd:
+                - echo "%s    juju-jimm-k8s-endpoints.%s.svc.cluster.local" >> /etc/hosts
+            ca-certs:
+                trusted:
+                - |\n%s'
+          printf "$CLOUDINIT_TEMPLATE" "$(lxc network get lxdbr0 ipv4.address | cut -f1 -d/)" "$(juju show-model ${{ steps.controller.outputs.name }} | yq 'keys'[0])" "$(cat /usr/local/share/ca-certificates/jimm-test.crt | sed -e 's/^/               /')" | sed -e 's/^          /  /g' > "${CLOUDINIT_FILE}"
+          cat "$CLOUDINIT_FILE"
+          juju bootstrap lxd "${CONTROLLER_NAME}" --config "${CLOUDINIT_FILE}" --config login-token-refresh-url=http://juju-jimm-k8s-endpoints."$(juju show-model ${{ steps.controller.outputs.name }} | yq 'keys'[0])".svc.cluster.local:8080/.well-known/jwks.json --debug
+          juju switch juju-jimm-k8s
+          sudo snap install --channel=3/edge jimmctl
+          jimmctl controller-info workload-lxd ~/snap/jimmctl/common/lxd-controller-info.yaml --local --tls-hostname juju-apiserver
+          jimmctl add-controller ~/snap/jimmctl/common/lxd-controller-info.yaml
+      - name: Set up Juju Dashboard k8s charm
+        uses: ./.github/actions/setup-k8s-charm
+        with:
+          controller-name: juju-jimm-k8s
+          charm-channel: latest/stable
+      - name: Configure JIMM
+        shell: bash
+        run: |
+          juju config juju-jimm-k8s cors-allowed-origins=http://$(juju show-unit dashboard/0 | yq '.dashboard/0.address'):8080
+          juju config juju-jimm-k8s juju-dashboard-location=http://$(juju show-unit dashboard/0 | yq '.dashboard/0.address'):8080/models
+      - name: Run tests
+        uses: ./.github/actions/run-playwright
+        with:
+          test-identifier: e2e-jimm-k8s-charm
         env:
            DASHBOARD_ADDRESS: "http://jimm.localhost:8000"
       - uses: actions/upload-artifact@v4
