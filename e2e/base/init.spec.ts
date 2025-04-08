@@ -1,6 +1,11 @@
-import { test, expect } from "@playwright/test";
+import { expect } from "@playwright/test";
 
-test("dashboard loads", async ({ page }) => {
-  await page.goto("/");
-  await expect(page).toHaveTitle(/Juju Dashboard/);
+import { test } from "../fixtures/setup";
+
+test("Log in", async ({ page, authHelpers }) => {
+  await authHelpers.login();
+  await expect(page.getByRole("link", { name: "Models" })).toBeInViewport();
+  await expect(
+    page.getByRole("link", { name: "Controllers" }),
+  ).toBeInViewport();
 });
