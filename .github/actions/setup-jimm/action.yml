@@ -27,7 +27,8 @@ runs:
     - name: Checkout JIMM repo
       uses: actions/checkout@v4
       with:
-        repository: canonical/jimm
+        repository: huwshimi/jimm # TODO: (canonical/jimm#1587) Replace this with `canonica/jimm` when PR is merged
+        ref: add-microk8s-action
         path: ./jimm
     - name: Update dashboard location for JIMM
       shell: bash
