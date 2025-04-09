@@ -21,6 +21,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Set up candid
         uses: ./.github/actions/setup-candid
+      - name: Set up access
+        run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
       - name: Set up Juju Dashboard machine charm
         uses: ./.github/actions/setup-machine-charm
       - name: Run tests
