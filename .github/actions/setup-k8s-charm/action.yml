@@ -1,6 +1,6 @@
 name: Set up Juju Dashboard k8s charm
 description: Set up the Juju Dashboard k8s charm using the supplied versions.
-inputs: 
+inputs:
   dashboard-version:
     description: When not called from a PR this can be set to the name of a Juju Dashboard release tag name or "latest".
     required: false
@@ -36,6 +36,7 @@ runs:
       uses: actions/checkout@v4
       with:
         repository: canonical/juju-dashboard-charm
+        ref: fix/pin-wheel
         path: juju-dashboard-charm
     - name: Set up Juju Dashboard release
       if: ${{ env.build_type == 'dashboard-release' }}
