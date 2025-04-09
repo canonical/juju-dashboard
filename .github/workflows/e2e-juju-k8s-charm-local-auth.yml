@@ -42,9 +42,9 @@ jobs:
           CONTROLLER_NAME: ${{ steps.microk8s-controller.outputs.name }}
           AUTH_MODE: local
           JUJU_ENV: juju
+          PROVIDER: microk8s
           USERNAME: admin
           PASSWORD: ${{ inputs.admin-password }}
-          PROVIDER: microk8s
       - name: Send notification on failure
         if: failure()
         uses: ./.github/actions/send-notification
