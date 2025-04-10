@@ -6,7 +6,7 @@ inputs:
     required: false
     default: "3/stable"
   bootstrap-options:
-    description: Options to pass to Juju bootstrap.
+    description: Options to pass to `juju bootstrap`. Multiple options can be provided here, and they will be passed to the CLI as-is.
     required: false
   controller-name:
     description: The name of the controller to bootstrap.
@@ -27,8 +27,8 @@ runs:
       run: lxc network set lxdbr0 ipv6.address none
       shell: bash
     - name: Install snap
-      run: sudo snap install juju --channel ${{ inputs.juju-channel}}
+      run: sudo snap install juju --channel '${{ inputs.juju-channel}}'
       shell: bash
     - name: Bootstrap Juju
-      run: juju bootstrap ${{ inputs.provider }} ${{ inputs.controller-name }} ${{ inputs.bootstrap-options }}
+      run: juju bootstrap '${{ inputs.provider }}' '${{ inputs.controller-name }}' ${{ inputs.bootstrap-options }}
       shell: bash

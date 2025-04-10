@@ -1,18 +1,67 @@
 name: End-to-end tests
 on:
   pull_request:
-    branches:
-      - main
+    types:
+      - labeled
+      - opened
+      - synchronize
+      - reopened
+
+  schedule:
+    - cron: "0 23 * * 1" # Every Monday at 23:00 UTC (9:00am AEST)
+
+  release:
+    types: [published]
+
+  workflow_dispatch:
+    inputs:
+      dashboard-source:
+        description: Source of the dashboard to run the test suite for.
+        required: true
+        type: choice
+        options:
+        - branch
+        - release
+        - charm
+        - bundled
+      source-identifier:
+        description: |
+          Identifier for the dashboard source:
+          - Branch: branch name
+          - Release: release tag
+          - Charm: charm channel
+          - Bundled: (ignored)
+        required: false
+        type: string
+      jimm-version:
+        description: Version of JIMM to use, or `dev` to pull from GitHub.
+        required: false
+        type: string
+        default: dev
+      juju-channel:
+        description: Charm channel of Juju to use.
+        required: false
+        type: string
+        default: 3/stable
+      dashboard-charm-ref:
+        description: Git ref to use for `juju-dashboard-charm` repository. Only valid if `dashboard-source` is `branch` or `release`.
+        required: false
+        type: string
+        default: main
+
 jobs:
   juju-machine-local:
     name: Test Juju, machine-charm and local-auth
     uses: ./.github/workflows/e2e-juju-machine-charm-local-auth.yml
     secrets: inherit
+    if:  github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'e2e')
   juju-machine-candid:
     name: Test Juju, machine-charm and candid-auth
     uses: ./.github/workflows/e2e-juju-machine-charm-candid-auth.yml
     secrets: inherit
+    if:  github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'e2e')
   juju-k8s-local:
     name: Test Juju, k8s-charm and local-auth
     uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml
     secrets: inherit
+    if:  github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'e2e')
