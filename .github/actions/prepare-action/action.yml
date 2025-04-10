@@ -1,0 +1,103 @@
+name: Prepare action
+description: Prepare the action environment based on workflow trigger parameters.
+outputs:
+  repo-ref:
+    description: Checkout ref for the repository.
+    value: ${{ steps.config.outputs.repo-ref }}
+  dashboard-source:
+    description: The source of the dashboard, either `source` if it should be built from source, or `charm` if it's a released charm.
+    value: ${{ steps.config.outputs.dashboard-source }}
+  dashboard-charm-ref:
+    description: Checkout ref for the `juju-dashboard-charm` repository. Only present if `dashboard-source` is `source`.
+    value: ${{ steps.config.outputs.dashboard-charm-ref }}
+  dashboard-charm-channel:
+    description: Charm channel to perform tests on, instead of building from source. Only present if `dashboard-source` is `charm`.
+    value: ${{ steps.config.outputs.dashboard-charm-channel }}
+  machine-bundled-dashboard:
+    description: If `true`, machine charm should be built using bundled dashboard version
+    value: ${{ steps.config.outputs.machine-bundled-dashboard }}
+  k8s-dashboard-resource:
+    description: Dashboard image revision to use for k8s charm.
+    value: ${{ steps.config.outputs.k8s-dashboard-resource }}
+  jimm-version:
+    description: Version of JIMM to use.
+    value: ${{ steps.config.outputs.jimm-version }}
+  juju-channel:
+    description: Version of Juju to use.
+    value: ${{ steps.config.outputs.juju-channel }}
+
+runs:
+  using: composite
+  steps:
+    - name: Determine config
+      id: config
+      shell: bash
+      env:
+        PULL_REQUEST_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        RELEASE_TARGET_COMMITISH: ${{ github.event.release.target_commitish }}
+        INPUTS_DASHBOARD_CHARM_REF: ${{ github.event.inputs.dashboard-charm-ref }}
+        INPUTS_JIMM_VERSION: ${{ github.event.inputs.jimm-version }}
+        INPUTS_JUJU_CHANNEL: ${{ github.event.inputs.juju-channel }}
+        INPUTS_DASHBOARD_SOURCE: ${{ github.event.inputs.dashboard-source }}
+        INPUTS_SOURCE_IDENTIFIER: ${{ github.event.inputs.source-identifier }}
+      run: |
+        # Set default branch
+        DASHBOARD_SOURCE="source"
+        REPO_REF="main"
+        DASHBOARD_CHARM_REF="main"
+        DASHBOARD_CHARM_CHANNEL=""
+        MACHINE_BUNDLED_DASHBOARD=""
+        K8S_DASHBOARD_RESOURCE=""
+        JIMM_VERSION="dev"
+        JUJU_CHANNEL="3/stable"
+
+        case "${{ github.event_name }}" in
+          "pull_request")
+            # Select pull request branch
+            REPO_REF="$PULL_REQUEST_HEAD_REF"
+            ;;
+          "release")
+            # Use release ref
+            REPO_REF="$RELEASE_TARGET_COMMITISH"
+            ;;
+          "workflow_dispatch")
+            DASHBOARD_CHARM_REF="$INPUTS_DASHBOARD_CHARM_REF"
+            JIMM_VERSION="$INPUTS_JIMM_VERSION"
+            JUJU_CHANNEL="$INPUTS_JUJU_CHANNEL"
+
+            case "$INPUTS_DASHBOARD_SOURCE" in
+              "bundled")
+                # Use source that is included in all relevant repositories
+                MACHINE_BUNDLED_DASHBOARD="true"
+                K8S_DASHBOARD_RESOURCE="latest"
+                REPO_REF="$INPUTS_SOURCE_IDENTIFIER"
+                ;;
+              "branch")
+                # Use workflow input
+                REPO_REF="$INPUTS_SOURCE_IDENTIFIER"
+                ;;
+              "release")
+                # Look up the release tag
+                git fetch --tags &> /dev/null
+                REPO_REF="$(git rev-list -n 1 "$INPUTS_SOURCE_IDENTIFIER")"
+                ;;
+              "charm")
+                DASHBOARD_SOURCE="charm"
+                DASHBOARD_CHARM_REF="" # Ensure charm is unset
+                DASHBOARD_CHARM_CHANNEL="$INPUTS_SOURCE_IDENTIFIER"
+                ;;
+            esac
+            ;;
+        esac
+        echo "repo-ref=$REPO_REF" >> "$GITHUB_OUTPUT"
+        echo "dashboard-source=$DASHBOARD_SOURCE" >> "$GITHUB_OUTPUT"
+        echo "dashboard-charm-ref=$DASHBOARD_CHARM_REF" >> "$GITHUB_OUTPUT"
+        echo "dashboard-charm-channel=$DASHBOARD_CHARM_CHANNEL" >> "$GITHUB_OUTPUT"
+        echo "machine-bundled-dashboard=$MACHINE_BUNDLED_DASHBOARD" >> "$GITHUB_OUTPUT"
+        echo "k8s-dashboard-resource=$K8S_DASHBOARD_RESOURCE" >> "$GITHUB_OUTPUT"
+        echo "jimm-version=$JIMM_VERSION" >> "$GITHUB_OUTPUT"
+        echo "juju-channel=$JUJU_CHANNEL" >> "$GITHUB_OUTPUT"
+    - name: Checkout Juju Dashboard repo
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ steps.config.outputs.repo-ref }}
