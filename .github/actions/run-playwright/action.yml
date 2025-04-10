@@ -13,18 +13,18 @@ runs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: "yarn"
+    - name: Install dependencies
+      shell: bash
+      run: yarn install
     - name: Install Playwright Browsers
-      run: yarn dlx playwright install --with-deps
+      run: yarn playwright install --with-deps
       shell: bash
     - name: Get dashboard address
       id: dashboard
       run: echo "address=http://$(address=$(juju show-unit dashboard/0 | yq '.dashboard/0.public-address'); if [ "$address" != "null" ]; then echo $address; else juju show-unit dashboard/0 | yq '.dashboard/0.address'; fi):8080" >> $GITHUB_OUTPUT
       shell: bash
     - name: Run Playwright tests
-      run: |
-        cd ${{ github.workspace }}
-        yarn install
-        yarn playwright test
+      run: yarn playwright test
       shell: bash
       env: 
         DASHBOARD_ADDRESS: ${{ steps.dashboard.outputs.address }}

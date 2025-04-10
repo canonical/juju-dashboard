@@ -9,6 +9,9 @@ inputs:
     description: The name of the controller to bootstrap.
     required: false
     default: test
+  juju-channel:
+    description: Channel to use for Juju charm.
+    required: false
 
 runs:
   using: composite
@@ -36,7 +39,8 @@ runs:
       with:
         provider: localhost
         controller-name: ${{ inputs.controller-name }}
-        bootstrap-options: --config identity-url=${{ inputs.candid-location }} --config identity-public-key=${{ steps.candid-key-capture.outputs.identity-public-key }} --config allow-model-access=true
+        bootstrap-options: --config 'identity-url=${{ inputs.candid-location }}' --config 'identity-public-key=${{ steps.candid-key-capture.outputs.identity-public-key }}' --config allow-model-access=true
+        juju-channel: ${{ inputs.juju-channel }}
     - name: Set up access
       shell: bash
       run: juju grant user1@external superuser

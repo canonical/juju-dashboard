@@ -1,11 +1,11 @@
 name: Set up Juju Dashboard k8s charm
 description: Set up the Juju Dashboard k8s charm using the supplied versions.
 inputs:
-  dashboard-version:
-    description: When not called from a PR this can be set to the name of a Juju Dashboard release tag name or "latest".
+  dashboard-ref:
+    description: Git reference to build dashboard from. Cannot be used with `dashboard-resource` or `charm-channel`.
     required: false
   dashboard-resource:
-    description: When not called from a PR this can be set to a dashboard-image revision or "latest" to use a docker image that has been published to Charmhub.
+    description: Charm resource revision to use when building charm. Cannot be used with `dashboard-ref` or `charm-channel`.
     required: false
   charm-channel:
     description: If set and this is not called from a PR this will run the e2e tests against a published charm. All other options will be ignored.
@@ -15,44 +15,67 @@ inputs:
       - latest/stable
       - latest/beta
       - latest/edge
+  dashboard-charm-ref:
+    description: Git reference to use when cloning charm repository.
+    required: false
 
 runs:
   using: "composite"
   steps:
     - name: Set build type
-      run: >
-        if [ "${{ github.event_name }}" == "pull_request" ] || ( [ -z "${{ inputs.dashboard-version }}" ] && [ -z "${{ inputs.charm-channel }}" ] ); then
-          echo "build_type=checkout" >> $GITHUB_ENV
-        elif [ -n "${{ inputs.charm-channel }}" ]; then
-          echo "build_type=charm-release" >> $GITHUB_ENV
+      run: |
+        if [ -n "${{ inputs.charm-channel }}" ]; then
+          # Use the provided charm version.
+          echo 'build_type=charm-release' >> "$GITHUB_ENV"
         elif [ -n "${{ inputs.dashboard-resource }}" ]; then
-          echo "build_type=dashboard-resource" >> $GITHUB_ENV
+          # Use the provided dashboard image when building the charm.
+          echo 'build_type=dashboard-resource' >> "$GITHUB_ENV"
         else
-          echo "build_type=dashboard-release" >> $GITHUB_ENV
+          # Build dashboard from source.
+          echo 'build_type=checkout' >> "$GITHUB_ENV"
         fi
       shell: bash
     - name: Check out Juju Dashboard charm
-      if: ${{ env.build_type == 'checkout' || env.build_type == 'dashboard-release' }}
+      if: ${{ env.build_type == 'checkout' || env.build_type == 'dashboard-resource' }}
       uses: actions/checkout@v4
       with:
+        ref: ${{ inputs.dashboard-charm-ref }}
         repository: canonical/juju-dashboard-charm
-        ref: fix/pin-wheel
         path: juju-dashboard-charm
     - name: Set up Juju Dashboard release
-      if: ${{ env.build_type == 'dashboard-release' }}
+      if: ${{ env.build_type == 'checkout' }}
       uses: actions/checkout@v4
       with:
-        ref: ${{ inputs.dashboard-version }}
+        ref: ${{ inputs.dashboard-ref }}
         path: juju-dashboard-release
     - name: Build Juju Dashboard image
-      id: dashboard-image
-      if: ${{ env.build_type == 'checkout' || env.build_type == 'dashboard-release' }}
+      id: build-dashboard-image
+      if: ${{ env.build_type == 'checkout' }}
       shell: bash
       run: |
-        cd ${{ github.workspace }}${{ env.build_type == 'dashboard-release' && '/juju-dashboard-release' || '' }}
+        cd '${{ github.workspace }}/juju-dashboard-release'
         DOCKER_BUILDKIT=1 docker build -t juju-dashboard .
         docker image save juju-dashboard | sudo microk8s ctr image import -
-        echo "id=$(docker image inspect juju-dashboard --format '{{.ID}}')" >> $GITHUB_OUTPUT
+        echo "id=$(docker image inspect juju-dashboard --format '{{.ID}}')" >> "$GITHUB_OUTPUT"
+    - name: Set Juju Dashboard image
+      id: set-dashboard-image
+      if: ${{ env.build_type == 'dashboard-resource' }}
+      shell: bash
+      run: echo "id=canonicalwebteam/juju-dashboard:${{ inputs.dashboard-resource }}" >> "$GITHUB_OUTPUT"
+    - name: Choose dashboard image
+      id: dashboard-image
+      shell: bash
+      if: ${{ env.build_type == 'checkout' || env.build_type == 'dashboard-resource' }}
+      run: |
+        case '${{ env.build_type }}' in
+          'checkout')
+            ID='${{ steps.build-dashboard-image.outputs.id }}'
+          ;;
+          'dashboard-resource')
+            ID='${{ steps.set-dashboard-image.outputs.id }}'
+          ;;
+        esac
+        echo "id=$ID" >> "$GITHUB_OUTPUT"
     - name: Install charmcraft
       if: ${{ env.build_type != 'charm-release' }}
       run: sudo snap install charmcraft --classic
@@ -73,11 +96,11 @@ runs:
       shell: bash
     - name: Deploy charm from channel
       if: ${{ env.build_type == 'charm-release' }}
-      run: juju deploy juju-dashboard dashboard --channel ${{ inputs.charm-channel }}
+      run: juju deploy juju-dashboard-k8s dashboard --channel '${{ inputs.charm-channel }}'
       shell: bash
     - name: Deploy built charm
       if: ${{ env.build_type != 'charm-release' }}
-      run: juju deploy ${{ github.workspace }}/juju-dashboard-charm/k8s-charm/juju-dashboard*.charm dashboard --resource 'dashboard-image=${{ env.build_type == 'dashboard-release' && 'canonicalwebteam/juju-dashboard:${{ inputs.dashboard-release }}' || steps.dashboard-image.outputs.id }}'
+      run: juju deploy ${{ github.workspace }}/juju-dashboard-charm/k8s-charm/juju-dashboard*.charm dashboard --resource 'dashboard-image=${{ steps.dashboard-image.outputs.id }}'
       shell: bash
     - name: Integrate charm
       run: juju integrate controller dashboard
