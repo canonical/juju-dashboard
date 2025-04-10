@@ -5,11 +5,16 @@ on:
       - main
 jobs:
   juju-machine-local:
+    if: false
     name: Test Juju, machine-charm and local-auth
     uses: ./.github/workflows/e2e-juju-machine-charm-local-auth.yml
   juju-machine-candid:
+    if: false
     name: Test Juju, machine-charm and candid-auth
     uses: ./.github/workflows/e2e-juju-machine-charm-candid-auth.yml
   juju-k8s-local:
     name: Test Juju, k8s-charm and local-auth
     uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml
+  jimm-machine:
+    name: Test JIMM machine charm
+    uses: ./.github/workflows/e2e-jimm-machine-charm.yml

@@ -15,6 +15,10 @@ inputs:
       - latest/stable
       - latest/beta
       - latest/edge
+  controller-name:
+    description: Name of controller to run dashboard in.
+    required: false
+    default: test
 
 runs:
   using: "composite"
@@ -30,6 +34,10 @@ runs:
         else
           echo "build_type=dashboard-release" >> $GITHUB_ENV
         fi
+      shell: bash
+    - name: Install charmcraft
+      if: ${{ env.build_type != 'charm-release' }}
+      run: sudo snap install charmcraft --classic
       shell: bash
     - name: Check out Juju Dashboard charm
       if: ${{ env.build_type == 'checkout' || env.build_type == 'dashboard-release' }}
@@ -52,10 +60,6 @@ runs:
         DOCKER_BUILDKIT=1 docker build -t juju-dashboard .
         docker image save juju-dashboard | sudo microk8s ctr image import -
         echo "id=$(docker image inspect juju-dashboard --format '{{.ID}}')" >> $GITHUB_OUTPUT
-    - name: Install charmcraft
-      if: ${{ env.build_type != 'charm-release' }}
-      run: sudo snap install charmcraft --classic
-      shell: bash
     - name: Wait for charmcraft snap
       if: ${{ env.build_type != 'charm-release' }}
       uses: ./.github/actions/wait-for-snap
@@ -68,7 +72,7 @@ runs:
         charmcraft pack
       shell: bash
     - name: Switch to controller
-      run: juju switch controller
+      run: juju switch "${{ inputs.controller-name }}:controller"
       shell: bash
     - name: Deploy charm from channel
       if: ${{ env.build_type == 'charm-release' }}

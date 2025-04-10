@@ -1,0 +1,38 @@
+name: Integration Test
+
+on:
+  pull_request:
+
+jobs:
+  startjimm:
+    name: Test JIMM with K8s
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Checkout Juju Dashboard repo
+        uses: actions/checkout@v4
+      - name: Start JIMM
+        id: jimm
+        uses: ./.github/actions/setup-jimm
+        with:
+          ghcr-secret: ${{ secrets.GITHUB_TOKEN }}
+          provider: microk8s
+          juju-channel: "3.6/stable"
+        env:
+          KUBECTL: sudo microk8s.kubectl
+          YQ: sudo yq
+      - name: Post restart JIMM
+        run: cd jimm && docker compose exec jimm-dev bash -c "echo '172.17.0.1 juju-apiserver' >> /etc/hosts"
+      - name: Set up Juju Dashboard k8s charm
+        uses: ./.github/actions/setup-k8s-charm
+        with:
+          controller-name: ${{ steps.jimm.outputs.controller-name }}
+      - name: Run tests
+        uses: ./.github/actions/run-playwright
+        with:
+          test-identifier: e2e-jimm-k8s-charm
+        env:
+          AUTH_MODE: oidc
+          JUJU_ENV: jimm
