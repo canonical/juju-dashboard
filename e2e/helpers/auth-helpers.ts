@@ -35,21 +35,11 @@ export class AuthHelpers {
     return popup;
   }
 
-  async login() {
+  async login(userName?: string, password?: string) {
     if (process.env.AUTH_MODE === "candid") {
-      await this.loginCandid();
-    } else {
-      await this.loginLocal();
-    }
-  }
-
-  async loginWithError(userName?: string, password?: string) {
-    if (process.env.AUTH_MODE === "candid") {
-      const popup = await this.loginCandid(userName, password);
-      return popup.getByText(`authentication failed for user "${userName}"`);
+      return await this.loginCandid(userName, password);
     } else {
       await this.loginLocal(userName, password);
-      return this.page.getByText("Could not log into controller");
     }
   }
 }
