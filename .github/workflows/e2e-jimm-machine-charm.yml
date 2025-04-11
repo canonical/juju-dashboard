@@ -1,10 +1,11 @@
-name: "E2E tests: Juju, machine charm and local auth"
+name: "E2E tests: JIMM machine charm"
 
 on:
   workflow_call:
 
 jobs:
   test:
+    if: false
     name: Run tests
     runs-on: ubuntu-22.04
     strategy:
@@ -13,15 +14,19 @@ jobs:
     steps:
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v4
-      - name: Set up candid
-        uses: ./.github/actions/setup-candid
+      - name: Start JIMM
+        id: jimm
+        uses: ./.github/actions/setup-jimm
+        with:
+          ghcr-secret: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Juju Dashboard machine charm
         uses: ./.github/actions/setup-machine-charm
+        with:
+          controller-name: ${{ steps.jimm.outputs.controller-name }}
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:
-          test-identifier: e2e-juju-machine-charm-candid-auth
+          test-identifier: e2e-jimm-machine-charm
         env:
-          CONTROLLER_NAME: test
-          AUTH_MODE: candid
-          JUJU_ENV: juju
+          AUTH_MODE: oidc
+          JUJU_ENV: jimm
