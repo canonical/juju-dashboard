@@ -36,6 +36,8 @@ jobs:
           CONTROLLER_NAME: test
           AUTH_MODE: local
           JUJU_ENV: juju
+          USERNAME: admin
+          PASSWORD: ${{ inputs.admin-password }}
       - name: Send notification on failure
         if: failure()
         uses: ./.github/actions/send-notification

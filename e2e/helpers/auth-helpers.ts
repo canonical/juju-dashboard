@@ -6,18 +6,22 @@ export class AuthHelpers {
     this.page = page;
   }
 
-  async loginLocal() {
+  async loginLocal(
+    userName: string = process.env.USERNAME ?? "",
+    password: string = process.env.PASSWORD ?? "",
+  ) {
     await this.page.goto("/");
-    await this.page.getByRole("textbox", { name: "Username" }).fill("admin");
-    await this.page
-      .getByRole("textbox", { name: "Password" })
-      .fill("password1");
+    await this.page.getByRole("textbox", { name: "Username" }).fill(userName);
+    await this.page.getByRole("textbox", { name: "Password" }).fill(password);
     await this.page
       .getByRole("button", { name: "Log in to the dashboard" })
       .click();
   }
 
-  async loginCandid() {
+  async loginCandid(
+    userName: string = "user1",
+    password: string = "password1",
+  ) {
     await this.page.goto("/");
     const popupPromise = this.page.waitForEvent("popup");
     await this.page
@@ -25,16 +29,17 @@ export class AuthHelpers {
       .click();
     const popup = await popupPromise;
     await popup.getByRole("link", { name: "static" }).click();
-    await popup.getByRole("textbox", { name: "Username" }).fill("user1");
-    await popup.getByRole("textbox", { name: "Password" }).fill("password1");
+    await popup.getByRole("textbox", { name: "Username" }).fill(userName);
+    await popup.getByRole("textbox", { name: "Password" }).fill(password);
     await popup.getByRole("button", { name: "Login" }).click();
+    return popup;
   }
 
-  async login() {
+  async login(userName?: string, password?: string) {
     if (process.env.AUTH_MODE === "candid") {
-      await this.loginCandid();
+      return await this.loginCandid(userName, password);
     } else {
-      await this.loginLocal();
+      await this.loginLocal(userName, password);
     }
   }
 }
