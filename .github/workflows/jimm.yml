@@ -11,12 +11,6 @@ jobs:
       matrix:
         node-version: [20.x]
     steps:
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          detached: true
-          timeout-minutes: 15
-          limit-access-to-actor: true
       - name: Disable IPv6
         shell: bash
         run: |
@@ -24,6 +18,9 @@ jobs:
           echo "net.ipv6.conf.default.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
           echo "net.ipv6.conf.lo.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
           sudo sysctl -p
+      - name: Disable LXD IPv6
+        run: lxc network set lxdbr0 ipv6.address none
+        shell: bash
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v4
       - name: Setup operator environment
