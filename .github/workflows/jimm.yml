@@ -11,6 +11,13 @@ jobs:
       matrix:
         node-version: [20.x]
     steps:
+      - name: Setup tmate session
+        if: true
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+          timeout-minutes: 15
+          limit-access-to-actor: true
       - name: Disable IPv6
         shell: bash
         run: |
@@ -18,104 +25,167 @@ jobs:
           echo "net.ipv6.conf.default.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
           echo "net.ipv6.conf.lo.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
           sudo sysctl -p
-      - name: Disable LXD IPv6
-        run: lxc network set lxdbr0 ipv6.address none
-        shell: bash
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v4
       - name: Setup operator environment
         uses: charmed-kubernetes/actions-operator@main
         with:
-          channel: 1.32-strict/stable
+          channel: 1.31-strict/stable
           juju-channel: 3/stable
           provider: microk8s
           microk8s-group: snap_microk8s
-          microk8s-addons: "ingress hostpath-storage dns host-access metallb:10.64.140.43/30"
-      - name: Wait for charmcraft snap
-        uses: ./.github/actions/wait-for-snap
-        with:
-          snap: charmcraft
-      - name: Setup microk8s for private registry
-        shell: bash
-        run: |
-          read -r -d '' REGISTRY_CONFIG << EOL || true
-            [plugins."io.containerd.grpc.v1.cri".registry.configs."ghcr.io".auth]
-              username = "${{ github.actor }}"
-              password = "${{ secrets.GITHUB_TOKEN }}"
-          EOL
-          echo "$REGISTRY_CONFIG" | sudo tee -a /var/snap/microk8s/current/args/containerd-template.toml
-          sudo snap restart microk8s.daemon-containerd
+          microk8s-addons: "hostpath-storage dns ingress host-access registry metallb:10.64.140.43-10.64.140.49"
       - name: Set up deps
         shell: bash
-        run: |
-          sudo apt install python3-virtualenv
-          sudo snap install node --classic
-          sudo snap install yq
-          sudo npx playwright install-deps
-      - name: Checkout operator repo
-        uses: actions/checkout@v4
-        with:
-          repository: canonical/jimm-k8s-operator
-          path: jimm-k8s-operator
-      - name: Wait for charmcraft snap
-        uses: ./.github/actions/wait-for-snap
-        with:
-          snap: charmcraft
-      - name: Run JIMM
+        run: sudo snap install yq
+      - name: Set up IAM
         shell: bash
         run: |
-          cd jimm-k8s-operator/
-          virtualenv -p python3 venv
-          source venv/bin/activate
-          pip install tox
-          tox -e integration -- --keep-models || true
-      - name: Get controller
-        id: controller
+          juju add-model iam
+          juju deploy identity-platform --trust --channel latest/edge
+          juju wait-for model iam --query='forEach(applications, app => (app.name == "kratos-external-idp-integrator" && app.status=="blocked") || (app.name != "kratos-external-idp-integrator" && app.status=="active"))' || true
+          juju offer hydra:oauth
+          juju offer self-signed-certificates:send-ca-cert
+          # juju config traefik-public external_hostname=$(juju status --format yaml | yq .applications.traefik-public.address)
+      - name: Create user
         shell: bash
-        run: echo "name=$(juju models --format json | yq '[.models.[] | select(.name | contains("test-charm-browser-login-"))][0].name')" >> $GITHUB_OUTPUT
+        run: |
+          juju config kratos enforce_mfa=False
+          juju wait-for unit kratos/0 || true
+          IDENTITY_ID=$(juju run --format=json kratos/0 create-admin-account email=test@example.com password=test username=admin | yq .kratos/0.results.identity-id)
+          SECRET_ID=$(juju add-secret password-secret password=test)
+          juju grant-secret password-secret kratos
+          juju run kratos/0 reset-password identity-id=$IDENTITY_ID password-secret-id=$SECRET_ID
+      - name: Set up JIMM
+        shell: bash
+        run: |
+          juju add-model jimm
+          juju deploy juju-jimm-k8s --channel=3/edge jimm
+          juju deploy openfga-k8s --channel=edge openfga
+          juju deploy postgresql-k8s --channel=14/stable postgresql
+          juju deploy vault-k8s --channel=1.15/beta vault
+          juju deploy nginx-ingress-integrator --channel=latest/stable --trust ingress
+          juju trust postgresql --scope=cluster
+          juju wait-for unit postgresql/0 || true
+          juju relate jimm:nginx-route ingress
+          juju relate jimm:openfga openfga
+          juju relate jimm:database postgresql
+          juju relate jimm:vault vault
+          juju relate openfga:database postgresql
+          juju wait-for application openfga --query='name=="openfga" && (status=="active" || status=="error")' || true
+          juju resolved openfga/0
+          juju wait-for unit openfga/0 || true
+          juju relate jimm admin/iam.hydra
+          juju relate jimm admin/iam.self-signed-certificates
+          juju deploy self-signed-certificates jimm-cert
+          juju relate ingress:certificates jimm-cert:certificates
+      - name: Set up Vault
+        shell: bash
+        run: |
+          sudo snap install vault
+          export VAULT_ADDR=https://$(juju status vault/leader --format=yaml | yq '.applications.vault.address'):8200; echo "Vault address =" "$VAULT_ADDR"
+          cert_juju_secret_id=$(juju secrets --format=yaml | yq 'to_entries | .[] | select(.value.label == "self-signed-vault-ca-certificate") | .key'); echo "Vault ca-cert secret ID =" "$cert_juju_secret_id"
+          juju show-secret ${cert_juju_secret_id} --reveal --format=yaml | yq '.[].content.certificate' > vault.pem && echo "saved certificate contents to vault.pem"
+          export VAULT_CAPATH=$(pwd)/vault.pem; echo "Setting VAULT_CAPATH from" "$VAULT_CAPATH"
+          vault status || true
+          echo "Initialising key..."
+          key_init=$(vault operator init -key-shares=1 -key-threshold=1); echo "$key_init"
+          export VAULT_TOKEN=$(echo "$key_init" | sed -n -e 's/.*Root Token: //p'); echo "RootToken = $VAULT_TOKEN"
+          export UNSEAL_KEY=$(echo "$key_init" | sed -n -e 's/.*Unseal Key 1: //p'); echo "UnsealKey = $UNSEAL_KEY"
+          vault operator unseal "$UNSEAL_KEY"
+          vault_secret_id=$(juju add-secret vault-token token="$VAULT_TOKEN")
+          juju grant-secret vault-token vault
+          juju run vault/leader authorize-charm secret-id="$vault_secret_id"
+          juju remove-secret "vault-token"
+      - name: Configure JIMM
+        shell: bash
+        run: |
+          # If this doesn't work try "admin"
+          juju config jimm controller-admins="test@example.com"
+          juju config jimm uuid=3f4d142b-732e-4e99-80e7-5899b7e67e59
+          juju config jimm dns-name=test-jimm.local
+          sudo snap install go --classic
+          KEYS=$(go run github.com/go-macaroon-bakery/macaroon-bakery/cmd/bakery-keygen/v3@latest)
+          juju config jimm public-key=$(echo $KEYS | yq .public)
+          juju config jimm private-key=$(echo $KEYS | yq .private)
+          juju wait-for application ingress --query='name=="ingress" && (status=="active" || status=="error")' || true
+          juju resolved ingress/0
+          juju wait-for unit ingress/0 || true
+          echo "$(juju status ingress/0 --format=json | yq '.applications.ingress.units.ingress/0.workload-status.message | sub("Ingress IP\\(s\\): ", "")') test-jimm.local" | sudo tee -a /etc/hosts
+          juju run jimm-cert/0 get-ca-certificate --quiet | yq .ca-certificate | sudo tee /usr/local/share/ca-certificates/jimm-test.crt
+          sudo update-ca-certificates --fresh
       - name: Get status
         shell: bash
         run: |
           juju controllers
           juju models
-          juju switch ${{ steps.controller.outputs.name }}
+          juju switch "$CONTROLLER_NAME"
           juju status
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
       - name: Add controller
         shell: bash
         run: |
-          juju run self-signed-certificates/0 get-ca-certificate --quiet | yq .ca-certificate | sudo tee /usr/local/share/ca-certificates/jimm-test.crt
-          sudo update-ca-certificates --fresh
-          CLOUDINIT_FILE="cloudinit-tweak.temp.yaml"
-          CONTROLLER_NAME="workload-lxd"
-          CLOUDINIT_TEMPLATE=$'cloudinit-userdata: |
-            preruncmd:
-                - echo "%s    juju-jimm-k8s-endpoints.%s.svc.cluster.local" >> /etc/hosts
-            ca-certs:
-                trusted:
-                - |\n%s'
-          printf "$CLOUDINIT_TEMPLATE" "$(lxc network get lxdbr0 ipv4.address | cut -f1 -d/)" "$(juju show-model ${{ steps.controller.outputs.name }} | yq 'keys'[0])" "$(cat /usr/local/share/ca-certificates/jimm-test.crt | sed -e 's/^/               /')" | sed -e 's/^          /  /g' > "${CLOUDINIT_FILE}"
-          cat "$CLOUDINIT_FILE"
-          juju bootstrap lxd "${CONTROLLER_NAME}" --config "${CLOUDINIT_FILE}" --config login-token-refresh-url=http://juju-jimm-k8s-endpoints."$(juju show-model ${{ steps.controller.outputs.name }} | yq 'keys'[0])".svc.cluster.local:8080/.well-known/jwks.json --debug
-          juju switch juju-jimm-k8s
+          juju wait-for unit jimm/0 || true
+          juju status
+          sg snap_microk8s -c "juju bootstrap microk8s workload-microk8s --config login-token-refresh-url=http://jimm-endpoints.jimm.svc.cluster.local:8080/.well-known/jwks.json"
+          juju switch "$CONTROLLER_NAME"
+          cd ${{ github.workspace }}
+          yarn dlx playwright install --with-deps
+          yarn install
+          export IAM_ADDRESS=$(juju status -m iam --format yaml | yq .applications.traefik-public.address)
+          juju login test-jimm.local:443 -c jimm-k8s >~/login.txt 2>&1 &
+          timeout 1m grep -m 1 'enter code' <(tail -f ~/login.txt)
+          export DEVICE_CODE=$(grep -oP "(?<=code\ )(.+)(?=\ to)" ~/login.txt); echo "Device code: $DEVICE_CODE"
+          yarn playwright test -c jimm-login
+          timeout 1m grep -m 1 Welcome <(tail -f ~/login.txt)
           sudo snap install --channel=3/edge jimmctl
-          jimmctl controller-info workload-lxd ~/snap/jimmctl/common/lxd-controller-info.yaml --local --tls-hostname juju-apiserver
-          jimmctl add-controller ~/snap/jimmctl/common/lxd-controller-info.yaml
+          jimmctl controller-info workload-microk8s ~/snap/jimmctl/common/k8s-controller-info.yaml --local --tls-hostname juju-apiserver
+          jimmctl add-controller ~/snap/jimmctl/common/k8s-controller-info.yaml
+          juju update-credentials microk8s --controller jimm-k8s
+          juju switch jimm-k8s
+          juju add-model test
+          juju switch "$CONTROLLER_NAME":jimm
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: jimm-login-results
+          path: jimm-login/test-results/
+          retention-days: 1
       - name: Set up Juju Dashboard k8s charm
         uses: ./.github/actions/setup-k8s-charm
         with:
-          controller-name: juju-jimm-k8s
+          controller-name: jimm
           charm-channel: latest/stable
-      - name: Configure JIMM
+      - name: Configure JIMM with dashboard
         shell: bash
         run: |
-          juju config juju-jimm-k8s cors-allowed-origins=http://$(juju show-unit dashboard/0 | yq '.dashboard/0.address'):8080
-          juju config juju-jimm-k8s juju-dashboard-location=http://$(juju show-unit dashboard/0 | yq '.dashboard/0.address'):8080/models
+          # juju deploy nginx-ingress-integrator dashboard-ingress --trust
+          # juju integrate dashboard dashboard-ingress
+          # juju config dashboard-ingress service-hostname=dashboard.test-jimm.local
+          DASHBOARD_ADDRESS=http://$(juju show-unit dashboard/0 | yq .dashboard/0.address):8080
+          juju config jimm cors-allowed-origins="$DASHBOARD_ADDRESS"
+          juju config jimm juju-dashboard-location="$DASHBOARD_ADDRESS"/models
+          # Fix ListModels issue:
+          sudo microk8s kubectl delete pod jimm-0 -n jimm
+          juju wait-for unit jimm/0 || true
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:
           test-identifier: e2e-jimm-k8s-charm
         env:
-           DASHBOARD_ADDRESS: "http://jimm.localhost:8000"
+          AUTH_MODE: oidc
+          JUJU_ENV: jimm
+      - name: Juju status
+        if: ${{ failure() }}
+        shell: bash
+        run: |
+          juju status
+          juju switch iam
+          juju status
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
