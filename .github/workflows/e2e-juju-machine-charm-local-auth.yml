@@ -36,6 +36,7 @@ jobs:
           CONTROLLER_NAME: test
           AUTH_MODE: local
           JUJU_ENV: juju
+          PROVIDER: localhost
           USERNAME: admin
           PASSWORD: ${{ inputs.admin-password }}
       - name: Send notification on failure

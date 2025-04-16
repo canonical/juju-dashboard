@@ -39,9 +39,10 @@ jobs:
         with:
           test-identifier: e2e-juju-k8s-charm-local-auth
         env:
-          CONTROLLER_NAME: ${{steps.microk8s-controller.outputs.name}}
+          CONTROLLER_NAME: ${{ steps.microk8s-controller.outputs.name }}
           AUTH_MODE: local
           JUJU_ENV: juju
+          PROVIDER: microk8s
           USERNAME: admin
           PASSWORD: ${{ inputs.admin-password }}
       - name: Send notification on failure
