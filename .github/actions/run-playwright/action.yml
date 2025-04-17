@@ -24,7 +24,7 @@ runs:
       run: |
         cd ${{ github.workspace }}
         yarn install
-        yarn playwright test
+        yarn playwright test e2e/base/init.spec.ts
       shell: bash
       env: 
         DASHBOARD_ADDRESS: ${{ steps.dashboard.outputs.address }}

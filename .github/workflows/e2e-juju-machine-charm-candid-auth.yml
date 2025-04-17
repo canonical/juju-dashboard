@@ -2,12 +2,6 @@ name: "E2E tests: Juju, machine charm and local auth"
 
 on:
   workflow_call:
-    inputs:
-      admin-password:
-        required: false
-        type: string
-        description: The password to use when logging in as the admin user.
-        default: password1
 
 jobs:
   test:
