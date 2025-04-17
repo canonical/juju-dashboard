@@ -1,4 +1,4 @@
-import { OIDC } from "../../../e2e/helpers/user/oidc";
+import { OIDC } from "../../../e2e/helpers/auth/backends/oidc";
 
 const username = process.env.USERNAME;
 const password = process.env.PASSWORD;
@@ -8,7 +8,7 @@ if (!username || !password) {
   );
 }
 console.log("Logging in to JIMM.");
-await OIDC.loginCli({
+await OIDC.loginCLI({
   username,
   password,
 });

@@ -2,8 +2,12 @@ import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 import { chromium } from "playwright";
 
-import { exec } from "../../utils/exec";
-import { findLine } from "../../utils/findLine";
+import { exec } from "../../../utils/exec";
+import { findLine } from "../../../utils/findLine";
+import type { Action } from "../../action";
+import type { JujuCLI } from "../../juju-cli";
+
+import { LocalUser } from "./Local";
 
 type Secret = {
   username: string;
@@ -14,8 +18,51 @@ type Secret = {
 // anything, it does not need to match the real controller names.
 const JIMM_CONTROLLER = "jimm-k8s";
 
+export class CreateOidcUser implements Action<OidcUser> {
+  constructor(
+    private username: string,
+    private password: string,
+  ) {}
+
+  async run(_jujuCLI: JujuCLI) {}
+  async rollback(_jujuCLI: JujuCLI) {}
+
+  debug(): string {
+    return "mocked OIDC user";
+  }
+  result(): OidcUser {
+    return new OidcUser(this.username, this.password);
+  }
+}
+
+export class OidcUser extends LocalUser {
+  constructor(username: string, password: string) {
+    super(username, password);
+  }
+
+  override async dashboardLogin(page: Page) {
+    await OIDC.dashboardLogin(page, {
+      username: this.username,
+      password: this.password,
+    });
+  }
+
+  override async cliLogin() {
+    // TODO: (WD-21779) Removing, as CLI will already be logged in
+    // await OIDC.loginCLI({ username: this.username, password: this.password });
+  }
+
+  override get cliUsername(): string {
+    return this.username;
+  }
+
+  override get dashboardUsername(): string {
+    return this.username;
+  }
+}
+
 export class OIDC {
-  static async loginCli(user: Secret): Promise<void> {
+  static async loginCLI(user: Secret): Promise<void> {
     try {
       await exec(`juju unregister ${JIMM_CONTROLLER} --no-prompt`);
       console.log(`Unregistered ${JIMM_CONTROLLER}.`);
@@ -61,5 +108,12 @@ export class OIDC {
     await page.getByRole("textbox", { name: /Password/ }).fill(secret.password);
     await page.getByRole("button", { name: "Sign in" }).click();
     await expect(page.getByText("Sign in successful")).toBeVisible();
+  }
+
+  static async dashboardLogin(page: Page, user: Secret) {
+    await page.getByRole("link", { name: "Log in to the dashboard" }).click();
+    await page.getByRole("textbox", { name: "Email" }).fill(user.username);
+    await page.getByRole("textbox", { name: "Password" }).fill(user.password);
+    await page.getByRole("button", { name: "Sign in" }).click();
   }
 }

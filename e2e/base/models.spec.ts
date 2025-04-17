@@ -1,55 +1,64 @@
 import { expect } from "@playwright/test";
 
 import { test } from "../fixtures/setup";
+import { ActionStack } from "../helpers/action";
+import { AddModel, GrantModelAccess } from "../helpers/actions";
+import type { User } from "../helpers/auth";
+import { ModelGrantPermission, type Model } from "../helpers/objects";
+
+const MODEL = "models-foo";
+const SHARED_MODEL = "models-bar";
 
 test.describe("Models", () => {
   // TODO: implement OIDC fixtures WD-21779.
   test.skip(process.env.AUTH_MODE === "oidc");
 
-  test.beforeAll(async ({ jujuHelpers, testOptions }) => {
-    await jujuHelpers.jujuLogin();
-    await jujuHelpers.addModel("foo");
-    await jujuHelpers.addSharedModel("bar", testOptions.secondaryUser.name);
-    await jujuHelpers.adminLogin();
+  let actions: ActionStack;
+  let user1: User;
+  let user2: User;
+  let model: Model;
+  let sharedModel: Model;
+
+  test.beforeAll(async ({ jujuCLI }) => {
+    actions = new ActionStack(jujuCLI);
+
+    await actions.prepare((add) => {
+      user1 = add(jujuCLI.createUser());
+      user2 = add(jujuCLI.createUser());
+
+      model = add(new AddModel(user1, MODEL));
+      sharedModel = add(new AddModel(user2, SHARED_MODEL));
+
+      add(new GrantModelAccess(sharedModel, user1, ModelGrantPermission.Read));
+    });
   });
 
-  test.afterAll(async ({ jujuHelpers }) => {
-    await jujuHelpers.cleanup();
+  test.afterAll(async () => {
+    await actions.rollback();
   });
 
-  test("List created and shared models", async ({
-    page,
-    authHelpers,
-    testOptions,
-  }) => {
+  test("List created and shared models", async ({ page }) => {
     await page.goto("/models");
-    await authHelpers.login();
+    await user1.dashboardLogin(page);
 
     await expect(
       page
-        .locator("tr", { hasText: "foo" })
-        .and(page.locator("tr", { hasText: "admin" })),
+        .locator("tr", { hasText: model.name })
+        .and(page.locator("tr", { hasText: user1.dashboardUsername })),
     ).toBeInViewport();
     await expect(
       page
-        .locator("tr", { hasText: "bar" })
-        .and(page.locator("tr", { hasText: testOptions.secondaryUser.name })),
+        .locator("tr", { hasText: sharedModel.name })
+        .and(page.locator("tr", { hasText: user2.dashboardUsername })),
     ).toBeInViewport();
   });
 
-  test("Cannot access model without permission", async ({
-    page,
-    authHelpers,
-    testOptions,
-  }) => {
+  test("Cannot access model without permission", async ({ page }) => {
     // Skipping non-local auth tests: Only admin login supported for Candid/OIDC currently.
     test.skip(process.env.AUTH_MODE !== "local");
 
-    const {
-      secondaryUser: { name, password },
-    } = testOptions;
-    await page.goto("/models/admin/foo");
-    await authHelpers.login(name, password);
+    await page.goto(`/models/${user1.dashboardUsername}/${model.name}`);
+    await user2.dashboardLogin(page);
 
     await expect(page.getByText("Model not found")).toBeVisible();
   });

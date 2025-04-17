@@ -33,13 +33,9 @@ Following is the list of required environment variables:
 | AUTH_MODE                            |      This determines the authentication flow      | `local`/`candid`/`oidc` |
 | ADMIN_USERNAME (local auth only)     |                 Admin's username                  |                 `admin` |
 | ADMIN_PASSWORD (local auth only)     |                 Admin's password                  |             `password1` |
-| SECONDARY_USERNAME (local auth only) |            Username for secondary user            |              `John-Doe` |
-| SECONDARY_PASSWORD (local auth only) |            Password for secondary user            |             `password2` |
 
-> Note: A few things to note about the users and their credentials:
->
-> 1. The admin must have `superuser` permission on the controller to create/modify/destroy any Juju object.
-> 2. The secondary user is an unprivileged user that can perform tasks based on the level of access granted.
+> [!note]
+> The admin must have `superuser` permission on the controller to create/modify/destroy any Juju object.
 
 ## Steps
 
@@ -72,6 +68,12 @@ yarn playwright test --ui-host=0.0.0.0 --ui-port=8080
 
 Now you can view the Playwright UI at http://localhost:8080.
 
+> [!note]
+> To access Playwright UI from within a GitHub Action, a service such as https://localhost.run
+> will be needed. Access the action with [tmate](https://github.com/mxschmitt/action-tmate), start
+> playwright (`yarn playwright test --ui-port 1234`), then share the port
+> (`ssh -R 80:localhost:1234 no-key@localhost.run`).
+
 ## Configuring Candid
 
 **Note: This must be done before `juju bootstrap`**
@@ -86,11 +88,6 @@ Now you can view the Playwright UI at http://localhost:8080.
 5. Bootstrap your controller
    ```bash
    juju bootstrap localhost test --config identity-url=http://127.0.0.1:8081 --config allow-model-access=true --config identity-public-key=<public-key-from-step-2>
-   ```
-6. Grant test user from Candid `superuser` permission
-   > Note: `user1` is provided by Candid and all Candid users are referenced with the `@external` suffix.
-   ```bash
-   juju grant user1@external superuser
    ```
 
 You should now be able to run these tests locally.

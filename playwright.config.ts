@@ -1,15 +1,17 @@
 import { defineConfig, devices } from "@playwright/test";
 
 import dotenv from "dotenv";
-import path from "path";
 
 dotenv.config({ path: [".env.e2e.local", ".env.e2e"] });
+
+const BASE_TIMEOUT = process.env.PROVIDER === "microk8s" ? 30_000 : 5_000;
+const TEST_TIMEOUT_MULT = 10;
 
 export default defineConfig({
   testDir: "./e2e",
   testIgnore:
     process.env.JUJU_ENV === "juju" ? "*jimm/*.spec.ts" : "*juju/*.spec.ts",
-  fullyParallel: true,
+  fullyParallel: process.env.CI ? false : true,
   forbidOnly: !!process.env.CI,
   outputDir: "./test-results",
   preserveOutput: "always",
@@ -23,6 +25,8 @@ export default defineConfig({
     screenshot: "on",
     ignoreHTTPSErrors: true,
   },
+  timeout: BASE_TIMEOUT * TEST_TIMEOUT_MULT,
+  expect: { timeout: BASE_TIMEOUT },
   projects: [
     {
       name: "chromium",

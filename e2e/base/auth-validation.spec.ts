@@ -1,8 +1,19 @@
 import { expect } from "@playwright/test";
 
 import { test } from "../fixtures/setup";
+import { ActionStack } from "../helpers/action";
 
 test.describe("Authentication Validation", () => {
+  let actions: ActionStack;
+
+  test.beforeEach(({ jujuCLI }) => {
+    actions = new ActionStack(jujuCLI);
+  });
+
+  test.afterEach(async () => {
+    await actions.rollback();
+  });
+
   test("Can't bypass authentication", async ({ page }) => {
     await page.goto("/models");
     await expect(page.getByText("Log in to the dashboard")).toBeVisible();
@@ -11,35 +22,37 @@ test.describe("Authentication Validation", () => {
     await expect(page.getByText("Log in to the dashboard")).toBeVisible();
   });
 
-  test("Needs valid credentials", async ({ page, authHelpers }) => {
+  test("Needs valid credentials", async ({ page, jujuCLI }) => {
     await page.goto("/");
-    const popup = await authHelpers.login("invalid-user", "password");
-    if (process.env.AUTH_MODE === "candid" && popup) {
-      await expect(
-        popup.getByText(`authentication failed for user "invalid-user"`),
-      ).toBeVisible();
+
+    const fakeUser = jujuCLI.fakeUser("invalid-user", "password");
+    await fakeUser.dashboardLogin(page);
+
+    let expectedText = "Could not log into controller";
+    if (process.env.AUTH_MODE === "candid") {
+      expectedText = "Connecting";
     } else if (process.env.AUTH_MODE === "oidc") {
-      await expect(
-        page.getByText("incorrect username or password"),
-      ).toBeVisible();
-    } else {
-      await expect(
-        page.getByText("Could not log into controller"),
-      ).toBeVisible();
+      expectedText = "incorrect username or password";
     }
+    await expect(page.getByText(expectedText)).toBeVisible();
   });
 
   test("Needs re-login if cookie/local storage value is corrupted", async ({
     page,
+    jujuCLI,
     context,
-    authHelpers,
   }) => {
     // Skipping local auth as session is managed in Redux state, not persistent storage.
     test.skip(process.env.AUTH_MODE === "local");
 
+    const user = await actions.prepare((add) => {
+      return add(jujuCLI.createUser());
+    });
+
+    await page.goto("/");
+    await user.dashboardLogin(page);
+
     if (process.env.AUTH_MODE === "candid") {
-      await page.goto("/");
-      await authHelpers.login();
       await page.evaluate(() => window.localStorage.clear());
       await expect(
         page.getByText("Controller authentication required").first(),

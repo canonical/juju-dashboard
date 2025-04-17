@@ -26,6 +26,7 @@ jobs:
         uses: ./.github/actions/setup-candid
         with:
           juju-channel: ${{ steps.config.outputs.juju-channel }}
+          merge-config: ./e2e/candid-config.yaml
       - name: Set up access
         run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
       - name: Set up Juju Dashboard machine charm
