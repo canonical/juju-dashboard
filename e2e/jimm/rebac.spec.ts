@@ -1,10 +1,14 @@
 import { expect } from "@playwright/test";
 
 import { test } from "../fixtures/setup";
+import { OIDC } from "../helpers/auth/backends/oidc";
 
-test("ReBAC Admin access", async ({ page, authHelpers, testOptions }) => {
+test("ReBAC Admin access", async ({ page, testOptions }) => {
   await page.goto("/models?enable-flag=rebac");
-  await authHelpers.login();
+  await OIDC.dashboardLogin(page, {
+    username: "test@example.com",
+    password: "test",
+  });
   // Wait until the login flow redirects back to the dashboard.
   await page.waitForURL("**/models");
   await page.goto("/permissions/users");

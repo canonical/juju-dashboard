@@ -108,3 +108,4 @@ runs:
       uses: actions/checkout@v4
       with:
         ref: ${{ steps.config.outputs.repo-ref }}
+        clean: false

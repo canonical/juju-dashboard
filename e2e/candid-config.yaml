@@ -1,0 +1,7 @@
+identity-providers:
+  - type: static
+    name: static
+    users: {}
+    hidden: false
+    match-email-addr: "@example.com$"
+    require-mfa: false

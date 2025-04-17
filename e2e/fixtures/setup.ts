@@ -1,8 +1,6 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { test as base } from "@playwright/test";
 
-import { AuthHelpers } from "../helpers/auth-helpers";
-import { JujuHelpers } from "../helpers/juju-helpers";
+import { JujuCLI } from "../helpers/juju-cli";
 
 export type TestOptions = {
   controllerName: string;
@@ -11,19 +9,14 @@ export type TestOptions = {
     name: string;
     password: string;
   };
-  secondaryUser: {
-    name: string;
-    password: string;
-  };
 };
 
-type Fixtures = {
-  authHelpers: AuthHelpers;
-  jujuHelpers: JujuHelpers;
+export type Fixtures = {
   testOptions: TestOptions;
+  jujuCLI: JujuCLI;
 };
 
-export enum CloudAccessTypes {
+export enum CloudAccessType {
   ADD_MODEL = "add-model",
 }
 
@@ -40,12 +33,10 @@ export enum ResourceType {
 }
 
 export type Resource = {
-  resourceName: string | CloudAccessTypes;
+  resourceName: string | CloudAccessType;
   type: ResourceType;
   owner?: string;
 };
-
-const cleanupStack: Resource[] = [];
 
 function getEnv(key: string): string {
   if (!(key in process.env)) {
@@ -62,20 +53,15 @@ export const test = base.extend<Fixtures>({
         name: getEnv("ADMIN_USERNAME"),
         password: getEnv("ADMIN_PASSWORD"),
       },
-      secondaryUser: {
-        name: getEnv("SECONDARY_USERNAME"),
-        password: getEnv("SECONDARY_PASSWORD"),
-      },
       controllerName: getEnv("CONTROLLER_NAME"),
       provider: getEnv("PROVIDER"),
     },
     { option: true },
   ],
-  authHelpers: async ({ page, testOptions }, use) => {
-    await use(new AuthHelpers(page, testOptions));
-  },
-  jujuHelpers: async ({ testOptions }, use) => {
-    await use(new JujuHelpers(testOptions, cleanupStack));
+  jujuCLI: async ({ testOptions, browser }, use) => {
+    await use(
+      new JujuCLI(testOptions.controllerName, testOptions.provider, browser),
+    );
   },
 });
 

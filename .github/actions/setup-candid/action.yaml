@@ -11,6 +11,8 @@ inputs:
     default: test
   juju-channel:
     description: Channel to use for Juju charm.
+  merge-config:
+    description: Additional candid configuration to merge in
     required: false
 
 runs:
@@ -27,6 +29,16 @@ runs:
       shell: bash
       run: |
         sudo yq -i '.location = "${{ inputs.candid-location }}"' /var/snap/candid/current/config.yaml
+    - name: Merge candid config
+      shell: bash
+      if: inputs.merge-config != ''
+      run: |
+        sudo yq eval-all '. as $item ireduce ({}; . * $item)' -i /var/snap/candid/current/config.yaml '${{ inputs.merge-config }}'
+        sudo snap restart candid
+    - name: Wait for candid snap to restart
+      uses: ./.github/actions/wait-for-snap
+      with:
+        snap: candid
     - name: Capture candid key
       id: candid-key-capture
       shell: bash
@@ -41,6 +53,3 @@ runs:
         controller-name: ${{ inputs.controller-name }}
         bootstrap-options: --config 'identity-url=${{ inputs.candid-location }}' --config 'identity-public-key=${{ steps.candid-key-capture.outputs.identity-public-key }}' --config allow-model-access=true
         juju-channel: ${{ inputs.juju-channel }}
-    - name: Set up access
-      shell: bash
-      run: juju grant user1@external superuser

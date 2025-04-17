@@ -1,0 +1,76 @@
+import fs from "node:fs/promises";
+
+import type { Page } from "@playwright/test";
+
+import type { User } from "..";
+import { juju } from "../../../utils";
+import { exec } from "../../../utils/exec";
+import type { Action } from "../../action";
+import type { JujuCLI } from "../../juju-cli";
+
+export class CreateLocalUser implements Action<LocalUser> {
+  constructor(
+    private username: string,
+    private password: string,
+  ) {}
+
+  result(): LocalUser {
+    return new LocalUser(this.username, this.password);
+  }
+
+  async run(jujuCLI: JujuCLI) {
+    await jujuCLI.loginLocalCLIAdmin();
+    await exec(
+      `juju add-user --controller '${jujuCLI.controller}' '${this.username}'`,
+    );
+    await exec(
+      `{ echo ${this.password}; echo ${this.password}; } | juju change-user-password '${this.username}'`,
+    );
+  }
+
+  async rollback(jujuCLI: JujuCLI) {
+    await jujuCLI.loginLocalCLIAdmin();
+    await exec(
+      `juju remove-user --yes --quiet --controller '${jujuCLI.controller}' '${this.username}'`,
+    );
+  }
+
+  debug(): string {
+    return `Create local user '${this.username}' (password '${this.password}')`;
+  }
+}
+
+export class LocalUser implements User {
+  constructor(
+    public username: string,
+    public password: string,
+  ) {}
+
+  async dashboardLogin(page: Page) {
+    await page.getByRole("textbox", { name: "Username" }).fill(this.username);
+    await page.getByRole("textbox", { name: "Password" }).fill(this.password);
+    await page.getByRole("button", { name: "Log in to the dashboard" }).click();
+  }
+
+  async cliLogin() {
+    await juju.login(this.cliUsername, this.password);
+  }
+
+  public get cliUsername(): string {
+    return this.username;
+  }
+
+  public get dashboardUsername(): string {
+    return this.username;
+  }
+
+  public async getCredential(): Promise<string> {
+    const CREDENTIAL_TEMPLATE_PATH = "e2e/helpers/credentials-template.yaml";
+
+    const credential = (await fs.readFile(CREDENTIAL_TEMPLATE_PATH, "utf8"))
+      .replaceAll("{{username}}", this.cliUsername)
+      .replaceAll("{{password}}", this.password);
+
+    return credential;
+  }
+}
