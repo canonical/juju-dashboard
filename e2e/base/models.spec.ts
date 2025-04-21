@@ -15,6 +15,7 @@ test.describe("Models", () => {
   });
 
   test("List created and shared models", async ({ page, authHelpers }) => {
+    await page.goto("/models");
     await authHelpers.login();
 
     await expect(
@@ -27,5 +28,15 @@ test.describe("Models", () => {
         .locator("tr", { hasText: "bar" })
         .and(page.locator("tr", { hasText: "John-Doe" })),
     ).toBeInViewport();
+  });
+
+  test("Cannot access model without permission", async ({
+    page,
+    authHelpers,
+  }) => {
+    await page.goto("/models/admin/foo");
+    await authHelpers.login("John-Doe", "password2");
+
+    await expect(page.getByText("Model not found")).toBeVisible();
   });
 });
