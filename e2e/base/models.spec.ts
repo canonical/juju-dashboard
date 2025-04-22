@@ -34,6 +34,7 @@ test.describe("Models", () => {
     page,
     authHelpers,
   }) => {
+    test.skip(process.env.AUTH_MODE !== "local");
     await page.goto("/models/admin/foo");
     await authHelpers.login("John-Doe", "password2");
 
