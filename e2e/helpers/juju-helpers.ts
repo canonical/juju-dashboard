@@ -3,29 +3,33 @@ import fs from "node:fs/promises";
 import { exec } from "utils/exec";
 
 import {
-  type Resource,
   CloudAccessTypes,
   ModelAccessTypes,
-  ResourceType,
   type TestOptions,
 } from "../fixtures/setup";
 
+const generateRandomModelName = () =>
+  `model-${new Date().getTime()}-${Math.floor(Math.random() * 10000)}`;
+
+const generateRandomUserName = () =>
+  `user-${new Date().getTime()}-${Math.floor(Math.random() * 10000)}`;
+
 export class JujuHelpers {
-  private cleanupStack: Resource[];
+  private cleanupStack: (() => Promise<void>)[];
   readonly primaryUser: {
     name: string;
     password: string;
   };
-  readonly secondaryUser: {
-    name: string;
-    password: string;
-  };
+  readonly secondaryUserPassword: string;
   readonly provider: string;
   readonly controllerName: string;
 
-  constructor(testOptions: TestOptions, cleanupStack?: Resource[]) {
+  constructor(
+    testOptions: TestOptions,
+    cleanupStack?: (() => Promise<void>)[],
+  ) {
     this.primaryUser = testOptions.primaryUser;
-    this.secondaryUser = testOptions.secondaryUser;
+    this.secondaryUserPassword = testOptions.secondaryUserPassword;
     this.provider = testOptions.provider;
     this.controllerName = testOptions.controllerName;
 
@@ -48,32 +52,32 @@ export class JujuHelpers {
     );
   }
 
-  async addToCleanupStack(
-    resourceName: string,
-    type: ResourceType,
+  async addModel(
     owner: string = this.primaryUser.name,
+    modelName: string = generateRandomModelName(),
   ) {
-    this.cleanupStack.push({ resourceName, type, owner });
-  }
-
-  async addModel(modelName: string, owner: string = this.primaryUser.name) {
     await exec(`juju add-model '${modelName}'`);
-    await this.addToCleanupStack(modelName, ResourceType.MODEL, owner);
+    this.cleanupStack.push(() => this.removeModel(modelName, owner));
+    return modelName;
   }
 
-  async addUser(userName: string) {
+  async addUser(
+    userName: string = generateRandomUserName(),
+    password: string = this.secondaryUserPassword,
+  ) {
     await exec(
       `juju add-user --controller '${this.controllerName}' '${userName}'`,
     );
-    await this.addToCleanupStack(userName, ResourceType.USER);
+    this.cleanupStack.push(() => this.removeUser(userName));
     await exec(
-      `{ echo password2; echo password2; } | juju change-user-password '${userName}'`,
+      `{ echo ${password}; echo ${password}; } | juju change-user-password '${userName}'`,
     );
+    return userName;
   }
 
   async grantCloud(userName: string, accessType: CloudAccessTypes) {
     await exec(`juju grant-cloud '${userName}' ${accessType} ${this.provider}`);
-    await this.addToCleanupStack(accessType, ResourceType.CLOUD, userName);
+    this.cleanupStack.push(() => this.revokeCloud(accessType, userName));
   }
 
   async jujuLogout() {
@@ -122,14 +126,15 @@ export class JujuHelpers {
     await exec(`juju grant '${userName}' ${accessType} '${modelName}'`);
   }
 
-  async addSharedModel(modelName: string, userName: string) {
+  async addSharedModel(userName: string = generateRandomUserName()) {
     await this.addUser(userName);
     await this.grantCloud(userName, CloudAccessTypes.ADD_MODEL);
     await this.jujuLogout();
-    await this.jujuLogin(userName, this.secondaryUser.password);
-    await this.addCredential(userName, this.secondaryUser.password);
-    await this.addModel(modelName, userName);
+    await this.jujuLogin(userName, this.secondaryUserPassword);
+    await this.addCredential(userName, this.secondaryUserPassword);
+    const modelName = await this.addModel(userName);
     await this.grantModelAccess(ModelAccessTypes.READ, modelName);
+    return { modelName, userName };
   }
 
   async cleanup() {
@@ -137,20 +142,12 @@ export class JujuHelpers {
     await this.adminLogin();
 
     while (this.cleanupStack.length > 0) {
-      const resource = this.cleanupStack.pop();
-      if (resource) {
-        const { resourceName, type, owner } = resource;
-        console.log(`Removing Juju ${type}: ${resourceName}`);
+      const cleanupFunction = this.cleanupStack.pop();
+      if (cleanupFunction) {
         try {
-          if (type === ResourceType.MODEL) {
-            await this.removeModel(resourceName, owner);
-          } else if (type === ResourceType.USER) {
-            await this.removeUser(resourceName);
-          } else if (type === ResourceType.CLOUD) {
-            await this.revokeCloud(resourceName, owner);
-          }
+          await cleanupFunction();
         } catch (error) {
-          console.warn(`Error removing ${type} ${resourceName}:`, error);
+          console.warn(`Error removing cleaning up resource`, error);
         }
       }
     }

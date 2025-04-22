@@ -11,10 +11,7 @@ export type TestOptions = {
     name: string;
     password: string;
   };
-  secondaryUser: {
-    name: string;
-    password: string;
-  };
+  secondaryUserPassword: string;
 };
 
 type Fixtures = {
@@ -45,7 +42,7 @@ export type Resource = {
   owner?: string;
 };
 
-const cleanupStack: Resource[] = [];
+const cleanupStack: (() => Promise<void>)[] = [];
 
 export const test = base.extend<Fixtures>({
   testOptions: [
@@ -54,10 +51,7 @@ export const test = base.extend<Fixtures>({
         name: process.env.USERNAME ?? "",
         password: process.env.PASSWORD ?? "",
       },
-      secondaryUser: {
-        name: process.env.SECONDARY_USERNAME ?? "",
-        password: process.env.SECONDARY_PASSWORD ?? "",
-      },
+      secondaryUserPassword: process.env.SECONDARY_PASSWORD ?? "",
       controllerName: process.env.CONTROLLER_NAME ?? "",
       provider: process.env.PROVIDER ?? "",
     },

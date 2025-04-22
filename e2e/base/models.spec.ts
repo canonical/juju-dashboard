@@ -3,10 +3,15 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/setup";
 
 test.describe("Models", () => {
-  test.beforeAll(async ({ jujuHelpers, testOptions }) => {
+  let ownedModel = "";
+  let secondaryUserName = "";
+  let sharedModel = "";
+  test.beforeAll(async ({ jujuHelpers }) => {
     await jujuHelpers.jujuLogin();
-    await jujuHelpers.addModel("foo");
-    await jujuHelpers.addSharedModel("bar", testOptions.secondaryUser.name);
+    ownedModel = await jujuHelpers.addModel();
+    const { modelName, userName } = await jujuHelpers.addSharedModel();
+    sharedModel = modelName;
+    secondaryUserName = userName;
     await jujuHelpers.adminLogin();
   });
 
@@ -14,23 +19,19 @@ test.describe("Models", () => {
     await jujuHelpers.cleanup();
   });
 
-  test("List created and shared models", async ({
-    page,
-    authHelpers,
-    testOptions,
-  }) => {
+  test("List created and shared models", async ({ page, authHelpers }) => {
     await page.goto("/models");
     await authHelpers.login();
 
     await expect(
       page
-        .locator("tr", { hasText: "foo" })
+        .locator("tr", { hasText: ownedModel })
         .and(page.locator("tr", { hasText: "admin" })),
     ).toBeInViewport();
     await expect(
       page
-        .locator("tr", { hasText: "bar" })
-        .and(page.locator("tr", { hasText: testOptions.secondaryUser.name })),
+        .locator("tr", { hasText: sharedModel })
+        .and(page.locator("tr", { hasText: secondaryUserName })),
     ).toBeInViewport();
   });
 
@@ -42,11 +43,11 @@ test.describe("Models", () => {
     // Skipping non-local auth tests: Only admin login supported for Candid/OIDC currently.
     test.skip(process.env.AUTH_MODE !== "local");
 
-    const {
-      secondaryUser: { name, password },
-    } = testOptions;
-    await page.goto("/models/admin/foo");
-    await authHelpers.login(name, password);
+    await page.goto(`/models/admin/${ownedModel}`);
+    await authHelpers.login(
+      secondaryUserName,
+      testOptions.secondaryUserPassword,
+    );
 
     await expect(page.getByText("Model not found")).toBeVisible();
   });

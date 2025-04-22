@@ -11,7 +11,7 @@ export default defineConfig({
   outputDir: "./test-results",
   preserveOutput: "always",
   retries: process.env.CI ? 2 : 0,
-  workers: 1,
+  workers: process.env.CI ? 1 : undefined,
   reporter: "list",
   use: {
     video: "on",
