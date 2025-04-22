@@ -10,7 +10,6 @@ export class AuthHelpers {
     userName: string = process.env.USERNAME ?? "",
     password: string = process.env.PASSWORD ?? "",
   ) {
-    await this.page.goto("/");
     await this.page.getByRole("textbox", { name: "Username" }).fill(userName);
     await this.page.getByRole("textbox", { name: "Password" }).fill(password);
     await this.page
@@ -22,7 +21,6 @@ export class AuthHelpers {
     userName: string = "user1",
     password: string = "password1",
   ) {
-    await this.page.goto("/");
     const popupPromise = this.page.waitForEvent("popup");
     await this.page
       .getByRole("link", { name: "Log in to the dashboard" })

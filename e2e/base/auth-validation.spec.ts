@@ -12,6 +12,7 @@ test.describe("Authentication Validation", () => {
   });
 
   test("Needs valid credentials", async ({ page, authHelpers }) => {
+    await page.goto("/");
     const popup = await authHelpers.login("invalid-user", "password");
     if (process.env.AUTH_MODE === "candid" && popup) {
       await expect(
@@ -31,6 +32,7 @@ test.describe("Authentication Validation", () => {
   }) => {
     // Skipping local auth as session is managed in Redux state, not persistent storage.
     test.skip(process.env.AUTH_MODE === "local");
+    await page.goto("/");
     await authHelpers.login();
 
     if (process.env.AUTH_MODE === "candid") {
