@@ -34,7 +34,9 @@ test.describe("Models", () => {
     page,
     authHelpers,
   }) => {
+    // Skipping non-local auth tests: Only admin login supported for Candid/OIDC currently.
     test.skip(process.env.AUTH_MODE !== "local");
+
     await page.goto("/models/admin/foo");
     await authHelpers.login("John-Doe", "password2");
 
