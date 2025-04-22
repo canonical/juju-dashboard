@@ -21,6 +21,14 @@ inputs:
   dashboard-charm-ref:
     description: Git reference to use when cloning charm repository.
     required: false
+  controller-app:
+    required: false
+    description: The Juju controller application.
+    default: controller
+  controller-model:
+    required: false
+    description: The model containing the Juju controller.
+    default: controller
 
 runs:
   using: "composite"
@@ -80,7 +88,7 @@ runs:
         charmcraft pack
       shell: bash
     - name: Switch to controller
-      run: juju switch controller
+      run: juju switch '${{ inputs.controller-model }}'
       shell: bash
     - name: Deploy charm from channel
       if: ${{ env.build_type == 'charm-release' }}
@@ -91,7 +99,7 @@ runs:
       run: juju deploy ${{ github.workspace }}/juju-dashboard-charm/machine-charm/juju-dashboard*.charm dashboard
       shell: bash
     - name: Integrate charm
-      run: juju integrate controller dashboard
+      run: juju integrate '${{ inputs.controller-app }}' dashboard
       shell: bash
     - name: Wait for charm to be ready
       run: juju wait-for application dashboard

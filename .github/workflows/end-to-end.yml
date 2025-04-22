@@ -65,3 +65,8 @@ jobs:
     uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml
     secrets: inherit
     if:  github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'e2e')
+  jimm-k8s-oidc:
+    name: Test JIMM, k8s-charm and oidc-auth
+    uses: ./.github/workflows/e2e-jimm-k8s-charm-oidc-auth.yml
+    secrets: inherit
+    if:  github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'e2e')

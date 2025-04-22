@@ -18,6 +18,10 @@ test.describe("Authentication Validation", () => {
       await expect(
         popup.getByText(`authentication failed for user "invalid-user"`),
       ).toBeVisible();
+    } else if (process.env.AUTH_MODE === "oidc") {
+      await expect(
+        page.getByText("incorrect username or password"),
+      ).toBeVisible();
     } else {
       await expect(
         page.getByText("Could not log into controller"),
@@ -32,10 +36,10 @@ test.describe("Authentication Validation", () => {
   }) => {
     // Skipping local auth as session is managed in Redux state, not persistent storage.
     test.skip(process.env.AUTH_MODE === "local");
-    await page.goto("/");
-    await authHelpers.login();
 
     if (process.env.AUTH_MODE === "candid") {
+      await page.goto("/");
+      await authHelpers.login();
       await page.evaluate(() => window.localStorage.clear());
       await expect(
         page.getByText("Controller authentication required").first(),
@@ -47,11 +51,15 @@ test.describe("Authentication Validation", () => {
           name: "jimm-browser-session",
           value: "random",
           path: "/",
-          domain: "localhost",
+          domain: "test-jimm.local",
+          httpOnly: true,
+          secure: true,
+          sameSite: "None",
         },
       ]);
+      await page.goto("/");
       await expect(
-        page.getByText("Authentication error.").first(),
+        page.getByText("Unable to check authentication status.").first(),
       ).toBeVisible();
       await expect(
         page.getByText("Log in to the dashboard").first(),

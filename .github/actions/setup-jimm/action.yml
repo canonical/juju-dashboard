@@ -1,0 +1,173 @@
+name: Set up JIMM
+description: Set up JIMM with provided configuration.
+inputs:
+  admin-username:
+    required: false
+    description: The username to use when logging in as the admin user.
+    default: test@example.com
+  admin-password:
+    required: false
+    description: The password to use when logging in as the admin user.
+    default: test
+  jimm-channel:
+    description: The JIMM charm channel to use.
+    required: false
+    default: 3/edge
+  juju-channel:
+    description: Channel of Juju to use.
+    required: false
+    default: 3/stable
+outputs:
+  controller-name:
+    description: Name of the JIMM workloads controller
+    value: ${{ steps.workloads-controller.outputs.name }}
+
+runs:
+  using: composite
+  steps:
+    - name: Disable IPv6
+      shell: bash
+      run: |
+        echo "net.ipv6.conf.all.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
+        echo "net.ipv6.conf.default.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
+        echo "net.ipv6.conf.lo.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
+        sudo sysctl -p
+    - name: Setup operator environment
+      uses: charmed-kubernetes/actions-operator@main
+      with:
+        channel: 1.32-strict/stable
+        juju-channel: ${{ inputs.juju-channel }}
+        provider: microk8s
+        microk8s-group: snap_microk8s
+        microk8s-addons: "hostpath-storage dns ingress host-access metallb:10.64.140.43-10.64.140.49"
+    - name: Set up deps
+      shell: bash
+      run: |
+        sudo snap install yq vault
+        sudo snap install --channel=3/edge jimmctl
+    - name: Setup Go
+      uses: actions/setup-go@v4
+    - name: Set up IAM
+      shell: bash
+      run: |
+        juju add-model iam
+        juju deploy identity-platform --trust --channel latest/edge
+        # Wait for everything to be ready except kratos-external-idp-integrator
+        # which will remain as blocked as we're not using an external identity provider.
+        juju wait-for model iam --query='forEach(applications, app => (app.name == "kratos-external-idp-integrator" && app.status=="blocked") || (app.name != "kratos-external-idp-integrator" && app.status=="active"))' || true # continue if this gets stuck because it stops getting status updates and times out
+        juju offer hydra:oauth
+        juju offer self-signed-certificates:send-ca-cert
+    - name: Create admin user
+      shell: bash
+      run: |
+        juju config kratos enforce_mfa=False
+        juju wait-for unit kratos/0 || true # continue if this gets stuck because it stops getting status updates and times out
+        IDENTITY_ID=$(juju run --format=json kratos/0 create-admin-account email='${{ inputs.admin-username }}' password=${{ inputs.admin-password }} username=admin | yq .kratos/0.results.identity-id)
+        SECRET_ID=$(juju add-secret password-secret password=test)
+        juju grant-secret password-secret kratos
+        juju run kratos/0 reset-password identity-id=$IDENTITY_ID password-secret-id=$SECRET_ID
+    - name: Set up JIMM
+      shell: bash
+      run: |
+        juju add-model jimm
+        juju deploy juju-jimm-k8s --channel=${{ inputs.jimm-channel }} jimm
+        juju deploy openfga-k8s --channel=edge openfga
+        juju deploy postgresql-k8s --channel=14/stable postgresql
+        juju deploy vault-k8s --channel=1.15/beta vault
+        juju deploy nginx-ingress-integrator --channel=latest/stable --trust ingress
+        juju trust postgresql --scope=cluster
+        # Wait for postgres to prevent issues when relating to openfga: https://github.com/canonical/openfga-operator/issues/25.
+        juju wait-for unit postgresql/0 || true # continue if this gets stuck because it stops getting status updates and times out
+        juju relate jimm:nginx-route ingress
+        juju relate jimm:openfga openfga
+        juju relate jimm:database postgresql
+        juju relate jimm:vault vault
+        juju relate openfga:database postgresql
+        juju wait-for application openfga --query='name=="openfga" && (status=="active" || status=="error")' || true # continue if this gets stuck because it stops getting status updates and times out
+        juju resolved openfga/0 # Sometimes the openfga unit will get into an error state, so resolve and try again.
+        juju wait-for unit openfga/0 || true # continue if this gets stuck because it stops getting status updates and times out
+        juju relate jimm admin/iam.hydra
+        juju relate jimm admin/iam.self-signed-certificates
+        juju deploy self-signed-certificates jimm-cert
+        juju relate ingress:certificates jimm-cert:certificates
+    - name: Set up Vault
+      shell: bash
+      run: |
+        export VAULT_ADDR=https://$(juju status vault/leader --format=yaml | yq '.applications.vault.address'):8200; echo "Vault address =" "$VAULT_ADDR"
+        cert_juju_secret_id=$(juju secrets --format=yaml | yq 'to_entries | .[] | select(.value.label == "self-signed-vault-ca-certificate") | .key'); echo "Vault ca-cert secret ID =" "$cert_juju_secret_id"
+        juju show-secret ${cert_juju_secret_id} --reveal --format=yaml | yq '.[].content.certificate' > vault.pem && echo "saved certificate contents to vault.pem"
+        export VAULT_CAPATH=$(pwd)/vault.pem; echo "Setting VAULT_CAPATH from" "$VAULT_CAPATH"
+        key_init=$(vault operator init -key-shares=1 -key-threshold=1); echo "$key_init"
+        export VAULT_TOKEN=$(echo "$key_init" | sed -n -e 's/.*Root Token: //p'); echo "RootToken = $VAULT_TOKEN"
+        export UNSEAL_KEY=$(echo "$key_init" | sed -n -e 's/.*Unseal Key 1: //p'); echo "UnsealKey = $UNSEAL_KEY"
+        vault operator unseal "$UNSEAL_KEY"
+        vault_secret_id=$(juju add-secret vault-token token="$VAULT_TOKEN")
+        juju grant-secret vault-token vault
+        juju run vault/leader authorize-charm secret-id="$vault_secret_id"
+        juju remove-secret "vault-token"
+    - name: Configure JIMM
+      shell: bash
+      run: |
+        # Give the user admin permissions so that they can add the workload controller.
+        juju config jimm controller-admins="${{ inputs.admin-username }}"
+        juju config jimm uuid=3f4d142b-732e-4e99-80e7-5899b7e67e59
+        juju config jimm dns-name=test-jimm.local
+        KEYS=$(go run github.com/go-macaroon-bakery/macaroon-bakery/cmd/bakery-keygen/v3@latest)
+        juju config jimm public-key=$(echo $KEYS | yq .public)
+        juju config jimm private-key=$(echo $KEYS | yq .private)
+        juju wait-for application ingress --query='name=="ingress" && (status=="active" || status=="error")' || true # continue if this gets stuck because it stops getting status updates and times out
+        juju resolved ingress/0 # Sometimes the ingress unit will get into an error state, so resolve and try again.
+        juju wait-for unit ingress/0 || true # continue if this gets stuck because it stops getting status updates and times out
+        # Point the test-jimm.local hostname to the ingress address.
+        echo "$(juju status ingress/0 --format=json | yq '.applications.ingress.units.ingress/0.workload-status.message | sub("Ingress IP\\(s\\): ", "")') test-jimm.local" | sudo tee -a /etc/hosts
+        juju run jimm-cert/0 get-ca-certificate --quiet | yq .ca-certificate | sudo tee /usr/local/share/ca-certificates/jimm-test.crt
+        sudo update-ca-certificates --fresh
+    - name: Bootstrap workloads controller
+      id: workloads-controller
+      shell: bash
+      run: |
+        # Wait for JIMM to be ready if it's still making config changes.
+        juju wait-for unit jimm/0 || true # continue if this gets stuck because it stops getting status updates and times out
+        WORKLOADS_NAME=workload-microk8s
+        sg snap_microk8s -c "juju bootstrap microk8s $WORKLOADS_NAME --config login-token-refresh-url=http://jimm-endpoints.jimm.svc.cluster.local:8080/.well-known/jwks.json"
+        echo "name=$WORKLOADS_NAME" >> $GITHUB_OUTPUT
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: "yarn"
+    - name: Set up Playwright
+      uses: ./.github/actions/run-playwright
+      with:
+        run: false
+    - name: Log in to JIMM with Juju CLI
+      shell: bash
+      run: |
+        juju switch "$CONTROLLER_NAME":jimm
+        # Export the identity address to be used by Playwright to log in.
+        export IAM_ADDRESS=$(juju status -m iam --format yaml | yq .applications.traefik-public.address)
+        # Start the login. This will output the device code to a file and puts the login process into the background while it waits for us to log in.
+        juju login test-jimm.local:443 -c jimm-k8s >~/login.txt 2>&1 &
+        # Wait for the login message to be output.
+        timeout 1m grep -m 1 'enter code' <(tail -f ~/login.txt)
+        # Get the device code from th efile.
+        export DEVICE_CODE=$(grep -oP "(?<=code\ )(.+)(?=\ to)" ~/login.txt); echo "Device code: $DEVICE_CODE"
+        # Use Playwright to step through the login flow.
+        yarn playwright test -c ${{ github.workspace }}/.github/actions/setup-jimm/cli-login
+        # Wait for the login process to complete.
+        timeout 1m grep -m 1 Welcome <(tail -f ~/login.txt)
+      env:
+        USERNAME: ${{ inputs.admin-username }}
+        PASSWORD: ${{ inputs.admin-password }}
+    - name: Register workload controller with JIMM
+      shell: bash
+      run: |
+        jimmctl controller-info '${{ steps.workloads-controller.outputs.name }}' ~/snap/jimmctl/common/k8s-controller-info.yaml --local --tls-hostname juju-apiserver
+        jimmctl add-controller ~/snap/jimmctl/common/k8s-controller-info.yaml
+        juju update-credentials microk8s --controller jimm-k8s
+    - name: Restart JIMM
+      shell: bash
+      run: |
+        # Fix ListModels issue:
+        sudo microk8s kubectl delete pod jimm-0 -n jimm
+        juju wait-for unit jimm/0 || true # continue if this gets stuck because it stops getting status updates and times out

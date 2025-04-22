@@ -40,9 +40,25 @@ export class AuthHelpers {
     return popup;
   }
 
+  async loginOIDC(
+    userName: string = "test@example.com",
+    password: string = "test",
+  ) {
+    await this.page.goto("/");
+    await this.page
+      .getByRole("link", { name: "Log in to the dashboard" })
+      .click();
+    await this.page.getByRole("textbox", { name: "Email" }).fill(userName);
+    await this.page.getByRole("textbox", { name: "Password" }).fill(password);
+    await this.page.getByRole("button", { name: "Sign in" }).click();
+    return this.page;
+  }
+
   async login(userName?: string, password?: string) {
     if (process.env.AUTH_MODE === "candid") {
       return await this.loginCandid(userName, password);
+    } else if (process.env.AUTH_MODE === "oidc") {
+      return await this.loginOIDC(userName, password);
     } else {
       await this.loginLocal(userName, password);
     }
