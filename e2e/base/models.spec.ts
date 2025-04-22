@@ -3,10 +3,10 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/setup";
 
 test.describe("Models", () => {
-  test.beforeAll(async ({ jujuHelpers }) => {
+  test.beforeAll(async ({ jujuHelpers, testOptions }) => {
     await jujuHelpers.jujuLogin();
     await jujuHelpers.addModel("foo");
-    await jujuHelpers.addSharedModel("bar", "John-Doe");
+    await jujuHelpers.addSharedModel("bar", testOptions.secondaryUser.name);
     await jujuHelpers.adminLogin();
   });
 
@@ -14,7 +14,11 @@ test.describe("Models", () => {
     await jujuHelpers.cleanup();
   });
 
-  test("List created and shared models", async ({ page, authHelpers }) => {
+  test("List created and shared models", async ({
+    page,
+    authHelpers,
+    testOptions,
+  }) => {
     await page.goto("/models");
     await authHelpers.login();
 
@@ -26,19 +30,23 @@ test.describe("Models", () => {
     await expect(
       page
         .locator("tr", { hasText: "bar" })
-        .and(page.locator("tr", { hasText: "John-Doe" })),
+        .and(page.locator("tr", { hasText: testOptions.secondaryUser.name })),
     ).toBeInViewport();
   });
 
   test("Cannot access model without permission", async ({
     page,
     authHelpers,
+    testOptions,
   }) => {
     // Skipping non-local auth tests: Only admin login supported for Candid/OIDC currently.
     test.skip(process.env.AUTH_MODE !== "local");
 
+    const {
+      secondaryUser: { name, password },
+    } = testOptions;
     await page.goto("/models/admin/foo");
-    await authHelpers.login("John-Doe", "password2");
+    await authHelpers.login(name, password);
 
     await expect(page.getByText("Model not found")).toBeVisible();
   });

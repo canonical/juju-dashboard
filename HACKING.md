@@ -211,6 +211,7 @@ should be used.
 
 The dashboard is unit tested and interaction tested using [Vitest](https://vitest.dev/) and [React
 Testing Library](https://testing-library.com/).
+The dashboard is end-to-end tested using [Playwright](https://playwright.dev/).
 
 #### Test factories
 
