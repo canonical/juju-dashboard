@@ -44,8 +44,8 @@ jobs:
           AUTH_MODE: candid
           JUJU_ENV: juju
           PROVIDER: localhost
-          USERNAME: admin
-          PASSWORD: ${{ inputs.admin-password }}
+          ADMIN_USERNAME: admin
+          ADMIN_PASSWORD: ${{ inputs.admin-password }}
       - name: Send notification on failure
         if: steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification

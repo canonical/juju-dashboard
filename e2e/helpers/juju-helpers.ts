@@ -7,19 +7,32 @@ import {
   CloudAccessTypes,
   ModelAccessTypes,
   ResourceType,
+  type TestOptions,
 } from "../fixtures/setup";
 
 export class JujuHelpers {
   private cleanupStack: Resource[];
+  readonly admin: {
+    name: string;
+    password: string;
+  };
+  readonly secondaryUser: {
+    name: string;
+    password: string;
+  };
+  readonly provider: string;
+  readonly controllerName: string;
 
-  constructor(cleanupStack?: Resource[]) {
+  constructor(testOptions: TestOptions, cleanupStack?: Resource[]) {
+    this.admin = testOptions.admin;
+    this.secondaryUser = testOptions.secondaryUser;
+    this.provider = testOptions.provider;
+    this.controllerName = testOptions.controllerName;
+
     this.cleanupStack = cleanupStack || [];
   }
 
-  async removeModel(
-    modelName: string,
-    owner: string | undefined = process.env.USERNAME,
-  ) {
+  async removeModel(modelName: string, owner: string = this.admin.name) {
     await exec(
       `juju destroy-model '${owner}/${modelName}' --force --no-prompt`,
     );
@@ -31,40 +44,38 @@ export class JujuHelpers {
 
   async revokeCloud(accessType: string | CloudAccessTypes, userName?: string) {
     await exec(
-      `juju revoke-cloud '${userName}' ${accessType} ${process.env.PROVIDER}`,
+      `juju revoke-cloud '${userName}' ${accessType} ${this.provider}`,
     );
   }
 
   async addToCleanupStack(
     resourceName: string,
     type: ResourceType,
-    owner: string | undefined = process.env.USERNAME,
+    owner: string = this.admin.name,
   ) {
     this.cleanupStack.push({ resourceName, type, owner });
   }
 
-  async addModel(
-    modelName: string,
-    owner: string | undefined = process.env.USERNAME,
-  ) {
+  async addModel(modelName: string, owner: string = this.admin.name) {
     await exec(`juju add-model '${modelName}'`);
     await this.addToCleanupStack(modelName, ResourceType.MODEL, owner);
   }
 
-  async addUser(userName: string) {
+  async addUser(
+    userName: string,
+    password: string = this.secondaryUser.password,
+  ) {
     await exec(
-      `juju add-user --controller '${process.env.CONTROLLER_NAME}' '${userName}'`,
+      `juju add-user --controller '${this.controllerName}' '${userName}'`,
     );
     await this.addToCleanupStack(userName, ResourceType.USER);
     await exec(
-      `{ echo password2; echo password2; } | juju change-user-password '${userName}'`,
+      `{ echo ${password}; echo ${password}; } | juju change-user-password '${userName}'`,
     );
   }
 
   async grantCloud(userName: string, accessType: CloudAccessTypes) {
-    await exec(
-      `juju grant-cloud '${userName}' ${accessType} ${process.env.PROVIDER}`,
-    );
+    await exec(`juju grant-cloud '${userName}' ${accessType} ${this.provider}`);
     await this.addToCleanupStack(accessType, ResourceType.CLOUD, userName);
   }
 
@@ -73,12 +84,9 @@ export class JujuHelpers {
   }
 
   async jujuLogin(
-    userName: string | undefined = process.env.USERNAME,
-    password: string | undefined = process.env.PASSWORD,
+    userName: string = this.admin.name,
+    password: string = this.admin.password,
   ) {
-    if (!userName || !password) {
-      throw new Error("Cannot login without credentials");
-    }
     await exec(`echo '${password}' | juju login -u '${userName}' --no-prompt`);
   }
 
@@ -100,7 +108,7 @@ export class JujuHelpers {
       await fs.writeFile(tmpFilePath, yamlContent, "utf8");
 
       await exec(
-        `juju add-credential ${process.env.PROVIDER} -f ${tmpFilePath} -c '${process.env.CONTROLLER_NAME}'`,
+        `juju add-credential ${this.provider} -f ${tmpFilePath} -c '${this.controllerName}'`,
       );
       await fs.unlink(tmpFilePath);
     } catch (error) {
@@ -112,11 +120,8 @@ export class JujuHelpers {
   async grantModelAccess(
     accessType: ModelAccessTypes,
     modelName: string,
-    userName: string | undefined = process.env.USERNAME,
+    userName: string = this.admin.name,
   ) {
-    if (!userName) {
-      throw new Error("Cannot login without username");
-    }
     await exec(`juju grant '${userName}' ${accessType} '${modelName}'`);
   }
 
@@ -124,8 +129,8 @@ export class JujuHelpers {
     await this.addUser(userName);
     await this.grantCloud(userName, CloudAccessTypes.ADD_MODEL);
     await this.jujuLogout();
-    await this.jujuLogin(userName, "password2");
-    await this.addCredential(userName, "password2");
+    await this.jujuLogin(userName, this.secondaryUser.password);
+    await this.addCredential(userName, this.secondaryUser.password);
     await this.addModel(modelName, userName);
     await this.grantModelAccess(ModelAccessTypes.READ, modelName);
   }
