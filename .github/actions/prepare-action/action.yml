@@ -25,6 +25,9 @@ outputs:
   juju-channel:
     description: Version of Juju to use.
     value: ${{ steps.config.outputs.juju-channel }}
+  send-failure-notification:
+    description: Whether a failure notification should be triggered from this workflow.
+    value: ${{ steps.config.outputs.send-failure-notification }}
 
 runs:
   using: composite
@@ -50,6 +53,7 @@ runs:
         K8S_DASHBOARD_RESOURCE=""
         JIMM_VERSION="dev"
         JUJU_CHANNEL="3/stable"
+        SEND_FAILURE_NOTIFICATION=""
 
         case "${{ github.event_name }}" in
           "pull_request")
@@ -59,11 +63,13 @@ runs:
           "release")
             # Use release ref
             REPO_REF="$RELEASE_TARGET_COMMITISH"
+            SEND_FAILURE_NOTIFICATION="true"
             ;;
           "workflow_dispatch")
             DASHBOARD_CHARM_REF="$INPUTS_DASHBOARD_CHARM_REF"
             JIMM_VERSION="$INPUTS_JIMM_VERSION"
             JUJU_CHANNEL="$INPUTS_JUJU_CHANNEL"
+            SEND_FAILURE_NOTIFICATION="true"
 
             case "$INPUTS_DASHBOARD_SOURCE" in
               "bundled")
@@ -97,6 +103,7 @@ runs:
         echo "k8s-dashboard-resource=$K8S_DASHBOARD_RESOURCE" >> "$GITHUB_OUTPUT"
         echo "jimm-version=$JIMM_VERSION" >> "$GITHUB_OUTPUT"
         echo "juju-channel=$JUJU_CHANNEL" >> "$GITHUB_OUTPUT"
+        echo "send-failure-notification=$SEND_FAILURE_NOTIFICATION" >> "$GITHUB_OUTPUT"
     - name: Checkout Juju Dashboard repo
       uses: actions/checkout@v4
       with:
