@@ -47,7 +47,7 @@ jobs:
           USERNAME: admin
           PASSWORD: ${{ inputs.admin-password }}
       - name: Send notification on failure
-        if: failure()
+        if: steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification
         with:
           webhook-url: ${{ secrets.WEBBOT_URL }}
