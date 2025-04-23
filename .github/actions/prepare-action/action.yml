@@ -33,7 +33,7 @@ runs:
       id: config
       shell: bash
       env:
-        PULL_REQUEST_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        PULL_REQUEST_HEAD_REF: ${{ github.event.pull_request.head.sha }}
         RELEASE_TARGET_COMMITISH: ${{ github.event.release.target_commitish }}
         INPUTS_DASHBOARD_CHARM_REF: ${{ github.event.inputs.dashboard-charm-ref }}
         INPUTS_JIMM_VERSION: ${{ github.event.inputs.jimm-version }}
