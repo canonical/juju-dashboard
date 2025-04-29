@@ -1,14 +1,21 @@
 import { type Page } from "@playwright/test";
 
+import { type TestOptions } from "../fixtures/setup";
+
 export class AuthHelpers {
   readonly page: Page;
-  constructor(page: Page) {
+  readonly admin: {
+    name: string;
+    password: string;
+  };
+  constructor(page: Page, testOptions: TestOptions) {
     this.page = page;
+    this.admin = testOptions.admin;
   }
 
   async loginLocal(
-    userName: string = process.env.USERNAME ?? "",
-    password: string = process.env.PASSWORD ?? "",
+    userName: string = this.admin.name,
+    password: string = this.admin.password,
   ) {
     await this.page.getByRole("textbox", { name: "Username" }).fill(userName);
     await this.page.getByRole("textbox", { name: "Password" }).fill(password);
