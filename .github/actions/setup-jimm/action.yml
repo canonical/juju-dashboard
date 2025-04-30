@@ -62,7 +62,7 @@ runs:
       run: |
         juju config kratos enforce_mfa=False
         juju wait-for unit kratos/0 || true # continue if this gets stuck because it stops getting status updates and times out
-        IDENTITY_ID=$(juju run --format=json kratos/0 create-admin-account email='${{ inputs.admin-username }}' password=${{ inputs.admin-password }} username=admin | yq .kratos/0.results.identity-id)
+        IDENTITY_ID=$(juju run --format=json kratos/0 create-admin-account email='${{ inputs.admin-username }}' password='${{ inputs.admin-password }}' username='${{ inputs.admin-username }}' | yq .kratos/0.results.identity-id)
         SECRET_ID=$(juju add-secret password-secret password=test)
         juju grant-secret password-secret kratos
         juju run kratos/0 reset-password identity-id=$IDENTITY_ID password-secret-id=$SECRET_ID
@@ -142,20 +142,7 @@ runs:
         run: false
     - name: Log in to JIMM with Juju CLI
       shell: bash
-      run: |
-        juju switch "$CONTROLLER_NAME":jimm
-        # Export the identity address to be used by Playwright to log in.
-        export IAM_ADDRESS=$(juju status -m iam --format yaml | yq .applications.traefik-public.address)
-        # Start the login. This will output the device code to a file and puts the login process into the background while it waits for us to log in.
-        juju login test-jimm.local:443 -c jimm-k8s >~/login.txt 2>&1 &
-        # Wait for the login message to be output.
-        timeout 1m grep -m 1 'enter code' <(tail -f ~/login.txt)
-        # Get the device code from th efile.
-        export DEVICE_CODE=$(grep -oP "(?<=code\ )(.+)(?=\ to)" ~/login.txt); echo "Device code: $DEVICE_CODE"
-        # Use Playwright to step through the login flow.
-        yarn playwright test -c ${{ github.workspace }}/.github/actions/setup-jimm/cli-login
-        # Wait for the login process to complete.
-        timeout 1m grep -m 1 Welcome <(tail -f ~/login.txt)
+      run: npx tsx .github/actions/setup-jimm/cli-login.ts
       env:
         USERNAME: ${{ inputs.admin-username }}
         PASSWORD: ${{ inputs.admin-password }}
