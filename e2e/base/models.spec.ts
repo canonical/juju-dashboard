@@ -3,6 +3,9 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/setup";
 
 test.describe("Models", () => {
+  // TODO: implement OIDC fixtures WD-21779.
+  test.skip(process.env.AUTH_MODE === "oidc");
+
   test.beforeAll(async ({ jujuHelpers, testOptions }) => {
     await jujuHelpers.jujuLogin();
     await jujuHelpers.addModel("foo");

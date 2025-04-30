@@ -1,0 +1,77 @@
+name: "E2E tests: JIMM, k8s charm and OIDC"
+
+on:
+  workflow_call:
+    inputs:
+      admin-username:
+        required: false
+        type: string
+        description: The username to use when logging in as the admin user.
+        default: test@example.com
+      admin-password:
+        required: false
+        type: string
+        description: The password to use when logging in as the admin user.
+        default: test
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - name: Maximize build space
+        shell: bash
+        run: |
+            # Free enough space for everything to fit inside the runner.
+            df -h
+            sudo rm -rf /usr/share/dotnet
+            sudo rm -rf /usr/local/lib/android
+            sudo rm -rf /opt/ghc
+            sudo rm -rf /opt/hostedtoolcache/CodeQL
+            sudo docker image prune --all --force
+            sudo docker builder prune -a
+            df -h
+      - name: Checkout Juju Dashboard repo
+        uses: actions/checkout@v4
+      - name: Configure action
+        id: config
+        uses: ./.github/actions/prepare-action
+      - name: Start JIMM
+        id: jimm
+        uses: ./.github/actions/setup-jimm
+      - name: Set up Juju Dashboard k8s charm
+        uses: ./.github/actions/setup-k8s-charm
+        with:
+          charm-channel: ${{ steps.config.outputs.dashboard-charm-channel }}
+          controller-app: jimm
+          controller-model: ${{ env.CONTROLLER_NAME }}:jimm
+          dashboard-charm-ref: ${{ steps.config.outputs.dashboard-charm-ref }}
+          dashboard-ref: ${{ steps.config.outputs.repo-ref }}
+          dashboard-resource: ${{ steps.config.outputs.k8s-dashboard-resource }}
+      - name: Configure JIMM with dashboard address
+        shell: bash
+        run: |
+          juju switch "$CONTROLLER_NAME":jimm
+          DASHBOARD_ADDRESS=http://$(juju show-unit dashboard/0 | yq .dashboard/0.address):8080
+          juju config jimm cors-allowed-origins="$DASHBOARD_ADDRESS"
+          juju config jimm juju-dashboard-location="$DASHBOARD_ADDRESS"/models
+      - name: Run tests
+        uses: ./.github/actions/run-playwright
+        with:
+          setup: false # Playwright was set up in the setup-jimm action.
+          test-identifier: e2e-jimm-k8s-charm-oidc-auth
+        env:
+          CONTROLLER_NAME: ${{ steps.jimm.outputs.controller-name }}
+          AUTH_MODE: oidc
+          JUJU_ENV: jimm
+          PROVIDER: microk8s
+          USERNAME: ${{ inputs.admin-username }}
+          PASSWORD: ${{ inputs.admin-password }}
+      - name: Send notification on failure
+        if: steps.config.outputs.send-failure-notification && failure()
+        uses: ./.github/actions/send-notification
+        with:
+          webhook-url: ${{ secrets.WEBBOT_URL }}

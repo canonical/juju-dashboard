@@ -1,6 +1,14 @@
 name: Set up Juju Dashboard k8s charm
 description: Set up the Juju Dashboard k8s charm using the supplied versions.
 inputs:
+  controller-app:
+    required: false
+    description: The Juju controller application.
+    default: controller
+  controller-model:
+    required: false
+    description: The model containing the Juju controller.
+    default: controller
   dashboard-ref:
     description: Git reference to build dashboard from. Cannot be used with `dashboard-resource` or `charm-channel`.
     required: false
@@ -49,19 +57,12 @@ runs:
         ref: ${{ inputs.dashboard-ref }}
         path: juju-dashboard-release
     - name: Build Juju Dashboard image
-      id: build-dashboard-image
       if: ${{ env.build_type == 'checkout' }}
       shell: bash
       run: |
         cd '${{ github.workspace }}/juju-dashboard-release'
-        DOCKER_BUILDKIT=1 docker build -t juju-dashboard .
-        docker image save juju-dashboard | sudo microk8s ctr image import -
-        echo "id=$(docker image inspect juju-dashboard --format '{{.ID}}')" >> "$GITHUB_OUTPUT"
-    - name: Set Juju Dashboard image
-      id: set-dashboard-image
-      if: ${{ env.build_type == 'dashboard-resource' }}
-      shell: bash
-      run: echo "id=canonicalwebteam/juju-dashboard:${{ inputs.dashboard-resource }}" >> "$GITHUB_OUTPUT"
+        DOCKER_BUILDKIT=1 docker build -t juju-dashboard:local .
+        docker image save juju-dashboard:local | sudo microk8s ctr image import -
     - name: Choose dashboard image
       id: dashboard-image
       shell: bash
@@ -69,10 +70,10 @@ runs:
       run: |
         case '${{ env.build_type }}' in
           'checkout')
-            ID='${{ steps.build-dashboard-image.outputs.id }}'
+            ID='juju-dashboard:local'
           ;;
           'dashboard-resource')
-            ID='${{ steps.set-dashboard-image.outputs.id }}'
+            ID='canonicalwebteam/juju-dashboard:${{ inputs.dashboard-resource }}'
           ;;
         esac
         echo "id=$ID" >> "$GITHUB_OUTPUT"
@@ -92,7 +93,7 @@ runs:
         charmcraft pack
       shell: bash
     - name: Switch to controller
-      run: juju switch controller
+      run: juju switch '${{ inputs.controller-model }}'
       shell: bash
     - name: Deploy charm from channel
       if: ${{ env.build_type == 'charm-release' }}
@@ -103,7 +104,7 @@ runs:
       run: juju deploy ${{ github.workspace }}/juju-dashboard-charm/k8s-charm/juju-dashboard*.charm dashboard --resource 'dashboard-image=${{ steps.dashboard-image.outputs.id }}'
       shell: bash
     - name: Integrate charm
-      run: juju integrate controller dashboard
+      run: juju integrate '${{ inputs.controller-app }}' dashboard
       shell: bash
     - name: Wait for charm to be ready
       run: juju wait-for application dashboard

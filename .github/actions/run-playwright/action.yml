@@ -4,32 +4,45 @@ inputs:
   test-identifier:
     description: Unique identifier for this test run that will be used for uploading test results.
     required: true
+  run:
+    default: 'true'
+    description: Whether to run the test suite.
+    required: false
+  setup:
+    default: 'true'
+    description: Whether to set up Playwright.
+    required: false
 
 runs:
   using: "composite"
   steps:
     - name: Use Node.js ${{ matrix.node-version }}
+      if: ${{ inputs.setup == 'true' }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: "yarn"
     - name: Install dependencies
+      if: ${{ inputs.setup == 'true' }}
       shell: bash
       run: yarn install
     - name: Install Playwright Browsers
+      if: ${{ inputs.setup == 'true' }}
       run: yarn playwright install --with-deps
       shell: bash
     - name: Get dashboard address
+      if: ${{ inputs.run == 'true' }}
       id: dashboard
       run: echo "address=http://$(address=$(juju show-unit dashboard/0 | yq '.dashboard/0.public-address'); if [ "$address" != "null" ]; then echo $address; else juju show-unit dashboard/0 | yq '.dashboard/0.address'; fi):8080" >> $GITHUB_OUTPUT
       shell: bash
     - name: Run Playwright tests
+      if: ${{ inputs.run == 'true' }}
       run: yarn playwright test
       shell: bash
       env: 
         DASHBOARD_ADDRESS: ${{ steps.dashboard.outputs.address }}
     - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
+      if: ${{ !cancelled() && inputs.run == 'true' }}
       with:
         name: ${{ inputs.test-identifier }}
         path: test-results/

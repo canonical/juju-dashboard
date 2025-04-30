@@ -1,7 +1,5 @@
 import fs from "node:fs/promises";
 
-import { exec } from "utils/exec";
-
 import {
   type Resource,
   CloudAccessTypes,
@@ -9,6 +7,7 @@ import {
   ResourceType,
   type TestOptions,
 } from "../fixtures/setup";
+import { exec } from "../utils/exec";
 
 export class JujuHelpers {
   private cleanupStack: Resource[];
