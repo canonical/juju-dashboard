@@ -44,7 +44,6 @@ export class AuthHelpers {
     userName: string = "test@example.com",
     password: string = "test",
   ) {
-    await this.page.goto("/");
     await this.page
       .getByRole("link", { name: "Log in to the dashboard" })
       .click();
