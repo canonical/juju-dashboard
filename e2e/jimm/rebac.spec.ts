@@ -3,7 +3,7 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import { GiveControllerAccess } from "../helpers/actions";
-import { Controller, ControllerPermission } from "../helpers/objects";
+import { ControllerPermission } from "../helpers/objects";
 
 test.describe("ReBAC Admin", () => {
   let actions: ActionStack;
@@ -18,11 +18,10 @@ test.describe("ReBAC Admin", () => {
 
   test("can be accessed", async ({ jujuCLI, page }) => {
     const user = await actions.prepare((add) => {
-      const controller = new Controller("jimm", jujuCLI.identityAdmin);
       const user = add(jujuCLI.createUser());
       add(
         new GiveControllerAccess(
-          controller,
+          jujuCLI.controllerInstance,
           user,
           ControllerPermission.SUPERUSER,
         ),
