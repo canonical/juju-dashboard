@@ -17,7 +17,10 @@ Following are the workflows that these tests are intended to run for:
 
 ## Environment Variables
 
-The target workflow is determined based on a set of environment variables. These variables are loaded into the local running environment from a `.env` file using [dotenv](https://www.npmjs.com/package/dotenv).
+The target workflow is determined based on a set of environment variables. These variables are loaded into the local running environment from a `.env.e2e` file using [dotenv](https://www.npmjs.com/package/dotenv).
+
+You can create a `.env.e2e.local` file and override environment variables from
+the `.env.e2e` file. The `.env.e2e.local` file will be ignored by git.
 
 Following is the list of required environment variables:
 
@@ -40,13 +43,34 @@ Following is the list of required environment variables:
 
 ## Steps
 
-1. Configure the `.env` based on your target workflow.
+1. Configure `.env.e2e.local` based on your target workflow.
    1. The `DASHBOARD_ADDRESS` is dynamic and depends on the network address of your currently running instance.
    2. Some tests are written strictly for Juju/JIMM environments so make sure the `JUJU_ENV` is set with correct value.
 2. If you are using **Multipass**, make sure all the required ports are forwarded/tunneled.
 3. For **Candid** auth, it is important to be running a `static` identity provider. You can [configure](#configuring-candid) Candid for this.
 4. Run the dashboard with the same auth method as the target workflow.
 5. Run the tests using `yarn playwright test`
+
+## Accessing Playwright UI
+
+If you are running Playwright inside a Multipass container you can use the
+following steps to access the UI from your host's browser.
+
+Firstly, you will need to access the UI from `localhost` otherwise your browser
+will block the service workers. To do this, port forward from localhost to the
+multipass container:
+
+```bash
+ssh -L :8080:0.0.0.0:8080 ubuntu@<multipass.ip>
+```
+
+Now run Playwright, exposing it to the host:
+
+```bash
+yarn playwright test --ui-host=0.0.0.0 --ui-port=8080
+```
+
+Now you can view the Playwright UI at http://localhost:8080.
 
 ## Configuring Candid
 
