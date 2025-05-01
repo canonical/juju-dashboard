@@ -68,8 +68,8 @@ jobs:
           AUTH_MODE: oidc
           JUJU_ENV: jimm
           PROVIDER: microk8s
-          USERNAME: ${{ inputs.admin-username }}
-          PASSWORD: ${{ inputs.admin-password }}
+          ADMIN_USERNAME: ${{ inputs.admin-username }}
+          ADMIN_PASSWORD: ${{ inputs.admin-password }}
       - name: Send notification on failure
         if: steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification
