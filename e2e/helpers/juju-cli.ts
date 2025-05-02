@@ -10,6 +10,7 @@ import type { Action } from "./action";
 import type { User } from "./auth";
 import { Users } from "./auth";
 import { LocalUser } from "./auth/backends/Local";
+import { Controller } from "./objects";
 
 /**
  * Credentials for the local superuser.
@@ -29,6 +30,7 @@ export class JujuCLI {
   private users: Users;
   private localAdmin: User;
   public identityAdmin: User;
+  public controllerInstance: Controller;
 
   constructor(
     public jujuEnv: JujuEnv,
@@ -43,6 +45,11 @@ export class JujuCLI {
     // Create an identity instance for the admin user. When using local auth
     // this will be identical to this.localAdmin.
     this.identityAdmin = this.users.createUserInstance(username, password);
+    this.controllerInstance = new Controller(
+      // In JIMM the controller name given to Juju is "jimm".
+      this.jujuEnv === JujuEnv.JIMM ? "jimm" : this.controller,
+      this.identityAdmin,
+    );
   }
 
   /**
