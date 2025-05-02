@@ -28,7 +28,7 @@ runs:
       run: yarn install
     - name: Install Playwright Browsers
       if: ${{ inputs.setup == 'true' }}
-      run: yarn playwright install --with-deps
+      run: yarn playwright install --with-deps --only-shell chromium
       shell: bash
     - name: Get dashboard address
       if: ${{ inputs.run == 'true' }}

@@ -107,3 +107,8 @@ runs:
     - name: Disable analytics
       run: juju config dashboard analytics-enabled=false
       shell: bash
+    - name: Clean up
+      run: |
+        # Delete build files to save space. Pass `|| true` so that an error is not thrown if the directories don't exist.
+        rm -rf '${{ github.workspace }}/juju-dashboard-charm' || true
+      shell: bash
