@@ -158,3 +158,31 @@ runs:
         # Fix ListModels issue:
         sudo microk8s kubectl delete pod jimm-0 -n jimm
         juju wait-for unit jimm/0 || true # continue if this gets stuck because it stops getting status updates and times out
+    - name: Logs
+      if: failure()
+      shell: bash
+      run: |
+        echo "-------------------------------------"
+        echo "Juju controllers"
+        echo "-------------------------------------"
+        juju controllers
+        echo "-------------------------------------"
+        echo "Juju models"
+        echo "-------------------------------------"
+        juju models
+        echo "-------------------------------------"
+        echo "IAM status"
+        echo "-------------------------------------"
+        juju status -m iam || true
+        echo "-------------------------------------"
+        echo "JIMM status"
+        echo "-------------------------------------"
+        juju status -m jimm || true
+        echo "-------------------------------------"
+        echo "Disk space"
+        echo "-------------------------------------"
+        df -h
+        echo "-------------------------------------"
+        echo "JIMM debug-log"
+        echo "-------------------------------------"
+        juju debug-log -m jimm --limit 200 --no-tail
