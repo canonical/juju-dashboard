@@ -1,11 +1,7 @@
 name: End-to-end tests
 on:
   pull_request:
-    types:
-      - labeled
-      - opened
-      - synchronize
-      - reopened
+    types: [labeled]
 
   schedule:
     - cron: "0 23 * * 1" # Every Monday at 23:00 UTC (9:00am AEST)
@@ -20,10 +16,10 @@ on:
         required: true
         type: choice
         options:
-        - branch
-        - release
-        - charm
-        - bundled
+          - branch
+          - release
+          - charm
+          - bundled
       source-identifier:
         description: |
           Identifier for the dashboard source:
@@ -54,31 +50,19 @@ jobs:
     name: Test Juju, machine-charm and local-auth
     uses: ./.github/workflows/e2e-juju-machine-charm-local-auth.yml
     secrets: inherit
-    if: |
-      github.event_name != 'pull_request' || (
-        (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
-        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))
+    if: ${{ github.event_name != 'pull_request' || github.event.label.name == 'e2e' }}
   juju-machine-candid:
     name: Test Juju, machine-charm and candid-auth
     uses: ./.github/workflows/e2e-juju-machine-charm-candid-auth.yml
     secrets: inherit
-    if: |
-      github.event_name != 'pull_request' || (
-        (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
-        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))
+    if: ${{ github.event_name != 'pull_request' || github.event.label.name == 'e2e' }}
   juju-k8s-local:
     name: Test Juju, k8s-charm and local-auth
     uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml
     secrets: inherit
-    if: |
-      github.event_name != 'pull_request' || (
-        (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
-        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))
+    if: ${{ github.event_name != 'pull_request' || github.event.label.name == 'e2e' }}
   jimm-k8s-oidc:
     name: Test JIMM, k8s-charm and oidc-auth
     uses: ./.github/workflows/e2e-jimm-k8s-charm-oidc-auth.yml
     secrets: inherit
-    if: |
-      github.event_name != 'pull_request' || (
-        (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
-        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))
+    if: ${{ github.event_name != 'pull_request' || github.event.label.name == 'e2e' }}
