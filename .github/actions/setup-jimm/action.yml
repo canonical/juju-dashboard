@@ -62,10 +62,16 @@ runs:
       run: |
         juju config kratos enforce_mfa=False
         juju wait-for unit kratos/0 || true # continue if this gets stuck because it stops getting status updates and times out
+        juju status
         IDENTITY_ID=$(juju run --format=json kratos/0 create-admin-account email='${{ inputs.admin-username }}' password='${{ inputs.admin-password }}' username='${{ inputs.admin-username }}' | yq .kratos/0.results.identity-id)
         SECRET_ID=$(juju add-secret password-secret password=test)
         juju grant-secret password-secret kratos
         juju run kratos/0 reset-password identity-id=$IDENTITY_ID password-secret-id=$SECRET_ID
+    - name: last output
+      if: failure()
+      shell: bash
+      run: |
+        echo $?
     - name: Set up JIMM
       shell: bash
       run: |
