@@ -8,13 +8,11 @@ import { Model } from "../objects";
  */
 export class AddModel implements Action<Model> {
   public model: Model;
+  private static nextModelId = 0;
 
-  constructor(
-    owner: User,
-    // TODO: Generate random name
-    modelName: string,
-  ) {
-    this.model = new Model(modelName, owner);
+  constructor(owner: User) {
+    const id = AddModel.nextModelId++;
+    this.model = new Model(`model${id}`, owner);
   }
 
   async run() {

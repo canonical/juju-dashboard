@@ -6,8 +6,6 @@ import { AddModel } from "../helpers/actions";
 import type { User } from "../helpers/auth";
 import type { Model } from "../helpers/objects";
 
-const MODEL = "model-access-control-foo";
-
 test.describe("Model Access Control", () => {
   let actions: ActionStack;
   let user1: User;
@@ -21,7 +19,7 @@ test.describe("Model Access Control", () => {
       user1 = add(jujuCLI.createUser());
       user2 = add(jujuCLI.createUser());
 
-      model = add(new AddModel(user2, MODEL));
+      model = add(new AddModel(user2));
     });
   });
 
