@@ -21,7 +21,7 @@ test.describe("Web CLI", () => {
 
     const { user, model } = await actions.prepare((add) => {
       const user = add(jujuCLI.createUser());
-      const model = add(new AddModel(user, "some-model-name"));
+      const model = add(new AddModel(user));
       return { user, model };
     });
 

@@ -14,7 +14,7 @@ import type { AuthImplementation } from ".";
  * environment variable.
  */
 export class Users {
-  private nextUserId = 0;
+  private static nextUserId = 0;
   private CreateUser: AuthImplementation;
 
   constructor(browser: Browser) {
@@ -55,7 +55,7 @@ export class Users {
       return new this.CreateUser("test@example.com", "test");
     }
 
-    const id = this.nextUserId++;
+    const id = Users.nextUserId++;
     return new this.CreateUser(`user${id}`, `password${id}`);
   }
 }
