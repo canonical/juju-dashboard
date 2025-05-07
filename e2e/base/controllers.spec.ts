@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 
-import { test } from "../fixtures/setup";
+import { JujuEnv, test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 
 test.describe("Controllers", () => {
@@ -14,18 +14,20 @@ test.describe("Controllers", () => {
     await actions.rollback();
   });
 
-  test("List Controllers", async ({ page, jujuCLI }) => {
+  test("List Controllers", async ({ page, jujuCLI, testOptions }) => {
     const user = await actions.prepare((add) => {
       return add(jujuCLI.createUser());
     });
-
-    await page.goto("/");
-    await user.dashboardLogin(page);
+    await user.dashboardLogin(page, "/");
     const controllersTab = page.getByRole("link", { name: "Controllers" });
     await expect(controllersTab).toBeInViewport();
     await controllersTab.click();
     await expect(
-      page.getByRole("gridcell").filter({ hasText: jujuCLI.controller }),
+      page.getByRole("gridcell").filter({
+        hasText:
+          // If you're a non-admin in jimm the controller is displayed as "jaas".
+          testOptions.jujuEnv === JujuEnv.JIMM ? "jaas" : jujuCLI.controller,
+      }),
     ).toBeInViewport();
   });
 });

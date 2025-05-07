@@ -24,9 +24,10 @@ test.describe("Web CLI", () => {
       const model = add(new AddModel(user));
       return { user, model };
     });
-
-    await page.goto(`/models/${user.dashboardUsername}/${model.name}`);
-    await user.dashboardLogin(page);
+    await user.dashboardLogin(
+      page,
+      `/models/${user.dashboardUsername}/${model.name}`,
+    );
     await page.getByRole("textbox", { name: "command" }).fill("help");
     await page.keyboard.down("Enter");
     await expect(page.getByTestId("output-code")).toContainText(

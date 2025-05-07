@@ -1,1 +1,2 @@
-export { Model, ModelGrantPermission } from "./model";
+export { Model, ModelPermission } from "./model";
+export { Controller, ControllerPermission } from "./controller";

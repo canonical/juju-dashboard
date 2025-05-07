@@ -30,10 +30,7 @@ test.describe("Model Access Control", () => {
   test("Can change model permissions", async ({ page }) => {
     // Skipping non-local auth tests: Only admin login supported for Candid/OIDC currently.
     test.skip(process.env.AUTH_MODE !== "local");
-
-    await page.goto("/models");
-    await user2.dashboardLogin(page);
-
+    await user2.dashboardLogin(page, "/models");
     const row = page.getByRole("row", { name: model.name });
     await row.getByTestId("column-updated").hover();
     await page.getByRole("button", { name: "Access" }).click();
@@ -48,9 +45,10 @@ test.describe("Model Access Control", () => {
     await expect(page.getByTestId("toast-card")).toContainText(
       `${user1.dashboardUsername} now has access to this model`,
     );
-
-    await page.goto(`/models/${user2.dashboardUsername}/${model.name}`);
-    await user1.dashboardLogin(page);
+    await user1.dashboardLogin(
+      page,
+      `/models/${user2.dashboardUsername}/${model.name}`,
+    );
     await expect(page.locator(".entity-info__grid-item").first()).toHaveText(
       "accessread",
     );

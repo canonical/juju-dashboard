@@ -4,7 +4,7 @@ inputs:
   admin-username:
     required: false
     description: The username to use when logging in as the admin user.
-    default: test@example.com
+    default: admin
   admin-password:
     required: false
     description: The password to use when logging in as the admin user.
@@ -20,7 +20,7 @@ inputs:
 outputs:
   controller-name:
     description: Name of the JIMM workloads controller
-    value: ${{ steps.workloads-controller.outputs.name }}
+    value: ${{ steps.workloads-controller.outputs.public }}
 
 runs:
   using: composite
@@ -62,7 +62,7 @@ runs:
       run: |
         juju config kratos enforce_mfa=False
         juju wait-for unit kratos/0 || true # continue if this gets stuck because it stops getting status updates and times out
-        IDENTITY_ID=$(juju run --format=json kratos/0 create-admin-account email='${{ inputs.admin-username }}' password='${{ inputs.admin-password }}' username='${{ inputs.admin-username }}' | yq .kratos/0.results.identity-id)
+        IDENTITY_ID=$(juju run --format=json kratos/0 create-admin-account email='${{ inputs.admin-username }}@example.com' password='${{ inputs.admin-password }}' username='${{ inputs.admin-username }}' | yq .kratos/0.results.identity-id)
         SECRET_ID=$(juju add-secret password-secret password=test)
         juju grant-secret password-secret kratos
         juju run kratos/0 reset-password identity-id=$IDENTITY_ID password-secret-id=$SECRET_ID
@@ -109,7 +109,7 @@ runs:
       shell: bash
       run: |
         # Give the user admin permissions so that they can add the workload controller.
-        juju config jimm controller-admins="${{ inputs.admin-username }}"
+        juju config jimm controller-admins="${{ inputs.admin-username }}@example.com"
         juju config jimm uuid=3f4d142b-732e-4e99-80e7-5899b7e67e59
         juju config jimm dns-name=test-jimm.local
         KEYS=$(go run github.com/go-macaroon-bakery/macaroon-bakery/cmd/bakery-keygen/v3@latest)
@@ -131,6 +131,8 @@ runs:
         WORKLOADS_NAME=workload-microk8s
         sg snap_microk8s -c "juju bootstrap microk8s $WORKLOADS_NAME --config login-token-refresh-url=http://jimm-endpoints.jimm.svc.cluster.local:8080/.well-known/jwks.json"
         echo "name=$WORKLOADS_NAME" >> $GITHUB_OUTPUT
+        # Set the name that the workloads controller will be registered as.
+        echo "public=jimm-k8s" >> $GITHUB_OUTPUT
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
@@ -144,14 +146,15 @@ runs:
       shell: bash
       run: npx tsx .github/actions/setup-jimm/cli-login.ts
       env:
-        USERNAME: ${{ inputs.admin-username }}
+        CONTROLLER_NAME: ${{ steps.workloads-controller.outputs.public }}
+        USERNAME: ${{ inputs.admin-username }}@example.com
         PASSWORD: ${{ inputs.admin-password }}
     - name: Register workload controller with JIMM
       shell: bash
       run: |
         jimmctl controller-info '${{ steps.workloads-controller.outputs.name }}' ~/snap/jimmctl/common/k8s-controller-info.yaml --local --tls-hostname juju-apiserver
         jimmctl add-controller ~/snap/jimmctl/common/k8s-controller-info.yaml
-        juju update-credentials microk8s --controller jimm-k8s
+        juju update-credentials microk8s --controller ${{ steps.workloads-controller.outputs.public }}
     - name: Restart JIMM
       shell: bash
       run: |

@@ -86,7 +86,8 @@ export class CandidUser extends LocalUser {
     super(username, password);
   }
 
-  override async dashboardLogin(page: Page) {
+  override async dashboardLogin(page: Page, url: string) {
+    await page.goto(url);
     const popupPromise = page.waitForEvent("popup");
     await page.getByRole("link", { name: "Log in to the dashboard" }).click();
 
