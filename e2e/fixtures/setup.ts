@@ -2,8 +2,14 @@ import { test as base } from "@playwright/test";
 
 import { JujuCLI } from "../helpers/juju-cli";
 
+export enum JujuEnv {
+  JIMM = "jimm",
+  JUJU = "juju",
+}
+
 export type TestOptions = {
   controllerName: string;
+  jujuEnv: JujuEnv;
   provider: string;
   admin: {
     name: string;
@@ -54,13 +60,19 @@ export const test = base.extend<Fixtures>({
         password: getEnv("ADMIN_PASSWORD"),
       },
       controllerName: getEnv("CONTROLLER_NAME"),
+      jujuEnv: getEnv("JUJU_ENV") as JujuEnv,
       provider: getEnv("PROVIDER"),
     },
     { option: true },
   ],
   jujuCLI: async ({ testOptions, browser }, use) => {
     await use(
-      new JujuCLI(testOptions.controllerName, testOptions.provider, browser),
+      new JujuCLI(
+        testOptions.jujuEnv,
+        testOptions.controllerName,
+        testOptions.provider,
+        browser,
+      ),
     );
   },
 });

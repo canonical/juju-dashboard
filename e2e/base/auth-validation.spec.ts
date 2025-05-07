@@ -23,10 +23,8 @@ test.describe("Authentication Validation", () => {
   });
 
   test("Needs valid credentials", async ({ page, jujuCLI }) => {
-    await page.goto("/");
-
     const fakeUser = jujuCLI.fakeUser("invalid-user", "password");
-    await fakeUser.dashboardLogin(page);
+    await fakeUser.dashboardLogin(page, "/", true);
 
     let expectedText = "Could not log into controller";
     if (process.env.AUTH_MODE === "candid") {
@@ -48,9 +46,7 @@ test.describe("Authentication Validation", () => {
     const user = await actions.prepare((add) => {
       return add(jujuCLI.createUser());
     });
-
-    await page.goto("/");
-    await user.dashboardLogin(page);
+    await user.dashboardLogin(page, "/");
 
     if (process.env.AUTH_MODE === "candid") {
       await page.evaluate(() => window.localStorage.clear());

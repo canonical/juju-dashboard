@@ -3,7 +3,7 @@ import type { Browser, Page } from "@playwright/test";
 import type { Action } from "../action";
 
 import { CreateCandidUser, CreateLocalUser } from "./backends";
-import { CreateOidcUser } from "./backends/oidc";
+import { CreateOIDCUser } from "./backends/oidc";
 
 import type { AuthImplementation } from ".";
 
@@ -14,7 +14,7 @@ import type { AuthImplementation } from ".";
  * environment variable.
  */
 export class Users {
-  private static nextUserId = 0;
+  private static nextUserId = Number(new Date());
   private CreateUser: AuthImplementation;
 
   constructor(browser: Browser) {
@@ -27,7 +27,7 @@ export class Users {
         this.CreateUser = CreateCandidUser;
         break;
       case "oidc":
-        this.CreateUser = CreateOidcUser;
+        this.CreateUser = CreateOIDCUser;
         break;
       default:
         throw new Error(
@@ -49,12 +49,6 @@ export class Users {
    * Produce an action which will create a user.
    */
   createUser(): Action<User> {
-    // TODO: (WD-21779) Temporary until OIDC is properly implemented
-    if (process.env["AUTH_MODE"] === "oidc") {
-      console.warn("Using hard-coded JIMM credentials as test");
-      return new this.CreateUser("test@example.com", "test");
-    }
-
     const id = Users.nextUserId++;
     return new this.CreateUser(`user${id}`, `password${id}`);
   }
@@ -64,7 +58,11 @@ export abstract class User {
   /**
    * Use this user to log into the dashboard.
    */
-  abstract dashboardLogin(page: Page): Promise<void>;
+  abstract dashboardLogin(
+    page: Page,
+    url: string,
+    expectError?: boolean,
+  ): Promise<void>;
 
   /**
    * Use this user to authenticate with the Juju CLI.
@@ -85,4 +83,9 @@ export abstract class User {
    * Username that will be presented in the dashboard.
    */
   abstract get dashboardUsername(): string;
+
+  /**
+   * Display name that will be presented in the dashboard.
+   */
+  abstract get displayName(): string;
 }

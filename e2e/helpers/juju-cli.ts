@@ -2,12 +2,14 @@ import fs from "node:fs/promises";
 
 import type { Browser } from "@playwright/test";
 
+import { JujuEnv } from "../fixtures/setup";
 import { CloudAccessType } from "../fixtures/setup";
-import { juju, getEnv, exec } from "../utils";
+import { getEnv, exec } from "../utils";
 
 import type { Action } from "./action";
 import type { User } from "./auth";
 import { Users } from "./auth";
+import { LocalUser } from "./auth/backends/Local";
 
 /**
  * Credentials for the local superuser.
@@ -25,13 +27,22 @@ export class JujuCLI {
    * Auth backend that is currently in use.
    */
   private users: Users;
+  private localAdmin: User;
+  public identityAdmin: User;
 
   constructor(
+    public jujuEnv: JujuEnv,
     public controller: string,
     public provider: string,
     browser: Browser,
   ) {
     this.users = new Users(browser);
+    const { username, password } = LOCAL_CLI_ADMIN;
+    // Create a Juju identity instance for the CLI admin.
+    this.localAdmin = new LocalUser(username, password);
+    // Create an identity instance for the admin user. When using local auth
+    // this will be identical to this.localAdmin.
+    this.identityAdmin = this.users.createUserInstance(username, password);
   }
 
   /**
@@ -69,13 +80,19 @@ export class JujuCLI {
    * tests. This is primarily intended to assist with forceful clean-up.
    */
   async loginLocalCLIAdmin(): Promise<void> {
-    // TODO: (WD-21779) Temporary until OIDC is properly implemented
-    if (process.env["AUTH_MODE"] === "oidc") {
-      return;
+    if (this.jujuEnv === JujuEnv.JIMM) {
+      // In JIMM the CLI admin is only available when in the JIMM controller.
+      await exec(`juju switch ${getEnv("JIMM_CONTROLLER_NAME")}`);
     }
+    await this.localAdmin.cliLogin();
+  }
 
-    const { username, password } = LOCAL_CLI_ADMIN;
-    await juju.login(username, password);
+  /**
+   * Login as the JIMM workload controller's OIDC identity. This will use the
+   * credentials passed in via the environment.
+   */
+  async loginIdentityCLIAdmin(): Promise<void> {
+    await this.identityAdmin.cliLogin();
   }
 }
 
@@ -95,13 +112,20 @@ class BootstrapAction implements Action<User> {
 
     const user = this.result();
 
-    // Bootstrap must be done by the admin.
-    await jujuCLI.loginLocalCLIAdmin();
+    if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
+      // Granting clouds must be done by the JIMM admin.
+      await jujuCLI.loginIdentityCLIAdmin();
+    } else {
+      // Bootstrap must be done by the admin.
+      await jujuCLI.loginLocalCLIAdmin();
+    }
 
-    // Grant access to the cloud.
-    await exec(
-      `juju grant-cloud '${user.cliUsername}' ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
-    );
+    if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
+      // Grant access to the cloud.
+      await exec(
+        `juju grant-cloud '${user.cliUsername}' ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
+      );
+    }
 
     // Login as the user.
     await user.cliLogin();
@@ -126,15 +150,23 @@ class BootstrapAction implements Action<User> {
 
     // Remove the user's credential
     await exec(
-      `juju remove-credential --force -c '${jujuCLI.controller}' '${jujuCLI.provider}' '${user.cliUsername}' `,
+      `juju remove-credential --force -c '${jujuCLI.controller}' '${jujuCLI.provider}' '${user.cliUsername}'`,
     );
 
-    await jujuCLI.loginLocalCLIAdmin();
+    if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
+      // Granting clouds must be done by the JIMM admin.
+      await jujuCLI.loginIdentityCLIAdmin();
+    } else {
+      // Bootstrap must be done by the admin.
+      await jujuCLI.loginLocalCLIAdmin();
+    }
 
-    // Remove the user's access to the cloud
-    await exec(
-      `juju revoke-cloud -c '${jujuCLI.controller}' ${user.cliUsername} ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
-    );
+    if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
+      // Remove the user's access to the cloud
+      await exec(
+        `juju revoke-cloud -c '${jujuCLI.controller}' ${user.cliUsername} ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
+      );
+    }
 
     await this.userAction.rollback(jujuCLI);
   }

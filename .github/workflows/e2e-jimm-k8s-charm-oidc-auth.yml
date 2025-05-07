@@ -7,7 +7,7 @@ on:
         required: false
         type: string
         description: The username to use when logging in as the admin user.
-        default: test@example.com
+        default: admin
       admin-password:
         required: false
         type: string
@@ -63,12 +63,15 @@ jobs:
           DASHBOARD_ADDRESS=http://$(juju show-unit dashboard/0 | yq .dashboard/0.address):8080
           juju config jimm cors-allowed-origins="$DASHBOARD_ADDRESS"
           juju config jimm juju-dashboard-location="$DASHBOARD_ADDRESS"/models
+      - name: Set the CLI admin's password
+        run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:
           setup: false # Playwright was set up in the setup-jimm action.
           test-identifier: e2e-jimm-k8s-charm-oidc-auth
         env:
+          JIMM_CONTROLLER_NAME: ${{ env.CONTROLLER_NAME }}
           CONTROLLER_NAME: ${{ steps.jimm.outputs.controller-name }}
           AUTH_MODE: oidc
           JUJU_ENV: jimm

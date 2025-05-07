@@ -8,8 +8,12 @@ if (!username || !password) {
   );
 }
 console.log("Logging in to JIMM.");
-await OIDC.loginCLI({
-  username,
-  password,
-});
+await OIDC.loginCLI(
+  {
+    username,
+    password,
+  },
+  // Register the controller.
+  true,
+);
 console.log("Logged in.");

@@ -3,10 +3,10 @@ import type { User } from "../auth";
 /**
  * Permissions that may be granted on a model.
  */
-export enum ModelGrantPermission {
-  Read = "read",
-  Write = "write",
-  Admin = "admin",
+export enum ModelPermission {
+  READ = "read",
+  WRITE = "write",
+  ADMIN = "admin",
 }
 
 export class Model {

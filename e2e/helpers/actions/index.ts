@@ -1,2 +1,3 @@
 export { AddModel } from "./addModel";
-export { GrantModelAccess } from "./grantModelAccess";
+export { GiveModelAccess } from "./giveModelAccess";
+export { GiveControllerAccess } from "./giveControllerAccess";
