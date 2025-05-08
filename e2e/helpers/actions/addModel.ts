@@ -1,5 +1,5 @@
 import { JujuEnv } from "../../fixtures/setup";
-import { exec } from "../../utils";
+import { exec, generateRandomName } from "../../utils";
 import type { Action } from "../action";
 import type { User } from "../auth";
 import type { JujuCLI } from "../juju-cli";
@@ -10,11 +10,10 @@ import { Model } from "../objects";
  */
 export class AddModel implements Action<Model> {
   public model: Model;
-  private static nextModelId = 0;
 
   constructor(owner: User) {
-    const id = AddModel.nextModelId++;
-    this.model = new Model(`model${id}`, owner);
+    const name = generateRandomName("model");
+    this.model = new Model(name, owner);
   }
 
   async run(jujuCLI: JujuCLI) {
@@ -32,7 +31,7 @@ export class AddModel implements Action<Model> {
     }
     await this.model.owner.cliLogin();
     await exec(
-      `juju destroy-model ${this.model.name} --force --no-prompt --no-wait --timeout 0`,
+      `juju destroy-model ${this.model.name} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
     );
   }
 

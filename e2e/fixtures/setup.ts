@@ -7,10 +7,15 @@ export enum JujuEnv {
   JUJU = "juju",
 }
 
+export enum Provider {
+  LOCALHOST = "localhost",
+  MICROK8S = "microk8s",
+}
+
 export type TestOptions = {
   controllerName: string;
   jujuEnv: JujuEnv;
-  provider: string;
+  provider: Provider;
   admin: {
     name: string;
     password: string;
@@ -61,7 +66,7 @@ export const test = base.extend<Fixtures>({
       },
       controllerName: getEnv("CONTROLLER_NAME"),
       jujuEnv: getEnv("JUJU_ENV") as JujuEnv,
-      provider: getEnv("PROVIDER"),
+      provider: getEnv("PROVIDER") as Provider,
     },
     { option: true },
   ],
