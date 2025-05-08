@@ -2,9 +2,7 @@ import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 import { chromium } from "playwright";
 
-import { getEnv } from "../../../utils";
-import { exec } from "../../../utils/exec";
-import { findLine } from "../../../utils/findLine";
+import { getEnv, exec, findLine } from "../../../utils";
 import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
