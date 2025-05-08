@@ -4,11 +4,11 @@ import { ModelPermission } from "../objects";
 
 import { GiveAccess } from "./utils/give-access";
 
-const jimmAccess = new Map([
-  [ModelPermission.READ, "reader"],
-  [ModelPermission.WRITE, "writer"],
-  [ModelPermission.ADMIN, "administrator"],
-]);
+const jimmAccess = {
+  [ModelPermission.READ]: "reader",
+  [ModelPermission.WRITE]: "writer",
+  [ModelPermission.ADMIN]: "administrator",
+};
 
 /**
  * Give a user access to a model.

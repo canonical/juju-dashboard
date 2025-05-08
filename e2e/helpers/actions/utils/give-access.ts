@@ -16,7 +16,7 @@ export class GiveAccess<Entity extends Model | Controller>
     public entity: Entity,
     private user: User,
     private access: string,
-    private jimmAccess: Map<string, string>,
+    private jimmAccess: Record<string, string>,
     private tag: string,
   ) {}
 
@@ -33,7 +33,7 @@ export class GiveAccess<Entity extends Model | Controller>
     } else {
       await jujuCLI.loginIdentityCLIAdmin();
       await exec(
-        `jimmctl auth relation ${jimmCommand} 'user-${this.user.cliUsername}' '${this.jimmAccess.get(this.access)}' '${[this.tag, this.entityName].join("-")}'`,
+        `jimmctl auth relation ${jimmCommand} 'user-${this.user.cliUsername}' '${this.jimmAccess[this.access]}' '${[this.tag, this.entityName].join("-")}'`,
       );
     }
   }

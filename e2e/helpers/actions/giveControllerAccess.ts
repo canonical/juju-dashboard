@@ -4,10 +4,10 @@ import { ControllerPermission } from "../objects";
 
 import { GiveAccess } from "./utils/give-access";
 
-const jimmAccess = new Map([
-  [ControllerPermission.LOGIN, "loginer"],
-  [ControllerPermission.SUPERUSER, "administrator"],
-]);
+const jimmAccess = {
+  [ControllerPermission.LOGIN]: "loginer",
+  [ControllerPermission.SUPERUSER]: "administrator",
+};
 
 /**
  * Give a user access to a controller.

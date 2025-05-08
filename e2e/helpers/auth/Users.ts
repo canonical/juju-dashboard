@@ -2,8 +2,7 @@ import type { Browser, Page } from "@playwright/test";
 
 import type { Action } from "../action";
 
-import { CreateCandidUser, CreateLocalUser } from "./backends";
-import { CreateOIDCUser } from "./backends/oidc";
+import { CreateOIDCUser, CreateCandidUser, CreateLocalUser } from "./backends";
 
 import type { AuthImplementation } from ".";
 
