@@ -84,7 +84,7 @@ export class OIDCUser extends LocalUser {
 
   override async cliLogin() {
     let retry = 3;
-    // This login is retried as sometimes the login fails if it is too slow and an error is display:
+    // This login is retried as sometimes the login fails if it is too slow and an error is displayed:
     // `cannot log into controller "jimm-k8s": connection is shut down`.
     while (retry-- > 0) {
       try {

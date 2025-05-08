@@ -52,14 +52,14 @@ jobs:
         with:
           charm-channel: ${{ steps.config.outputs.dashboard-charm-channel }}
           controller-app: jimm
-          controller-model: ${{ env.CONTROLLER_NAME }}:jimm
+          controller-model: '${{ steps.jimm.outputs.jimm-controller-name }}':jimm
           dashboard-charm-ref: ${{ steps.config.outputs.dashboard-charm-ref }}
           dashboard-ref: ${{ steps.config.outputs.repo-ref }}
           dashboard-resource: ${{ steps.config.outputs.k8s-dashboard-resource }}
       - name: Configure JIMM with dashboard address
         shell: bash
         run: |
-          juju switch "$CONTROLLER_NAME":jimm
+          juju switch '${{ steps.jimm.outputs.jimm-controller-name }}':jimm
           DASHBOARD_ADDRESS=http://$(juju show-unit dashboard/0 | yq .dashboard/0.address):8080
           juju config jimm cors-allowed-origins="$DASHBOARD_ADDRESS"
           juju config jimm juju-dashboard-location="$DASHBOARD_ADDRESS"/models
@@ -71,8 +71,8 @@ jobs:
           setup: false # Playwright was set up in the setup-jimm action.
           test-identifier: e2e-jimm-k8s-charm-oidc-auth
         env:
-          JIMM_CONTROLLER_NAME: ${{ env.CONTROLLER_NAME }}
-          CONTROLLER_NAME: ${{ steps.jimm.outputs.controller-name }}
+          JIMM_CONTROLLER_NAME: ${{ steps.jimm.outputs.jimm-controller-name }}
+          CONTROLLER_NAME: ${{ steps.jimm.outputs.workloads-controller-name }}
           AUTH_MODE: oidc
           JUJU_ENV: jimm
           PROVIDER: microk8s
