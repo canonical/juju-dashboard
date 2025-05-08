@@ -18,7 +18,10 @@ inputs:
     required: false
     default: 3/stable
 outputs:
-  controller-name:
+  jimm-controller-name:
+    description: Name of the JIMM workloads controller
+    value: ${{ steps.jimm-controller.outputs.name }}
+  workloads-controller-name:
     description: Name of the JIMM workloads controller
     value: ${{ steps.workloads-controller.outputs.public }}
 
@@ -40,6 +43,10 @@ runs:
         provider: microk8s
         microk8s-group: snap_microk8s
         microk8s-addons: "hostpath-storage dns ingress host-access metallb:10.64.140.43-10.64.140.49"
+    - name: Save JIMM controller name
+      id: jimm-controller
+      run: echo "name=$CONTROLLER_NAME" >> "$GITHUB_OUTPUT"
+      shell: bash
     - name: Set up deps
       shell: bash
       run: |

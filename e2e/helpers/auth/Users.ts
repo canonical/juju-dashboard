@@ -14,7 +14,7 @@ import type { AuthImplementation } from ".";
  * environment variable.
  */
 export class Users {
-  private static nextUserId = Number(new Date());
+  private static nextUserId = 0;
   private CreateUser: AuthImplementation;
 
   constructor(browser: Browser) {

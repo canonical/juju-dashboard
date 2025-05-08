@@ -10,7 +10,7 @@ import { Model } from "../objects";
  */
 export class AddModel implements Action<Model> {
   public model: Model;
-  private static nextModelId = Number(new Date());
+  private static nextModelId = 0;
 
   constructor(owner: User) {
     const id = AddModel.nextModelId++;
