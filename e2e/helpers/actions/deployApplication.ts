@@ -31,7 +31,7 @@ export class DeployApplication implements Action<Application> {
   async rollback() {
     await this.model.owner.cliLogin();
     await exec(
-      `juju remove-application '${this.application.name}' -m '${this.model.name}' --force --no-prompt --no-wait`,
+      `juju remove-application '${this.application.name}' -m '${this.model.name}' --force --destroy-storage --no-prompt --no-wait`,
     );
   }
 

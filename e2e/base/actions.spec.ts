@@ -58,13 +58,8 @@ test.describe("Actions", () => {
 
     await expect(page.getByTestId("actions-panel")).not.toBeInViewport();
 
-    // Go to the action logs
-    if (process.env.AUTH_MODE === "oidc") {
-      await page.getByRole("link", { name: "Logs" }).click();
-    } else {
-      await page.getByTestId("show-logs").click();
-    }
-
+    // Go to the action logs and verify that the action was executed
+    await page.getByTestId("show-logs").click();
     await expect(
       page
         .locator("tr", { hasText: application.name })
