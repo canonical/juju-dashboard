@@ -1,5 +1,6 @@
 import type { Browser, Page } from "@playwright/test";
 
+import { generateRandomName } from "../../utils";
 import type { Action } from "../action";
 
 import { CreateOIDCUser, CreateCandidUser, CreateLocalUser } from "./backends";
@@ -13,7 +14,6 @@ import type { AuthImplementation } from ".";
  * environment variable.
  */
 export class Users {
-  private static nextUserId = 0;
   private CreateUser: AuthImplementation;
 
   constructor(browser: Browser) {
@@ -48,8 +48,8 @@ export class Users {
    * Produce an action which will create a user.
    */
   createUser(): Action<User> {
-    const id = Users.nextUserId++;
-    return new this.CreateUser(`user${id}`, `password${id}`);
+    const name = generateRandomName("user");
+    return new this.CreateUser(name, "password");
   }
 }
 
