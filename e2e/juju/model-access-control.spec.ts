@@ -28,6 +28,8 @@ test.describe("Model Access Control", () => {
   });
 
   test("Can change model permissions", async ({ page }) => {
+    // Skipping non-local auth tests: Only admin login supported for Candid/OIDC currently.
+    test.skip(process.env.AUTH_MODE !== "local");
     await user2.dashboardLogin(page, "/models");
     const row = page.getByRole("row", { name: model.name });
     await row.getByTestId("column-updated").hover();
