@@ -27,9 +27,7 @@ test.describe("Model Access Control", () => {
     await actions.rollback();
   });
 
-  test("Can change model permissions", async ({ page }) => {
-    // Skipping non-local auth tests: Only admin login supported for Candid/OIDC currently.
-    test.skip(process.env.AUTH_MODE !== "local");
+  test("Can change model permissions", async ({ browser, page }) => {
     await user2.dashboardLogin(page, "/models");
     const row = page.getByRole("row", { name: model.name });
     await row.getByTestId("column-updated").hover();
@@ -39,18 +37,24 @@ test.describe("Model Access Control", () => {
 
     await page
       .getByRole("textbox", { name: "Username" })
-      .fill(user1.dashboardUsername);
+      .fill(user1.cliUsername);
     await page.getByRole("button", { name: "Add user" }).click();
 
-    await expect(page.getByTestId("toast-card")).toContainText(
-      `${user1.dashboardUsername} now has access to this model`,
+    await expect(page.getByTestId("toast-card").last()).toContainText(
+      `${user1.cliUsername} now has access to this model`,
     );
+    // Create a fresh context so that the second user can log in. This saves
+    // logging out and clearing the IDP session for Candid.
+    const context = await browser.newContext();
+    // Create a new page inside context.
+    const page2 = await context.newPage();
     await user1.dashboardLogin(
-      page,
-      `/models/${user2.dashboardUsername}/${model.name}`,
+      page2,
+      `/models/${user2.cliUsername}/${model.name}`,
     );
-    await expect(page.locator(".entity-info__grid-item").first()).toHaveText(
+    await expect(page2.locator(".entity-info__grid-item").first()).toHaveText(
       "accessread",
     );
+    await context.close();
   });
 });

@@ -108,7 +108,7 @@ export class OIDCUser extends LocalUser {
   }
 
   override get dashboardUsername(): string {
-    return `${this.username}@example.com`;
+    return this.cliUsername;
   }
 
   public get displayName(): string {
