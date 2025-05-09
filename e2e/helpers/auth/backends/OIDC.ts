@@ -66,7 +66,7 @@ export class OIDCUser extends LocalUser {
 
   override async dashboardLogin(
     page: Page,
-    url: string,
+    url?: string,
     expectError?: boolean,
   ) {
     await OIDC.dashboardLogin(
@@ -163,10 +163,10 @@ export class OIDC {
   static async dashboardLogin(
     page: Page,
     user: Secret,
-    url: string,
+    url?: string,
     expectError?: boolean,
   ) {
-    await page.goto(url);
+    if (url) await page.goto(url);
     await page.getByRole("link", { name: "Log in to the dashboard" }).click();
     await page.getByRole("textbox", { name: "Email" }).fill(user.username);
     await page.getByRole("textbox", { name: "Password" }).fill(user.password);
@@ -177,7 +177,7 @@ export class OIDC {
       await page.waitForURL("**/models");
       // The OIDC flow always redirects back to /models so now we need to visit
       // the expected URL:
-      await page.goto(url);
+      if (url) await page.goto(url);
     }
   }
 }

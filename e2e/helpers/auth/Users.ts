@@ -59,7 +59,7 @@ export abstract class User {
    */
   abstract dashboardLogin(
     page: Page,
-    url: string,
+    url?: string,
     expectError?: boolean,
   ): Promise<void>;
 

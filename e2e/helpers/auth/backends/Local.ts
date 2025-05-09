@@ -46,8 +46,8 @@ export class LocalUser implements User {
     public password: string,
   ) {}
 
-  async dashboardLogin(page: Page, url: string) {
-    await page.goto(url);
+  async dashboardLogin(page: Page, url?: string) {
+    if (url) await page.goto(url);
     await page.getByRole("textbox", { name: "Username" }).fill(this.username);
     await page.getByRole("textbox", { name: "Password" }).fill(this.password);
     await page.getByRole("button", { name: "Log in to the dashboard" }).click();
