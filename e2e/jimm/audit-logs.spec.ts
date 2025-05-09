@@ -38,8 +38,8 @@ test.describe("audit logs", () => {
     ).toBeVisible();
     await expect(
       page
-        .locator("td", { hasText: user.displayName })
-        .and(page.locator("td", { hasText: "less than a minute ago" })),
+        .locator("tr", { hasText: user.displayName })
+        .and(page.locator("tr", { hasText: "less than a minute ago" })),
     ).toBeVisible();
   });
 
@@ -54,8 +54,8 @@ test.describe("audit logs", () => {
     );
     await expect(
       page
-        .locator("td", { hasText: user.displayName })
-        .and(page.locator("td", { hasText: "less than a minute ago" })),
+        .locator("tr", { hasText: user.displayName })
+        .and(page.locator("tr", { hasText: "less than a minute ago" })),
     ).toBeVisible();
   });
 });
