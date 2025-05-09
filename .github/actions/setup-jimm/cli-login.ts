@@ -1,4 +1,4 @@
-import { OIDC } from "../../../e2e/helpers/auth/backends/oidc";
+import { OIDC } from "../../../e2e/helpers/auth/backends";
 
 const username = process.env.USERNAME;
 const password = process.env.PASSWORD;
