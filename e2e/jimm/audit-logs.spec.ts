@@ -37,10 +37,9 @@ test.describe("audit logs", () => {
       page.getByRole("heading", { name: "Audit logs" }),
     ).toBeVisible();
     await expect(
-      page.locator("td", { hasText: user.displayName }).first(),
-    ).toBeVisible();
-    await expect(
-      page.locator("td", { hasText: "less than a minute ago" }).first(),
+      page
+        .locator("td", { hasText: user.displayName })
+        .and(page.locator("td", { hasText: "less than a minute ago" })),
     ).toBeVisible();
   });
 
@@ -54,10 +53,9 @@ test.describe("audit logs", () => {
       "true",
     );
     await expect(
-      page.locator("td", { hasText: user.dashboardUsername }).first(),
-    ).toBeVisible();
-    await expect(
-      page.locator("td", { hasText: "less than a minute ago" }).first(),
+      page
+        .locator("td", { hasText: user.displayName })
+        .and(page.locator("td", { hasText: "less than a minute ago" })),
     ).toBeVisible();
   });
 });
