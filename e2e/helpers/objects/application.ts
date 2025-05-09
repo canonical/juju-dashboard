@@ -25,6 +25,14 @@ export enum ConfigName {
   "hello-kubecon" = "redirect-map",
 }
 
+/**
+ * Configuration to change.
+ */
+export const Configuration = {
+  "anbox-cloud-dashboard": "ua_token",
+  "hello-kubecon": "redirect-map",
+};
+
 export class Application {
   public action: string;
   public config: string;
