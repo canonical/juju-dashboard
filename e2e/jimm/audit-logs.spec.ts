@@ -39,7 +39,8 @@ test.describe("audit logs", () => {
     await expect(
       page
         .locator("tr", { hasText: user.displayName })
-        .and(page.locator("tr", { hasText: "less than a minute ago" })),
+        .filter({ hasText: "less than a minute ago" })
+        .first(),
     ).toBeVisible();
   });
 
@@ -55,7 +56,8 @@ test.describe("audit logs", () => {
     await expect(
       page
         .locator("tr", { hasText: user.displayName })
-        .and(page.locator("tr", { hasText: "less than a minute ago" })),
+        .filter({ hasText: "less than a minute ago" })
+        .first(),
     ).toBeVisible();
   });
 });
