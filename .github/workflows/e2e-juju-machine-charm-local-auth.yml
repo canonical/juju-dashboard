@@ -48,6 +48,12 @@ jobs:
           PROVIDER: localhost
           ADMIN_USERNAME: admin
           ADMIN_PASSWORD: ${{ inputs.admin-password }}
+      - name: Display logs
+        if: failure()
+        uses: ./.github/actions/failure-log
+        with:
+          juju-env: "juju"
+          controller: "test"
       - name: Send notification on failure
         if: steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification

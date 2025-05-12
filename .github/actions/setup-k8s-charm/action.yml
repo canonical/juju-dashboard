@@ -88,10 +88,16 @@ runs:
         snap: charmcraft
     - name: Build the charm
       if: ${{ env.build_type != 'charm-release' }}
-      run: |
-        cd ${{ github.workspace }}/juju-dashboard-charm/k8s-charm
-        charmcraft pack
-      shell: bash
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: |
+          # This command is retired as it sometimes fails with the following error:.
+          # Failed to wait for snap refreshes to complete.
+          # error: daemon is stopping to wait for socket activation
+          cd ${{ github.workspace }}/juju-dashboard-charm/k8s-charm
+          charmcraft pack
     - name: Switch to controller
       run: juju switch '${{ inputs.controller-model }}'
       shell: bash
@@ -107,8 +113,17 @@ runs:
       run: juju integrate '${{ inputs.controller-app }}' dashboard
       shell: bash
     - name: Wait for charm to be ready
-      run: juju wait-for application dashboard
-      shell: bash
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 10
+        max_attempts: 2 # Retry the wait-for in case it gets stuck and times out. If it fails on the second try it's probably a real error.
+        command: |
+          STATUS=$(juju status --format json | yq .applications.dashboard.application-status.current)
+          if [ "$STATUS" == "error" ]; then
+            # Sometimes the dashboard unit will get into an error state, so resolve and try again.
+            juju resolved dashboard/0
+          fi
+          juju wait-for application dashboard
     - name: Disable analytics
       run: juju config dashboard analytics-enabled=false
       shell: bash
