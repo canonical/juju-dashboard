@@ -53,6 +53,12 @@ jobs:
           PROVIDER: microk8s
           ADMIN_USERNAME: admin
           ADMIN_PASSWORD: ${{ inputs.admin-password }}
+      - name: Display logs
+        if: failure()
+        uses: ./.github/actions/failure-log
+        with:
+          juju-env: "juju"
+          controller: ${{ steps.microk8s-controller.outputs.name }}
       - name: Send notification on failure
         if: steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification

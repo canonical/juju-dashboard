@@ -1,0 +1,56 @@
+name: Failure log
+description: Output logs if the workflow fails.
+inputs:
+  juju-env:
+    description: The type of Juju environment.
+    required: true
+    type: choice
+    options:
+      - jimm
+      - juju
+  controller:
+    description: The bootstrapped controller
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Common logs
+      shell: bash
+      run: |
+        echo "-------------------------------------"
+        echo "Juju controllers"
+        echo "-------------------------------------"
+        juju controllers
+        echo "-------------------------------------"
+        echo "Juju models"
+        echo "-------------------------------------"
+        juju models
+        echo "-------------------------------------"
+        echo "Disk space"
+        echo "-------------------------------------"
+        df -h
+    - name: Juju logs
+      if: ${{ inputs.juju-env == 'juju' }}
+      shell: bash
+      run: |
+        echo "-------------------------------------"
+        echo "Juju debug-log"
+        echo "-------------------------------------"
+        juju debug-log -m ${{ inputs.controller }}:controller --limit 200 --no-tail
+    - name: JIMM logs
+      if: ${{ inputs.juju-env == 'jimm' }}
+      shell: bash
+      run: |
+        echo "-------------------------------------"
+        echo "IAM status"
+        echo "-------------------------------------"
+        juju status -m iam || true
+        echo "-------------------------------------"
+        echo "JIMM status"
+        echo "-------------------------------------"
+        juju status -m ${{ inputs.controller }}:jimm || true
+        echo "-------------------------------------"
+        echo "JIMM debug-log"
+        echo "-------------------------------------"
+        juju debug-log -m jimm --limit 200 --no-tail
