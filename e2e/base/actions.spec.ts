@@ -2,9 +2,14 @@ import { expect } from "@playwright/test";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
-import { AddModel, DeployApplication } from "../helpers/actions";
+import {
+  AddModel,
+  DeployApplication,
+  GiveModelAccess,
+} from "../helpers/actions";
 import type { User } from "../helpers/auth";
 import type { Model, Application } from "../helpers/objects";
+import { ModelPermission } from "../helpers/objects";
 
 test.describe("Actions", () => {
   let actions: ActionStack;
@@ -70,5 +75,23 @@ test.describe("Actions", () => {
         .locator("tr", { hasText: application.name })
         .and(page.locator("tr", { hasText: `1/${application.action}` })),
     ).toBeInViewport();
+  });
+
+  test("actions controls aren't displayed to non-admins", async ({
+    jujuCLI,
+    page,
+  }) => {
+    await actions.prepare((add) => {
+      const nonAdmin = add(jujuCLI.createUser());
+      add(new GiveModelAccess(model, nonAdmin, ModelPermission.READ));
+    });
+    await user.dashboardLogin(
+      page,
+      `/models/${model.owner.dashboardUsername}/${model.name}/app/${application.name}?enable-flag=rebac`,
+    );
+    await expect(page.getByRole("checkbox")).not.toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Run action" }),
+    ).not.toBeVisible();
   });
 });

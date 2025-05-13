@@ -50,8 +50,31 @@ test.describe("Models", () => {
   test("Cannot access model without permission", async ({ page }) => {
     await user2.dashboardLogin(
       page,
-      `/models/${user1.dashboardUsername}/${user1Model.name}`,
+      `/models/${user1.cliUsername}/${user1Model.name}`,
     );
     await expect(page.getByText("Model not found")).toBeVisible();
+  });
+
+  test("model list does not display access button to non-admins", async ({
+    page,
+  }) => {
+    await user2.dashboardLogin(page, "/models?enable-flag=rebac");
+    // The access button only appears on hover.
+    await page.getByRole("link", { name: sharedModel.name }).hover();
+    await expect(
+      page.getByRole("button", { name: "Access" }),
+    ).not.toBeVisible();
+  });
+
+  test("model details does not display access button to non-admins", async ({
+    page,
+  }) => {
+    await user2.dashboardLogin(
+      page,
+      `/models/${user1.cliUsername}/${user1Model.name}?enable-flag=rebac`,
+    );
+    await expect(
+      page.getByRole("button", { name: "Manage access" }),
+    ).not.toBeVisible();
   });
 });
