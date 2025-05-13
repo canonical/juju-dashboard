@@ -46,11 +46,20 @@ export class LocalUser implements User {
     public password: string,
   ) {}
 
-  async dashboardLogin(page: Page, url: string) {
-    await page.goto(url);
+  private async enterCredentials(page: Page) {
     await page.getByRole("textbox", { name: "Username" }).fill(this.username);
     await page.getByRole("textbox", { name: "Password" }).fill(this.password);
     await page.getByRole("button", { name: "Log in to the dashboard" }).click();
+  }
+
+  async dashboardLogin(page: Page, url: string) {
+    await page.goto(url);
+    await this.enterCredentials(page);
+  }
+
+  async reloadDashboard(page: Page) {
+    await page.reload();
+    await this.enterCredentials(page);
   }
 
   async cliLogin() {

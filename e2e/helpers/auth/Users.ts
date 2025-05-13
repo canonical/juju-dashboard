@@ -64,6 +64,11 @@ export abstract class User {
   ): Promise<void>;
 
   /**
+   * Use this user to log into the dashboard.
+   */
+  abstract reloadDashboard(page: Page): Promise<void>;
+
+  /**
    * Use this user to authenticate with the Juju CLI.
    */
   abstract cliLogin(): Promise<void>;
