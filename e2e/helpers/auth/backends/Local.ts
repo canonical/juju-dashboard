@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import type { Page } from "@playwright/test";
 
 import type { User } from "..";
-import { juju } from "../../../utils";
+import { addFeatureFlags, juju } from "../../../utils";
 import { exec } from "../../../utils/exec";
 import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
@@ -53,7 +53,7 @@ export class LocalUser implements User {
   }
 
   async dashboardLogin(page: Page, url: string) {
-    await page.goto(url);
+    await page.goto(addFeatureFlags(url));
     await this.enterCredentials(page);
   }
 

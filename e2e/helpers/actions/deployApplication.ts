@@ -15,7 +15,7 @@ export class DeployApplication implements Action<Application> {
   ) {
     const charm = CharmName[provider];
     const name = generateRandomName(charm);
-    this.application = new Application(name, charm);
+    this.application = new Application(name, charm, model);
   }
 
   async run() {

@@ -3,6 +3,7 @@ import { expect } from "@playwright/test";
 import { Label as AccessButtonLabel } from "components/ModelTableList/AccessButton/types";
 import { Label as ModelLabel } from "pages/EntityDetails/Model/types";
 import { Label as EntityDetailsLabel } from "pages/EntityDetails/types";
+import urls from "urls";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -38,7 +39,7 @@ test.describe("Models", () => {
   });
 
   test("List created and shared models", async ({ page }) => {
-    await user2.dashboardLogin(page, "/models");
+    await user2.dashboardLogin(page, urls.models.index);
     await expect(
       page
         .locator("tr", { hasText: sharedModel.name })
@@ -52,10 +53,7 @@ test.describe("Models", () => {
   });
 
   test("Cannot access model without permission", async ({ page }) => {
-    await user2.dashboardLogin(
-      page,
-      `/models/${user1.cliUsername}/${user1Model.name}`,
-    );
+    await user2.dashboardLogin(page, user1Model.url);
     await expect(page.getByText(EntityDetailsLabel.NOT_FOUND)).toBeVisible();
   });
 

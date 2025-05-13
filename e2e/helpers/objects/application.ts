@@ -1,3 +1,6 @@
+import urls from "urls";
+
+import type { Model } from "../objects";
 /**
  * Charm to deploy based on provider.
  */
@@ -28,8 +31,17 @@ export class Application {
   constructor(
     public name: string,
     public charm: CharmName,
+    public model: Model,
   ) {
     this.action = ActionName[charm];
     this.config = ConfigName[charm];
+  }
+
+  public get url(): string {
+    return urls.model.app.index({
+      userName: this.model.owner.dashboardUsername,
+      modelName: this.model.name,
+      appName: this.name,
+    });
   }
 }

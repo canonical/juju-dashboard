@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 import { chromium } from "playwright";
 
-import { getEnv, exec, findLine } from "../../../utils";
+import { getEnv, exec, findLine, addFeatureFlags } from "../../../utils";
 import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
@@ -170,7 +170,7 @@ export class OIDC {
     url: string,
     expectError?: boolean,
   ) {
-    await page.goto(url);
+    await page.goto(addFeatureFlags(url));
     await page.getByRole("link", { name: "Log in to the dashboard" }).click();
     await page.getByRole("textbox", { name: "Email" }).fill(user.username);
     await page.getByRole("textbox", { name: "Password" }).fill(user.password);
@@ -181,7 +181,7 @@ export class OIDC {
       await page.waitForURL("**/models");
       // The OIDC flow always redirects back to /models so now we need to visit
       // the expected URL:
-      await page.goto(url);
+      await page.goto(addFeatureFlags(url));
     }
   }
 }

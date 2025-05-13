@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 
 import { Label as PrimaryNavLabel } from "components/PrimaryNav/types";
+import { rebacURLS } from "urls";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -35,7 +36,7 @@ test.describe("ReBAC Admin", () => {
       );
       return user;
     });
-    await user.dashboardLogin(page, "/permissions/users?enable-flag=rebac");
+    await user.dashboardLogin(page, rebacURLS.users.index);
     await expect(
       page.getByRole("link", { name: PrimaryNavLabel.PERMISSIONS }),
     ).toBeVisible();

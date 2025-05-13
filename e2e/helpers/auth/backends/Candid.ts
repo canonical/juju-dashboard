@@ -1,6 +1,7 @@
 import type { Browser } from "@playwright/test";
 import { type Page } from "@playwright/test";
 
+import { addFeatureFlags } from "../../../utils";
 import { exec } from "../../../utils/exec";
 import { findLine } from "../../../utils/findLine";
 import type { Action } from "../../action";
@@ -87,7 +88,7 @@ export class CandidUser extends LocalUser {
   }
 
   override async dashboardLogin(page: Page, url: string) {
-    await page.goto(url);
+    await page.goto(addFeatureFlags(url));
     const popupPromise = page.waitForEvent("popup");
     await page.getByRole("link", { name: "Log in to the dashboard" }).click();
 
