@@ -95,6 +95,10 @@ export class CandidUser extends LocalUser {
     await this.candidUiLogin(popup);
   }
 
+  override async reloadDashboard(page: Page) {
+    await page.reload();
+  }
+
   override async cliLogin() {
     await exec("juju logout");
 

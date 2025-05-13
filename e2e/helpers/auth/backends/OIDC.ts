@@ -80,6 +80,10 @@ export class OIDCUser extends LocalUser {
     );
   }
 
+  override async reloadDashboard(page: Page) {
+    await page.reload();
+  }
+
   override async cliLogin() {
     let retry = 3;
     // This login is retried as sometimes the login fails if it is too slow and an error is displayed:
