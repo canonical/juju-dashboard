@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 
+import { Label as LogsLabel } from "pages/EntityDetails/Model/Logs/types";
 import { Label as PageNotFoundLabel } from "pages/PageNotFound/types";
 
 import { test } from "../fixtures/setup";
@@ -58,10 +59,9 @@ test.describe("audit logs", () => {
       page,
       `/models/${model.owner.dashboardUsername}/${model.name}?activeView=logs&tableView=audit-logs&enable-flag=rebac`,
     );
-    await expect(page.getByRole("tab", { name: "Audit logs" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
+    await expect(
+      page.getByRole("tab", { name: LogsLabel.AUDIT_LOGS }),
+    ).toHaveAttribute("aria-selected", "true");
     await expect(
       page
         .locator("tr", { hasText: user.displayName })

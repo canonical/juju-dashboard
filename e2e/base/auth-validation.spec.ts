@@ -1,5 +1,7 @@
 import { expect } from "@playwright/test";
 
+import { Label as LogInLabel } from "components/LogIn/types";
+
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 
@@ -16,10 +18,10 @@ test.describe("Authentication Validation", () => {
 
   test("Can't bypass authentication", async ({ page }) => {
     await page.goto("/models");
-    await expect(page.getByText("Log in to the dashboard")).toBeVisible();
+    await expect(page.getByText(LogInLabel.LOGIN_TO_DASHBOARD)).toBeVisible();
 
     await page.goto("/controllers");
-    await expect(page.getByText("Log in to the dashboard")).toBeVisible();
+    await expect(page.getByText(LogInLabel.LOGIN_TO_DASHBOARD)).toBeVisible();
   });
 
   test("Needs valid credentials", async ({ page, jujuCLI }) => {
@@ -28,7 +30,7 @@ test.describe("Authentication Validation", () => {
 
     let expectedText = "Could not log into controller";
     if (process.env.AUTH_MODE === "candid") {
-      expectedText = "Connecting";
+      expectedText = LogInLabel.LOADING;
     } else if (process.env.AUTH_MODE === "oidc") {
       expectedText = "incorrect username or password";
     }
@@ -71,7 +73,7 @@ test.describe("Authentication Validation", () => {
         page.getByText("Unable to check authentication status.").first(),
       ).toBeVisible();
       await expect(
-        page.getByText("Log in to the dashboard").first(),
+        page.getByText(LogInLabel.LOGIN_TO_DASHBOARD).first(),
       ).toBeVisible();
     }
   });

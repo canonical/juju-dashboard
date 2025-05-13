@@ -1,6 +1,11 @@
 import { expect } from "@playwright/test";
 
-import { TestId as AppTestId } from "pages/EntityDetails/App/types";
+import {
+  Label as AppLabel,
+  TestId as AppTestId,
+} from "pages/EntityDetails/App/types";
+import { Label as ConfirmationDialogLabel } from "panels/ActionsPanel/ConfirmationDialog/types";
+import { TestId as ActionsPanelTestId } from "panels/ActionsPanel/types";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -45,9 +50,9 @@ test.describe("Actions", () => {
     await page
       .locator(`label[for="table-checkbox-${application.name}/0"]`)
       .click();
-    await page.getByTestId("run-action-button").click();
+    await page.getByTestId(AppTestId.RUN_ACTION_BUTTON).click();
 
-    await expect(page.getByTestId("actions-panel")).toBeInViewport();
+    await expect(page.getByTestId(ActionsPanelTestId.PANEL)).toBeInViewport();
 
     // Run the action
     await page
@@ -56,20 +61,22 @@ test.describe("Actions", () => {
       })
       .click();
     await page
-      .getByTestId("actions-panel")
-      .getByRole("button", { name: "Run action" })
+      .getByTestId(ActionsPanelTestId.PANEL)
+      .getByRole("button", { name: AppLabel.RUN_ACTION })
       .click();
 
     await expect(page.getByText(`Run ${application.action}?`)).toBeInViewport();
-    await page.getByText("Confirm").click();
+    await page.getByText(ConfirmationDialogLabel.CONFIRM_BUTTON).click();
 
-    await expect(page.getByTestId("actions-panel")).not.toBeInViewport();
+    await expect(
+      page.getByTestId(ActionsPanelTestId.PANEL),
+    ).not.toBeInViewport();
 
     // Go to the action logs
     if (process.env.AUTH_MODE === "oidc") {
       await page.getByRole("link", { name: "Logs" }).click();
     } else {
-      await page.getByTestId("show-logs").click();
+      await page.getByTestId(AppTestId.SHOW_LOGS).click();
     }
 
     await expect(

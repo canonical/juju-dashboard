@@ -1,5 +1,10 @@
 import { expect } from "@playwright/test";
 
+import {
+  Label as ShareModelLabel,
+  TestId as ShareModelTestId,
+} from "panels/ShareModelPanel/types";
+
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import { AddModel } from "../helpers/actions";
@@ -33,12 +38,14 @@ test.describe("Model Access Control", () => {
     await row.getByTestId("column-updated").hover();
     await page.getByRole("button", { name: "Access" }).click();
 
-    await expect(page.getByTestId("share-panel")).toBeInViewport();
+    await expect(page.getByTestId(ShareModelTestId.PANEL)).toBeInViewport();
 
     await page
       .getByRole("textbox", { name: "Username" })
       .fill(user1.cliUsername);
-    await page.getByRole("button", { name: "Add user" }).click();
+    await page
+      .getByRole("button", { name: ShareModelLabel.ADD_BUTTON })
+      .click();
 
     await expect(page.getByTestId("toast-card").last()).toContainText(
       `${user1.cliUsername} now has access to this model`,
