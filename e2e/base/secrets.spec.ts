@@ -38,6 +38,7 @@ test.describe("secrets", () => {
   let application: Application;
 
   test.beforeAll(async ({ jujuCLI, testOptions }) => {
+    // Give the test enough time to deploy the application:
     test.setTimeout(300000);
     actions = new ActionStack(jujuCLI);
 
