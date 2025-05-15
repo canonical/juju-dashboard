@@ -1,5 +1,12 @@
 import { expect } from "@playwright/test";
 
+import { Label as AppLabel } from "pages/EntityDetails/App/types";
+import { Label as ConfirmationDialogLabel } from "panels/ConfigPanel/ConfirmationDialog/types";
+import {
+  Label as ConfigPanelLabel,
+  TestId as ConfigPanelTestId,
+} from "panels/ConfigPanel/types";
+
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import {
@@ -41,28 +48,34 @@ test.describe("configure application", () => {
     await page.getByRole("link", { name: model.name }).click();
     await page.getByRole("link", { name: application.name }).click();
     // Open the configure panel for the corresponding application:
-    await page.getByRole("button", { name: "Configure" }).click();
-    const configPanel = page.getByTestId("config-panel");
+    await page.getByRole("button", { name: AppLabel.CONFIGURE }).click();
+    const configPanel = page.getByTestId(ConfigPanelTestId.PANEL);
     await expect(configPanel).toBeInViewport();
     // Set the config:
     const textbox = page.getByTestId(application.config).getByRole("textbox");
     const changed = "new value";
     await textbox.clear();
     await textbox.fill(changed);
-    await configPanel.getByRole("button", { name: "Save and apply" }).click();
+    await configPanel
+      .getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON })
+      .click();
     // Confirm the change:
     await expect(
       page.getByRole("heading", {
-        name: "Are you sure you wish to apply these changes?",
+        name: ConfirmationDialogLabel.SAVE_CONFIRM,
       }),
     ).toBeInViewport();
-    await page.getByRole("button", { name: "Yes, apply changes" }).click();
+    await page
+      .getByRole("button", {
+        name: ConfirmationDialogLabel.SAVE_CONFIRM_CONFIRM_BUTTON,
+      })
+      .click();
     // The panel should now close:
     await expect(configPanel).not.toBeInViewport();
     await user.reloadDashboard(page);
     // Open the configure panel again:
-    await page.getByRole("button", { name: "Configure" }).click();
-    await expect(page.getByTestId("config-panel")).toBeInViewport();
+    await page.getByRole("button", { name: AppLabel.CONFIGURE }).click();
+    await expect(page.getByTestId(ConfigPanelTestId.PANEL)).toBeInViewport();
     // Check that the config persisted:
     await expect(
       page.getByTestId(application.config).getByRole("textbox"),

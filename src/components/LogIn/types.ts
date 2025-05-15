@@ -4,6 +4,8 @@ export enum ErrorResponse {
 }
 
 export enum Label {
+  AUTHENTICATE = "Authenticate",
+  AUTH_REQUIRED = "Controller authentication required",
   INVALID_NAME = "Invalid user name",
   INVALID_FIELD = "Invalid user name or password",
   POLLING_ERROR = "Error when trying to connect and start polling models.",

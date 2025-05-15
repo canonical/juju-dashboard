@@ -1,6 +1,8 @@
 import { expect } from "@playwright/test";
 
+import { OIDCAuthLabel } from "auth/types";
 import { Label as LogInLabel } from "components/LogIn/types";
+import { Label as APILabel } from "juju/types";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -28,7 +30,7 @@ test.describe("Authentication Validation", () => {
     const fakeUser = jujuCLI.fakeUser("invalid-user", "password");
     await fakeUser.dashboardLogin(page, "/", true);
 
-    let expectedText = "Could not log into controller";
+    let expectedText: string = APILabel.CONTROLLER_LOGIN_ERROR;
     if (process.env.AUTH_MODE === "candid") {
       expectedText = LogInLabel.LOADING;
     } else if (process.env.AUTH_MODE === "oidc") {
@@ -53,9 +55,11 @@ test.describe("Authentication Validation", () => {
     if (process.env.AUTH_MODE === "candid") {
       await page.evaluate(() => window.localStorage.clear());
       await expect(
-        page.getByText("Controller authentication required").first(),
+        page.getByText(LogInLabel.AUTH_REQUIRED).first(),
       ).toBeVisible();
-      await expect(page.getByText("Authenticate").first()).toBeVisible();
+      await expect(
+        page.getByText(LogInLabel.AUTHENTICATE).first(),
+      ).toBeVisible();
     } else {
       await context.addCookies([
         {
@@ -69,9 +73,7 @@ test.describe("Authentication Validation", () => {
         },
       ]);
       await page.goto("/");
-      await expect(
-        page.getByText("Unable to check authentication status.").first(),
-      ).toBeVisible();
+      await expect(page.getByText(OIDCAuthLabel.WHOAMI).first()).toBeVisible();
       await expect(
         page.getByText(LogInLabel.LOGIN_TO_DASHBOARD).first(),
       ).toBeVisible();

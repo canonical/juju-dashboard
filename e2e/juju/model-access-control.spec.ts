@@ -1,9 +1,12 @@
 import { expect } from "@playwright/test";
 
+import { Label as AccessButtonLabel } from "components/ModelTableList/AccessButton/types";
+import { TestId as StatusGroupTestId } from "components/ModelTableList/StatusGroup/types";
 import {
   Label as ShareModelLabel,
   TestId as ShareModelTestId,
 } from "panels/ShareModelPanel/types";
+import { Label as ShareModelPanelLabel } from "panels/ShareModelPanel/types";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -35,13 +38,15 @@ test.describe("Model Access Control", () => {
   test("Can change model permissions", async ({ browser, page }) => {
     await user2.dashboardLogin(page, "/models");
     const row = page.getByRole("row", { name: model.name });
-    await row.getByTestId("column-updated").hover();
-    await page.getByRole("button", { name: "Access" }).click();
+    await row.getByTestId(StatusGroupTestId.COLUMN_UPDATED).hover();
+    await page
+      .getByRole("button", { name: AccessButtonLabel.ACCESS_BUTTON })
+      .click();
 
     await expect(page.getByTestId(ShareModelTestId.PANEL)).toBeInViewport();
 
     await page
-      .getByRole("textbox", { name: "Username" })
+      .getByRole("textbox", { name: ShareModelPanelLabel.FIELD_USERNAME })
       .fill(user1.cliUsername);
     await page
       .getByRole("button", { name: ShareModelLabel.ADD_BUTTON })

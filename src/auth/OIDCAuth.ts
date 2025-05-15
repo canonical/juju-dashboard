@@ -9,12 +9,9 @@ import type { AppDispatch } from "store/store";
 
 import { Auth, type ControllerData } from "./Auth";
 import { pollingMixin } from "./mixins";
+import { OIDCAuthLabel } from "./types";
 
 import { AuthMethod } from ".";
-
-export enum Label {
-  WHOAMI = "Unable to check authentication status. You can attempt to log in anyway.",
-}
 
 export class OIDCAuth extends pollingMixin(Auth) {
   constructor(dispatch: AppDispatch) {
@@ -50,7 +47,7 @@ export class OIDCAuth extends pollingMixin(Auth) {
       this.dispatch(
         generalActions.storeLoginError({
           wsControllerURL,
-          error: Label.WHOAMI,
+          error: OIDCAuthLabel.WHOAMI,
         }),
       );
       // Halt the connection attempt.

@@ -52,10 +52,9 @@ import {
   startModelWatcher,
   stopModelWatcher,
   connectToModel,
-  Label,
 } from "./api";
 import type { AllWatcherDelta } from "./types";
-import { DeltaChangeTypes, DeltaEntityTypes } from "./types";
+import { DeltaChangeTypes, DeltaEntityTypes, Label } from "./types";
 
 describe("Juju API", () => {
   beforeEach(() => {

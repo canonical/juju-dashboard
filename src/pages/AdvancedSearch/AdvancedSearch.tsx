@@ -8,7 +8,7 @@ import { useAppSelector } from "store/store";
 import ErrorsBlock from "./ErrorsBlock";
 import ResultsBlock from "./ResultsBlock";
 import SearchForm from "./SearchForm";
-import { TestId } from "./types";
+import { Label, TestId } from "./types";
 
 const AdvancedSearch = (): JSX.Element => {
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
@@ -17,7 +17,7 @@ const AdvancedSearch = (): JSX.Element => {
       allowed={crossModelQueriesEnabled}
       data-testid={TestId.COMPONENT}
     >
-      <BaseLayout data-testid={TestId.COMPONENT} title="Advanced search">
+      <BaseLayout data-testid={TestId.COMPONENT} title={Label.TITLE}>
         <SearchForm />
         <ErrorsBlock />
         <ResultsBlock />

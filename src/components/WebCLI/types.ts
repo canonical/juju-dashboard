@@ -4,3 +4,7 @@ export enum Label {
   NOT_OPEN_ERROR = "WebSocket connection is not open.",
   UNKNOWN_ERROR = "Unknown error.",
 }
+
+export enum Fields {
+  COMMAND = "command",
+}

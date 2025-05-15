@@ -1,5 +1,8 @@
 import { expect } from "@playwright/test";
 
+import { Label as SearchFormLabel } from "pages/AdvancedSearch/SearchForm/types";
+import { Label as AdvancedSearchLabel } from "pages/AdvancedSearch/types";
+
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import {
@@ -39,10 +42,10 @@ test.describe("cross model queries", () => {
   test("results are displayed ", async ({ page }) => {
     await user.dashboardLogin(page, "/search");
     await expect(
-      page.getByRole("heading", { name: "Advanced search" }),
+      page.getByRole("heading", { name: AdvancedSearchLabel.TITLE }),
     ).toBeVisible();
     await page
-      .getByRole("textbox", { name: "Search query" })
+      .getByRole("textbox", { name: SearchFormLabel.FIELD_QUERY })
       .fill(".applications");
     await page.keyboard.down("Enter");
     await expect(

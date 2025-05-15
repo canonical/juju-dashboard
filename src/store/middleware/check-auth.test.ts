@@ -3,6 +3,7 @@ import type { Mock } from "vitest";
 import { vi } from "vitest";
 
 import * as jujuModule from "juju/api";
+import { Label } from "juju/types";
 import { thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import type { RootState } from "store/store";
@@ -44,7 +45,7 @@ describe("model poller", () => {
       dispatch: vi.fn(),
     };
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      error: "Uh oh!",
+      error: Label.CONTROLLER_LOGIN_ERROR,
       wsControllerURL: "wss://example.com/api",
     }));
   });

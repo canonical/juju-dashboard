@@ -6,6 +6,7 @@ import {
 } from "pages/EntityDetails/App/types";
 import { Label as ConfirmationDialogLabel } from "panels/ActionsPanel/ConfirmationDialog/types";
 import { TestId as ActionsPanelTestId } from "panels/ActionsPanel/types";
+import { ModelTab } from "urls";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -74,7 +75,7 @@ test.describe("Actions", () => {
 
     // Go to the action logs
     if (process.env.AUTH_MODE === "oidc") {
-      await page.getByRole("link", { name: "Logs" }).click();
+      await page.getByRole("link", { name: ModelTab.LOGS }).click();
     } else {
       await page.getByTestId(AppTestId.SHOW_LOGS).click();
     }

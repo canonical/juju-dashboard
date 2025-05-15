@@ -14,7 +14,8 @@ import {
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { ComponentProviders, changeURL, createStore } from "testing/utils";
 
-import { LOGIN_TIMEOUT, Label as APILabel } from "../api";
+import { LOGIN_TIMEOUT } from "../api";
+import { Label as APILabel } from "../types";
 
 import {
   useModelConnectionCallback,

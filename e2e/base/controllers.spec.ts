@@ -1,5 +1,7 @@
 import { expect } from "@playwright/test";
 
+import { Label as PrimaryNavLabel } from "components/PrimaryNav/types";
+
 import { JujuEnv, test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 
@@ -19,7 +21,9 @@ test.describe("Controllers", () => {
       return add(jujuCLI.createUser());
     });
     await user.dashboardLogin(page, "/");
-    const controllersTab = page.getByRole("link", { name: "Controllers" });
+    const controllersTab = page.getByRole("link", {
+      name: PrimaryNavLabel.CONTROLLERS,
+    });
     await expect(controllersTab).toBeInViewport();
     await controllersTab.click();
     await expect(

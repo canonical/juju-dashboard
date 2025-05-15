@@ -18,6 +18,13 @@ import type JIMMV4 from "./jimm/JIMMV4";
 // See https://github.com/juju/juju/blob/main/rpc/params/multiwatcher.go
 // for the Juju types for the AllWatcher responses.
 
+export enum Label {
+  CONTROLLER_LOGIN_ERROR = "Could not log into controller",
+  LOGIN_TIMEOUT_ERROR = "Timed out when connecting to model.",
+  START_MODEL_WATCHER_NO_CONNECTION_ERROR = "Could not connect to model",
+  START_MODEL_WATCHER_NO_ID_ERROR = "Could not watch model for changes",
+}
+
 export interface ActionData {
   [id: string]: ActionChangeDelta;
 }

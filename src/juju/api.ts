@@ -42,20 +42,15 @@ import { logger } from "utils/logger";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
-import type {
-  AllWatcherDelta,
-  ApplicationInfo,
-  ConnectionWithFacades,
-  Facades,
-  FullStatusAnnotations,
-  FullStatusWithAnnotations,
+import {
+  Label,
+  type AllWatcherDelta,
+  type ApplicationInfo,
+  type ConnectionWithFacades,
+  type Facades,
+  type FullStatusAnnotations,
+  type FullStatusWithAnnotations,
 } from "./types";
-
-export enum Label {
-  LOGIN_TIMEOUT_ERROR = "Timed out when connecting to model.",
-  START_MODEL_WATCHER_NO_CONNECTION_ERROR = "Could not connect to model",
-  START_MODEL_WATCHER_NO_ID_ERROR = "Could not watch model for changes",
-}
 
 export const PING_TIME = 20000;
 export const LOGIN_TIMEOUT = 5000;
@@ -145,7 +140,7 @@ export async function loginWithBakery(
   try {
     conn = await juju.login(loginParams, CLIENT_VERSION);
   } catch (error) {
-    return { error: "Could not log into controller" };
+    return { error: Label.CONTROLLER_LOGIN_ERROR };
   }
 
   const intervalId = conn ? startPingerLoop(conn) : null;

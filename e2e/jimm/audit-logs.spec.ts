@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 
 import { Label as LogsLabel } from "pages/EntityDetails/Model/Logs/types";
+import { Label as LogsPageLabel } from "pages/Logs/types";
 import { Label as PageNotFoundLabel } from "pages/PageNotFound/types";
 
 import { test } from "../fixtures/setup";
@@ -44,7 +45,7 @@ test.describe("audit logs", () => {
   test("all logs page", async ({ page }) => {
     await user.dashboardLogin(page, "/logs?enable-flag=rebac");
     await expect(
-      page.getByRole("heading", { name: "Audit logs" }),
+      page.getByRole("heading", { name: LogsPageLabel.TITLE }),
     ).toBeVisible();
     await expect(
       page

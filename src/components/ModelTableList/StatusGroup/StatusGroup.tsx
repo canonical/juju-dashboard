@@ -83,11 +83,11 @@ function generateModelTableDataByStatus(
         "data-testid": `model-uuid-${model?.uuid}`,
         columns: [
           {
-            "data-testid": "column-name",
+            "data-testid": TestId.COLUMN_NAME,
             content: generateModelNameCell(model, groupLabel),
           },
           {
-            "data-testid": "column-summary",
+            "data-testid": TestId.COLUMN_SUMMARY,
             content: (
               <ModelSummary
                 modelData={model}
@@ -97,13 +97,13 @@ function generateModelTableDataByStatus(
             className: "u-overflow--visible",
           },
           {
-            "data-testid": "column-owner",
+            "data-testid": TestId.COLUMN_OWNER,
             content: (
               <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>
             ),
           },
           {
-            "data-testid": "column-cloud",
+            "data-testid": TestId.COLUMN_CLOUD,
             content: (
               <TruncatedTooltip message={generateCloudAndRegion(model)}>
                 {cloud}
@@ -111,7 +111,7 @@ function generateModelTableDataByStatus(
             ),
           },
           {
-            "data-testid": "column-credential",
+            "data-testid": TestId.COLUMN_CREDENTIAL,
             content: (
               <TruncatedTooltip message={credential}>
                 {credential}
@@ -119,7 +119,7 @@ function generateModelTableDataByStatus(
             ),
           },
           {
-            "data-testid": "column-controller",
+            "data-testid": TestId.COLUMN_CONTROLLER,
             content: (
               <TruncatedTooltip message={controller}>
                 {controller}
@@ -128,7 +128,7 @@ function generateModelTableDataByStatus(
           },
           // We're not currently able to get a last-accessed or updated from JAAS.
           {
-            "data-testid": "column-updated",
+            "data-testid": TestId.COLUMN_UPDATED,
             content: (
               <>
                 {canAdministerModel(activeUser, model?.info?.users) && (

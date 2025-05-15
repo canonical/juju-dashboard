@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 
 import { TestId as OutputTestId } from "components/WebCLI/Output/types";
+import { Fields as WebCLIFields } from "components/WebCLI/types";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -30,7 +31,9 @@ test.describe("Web CLI", () => {
       page,
       `/models/${user.dashboardUsername}/${model.name}`,
     );
-    await page.getByRole("textbox", { name: "command" }).fill("help");
+    await page
+      .getByRole("textbox", { name: WebCLIFields.COMMAND })
+      .fill("help");
     await page.keyboard.down("Enter");
     await expect(page.getByTestId(OutputTestId.CODE)).toContainText(
       "Juju provides easy, intelligent application orchestration on top of Kubernetes",
