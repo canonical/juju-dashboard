@@ -1,5 +1,7 @@
 import { expect } from "@playwright/test";
 
+import { TestId as AppTestId } from "pages/EntityDetails/App/types";
+
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import {
@@ -89,7 +91,9 @@ test.describe("Actions", () => {
       page,
       `/models/${model.owner.dashboardUsername}/${model.name}/app/${application.name}?enable-flag=rebac`,
     );
-    await expect(page.getByRole("checkbox")).not.toBeVisible();
+    await expect(
+      page.getByTestId(AppTestId.UNITS_TABLE).getByRole("checkbox"),
+    ).not.toBeVisible();
     await expect(
       page.getByRole("button", { name: "Run action" }),
     ).not.toBeVisible();

@@ -14,7 +14,6 @@ test.describe("secrets", () => {
   let model: Model;
 
   test.beforeAll(async ({ jujuCLI }) => {
-    test.setTimeout(300000);
     actions = new ActionStack(jujuCLI);
 
     await actions.prepare((add) => {

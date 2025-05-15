@@ -1,5 +1,7 @@
 import { expect } from "@playwright/test";
 
+import { Label as PageNotFoundLabel } from "pages/PageNotFound/types";
+
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import {
@@ -82,7 +84,7 @@ test.describe("audit logs", () => {
     ).not.toBeVisible();
     await expect(
       page.getByRole("heading", {
-        name: "Hmm, we can't seem to find that page...",
+        name: PageNotFoundLabel.NOT_FOUND,
       }),
     ).toBeVisible();
   });

@@ -30,7 +30,7 @@ export class GiveAccess<Entity extends Model | Controller>
         this.tag === "controller" ? "" : `'${this.entityName}'`;
       await this.entity.owner.cliLogin();
       await exec(
-        `juju ${jujuCommand} '${this.user.cliUsername}' '${this.access}' ${entityName}`,
+        `juju ${jujuCommand} '${this.user.cliUsername}' '${this.access}' '${entityName}'`,
       );
     } else {
       await jujuCLI.loginIdentityCLIAdmin();
