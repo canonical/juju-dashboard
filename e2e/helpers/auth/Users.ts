@@ -59,7 +59,7 @@ export abstract class User {
    */
   abstract dashboardLogin(
     page: Page,
-    url?: string,
+    url: string,
     expectError?: boolean,
   ): Promise<void>;
 
@@ -72,11 +72,6 @@ export abstract class User {
    * Use this user to authenticate with the Juju CLI.
    */
   abstract cliLogin(): Promise<void>;
-
-  /**
-   * Get the user's credential.
-   */
-  abstract getCredential(): Promise<string>;
 
   /**
    * Get the username for this user suitable for use on the CLI.

@@ -1,5 +1,3 @@
-import fs from "node:fs/promises";
-
 import type { Browser } from "@playwright/test";
 
 import { JujuEnv } from "../fixtures/setup";
@@ -137,14 +135,13 @@ class BootstrapAction implements Action<User> {
     // Login as the user.
     await user.cliLogin();
 
-    // Add the user's credential to the controller.
-    const credential = await user.getCredential();
-    const tmpFilePath = `e2e/helpers/juju-cred-${Date.now()}.yaml`;
-    await fs.writeFile(tmpFilePath, credential, "utf8");
+    // Use the client credentials for this user (stored in
+    // ~/.local/share/juju/credentials.yaml). This allows authentication via the
+    // oauth token which is required in some scenarios (e.g. adding secrets when
+    // using microk8s).
     await exec(
-      `juju add-credential ${jujuCLI.provider} -f ${tmpFilePath} -c '${jujuCLI.controller}'`,
+      `juju update-credential ${jujuCLI.provider} ${jujuCLI.provider} -c '${jujuCLI.controller}'`,
     );
-    await fs.unlink(tmpFilePath);
   }
 
   /**

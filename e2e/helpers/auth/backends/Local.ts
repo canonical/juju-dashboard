@@ -1,5 +1,3 @@
-import fs from "node:fs/promises";
-
 import type { Page } from "@playwright/test";
 
 import type { User } from "..";
@@ -76,15 +74,5 @@ export class LocalUser implements User {
 
   public get displayName(): string {
     return this.dashboardUsername;
-  }
-
-  public async getCredential(): Promise<string> {
-    const CREDENTIAL_TEMPLATE_PATH = "e2e/helpers/credentials-template.yaml";
-
-    const credential = (await fs.readFile(CREDENTIAL_TEMPLATE_PATH, "utf8"))
-      .replaceAll("{{username}}", this.cliUsername)
-      .replaceAll("{{password}}", this.password);
-
-    return credential;
   }
 }

@@ -26,7 +26,7 @@ jobs:
         uses: charmed-kubernetes/actions-operator@main
         with:
           provider: "microk8s"
-          channel: 1.28-strict/stable
+          channel: 1.32-strict/stable
           juju-channel: ${{ steps.config.outputs.juju-channel }}
           microk8s-group: snap_microk8s
       - name: Save microk8s controller name
