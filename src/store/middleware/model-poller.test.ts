@@ -7,6 +7,7 @@ import { Auth, LocalAuth, OIDCAuth } from "auth";
 import * as jujuModule from "juju/api";
 import * as jimmModule from "juju/jimm/api";
 import { pollWhoamiStart } from "juju/jimm/listeners";
+import { Label } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import type { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
@@ -154,14 +155,14 @@ describe("model poller", () => {
 
   it("dispatches login errors", async () => {
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      error: "Uh oh!",
+      error: Label.CONTROLLER_LOGIN_ERROR,
     }));
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       generalActions.storeLoginError({
         wsControllerURL: "wss://example.com",
-        error: "Uh oh!",
+        error: Label.CONTROLLER_LOGIN_ERROR,
       }),
     );
   });

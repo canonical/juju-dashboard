@@ -3,6 +3,10 @@ export enum CodeSnippetView {
   JSON = "json",
 }
 
+export enum Label {
+  TITLE = "Advanced search",
+}
+
 export enum TestId {
   COMPONENT = "AdvancedSearch",
 }

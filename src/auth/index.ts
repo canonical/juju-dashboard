@@ -3,4 +3,4 @@ export { CandidAuth } from "./CandidAuth";
 export { LocalAuth } from "./LocalAuth";
 export { OIDCAuth } from "./OIDCAuth";
 export { initialiseAuthFromConfig } from "./utils";
-export { AuthMethod } from "./types";
+export { AuthMethod, OIDCAuthLabel } from "./types";

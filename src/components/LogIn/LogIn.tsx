@@ -46,7 +46,7 @@ export default function LogIn() {
         reactHotToast.custom((t: ToastInstance) => (
           <ToastCard toastInstance={t} type="caution">
             <p className="u-no-margin--top u-no-padding--top">
-              Controller authentication required
+              {Label.AUTH_REQUIRED}
             </p>
             <AuthenticationButton
               appearance="positive"
@@ -58,7 +58,7 @@ export default function LogIn() {
                 reactHotToast.remove(t.id);
               }}
             >
-              Authenticate
+              {Label.AUTHENTICATE}
             </AuthenticationButton>
           </ToastCard>
         ));

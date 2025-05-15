@@ -1,5 +1,7 @@
 import { expect } from "@playwright/test";
 
+import { Label as PrimaryNavLabel } from "components/PrimaryNav/types";
+
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import { GiveControllerAccess } from "../helpers/actions";
@@ -34,7 +36,9 @@ test.describe("ReBAC Admin", () => {
       return user;
     });
     await user.dashboardLogin(page, "/permissions/users?enable-flag=rebac");
-    await expect(page.getByRole("link", { name: "Permissions" })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: PrimaryNavLabel.PERMISSIONS }),
+    ).toBeVisible();
     await expect(page.getByRole("heading", { name: "Users" })).toBeVisible();
     await expect(
       page.locator("td", { hasText: jujuCLI.identityAdmin.dashboardUsername }),
@@ -44,7 +48,9 @@ test.describe("ReBAC Admin", () => {
   test("link is not displayed for non-admins", async ({ page }) => {
     await nonAdminUser.dashboardLogin(page, "/models?enable-flag=rebac");
     await expect(
-      page.getByRole("banner").getByRole("link", { name: "Permissions" }),
+      page
+        .getByRole("banner")
+        .getByRole("link", { name: PrimaryNavLabel.PERMISSIONS }),
     ).not.toBeVisible();
   });
 

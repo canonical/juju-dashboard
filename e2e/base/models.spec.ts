@@ -1,5 +1,9 @@
 import { expect } from "@playwright/test";
 
+import { Label as AccessButtonLabel } from "components/ModelTableList/AccessButton/types";
+import { Label as ModelLabel } from "pages/EntityDetails/Model/types";
+import { Label as EntityDetailsLabel } from "pages/EntityDetails/types";
+
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import { AddModel, GiveModelAccess } from "../helpers/actions";
@@ -52,7 +56,7 @@ test.describe("Models", () => {
       page,
       `/models/${user1.cliUsername}/${user1Model.name}`,
     );
-    await expect(page.getByText("Model not found")).toBeVisible();
+    await expect(page.getByText(EntityDetailsLabel.NOT_FOUND)).toBeVisible();
   });
 
   test("model list does not display access button to non-admins", async ({
@@ -62,7 +66,7 @@ test.describe("Models", () => {
     // The access button only appears on hover.
     await page.getByRole("link", { name: sharedModel.name }).hover();
     await expect(
-      page.getByRole("button", { name: "Access" }),
+      page.getByRole("button", { name: AccessButtonLabel.ACCESS_BUTTON }),
     ).not.toBeVisible();
   });
 
@@ -74,7 +78,7 @@ test.describe("Models", () => {
       `/models/${user1.cliUsername}/${user1Model.name}?enable-flag=rebac`,
     );
     await expect(
-      page.getByRole("button", { name: "Manage access" }),
+      page.getByRole("button", { name: ModelLabel.ACCESS_BUTTON }),
     ).not.toBeVisible();
   });
 });

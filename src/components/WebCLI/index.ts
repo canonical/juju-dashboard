@@ -1,2 +1,2 @@
 export { default } from "./WebCLI";
-export { Label as WebCLILabel } from "./types";
+export { Label as WebCLILabel, Fields as WebCLIFields } from "./types";

@@ -1,5 +1,9 @@
 import { expect } from "@playwright/test";
 
+import { OIDCAuthLabel } from "auth/types";
+import { Label as LogInLabel } from "components/LogIn/types";
+import { Label as APILabel } from "juju/types";
+
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 
@@ -16,19 +20,19 @@ test.describe("Authentication Validation", () => {
 
   test("Can't bypass authentication", async ({ page }) => {
     await page.goto("/models");
-    await expect(page.getByText("Log in to the dashboard")).toBeVisible();
+    await expect(page.getByText(LogInLabel.LOGIN_TO_DASHBOARD)).toBeVisible();
 
     await page.goto("/controllers");
-    await expect(page.getByText("Log in to the dashboard")).toBeVisible();
+    await expect(page.getByText(LogInLabel.LOGIN_TO_DASHBOARD)).toBeVisible();
   });
 
   test("Needs valid credentials", async ({ page, jujuCLI }) => {
     const fakeUser = jujuCLI.fakeUser("invalid-user", "password");
     await fakeUser.dashboardLogin(page, "/", true);
 
-    let expectedText = "Could not log into controller";
+    let expectedText: string = APILabel.CONTROLLER_LOGIN_ERROR;
     if (process.env.AUTH_MODE === "candid") {
-      expectedText = "Connecting";
+      expectedText = LogInLabel.LOADING;
     } else if (process.env.AUTH_MODE === "oidc") {
       expectedText = "incorrect username or password";
     }
@@ -51,9 +55,11 @@ test.describe("Authentication Validation", () => {
     if (process.env.AUTH_MODE === "candid") {
       await page.evaluate(() => window.localStorage.clear());
       await expect(
-        page.getByText("Controller authentication required").first(),
+        page.getByText(LogInLabel.AUTH_REQUIRED).first(),
       ).toBeVisible();
-      await expect(page.getByText("Authenticate").first()).toBeVisible();
+      await expect(
+        page.getByText(LogInLabel.AUTHENTICATE).first(),
+      ).toBeVisible();
     } else {
       await context.addCookies([
         {
@@ -67,11 +73,9 @@ test.describe("Authentication Validation", () => {
         },
       ]);
       await page.goto("/");
+      await expect(page.getByText(OIDCAuthLabel.WHOAMI).first()).toBeVisible();
       await expect(
-        page.getByText("Unable to check authentication status.").first(),
-      ).toBeVisible();
-      await expect(
-        page.getByText("Log in to the dashboard").first(),
+        page.getByText(LogInLabel.LOGIN_TO_DASHBOARD).first(),
       ).toBeVisible();
     }
   });

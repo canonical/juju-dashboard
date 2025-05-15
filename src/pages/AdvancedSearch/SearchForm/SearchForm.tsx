@@ -90,7 +90,7 @@ const SearchForm = (): JSX.Element => {
         <div className="search-form__fields">
           <div className="search-form__field">
             <Field
-              aria-label="Search query"
+              aria-label={Label.FIELD_QUERY}
               as={Textarea}
               onKeyDown={(event: React.KeyboardEvent<HTMLTextAreaElement>) => {
                 if (event.key === "Enter") {

@@ -3,3 +3,7 @@ export enum AuthMethod {
   LOCAL = "local",
   OIDC = "oidc",
 }
+
+export enum OIDCAuthLabel {
+  WHOAMI = "Unable to check authentication status. You can attempt to log in anyway.",
+}

@@ -337,7 +337,7 @@ export default function ShareModel() {
               id="username"
               name="username"
               type="text"
-              label="Username"
+              label={Label.FIELD_USERNAME}
               required
               value={newUserFormik.values.username}
               onChange={newUserFormik.handleChange}

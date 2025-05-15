@@ -1,2 +1,2 @@
 export { default } from "./Logs";
-export { TestId as LogsTestId } from "./types";
+export { Label as LogsLabel, TestId as LogsTestId } from "./types";

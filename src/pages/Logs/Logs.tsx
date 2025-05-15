@@ -7,7 +7,7 @@ import CheckPermissions from "components/CheckPermissions";
 import { useAuditLogsPermitted } from "juju/api-hooks/permissions";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
 
-import { TestId } from "./types";
+import { Label, TestId } from "./types";
 
 const Logs = (): JSX.Element => {
   const { loading, permitted } = useAuditLogsPermitted();
@@ -17,7 +17,7 @@ const Logs = (): JSX.Element => {
       data-testid={TestId.COMPONENT}
       loading={loading}
     >
-      <BaseLayout data-testid={TestId.COMPONENT} title="Audit logs">
+      <BaseLayout data-testid={TestId.COMPONENT} title={Label.TITLE}>
         <ActionBar>
           <AuditLogsTableActions />
         </ActionBar>

@@ -1,5 +1,8 @@
 import { expect } from "@playwright/test";
 
+import { Label as PrimaryNavLabel } from "components/PrimaryNav/types";
+import { Label as LogsLabel } from "pages/EntityDetails/Model/Logs/types";
+import { Label as LogsPageLabel } from "pages/Logs/types";
 import { Label as PageNotFoundLabel } from "pages/PageNotFound/types";
 
 import { test } from "../fixtures/setup";
@@ -43,7 +46,7 @@ test.describe("audit logs", () => {
   test("all logs page", async ({ page }) => {
     await user.dashboardLogin(page, "/logs?enable-flag=rebac");
     await expect(
-      page.getByRole("heading", { name: "Audit logs" }),
+      page.getByRole("heading", { name: LogsPageLabel.TITLE }),
     ).toBeVisible();
     await expect(
       page
@@ -58,10 +61,9 @@ test.describe("audit logs", () => {
       page,
       `/models/${model.owner.dashboardUsername}/${model.name}?activeView=logs&tableView=audit-logs&enable-flag=rebac`,
     );
-    await expect(page.getByRole("tab", { name: "Audit logs" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
+    await expect(
+      page.getByRole("tab", { name: LogsLabel.AUDIT_LOGS }),
+    ).toHaveAttribute("aria-selected", "true");
     await expect(
       page
         .locator("tr", { hasText: user.displayName })
@@ -73,14 +75,16 @@ test.describe("audit logs", () => {
   test("all logs link is not displayed for non-admins", async ({ page }) => {
     await nonAdminUser.dashboardLogin(page, "/models?enable-flag=rebac");
     await expect(
-      page.getByRole("banner").getByRole("link", { name: "Logs" }),
+      page
+        .getByRole("banner")
+        .getByRole("link", { name: PrimaryNavLabel.LOGS }),
     ).not.toBeVisible();
   });
 
   test("all logs page can't be accessed by non-admins", async ({ page }) => {
     await nonAdminUser.dashboardLogin(page, "/logs?enable-flag=rebac");
     await expect(
-      page.getByRole("heading", { name: "Audit logs" }),
+      page.getByRole("heading", { name: LogsPageLabel.TITLE }),
     ).not.toBeVisible();
     await expect(
       page.getByRole("heading", {
@@ -92,7 +96,9 @@ test.describe("audit logs", () => {
   test("model logs link is not displayed for non-admins", async ({ page }) => {
     await nonAdminUser.dashboardLogin(page, "/models?enable-flag=rebac");
     await expect(
-      page.getByRole("banner").getByRole("link", { name: "Logs" }),
+      page
+        .getByRole("banner")
+        .getByRole("link", { name: PrimaryNavLabel.LOGS }),
     ).not.toBeVisible();
   });
 
@@ -102,7 +108,7 @@ test.describe("audit logs", () => {
       `/models/${model.owner.dashboardUsername}/${model.name}?activeView=logs&tableView=audit-logs&enable-flag=rebac`,
     );
     await expect(
-      page.getByRole("tab", { name: "Audit logs" }),
+      page.getByRole("tab", { name: LogsPageLabel.TITLE }),
     ).not.toBeVisible();
   });
 });

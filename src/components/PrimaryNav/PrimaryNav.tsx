@@ -74,7 +74,7 @@ const useControllersLink = () => {
     component: NavLink,
     to: urls.controllers,
     icon: "controllers",
-    label: "Controllers",
+    label: Label.CONTROLLERS,
     status,
   };
 };
