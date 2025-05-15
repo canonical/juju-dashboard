@@ -1,5 +1,7 @@
 import { expect } from "@playwright/test";
 
+import { ModelTab } from "urls";
+
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import { AddModel, GiveModelAccess } from "../helpers/actions";
@@ -29,10 +31,7 @@ test.describe("secrets", () => {
   });
 
   test("secrets do not display controls", async ({ page }) => {
-    await nonAdmin.dashboardLogin(
-      page,
-      `/models/${model.owner.cliUsername}/${model.name}?activeView=secrets&enable-flag=rebac`,
-    );
+    await nonAdmin.dashboardLogin(page, model.tab(ModelTab.SECRETS));
     // Go to the application inside the model:
     await page.getByRole("link", { name: model.name }).hover();
     await expect(

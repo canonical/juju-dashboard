@@ -60,7 +60,7 @@ test.describe("Models", () => {
   test("model list does not display access button to non-admins", async ({
     page,
   }) => {
-    await user2.dashboardLogin(page, "/models?enable-flag=rebac");
+    await user2.dashboardLogin(page, urls.models.index);
     // The access button only appears on hover.
     await page.getByRole("link", { name: sharedModel.name }).hover();
     await expect(
@@ -71,10 +71,7 @@ test.describe("Models", () => {
   test("model details does not display access button to non-admins", async ({
     page,
   }) => {
-    await user2.dashboardLogin(
-      page,
-      `/models/${user1.cliUsername}/${user1Model.name}?enable-flag=rebac`,
-    );
+    await user2.dashboardLogin(page, user1Model.url);
     await expect(
       page.getByRole("button", { name: ModelLabel.ACCESS_BUTTON }),
     ).not.toBeVisible();

@@ -83,10 +83,7 @@ test.describe("configure application", () => {
   });
 
   test("application does not display configure button", async ({ page }) => {
-    await user.dashboardLogin(
-      page,
-      `/models/${model.owner.dashboardUsername}/${model.name}/app/${application.name}?enable-flag=rebac`,
-    );
+    await user.dashboardLogin(page, application.url);
     await expect(
       page.getByRole("button", { name: AppLabel.CONFIGURE }),
     ).not.toBeVisible();

@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 
 import { Label as PrimaryNavLabel } from "components/PrimaryNav/types";
-import { rebacURLS } from "urls";
+import urls, { rebacURLS } from "urls";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -47,7 +47,7 @@ test.describe("ReBAC Admin", () => {
   });
 
   test("link is not displayed for non-admins", async ({ page }) => {
-    await nonAdminUser.dashboardLogin(page, "/models?enable-flag=rebac");
+    await nonAdminUser.dashboardLogin(page, urls.models.index);
     await expect(
       page
         .getByRole("banner")
@@ -56,10 +56,7 @@ test.describe("ReBAC Admin", () => {
   });
 
   test("can't be accessed by non-admins", async ({ page }) => {
-    await nonAdminUser.dashboardLogin(
-      page,
-      "/permissions/users?enable-flag=rebac",
-    );
+    await nonAdminUser.dashboardLogin(page, rebacURLS.users.index);
     await expect(
       page.getByRole("heading", {
         name: "Hmm, we can't seem to find that page...",

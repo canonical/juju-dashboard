@@ -96,10 +96,7 @@ test.describe("Actions", () => {
       const nonAdmin = add(jujuCLI.createUser());
       add(new GiveModelAccess(model, nonAdmin, ModelPermission.READ));
     });
-    await user.dashboardLogin(
-      page,
-      `/models/${model.owner.dashboardUsername}/${model.name}/app/${application.name}?enable-flag=rebac`,
-    );
+    await user.dashboardLogin(page, application.url);
     await expect(
       page.getByTestId(AppTestId.UNITS_TABLE).getByRole("checkbox"),
     ).not.toBeVisible();
