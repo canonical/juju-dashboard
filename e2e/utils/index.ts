@@ -1,3 +1,4 @@
+export { addFeatureFlags } from "./addFeatureFlags";
 export { exec } from "./exec";
 export { findLine } from "./findLine";
 export { generateRandomName } from "./generateRandomName";

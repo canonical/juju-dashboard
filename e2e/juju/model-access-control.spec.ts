@@ -7,6 +7,7 @@ import {
   TestId as ShareModelTestId,
 } from "panels/ShareModelPanel/types";
 import { Label as ShareModelPanelLabel } from "panels/ShareModelPanel/types";
+import urls from "urls";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -36,7 +37,7 @@ test.describe("Model Access Control", () => {
   });
 
   test("Can change model permissions", async ({ browser, page }) => {
-    await user2.dashboardLogin(page, "/models");
+    await user2.dashboardLogin(page, urls.models.index);
     const row = page.getByRole("row", { name: model.name });
     await row.getByTestId(StatusGroupTestId.COLUMN_UPDATED).hover();
     await page
@@ -60,10 +61,7 @@ test.describe("Model Access Control", () => {
     const context = await browser.newContext();
     // Create a new page inside context.
     const page2 = await context.newPage();
-    await user1.dashboardLogin(
-      page2,
-      `/models/${user2.cliUsername}/${model.name}`,
-    );
+    await user1.dashboardLogin(page2, model.url);
     await expect(page2.locator(".entity-info__grid-item").first()).toHaveText(
       "accessread",
     );

@@ -3,6 +3,7 @@ import { expect } from "@playwright/test";
 import { OIDCAuthLabel } from "auth/types";
 import { Label as LogInLabel } from "components/LogIn/types";
 import { Label as APILabel } from "juju/types";
+import urls from "urls";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -19,10 +20,10 @@ test.describe("Authentication Validation", () => {
   });
 
   test("Can't bypass authentication", async ({ page }) => {
-    await page.goto("/models");
+    await page.goto(urls.models.index);
     await expect(page.getByText(LogInLabel.LOGIN_TO_DASHBOARD)).toBeVisible();
 
-    await page.goto("/controllers");
+    await page.goto(urls.controllers);
     await expect(page.getByText(LogInLabel.LOGIN_TO_DASHBOARD)).toBeVisible();
   });
 

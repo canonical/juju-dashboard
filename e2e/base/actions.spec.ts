@@ -7,6 +7,7 @@ import {
 import { Label as ConfirmationDialogLabel } from "panels/ActionsPanel/ConfirmationDialog/types";
 import { TestId as ActionsPanelTestId } from "panels/ActionsPanel/types";
 import { ModelTab } from "urls";
+import urls from "urls";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -41,7 +42,7 @@ test.describe("Actions", () => {
   });
 
   test("Run charm actions", async ({ page }) => {
-    await user.dashboardLogin(page, "/models?enable-flag=rebac");
+    await user.dashboardLogin(page, urls.models.index);
 
     // Go to the application inside the model
     await page.getByRole("link", { name: model.name }).click();
@@ -95,10 +96,7 @@ test.describe("Actions", () => {
       const nonAdmin = add(jujuCLI.createUser());
       add(new GiveModelAccess(model, nonAdmin, ModelPermission.READ));
     });
-    await user.dashboardLogin(
-      page,
-      `/models/${model.owner.dashboardUsername}/${model.name}/app/${application.name}?enable-flag=rebac`,
-    );
+    await user.dashboardLogin(page, application.url);
     await expect(
       page.getByTestId(AppTestId.UNITS_TABLE).getByRole("checkbox"),
     ).not.toBeVisible();

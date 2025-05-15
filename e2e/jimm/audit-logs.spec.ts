@@ -4,6 +4,7 @@ import { Label as PrimaryNavLabel } from "components/PrimaryNav/types";
 import { Label as LogsLabel } from "pages/EntityDetails/Model/Logs/types";
 import { Label as LogsPageLabel } from "pages/Logs/types";
 import { Label as PageNotFoundLabel } from "pages/PageNotFound/types";
+import urls, { ModelTab } from "urls";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -44,7 +45,7 @@ test.describe("audit logs", () => {
   });
 
   test("all logs page", async ({ page }) => {
-    await user.dashboardLogin(page, "/logs?enable-flag=rebac");
+    await user.dashboardLogin(page, urls.logs);
     await expect(
       page.getByRole("heading", { name: LogsPageLabel.TITLE }),
     ).toBeVisible();
@@ -59,7 +60,7 @@ test.describe("audit logs", () => {
   test("model logs tab", async ({ page }) => {
     await user.dashboardLogin(
       page,
-      `/models/${model.owner.dashboardUsername}/${model.name}?activeView=logs&tableView=audit-logs&enable-flag=rebac`,
+      `${model.tab(ModelTab.LOGS)}&tableView=audit-logs`,
     );
     await expect(
       page.getByRole("tab", { name: LogsLabel.AUDIT_LOGS }),
@@ -73,7 +74,7 @@ test.describe("audit logs", () => {
   });
 
   test("all logs link is not displayed for non-admins", async ({ page }) => {
-    await nonAdminUser.dashboardLogin(page, "/models?enable-flag=rebac");
+    await nonAdminUser.dashboardLogin(page, urls.models.index);
     await expect(
       page
         .getByRole("banner")
@@ -82,7 +83,7 @@ test.describe("audit logs", () => {
   });
 
   test("all logs page can't be accessed by non-admins", async ({ page }) => {
-    await nonAdminUser.dashboardLogin(page, "/logs?enable-flag=rebac");
+    await nonAdminUser.dashboardLogin(page, urls.logs);
     await expect(
       page.getByRole("heading", { name: LogsPageLabel.TITLE }),
     ).not.toBeVisible();
@@ -94,7 +95,7 @@ test.describe("audit logs", () => {
   });
 
   test("model logs link is not displayed for non-admins", async ({ page }) => {
-    await nonAdminUser.dashboardLogin(page, "/models?enable-flag=rebac");
+    await nonAdminUser.dashboardLogin(page, urls.models.index);
     await expect(
       page
         .getByRole("banner")
@@ -105,7 +106,7 @@ test.describe("audit logs", () => {
   test("model logs tab can't be accessed by non-admins", async ({ page }) => {
     await nonAdminUser.dashboardLogin(
       page,
-      `/models/${model.owner.dashboardUsername}/${model.name}?activeView=logs&tableView=audit-logs&enable-flag=rebac`,
+      `${model.tab(ModelTab.LOGS)}&tableView=audit-logs`,
     );
     await expect(
       page.getByRole("tab", { name: LogsPageLabel.TITLE }),

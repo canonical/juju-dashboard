@@ -27,10 +27,7 @@ test.describe("Web CLI", () => {
       const model = add(new AddModel(user));
       return { user, model };
     });
-    await user.dashboardLogin(
-      page,
-      `/models/${user.dashboardUsername}/${model.name}`,
-    );
+    await user.dashboardLogin(page, model.url);
     await page
       .getByRole("textbox", { name: WebCLIFields.COMMAND })
       .fill("help");
