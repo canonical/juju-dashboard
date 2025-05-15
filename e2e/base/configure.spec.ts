@@ -2,14 +2,20 @@ import { expect } from "@playwright/test";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
-import { AddModel, DeployApplication } from "../helpers/actions";
+import {
+  AddModel,
+  DeployApplication,
+  GiveModelAccess,
+} from "../helpers/actions";
 import type { User } from "../helpers/auth";
 import type { Model, Application } from "../helpers/objects";
+import { ModelPermission } from "../helpers/objects";
 
 test.describe("configure application", () => {
   let actions: ActionStack;
   let user: User;
   let model: Model;
+  let nonAdminUser: User;
   let application: Application;
 
   test.beforeAll(async ({ jujuCLI, testOptions }) => {
@@ -20,6 +26,8 @@ test.describe("configure application", () => {
       user = add(jujuCLI.createUser());
       model = add(new AddModel(user));
       application = add(new DeployApplication(model, testOptions.provider));
+      nonAdminUser = add(jujuCLI.createUser());
+      add(new GiveModelAccess(model, nonAdminUser, ModelPermission.READ));
     });
   });
 
@@ -59,5 +67,15 @@ test.describe("configure application", () => {
     await expect(
       page.getByTestId(application.config).getByRole("textbox"),
     ).toHaveValue(changed);
+  });
+
+  test("application does not display configure button", async ({ page }) => {
+    await user.dashboardLogin(
+      page,
+      `/models/${model.owner.dashboardUsername}/${model.name}/app/${application.name}?enable-flag=rebac`,
+    );
+    await expect(
+      page.getByRole("button", { name: "Configure" }),
+    ).not.toBeVisible();
   });
 });
