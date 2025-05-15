@@ -93,7 +93,7 @@ export class CandidUser extends LocalUser {
     await page.getByRole("link", { name: "Log in to the dashboard" }).click();
 
     const popup = await popupPromise;
-    await this.candidUiLogin(popup);
+    await this.candidUILogin(popup);
   }
 
   override async reloadDashboard(page: Page) {
@@ -127,7 +127,7 @@ export class CandidUser extends LocalUser {
     await page.goto(loginUrl);
 
     // Login with user credentials
-    await this.candidUiLogin(page);
+    await this.candidUILogin(page);
 
     // Wait for the original process to finish.
     await loginProc;
@@ -139,7 +139,7 @@ export class CandidUser extends LocalUser {
     return `${this.username}@external`;
   }
 
-  async candidUiLogin(page: Page) {
+  async candidUILogin(page: Page) {
     await page.getByRole("link", { name: "static" }).click();
     await page.getByRole("textbox", { name: "Username" }).fill(this.username);
     await page.getByRole("textbox", { name: "Password" }).fill(this.password);

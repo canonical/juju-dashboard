@@ -74,11 +74,6 @@ export abstract class User {
   abstract cliLogin(): Promise<void>;
 
   /**
-   * Get the user's credential.
-   */
-  abstract getCredential(): Promise<string>;
-
-  /**
    * Get the username for this user suitable for use on the CLI.
    */
   abstract get cliUsername(): string;

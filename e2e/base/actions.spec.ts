@@ -6,7 +6,6 @@ import {
 } from "pages/EntityDetails/App/types";
 import { Label as ConfirmationDialogLabel } from "panels/ActionsPanel/ConfirmationDialog/types";
 import { TestId as ActionsPanelTestId } from "panels/ActionsPanel/types";
-import { ModelTab } from "urls";
 import urls from "urls";
 
 import { test } from "../fixtures/setup";
@@ -27,6 +26,7 @@ test.describe("Actions", () => {
   let application: Application;
 
   test.beforeAll(async ({ jujuCLI, testOptions }) => {
+    // Give the test enough time to deploy the application:
     test.setTimeout(300000);
     actions = new ActionStack(jujuCLI);
 
@@ -74,13 +74,8 @@ test.describe("Actions", () => {
       page.getByTestId(ActionsPanelTestId.PANEL),
     ).not.toBeInViewport();
 
-    // Go to the action logs
-    if (process.env.AUTH_MODE === "oidc") {
-      await page.getByRole("link", { name: ModelTab.LOGS }).click();
-    } else {
-      await page.getByTestId(AppTestId.SHOW_LOGS).click();
-    }
-
+    // Go to the action logs and verify that the action was executed
+    await page.getByTestId(AppTestId.SHOW_LOGS).click();
     await expect(
       page
         .locator("tr", { hasText: application.name })
