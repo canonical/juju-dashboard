@@ -16,7 +16,7 @@ import {
   Label as SecretFormPanelLabel,
   TestId as SecretFormPanelTestId,
 } from "panels/SecretFormPanel/types";
-import { ModelTab } from "urls";
+import urls, { ModelTab } from "urls";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -56,7 +56,7 @@ test.describe("secrets", () => {
   });
 
   test("Can create and use a secret", async ({ page }) => {
-    await user.dashboardLogin(page, "/models?enable-flag=rebac");
+    await user.dashboardLogin(page, urls.models.index);
 
     // Go to the secrets tab inside the model
     await page.getByRole("link", { name: model.name }).click();
@@ -136,6 +136,7 @@ test.describe("secrets", () => {
       page.getByTestId(application.config).locator("textarea"),
     ).toHaveText(secretURI);
   });
+
   test("secrets do not display controls to non-admins", async ({ page }) => {
     await nonAdmin.dashboardLogin(page, model.tab(ModelTab.SECRETS));
     await expect(
