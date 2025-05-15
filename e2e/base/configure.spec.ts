@@ -88,7 +88,7 @@ test.describe("configure application", () => {
       `/models/${model.owner.dashboardUsername}/${model.name}/app/${application.name}?enable-flag=rebac`,
     );
     await expect(
-      page.getByRole("button", { name: "Configure" }),
+      page.getByRole("button", { name: AppLabel.CONFIGURE }),
     ).not.toBeVisible();
   });
 });

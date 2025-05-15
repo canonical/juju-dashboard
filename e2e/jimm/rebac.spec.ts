@@ -48,7 +48,9 @@ test.describe("ReBAC Admin", () => {
   test("link is not displayed for non-admins", async ({ page }) => {
     await nonAdminUser.dashboardLogin(page, "/models?enable-flag=rebac");
     await expect(
-      page.getByRole("banner").getByRole("link", { name: "Permissions" }),
+      page
+        .getByRole("banner")
+        .getByRole("link", { name: PrimaryNavLabel.PERMISSIONS }),
     ).not.toBeVisible();
   });
 

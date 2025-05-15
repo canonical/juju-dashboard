@@ -103,7 +103,7 @@ test.describe("Actions", () => {
       page.getByTestId(AppTestId.UNITS_TABLE).getByRole("checkbox"),
     ).not.toBeVisible();
     await expect(
-      page.getByRole("button", { name: "Run action" }),
+      page.getByRole("button", { name: AppLabel.RUN_ACTION }),
     ).not.toBeVisible();
   });
 });
