@@ -8,7 +8,7 @@ on:
       - reopened
 
   schedule:
-    - cron: "0 23 * * 1" # Every Monday at 23:00 UTC (9:00am AEST)
+    - cron: "0 23 * * 1" # Every day at 23:00 UTC (9:00am AEST)
 
   release:
     types: [published]
