@@ -9,6 +9,8 @@ on:
         description: The password to use when logging in as the admin user.
         default: password1
 
+permissions: read-all
+
 jobs:
   test:
     name: Run tests

@@ -49,6 +49,8 @@ on:
         type: string
         default: main
 
+permissions: read-all
+
 jobs:
   juju-machine-local:
     name: Test Juju, machine-charm and local-auth
