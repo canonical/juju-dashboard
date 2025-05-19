@@ -4,7 +4,7 @@ inputs:
   channel:
     description: Mattermost channel to send message to.
     required: false
-    default: juju-dashboard-webhook-testing
+    default: juju-dashboard
   webhook-url:
     description: Webhook URL to send use.
     required: true
