@@ -173,7 +173,7 @@ const WebCLI = ({
       const origin = connection.current?.address
         ? new URL(connection.current?.address)?.origin
         : null;
-      const macaroons = origin ? bakery.storage.get(origin) : null;
+      const macaroons = origin ? bakery.storage.get(`${origin}/api`) : null;
       if (macaroons) {
         const deserialized = JSON.parse(atob(macaroons));
         const originalWSOrigin = wsAddress ? new URL(wsAddress).origin : null;

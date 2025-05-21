@@ -177,7 +177,7 @@ describe("WebCLI", () => {
     });
     bakerySpy.mockImplementation((key) => {
       const macaroons: Record<string, string> = {
-        "wss://localhost:1234": "WyJtYWMiLCAiYXJvb24iXQo=",
+        "wss://localhost:1234/api": "WyJtYWMiLCAiYXJvb24iXQo=",
       };
       return macaroons[key];
     });
