@@ -1,9 +1,11 @@
-import { screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
 
 import Output from "./Output";
+import { DEFAULT_HEIGHT, HELP_HEIGHT } from "./consts";
+import { TestId } from "./types";
 
 describe("Output", () => {
   it("should display content and not display help message", () => {
@@ -17,6 +19,10 @@ describe("Output", () => {
     );
     expect(screen.getByText("Output")).toBeInTheDocument();
     expect(screen.queryByText("Help message")).not.toBeInTheDocument();
+    expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      `height: ${DEFAULT_HEIGHT}px;`,
+    );
   });
 
   it("should not display content and display help message", () => {
@@ -28,8 +34,41 @@ describe("Output", () => {
         setShouldShowHelp={vi.fn()}
       />,
     );
-    expect(screen.queryByRole("Output")).not.toBeInTheDocument();
+    expect(screen.queryByText("Output")).not.toBeInTheDocument();
     expect(screen.getByText("Help message")).toBeInTheDocument();
+    expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      `height: ${HELP_HEIGHT}px;`,
+    );
+  });
+
+  it("should close the output when the help is closed", async () => {
+    const { rerender } = render(
+      <Output
+        content="Output"
+        helpMessage="Help message"
+        // Initially render with the help visible.
+        showHelp={true}
+        setShouldShowHelp={vi.fn()}
+      />,
+    );
+    expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      `height: ${HELP_HEIGHT}px;`,
+    );
+    rerender(
+      <Output
+        content="Output"
+        helpMessage="Help message"
+        // Rerender with the help hidden.
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+      />,
+    );
+    expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
+      "style",
+      "height: 0px;",
+    );
   });
 
   it("should display the content with correct formatting", () => {

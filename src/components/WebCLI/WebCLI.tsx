@@ -227,7 +227,7 @@ const WebCLI = ({
   };
 
   return (
-    <div className="webcli">
+    <div className="webcli is-dark">
       <WebCLIOutput
         content={output}
         showHelp={shouldShowHelp || hasInlineError(InlineErrors.AUTHENTICATION)}
@@ -243,12 +243,7 @@ const WebCLI = ({
           ) : (
             <>
               Welcome to the Juju Web CLI - see the{" "}
-              <a
-                href={externalURLs.cliHelp}
-                className="p-link--inverted"
-                rel="noreferrer"
-                target="_blank"
-              >
+              <a href={externalURLs.cliHelp} rel="noreferrer" target="_blank">
                 full documentation here
               </a>
               .

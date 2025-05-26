@@ -1,7 +1,9 @@
+import { useListener, usePrevious } from "@canonical/react-components";
 import Convert from "ansi-to-html";
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { HELP_HEIGHT, CONSIDER_CLOSED, DEFAULT_HEIGHT } from "./consts";
 import { TestId } from "./types";
 
 type Props = {
@@ -11,11 +13,6 @@ type Props = {
   setShouldShowHelp: (showHelp: boolean) => void;
 };
 
-const DEFAULT_HEIGHT = 300;
-// 20 is a magic number, sometimes the browser stops firing the drag at
-// an inopportune time and the element isn't left completely closed.
-const CONSIDER_CLOSED = 20;
-const HELP_HEIGHT = 50;
 const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
 
 const WebCLIOutput = ({
@@ -27,7 +24,24 @@ const WebCLIOutput = ({
   const convert = new Convert();
 
   const resizeDeltaY = useRef(0);
+  const dragNode = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(1);
+  const [dragHeight, setDragHeight] = useState(0);
+  const showHelpPrevious = usePrevious(showHelp, false);
+  const contentPrevious = usePrevious(content, false);
+
+  const onResize = useCallback(() => {
+    if (dragNode.current) {
+      setDragHeight(dragNode.current.clientHeight);
+    }
+  }, []);
+
+  useListener(window, onResize, "resize", true, true);
+
+  useEffect(() => {
+    // Set the drag height on first render.
+    onResize();
+  }, [onResize]);
 
   useEffect(() => {
     const resize = (clientY: number) => {
@@ -96,9 +110,12 @@ const WebCLIOutput = ({
 
   useEffect(() => {
     if (showHelp) {
-      setHeight(HELP_HEIGHT);
+      setHeight(HELP_HEIGHT + dragHeight);
+    } else if (!showHelp && showHelpPrevious) {
+      // The help got closed so also close the panel.
+      setHeight(0);
     }
-  }, [showHelp]);
+  }, [showHelp, dragHeight, showHelpPrevious]);
 
   useEffect(() => {
     if (height < CONSIDER_CLOSED) {
@@ -110,20 +127,23 @@ const WebCLIOutput = ({
     // New content is coming in, so check if we're collapsed and if we
     // are then open it back up.
     if (
+      // Only trigger this condition if the content changes.
+      content != contentPrevious &&
       content.length > 1 &&
       height <= HELP_HEIGHT &&
       height !== DEFAULT_HEIGHT
     ) {
       setHeight(DEFAULT_HEIGHT);
     }
-    // We can't have height as a dependency because we don't want this to run
-    // when the height changes, only when the content comes in.
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [content]);
+  }, [content, contentPrevious, height]);
 
   return (
     <div className="webcli__output" style={{ height: `${height}px` }}>
-      <div className="webcli__output-dragarea" aria-hidden={true}>
+      <div
+        className="webcli__output-dragarea"
+        aria-hidden={true}
+        ref={dragNode}
+      >
         <div className="webcli__output-handle"></div>
       </div>
       <pre
