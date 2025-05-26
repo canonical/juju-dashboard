@@ -26,7 +26,7 @@ exports[`WebCLI > renders correctly 1`] = `
 >
   <div
     class="webcli__output"
-    style="height: 1px;"
+    style="height: 0px;"
   >
     <div
       aria-hidden="true"
@@ -39,7 +39,7 @@ exports[`WebCLI > renders correctly 1`] = `
     <pre
       class="webcli__output-content"
       data-testid="output-content"
-      style="height: 1px;"
+      style="height: 0px;"
     >
       <code
         data-testid="output-help"
@@ -81,6 +81,7 @@ exports[`WebCLI > renders correctly 1`] = `
       class="webcli__input-help"
     >
       <i
+        aria-label="Display help"
         class="p-icon--help is-light"
         role="button"
         tabindex="0"

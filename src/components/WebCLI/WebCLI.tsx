@@ -42,7 +42,8 @@ const WebCLI = ({
   protocol = "wss",
 }: Props) => {
   const connection = useRef<Connection | null>(null);
-  const [shouldShowHelp, setShouldShowHelp] = useState(false);
+  const [shouldShowHelp, setShouldShowHelp] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [historyPosition, setHistoryPosition] = useState(0);
   const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -143,6 +144,7 @@ const WebCLI = ({
         wsMessageStore.current = wsMessageStore.current + message;
         setOutput(wsMessageStore.current);
       },
+      setLoading,
     }).connect();
     connection.current = conn;
   }, [setInlineError, wsAddress]);
@@ -222,7 +224,11 @@ const WebCLI = ({
     }
   };
 
-  const showHelp = () => {
+  const showHelp = (event: React.MouseEvent | React.KeyboardEvent) => {
+    // Only trigger the help from the space or enter keys (or mouse clicks).
+    if ("key" in event && !["Enter", " "].includes(event.key)) {
+      return;
+    }
     setShouldShowHelp(!shouldShowHelp);
   };
 
@@ -250,6 +256,7 @@ const WebCLI = ({
             </>
           )
         }
+        loading={loading}
       />
       <div className="webcli__input">
         <div className="webcli__input-prompt">$ juju</div>
@@ -269,6 +276,7 @@ const WebCLI = ({
         </form>
         <div className="webcli__input-help">
           <i
+            aria-label={Label.HELP}
             className="p-icon--help is-light"
             onClick={showHelp}
             onKeyDown={showHelp}

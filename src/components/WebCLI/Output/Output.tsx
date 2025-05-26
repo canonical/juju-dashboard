@@ -9,6 +9,7 @@ import { TestId } from "./types";
 type Props = {
   content: string;
   helpMessage: ReactNode;
+  loading?: boolean;
   showHelp: boolean;
   setShouldShowHelp: (showHelp: boolean) => void;
 };
@@ -18,6 +19,7 @@ const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
 const WebCLIOutput = ({
   content,
   helpMessage,
+  loading,
   showHelp,
   setShouldShowHelp,
 }: Props) => {
@@ -151,7 +153,7 @@ const WebCLIOutput = ({
         style={{ height: `${height}px` }}
         data-testid={TestId.CONTENT}
       >
-        {showHelp || !content ? (
+        {showHelp || (!loading && !content) ? (
           <code data-testid={TestId.HELP}>{helpMessage}</code>
         ) : (
           <code
