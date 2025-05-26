@@ -11,6 +11,7 @@ type Options = {
   onclose: () => void;
   onopen: () => void;
   onerror: (error: Event | string) => void;
+  setLoading: (loading: boolean) => void;
 };
 
 class Connection {
@@ -18,6 +19,7 @@ class Connection {
   #messageBuffer = "";
   #timeout: number | null = null;
   #messageCallback: (message: string) => void;
+  #setLoading: Options["setLoading"];
   #wsOnOpen: () => void;
   #wsOnClose: () => void;
   #wsOnError: (error: Event | string) => void;
@@ -26,6 +28,7 @@ class Connection {
   constructor(options: Options) {
     this.#messageCallback = options.messageCallback;
     this.#address = options.address;
+    this.#setLoading = options.setLoading;
     this.#wsOnOpen = options.onopen;
     this.#wsOnClose = options.onclose;
     this.#wsOnError = options.onerror;
@@ -46,12 +49,14 @@ class Connection {
   }
 
   send(message: string) {
+    this.#setLoading(true);
     this.#ws?.send(message);
   }
 
   disconnect() {
     if (this.isActive()) {
       this.#ws?.close();
+      this.#setLoading(false);
     }
     if (this.#timeout) {
       clearTimeout(this.#timeout);
@@ -73,6 +78,7 @@ class Connection {
   }
 
   #handleMessage(messageEvent: MessageEvent) {
+    this.#setLoading(false);
     try {
       let data: unknown;
       try {
@@ -116,9 +122,8 @@ class Connection {
   }
 
   #pushToMessageBuffer(message: string) {
-    const bufferEmpty = !!this.#messageBuffer;
     this.#messageBuffer = this.#messageBuffer + message;
-    if (bufferEmpty) {
+    if (!this.#timeout) {
       this.#timeout = window.setTimeout(() => {
         /*
         The messageBuffer is required because the websocket returns messages

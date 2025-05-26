@@ -42,6 +42,33 @@ describe("Output", () => {
     );
   });
 
+  it("displays help while not loading and there is no content", () => {
+    renderComponent(
+      <Output
+        content=""
+        helpMessage="Help message"
+        showHelp={false}
+        loading={false}
+        setShouldShowHelp={vi.fn()}
+      />,
+    );
+    expect(screen.getByText("Help message")).toBeInTheDocument();
+  });
+
+  it("displays nothing while loading and there is no content", () => {
+    renderComponent(
+      <Output
+        content=""
+        helpMessage="Help message"
+        showHelp={false}
+        loading={true}
+        setShouldShowHelp={vi.fn()}
+      />,
+    );
+    expect(screen.queryByText("Help message")).not.toBeInTheDocument();
+    expect(screen.getByTestId(TestId.CONTENT)).toHaveTextContent("");
+  });
+
   it("should close the output when the help is closed", async () => {
     const { rerender } = render(
       <Output

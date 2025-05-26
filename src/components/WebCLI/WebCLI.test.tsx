@@ -64,6 +64,54 @@ describe("WebCLI", () => {
     );
   });
 
+  it("shows the help in the output when enter is pressed", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status{enter}");
+    const messages = [{ output: ["test"] }, { done: true }];
+    messages.forEach((message) => {
+      server.send(JSON.stringify(message));
+    });
+    await waitFor(() =>
+      expect(screen.getByTestId(OutputTestId.CONTENT)).toHaveTextContent(
+        "test",
+      ),
+    );
+    fireEvent.keyDown(screen.getByRole("button", { name: Label.HELP }), {
+      key: "Enter",
+    });
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(
+      `Welcome to the Juju Web CLI - see the full documentation here.`,
+    );
+  });
+
+  it("shows the help in the output when space is pressed", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    fireEvent.keyDown(screen.getByRole("button", { name: Label.HELP }), {
+      key: " ",
+    });
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).toHaveTextContent(
+      `Welcome to the Juju Web CLI - see the full documentation here.`,
+    );
+  });
+
+  it("does not show the help in the output when keys other than space or enter are pressed", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    fireEvent.keyDown(screen.getByRole("button", { name: Label.HELP }), {
+      key: "a",
+    });
+    expect(
+      document.querySelector(".webcli__output-content code"),
+    ).not.toHaveTextContent("");
+  });
+
   it("shows the help when there is no output", async () => {
     renderComponent(<WebCLI {...props} />);
     await server.connected;
@@ -310,7 +358,7 @@ describe("WebCLI", () => {
     await server.connected;
     expect(await screen.findByTestId(OutputTestId.CONTENT)).toHaveAttribute(
       "style",
-      "height: 1px;",
+      "height: 0px;",
     );
     const handle = document.querySelector(".webcli__output-handle");
     expect(handle).toBeTruthy();
@@ -331,7 +379,7 @@ describe("WebCLI", () => {
     await server.connected;
     expect(await screen.findByTestId(OutputTestId.CONTENT)).toHaveAttribute(
       "style",
-      "height: 1px;",
+      "height: 0px;",
     );
     const handle = document.querySelector(".webcli__output-handle");
     expect(handle).toBeTruthy();
