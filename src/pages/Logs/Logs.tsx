@@ -5,7 +5,7 @@ import AuditLogsTable from "components/AuditLogsTable/AuditLogsTable";
 import AuditLogsTableActions from "components/AuditLogsTable/AuditLogsTableActions";
 import CheckPermissions from "components/CheckPermissions";
 import { useAuditLogsPermitted } from "juju/api-hooks/permissions";
-import BaseLayout from "layout/BaseLayout/BaseLayout";
+import MainContent from "layout/MainContent";
 
 import { Label, TestId } from "./types";
 
@@ -17,12 +17,12 @@ const Logs = (): JSX.Element => {
       data-testid={TestId.COMPONENT}
       loading={loading}
     >
-      <BaseLayout data-testid={TestId.COMPONENT} title={Label.TITLE}>
+      <MainContent data-testid={TestId.COMPONENT} title={Label.TITLE}>
         <ActionBar>
           <AuditLogsTableActions />
         </ActionBar>
         <AuditLogsTable />
-      </BaseLayout>
+      </MainContent>
     </CheckPermissions>
   );
 };

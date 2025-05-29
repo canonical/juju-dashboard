@@ -35,6 +35,7 @@ describe("Panel", () => {
     };
 
     return renderComponent(<MockPanelHeader />, {
+      path: "/foo",
       url: "/foo?panel=share-model&externalParam=externalValue",
     });
   };

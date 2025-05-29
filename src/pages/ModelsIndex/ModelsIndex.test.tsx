@@ -17,6 +17,7 @@ import {
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
+import urls from "urls";
 
 import ModelsIndex from "./ModelsIndex";
 import { Label, TestId } from "./types";
@@ -111,7 +112,8 @@ describe("Models Index page", () => {
   it("displays correct grouping view", async () => {
     const { router } = renderComponent(<ModelsIndex />, {
       state,
-      url: "?groupedby=status",
+      path: urls.models.index,
+      url: urls.models.group({ groupedby: "status" }),
     });
 
     expect(screen.getByRole("tab", { name: "Status" })).toHaveAttribute(

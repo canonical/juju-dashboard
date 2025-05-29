@@ -14,7 +14,7 @@ import SegmentedControl from "components/SegmentedControl";
 import useModelAttributes from "hooks/useModelAttributes";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
-import BaseLayout from "layout/BaseLayout";
+import MainContent from "layout/MainContent";
 import {
   getGroupedModelStatusCounts,
   getModelData,
@@ -126,7 +126,7 @@ export default function Models() {
   }
 
   return (
-    <BaseLayout
+    <MainContent
       data-testid={TestId.COMPONENT}
       title={
         <div className="models__header" data-disabled={modelCount === 0}>
@@ -212,6 +212,6 @@ export default function Models() {
         </Notification>
       ) : null}
       {content}
-    </BaseLayout>
+    </MainContent>
   );
 }

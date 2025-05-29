@@ -14,7 +14,7 @@ import AuthenticationButton from "components/AuthenticationButton";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import useWindowTitle from "hooks/useWindowTitle";
-import BaseLayout from "layout/BaseLayout/BaseLayout";
+import MainContent from "layout/MainContent";
 import {
   getControllerConnections,
   getLoginErrors,
@@ -247,7 +247,7 @@ const ControllersIndex = () => {
     );
 
   return (
-    <BaseLayout
+    <MainContent
       data-testid={TestId.COMPONENT}
       title={
         <>
@@ -281,7 +281,7 @@ const ControllersIndex = () => {
           )}
         </div>
       </div>
-    </BaseLayout>
+    </MainContent>
   );
 };
 

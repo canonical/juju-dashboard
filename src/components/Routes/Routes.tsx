@@ -1,7 +1,7 @@
 import { Navigate, createBrowserRouter, RouterProvider } from "react-router";
 
-import CaptureRoutes from "components/CaptureRoutes";
 import Login from "components/LogIn";
+import BaseLayout from "layout/BaseLayout";
 import AdvancedSearch from "pages/AdvancedSearch";
 import ControllersIndex from "pages/ControllersIndex";
 import Logs from "pages/Logs";
@@ -55,7 +55,7 @@ export function Routes() {
     [
       {
         path: "/",
-        element: <CaptureRoutes />,
+        element: <BaseLayout />,
         children: [
           {
             path: urls.index,

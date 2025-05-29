@@ -12,6 +12,7 @@ import { Provider } from "react-redux";
 import type { RouteObject } from "react-router";
 import {
   BrowserRouter,
+  Outlet,
   Route,
   RouterProvider,
   Routes,
@@ -83,12 +84,18 @@ export const wrapComponent = (
   const router = createMemoryRouter(
     [
       {
-        path: options?.path ?? "*",
-        element: <Provider store={store}>{component}</Provider>,
-        children: options?.routeChildren,
+        path: "/",
+        element: <Outlet context={{ setStatus: vi.fn() }} />,
+        children: [
+          {
+            path: options?.path ?? "/",
+            element: <Provider store={store}>{component}</Provider>,
+            children: options?.routeChildren,
+          },
+          // Capture other paths to prevent warnings when navigating in tests.
+          { path: "*", element: <span>Navigated to an unknown URL.</span> },
+        ],
       },
-      // Capture other paths to prevent warnings when navigating in tests.
-      { path: "*", element: <span>Navigated to an unknown URL.</span> },
     ],
     { initialEntries: [options?.url ?? "/"] },
   );

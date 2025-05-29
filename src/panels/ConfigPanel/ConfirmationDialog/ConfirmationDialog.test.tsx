@@ -16,6 +16,7 @@ import {
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
+import urls from "urls";
 
 import type { Config } from "../types";
 import { ConfigConfirmType } from "../types";
@@ -31,6 +32,7 @@ describe("ConfirmationDialog", () => {
     modelUUID: "abc123",
     panel: "config",
   });
+  const path = urls.model.index(null);
   const url = `/models/eggman@external/hadoopspark?${params.toString()}`;
   let mockSetConfirmType: Mock;
   let mockSetInlineError: Mock;
@@ -100,6 +102,7 @@ describe("ConfirmationDialog", () => {
         handleRemovePanelQueryParams={vi.fn()}
       />,
       {
+        path,
         url,
         state,
       },
@@ -147,6 +150,7 @@ describe("ConfirmationDialog", () => {
         handleRemovePanelQueryParams={mockHandleRemovePanelQueryParams}
       />,
       {
+        path,
         url,
         state,
       },
@@ -198,6 +202,7 @@ describe("ConfirmationDialog", () => {
         handleRemovePanelQueryParams={vi.fn()}
       />,
       {
+        path,
         url,
         state,
       },
@@ -242,6 +247,7 @@ describe("ConfirmationDialog", () => {
         handleRemovePanelQueryParams={vi.fn()}
       />,
       {
+        path,
         url,
         state,
       },
@@ -290,6 +296,7 @@ describe("ConfirmationDialog", () => {
         handleRemovePanelQueryParams={mockHandleRemovePanelQueryParams}
       />,
       {
+        path,
         url,
         state,
       },
@@ -345,6 +352,7 @@ describe("ConfirmationDialog", () => {
         handleRemovePanelQueryParams={mockHandleRemovePanelQueryParams}
       />,
       {
+        path,
         url,
         state,
       },
@@ -387,6 +395,7 @@ describe("ConfirmationDialog", () => {
         handleRemovePanelQueryParams={vi.fn()}
       />,
       {
+        path,
         url,
         state,
       },
@@ -418,6 +427,7 @@ describe("ConfirmationDialog", () => {
         handleRemovePanelQueryParams={mockHandleRemovePanelQueryParams}
       />,
       {
+        path,
         url,
         state,
       },
@@ -442,6 +452,7 @@ describe("ConfirmationDialog", () => {
         handleRemovePanelQueryParams={vi.fn()}
       />,
       {
+        path,
         url,
         state,
       },
@@ -485,6 +496,7 @@ describe("ConfirmationDialog", () => {
         handleRemovePanelQueryParams={vi.fn()}
       />,
       {
+        path,
         url,
         state,
       },

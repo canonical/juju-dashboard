@@ -1,11 +1,11 @@
 import type { JSX } from "react";
 import { useEffect } from "react";
-import { Outlet, useLocation } from "react-router";
+import { useLocation } from "react-router";
 
 import useAnalytics from "hooks/useAnalytics";
 import useFeatureFlags from "hooks/useFeatureFlags";
 
-const CaptureRoutes = (): JSX.Element => {
+const CaptureRoutes = (): JSX.Element | null => {
   useFeatureFlags();
   const sendAnalytics = useAnalytics();
   const location = useLocation();
@@ -17,7 +17,7 @@ const CaptureRoutes = (): JSX.Element => {
     });
   }, [location, sendAnalytics]);
 
-  return <Outlet />;
+  return null;
 };
 
 export default CaptureRoutes;

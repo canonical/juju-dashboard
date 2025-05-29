@@ -1,17 +1,18 @@
 import { Button, Notification, Strip } from "@canonical/react-components";
 import classNames from "classnames";
-import type { ReactNode } from "react";
-import { useParams, Link, Outlet } from "react-router";
+import { type ReactNode } from "react";
+import { useParams, Link, Outlet, useOutletContext } from "react-router";
 
 import Breadcrumb from "components/Breadcrumb";
-import JujuCLI from "components/JujuCLI";
 import LoadingSpinner from "components/LoadingSpinner";
 import NotFound from "components/NotFound";
 import type { EntityDetailsRoute } from "components/Routes";
-import { useEntityDetailsParams } from "components/hooks";
+import { useEntityDetailsParams, useStatusView } from "components/hooks";
 import useCanConfigureModel from "hooks/useCanConfigureModel";
 import useWindowTitle from "hooks/useWindowTitle";
-import BaseLayout from "layout/BaseLayout/BaseLayout";
+import type { BaseLayoutContext } from "layout/BaseLayout";
+import MainContent from "layout/MainContent";
+import { StatusView } from "layout/Status";
 import {
   getModelInfo,
   getModelListLoaded,
@@ -47,6 +48,8 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   );
   const modelInfo = useAppSelector((state) => getModelInfo(state, modelUUID));
   const { isNestedEntityPage } = useEntityDetailsParams();
+  // Pass the base context to the children of the outlet in this component:
+  const context = useOutletContext<BaseLayoutContext>();
 
   // Cleanup is set for this hook, but not for the instances of
   // useCanConfigureModel in other model components as this component wraps all
@@ -58,11 +61,13 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
 
   useWindowTitle(modelInfo?.name ? `Model: ${modelInfo?.name}` : "...");
 
+  useStatusView(StatusView.CLI);
+
   let content: ReactNode;
   if (modelInfo) {
     content = (
       <div className={`entity-details entity-details__${entityType}`}>
-        <Outlet />
+        <Outlet context={context} />
       </div>
     );
   } else if (modelsLoaded && !modelUUID) {
@@ -94,9 +99,8 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   }
 
   return (
-    <BaseLayout
+    <MainContent
       data-testid={TestId.COMPONENT}
-      status={<JujuCLI />}
       title={
         <>
           <Breadcrumb />
@@ -133,7 +137,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
         </Strip>
       ) : null}
       {content}
-    </BaseLayout>
+    </MainContent>
   );
 };
 
