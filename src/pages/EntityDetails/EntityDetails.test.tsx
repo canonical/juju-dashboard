@@ -2,7 +2,6 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import * as WebCLIModule from "components/WebCLI";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
@@ -27,13 +26,6 @@ vi.mock("components/Topology", () => {
   const Topology = () => <div className="topology"></div>;
   return { default: Topology };
 });
-
-vi.mock("components/WebCLI", () => ({
-  __esModule: true,
-  default: () => {
-    return <div className="webcli" data-testid="webcli"></div>;
-  },
-}));
 
 describe("Entity Details Container", () => {
   let state: RootState;
@@ -122,104 +114,6 @@ describe("Entity Details Container", () => {
       state,
     });
     expect(await screen.findByText(children)).toBeInTheDocument();
-  });
-
-  it("shows the CLI in juju 2.9", async () => {
-    state.general.config = configFactory.build({
-      isJuju: true,
-    });
-    renderComponent(<EntityDetails />, { path, url, state });
-    await waitFor(() => {
-      expect(screen.queryByTestId("webcli")).toBeInTheDocument();
-    });
-  });
-
-  it("shows the CLI in juju higher than 2.9", async () => {
-    state.general.config = configFactory.build({
-      isJuju: true,
-    });
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        applications: {
-          "ceph-mon": applicationInfoFactory.build(),
-        },
-        model: modelWatcherModelInfoFactory.build({
-          name: "enterprise",
-          owner: "kirk@external",
-          version: "3.0.7",
-          "controller-uuid": "controller123",
-        }),
-      }),
-    };
-    renderComponent(<EntityDetails />, { path, url, state });
-    await waitFor(() => {
-      expect(screen.queryByTestId("webcli")).toBeInTheDocument();
-    });
-  });
-
-  it("does not show the CLI in JAAS", async () => {
-    state.general.config = configFactory.build({
-      isJuju: false,
-    });
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        applications: {
-          "ceph-mon": applicationInfoFactory.build(),
-        },
-        model: modelWatcherModelInfoFactory.build({
-          name: "enterprise",
-          owner: "kirk@external",
-          version: "3.0.7",
-          "controller-uuid": "controller123",
-        }),
-      }),
-    };
-    renderComponent(<EntityDetails />, { path, url, state });
-    await waitFor(() => {
-      expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
-    });
-  });
-
-  it("does not show the webCLI in juju 2.8", async () => {
-    state.general.config = configFactory.build({
-      isJuju: true,
-    });
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        applications: {
-          "ceph-mon": applicationInfoFactory.build(),
-        },
-        model: modelWatcherModelInfoFactory.build({
-          name: "enterprise",
-          owner: "kirk@external",
-          version: "2.8.7",
-        }),
-      }),
-    };
-    renderComponent(<EntityDetails />, { path, url, state });
-    await waitFor(() => {
-      expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
-    });
-  });
-
-  it("passes the controller details to the webCLI", () => {
-    state.general.config = configFactory.build({
-      isJuju: true,
-    });
-    const cliComponent = vi
-      .spyOn(WebCLIModule, "default")
-      .mockImplementation(vi.fn());
-    renderComponent(<EntityDetails />, { path, url, state });
-    expect(cliComponent.mock.calls[0][0]).toMatchObject({
-      controllerWSHost: "example.com:17070",
-      credentials: {
-        password: "verysecure123",
-        user: "user-kirk@external",
-      },
-      modelUUID: "abc123",
-      protocol: "wss",
-    });
-    cliComponent.mockReset();
   });
 
   it("gives the header a class when the header should be a single column", async () => {

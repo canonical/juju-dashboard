@@ -1,28 +1,24 @@
 import { Button, Notification, Strip } from "@canonical/react-components";
 import classNames from "classnames";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
 import { useParams, Link, Outlet } from "react-router";
 
 import Breadcrumb from "components/Breadcrumb";
+import JujuCLI from "components/JujuCLI";
 import LoadingSpinner from "components/LoadingSpinner";
 import NotFound from "components/NotFound";
 import type { EntityDetailsRoute } from "components/Routes";
-import WebCLI from "components/WebCLI";
 import { useEntityDetailsParams } from "components/hooks";
 import useCanConfigureModel from "hooks/useCanConfigureModel";
 import useWindowTitle from "hooks/useWindowTitle";
 import BaseLayout from "layout/BaseLayout/BaseLayout";
-import { getIsJuju, getUserPass } from "store/general/selectors";
 import {
-  getControllerDataByUUID,
   getModelInfo,
   getModelListLoaded,
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import urls from "urls";
-import { getMajorMinorVersion } from "utils";
 
 import ModelTabs from "./Model/ModelTabs";
 import { Label, TestId } from "./types";
@@ -58,40 +54,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   // away from the model.
   useCanConfigureModel(true);
 
-  const isJuju = useAppSelector(getIsJuju);
-
-  const [showWebCLI, setShowWebCLI] = useState(false);
-
-  // In a JAAS environment the controllerUUID will be the sub controller not
-  // the primary controller UUID that we connect to.
-  const controllerUUID = modelInfo?.["controller-uuid"];
-  // The primary controller data is the controller endpoint we actually connect
-  // to. In the case of a normally bootstrapped controller this will be the
-  // same as the model controller, however in a JAAS environment, this primary
-  // controller will be JAAS and the model controller will be different.
-  const primaryControllerData = useAppSelector((state) =>
-    getControllerDataByUUID(state, controllerUUID),
-  );
   const entityType = getEntityType(routeParams);
-  const credentials = useAppSelector((state) =>
-    getUserPass(state, primaryControllerData?.[0]),
-  );
-  const controllerWSHost =
-    primaryControllerData?.[0]
-      .replace("ws://", "")
-      .replace("wss://", "")
-      .replace("/api", "") || null;
-  const wsProtocol = primaryControllerData?.[0].split("://")[0];
-
-  useEffect(() => {
-    if (isJuju && getMajorMinorVersion(modelInfo?.version) >= 2.9) {
-      // The Web CLI is only available in Juju controller versions 2.9 and
-      // above. This will allow us to only show the shell on multi-controller
-      // setups with different versions where the correct controller version
-      // is available.
-      setShowWebCLI(true);
-    }
-  }, [modelInfo, isJuju]);
 
   useWindowTitle(modelInfo?.name ? `Model: ${modelInfo?.name}` : "...");
 
@@ -133,17 +96,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
   return (
     <BaseLayout
       data-testid={TestId.COMPONENT}
-      status={
-        showWebCLI &&
-        controllerWSHost && (
-          <WebCLI
-            controllerWSHost={controllerWSHost}
-            credentials={credentials}
-            modelUUID={modelUUID}
-            protocol={wsProtocol ?? "wss"}
-          />
-        )
-      }
+      status={<JujuCLI />}
       title={
         <>
           <Breadcrumb />
