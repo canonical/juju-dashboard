@@ -1,38 +1,28 @@
-import { ApplicationLayout, Panel } from "@canonical/react-components";
-import classNames from "classnames";
+import { ApplicationLayout } from "@canonical/react-components";
+import { useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { Link, useLocation } from "react-router";
+import { Link, Outlet, useLocation } from "react-router";
 
-import FadeIn from "animations/FadeIn";
 import Banner from "components/Banner";
-import LoadingSpinner from "components/LoadingSpinner";
+import CaptureRoutes from "components/CaptureRoutes";
 import Logo from "components/Logo";
 import PrimaryNav from "components/PrimaryNav";
-import SecondaryNavigation from "components/SecondaryNavigation";
 import { DARK_THEME } from "consts";
 import useOffline from "hooks/useOffline";
+import type { StatusView } from "layout/Status";
+import Status from "layout/Status";
 import Panels from "panels";
 import { getIsJuju } from "store/general/selectors";
 import { useAppSelector } from "store/store";
 import urls from "urls";
 
-import type { Props } from "./types";
-import { Label, TestId } from "./types";
+import { Label } from "./types";
 
-const BaseLayout = ({
-  children,
-  loading,
-  secondaryNav,
-  status,
-  title,
-  titleClassName,
-  titleComponent,
-  ...props
-}: Props) => {
+const BaseLayout = () => {
   const location = useLocation();
   const isOffline = useOffline();
   const isJuju = useAppSelector(getIsJuju);
-  const hasSecondaryNav = !!secondaryNav?.items.length;
+  const [status, setStatus] = useState<StatusView | null>(null);
 
   return (
     <>
@@ -65,37 +55,9 @@ const BaseLayout = ({
           />
         }
         sideNavigation={<PrimaryNav />}
-        status={status}
+        status={<Status status={status} />}
       >
-        <div
-          id="main-content"
-          className={classNames("l-main__content", {
-            "l-main__content--has-secondary-nav": hasSecondaryNav,
-          })}
-        >
-          <>
-            {hasSecondaryNav && !loading ? (
-              <SecondaryNavigation
-                items={secondaryNav.items}
-                title={secondaryNav.title}
-              />
-            ) : null}
-            <Panel
-              className="l-main__panel"
-              data-testid={TestId.MAIN}
-              titleClassName={titleClassName}
-              titleComponent={titleComponent}
-              stickyHeader
-              title={title}
-            >
-              <div className="l-content" {...props}>
-                <FadeIn isActive={true}>
-                  {loading ? <LoadingSpinner /> : children}
-                </FadeIn>
-              </div>
-            </Panel>
-          </>
-        </div>
+        <Outlet context={{ setStatus }} />
       </ApplicationLayout>
       <Toaster
         position="bottom-right"
@@ -105,6 +67,7 @@ const BaseLayout = ({
         }}
         reverseOrder={true}
       />
+      <CaptureRoutes />
     </>
   );
 };

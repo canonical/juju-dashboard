@@ -1,9 +1,11 @@
 import { renderHook } from "@testing-library/react";
+import { MemoryRouter, Outlet, Route, Routes } from "react-router";
 
+import { StatusView } from "layout/Status";
 import { rootStateFactory } from "testing/factories";
 import { ComponentProviders, changeURL, createStore } from "testing/utils";
 
-import { useEntityDetailsParams } from "./hooks";
+import { useEntityDetailsParams, useStatusView } from "./hooks";
 
 describe("useEntityDetailsParams", () => {
   it("retrieve entity details from the URL", () => {
@@ -53,5 +55,40 @@ describe("useEntityDetailsParams", () => {
       ),
     });
     expect(result.current.isNestedEntityPage).toBe(true);
+  });
+});
+
+describe("useStatusView", () => {
+  it("updates status", () => {
+    const setStatus = vi.fn();
+    renderHook(() => useStatusView(StatusView.CLI), {
+      wrapper: (props) => (
+        <MemoryRouter>
+          <Routes>
+            <Route path="*" element={<Outlet context={{ setStatus }} />}>
+              <Route path="*" element={<div {...props}></div>} />
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      ),
+    });
+    expect(setStatus).toHaveBeenCalledWith(StatusView.CLI);
+  });
+
+  it("clears the status when component is unmounted", () => {
+    const setStatus = vi.fn();
+    const result = renderHook(() => useStatusView(StatusView.CLI), {
+      wrapper: (props) => (
+        <MemoryRouter>
+          <Routes>
+            <Route path="*" element={<Outlet context={{ setStatus }} />}>
+              <Route path="*" element={<div {...props}></div>} />
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      ),
+    });
+    result.unmount();
+    expect(setStatus).toHaveBeenCalledWith(null);
   });
 });
