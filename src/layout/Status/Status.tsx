@@ -8,6 +8,9 @@ const Status = ({ status }: Props) => {
     case StatusView.CLI:
       return <JujuCLI />;
     default:
+      if (status) {
+        throw new Error(`Unhandled status view state: ${status}`);
+      }
       return null;
   }
 };

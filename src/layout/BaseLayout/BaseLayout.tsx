@@ -1,13 +1,14 @@
 import { ApplicationLayout } from "@canonical/react-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Link, Outlet, useLocation } from "react-router";
 
 import Banner from "components/Banner";
-import CaptureRoutes from "components/CaptureRoutes";
 import Logo from "components/Logo";
 import PrimaryNav from "components/PrimaryNav";
 import { DARK_THEME } from "consts";
+import useAnalytics from "hooks/useAnalytics";
+import useFeatureFlags from "hooks/useFeatureFlags";
 import useOffline from "hooks/useOffline";
 import type { StatusView } from "layout/Status";
 import Status from "layout/Status";
@@ -23,6 +24,16 @@ const BaseLayout = () => {
   const isOffline = useOffline();
   const isJuju = useAppSelector(getIsJuju);
   const [status, setStatus] = useState<StatusView | null>(null);
+  const sendAnalytics = useAnalytics();
+
+  useFeatureFlags();
+
+  useEffect(() => {
+    // Send an analytics event when the URL changes.
+    sendAnalytics({
+      path: window.location.href.replace(window.location.origin, ""),
+    });
+  }, [location, sendAnalytics]);
 
   return (
     <>
@@ -67,7 +78,6 @@ const BaseLayout = () => {
         }}
         reverseOrder={true}
       />
-      <CaptureRoutes />
     </>
   );
 };
