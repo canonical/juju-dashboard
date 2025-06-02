@@ -1,6 +1,9 @@
-import { useParams } from "react-router";
+import { useEffect } from "react";
+import { useParams, useOutletContext } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
+import type { BaseLayoutContext } from "layout/BaseLayout";
+import type { StatusView } from "layout/Status";
 import { getModelByUUID } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import getUserName from "utils/getUserName";
@@ -42,4 +45,16 @@ export const useModelByUUIDDetails = ({
   const model = uuid ? modelDetails?.name : modelName;
   const userName = typeof owner === "string" ? getUserName(owner) : null;
   return { modelName: model, userName };
+};
+
+export const useStatusView = (statusView: StatusView) => {
+  const { setStatus } = useOutletContext<BaseLayoutContext>();
+
+  useEffect(() => {
+    setStatus(statusView);
+    return () => {
+      // Hide the view when navigating away from this component.
+      setStatus(null);
+    };
+  }, [setStatus, statusView]);
 };

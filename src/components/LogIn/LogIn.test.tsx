@@ -33,7 +33,6 @@ describe("LogIn", () => {
     });
     renderComponent(<LogIn />, {
       state,
-      path: "*",
       routeChildren: [{ path: "", element: <>App content</> }],
     });
     expect(document.querySelector(".login")).not.toBeInTheDocument();

@@ -2,7 +2,7 @@ import { Spinner } from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import reactHotToast from "react-hot-toast";
-import { Outlet } from "react-router";
+import { Outlet, useOutletContext } from "react-router";
 
 import FadeUpIn from "animations/FadeUpIn";
 import { Auth, AuthMethod } from "auth";
@@ -10,6 +10,7 @@ import AuthenticationButton from "components/AuthenticationButton";
 import Logo from "components/Logo";
 import ToastCard from "components/ToastCard";
 import type { ToastInstance } from "components/ToastCard";
+import type { BaseLayoutContext } from "layout/BaseLayout";
 import {
   getLoginError,
   getVisitURLs,
@@ -37,6 +38,8 @@ export default function LogIn() {
   );
   const visitURLs = useAppSelector(getVisitURLs);
   const loginLoading = useAppSelector(getLoginLoading);
+  // Pass the base context to the children of the outlet in this component:
+  const context = useOutletContext<BaseLayoutContext>();
 
   // This login component wraps all other views, so this useEffect will run each
   // time we get an authentication request.
@@ -106,7 +109,7 @@ export default function LogIn() {
         </div>
       )}
       <div className="app-content">
-        <Outlet />
+        <Outlet context={context} />
       </div>
     </>
   );

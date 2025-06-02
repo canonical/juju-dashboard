@@ -92,8 +92,8 @@ describe("SearchForm", () => {
     );
   });
 
-  it("should have the copy json button dissabled when cross model query isn't loaded", () => {
-    renderComponent(<SearchForm />, { state, url: "/q=." });
+  it("should have the copy json button disabled when cross model query isn't loaded", () => {
+    renderComponent(<SearchForm />, { state, url: "/?q=." });
     expect(
       screen.getByRole("button", {
         name: Label.COPY_JSON,
@@ -101,10 +101,10 @@ describe("SearchForm", () => {
     ).toHaveAttribute("aria-disabled");
   });
 
-  it("should have the copy json button dissabled when cross model query is loading", () => {
+  it("should have the copy json button disabled when cross model query is loading", () => {
     state.juju.crossModelQuery.loaded = true;
     state.juju.crossModelQuery.loading = true;
-    renderComponent(<SearchForm />, { state, url: "/q=." });
+    renderComponent(<SearchForm />, { state, url: "/?q=." });
     expect(
       screen.getByRole("button", {
         name: Label.COPY_JSON,
@@ -112,11 +112,11 @@ describe("SearchForm", () => {
     ).toHaveAttribute("aria-disabled");
   });
 
-  it("should have the copy json button dissabled when cross model query returns error", () => {
+  it("should have the copy json button disabled when cross model query returns error", () => {
     state.juju.crossModelQuery.loaded = true;
     state.juju.crossModelQuery.loading = false;
     state.juju.crossModelQuery.errors = "mockErrors";
-    renderComponent(<SearchForm />, { state, url: "/q=." });
+    renderComponent(<SearchForm />, { state, url: "/?q=." });
     expect(
       screen.getByRole("button", {
         name: Label.COPY_JSON,
@@ -131,7 +131,7 @@ describe("SearchForm", () => {
     state.juju.crossModelQuery.loaded = true;
     state.juju.crossModelQuery.loading = false;
     state.juju.crossModelQuery.results = mockResults;
-    renderComponent(<SearchForm />, { state, url: "/q=." });
+    renderComponent(<SearchForm />, { state });
     const copyJSONButton = screen.getByRole("button", {
       name: Label.COPY_JSON,
     });
