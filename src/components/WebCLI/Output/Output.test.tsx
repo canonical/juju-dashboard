@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
@@ -11,7 +11,8 @@ describe("Output", () => {
   it("should display content and not display help message", () => {
     renderComponent(
       <Output
-        content="Output"
+        command="status"
+        content={["Output"]}
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={vi.fn()}
@@ -28,7 +29,8 @@ describe("Output", () => {
   it("should not display content and display help message", () => {
     renderComponent(
       <Output
-        content="Output"
+        command="status"
+        content={["Output"]}
         helpMessage="Help message"
         showHelp={true}
         setShouldShowHelp={vi.fn()}
@@ -45,7 +47,8 @@ describe("Output", () => {
   it("displays help while not loading and there is no content", () => {
     renderComponent(
       <Output
-        content=""
+        command="status"
+        content={[]}
         helpMessage="Help message"
         showHelp={false}
         loading={false}
@@ -58,7 +61,8 @@ describe("Output", () => {
   it("displays nothing while loading and there is no content", () => {
     renderComponent(
       <Output
-        content=""
+        command="status"
+        content={[]}
         helpMessage="Help message"
         showHelp={false}
         loading={true}
@@ -72,7 +76,8 @@ describe("Output", () => {
   it("should close the output when the help is closed", async () => {
     const { rerender } = render(
       <Output
-        content="Output"
+        command="status"
+        content={["Output"]}
         helpMessage="Help message"
         // Initially render with the help visible.
         showHelp={true}
@@ -85,7 +90,8 @@ describe("Output", () => {
     );
     rerender(
       <Output
-        content="Output"
+        command="status"
+        content={["Output"]}
         helpMessage="Help message"
         // Rerender with the help hidden.
         showHelp={false}
@@ -99,25 +105,92 @@ describe("Output", () => {
   });
 
   it("should display the content with correct formatting", () => {
-    const content = `\u001b[1;39mApp\n\u001b[0m\u001b[33munknown`;
+    const content = [`\u001b[1;39mApp\n\u001b[0m\u001b[33munknown`];
     renderComponent(
       <Output
+        command="status"
         content={content}
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={vi.fn()}
       />,
     );
-    const boldElements = screen.getAllByText(/.*/, { selector: "b" });
-    expect(boldElements).toHaveLength(1);
-    expect(boldElements[0].childNodes).toHaveLength(1);
-    const appSpanElement = boldElements[0].childNodes[0];
-    expect(appSpanElement).toHaveTextContent("App");
-    expect(appSpanElement).toHaveStyle({
-      color: "#FFF",
+    expect(screen.getByText("unknown").parentElement).toHaveStyle({
+      color: "color: rgb(187, 187, 0);",
     });
-    expect(screen.getByText("unknown")).toHaveStyle({
-      color: "#A50",
-    });
+  });
+
+  it("overrides output for matching commands", async () => {
+    const messages = ["Model       Controller", "k8s         workloads"];
+    renderComponent(
+      <Output
+        command="remove-unit"
+        content={messages}
+        helpMessage="Help message"
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+        processOutput={{
+          "remove-unit": {
+            exact: false,
+            process: (messages) => (
+              <div data-testid="custom">{messages[0]}</div>
+            ),
+          },
+        }}
+      />,
+    );
+    const code = await screen.findByTestId(TestId.CODE);
+    expect(within(code).getByTestId("custom")).toHaveTextContent(
+      "Model Controller",
+    );
+  });
+
+  it("falls back to default processor if the provided processor does not handle command", async () => {
+    const messages = ["Model       Controller", "k8s         workloads"];
+    renderComponent(
+      <Output
+        command="status"
+        content={messages}
+        helpMessage="Help message"
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+        processOutput={{
+          // This does not match the command that was sent:
+          "remove-unit": {
+            exact: false,
+            process: (messages) => (
+              <div data-testid="custom">{messages[0]}</div>
+            ),
+          },
+        }}
+      />,
+    );
+    expect(await screen.findByTestId(TestId.CODE)).toHaveTextContent(
+      "Model Controller",
+    );
+  });
+
+  it("falls back to default processor if the provided processor fails", async () => {
+    const messages = ["Model       Controller", "k8s         workloads"];
+    renderComponent(
+      <Output
+        command="remove-unit"
+        content={messages}
+        helpMessage="Help message"
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+        processOutput={{
+          "remove-unit": {
+            exact: false,
+            process: () => {
+              throw new Error("unrecognised data");
+            },
+          },
+        }}
+      />,
+    );
+    expect(await screen.findByTestId(TestId.CODE)).toHaveTextContent(
+      "Model Controller",
+    );
   });
 });

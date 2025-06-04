@@ -23,6 +23,7 @@ Machine  State    DNS             Inst id        Series  AZ          Message
 exports[`WebCLI > renders correctly 1`] = `
 <div
   class="webcli is-dark"
+  data-testid="WebCLI"
 >
   <div
     class="webcli__output"
@@ -67,6 +68,7 @@ exports[`WebCLI > renders correctly 1`] = `
     </div>
     <form>
       <input
+        aria-label="enter command"
         autocapitalize="none"
         autocomplete="off"
         autocorrect="off"

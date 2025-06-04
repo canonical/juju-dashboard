@@ -1,3 +1,4 @@
+import Ansi from "ansi-to-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
@@ -11,6 +12,72 @@ import {
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { getMajorMinorVersion } from "utils";
+
+const HELP_HEADER = "Starter commands:";
+
+/**
+ * Insert docs links around the commands in the help output.
+ * The section we're interested looks like the following
+ *
+ * Starter commands:
+ *
+ *     bootstrap           Initializes a cloud environment.
+ *     add-model           Adds a workload model.
+ *
+ * @param messages The messages returned by the API.
+ * @returns The help nodes.
+ */
+const processHelp = (messages: string[]) => {
+  let inCommandsBlock = false;
+  return (
+    <>
+      {messages.map((message, i) => {
+        if (i > 1 && messages[i - 2] === HELP_HEADER) {
+          // The header has a blank row between the header and the first command.
+          inCommandsBlock = i > 1 && messages[i - 2] === HELP_HEADER;
+        } else {
+          // End the commands block when we get to a blank row.
+          inCommandsBlock = inCommandsBlock && message !== "";
+        }
+        if (inCommandsBlock) {
+          // Get the help command, ignoring the leading whitespace.
+          const helpCommand = message.match(/(?<=^\s{2,})\S+(?=\s{2,})/)?.[0];
+          // Get the whitespace surrounding the help command so it can be used
+          // to reconstruct the output.
+          const before = message.match(/^\s+/)?.[0];
+          const after = message.match(/(?<=\S)\s{2,}.+/)?.[0];
+          // Handle text we don't recognise.
+          if (!helpCommand || !before || !after) {
+            return (
+              <div key={i}>
+                <Ansi>{message}</Ansi>
+              </div>
+            );
+          }
+          return (
+            <div key={i}>
+              {before}
+              <a
+                href={`https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/${helpCommand}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Ansi>{helpCommand}</Ansi>
+              </a>
+              {after}
+            </div>
+          );
+        } else if (!inCommandsBlock || message === "") {
+          return (
+            <div key={i}>
+              <Ansi>{message}</Ansi>
+            </div>
+          );
+        }
+      })}
+    </>
+  );
+};
 
 const JujuCLI = () => {
   const routeParams = useParams<EntityDetailsRoute>();
@@ -56,11 +123,18 @@ const JujuCLI = () => {
 
   return (
     <>
-      {showWebCLI && controllerWSHost ? (
+      {showWebCLI && controllerWSHost && modelInfo ? (
         <WebCLI
           controllerWSHost={controllerWSHost}
           credentials={credentials}
           modelUUID={modelUUID}
+          processOutput={{
+            help: {
+              // This should match "help" but not "help bootstrap" etc.
+              exact: true,
+              process: processHelp,
+            },
+          }}
           protocol={wsProtocol ?? "wss"}
         />
       ) : null}

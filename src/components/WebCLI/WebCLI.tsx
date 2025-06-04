@@ -12,10 +12,11 @@ import type { Credential } from "store/general/types";
 import { externalURLs } from "urls";
 import { getUserName } from "utils";
 
+import type { OutputProps } from "./Output";
 import WebCLIOutput from "./Output";
 import Connection from "./connection";
 import { MAX_HISTORY } from "./consts";
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 enum InlineErrors {
   CONNECTION = "connection",
@@ -26,6 +27,10 @@ type Props = {
   controllerWSHost: string;
   credentials?: Credential | null;
   modelUUID: string;
+  /**
+   * When overriding this function then ANSI codes need to be manually handled.
+   */
+  processOutput?: OutputProps["processOutput"];
   protocol?: string;
 };
 
@@ -39,6 +44,7 @@ const WebCLI = ({
   controllerWSHost,
   credentials,
   modelUUID,
+  processOutput,
   protocol = "wss",
 }: Props) => {
   const connection = useRef<Connection | null>(null);
@@ -47,8 +53,8 @@ const WebCLI = ({
   const [historyPosition, setHistoryPosition] = useState(0);
   const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
   const inputRef = useRef<HTMLInputElement>(null);
-  const wsMessageStore = useRef<string>("");
-  const [output, setOutput] = useState("");
+  const [output, setOutput] = useState<string[]>([]);
+  const lastCommand = useRef<string | null | undefined>(null);
   const sendAnalytics = useAnalytics();
   const storeState = useStore().getState();
   const [cliHistory, setCLIHistory] = useLocalStorage<string[]>(
@@ -57,8 +63,7 @@ const WebCLI = ({
   );
 
   const clearMessageBuffer = () => {
-    wsMessageStore.current = "";
-    setOutput(""); // Clear the output when sending a new message.
+    setOutput([]); // Clear the output when sending a new message.
   };
   const keydownListener = useCallback(
     (event: KeyboardEvent) => {
@@ -140,9 +145,8 @@ const WebCLI = ({
           );
         }
       },
-      messageCallback: (message: string) => {
-        wsMessageStore.current = wsMessageStore.current + message;
-        setOutput(wsMessageStore.current);
+      messageCallback: (messages: string[]) => {
+        setOutput(messages);
       },
       setLoading,
     }).connect();
@@ -206,6 +210,7 @@ const WebCLI = ({
     }
 
     if (connection.current?.isOpen()) {
+      lastCommand.current = command;
       connection.current?.send(
         JSON.stringify({
           ...authentication,
@@ -233,8 +238,9 @@ const WebCLI = ({
   };
 
   return (
-    <div className="webcli is-dark">
+    <div className="webcli is-dark" data-testid={TestId.COMPONENT}>
       <WebCLIOutput
+        command={lastCommand.current}
         content={output}
         showHelp={shouldShowHelp || hasInlineError(InlineErrors.AUTHENTICATION)}
         setShouldShowHelp={setShouldShowHelp}
@@ -257,6 +263,7 @@ const WebCLI = ({
           )
         }
         loading={loading}
+        processOutput={processOutput}
       />
       <div className="webcli__input">
         <div className="webcli__input-prompt">$ juju</div>
@@ -270,7 +277,8 @@ const WebCLI = ({
             type="text"
             name="command"
             ref={inputRef}
-            placeholder="enter command"
+            aria-label={Label.COMMAND}
+            placeholder={Label.COMMAND}
             disabled={hasInlineError(InlineErrors.CONNECTION)}
           />
         </form>
