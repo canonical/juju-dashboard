@@ -12,11 +12,11 @@ function getPercentage(denominator: number, numerator: number) {
   if (denominator === 0 || numerator === 0) {
     return 0;
   }
-  const trunc = Math.trunc(denominator / numerator);
-  if (Number.isNaN(trunc)) {
+  const percentage = Math.round((numerator / denominator) * 100);
+  if (Number.isNaN(percentage)) {
     return 0;
   }
-  return trunc;
+  return percentage;
 }
 
 export default function ControllerChart({
