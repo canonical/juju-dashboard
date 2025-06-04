@@ -5,12 +5,14 @@ import { vi } from "vitest";
 
 import * as WebCLIModule from "components/WebCLI";
 import { WebCLILabel, WebCLITestId } from "components/WebCLI";
+import * as useAnalyticsHook from "hooks/useAnalytics";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
   credentialFactory,
   generalStateFactory,
   configFactory,
+  authUserInfoFactory,
 } from "testing/factories/general";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { controllerFactory } from "testing/factories/juju/juju";
@@ -28,6 +30,7 @@ import JujuCLI from "./JujuCLI";
 
 describe("JujuCLI", () => {
   let state: RootState;
+  const useAnalyticsMock = vi.fn();
   const modelName = "test-model";
   const userName = "eggman@external";
   const userTag = `user-${userName}`;
@@ -36,6 +39,7 @@ describe("JujuCLI", () => {
   let server: WS;
 
   beforeEach(() => {
+    vi.spyOn(useAnalyticsHook, "default").mockReturnValue(useAnalyticsMock);
     server = new WS("wss://example.com:17070/model/abc123/commands");
     state = rootStateFactory.withGeneralConfig().build({
       general: generalStateFactory.build({
@@ -47,6 +51,11 @@ describe("JujuCLI", () => {
           "wss://example.com:17070/api": credentialFactory.build({
             user: userTag,
           }),
+        },
+        controllerConnections: {
+          "wss://example.com:17070/api": {
+            user: authUserInfoFactory.build(),
+          },
         },
       }),
       juju: jujuStateFactory.build({
@@ -150,13 +159,13 @@ describe("JujuCLI", () => {
       .mockImplementation(vi.fn());
     renderComponent(<JujuCLI />, { path, url, state });
     expect(cliComponent.mock.calls[0][0]).toMatchObject({
-      controllerWSHost: "example.com:17070",
       credentials: {
         password: "verysecure123",
         user: userTag,
       },
       modelUUID: "abc123",
       protocol: "wss",
+      activeUser: userTag,
     });
     cliComponent.mockReset();
   });
@@ -192,6 +201,19 @@ describe("JujuCLI", () => {
       expect(
         within(output).getByRole("link", { name: "add-model" }),
       ).toHaveAttribute("href", externalURLs.cliHelpCommand("add-model"));
+    });
+  });
+
+  it("sends usage analytics when a command is successfully sent", async () => {
+    renderComponent(<JujuCLI />, { path, url, state });
+    await server.connected;
+    const input = screen.getByRole("textbox", {
+      name: WebCLILabel.COMMAND,
+    });
+    await userEvent.type(input, "some-command{enter}");
+    expect(useAnalyticsMock).toBeCalledWith({
+      category: "User",
+      action: "WebCLI command sent",
     });
   });
 });

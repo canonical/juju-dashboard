@@ -1,13 +1,10 @@
 import type { Macaroon } from "@canonical/macaroon-bakery/dist/macaroon";
 import type { FormEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useStore } from "react-redux";
 
-import useAnalytics from "hooks/useAnalytics";
 import useInlineErrors from "hooks/useInlineErrors";
 import useLocalStorage from "hooks/useLocalStorage";
 import bakery from "juju/bakery";
-import { getActiveUserTag } from "store/general/selectors";
 import type { Credential } from "store/general/types";
 import { externalURLs } from "urls";
 import { getUserName } from "utils";
@@ -27,6 +24,8 @@ type Props = {
   controllerWSHost: string;
   credentials?: Credential | null;
   modelUUID: string;
+  onCommandSent: (command?: string) => void;
+  activeUser?: string;
   /**
    * When overriding this function then ANSI codes need to be manually handled.
    */
@@ -44,6 +43,8 @@ const WebCLI = ({
   controllerWSHost,
   credentials,
   modelUUID,
+  onCommandSent,
+  activeUser,
   processOutput,
   protocol = "wss",
 }: Props) => {
@@ -55,8 +56,6 @@ const WebCLI = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [output, setOutput] = useState<string[]>([]);
   const lastCommand = useRef<string | null>(null);
-  const sendAnalytics = useAnalytics();
-  const storeState = useStore().getState();
   const [cliHistory, setCLIHistory] = useLocalStorage<string[]>(
     "cliHistory",
     [],
@@ -182,11 +181,6 @@ const WebCLI = ({
       const macaroons = origin ? bakery.storage.get(`${origin}/api`) : null;
       if (macaroons) {
         const deserialized = JSON.parse(atob(macaroons));
-        const originalWSOrigin = wsAddress ? new URL(wsAddress).origin : null;
-        const activeUser = getActiveUserTag(
-          storeState,
-          `${originalWSOrigin}/api`,
-        );
         authentication.user = activeUser ? getUserName(activeUser) : undefined;
         authentication.macaroons = [deserialized];
       }
@@ -217,10 +211,7 @@ const WebCLI = ({
           commands: [command],
         }),
       );
-      sendAnalytics({
-        category: "User",
-        action: "WebCLI command sent",
-      });
+      onCommandSent(command);
     } else {
       setInlineError(InlineErrors.CONNECTION, Label.NOT_OPEN_ERROR);
     }

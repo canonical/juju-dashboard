@@ -52,7 +52,7 @@ contribute and what kinds of contributions are welcome.
 ## Setting up the dashboard for development
 
 To get started working on the dashboard you will need to set up a local
-development environement and you will also need access to a Juju controller (JAAS may be
+development environment and you will also need access to a Juju controller (JAAS may be
 sufficient to get started).
 
 Once set up you might like to take a look at our [codebase overview and development guidelines](#codebase-and-development-guidelines).
