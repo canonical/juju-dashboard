@@ -16,6 +16,10 @@
     "email": "webteam@canonical.com"
   },
   "main": "index.js",
+  "workspaces": [
+    ".",
+    "actions"
+  ],
   "scripts": {
     "build": "vite build && yarn run generate-version-file",
     "clean": "./scripts/clean-files",
