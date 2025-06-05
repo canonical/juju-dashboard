@@ -1,30 +1,30 @@
 import { useListener, usePrevious } from "@canonical/react-components";
-import Convert from "ansi-to-html";
+import Ansi from "@curvenote/ansi-to-react";
+import fastDeepEqual from "fast-deep-equal/es6";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { processCommandOutput } from "../utils";
+
 import { HELP_HEIGHT, CONSIDER_CLOSED, DEFAULT_HEIGHT } from "./consts";
+import type { Props } from "./types";
 import { TestId } from "./types";
 
-type Props = {
-  content: string;
-  helpMessage: ReactNode;
-  loading?: boolean;
-  showHelp: boolean;
-  setShouldShowHelp: (showHelp: boolean) => void;
-};
+const defaultProcessOutput = (_command: string, messages: string[]) => (
+  <Ansi>{messages.map((message) => `\n${message}`).join("")}</Ansi>
+);
 
 const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
 
 const WebCLIOutput = ({
   content,
+  command,
   helpMessage,
   loading,
+  processOutput,
   showHelp,
   setShouldShowHelp,
 }: Props) => {
-  const convert = new Convert();
-
   const resizeDeltaY = useRef(0);
   const dragNode = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(1);
@@ -130,14 +130,31 @@ const WebCLIOutput = ({
     // are then open it back up.
     if (
       // Only trigger this condition if the content changes.
-      content != contentPrevious &&
-      content.length > 1 &&
+      !fastDeepEqual(content, contentPrevious) &&
+      content.length &&
       height <= HELP_HEIGHT &&
       height !== DEFAULT_HEIGHT
     ) {
       setHeight(DEFAULT_HEIGHT);
     }
   }, [content, contentPrevious, height]);
+
+  let output: ReactNode = null;
+  if (command) {
+    // Handle custom renders. If a renderer doesn't return anything then it
+    // falls through to the next handler.
+    try {
+      if (!output && processOutput) {
+        output = processCommandOutput(command, content, processOutput);
+      }
+      if (!output) {
+        output = defaultProcessOutput(command, content);
+      }
+    } catch (err) {
+      // If the provided processor fails (e.g. if the data isn't what was expected) then fall back to the default.
+      output = defaultProcessOutput(command, content);
+    }
+  }
 
   return (
     <div className="webcli__output" style={{ height: `${height}px` }}>
@@ -153,13 +170,10 @@ const WebCLIOutput = ({
         style={{ height: `${height}px` }}
         data-testid={TestId.CONTENT}
       >
-        {showHelp || (!loading && !content) ? (
+        {showHelp || (!loading && !content?.length) ? (
           <code data-testid={TestId.HELP}>{helpMessage}</code>
         ) : (
-          <code
-            data-testid={TestId.CODE}
-            dangerouslySetInnerHTML={{ __html: convert.toHtml(content) }}
-          />
+          <code data-testid={TestId.CODE}>{output}</code>
         )}
       </pre>
     </div>

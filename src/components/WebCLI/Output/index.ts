@@ -1,2 +1,2 @@
 export { default } from "./Output";
-export { TestId as OutputTestId } from "./types";
+export { type Props as OutputProps, TestId as OutputTestId } from "./types";

@@ -7,7 +7,7 @@ export enum Label {
 
 type Options = {
   address: string;
-  messageCallback: (message: string) => void;
+  messageCallback: (messages: string[]) => void;
   onclose: () => void;
   onopen: () => void;
   onerror: (error: Event | string) => void;
@@ -16,9 +16,8 @@ type Options = {
 
 class Connection {
   #address: string;
-  #messageBuffer = "";
-  #timeout: number | null = null;
-  #messageCallback: (message: string) => void;
+  #messageBuffer: string[] = [];
+  #messageCallback: (messages: string[]) => void;
   #setLoading: Options["setLoading"];
   #wsOnOpen: () => void;
   #wsOnClose: () => void;
@@ -58,11 +57,7 @@ class Connection {
       this.#ws?.close();
       this.#setLoading(false);
     }
-    if (this.#timeout) {
-      clearTimeout(this.#timeout);
-      this.#messageBuffer = "";
-      this.#timeout = null;
-    }
+    this.#messageBuffer = [];
   }
 
   isOpen() {
@@ -105,7 +100,9 @@ class Connection {
         }
       }
       if ("done" in data && data.done) {
-        // This is the last message.
+        // This is the last message so send the entire message.
+        this.#messageCallback(this.#messageBuffer);
+        this.#messageBuffer = [];
         return;
       }
       if (!("output" in data) || !data.output) {
@@ -115,26 +112,10 @@ class Connection {
       if (!Array.isArray(data.output)) {
         throw new Error(Label.INCORRECT_DATA_ERROR);
       }
-      this.#pushToMessageBuffer(`\n${data.output[0]}`);
+      // Build up messages until it gets the 'done' message:
+      this.#messageBuffer.push(data.output[0]);
     } catch (error) {
       this.#wsOnError(toErrorString(error));
-    }
-  }
-
-  #pushToMessageBuffer(message: string) {
-    this.#messageBuffer = this.#messageBuffer + message;
-    if (!this.#timeout) {
-      this.#timeout = window.setTimeout(() => {
-        /*
-        The messageBuffer is required because the websocket returns messages
-        much faster than React wants to update the component. Doing this allows
-        us to store the messages in a buffer and then set the output every
-        cycle.
-      */
-        this.#messageCallback(this.#messageBuffer);
-        this.#messageBuffer = "";
-        this.#timeout = null;
-      });
     }
   }
 }

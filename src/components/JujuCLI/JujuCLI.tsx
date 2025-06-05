@@ -1,3 +1,4 @@
+import Ansi from "@curvenote/ansi-to-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
@@ -10,7 +11,70 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { externalURLs } from "urls";
 import { getMajorMinorVersion } from "utils";
+
+const HELP_HEADER = "Starter commands:";
+// Get the help command and surrounding characters from a string in the format:
+// "     add-model           Adds a workload model."
+const HELP_COMMAND_REGEX = /^(?<before>\s{2,})(?<command>\S+)(?<after>.+)/;
+
+/**
+ * Insert docs links around the commands in the help output.
+ * The section we're interested looks like the following
+ *
+ * Starter commands:
+ *
+ *     bootstrap           Initializes a cloud environment.
+ *     add-model           Adds a workload model.
+ *
+ * @param messages The messages returned by the API.
+ * @returns The help nodes.
+ */
+const processHelp = (messages: string[]) => {
+  let inCommandsBlock = false;
+  return (
+    <>
+      {messages.map((message, i) => {
+        // The first command follows the help header and a blank row.
+        const isFirstCommand = i > 1 && messages[i - 2] === HELP_HEADER;
+        // Command block continues until an empty row is encountered.
+        inCommandsBlock = isFirstCommand || (inCommandsBlock && message !== "");
+        if (inCommandsBlock) {
+          // Get the help command and surrounding whitespace.
+          const matchGroups = message.match(HELP_COMMAND_REGEX)?.groups;
+          // Handle text we don't recognise.
+          if (!matchGroups) {
+            return (
+              <div key={i}>
+                <Ansi>{message}</Ansi>
+              </div>
+            );
+          }
+          const { before, command, after } = matchGroups;
+          return (
+            <div key={i}>
+              {before}
+              <a
+                href={externalURLs.cliHelpCommand(command)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Ansi>{command}</Ansi>
+              </a>
+              {after}
+            </div>
+          );
+        }
+        return (
+          <div key={i}>
+            <Ansi>{message}</Ansi>
+          </div>
+        );
+      })}
+    </>
+  );
+};
 
 const JujuCLI = () => {
   const routeParams = useParams<EntityDetailsRoute>();
@@ -54,17 +118,23 @@ const JujuCLI = () => {
     }
   }, [modelInfo, isJuju]);
 
+  if (!showWebCLI || !controllerWSHost || !modelInfo) {
+    return null;
+  }
   return (
-    <>
-      {showWebCLI && controllerWSHost ? (
-        <WebCLI
-          controllerWSHost={controllerWSHost}
-          credentials={credentials}
-          modelUUID={modelUUID}
-          protocol={wsProtocol ?? "wss"}
-        />
-      ) : null}
-    </>
+    <WebCLI
+      controllerWSHost={controllerWSHost}
+      credentials={credentials}
+      modelUUID={modelUUID}
+      processOutput={{
+        help: {
+          // This should match "help" but not "help bootstrap" etc.
+          exact: true,
+          process: processHelp,
+        },
+      }}
+      protocol={wsProtocol ?? "wss"}
+    />
   );
 };
 

@@ -62,6 +62,8 @@ const urls = {
 export const externalURLs = {
   newIssue: "https://github.com/canonical/juju-dashboard/issues/new",
   cliHelp: "https://juju.is/docs/olm/the-juju-web-cli",
+  cliHelpCommand: (command: string) =>
+    `https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/${command.replace(/^\//, "")}`,
 };
 
 export const rebacURLS = generateReBACURLS(urls.permissions);

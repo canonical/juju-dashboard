@@ -61,15 +61,15 @@ $canonical-purple: #2c001e;
       text-decoration: underline;
     }
 
-    code {
-      padding-bottom: 1rem;
-    }
-
-    code,
+    pre > code,
     pre {
       background-color: $canonical-purple;
       border: none;
       width: 100%;
+    }
+
+    pre > code {
+      padding-bottom: 1rem;
     }
 
     &-content {
