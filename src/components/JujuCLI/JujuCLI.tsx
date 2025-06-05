@@ -1,4 +1,4 @@
-import Ansi from "ansi-to-react";
+import Ansi from "@curvenote/ansi-to-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
@@ -11,9 +11,13 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { externalURLs } from "urls";
 import { getMajorMinorVersion } from "utils";
 
 const HELP_HEADER = "Starter commands:";
+// Get the help command and surrounding characters from a string in the format:
+// "     add-model           Adds a workload model."
+const HELP_COMMAND_REGEX = /^(?<before>\s{2,})(?<command>\S+)(?<after>.+)/;
 
 /**
  * Insert docs links around the commands in the help output.
@@ -32,48 +36,41 @@ const processHelp = (messages: string[]) => {
   return (
     <>
       {messages.map((message, i) => {
-        if (i > 1 && messages[i - 2] === HELP_HEADER) {
-          // The header has a blank row between the header and the first command.
-          inCommandsBlock = i > 1 && messages[i - 2] === HELP_HEADER;
-        } else {
-          // End the commands block when we get to a blank row.
-          inCommandsBlock = inCommandsBlock && message !== "";
-        }
+        // The first command follows the help header and a blank row.
+        const isFirstCommand = i > 1 && messages[i - 2] === HELP_HEADER;
+        // Command block continues until an empty row is encountered.
+        inCommandsBlock = isFirstCommand || (inCommandsBlock && message !== "");
         if (inCommandsBlock) {
-          // Get the help command, ignoring the leading whitespace.
-          const helpCommand = message.match(/(?<=^\s{2,})\S+(?=\s{2,})/)?.[0];
-          // Get the whitespace surrounding the help command so it can be used
-          // to reconstruct the output.
-          const before = message.match(/^\s+/)?.[0];
-          const after = message.match(/(?<=\S)\s{2,}.+/)?.[0];
+          // Get the help command and surrounding whitespace.
+          const matchGroups = message.match(HELP_COMMAND_REGEX)?.groups;
           // Handle text we don't recognise.
-          if (!helpCommand || !before || !after) {
+          if (!matchGroups) {
             return (
               <div key={i}>
                 <Ansi>{message}</Ansi>
               </div>
             );
           }
+          const { before, command, after } = matchGroups;
           return (
             <div key={i}>
               {before}
               <a
-                href={`https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/${helpCommand}`}
+                href={externalURLs.cliHelpCommand(command)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Ansi>{helpCommand}</Ansi>
+                <Ansi>{command}</Ansi>
               </a>
               {after}
             </div>
           );
-        } else if (!inCommandsBlock || message === "") {
-          return (
-            <div key={i}>
-              <Ansi>{message}</Ansi>
-            </div>
-          );
         }
+        return (
+          <div key={i}>
+            <Ansi>{message}</Ansi>
+          </div>
+        );
       })}
     </>
   );
@@ -121,24 +118,23 @@ const JujuCLI = () => {
     }
   }, [modelInfo, isJuju]);
 
+  if (!showWebCLI || !controllerWSHost || !modelInfo) {
+    return null;
+  }
   return (
-    <>
-      {showWebCLI && controllerWSHost && modelInfo ? (
-        <WebCLI
-          controllerWSHost={controllerWSHost}
-          credentials={credentials}
-          modelUUID={modelUUID}
-          processOutput={{
-            help: {
-              // This should match "help" but not "help bootstrap" etc.
-              exact: true,
-              process: processHelp,
-            },
-          }}
-          protocol={wsProtocol ?? "wss"}
-        />
-      ) : null}
-    </>
+    <WebCLI
+      controllerWSHost={controllerWSHost}
+      credentials={credentials}
+      modelUUID={modelUUID}
+      processOutput={{
+        help: {
+          // This should match "help" but not "help bootstrap" etc.
+          exact: true,
+          process: processHelp,
+        },
+      }}
+      protocol={wsProtocol ?? "wss"}
+    />
   );
 };
 

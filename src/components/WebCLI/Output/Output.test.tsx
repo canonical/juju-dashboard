@@ -141,12 +141,16 @@ describe("Output", () => {
     );
     const code = await screen.findByTestId(TestId.CODE);
     expect(within(code).getByTestId("custom")).toHaveTextContent(
-      "Model Controller",
+      /^Model Controller$/,
     );
   });
 
+  // When a processOutput prop is supplied and a command that doesn't get
+  // handled is submitted, it should handle the output via the default processor
+  // rather than returning the output of `processOutput` which would be nothing.
   it("falls back to default processor if the provided processor does not handle command", async () => {
     const messages = ["Model       Controller", "k8s         workloads"];
+    const customId = "custom";
     renderComponent(
       <Output
         command="status"
@@ -159,7 +163,7 @@ describe("Output", () => {
           "remove-unit": {
             exact: false,
             process: (messages) => (
-              <div data-testid="custom">{messages[0]}</div>
+              <div data-testid={customId}>{messages[0]}</div>
             ),
           },
         }}
@@ -168,6 +172,7 @@ describe("Output", () => {
     expect(await screen.findByTestId(TestId.CODE)).toHaveTextContent(
       "Model Controller",
     );
+    expect(screen.queryByTestId(customId)).not.toBeInTheDocument();
   });
 
   it("falls back to default processor if the provided processor fails", async () => {

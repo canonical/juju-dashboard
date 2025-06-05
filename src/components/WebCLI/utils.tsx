@@ -24,11 +24,12 @@ const getHandler = <Handlers extends Record<string, CommandHandler>>(
 };
 
 /**
- * Process custom output for provided commands.
+ * Process custom output for provided commands. Any commands that are not
+ * matched by a handler will fall through to the default processor in Output.tsx.
  * @param command The command that was entered into the CLI.
  * @param messages The messages returned by the API.
  * @param processOutput The render function for each command.
- * @returns The resulting nodes.
+ * @returns The resulting nodes if the command matches a handler.
  */
 export const processCommandOutput = (
   command: string,

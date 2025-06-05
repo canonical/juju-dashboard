@@ -54,7 +54,7 @@ const WebCLI = ({
   const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
   const inputRef = useRef<HTMLInputElement>(null);
   const [output, setOutput] = useState<string[]>([]);
-  const lastCommand = useRef<string | null | undefined>(null);
+  const lastCommand = useRef<string | null>(null);
   const sendAnalytics = useAnalytics();
   const storeState = useStore().getState();
   const [cliHistory, setCLIHistory] = useLocalStorage<string[]>(
@@ -196,18 +196,18 @@ const WebCLI = ({
       );
     }
 
-    let command;
     const formFields = e.currentTarget.children;
-    if ("command" in formFields) {
-      command = (formFields.command as HTMLInputElement).value.trim();
-      let history = cliHistory.concat([command]);
-      if (history.length > MAX_HISTORY) {
-        history = history.slice(-MAX_HISTORY);
-      }
-      setCLIHistory(history);
-      // Reset the position in case the user was navigating through the history.
-      setHistoryPosition(0);
+    if (!("command" in formFields)) {
+      return;
     }
+    const command = (formFields.command as HTMLInputElement).value.trim();
+    let history = cliHistory.concat([command]);
+    if (history.length > MAX_HISTORY) {
+      history = history.slice(-MAX_HISTORY);
+    }
+    setCLIHistory(history);
+    // Reset the position in case the user was navigating through the history.
+    setHistoryPosition(0);
 
     if (connection.current?.isOpen()) {
       lastCommand.current = command;

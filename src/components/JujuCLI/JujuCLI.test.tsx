@@ -20,6 +20,7 @@ import {
   modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
+import urls, { externalURLs } from "urls";
 
 import { OutputTestId } from "../WebCLI/Output";
 
@@ -27,8 +28,11 @@ import JujuCLI from "./JujuCLI";
 
 describe("JujuCLI", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName";
-  const url = "/models/eggman@external/test-model";
+  const modelName = "test-model";
+  const userName = "eggman@external";
+  const userTag = `user-${userName}`;
+  const path = urls.model.index(null);
+  const url = urls.model.index({ userName, modelName });
   let server: WS;
 
   beforeEach(() => {
@@ -41,7 +45,7 @@ describe("JujuCLI", () => {
         }),
         credentials: {
           "wss://example.com:17070/api": credentialFactory.build({
-            user: "user-eggman@external",
+            user: userTag,
           }),
         },
       }),
@@ -54,16 +58,16 @@ describe("JujuCLI", () => {
         models: {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
-            name: "test-model",
-            ownerTag: "user-eggman@external",
+            name: modelName,
+            ownerTag: userTag,
           }),
         },
         modelWatcherData: {
           abc123: modelWatcherModelDataFactory.build({
             model: modelWatcherModelInfoFactory.build({
               "controller-uuid": "controller123",
-              name: "test-model",
-              owner: "eggman@external",
+              name: modelName,
+              owner: userName,
             }),
           }),
         },
@@ -89,8 +93,8 @@ describe("JujuCLI", () => {
           "ceph-mon": applicationInfoFactory.build(),
         },
         model: modelWatcherModelInfoFactory.build({
-          name: "test-model",
-          owner: "eggman@external",
+          name: modelName,
+          owner: userName,
           version: "3.0.7",
           "controller-uuid": "controller123",
         }),
@@ -112,8 +116,8 @@ describe("JujuCLI", () => {
           "ceph-mon": applicationInfoFactory.build(),
         },
         model: modelWatcherModelInfoFactory.build({
-          name: "test-model",
-          owner: "eggman@external",
+          name: modelName,
+          owner: userName,
           version: "3.0.7",
           "controller-uuid": "controller123",
         }),
@@ -130,8 +134,8 @@ describe("JujuCLI", () => {
           "ceph-mon": applicationInfoFactory.build(),
         },
         model: modelWatcherModelInfoFactory.build({
-          name: "test-model",
-          owner: "eggman@external",
+          name: modelName,
+          owner: userName,
           version: "2.8.7",
         }),
       }),
@@ -149,7 +153,7 @@ describe("JujuCLI", () => {
       controllerWSHost: "example.com:17070",
       credentials: {
         password: "verysecure123",
-        user: "user-eggman@external",
+        user: userTag,
       },
       modelUUID: "abc123",
       protocol: "wss",
@@ -184,16 +188,10 @@ describe("JujuCLI", () => {
     await waitFor(() => {
       expect(
         within(output).getByRole("link", { name: "bootstrap" }),
-      ).toHaveAttribute(
-        "href",
-        "https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/bootstrap",
-      );
+      ).toHaveAttribute("href", externalURLs.cliHelpCommand("bootstrap"));
       expect(
         within(output).getByRole("link", { name: "add-model" }),
-      ).toHaveAttribute(
-        "href",
-        "https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/add-model",
-      );
+      ).toHaveAttribute("href", externalURLs.cliHelpCommand("add-model"));
     });
   });
 });

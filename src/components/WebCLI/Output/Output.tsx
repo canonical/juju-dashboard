@@ -1,5 +1,5 @@
 import { useListener, usePrevious } from "@canonical/react-components";
-import Ansi from "ansi-to-react";
+import Ansi from "@curvenote/ansi-to-react";
 import fastDeepEqual from "fast-deep-equal/es6";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
