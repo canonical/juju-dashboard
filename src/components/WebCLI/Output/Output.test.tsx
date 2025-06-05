@@ -120,6 +120,35 @@ describe("Output", () => {
     });
   });
 
+  it("inserts table links for matching commands", async () => {
+    const messages = ["Model       Controller", "k8s         workloads"];
+    renderComponent(
+      <Output
+        command="remove-unit"
+        content={messages}
+        helpMessage="Help message"
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+        tableLinks={{
+          "remove-unit": {
+            exact: false,
+            blocks: {
+              Model: {
+                Controller: (column) => ({
+                  link: `/controller/${column.value}`,
+                }),
+              },
+            },
+          },
+        }}
+      />,
+    );
+    const code = await screen.findByTestId(TestId.CODE);
+    expect(
+      within(code).getByRole("link", { name: "workloads" }),
+    ).toHaveAttribute("href", "/controller/workloads");
+  });
+
   it("overrides output for matching commands", async () => {
     const messages = ["Model       Controller", "k8s         workloads"];
     renderComponent(
@@ -142,6 +171,38 @@ describe("Output", () => {
     const code = await screen.findByTestId(TestId.CODE);
     expect(within(code).getByTestId("custom")).toHaveTextContent(
       /^Model Controller$/,
+    );
+  });
+
+  // When a tableLinks prop is supplied and a command that doesn't get
+  // handled is submitted, it should handle the output via the default processor
+  // rather than returning the output of `tableLinks` which would be nothing.
+  it("falls back to default processor if the link processor does not handle command", async () => {
+    const messages = ["Model       Controller", "k8s         workloads"];
+    renderComponent(
+      <Output
+        command="status"
+        content={messages}
+        helpMessage="Help message"
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+        tableLinks={{
+          // This does not match the command that was sent:
+          "remove-unit": {
+            exact: false,
+            blocks: {
+              Model: {
+                Controller: (column) => ({
+                  link: `/controller/${column.value}`,
+                }),
+              },
+            },
+          },
+        }}
+      />,
+    );
+    expect(await screen.findByTestId(TestId.CODE)).toHaveTextContent(
+      "Model Controller",
     );
   });
 

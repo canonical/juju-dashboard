@@ -216,4 +216,69 @@ describe("JujuCLI", () => {
       action: "WebCLI command sent",
     });
   });
+
+  it("adds links to the status command", async () => {
+    renderComponent(<JujuCLI />, { path, url, state });
+    await server.connected;
+    const input = screen.getByRole("textbox", {
+      name: WebCLILabel.COMMAND,
+    });
+    await userEvent.type(input, "status{enter}");
+    const messages = [
+      "Model         Controller           Cloud/Region         Version    SLA          Timestamp",
+      "test-model    localhost-localhost  localhost/localhost  3.2-beta3  unsupported  01:17:46Z",
+      "",
+      "App       Version  Status   Scale  Charm     Channel  Rev  Exposed  Message",
+      "slurmdbd  0.8.5    blocked      1  slurmdbd  stable    18  no       Need relations: slurcmtld",
+      "",
+      "Unit         Workload  Agent  Machine  Public address  Ports  Message",
+      "slurmdbd/0*  blocked   idle   0        10.153.59.132          Need relations: slurcmtld",
+      "",
+      "Machine  State    Address        Inst id        Base          AZ  Message",
+      "0        started  10.153.59.132  juju-75ed27-0  ubuntu@20.04      Running",
+    ];
+    messages.forEach((message) => {
+      server.send(JSON.stringify({ output: [message] }));
+    });
+    server.send(JSON.stringify({ done: true }));
+    const output = screen.getByTestId(OutputTestId.CONTENT);
+    await waitFor(() => {
+      expect(
+        within(output).getByRole("link", { name: "test-model" }),
+      ).toHaveAttribute("href", "/models/eggman@external/test-model");
+      expect(
+        within(output).getByRole("link", { name: "slurmdbd" }),
+      ).toHaveAttribute(
+        "href",
+        "/models/eggman@external/test-model/app/slurmdbd",
+      );
+      expect(
+        within(output).getByRole("link", { name: "localhost-localhost" }),
+      ).toHaveAttribute("href", "/controllers");
+      expect(
+        within(output).getByRole("link", { name: "slurmdbd/0*" }),
+      ).toHaveAttribute(
+        "href",
+        "/models/eggman@external/test-model/app/slurmdbd/unit/slurmdbd-0",
+      );
+      // There should be two machine links.
+      const machines = within(output).getAllByRole("link", { name: "0" });
+      expect(machines).toHaveLength(2);
+      expect(machines[0]).toHaveAttribute(
+        "href",
+        "/models/eggman@external/test-model/machine/0",
+      );
+      expect(machines[1]).toHaveAttribute(
+        "href",
+        "/models/eggman@external/test-model/machine/0",
+      );
+      // There should be two address links.
+      const addresses = within(output).getAllByRole("link", {
+        name: "10.153.59.132",
+      });
+      expect(addresses).toHaveLength(2);
+      expect(addresses[0]).toHaveAttribute("href", "http://10.153.59.132");
+      expect(addresses[1]).toHaveAttribute("href", "http://10.153.59.132");
+    });
+  });
 });
