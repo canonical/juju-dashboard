@@ -17,7 +17,10 @@ import {
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { externalURLs } from "urls";
+import urls from "urls";
 import { getMajorMinorVersion } from "utils";
+
+import { CLICommand } from "./types";
 
 const HELP_HEADER = "Starter commands:";
 // Get the help command and surrounding characters from a string in the format:
@@ -146,13 +149,75 @@ const JujuCLI = () => {
       onCommandSent={onCommandSent}
       activeUser={activeUser}
       processOutput={{
-        help: {
+        [CLICommand.HELP]: {
           // This should match "help" but not "help bootstrap" etc.
           exact: true,
           process: processHelp,
         },
       }}
       protocol={wsProtocol}
+      tableLinks={{
+        [CLICommand.STATUS]: {
+          exact: false,
+          blocks: {
+            App: {
+              App: (column) => ({
+                link: urls.model.app.index({
+                  userName: modelInfo.owner,
+                  modelName: modelInfo.name,
+                  appName: column.value,
+                }),
+              }),
+            },
+            Machine: {
+              Machine: (column) => ({
+                link: urls.model.machine({
+                  userName: modelInfo.owner,
+                  modelName: modelInfo.name,
+                  machineId: column.value,
+                }),
+              }),
+              Address: (column) => ({
+                externalLink: `http://${column.value}`,
+              }),
+            },
+            Model: {
+              Controller: () => ({
+                link: urls.controllers,
+              }),
+              Model: () => ({
+                link: urls.model.index({
+                  userName: modelInfo.owner,
+                  modelName: modelInfo.name,
+                }),
+              }),
+            },
+            Unit: {
+              Unit: (column) => {
+                const [appName] = column.value.split("/");
+                return {
+                  link: urls.model.unit({
+                    userName: modelInfo.owner,
+                    modelName: modelInfo.name,
+                    appName,
+                    unitId: column.value.replace("/", "-").replace("*", ""),
+                  }),
+                };
+              },
+              Machine: (column) => ({
+                link: urls.model.machine({
+                  userName: modelInfo.owner,
+                  modelName: modelInfo.name,
+                  machineId: column.value,
+                }),
+              }),
+              "Public address": (column) => ({
+                externalLink: `http://${column.value}`,
+              }),
+            },
+          },
+        },
+      }}
     />
   );
 };

@@ -1,5 +1,39 @@
 import type { ReactNode } from "react";
 
+export type Block = {
+  header: string;
+  rows: string[];
+};
+
+export type Header = {
+  content: string;
+  ansiTitle: string;
+  title: string;
+  start: number;
+  end?: number;
+};
+
+export type Column = {
+  content: string;
+  key: string;
+  ansiValue: string;
+  value: string;
+  whitespaceBefore?: string;
+  whitespaceAfter?: string;
+};
+
+export type TableLinksLink =
+  | {
+      link: string;
+    }
+  | {
+      externalLink: string;
+    };
+
+type TableLinksGenerateLink = (column: Column, row: Column[]) => TableLinksLink;
+
+type TableLinksBlocks = Record<string, TableLinksGenerateLink>;
+
 export type CommandHandler = {
   /**
    * Wether the command needs to exactly match e.g. should it match `status` or
@@ -7,6 +41,12 @@ export type CommandHandler = {
    */
   exact?: boolean;
 };
+
+export type TableLinksCommand = {
+  blocks: Record<string, TableLinksBlocks>;
+} & CommandHandler;
+
+export type TableLinks = Record<string, TableLinksCommand>;
 
 export type ProcessCommand = {
   process: (messages: string[]) => ReactNode;
@@ -20,6 +60,7 @@ export type Props = {
   helpMessage: ReactNode;
   loading?: boolean;
   processOutput?: ProcessOutput;
+  tableLinks?: TableLinks;
   showHelp: boolean;
   setShouldShowHelp: (showHelp: boolean) => void;
 };
