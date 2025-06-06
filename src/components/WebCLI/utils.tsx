@@ -272,7 +272,7 @@ const getHandler = <Handlers extends Record<string, CommandHandler>>(
 };
 
 /**
- * Wrap column content in links as provided as a map between CLI commands, Any
+ * Wrap column content in links as provided as a map between CLI commands. Any
  * commands that are not matched by a handler will fall through to the next
  * processor in Output.tsx.
  * @param command The command that was entered into the CLI.
