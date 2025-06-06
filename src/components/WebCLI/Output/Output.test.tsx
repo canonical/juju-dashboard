@@ -186,19 +186,11 @@ describe("Output", () => {
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={vi.fn()}
-        tableLinks={{
-          // This does not match the command that was sent:
-          "remove-unit": {
-            exact: false,
-            blocks: {
-              Model: {
-                Controller: (column) => ({
-                  link: `/controller/${column.value}`,
-                }),
-              },
-            },
-          },
-        }}
+        tableLinks={
+          {
+            // This is a truth value, but there are no handlers to match the command.
+          }
+        }
       />,
     );
     expect(await screen.findByTestId(TestId.CODE)).toHaveTextContent(
@@ -219,15 +211,11 @@ describe("Output", () => {
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={vi.fn()}
-        processOutput={{
-          // This does not match the command that was sent:
-          "remove-unit": {
-            exact: false,
-            process: (messages) => (
-              <div data-testid={customId}>{messages[0]}</div>
-            ),
-          },
-        }}
+        processOutput={
+          {
+            // This is a truth value, but there are no handlers to match the command.
+          }
+        }
       />,
     );
     expect(await screen.findByTestId(TestId.CODE)).toHaveTextContent(
