@@ -1,0 +1,6 @@
+name: Update changelog
+description: Update changelog for a given pull request.
+
+runs:
+  using: node20
+  main: dist/index.js

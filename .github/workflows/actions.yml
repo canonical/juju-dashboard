@@ -77,6 +77,7 @@ jobs:
     strategy:
       matrix:
         node-version: [22.x]
+        project: [tsconfig.json, tsconfig.node.json]
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
@@ -86,7 +87,7 @@ jobs:
           cache: "yarn"
       - name: Install
         run: yarn install --immutable
-      - run: yarn typescript-build
+      - run: yarn tsc --noEmit -p ${{ matrix.project }}
   build:
     name: Build
     runs-on: ubuntu-latest

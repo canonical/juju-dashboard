@@ -1,15 +1,16 @@
-import { fixupConfigRules, fixupPluginRules } from "@eslint/compat";
-import prettier from "eslint-plugin-prettier";
-import vitest from "eslint-plugin-vitest";
-import promise from "eslint-plugin-promise";
-import reactRefresh from "eslint-plugin-react-refresh";
-import react from "eslint-plugin-react";
-import _import from "eslint-plugin-import";
-import tsParser from "@typescript-eslint/parser";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
+
+import { fixupConfigRules, fixupPluginRules } from "@eslint/compat";
 import { FlatCompat } from "@eslint/eslintrc";
+import js from "@eslint/js";
+import tsParser from "@typescript-eslint/parser";
+import _import from "eslint-plugin-import";
+import prettier from "eslint-plugin-prettier";
+import promise from "eslint-plugin-promise";
+import react from "eslint-plugin-react";
+import reactRefresh from "eslint-plugin-react-refresh";
+import vitest from "eslint-plugin-vitest";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,7 +56,11 @@ export default [
       sourceType: "script",
       parserOptions: {
         parser: "@typescript-eslint/parser",
-        project: "./tsconfig.json",
+        project: [
+          "./tsconfig.json",
+          "./tsconfig.node.json",
+          "./actions/tsconfig.json",
+        ].map((p) => path.join(__dirname, p)),
         ecmaFeatures: { jsx: true },
       },
     },

@@ -1,0 +1,83 @@
+name: Test custom actions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "actions/**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "actions/**"
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - name: Install
+        run: yarn install --immutable
+        working-directory: actions
+      - run: yarn test
+        working-directory: actions
+
+  lint:
+    name: Lint source
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - name: Install
+        run: yarn install --immutable
+        working-directory: actions
+      - run: yarn lint
+        working-directory: actions
+
+  ensure-built:
+    name: Ensure actions have been built
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - name: Install
+        run: yarn install --immutable
+        working-directory: actions
+      - run: yarn build
+        working-directory: actions
+      - name: Ensure bulid up to date
+        working-directory: actions
+        run: |
+          status="$(git status --porcelain)"
+
+          if [ -n "$status" ]; then
+            echo "built actions are not up to date"
+            echo "please build locally and push"
+            exit 1
+          fi
+
+          echo "actions are up to date"
