@@ -27,6 +27,7 @@ import urls, { externalURLs } from "urls";
 import { OutputTestId } from "../WebCLI/Output";
 
 import JujuCLI from "./JujuCLI";
+import { CLICommand } from "./types";
 
 describe("JujuCLI", () => {
   let state: RootState;
@@ -176,7 +177,7 @@ describe("JujuCLI", () => {
     const input = screen.getByRole("textbox", {
       name: WebCLILabel.COMMAND,
     });
-    await userEvent.type(input, "help{enter}");
+    await userEvent.type(input, `${CLICommand.HELP}{enter}`);
     const messages = [
       "See https://juju.is for getting started tutorials and additional documentation.",
       "",
@@ -223,7 +224,7 @@ describe("JujuCLI", () => {
     const input = screen.getByRole("textbox", {
       name: WebCLILabel.COMMAND,
     });
-    await userEvent.type(input, "status{enter}");
+    await userEvent.type(input, `${CLICommand.STATUS}{enter}`);
     const messages = [
       "Model         Controller           Cloud/Region         Version    SLA          Timestamp",
       "test-model    localhost-localhost  localhost/localhost  3.2-beta3  unsupported  01:17:46Z",
@@ -242,6 +243,7 @@ describe("JujuCLI", () => {
     });
     server.send(JSON.stringify({ done: true }));
     const output = screen.getByTestId(OutputTestId.CONTENT);
+    expect(within(output).getAllByRole("link")).toHaveLength(8);
     await waitFor(() => {
       expect(
         within(output).getByRole("link", { name: "test-model" }),

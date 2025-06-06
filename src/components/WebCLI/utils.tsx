@@ -140,7 +140,7 @@ export const getColumns = (rows: string[], headers: Header[]): Column[][] => {
         // Use the width of the header to figure out where the column content is. This
         // is required so we know where empty columns are.
         header.start ? header.start - 1 : header.start,
-        header.end || header.end === 0 ? header.end : row.length,
+        header.end ?? row.length,
       );
       // Get the content without the whitespace, this will be extracted below.
       const ansiValue = content
@@ -275,7 +275,6 @@ const getHandler = <Handlers extends Record<string, CommandHandler>>(
  * Wrap column content in links as provided as a map between CLI commands, Any
  * commands that are not matched by a handler will fall through to the next
  * processor in Output.tsx.
- * tables and columns.
  * @param command The command that was entered into the CLI.
  * @param messages The messages returned by the API.
  * @param tableLinks The link mapping for each command.

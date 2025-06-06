@@ -20,6 +20,8 @@ import { externalURLs } from "urls";
 import urls from "urls";
 import { getMajorMinorVersion } from "utils";
 
+import { CLICommand } from "./types";
+
 const HELP_HEADER = "Starter commands:";
 // Get the help command and surrounding characters from a string in the format:
 // "     add-model           Adds a workload model."
@@ -147,7 +149,7 @@ const JujuCLI = () => {
       onCommandSent={onCommandSent}
       activeUser={activeUser}
       processOutput={{
-        help: {
+        [CLICommand.HELP]: {
           // This should match "help" but not "help bootstrap" etc.
           exact: true,
           process: processHelp,
@@ -155,7 +157,7 @@ const JujuCLI = () => {
       }}
       protocol={wsProtocol}
       tableLinks={{
-        status: {
+        [CLICommand.STATUS]: {
           exact: false,
           blocks: {
             App: {
