@@ -1,0 +1,13 @@
+'DIR' => 
+  "/src/" ||
+  "/actions/src/"
+
+'TESTCODE_FILE' =>
+  "/src/test/" ||
+  "/src/[^/]+/.+\.test\..+" ||
+  "/actions/src/[^/]+/.+\.test\..+"
+
+
+'GENERATED_FILE' =>
+  "/.github/actions/update-changelog"
+  // Add generated actions here.

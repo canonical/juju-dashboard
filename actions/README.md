@@ -34,6 +34,9 @@ directory]. These built files **must** be committed in order to use them in CI.
 
 3. Add the action name to the `ACTIONS` array in the [build script].
 
+4. Update `.github/workflows/tiobe_archive.txt` and include the path to the generated action under
+  `GENERATED_FILE`.
+
 ## Testing actions
 
 Vitest is configured for these actions, and can be invoked with `yarn test`. Any `.test.ts` file
