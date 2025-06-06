@@ -34,6 +34,8 @@ describe("WebCLI", () => {
       user: "eggman@external",
       password: "somelongpassword",
     },
+    onCommandSent: vi.fn(),
+    activeUser: "eggman@external",
   };
 
   beforeEach(() => {
@@ -241,6 +243,21 @@ describe("WebCLI", () => {
         commands: ["status"],
       }),
     );
+  });
+
+  it("sends commands over the websocket", async () => {
+    renderComponent(<WebCLI {...props} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "some-command{enter}");
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["some-command"],
+      }),
+    );
+    expect(props.onCommandSent).toBeCalledWith("some-command");
   });
 
   it("displays messages received over the websocket", async () => {

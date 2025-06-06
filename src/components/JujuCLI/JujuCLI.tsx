@@ -4,7 +4,12 @@ import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
 import WebCLI from "components/WebCLI";
-import { getUserPass, getIsJuju } from "store/general/selectors";
+import useAnalytics from "hooks/useAnalytics";
+import {
+  getUserPass,
+  getIsJuju,
+  getActiveUserTag,
+} from "store/general/selectors";
 import {
   getControllerDataByUUID,
   getModelInfo,
@@ -78,6 +83,7 @@ const processHelp = (messages: string[]) => {
 
 const JujuCLI = () => {
   const routeParams = useParams<EntityDetailsRoute>();
+  const sendAnalytics = useAnalytics();
   const { userName, modelName } = routeParams;
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
@@ -106,7 +112,18 @@ const JujuCLI = () => {
       .replace("ws://", "")
       .replace("wss://", "")
       .replace("/api", "") || null;
-  const wsProtocol = primaryControllerData?.[0].split("://")[0];
+  const wsProtocol = primaryControllerData?.[0].split("://")[0] ?? "wss";
+
+  const activeUser = useAppSelector((state) =>
+    getActiveUserTag(state, primaryControllerData?.[0]),
+  );
+
+  function onCommandSent(_command?: string) {
+    sendAnalytics({
+      category: "User",
+      action: "WebCLI command sent",
+    });
+  }
 
   useEffect(() => {
     if (isJuju && getMajorMinorVersion(modelInfo?.version) >= 2.9) {
@@ -126,6 +143,8 @@ const JujuCLI = () => {
       controllerWSHost={controllerWSHost}
       credentials={credentials}
       modelUUID={modelUUID}
+      onCommandSent={onCommandSent}
+      activeUser={activeUser}
       processOutput={{
         help: {
           // This should match "help" but not "help bootstrap" etc.
@@ -133,7 +152,7 @@ const JujuCLI = () => {
           process: processHelp,
         },
       }}
-      protocol={wsProtocol ?? "wss"}
+      protocol={wsProtocol}
     />
   );
 };
