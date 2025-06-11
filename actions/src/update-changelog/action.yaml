@@ -4,3 +4,12 @@ description: Update changelog for a given pull request.
 runs:
   using: node20
   main: dist/index.js
+
+inputs:
+  github-token:
+    description: "GitHub Token (usually `${{ secrets.GITHUB_TOKEN }}`)."
+    required: true
+
+  merged-pull-request:
+    description: "ID of the pull request that was merged."
+    required: true
