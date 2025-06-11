@@ -78,7 +78,7 @@ export default [
       "@typescript-eslint/await-thenable": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
-      "import/imports-first": ["error", "absolute-first"],
+      "import/first": ["error"],
       "import/newline-after-import": "error",
       "import/order": [
         "error",
