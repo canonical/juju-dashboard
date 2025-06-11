@@ -97,8 +97,13 @@ export type ReBACAllowed = GenericState<string> & {
   allowed?: boolean | null;
 };
 
+export type ReBACRelationship = GenericState<string[]> & {
+  requestId: string;
+};
+
 export type ReBACState = {
   allowed: ReBACAllowed[];
+  relationships: ReBACRelationship[];
 };
 
 export type JujuState = {

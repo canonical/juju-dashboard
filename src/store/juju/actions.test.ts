@@ -465,4 +465,54 @@ describe("actions", () => {
       payload: { tuple },
     });
   });
+
+  it("checkRelations", () => {
+    const requestId = "123456";
+    const tuples = [relationshipTupleFactory.build()];
+    expect(
+      actions.checkRelations({
+        requestId,
+        tuples,
+        wsControllerURL: "wss://test.example.com",
+      }),
+    ).toStrictEqual({
+      type: "juju/checkRelations",
+      payload: {
+        requestId,
+        tuples,
+        wsControllerURL: "wss://test.example.com",
+      },
+    });
+  });
+
+  it("addCheckRelations", () => {
+    const tuples = [relationshipTupleFactory.build()];
+    const permissions = [{ allowed: true }];
+    const requestId = "123456";
+    expect(
+      actions.addCheckRelations({ requestId, tuples, permissions }),
+    ).toStrictEqual({
+      type: "juju/addCheckRelations",
+      payload: { tuples, permissions, requestId },
+    });
+  });
+
+  it("addCheckRelationsErrors", () => {
+    const tuples = [relationshipTupleFactory.build()];
+    const requestId = "123456";
+    expect(
+      actions.addCheckRelationsErrors({ requestId, tuples, errors: "oops!" }),
+    ).toStrictEqual({
+      type: "juju/addCheckRelationsErrors",
+      payload: { requestId, tuples, errors: "oops!" },
+    });
+  });
+
+  it("removeCheckRelations", () => {
+    const requestId = "123456";
+    expect(actions.removeCheckRelations({ requestId })).toStrictEqual({
+      type: "juju/removeCheckRelations",
+      payload: { requestId },
+    });
+  });
 });

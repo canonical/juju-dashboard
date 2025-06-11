@@ -9,6 +9,7 @@ import {
   endpoints,
   findAuditEvents,
   checkRelation,
+  checkRelations,
   Label,
 } from "./api";
 
@@ -155,7 +156,7 @@ describe("JIMM API", () => {
   });
 
   describe("checkRelation", () => {
-    it("fetches cross model query result with supplied params", async () => {
+    it("fetches check relation result with supplied params", async () => {
       const tuple = relationshipTupleFactory.build();
       const conn = {
         facades: {
@@ -200,7 +201,7 @@ describe("JIMM API", () => {
           jimM: {
             checkRelation: vi.fn(() =>
               Promise.reject(
-                new Error("Error while trying to run cross model query!"),
+                new Error("Error while trying to check relations!"),
               ),
             ),
           },
@@ -209,8 +210,62 @@ describe("JIMM API", () => {
       await expect(
         checkRelation(conn, relationshipTupleFactory.build()),
       ).rejects.toMatchObject(
-        new Error("Error while trying to run cross model query!"),
+        new Error("Error while trying to check relations!"),
       );
+    });
+  });
+
+  describe("checkRelations", () => {
+    it("fetches relationship tuple result with supplied params", async () => {
+      const tuples = [relationshipTupleFactory.build()];
+      const conn = {
+        facades: {
+          jimM: {
+            checkRelations: vi.fn(() => Promise.resolve(true)),
+          },
+        },
+      } as unknown as Connection;
+      const response = await checkRelations(conn, tuples);
+      expect(conn.facades.jimM.checkRelations).toHaveBeenCalledWith(tuples);
+      expect(response).toStrictEqual(true);
+    });
+
+    it("handles errors", async () => {
+      const error = new Error("Request failed");
+      const conn = {
+        facades: {
+          jimM: {
+            checkRelations: vi.fn().mockImplementation(() => {
+              throw error;
+            }),
+          },
+        },
+      } as unknown as Connection;
+      await expect(
+        checkRelations(conn, [relationshipTupleFactory.build()]),
+      ).rejects.toBe(error);
+    });
+
+    it("handles no JIMM connection", async () => {
+      const conn = {
+        facades: {},
+      } as unknown as Connection;
+      await expect(
+        checkRelations(conn, [relationshipTupleFactory.build()]),
+      ).rejects.toMatchObject(new Error(Label.NO_JIMM));
+    });
+
+    it("should handle exceptions", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            checkRelations: vi.fn(() => Promise.reject(new Error("Uh oh!"))),
+          },
+        },
+      } as unknown as Connection;
+      await expect(
+        checkRelations(conn, [relationshipTupleFactory.build()]),
+      ).rejects.toMatchObject(new Error("Uh oh!"));
     });
   });
 });
