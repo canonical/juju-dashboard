@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "prefer-absolute-version-dependencies": "error",
+    "prefer-absolute-version-devDependencies": "error",
+    "prefer-alphabetical-dependencies": "error",
+    "prefer-alphabetical-devDependencies": "error"
+  }
+}

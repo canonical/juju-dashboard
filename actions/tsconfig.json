@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "moduleResolution": "bundler"
+  },
+  "include": [
+    "src",
+    "vite.config.ts"
+  ],
+  "references": [
+    {
+      "path": "../tsconfig.node.json"
+    }
+  ]
+}

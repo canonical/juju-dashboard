@@ -1,0 +1,22 @@
+{
+  "name": "juju-dashboard-actions",
+  "version": "0.0.0",
+  "packageManager": "yarn@4.8.1",
+  "type": "module",
+  "scripts": {
+    "build": "./scripts/build.sh",
+    "clean": "rm -rf ./dist",
+    "run-action": "./scripts/run.sh",
+    "test": "vitest",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@actions/core": "1.11.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "0.38.3",
+    "eslint": "9.28.0",
+    "typescript": "5.8.3",
+    "vitest": "3.2.1"
+  }
+}
