@@ -26,7 +26,8 @@
     "eslint-check": "eslint src/",
     "generate-release-tarball": "yarn run build && ./scripts/generate-release-tarball",
     "generate-version-file": "./scripts/generate-version-file",
-    "lint": "npmPkgJsonLint . && yarn run eslint-check && yarn run prettier-check && yarn run stylelint-check",
+    "lint": "yarn lint:package-json && yarn run eslint-check && yarn run prettier-check && yarn run stylelint-check",
+    "lint:package-json": "npmPkgJsonLint -c ./.npmpackagejsonlintrc.json ./ ./actions",
     "prettier-check": "prettier --check 'src/**/*'",
     "serve": "yarn run start",
     "start": "vite -c vite.dev.config.ts",
@@ -135,14 +136,6 @@
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.0.9",
     "vitest-fetch-mock": "0.4.5"
-  },
-  "npmpackagejsonlint": {
-    "rules": {
-      "prefer-absolute-version-dependencies": "error",
-      "prefer-absolute-version-devDependencies": "error",
-      "prefer-alphabetical-dependencies": "error",
-      "prefer-alphabetical-devDependencies": "error"
-    }
   },
   "packageManager": "yarn@4.8.1"
 }

@@ -12,7 +12,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@actions/core@npm:^1.11.1":
+"@actions/core@npm:1.11.1":
   version: 1.11.1
   resolution: "@actions/core@npm:1.11.1"
   dependencies:
@@ -2467,7 +2467,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/ncc@npm:^0.38.3":
+"@vercel/ncc@npm:0.38.3":
   version: 0.38.3
   resolution: "@vercel/ncc@npm:0.38.3"
   dependencies:
@@ -5855,7 +5855,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.28.0":
+"eslint@npm:9.28.0":
   version: 9.28.0
   resolution: "eslint@npm:9.28.0"
   dependencies:
@@ -8189,11 +8189,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "juju-dashboard-actions@workspace:actions"
   dependencies:
-    "@actions/core": "npm:^1.11.1"
-    "@vercel/ncc": "npm:^0.38.3"
-    eslint: "npm:^9.28.0"
-    typescript: "npm:^5.8.3"
-    vitest: "npm:^3.2.1"
+    "@actions/core": "npm:1.11.1"
+    "@vercel/ncc": "npm:0.38.3"
+    eslint: "npm:9.28.0"
+    typescript: "npm:5.8.3"
+    vitest: "npm:3.2.1"
   languageName: unknown
   linkType: soft
 
@@ -12386,7 +12386,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.8.3":
+"typescript@npm:5.8.3":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
   bin:
@@ -12406,7 +12406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>":
   version: 5.8.3
   resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
   bin:
@@ -12890,7 +12890,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:^3.2.1":
+"vitest@npm:3.2.1":
   version: 3.2.1
   resolution: "vitest@npm:3.2.1"
   dependencies:
