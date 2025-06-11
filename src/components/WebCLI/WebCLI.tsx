@@ -30,6 +30,7 @@ type Props = {
    * When overriding this function then ANSI codes need to be manually handled.
    */
   processOutput?: OutputProps["processOutput"];
+  tableLinks?: OutputProps["tableLinks"];
   protocol?: string;
 };
 
@@ -47,6 +48,7 @@ const WebCLI = ({
   activeUser,
   processOutput,
   protocol = "wss",
+  tableLinks,
 }: Props) => {
   const connection = useRef<Connection | null>(null);
   const [shouldShowHelp, setShouldShowHelp] = useState(true);
@@ -235,6 +237,7 @@ const WebCLI = ({
         content={output}
         showHelp={shouldShowHelp || hasInlineError(InlineErrors.AUTHENTICATION)}
         setShouldShowHelp={setShouldShowHelp}
+        tableLinks={tableLinks}
         helpMessage={
           // If errors exist, display them instead of the default help message.
           hasInlineError() ? (

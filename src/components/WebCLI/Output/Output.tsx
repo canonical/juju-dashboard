@@ -4,7 +4,7 @@ import fastDeepEqual from "fast-deep-equal/es6";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { processCommandOutput } from "../utils";
+import { processTableLinks, processCommandOutput } from "../utils";
 
 import { HELP_HEIGHT, CONSIDER_CLOSED, DEFAULT_HEIGHT } from "./consts";
 import type { Props } from "./types";
@@ -24,6 +24,7 @@ const WebCLIOutput = ({
   processOutput,
   showHelp,
   setShouldShowHelp,
+  tableLinks,
 }: Props) => {
   const resizeDeltaY = useRef(0);
   const dragNode = useRef<HTMLDivElement>(null);
@@ -144,6 +145,9 @@ const WebCLIOutput = ({
     // Handle custom renders. If a renderer doesn't return anything then it
     // falls through to the next handler.
     try {
+      if (tableLinks) {
+        output = processTableLinks(command, content, tableLinks);
+      }
       if (!output && processOutput) {
         output = processCommandOutput(command, content, processOutput);
       }
