@@ -1,6 +1,14 @@
 {
   "compilerOptions": {
     "baseUrl": "src",
+    "paths": {
+      "@/lib": [
+        "./lib/index.ts"
+      ],
+      "@/lib/*": [
+        "./lib/*"
+      ]
+    },
     "moduleResolution": "bundler"
   },
   "include": [
