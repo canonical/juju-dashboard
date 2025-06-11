@@ -1,6 +1,5 @@
 'DIR' => 
-  "/src/" ||
-  "/actions/src/"
+  "/src/"
 
 'TESTCODE_FILE' =>
   "/src/test/" ||
