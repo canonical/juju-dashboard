@@ -1,5 +1,6 @@
 import type { ConnectionInfo, Transport } from "@canonical/jujulib";
 
+import { relationshipTupleFactory } from "testing/factories/juju/juju";
 import { connectionInfoFactory } from "testing/factories/juju/jujulib";
 
 import JIMMV4, { JIMMRelation } from "./JIMMV4";
@@ -91,6 +92,27 @@ describe("JIMMV4", () => {
         request: "ListControllers",
         version: 4,
         params: {},
+      },
+      expect.any(Function),
+      expect.any(Function),
+    );
+  });
+
+  it("checkRelations", async () => {
+    const jimm = new JIMMV4(transport, connectionInfo);
+    const tuples = [
+      relationshipTupleFactory.build(),
+      relationshipTupleFactory.build(),
+    ];
+    void jimm.checkRelations(tuples);
+    expect(transport.write).toHaveBeenCalledWith(
+      {
+        type: "JIMM",
+        request: "CheckRelations",
+        version: 4,
+        params: {
+          tuples,
+        },
       },
       expect.any(Function),
       expect.any(Function),

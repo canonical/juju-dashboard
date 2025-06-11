@@ -49,6 +49,12 @@ export type CheckRelationResponse =
     }
   | { error: string };
 
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/f99b1498267dcb551b640c5b389657aa4cf7f798/pkg/api/params/params.go#L372
+export type CheckRelationsResponse = {
+  results: CheckRelationResponse[];
+};
+
 class JIMMV4 extends JIMMV3 {
   static NAME: string;
   static VERSION: number;
@@ -73,6 +79,18 @@ class JIMMV4 extends JIMMV3 {
         request: "CheckRelation",
         version: 4,
         params: { tuple },
+      };
+      this._transport.write(req, resolve, reject);
+    });
+  }
+
+  checkRelations(tuples: RelationshipTuple[]): Promise<CheckRelationsResponse> {
+    return new Promise((resolve, reject) => {
+      const req = {
+        type: "JIMM",
+        request: "CheckRelations",
+        version: 4,
+        params: { tuples },
       };
       this._transport.write(req, resolve, reject);
     });

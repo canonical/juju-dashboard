@@ -9,7 +9,12 @@ import {
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
-import { checkRelation, crossModelQuery, findAuditEvents } from "juju/jimm/api";
+import {
+  checkRelation,
+  checkRelations,
+  crossModelQuery,
+  findAuditEvents,
+} from "juju/jimm/api";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
@@ -377,6 +382,45 @@ export const modelPollerMiddleware: Middleware<
             : "Could not check permissions.";
         reduxStore.dispatch(
           jujuActions.addCheckRelationErrors({ tuple, errors: errorMessage }),
+        );
+      }
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
+    } else if (
+      isSpecificAction<ReturnType<typeof jujuActions.checkRelations>>(
+        action,
+        jujuActions.checkRelations.type,
+      )
+    ) {
+      // Intercept checkRelations actions and fetch and store
+      // the tuples via the controller connection.
+      const { wsControllerURL, tuples } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+      try {
+        const response = await checkRelations(conn, tuples);
+        reduxStore.dispatch(
+          jujuActions.addCheckRelations({
+            requestId: action.payload.requestId,
+            tuples,
+            permissions: response.results,
+          }),
+        );
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Could not check relations.";
+        reduxStore.dispatch(
+          jujuActions.addCheckRelationsErrors({
+            requestId: action.payload.requestId,
+            tuples,
+            errors: errorMessage,
+          }),
         );
       }
       // The action has already been passed to the next middleware

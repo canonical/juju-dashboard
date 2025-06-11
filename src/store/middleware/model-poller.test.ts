@@ -39,6 +39,7 @@ vi.mock("juju/jimm/api", () => ({
   checkRelation: vi.fn(),
   crossModelQuery: vi.fn(),
   findAuditEvents: vi.fn(),
+  checkRelations: vi.fn(),
 }));
 
 describe("model poller", () => {
@@ -928,6 +929,92 @@ describe("model poller", () => {
       jujuActions.addCheckRelationErrors({
         tuple,
         errors: "Could not check permissions.",
+      }),
+    );
+  });
+
+  it("handles listing relationship tuples", async () => {
+    const requestId = "12356";
+    const tuples = [relationshipTupleFactory.build()];
+    const checkRelationsResponse = {
+      results: [{ allowed: false }, { allowed: true }],
+    };
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jimmModule, "checkRelations").mockImplementation(() =>
+      Promise.resolve(checkRelationsResponse),
+    );
+    const middleware = await runMiddleware();
+    const action = jujuActions.checkRelations({
+      wsControllerURL: "wss://example.com",
+      tuples,
+      requestId,
+    });
+    await middleware(next)(action);
+    expect(jimmModule.checkRelations).toHaveBeenCalledWith(
+      expect.any(Object),
+      tuples,
+    );
+    expect(next).toHaveBeenCalledWith(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.addCheckRelations({
+        tuples,
+        requestId,
+        permissions: checkRelationsResponse.results,
+      }),
+    );
+  });
+
+  it("handles no controller when listing relationship tuples", async () => {
+    const requestId = "12356";
+    const tuples = [relationshipTupleFactory.build()];
+    const checkRelationsResponse = {
+      results: [],
+    };
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jimmModule, "checkRelations").mockImplementation(() =>
+      Promise.resolve(checkRelationsResponse),
+    );
+    const middleware = await runMiddleware();
+    const action = jujuActions.checkRelations({
+      requestId,
+      wsControllerURL: "nothing",
+      tuples,
+    });
+    await middleware(next)(action);
+    expect(jimmModule.checkRelations).not.toHaveBeenCalled();
+  });
+
+  it("handles non-standard errors when listing relationship tuples", async () => {
+    const requestId = "12356";
+    const tuples = [relationshipTupleFactory.build()];
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jimmModule, "checkRelations")
+      // eslint-disable-next-line prefer-promise-reject-errors
+      .mockImplementation(() => Promise.reject("Uh oh!"));
+    const middleware = await runMiddleware();
+    const action = jujuActions.checkRelations({
+      requestId,
+      wsControllerURL: "wss://example.com",
+      tuples,
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.addCheckRelationsErrors({
+        requestId,
+        tuples,
+        errors: "Could not check relations.",
       }),
     );
   });

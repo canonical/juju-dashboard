@@ -28,6 +28,7 @@ import type {
   ModelListInfo,
   ModelSecrets,
   ReBACAllowed,
+  ReBACRelationship,
   ReBACState,
   SecretsState,
 } from "store/juju/types";
@@ -244,6 +245,14 @@ export const relationshipTupleFactory = Factory.define<RelationshipTuple>(
   }),
 );
 
+export const partialRelationshipTupleFactory = Factory.define<
+  Partial<RelationshipTuple>
+>(() => ({
+  object: "user-eggman@external",
+  relation: JIMMRelation.MEMBER,
+  target_object: "admins",
+}));
+
 export const rebacAllowedFactory = Factory.define<ReBACAllowed>(() => ({
   errors: null,
   loaded: false,
@@ -251,8 +260,18 @@ export const rebacAllowedFactory = Factory.define<ReBACAllowed>(() => ({
   tuple: relationshipTupleFactory.build(),
 }));
 
+export const rebacRelationshipFactory = Factory.define<ReBACRelationship>(
+  () => ({
+    errors: null,
+    loaded: false,
+    loading: false,
+    requestId: "rel123",
+  }),
+);
+
 export const rebacState = Factory.define<ReBACState>(() => ({
   allowed: [],
+  relationships: [],
 }));
 
 export const jujuStateFactory = Factory.define<JujuState>(() => ({
