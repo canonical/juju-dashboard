@@ -3,6 +3,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
 import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
 import { actions as jujuActions } from "store/juju";
+import type { ReBACAllowed } from "store/juju/types";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -12,13 +13,18 @@ import {
   controllerFeaturesStateFactory,
   authUserInfoFactory,
 } from "testing/factories/general";
-import { rebacAllowedFactory } from "testing/factories/juju/juju";
+import {
+  rebacAllowedFactory,
+  rebacRelationshipFactory,
+  relationshipTupleFactory,
+} from "testing/factories/juju/juju";
 import { ComponentProviders, createStore } from "testing/utils";
 
 import {
   useCheckPermissions,
   useIsJIMMAdmin,
   useAuditLogsPermitted,
+  useCheckRelations,
 } from "./permissions";
 
 describe("useCheckPermissions", () => {
@@ -603,6 +609,351 @@ describe("useAuditLogsPermitted", () => {
       expect(dispatched).toEqual(
         expect.arrayContaining([adminAction, auditLogAction]),
       );
+    });
+  });
+});
+
+describe("useCheckRelations", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://example.com/api",
+        }),
+        controllerFeatures: controllerFeaturesStateFactory.build({
+          "wss://example.com/api": controllerFeaturesFactory.build({
+            rebac: true,
+          }),
+        }),
+      }),
+    });
+  });
+
+  it("fetches relationships", async () => {
+    const requestId = "123456";
+    const tuples = [relationshipTupleFactory.build()];
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderHook(() => useCheckRelations(requestId, tuples), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    const action = jujuActions.checkRelations({
+      requestId,
+      tuples,
+      wsControllerURL: "wss://example.com/api",
+    });
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelations.type,
+        ),
+      ).toMatchObject(action);
+    });
+  });
+
+  it("returns the relationships", async () => {
+    const requestId = "1234567";
+    const tuples = [
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-admins",
+      }),
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-readers",
+      }),
+    ];
+    const relationships = rebacRelationshipFactory.build({
+      loading: true,
+      loaded: true,
+      requestId,
+    });
+
+    const allowed = [
+      rebacAllowedFactory.build({
+        tuple: tuples[0],
+        loading: true,
+        loaded: true,
+        allowed: true,
+      }),
+      rebacAllowedFactory.build({
+        tuple: tuples[1],
+        loading: false,
+        loaded: true,
+        allowed: false,
+      }),
+    ];
+    state.juju.rebac.allowed = allowed;
+    state.juju.rebac.relationships = [relationships];
+    const store = createStore(state);
+    const { result } = renderHook(() => useCheckRelations(requestId, tuples), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    expect(result.current).toMatchObject({
+      loading: true,
+      loaded: true,
+      permissions: allowed,
+    });
+  });
+
+  it("does not try and fetch the relationships if the tuples are not provided", async () => {
+    const requestId = "12345";
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderHook(() => useCheckRelations(requestId), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelations.type,
+        ),
+      ).toBeUndefined();
+    });
+  });
+
+  it("does not try and fetch the relationships if the tuples array has a new reference", async () => {
+    const requestId = "12345";
+    const tuples = [
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-admins",
+      }),
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-readers",
+      }),
+    ];
+    const [store, actions] = createStore(state, { trackActions: true });
+    const { rerender } = renderHook(
+      () => useCheckRelations(requestId, tuples),
+      {
+        wrapper: (props) => (
+          <ComponentProviders {...props} path="/" store={store} />
+        ),
+      },
+    );
+    await waitFor(() => {
+      expect(
+        actions.filter(
+          (dispatch) => dispatch.type === jujuActions.checkRelations.type,
+        ),
+      ).toHaveLength(1);
+    });
+    rerender([...tuples]);
+    await waitFor(() => {
+      expect(
+        actions.filter(
+          (dispatch) => dispatch.type === jujuActions.checkRelations.type,
+        ),
+      ).toHaveLength(1);
+    });
+  });
+
+  it("does not fetch the relationships that are already loading", async () => {
+    const requestId = "12345";
+    const tuples = [
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-admins",
+      }),
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-readers",
+      }),
+    ];
+    const relationships = rebacRelationshipFactory.build({
+      requestId,
+      loading: true,
+    });
+    state.juju.rebac.relationships = [relationships];
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderHook(() => useCheckRelations(requestId, tuples), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelations.type,
+        ),
+      ).toBeUndefined();
+    });
+  });
+
+  it("does not fetch the relationships that have already loaded", async () => {
+    const requestId = "12345";
+    const tuples = [
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-admins",
+      }),
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-readers",
+      }),
+    ];
+    const relationships = rebacRelationshipFactory.build({
+      requestId,
+      loaded: true,
+    });
+    state.juju.rebac.relationships = [relationships];
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderHook(() => useCheckRelations(requestId, tuples), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelations.type,
+        ),
+      ).toBeUndefined();
+    });
+  });
+
+  it("cleans up previous relationships if the tuple changes", async () => {
+    const requestId = "12345";
+    const tuples = [
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-admins",
+      }),
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-readers",
+      }),
+    ];
+    const relationships = rebacRelationshipFactory.build({
+      requestId,
+      loaded: true,
+    });
+    state.juju.rebac.relationships = [relationships];
+    const [store, actions] = createStore(state, { trackActions: true });
+    const { rerender } = renderHook<
+      {
+        permissions?: ReBACAllowed[] | null;
+        loading: boolean;
+        loaded: boolean;
+      },
+      {
+        tuplesList: RelationshipTuple[];
+        cleanup: boolean;
+      }
+    >(
+      ({ tuplesList, cleanup } = { tuplesList: tuples, cleanup: true }) =>
+        useCheckRelations(requestId, tuplesList, cleanup),
+      {
+        wrapper: (props) => (
+          <ComponentProviders {...props} path="/" store={store} />
+        ),
+      },
+    );
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelations.type,
+        ),
+      ).toBeUndefined();
+    });
+    rerender({
+      tuplesList: [
+        ...tuples,
+        relationshipTupleFactory.build({
+          object: "user-eggman@external",
+          target_object: "mode-8910",
+        }),
+      ],
+      cleanup: true,
+    });
+    const action = jujuActions.removeCheckRelations({
+      requestId,
+    });
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.removeCheckRelations.type,
+        ),
+      ).toMatchObject(action);
+    });
+  });
+
+  it("can clean up on unmount", async () => {
+    const requestId = "56789";
+    const tuples = [
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-admins",
+      }),
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-readers",
+      }),
+    ];
+    const relationships = rebacRelationshipFactory.build({
+      requestId,
+      loaded: true,
+    });
+    state.juju.rebac.relationships = [relationships];
+    const [store, actions] = createStore(state, { trackActions: true });
+    const { unmount } = renderHook(
+      () => useCheckRelations(requestId, tuples, true),
+      {
+        wrapper: (props) => (
+          <ComponentProviders {...props} path="/" store={store} />
+        ),
+      },
+    );
+    const action = jujuActions.removeCheckRelations({
+      requestId,
+    });
+    unmount();
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.removeCheckRelations.type,
+        ),
+      ).toMatchObject(action);
+    });
+  });
+
+  it("does not fetch the relationships if rebac is not enabled", async () => {
+    const requestId = "12345";
+    const tuples = [
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-admins",
+      }),
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-readers",
+      }),
+    ];
+    state.general.controllerFeatures = controllerFeaturesStateFactory.build({
+      "wss://example.com/api": controllerFeaturesFactory.build({
+        rebac: false,
+      }),
+    });
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderHook(() => useCheckRelations(requestId, tuples), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelations.type,
+        ),
+      ).toBeUndefined();
     });
   });
 });
