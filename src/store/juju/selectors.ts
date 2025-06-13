@@ -1085,6 +1085,21 @@ export const getReBACPermission = createSelector(
     allowed.find((relation) => fastDeepEqual(relation.tuple, tuple)),
 );
 
+export const getReBACPermissions = createSelector(
+  [
+    getReBACAllowedState,
+    (_state: RootState, tuples?: RelationshipTuple[] | null) => tuples,
+  ],
+  (allowed, tuples) =>
+    tuples
+      ? allowed.filter((relation) => {
+          for (const tuple of tuples) {
+            if (fastDeepEqual(relation.tuple, tuple)) return relation.tuple;
+          }
+        })
+      : null,
+);
+
 export const getReBACPermissionLoading = createSelector(
   [
     (state, tuple?: RelationshipTuple | null) =>
@@ -1113,4 +1128,25 @@ export const hasReBACPermission = createSelector(
   (permission) => {
     return permission?.allowed ?? false;
   },
+);
+
+export const getReBACRelationshipsState = createSelector(
+  [slice],
+  (sliceState) => sliceState.rebac.relationships,
+);
+
+export const getReBACRelationships = createSelector(
+  [getReBACRelationshipsState, (_state, requestId: string) => requestId],
+  (relationships, requestId) =>
+    relationships.find((relation) => relation.requestId, requestId),
+);
+
+export const getReBACRelationshipsLoading = createSelector(
+  [(state, requestId: string) => getReBACRelationships(state, requestId)],
+  (permission) => permission?.loading ?? false,
+);
+
+export const getReBACRelationshipsLoaded = createSelector(
+  [(state, requestId: string) => getReBACRelationships(state, requestId)],
+  (permission) => permission?.loaded ?? false,
 );

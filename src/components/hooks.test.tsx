@@ -1,11 +1,22 @@
+import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import { createAction } from "@reduxjs/toolkit";
 import { renderHook } from "@testing-library/react";
 import { MemoryRouter, Outlet, Route, Routes } from "react-router";
 
 import { StatusView } from "layout/Status";
 import { rootStateFactory } from "testing/factories";
-import { ComponentProviders, changeURL, createStore } from "testing/utils";
+import {
+  ComponentProviders,
+  changeURL,
+  createStore,
+  renderWrappedHook,
+} from "testing/utils";
 
-import { useEntityDetailsParams, useStatusView } from "./hooks";
+import {
+  useEntityDetailsParams,
+  useStatusView,
+  useCleanupOnUnmount,
+} from "./hooks";
 
 describe("useEntityDetailsParams", () => {
   it("retrieve entity details from the URL", () => {
@@ -90,5 +101,72 @@ describe("useStatusView", () => {
     });
     result.unmount();
     expect(setStatus).toHaveBeenCalledWith(null);
+  });
+});
+
+describe("useCleanupOnUnmount", () => {
+  it("dispatches on unmount", () => {
+    const action = vi.fn().mockImplementation(createAction("action"));
+    const payload = "payload";
+    const { unmount } = renderWrappedHook(() =>
+      useCleanupOnUnmount(
+        action as unknown as ActionCreatorWithPayload<string>,
+        true,
+        payload,
+      ),
+    );
+    unmount();
+    expect(action).toHaveBeenCalledWith(payload);
+  });
+
+  it("does not dispatch on unmount if cleanup is not enabled", () => {
+    const action = vi.fn().mockImplementation(createAction("action"));
+    const payload = "payload";
+    const { unmount } = renderWrappedHook(() =>
+      useCleanupOnUnmount(
+        action as unknown as ActionCreatorWithPayload<string>,
+        false,
+        payload,
+      ),
+    );
+    unmount();
+    expect(action).not.toHaveBeenCalled();
+  });
+
+  it("dispatches a updated action on unmount if it changes", () => {
+    const firstAction = vi.fn().mockImplementation(createAction("action"));
+    const newAction = vi.fn().mockImplementation(createAction("action2"));
+    const firstPayload = "payload";
+    const newPayload = "payload2";
+    type Args = {
+      action?: unknown;
+      enabled?: boolean;
+      payload?: string;
+    };
+    const { rerender, unmount } = renderWrappedHook(
+      ({ action, enabled, payload }: Args = {}) =>
+        useCleanupOnUnmount(
+          action as unknown as ActionCreatorWithPayload<string>,
+          enabled,
+          payload,
+        ),
+      {
+        initialProps: {
+          action: firstAction,
+          enabled: true,
+          payload: firstPayload,
+        },
+      },
+    );
+    rerender({
+      action: newAction,
+      enabled: true,
+      payload: newPayload,
+    });
+    unmount();
+    // Ideally this test would check that the original cleanup action wasn't
+    // called, but RTL unmounts the component when rerendering so it always gets
+    // called.
+    expect(newAction).toHaveBeenCalledWith(newPayload);
   });
 });

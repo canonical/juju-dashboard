@@ -5,6 +5,7 @@ import type {
   UnknownAction,
 } from "@reduxjs/toolkit";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import type { RenderHookResult } from "@testing-library/react";
 import { render, renderHook } from "@testing-library/react";
 import { useEffect, type PropsWithChildren, type ReactNode } from "react";
 import reactHotToast, { Toaster } from "react-hot-toast";
@@ -42,6 +43,7 @@ type Options = {
   url?: string;
   path?: string;
   routeChildren?: RouteObject[];
+  initialProps?: Record<string, unknown>;
 } & (OptionsWithStore | OptionsWithState);
 
 export type ComponentProps = {
@@ -141,12 +143,11 @@ export const renderWrappedHook = <Result, Props>(
   options?: Options | null,
 ): {
   router: Router | null;
-  result: { current: Result };
   store: OptionsWithStore["store"] | null;
-} => {
+} & RenderHookResult<Result, Props> => {
   let router: Router | null = null;
   let store: OptionsWithStore["store"] | null = null;
-  const { result } = renderHook(hook, {
+  const result = renderHook(hook, {
     queries,
     wrapper: ({ children }: PropsWithChildren) => {
       const {
@@ -164,7 +165,7 @@ export const renderWrappedHook = <Result, Props>(
       );
     },
   });
-  return { router, result, store };
+  return { ...result, router, store };
 };
 
 export function createStore(
