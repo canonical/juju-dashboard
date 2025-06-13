@@ -14,8 +14,10 @@ import {
 
 import {
   useEntityDetailsParams,
-  useStatusView,
   useCleanupOnUnmount,
+  useModelAppParams,
+  useModelIndexParams,
+  useStatusView,
 } from "./hooks";
 
 describe("useEntityDetailsParams", () => {
@@ -66,6 +68,71 @@ describe("useEntityDetailsParams", () => {
       ),
     });
     expect(result.current.isNestedEntityPage).toBe(true);
+  });
+});
+
+describe("useModelIndexParams", () => {
+  it("retrieves model parameters from the URL", () => {
+    changeURL("/models/eggman@external/group-test");
+    const { result } = renderHook(() => useModelIndexParams(), {
+      wrapper: (props) => (
+        <ComponentProviders
+          {...props}
+          path="/models/:userName/:modelName"
+          store={createStore(rootStateFactory.build())}
+        />
+      ),
+    });
+    expect(result.current).toStrictEqual({
+      userName: "eggman@external",
+      modelName: "group-test",
+    });
+  });
+  it("produces empty object on other URL", () => {
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const { result } = renderHook(() => useModelIndexParams(), {
+      wrapper: (props) => (
+        <ComponentProviders
+          {...props}
+          path="/models/:userName/:modelName/app/:appName"
+          store={createStore(rootStateFactory.build())}
+        />
+      ),
+    });
+    expect(result.current).toStrictEqual({});
+  });
+});
+
+describe("useModelAppParams", () => {
+  it("retrieves model app parameters from the URL", () => {
+    changeURL("/models/eggman@external/group-test/app/etcd");
+    const { result } = renderHook(() => useModelAppParams(), {
+      wrapper: (props) => (
+        <ComponentProviders
+          {...props}
+          path="/models/:userName/:modelName/app/:appName"
+          store={createStore(rootStateFactory.build())}
+        />
+      ),
+    });
+    expect(result.current).toStrictEqual({
+      userName: "eggman@external",
+      modelName: "group-test",
+      appName: "etcd",
+    });
+  });
+  it("produces empty object on other URL", () => {
+    changeURL("/models/eggman@external/group-test");
+    const { result } = renderHook(() => useModelAppParams(), {
+      wrapper: (props) => (
+        <ComponentProviders
+          {...props}
+          path="/models/:userName/:modelName"
+          store={createStore(rootStateFactory.build())}
+        />
+      ),
+    });
+    expect(result.current).toStrictEqual({});
   });
 });
 

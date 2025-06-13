@@ -1,8 +1,7 @@
 import { ConfirmationModal, usePortal } from "@canonical/react-components";
 import type { JSX } from "react";
-import { useParams } from "react-router";
 
-import type { EntityDetailsRoute } from "components/Routes";
+import { useModelAppParams } from "components/hooks";
 import { type SetError } from "hooks/useInlineErrors";
 import { useExecuteActionOnUnits } from "juju/api-hooks";
 import type { ConfirmTypes } from "panels/types";
@@ -35,7 +34,7 @@ const ConfirmationDialog = ({
   setInlineErrors,
 }: Props): JSX.Element | null => {
   const { Portal } = usePortal();
-  const { modelName, userName } = useParams<EntityDetailsRoute>();
+  const { modelName, userName } = useModelAppParams();
   const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
 
   if (confirmType === ConfirmType.SUBMIT) {
