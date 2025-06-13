@@ -95,15 +95,26 @@ runs:
             esac
             ;;
         esac
-        echo "repo-ref=$REPO_REF" >> "$GITHUB_OUTPUT"
-        echo "dashboard-source=$DASHBOARD_SOURCE" >> "$GITHUB_OUTPUT"
-        echo "dashboard-charm-ref=$DASHBOARD_CHARM_REF" >> "$GITHUB_OUTPUT"
-        echo "dashboard-charm-channel=$DASHBOARD_CHARM_CHANNEL" >> "$GITHUB_OUTPUT"
-        echo "machine-bundled-dashboard=$MACHINE_BUNDLED_DASHBOARD" >> "$GITHUB_OUTPUT"
-        echo "k8s-dashboard-resource=$K8S_DASHBOARD_RESOURCE" >> "$GITHUB_OUTPUT"
-        echo "jimm-version=$JIMM_VERSION" >> "$GITHUB_OUTPUT"
-        echo "juju-channel=$JUJU_CHANNEL" >> "$GITHUB_OUTPUT"
-        echo "send-failure-notification=$SEND_FAILURE_NOTIFICATION" >> "$GITHUB_OUTPUT"
+
+        export_variable() {
+          key="$1"
+          value="$2"
+
+          echo "$key=$value" | tee -a "$GITHUB_OUTPUT"
+        }
+
+        echo "Exporting action configuration"
+        echo "=============================="
+        export_variable "repo-ref" "$REPO_REF"
+        export_variable "dashboard-source" "$DASHBOARD_SOURCE"
+        export_variable "dashboard-charm-ref" "$DASHBOARD_CHARM_REF"
+        export_variable "dashboard-charm-channel" "$DASHBOARD_CHARM_CHANNEL"
+        export_variable "machine-bundled-dashboard" "$MACHINE_BUNDLED_DASHBOARD"
+        export_variable "k8s-dashboard-resource" "$K8S_DASHBOARD_RESOURCE"
+        export_variable "jimm-version" "$JIMM_VERSION"
+        export_variable "juju-channel" "$JUJU_CHANNEL"
+        export_variable "send-failure-notification" "$SEND_FAILURE_NOTIFICATION"
+        echo "=============================="
     - name: Checkout Juju Dashboard repo
       uses: actions/checkout@v4
       with:
