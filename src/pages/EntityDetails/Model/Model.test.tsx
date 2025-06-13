@@ -33,6 +33,7 @@ import {
   modelFeaturesStateFactory,
   modelFeaturesFactory,
   rebacAllowedFactory,
+  rebacState,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -134,6 +135,48 @@ describe("Model", () => {
   it("renders the info panel data", () => {
     renderComponent(<Model />, { state, url, path });
     expect(screen.getByTestId(InfoPanelTestId.INFO_PANEL)).toBeInTheDocument();
+  });
+
+  it("displays model access for Juju controllers", () => {
+    if (state.general.config) {
+      state.general.config.isJuju = true;
+    }
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
+          users: [
+            modelUserInfoFactory.build({
+              user: "eggman@external",
+              access: "read",
+            }),
+          ],
+        }),
+      }),
+    };
+    renderComponent(<Model />, { state, url, path });
+    expect(screen.getByLabelText("access")).toHaveTextContent("read");
+  });
+
+  it("displays model access for JIMM controllers", () => {
+    if (state.general.config) {
+      state.general.config.isJuju = false;
+    }
+    state.juju.rebac = rebacState.build({
+      allowed: [
+        rebacAllowedFactory.build({
+          tuple: {
+            object: "user-eggman@external",
+            relation: JIMMRelation.WRITER,
+            target_object: "model-abc123",
+          },
+          loading: true,
+          allowed: true,
+        }),
+      ],
+    });
+    renderComponent(<Model />, { state, url, path });
+    expect(screen.getByTestId(InfoPanelTestId.INFO_PANEL)).toBeInTheDocument();
+    expect(screen.getByLabelText("access")).toHaveTextContent("writer");
   });
 
   it("renders the main table", () => {

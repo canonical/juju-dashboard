@@ -1,7 +1,12 @@
 import type { TooltipProps } from "@canonical/react-components";
 import { Tooltip } from "@canonical/react-components";
 import classNames from "classnames";
-import type { ComponentType, ElementType, PropsWithChildren } from "react";
+import type {
+  ComponentType,
+  ElementType,
+  HTMLProps,
+  PropsWithChildren,
+} from "react";
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 
 type Props = {
@@ -9,6 +14,7 @@ type Props = {
   positionElementClassName?: TooltipProps["positionElementClassName"];
   wrapperClassName?: string;
   element?: ElementType | ComponentType;
+  elementProps?: HTMLProps<HTMLElement>;
 } & TooltipProps &
   PropsWithChildren;
 
@@ -21,6 +27,7 @@ const TruncatedTooltip = ({
   tooltipClassName,
   wrapperClassName,
   element: Component = "div",
+  elementProps,
   ...tooltipProps
 }: Props) => {
   const truncatedNode = useRef<HTMLDivElement>(null);
@@ -70,7 +77,7 @@ const TruncatedTooltip = ({
           "u-hide": !truncated,
         })}
       >
-        <Component ref={truncatedNode} className="u-truncate">
+        <Component ref={truncatedNode} className="u-truncate" {...elementProps}>
           {children}
         </Component>
       </Tooltip>
