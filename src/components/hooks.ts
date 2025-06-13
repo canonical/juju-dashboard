@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { useParams, useOutletContext } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
@@ -57,4 +59,31 @@ export const useStatusView = (statusView: StatusView) => {
       setStatus(null);
     };
   }, [setStatus, statusView]);
+};
+
+// Dispatch a cleanup action when a component unmounts.
+export const useCleanupOnUnmount = <P>(
+  cleanupAction: ActionCreatorWithPayload<P>,
+  cleanupEnabled?: boolean,
+  payload?: P | null,
+) => {
+  const dispatch = useDispatch();
+  const cleanupPayload = useRef<(() => void) | null>(null);
+
+  // Store the cleanup action in a ref, this is required otherwise the cleanup
+  // action will get called whenever any of the args change instead of when the
+  // component is unmounted.
+  useEffect(() => {
+    if (cleanupEnabled && payload) {
+      cleanupPayload.current = () => dispatch(cleanupAction(payload));
+    }
+  }, [cleanupEnabled, cleanupAction, dispatch, payload]);
+
+  // Clean up the store when the component that is using the hook gets unmounted.
+  useEffect(
+    () => () => {
+      cleanupPayload.current?.();
+    },
+    [],
+  );
 };

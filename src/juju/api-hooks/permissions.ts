@@ -1,9 +1,10 @@
 import { usePrevious } from "@canonical/react-components";
 import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import fastDeepEqual from "fast-deep-equal/es6";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
+import { useCleanupOnUnmount } from "components/hooks";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
 import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
 import {
@@ -38,6 +39,8 @@ export const useReBAC = <A, C>(
   const previousPayload = usePrevious(payload, false);
   const payloadChanged = !fastDeepEqual(payload, previousPayload);
 
+  useCleanupOnUnmount(cleanupAction, cleanup, payloadCleanup);
+
   useEffect(() => {
     if (
       // Only fetch it if it doesn't already exist in the store.
@@ -70,32 +73,6 @@ export const useReBAC = <A, C>(
       dispatch(cleanupAction(payloadCleanup));
     }
   }, [cleanup, cleanupAction, dispatch, payloadChanged, payloadCleanup]);
-
-  const cleanupPayload = useRef<(() => void) | null>(null);
-
-  // Store the cleanup action in a ref, this is required otherwise the cleanup
-  // action will get called whenever any of the args change instead of when the
-  // component is unmounted.
-  useEffect(() => {
-    if (cleanup && payloadChanged && payloadCleanup) {
-      cleanupPayload.current = () => dispatch(cleanupAction(payloadCleanup));
-    }
-  }, [
-    cleanup,
-    cleanupAction,
-    dispatch,
-    payload,
-    payloadChanged,
-    payloadCleanup,
-  ]);
-
-  // Clean up the store when the component that is using the hook gets unmounted.
-  useEffect(
-    () => () => {
-      cleanupPayload.current?.();
-    },
-    [],
-  );
 };
 
 export const useCheckPermissions = (
