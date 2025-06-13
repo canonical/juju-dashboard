@@ -1,9 +1,8 @@
 import { Button } from "@canonical/react-components";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router";
+import { useMatch } from "react-router";
 
-import type { EntityDetailsRoute } from "components/Routes";
 import { isSet } from "components/utils";
 import useInlineErrors from "hooks/useInlineErrors";
 import { getCharmsURLFromApplications } from "juju/api";
@@ -15,6 +14,7 @@ import {
   getSelectedApplications,
 } from "store/juju/selectors";
 import { useAppSelector, useAppStore } from "store/store";
+import urls from "urls";
 import { logger } from "utils/logger";
 
 import { Label } from "./types";
@@ -38,7 +38,8 @@ const CharmsAndActionsPanel = () => {
   const selectedApplications = useAppSelector(getSelectedApplications);
   const getState = useAppStore().getState;
   const dispatch = useDispatch();
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { modelName, userName } =
+    useMatch(urls.model.index(null))?.params ?? {};
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );

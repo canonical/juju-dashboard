@@ -7,10 +7,9 @@ import {
 } from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import { useId, useState, useRef } from "react";
-import { useParams } from "react-router";
+import { useMatch } from "react-router";
 
 import Panel from "components/Panel";
-import type { EntityDetailsRoute } from "components/Routes";
 import SecretLabel from "components/secrets/SecretLabel";
 import {
   useListSecrets,
@@ -25,6 +24,7 @@ import {
   getModelApplications,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import urls from "urls";
 import { toErrorString } from "utils";
 
 import { Label, TestId } from "./types";
@@ -46,7 +46,8 @@ const handleErrors = (response: ErrorResults) => {
 };
 
 const GrantSecretPanel = () => {
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { modelName, userName } =
+    useMatch(urls.model.index(null))?.params ?? {};
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );

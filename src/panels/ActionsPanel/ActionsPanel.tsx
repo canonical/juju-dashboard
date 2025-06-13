@@ -1,13 +1,12 @@
 import { ActionButton, Button } from "@canonical/react-components";
 import type { JSX } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useMatch } from "react-router";
 
 import CharmIcon from "components/CharmIcon";
 import LoadingHandler from "components/LoadingHandler";
 import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox";
-import type { EntityDetailsRoute } from "components/Routes";
 import useInlineErrors from "hooks/useInlineErrors";
 import { useGetActionsForApplication } from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
@@ -17,6 +16,7 @@ import { getModelUUID } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 import type { RootState } from "store/store";
 import { useAppStore, useAppSelector } from "store/store";
+import urls from "urls";
 import { logger } from "utils/logger";
 
 import ActionOptions from "./ActionOptions";
@@ -39,7 +39,8 @@ type ActionsQueryParams = {
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
   const appState = appStore.getState();
-  const { appName, modelName, userName } = useParams<EntityDetailsRoute>();
+  const { appName, modelName, userName } =
+    useMatch(urls.model.app.index(null))?.params ?? {};
   const modelUUID = useAppSelector((state: RootState) =>
     getModelUUID(state, modelName),
   );

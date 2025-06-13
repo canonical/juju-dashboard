@@ -4,12 +4,11 @@ import classnames from "classnames";
 import cloneDeep from "clone-deep";
 import type { JSX, MouseEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useMatch } from "react-router";
 
 import FadeIn from "animations/FadeIn";
 import CharmIcon from "components/CharmIcon";
 import Panel from "components/Panel";
-import type { EntityDetailsRoute } from "components/Routes";
 import { isSet } from "components/utils";
 import useAnalytics from "hooks/useAnalytics";
 import useInlineErrors, { type SetError } from "hooks/useInlineErrors";
@@ -22,6 +21,7 @@ import boxImage from "static/images/no-config-params.svg";
 import { actions as jujuActions } from "store/juju";
 import { getModelSecrets, getModelByUUID } from "store/juju/selectors";
 import { useAppSelector, useAppDispatch } from "store/store";
+import urls from "urls";
 import { secretIsAppOwned } from "utils";
 import { logger } from "utils/logger";
 
@@ -93,7 +93,8 @@ export default function ConfigPanel(): JSX.Element {
     entity: null,
     modelUUID: null,
   };
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { modelName, userName } =
+    useMatch(urls.model.index(null))?.params ?? {};
   const [queryParams, , handleRemovePanelQueryParams] =
     usePanelQueryParams<ConfigQueryParams>(defaultQueryParams);
   const { entity: appName, charm, modelUUID } = queryParams;
