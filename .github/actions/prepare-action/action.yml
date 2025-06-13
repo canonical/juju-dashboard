@@ -53,23 +53,23 @@ runs:
         K8S_DASHBOARD_RESOURCE=""
         JIMM_VERSION="dev"
         JUJU_CHANNEL="3/stable"
-        SEND_FAILURE_NOTIFICATION=""
+        SEND_FAILURE_NOTIFICATION="true"
 
         case "${{ github.event_name }}" in
           "pull_request")
             # Select pull request branch
             REPO_REF="$PULL_REQUEST_HEAD_REF"
+            # Don't send failure notification for PRs, as it'll show in the UI
+            SEND_FAILURE_NOTIFICATION=""
             ;;
           "release")
             # Use release ref
             REPO_REF="$RELEASE_TARGET_COMMITISH"
-            SEND_FAILURE_NOTIFICATION="true"
             ;;
           "workflow_dispatch")
             DASHBOARD_CHARM_REF="$INPUTS_DASHBOARD_CHARM_REF"
             JIMM_VERSION="$INPUTS_JIMM_VERSION"
             JUJU_CHANNEL="$INPUTS_JUJU_CHANNEL"
-            SEND_FAILURE_NOTIFICATION="true"
 
             case "$INPUTS_DASHBOARD_SOURCE" in
               "bundled")
