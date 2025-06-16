@@ -1,9 +1,8 @@
 import { Button } from "@canonical/react-components";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router";
 
-import type { EntityDetailsRoute } from "components/Routes";
+import { useModelIndexParams } from "components/hooks";
 import { isSet } from "components/utils";
 import useInlineErrors from "hooks/useInlineErrors";
 import { getCharmsURLFromApplications } from "juju/api";
@@ -38,7 +37,7 @@ const CharmsAndActionsPanel = () => {
   const selectedApplications = useAppSelector(getSelectedApplications);
   const getState = useAppStore().getState;
   const dispatch = useDispatch();
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { modelName, userName } = useModelIndexParams();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );

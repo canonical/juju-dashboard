@@ -7,10 +7,9 @@ import {
 } from "@canonical/react-components";
 import { Form, Formik } from "formik";
 import { useId, useState, useRef } from "react";
-import { useParams } from "react-router";
 
 import Panel from "components/Panel";
-import type { EntityDetailsRoute } from "components/Routes";
+import { useModelIndexParams } from "components/hooks";
 import SecretLabel from "components/secrets/SecretLabel";
 import {
   useListSecrets,
@@ -46,7 +45,7 @@ const handleErrors = (response: ErrorResults) => {
 };
 
 const GrantSecretPanel = () => {
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { modelName, userName } = useModelIndexParams();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );

@@ -15,9 +15,8 @@ import {
 } from "@canonical/react-components";
 import type { JSX, ReactNode } from "react";
 import { useId, useState } from "react";
-import { useParams } from "react-router";
 
-import type { EntityDetailsRoute } from "components/Routes";
+import { useModelIndexParams } from "components/hooks";
 import SecretForm from "components/secrets/SecretForm";
 import SecretLabel from "components/secrets/SecretLabel";
 import useCanManageSecrets from "hooks/useCanManageSecrets";
@@ -39,7 +38,7 @@ type Props = {
 };
 
 export default function SecretsPicker({ setValue }: Props): JSX.Element {
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { modelName, userName } = useModelIndexParams();
   const [saving, setSaving] = useState<boolean>(false);
   const formId = useId();
   const modelUUID = useAppSelector((state) =>

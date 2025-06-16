@@ -1,13 +1,12 @@
 import { ActionButton, Button } from "@canonical/react-components";
 import type { JSX } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router";
 
 import CharmIcon from "components/CharmIcon";
 import LoadingHandler from "components/LoadingHandler";
 import Panel from "components/Panel";
 import RadioInputBox from "components/RadioInputBox";
-import type { EntityDetailsRoute } from "components/Routes";
+import { useModelAppParams } from "components/hooks";
 import useInlineErrors from "hooks/useInlineErrors";
 import { useGetActionsForApplication } from "juju/api-hooks";
 import PanelInlineErrors from "panels/PanelInlineErrors";
@@ -39,7 +38,7 @@ type ActionsQueryParams = {
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
   const appState = appStore.getState();
-  const { appName, modelName, userName } = useParams<EntityDetailsRoute>();
+  const { appName, modelName, userName } = useModelAppParams();
   const modelUUID = useAppSelector((state: RootState) =>
     getModelUUID(state, modelName),
   );

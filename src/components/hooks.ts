@@ -1,13 +1,18 @@
 import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { useParams, useOutletContext } from "react-router";
+import { useParams, useOutletContext, useMatch } from "react-router";
 
-import type { EntityDetailsRoute } from "components/Routes";
+import type {
+  EntityDetailsRoute,
+  ModelAppRoute,
+  ModelIndexRoute,
+} from "components/Routes";
 import type { BaseLayoutContext } from "layout/BaseLayout";
 import type { StatusView } from "layout/Status";
 import { getModelByUUID } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import urls from "urls";
 import getUserName from "utils/getUserName";
 
 type NameProps = {
@@ -35,6 +40,14 @@ export const useEntityDetailsParams = () => {
     unitId,
     userName,
   };
+};
+
+export const useModelIndexParams = (): Partial<ModelIndexRoute> => {
+  return useMatch(urls.model.index(null))?.params ?? {};
+};
+
+export const useModelAppParams = (): Partial<ModelAppRoute> => {
+  return useMatch(urls.model.app.index(null))?.params ?? {};
 };
 
 export const useModelByUUIDDetails = ({
