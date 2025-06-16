@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { fixupConfigRules, fixupPluginRules } from "@eslint/compat";
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
+import stylistic from "@stylistic/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import _import from "eslint-plugin-import";
 import prettier from "eslint-plugin-prettier";
@@ -41,6 +42,7 @@ export default [
       "react-refresh": reactRefresh,
       react: fixupPluginRules(react),
       import: fixupPluginRules(_import),
+      "@stylistic": stylistic,
     },
     languageOptions: {
       globals: {
@@ -105,6 +107,7 @@ export default [
         "error",
         { exceptions: ["_", "i", "j", "x", "y"], properties: "never" },
       ],
+      "@stylistic/no-multiple-empty-lines": ["error", { max: 1 }],
       "react/no-unescaped-entities": 0,
       "react/display-name": 0,
       "@typescript-eslint/no-duplicate-enum-values": 0,
