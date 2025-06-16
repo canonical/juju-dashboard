@@ -100,6 +100,7 @@ export default [
       "no-case-declarations": 0,
       "no-constant-condition": ["error", { checkLoops: false }],
       "prefer-destructuring": 0,
+      "one-var": ["error", "never"],
       "react/no-unescaped-entities": 0,
       "react/display-name": 0,
       "@typescript-eslint/no-duplicate-enum-values": 0,
