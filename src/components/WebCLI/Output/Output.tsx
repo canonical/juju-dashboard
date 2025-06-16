@@ -57,33 +57,33 @@ const WebCLIOutput = ({
       }
     };
 
-    const resizeMouse = (e: MouseEvent) => {
-      e.preventDefault();
-      resize(e.clientY);
+    const resizeMouse = (ev: MouseEvent) => {
+      ev.preventDefault();
+      resize(ev.clientY);
     };
 
-    const resizeTouch = (e: TouchEvent) => {
-      e.preventDefault();
-      resize(e.touches[0].clientY);
+    const resizeTouch = (ev: TouchEvent) => {
+      ev.preventDefault();
+      resize(ev.touches[0].clientY);
     };
 
-    const addMouseResizeListener = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
+    const addMouseResizeListener = (ev: MouseEvent) => {
+      const target = ev.target as HTMLElement;
       if (!dragHandles.includes(target?.classList.value)) {
         return;
       }
-      resizeDeltaY.current = e.offsetY ?? 0;
+      resizeDeltaY.current = ev.offsetY ?? 0;
       document.addEventListener("mousemove", resizeMouse);
     };
 
-    const addTouchResizeListener = (e: TouchEvent) => {
-      const target = e.target as HTMLElement;
+    const addTouchResizeListener = (ev: TouchEvent) => {
+      const target = ev.target as HTMLElement;
       if (!dragHandles.includes(target?.classList.value)) {
         return;
       }
       const rect = target.getBoundingClientRect();
-      if (typeof e.targetTouches?.[0]?.pageY === "number") {
-        resizeDeltaY.current = e.targetTouches[0].pageY;
+      if (typeof ev.targetTouches?.[0]?.pageY === "number") {
+        resizeDeltaY.current = ev.targetTouches[0].pageY;
       } else if (typeof rect?.top === "number") {
         resizeDeltaY.current = 0 - rect.top;
       } else {

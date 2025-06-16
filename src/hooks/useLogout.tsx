@@ -18,8 +18,8 @@ const useLogout = () => {
     dispatch(appThunks.logOut())
       .then(unwrapResult)
       .catch((error) => {
-        reactHotToast.custom((t: ToastInstance) => (
-          <ToastCard toastInstance={t} type="negative">
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard toastInstance={toast} type="negative">
             <>
               {Label.LOGOUT_ERROR} Try{" "}
               <Button

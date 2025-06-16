@@ -46,8 +46,8 @@ export default function LogIn() {
   useEffect(() => {
     visitURLs?.forEach((visitURL) => {
       if (!viewedAuthRequests.current.includes(visitURL)) {
-        reactHotToast.custom((t: ToastInstance) => (
-          <ToastCard toastInstance={t} type="caution">
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard toastInstance={toast} type="caution">
             <p className="u-no-margin--top u-no-padding--top">
               {Label.AUTH_REQUIRED}
             </p>
@@ -58,7 +58,7 @@ export default function LogIn() {
               onClick={() => {
                 // Close the notification once the user clicks the button to
                 // open the authentication page.
-                reactHotToast.remove(t.id);
+                reactHotToast.remove(toast.id);
               }}
             >
               {Label.AUTHENTICATE}

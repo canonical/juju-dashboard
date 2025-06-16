@@ -12,9 +12,9 @@ export default function BooleanConfig({
   validate,
 }: ConfigProps): JSX.Element {
   function handleOptionChange(
-    e: FormEvent<HTMLInputElement> | MouseEvent<HTMLInputElement>,
+    ev: FormEvent<HTMLInputElement> | MouseEvent<HTMLInputElement>,
   ) {
-    const target = e.target as HTMLInputElement;
+    const target = ev.target as HTMLInputElement;
     const bool = target.value === "true" ? true : false;
     setNewValue(target.name, bool);
   }

@@ -161,8 +161,8 @@ const WebCLI = ({
     [],
   );
 
-  const handleCommandSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleCommandSubmit = (ev: FormEvent<HTMLFormElement>) => {
+    ev.preventDefault();
     clearMessageBuffer();
     setShouldShowHelp(false);
     // We need to get the most up to date connection information in the event
@@ -192,7 +192,7 @@ const WebCLI = ({
       );
     }
 
-    const formFields = e.currentTarget.children;
+    const formFields = ev.currentTarget.children;
     if (!("command" in formFields)) {
       return;
     }

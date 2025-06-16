@@ -27,7 +27,7 @@ export class CandidAuth extends pollingMixin(Auth) {
     // on the JIMM controller we're connected to.
     try {
       await jujuApi.disableControllerUUIDMasking(conn);
-    } catch (e) {
+    } catch (err) {
       // Silently fail, if this doesn't work then the user isn't authorized
       // to perform the action.
     }

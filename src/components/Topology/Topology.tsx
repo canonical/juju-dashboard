@@ -246,15 +246,15 @@ const Topology = memo(
       const appIcon = appIcons
         .enter()
         .append("g")
-        .attr("transform", (d) => {
-          const adjustment = isSubordinate(d) ? 30 : 0;
+        .attr("transform", (application) => {
+          const adjustment = isSubordinate(application) ? 30 : 0;
           const x =
-            d.annotations["gui-x"] !== undefined
-              ? d.annotations["gui-x"]
+            application.annotations["gui-x"] !== undefined
+              ? application.annotations["gui-x"]
               : gridCount.x + adjustment;
           const y =
-            d.annotations["gui-y"] !== undefined
-              ? Number(d.annotations["gui-y"])
+            application.annotations["gui-y"] !== undefined
+              ? Number(application.annotations["gui-y"])
               : gridCount.y + adjustment;
           gridCount.x += 250;
           // Let the placed units determine the max width of the visualization.
@@ -268,11 +268,11 @@ const Topology = memo(
 
       appIcon
         .classed("application", true)
-        .attr("data-name", (d) => d.name)
+        .attr("data-name", (application) => application.name)
         .append("circle")
-        .attr("cx", (d) => (isSubordinate(d) ? 60 : 90))
-        .attr("cy", (d) => (isSubordinate(d) ? 60 : 90))
-        .attr("r", (d) => (isSubordinate(d) ? 60 : 90))
+        .attr("cx", (application) => (isSubordinate(application) ? 60 : 90))
+        .attr("cy", (application) => (isSubordinate(application) ? 60 : 90))
+        .attr("r", (application) => (isSubordinate(application) ? 60 : 90))
         .attr("fill", "#f5f5f5")
         .attr("stroke-width", 3)
         .attr("stroke", "#888888")
@@ -318,20 +318,26 @@ const Topology = memo(
 
       appIcon
         .append("image")
-        .attr("xlink:href", (d) =>
-          "charm-url" in d ? generateIconPath(d["charm-url"]) : null,
+        .attr("xlink:href", (application) =>
+          "charm-url" in application
+            ? generateIconPath(application["charm-url"])
+            : null,
         )
         // use a fallback image if the icon is not found
         .on("error", function () {
           d3.select(this).attr("xlink:href", () => defaultCharmIcon);
         })
-        .attr("width", (d) => (isSubordinate(d) ? 96 : 126))
-        .attr("height", (d) => (isSubordinate(d) ? 96 : 126))
-        .attr("transform", (d) =>
-          isSubordinate(d) ? "translate(13, 13)" : "translate(28, 28)",
+        .attr("width", (application) => (isSubordinate(application) ? 96 : 126))
+        .attr("height", (application) =>
+          isSubordinate(application) ? 96 : 126,
         )
-        .attr("clip-path", (d) =>
-          isSubordinate(d)
+        .attr("transform", (application) =>
+          isSubordinate(application)
+            ? "translate(13, 13)"
+            : "translate(28, 28)",
+        )
+        .attr("clip-path", (application) =>
+          isSubordinate(application)
             ? "circle(43px at 48px 48px)"
             : "circle(55px at 63px 63px)",
         );
@@ -342,10 +348,10 @@ const Topology = memo(
       relationLine
         .classed("relation", true)
         .append("line")
-        .attr("x1", (d) => getRelationPosition(d).x1)
-        .attr("y1", (d) => getRelationPosition(d).y1)
-        .attr("x2", (d) => getRelationPosition(d).x2)
-        .attr("y2", (d) => getRelationPosition(d).y2)
+        .attr("x1", (relation) => getRelationPosition(relation).x1)
+        .attr("y1", (relation) => getRelationPosition(relation).y1)
+        .attr("x2", (relation) => getRelationPosition(relation).x2)
+        .attr("y2", (relation) => getRelationPosition(relation).y2)
         .attr("stroke", "#666666")
         .attr("stroke-width", 2);
 

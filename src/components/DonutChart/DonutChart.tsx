@@ -44,7 +44,7 @@ const DonutChart = ({ alert = 0, blocked = 0, running = 0 }: Props) => {
           : ["is-disabled"],
       );
 
-    const pie = d3.pie<void, KeyValTuple>().value((d) => d[1]);
+    const pie = d3.pie<void, KeyValTuple>().value(([_key, value]) => value);
     const dataReady = pie(Object.entries(data));
 
     svg
@@ -59,7 +59,7 @@ const DonutChart = ({ alert = 0, blocked = 0, running = 0 }: Props) => {
           .innerRadius(100)
           .outerRadius(radius),
       )
-      .attr("class", (d) => color(d.data[0]));
+      .attr("class", (datum) => color(datum.data[0]));
 
     return () => {
       svg.remove();

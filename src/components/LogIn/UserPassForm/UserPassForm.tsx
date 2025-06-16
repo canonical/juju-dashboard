@@ -20,10 +20,10 @@ const UserPassForm = () => {
   const wsControllerURL = useAppSelector(getWSControllerURL);
 
   function handleSubmit(
-    e: FormEvent<HTMLFormElement & { elements: LoginElements }>,
+    ev: FormEvent<HTMLFormElement & { elements: LoginElements }>,
   ) {
-    e.preventDefault();
-    const elements = e.currentTarget.elements;
+    ev.preventDefault();
+    const elements = ev.currentTarget.elements;
     const user = elements.username.value;
     const password = elements.password.value;
     dispatch(generalActions.cleanupLoginErrors());

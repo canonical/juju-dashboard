@@ -337,7 +337,9 @@ const slice = createSlice({
       >,
     ) => {
       action.payload.charms = action.payload.charms.filter((charm) => {
-        return !state.charms.some((c) => c.url === charm.url);
+        return !state.charms.some(
+          (state_charm) => state_charm.url === charm.url,
+        );
       });
       state.charms = [...state.charms, ...action.payload.charms];
     },
