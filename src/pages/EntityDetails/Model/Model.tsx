@@ -148,7 +148,7 @@ const Model = () => {
         {modelInfoData && (
           <EntityInfo
             data={{
-              access: modelAccess || "Unknown",
+              access: modelAccess || "unknown",
               controller: modelInfoData.type,
               "Cloud/Region": generateCloudAndRegion(
                 modelInfoData["cloud"],

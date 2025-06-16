@@ -2,7 +2,11 @@ import { useId } from "react";
 
 import { useCheckRelations } from "juju/api-hooks/permissions";
 import { JIMMRelation } from "juju/jimm/JIMMV4";
-import { getIsJuju, getControllerUserTag } from "store/general/selectors";
+import {
+  getIsJuju,
+  getControllerUserTag,
+  getIsJIMM,
+} from "store/general/selectors";
 import { getModelAccess, getReBACPermissions } from "store/juju/selectors";
 import type { ReBACAllowed } from "store/juju/types";
 import { useAppSelector } from "store/store";
@@ -31,12 +35,13 @@ const getHighestAccess = (relations: ReBACAllowed[]) => {
 
 const useModelAccess = (modelUUID?: string | null, cleanup?: boolean) => {
   const isJuju = useAppSelector(getIsJuju);
+  const isJIMM = useAppSelector(getIsJIMM);
   const controllerUser = useAppSelector(getControllerUserTag);
   const jujuAccess = useAppSelector((state) =>
     getModelAccess(state, modelUUID),
   );
   const relations =
-    !isJuju && controllerUser && modelUUID
+    isJIMM && controllerUser && modelUUID
       ? [
           {
             object: controllerUser,
