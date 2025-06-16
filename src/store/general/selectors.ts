@@ -28,6 +28,14 @@ export const getIsJuju = createSelector(
 );
 
 /**
+  Determines if JIMM is used based on config value from state.
+  @param state The application state.
+  @returns true if JIMM is used, false if JIMM isn't used or
+    undefined if config is undefined.
+ */
+export const getIsJIMM = createSelector([getIsJuju], (isJuju) => !isJuju);
+
+/**
   Determines if analytics is enabled based on config value from state.
   @param state The application state.
   @returns true if analytics is enabled, false if analytics isn't enabled,
