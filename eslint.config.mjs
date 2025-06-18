@@ -107,6 +107,7 @@ export default [
         "error",
         { exceptions: ["_", "i", "j", "x", "y"], properties: "never" },
       ],
+      camelcase: ["error", { properties: "never" }],
       "@stylistic/no-multiple-empty-lines": ["error", { max: 1 }],
       "react/no-unescaped-entities": 0,
       "react/display-name": 0,
