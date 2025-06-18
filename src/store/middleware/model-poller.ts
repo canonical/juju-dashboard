@@ -97,7 +97,7 @@ export const modelPollerMiddleware: Middleware<
             );
             return;
           }
-        } catch (e) {
+        } catch (err) {
           reduxStore.dispatch(
             generalActions.storeLoginError({
               wsControllerURL,
@@ -105,7 +105,7 @@ export const modelPollerMiddleware: Middleware<
                 "Unable to log into the controller, check that the controller address is correct and that it is online.",
             }),
           );
-          return logger.log(LoginError.LOG, e, controllerData);
+          return logger.log(LoginError.LOG, err, controllerData);
         } finally {
           reduxStore.dispatch(generalActions.updateLoginLoading(false));
         }

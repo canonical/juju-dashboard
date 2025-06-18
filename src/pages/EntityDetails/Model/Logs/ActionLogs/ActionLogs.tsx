@@ -85,8 +85,8 @@ function generateAppIcon(
   return <>{appName}</>;
 }
 
-const compare = (a: string | number, b: string | number) =>
-  a === b ? 0 : a > b ? 1 : -1;
+const compare = (numA: string | number, numB: string | number) =>
+  numA === numB ? 0 : numA > numB ? 1 : -1;
 
 const tableSort = (column: string, rowA: Row<RowCells>, rowB: Row<RowCells>) =>
   column in rowA.original.sortData && column in rowB.original.sortData
@@ -250,9 +250,9 @@ export default function ActionLogs() {
         const hasSterr =
           actionFullDetails.status === "failed" && !!actionFullDetails.message;
         const stdout = hasStdout
-          ? log.map((m, i) => (
+          ? log.map(({ message }, i) => (
               <span className="action-logs__stdout" key={i}>
-                {m.message}
+                {message}
               </span>
             ))
           : [];

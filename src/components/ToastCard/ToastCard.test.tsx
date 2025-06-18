@@ -22,9 +22,9 @@ describe("Toast Card", () => {
   };
 
   it("should display message", () => {
-    const t = cloneDeep(toastInstanceExample);
+    const toast = cloneDeep(toastInstanceExample);
     render(
-      <ToastCard type="positive" toastInstance={t}>
+      <ToastCard type="positive" toastInstance={toast}>
         I am a toast message
       </ToastCard>,
     );
@@ -34,9 +34,9 @@ describe("Toast Card", () => {
   });
 
   it("should display as correct type", () => {
-    const t = cloneDeep(toastInstanceExample);
+    const toast = cloneDeep(toastInstanceExample);
     const { container } = render(
-      <ToastCard type="positive" toastInstance={t}>
+      <ToastCard type="positive" toastInstance={toast}>
         I am a toast message
       </ToastCard>,
     );
@@ -44,9 +44,9 @@ describe("Toast Card", () => {
   });
 
   it("should display correct success icon", () => {
-    const t = cloneDeep(toastInstanceExample);
+    const toast = cloneDeep(toastInstanceExample);
     render(
-      <ToastCard type="positive" toastInstance={t}>
+      <ToastCard type="positive" toastInstance={toast}>
         I am a toast message
       </ToastCard>,
     );
@@ -54,9 +54,9 @@ describe("Toast Card", () => {
   });
 
   it("should display correct error icon", () => {
-    const t = cloneDeep(toastInstanceExample);
+    const toast = cloneDeep(toastInstanceExample);
     render(
-      <ToastCard type="negative" toastInstance={t}>
+      <ToastCard type="negative" toastInstance={toast}>
         I am a toast message
       </ToastCard>,
     );
@@ -64,9 +64,9 @@ describe("Toast Card", () => {
   });
 
   it("should display correct warning icon", () => {
-    const t = cloneDeep(toastInstanceExample);
+    const toast = cloneDeep(toastInstanceExample);
     render(
-      <ToastCard type="caution" toastInstance={t}>
+      <ToastCard type="caution" toastInstance={toast}>
         I am a toast message
       </ToastCard>,
     );
@@ -74,9 +74,9 @@ describe("Toast Card", () => {
   });
 
   it("should display close icon", () => {
-    const t = cloneDeep(toastInstanceExample);
+    const toast = cloneDeep(toastInstanceExample);
     render(
-      <ToastCard type="negative" toastInstance={t}>
+      <ToastCard type="negative" toastInstance={toast}>
         I am a toast message
       </ToastCard>,
     );
@@ -86,9 +86,9 @@ describe("Toast Card", () => {
   });
 
   it("should not display an undo button if an undo function is not passed", () => {
-    const t = cloneDeep(toastInstanceExample);
+    const toast = cloneDeep(toastInstanceExample);
     render(
-      <ToastCard type="negative" toastInstance={t}>
+      <ToastCard type="negative" toastInstance={toast}>
         I am a toast message
       </ToastCard>,
     );
@@ -99,9 +99,9 @@ describe("Toast Card", () => {
 
   it("should display a clickable undo button if an undo function is passed", async () => {
     const undoFn = vi.fn();
-    const t = cloneDeep(toastInstanceExample);
+    const toast = cloneDeep(toastInstanceExample);
     render(
-      <ToastCard type="negative" toastInstance={t} undo={undoFn}>
+      <ToastCard type="negative" toastInstance={toast} undo={undoFn}>
         I am a toast message
       </ToastCard>,
     );
@@ -114,8 +114,8 @@ describe("Toast Card", () => {
   it("should remove the card when close is clicked", async () => {
     render(<Toaster />);
     await act(async () => {
-      reactHotToast.custom((t: ToastInstance) => (
-        <ToastCard type="negative" toastInstance={t}>
+      reactHotToast.custom((toast: ToastInstance) => (
+        <ToastCard type="negative" toastInstance={toast}>
           I am a toast message
         </ToastCard>
       ));
@@ -130,8 +130,8 @@ describe("Toast Card", () => {
   it("should close the card using the keyboard", async () => {
     render(<Toaster />);
     await act(async () => {
-      reactHotToast.custom((t: ToastInstance) => (
-        <ToastCard type="negative" toastInstance={t}>
+      reactHotToast.custom((toast: ToastInstance) => (
+        <ToastCard type="negative" toastInstance={toast}>
           I am a toast message
         </ToastCard>
       ));

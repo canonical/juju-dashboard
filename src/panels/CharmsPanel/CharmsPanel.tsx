@@ -27,8 +27,8 @@ export default function CharmsPanel({
   const [selectedCharm, setSelectedCharm] = useState<string | null>(null);
   const charms = useAppSelector(getCharms);
 
-  const handleSubmit: FormEventHandler = (e) => {
-    e.preventDefault();
+  const handleSubmit: FormEventHandler = (ev) => {
+    ev.preventDefault();
     onCharmURLChange(selectedCharm);
   };
 

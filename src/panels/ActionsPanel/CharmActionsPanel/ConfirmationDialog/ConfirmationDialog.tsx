@@ -37,9 +37,9 @@ const executeAction = (
   executeActionOnUnits(
     // transform applications to unit list for the API
     selectedApplications
-      .map((a) =>
-        Array(a["unit-count"])
-          .fill("name" in a ? a.name : null)
+      .map((application) =>
+        Array(application["unit-count"])
+          .fill("name" in application ? application.name : null)
           .filter(Boolean)
           .map((unit, i) => `${unit}-${i}`),
       )
@@ -48,20 +48,20 @@ const executeAction = (
     selectedActionOptionValue,
   )
     .then((payload) => {
-      const error = payload?.actions?.find((e) => e.error);
+      const error = payload?.actions?.find(({ error }) => error);
       if (error) {
         throw error;
       }
-      reactHotToast.custom((t: ToastInstance) => (
-        <ToastCard toastInstance={t} type="positive">
+      reactHotToast.custom((toast: ToastInstance) => (
+        <ToastCard toastInstance={toast} type="positive">
           {Label.ACTION_SUCCESS}
         </ToastCard>
       ));
       return;
     })
     .catch(() => {
-      reactHotToast.custom((t: ToastInstance) => (
-        <ToastCard toastInstance={t} type="negative">
+      reactHotToast.custom((toast: ToastInstance) => (
+        <ToastCard toastInstance={toast} type="negative">
           {Label.ACTION_ERROR}
         </ToastCard>
       ));

@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { fixupConfigRules, fixupPluginRules } from "@eslint/compat";
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
+import stylistic from "@stylistic/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import _import from "eslint-plugin-import";
 import prettier from "eslint-plugin-prettier";
@@ -41,6 +42,7 @@ export default [
       "react-refresh": reactRefresh,
       react: fixupPluginRules(react),
       import: fixupPluginRules(_import),
+      "@stylistic": stylistic,
     },
     languageOptions: {
       globals: {
@@ -60,7 +62,7 @@ export default [
           "./tsconfig.json",
           "./tsconfig.node.json",
           "./actions/tsconfig.json",
-        ].map((p) => path.join(__dirname, p)),
+        ].map((project) => path.join(__dirname, project)),
         ecmaFeatures: { jsx: true },
       },
     },
@@ -100,6 +102,13 @@ export default [
       "no-case-declarations": 0,
       "no-constant-condition": ["error", { checkLoops: false }],
       "prefer-destructuring": 0,
+      "one-var": ["error", "never"],
+      "id-length": [
+        "error",
+        { exceptions: ["_", "i", "j", "x", "y"], properties: "never" },
+      ],
+      camelcase: ["error", { properties: "never" }],
+      "@stylistic/no-multiple-empty-lines": ["error", { max: 1 }],
       "react/no-unescaped-entities": 0,
       "react/display-name": 0,
       "@typescript-eslint/no-duplicate-enum-values": 0,

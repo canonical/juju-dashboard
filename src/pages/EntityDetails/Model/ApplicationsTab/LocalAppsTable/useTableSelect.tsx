@@ -39,7 +39,7 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
     });
     let apps = selectedApplications;
     if (apps.includes(application)) {
-      apps = apps.filter((a) => a !== application);
+      apps = apps.filter((testApplication) => testApplication !== application);
     } else {
       apps = [...apps, application];
     }

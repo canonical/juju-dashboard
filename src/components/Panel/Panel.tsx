@@ -23,26 +23,26 @@ type Props = PropsWithSpread<
 const close = {
   // Close panel if Escape key is pressed when panel active
   onEscape: (
-    e: KeyboardEvent,
+    ev: KeyboardEvent,
     onRemovePanelQueryParams: () => void,
     checkCanClose?: Props["checkCanClose"],
   ) => {
-    if (e.code === "Escape") {
-      if (checkCanClose && !checkCanClose?.(e)) {
+    if (ev.code === "Escape") {
+      if (checkCanClose && !checkCanClose?.(ev)) {
         return;
       }
       onRemovePanelQueryParams();
     }
   },
   onClickOutside: (
-    e: MouseEvent,
+    ev: MouseEvent,
     onRemovePanelQueryParams: () => void,
     checkCanClose?: Props["checkCanClose"],
   ) => {
-    if (checkCanClose && !checkCanClose?.(e)) {
+    if (checkCanClose && !checkCanClose?.(ev)) {
       return;
     }
-    const target = e.target as HTMLElement;
+    const target = ev.target as HTMLElement;
     if (!target.closest(".p-panel")) {
       onRemovePanelQueryParams();
     }
@@ -65,14 +65,14 @@ const Panel = forwardRef<HTMLDivElement, Props>(
   ) => {
     useListener(
       window,
-      (e: KeyboardEvent) =>
-        close.onEscape(e, onRemovePanelQueryParams, checkCanClose),
+      (ev: KeyboardEvent) =>
+        close.onEscape(ev, onRemovePanelQueryParams, checkCanClose),
       "keydown",
     );
     useListener(
       window,
-      (e: MouseEvent) =>
-        close.onClickOutside(e, onRemovePanelQueryParams, checkCanClose),
+      (ev: MouseEvent) =>
+        close.onClickOutside(ev, onRemovePanelQueryParams, checkCanClose),
       "click",
     );
 

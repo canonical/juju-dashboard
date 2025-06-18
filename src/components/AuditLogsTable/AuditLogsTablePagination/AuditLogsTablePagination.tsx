@@ -56,9 +56,9 @@ const AuditLogsTablePagination = ({
   const hasPrevPage = page > Number(DEFAULT_PAGE);
 
   const handleChangeSelect = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
+    (ev: React.ChangeEvent<HTMLSelectElement>) => {
       setQueryParams({ page: null }, { replace: true });
-      dispatch(jujuActions.updateAuditEventsLimit(Number(e.target.value)));
+      dispatch(jujuActions.updateAuditEventsLimit(Number(ev.target.value)));
     },
     [dispatch, setQueryParams],
   );

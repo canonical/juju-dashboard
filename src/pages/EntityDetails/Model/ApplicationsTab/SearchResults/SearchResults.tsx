@@ -46,7 +46,7 @@ const SearchResults = () => {
     if (!applications) {
       return;
     }
-    const searchedApps = fuse.search(filterQuery).map((e) => e.item);
+    const searchedApps = fuse.search(filterQuery).map(({ item }) => item);
     const filteredApplications: ApplicationData = {};
     searchedApps.forEach((application) => {
       if ("name" in application && applications[application.name]) {
