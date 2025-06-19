@@ -3,7 +3,11 @@ import { screen, within } from "@testing-library/react";
 import gceLogo from "static/images/logo/cloud/gce.svg";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
-import { configFactory, generalStateFactory } from "testing/factories/general";
+import {
+  configFactory,
+  generalStateFactory,
+  authUserInfoFactory,
+} from "testing/factories/general";
 import {
   detailedStatusFactory,
   modelStatusInfoFactory,
@@ -34,10 +38,14 @@ describe("StatusGroup", () => {
               }),
             },
             info: modelDataInfoFactory.build({
+              name: "test1",
               "controller-uuid": "controller123",
               uuid: "abc123",
             }),
-            model: modelStatusInfoFactory.build({ "cloud-tag": "cloud-aws" }),
+            model: modelStatusInfoFactory.build({
+              "cloud-tag": "cloud-aws",
+              name: "test1",
+            }),
             uuid: "abc123",
           }),
           def456: modelDataFactory.build({
@@ -72,6 +80,7 @@ describe("StatusGroup", () => {
         models: {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
+            name: "test1",
             wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
         },
@@ -115,18 +124,16 @@ describe("StatusGroup", () => {
       }),
       controllerConnections: {
         "wss://jimm.jujucharms.com/api": {
-          user: {
-            "display-name": "eggman",
+          user: authUserInfoFactory.build({
             identity: "user-eggman@external",
-            "controller-access": "",
-            "model-access": "",
-          },
+          }),
         },
       },
     });
     state.juju.modelData.abc123.info = modelDataInfoFactory.build({
       "cloud-tag": "cloud-aws",
       "controller-uuid": "controller123",
+      name: "test1",
       users: [
         modelUserInfoFactory.build({
           user: "eggman@external",
@@ -158,6 +165,6 @@ describe("StatusGroup", () => {
     const tables = screen.getAllByRole("grid");
     const row = within(tables[0]).getAllByRole("row")[1];
     const error = within(row).getByRole("link", { name: "app blocked" });
-    expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
+    expect(error).toHaveAttribute("href", "/models/eggman@external/test1");
   });
 });

@@ -10,7 +10,7 @@ import {
   modelDataFactory,
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
-import { createStore } from "testing/utils";
+import { createStore, renderWrappedHook } from "testing/utils";
 
 import useModelStatus from "./useModelStatus";
 
@@ -99,6 +99,26 @@ describe("useModelStatus", () => {
     });
     const { result } = renderHook(() => useModelStatus(), {
       wrapper: generateContainer(state, "/models", "/models?model=test-model"),
+    });
+    expect(result.current).toMatchObject(modelData);
+  });
+
+  it("can return the model status from a given model UUID", () => {
+    const modelData = modelDataFactory.build({
+      uuid: "abc123",
+      info: modelDataInfoFactory.build({
+        name: "test-model",
+      }),
+    });
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelData,
+        },
+      }),
+    });
+    const { result } = renderWrappedHook(() => useModelStatus("abc123"), {
+      state,
     });
     expect(result.current).toMatchObject(modelData);
   });
