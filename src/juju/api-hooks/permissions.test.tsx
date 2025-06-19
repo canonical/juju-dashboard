@@ -206,6 +206,7 @@ describe("useCheckPermissions", () => {
       rebacAllowedFactory.build({
         tuple: tuple,
         loaded: true,
+        loading: false,
       }),
     ];
     const [store, actions] = createStore(state, { trackActions: true });

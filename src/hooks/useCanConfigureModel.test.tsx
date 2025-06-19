@@ -44,7 +44,7 @@ const generateContainer =
     );
   };
 
-describe("useModelStatus", () => {
+describe("useCanConfigureModel", () => {
   let state: RootState;
   const url = "/models/eggman@external/test1";
   const path = "/models/:userName/:modelName";
@@ -100,6 +100,28 @@ describe("useModelStatus", () => {
     const { result } = renderHook(() => useCanConfigureModel(), {
       wrapper: generateContainer(state, path, url),
     });
+    expect(result.current).toBe(true);
+  });
+
+  it("can be passed a username and password", () => {
+    if (state.general.config) {
+      state.general.config.isJuju = true;
+    }
+    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+      uuid: "abc123",
+      name: "test1",
+      "controller-uuid": "controller123",
+      users: [
+        modelUserInfoFactory.build({
+          user: "eggman@external",
+          access: "admin",
+        }),
+      ],
+    });
+    const { result } = renderWrappedHook(
+      () => useCanConfigureModel(false, "test1", "eggman@external"),
+      { state },
+    );
     expect(result.current).toBe(true);
   });
 
