@@ -54,9 +54,13 @@ export type ProcessCommand = {
 
 export type ProcessOutput = Record<string, ProcessCommand>;
 
+export type HistoryItem = {
+  command: string;
+  messages: string[];
+};
+
 export type Props = {
-  content: string[];
-  command?: string | null;
+  content: HistoryItem[];
   helpMessage: ReactNode;
   loading?: boolean;
   processOutput?: ProcessOutput;
