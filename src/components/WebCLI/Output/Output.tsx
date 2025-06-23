@@ -6,19 +6,23 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { processTableLinks, processCommandOutput } from "../utils";
 
-import { HELP_HEIGHT, CONSIDER_CLOSED, DEFAULT_HEIGHT } from "./consts";
+import {
+  HELP_HEIGHT,
+  CONSIDER_CLOSED,
+  DEFAULT_HEIGHT,
+  AUTO_SCROLL_DISTANCE,
+} from "./consts";
 import type { Props } from "./types";
 import { TestId } from "./types";
 
 const defaultProcessOutput = (_command: string, messages: string[]) => (
-  <Ansi>{messages.map((message) => `\n${message}`).join("")}</Ansi>
+  <Ansi>{messages.map((message) => `${message}\n`).join("")}</Ansi>
 );
 
 const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
 
 const WebCLIOutput = ({
   content,
-  command,
   helpMessage,
   loading,
   processOutput,
@@ -28,16 +32,37 @@ const WebCLIOutput = ({
 }: Props) => {
   const resizeDeltaY = useRef(0);
   const dragNode = useRef<HTMLDivElement>(null);
+  const outputRef = useRef<HTMLPreElement>(null);
   const [height, setHeight] = useState(1);
   const [dragHeight, setDragHeight] = useState(0);
   const showHelpPrevious = usePrevious(showHelp, false);
   const contentPrevious = usePrevious(content, false);
+  const contentChanged = !fastDeepEqual(content, contentPrevious);
 
   const onResize = useCallback(() => {
     if (dragNode.current) {
       setDragHeight(dragNode.current.clientHeight);
     }
   }, []);
+
+  useEffect(() => {
+    if (contentChanged && outputRef.current) {
+      const newResponseHeight = document.querySelector(
+        ".webcli__output-content-response:last-child",
+      )?.clientHeight;
+      const scrollHeight = outputRef.current.scrollHeight;
+      // Get the distance the scroll area is from the bottom.
+      const distance =
+        scrollHeight -
+        (outputRef.current.clientHeight +
+          outputRef.current.scrollTop +
+          // Need to get the position from the bottom before the new content in.
+          (newResponseHeight || 0));
+      if (distance <= AUTO_SCROLL_DISTANCE) {
+        outputRef.current.scrollTo({ top: scrollHeight });
+      }
+    }
+  }, [contentChanged]);
 
   useListener(window, onResize, "resize", true, true);
 
@@ -131,34 +156,41 @@ const WebCLIOutput = ({
     // are then open it back up.
     if (
       // Only trigger this condition if the content changes.
-      !fastDeepEqual(content, contentPrevious) &&
+      contentChanged &&
       content.length &&
       height <= HELP_HEIGHT &&
       height !== DEFAULT_HEIGHT
     ) {
       setHeight(DEFAULT_HEIGHT);
+      outputRef.current?.scrollTo({ top: outputRef.current.scrollHeight });
     }
-  }, [content, contentPrevious, height]);
+  }, [content, contentChanged, height]);
 
-  let output: ReactNode = null;
-  if (command) {
+  const output = content.map(({ command, messages }, i) => {
+    let response: ReactNode = null;
     // Handle custom renders. If a renderer doesn't return anything then it
     // falls through to the next handler.
     try {
       if (tableLinks) {
-        output = processTableLinks(command, content, tableLinks);
+        response = processTableLinks(command, messages, tableLinks);
       }
-      if (!output && processOutput) {
-        output = processCommandOutput(command, content, processOutput);
+      if (!response && processOutput) {
+        response = processCommandOutput(command, messages, processOutput);
       }
-      if (!output) {
-        output = defaultProcessOutput(command, content);
+      if (!response) {
+        response = defaultProcessOutput(command, messages);
       }
     } catch (err) {
       // If the provided processor fails (e.g. if the data isn't what was expected) then fall back to the default.
-      output = defaultProcessOutput(command, content);
+      response = defaultProcessOutput(command, messages);
     }
-  }
+    return (
+      <div key={`message-${i}`} className="webcli__output-content-response">
+        <div>$ {command}</div>
+        {response}
+      </div>
+    );
+  });
 
   return (
     <div className="webcli__output" style={{ height: `${height}px` }}>
@@ -173,6 +205,7 @@ const WebCLIOutput = ({
         className="webcli__output-content"
         style={{ height: `${height}px` }}
         data-testid={TestId.CONTENT}
+        ref={outputRef}
       >
         {showHelp || (!loading && !content?.length) ? (
           <code data-testid={TestId.HELP}>{helpMessage}</code>

@@ -11,6 +11,7 @@ import { getUserName } from "utils";
 
 import type { OutputProps } from "./Output";
 import WebCLIOutput from "./Output";
+import type { HistoryItem } from "./Output/types";
 import Connection from "./connection";
 import { MAX_HISTORY } from "./consts";
 import { Label, TestId } from "./types";
@@ -56,16 +57,13 @@ const WebCLI = ({
   const [historyPosition, setHistoryPosition] = useState(0);
   const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [output, setOutput] = useState<string[]>([]);
+  const [output, setOutput] = useState<HistoryItem[]>([]);
   const lastCommand = useRef<string | null>(null);
   const [cliHistory, setCLIHistory] = useLocalStorage<string[]>(
     "cliHistory",
     [],
   );
 
-  const clearMessageBuffer = () => {
-    setOutput([]); // Clear the output when sending a new message.
-  };
   const keydownListener = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "ArrowUp" || event.key === "ArrowDown") {
@@ -147,7 +145,13 @@ const WebCLI = ({
         }
       },
       messageCallback: (messages: string[]) => {
-        setOutput(messages);
+        const command = lastCommand.current;
+        if (command) {
+          setOutput((previousOutput) => [
+            ...previousOutput,
+            { command, messages },
+          ]);
+        }
       },
       setLoading,
     }).connect();
@@ -163,7 +167,6 @@ const WebCLI = ({
 
   const handleCommandSubmit = (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
-    clearMessageBuffer();
     setShouldShowHelp(false);
     // We need to get the most up to date connection information in the event
     // that the original connection was redirected. This typically happens in
@@ -233,7 +236,6 @@ const WebCLI = ({
   return (
     <div className="webcli is-dark" data-testid={TestId.COMPONENT}>
       <WebCLIOutput
-        command={lastCommand.current}
         content={output}
         showHelp={shouldShowHelp || hasInlineError(InlineErrors.AUTHENTICATION)}
         setShouldShowHelp={setShouldShowHelp}

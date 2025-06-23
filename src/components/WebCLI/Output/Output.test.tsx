@@ -11,14 +11,24 @@ describe("Output", () => {
   it("should display content and not display help message", () => {
     renderComponent(
       <Output
-        command="status"
-        content={["Output"]}
+        content={[
+          {
+            command: "status",
+            messages: ["Output1"],
+          },
+          {
+            command: "help",
+            messages: ["Output2"],
+          },
+        ]}
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={vi.fn()}
       />,
     );
-    expect(screen.getByText("Output")).toBeInTheDocument();
+    expect(screen.getByTestId(TestId.CONTENT)).toHaveTextContent(
+      ["$ status", "Output1 ", "$ help", "Output2"].join(""),
+    );
     expect(screen.queryByText("Help message")).not.toBeInTheDocument();
     expect(screen.getByTestId(TestId.CONTENT)).toHaveAttribute(
       "style",
@@ -29,8 +39,12 @@ describe("Output", () => {
   it("should not display content and display help message", () => {
     renderComponent(
       <Output
-        command="status"
-        content={["Output"]}
+        content={[
+          {
+            command: "status",
+            messages: ["Output"],
+          },
+        ]}
         helpMessage="Help message"
         showHelp={true}
         setShouldShowHelp={vi.fn()}
@@ -47,7 +61,6 @@ describe("Output", () => {
   it("displays help while not loading and there is no content", () => {
     renderComponent(
       <Output
-        command="status"
         content={[]}
         helpMessage="Help message"
         showHelp={false}
@@ -61,7 +74,6 @@ describe("Output", () => {
   it("displays nothing while loading and there is no content", () => {
     renderComponent(
       <Output
-        command="status"
         content={[]}
         helpMessage="Help message"
         showHelp={false}
@@ -76,8 +88,12 @@ describe("Output", () => {
   it("should close the output when the help is closed", async () => {
     const { rerender } = render(
       <Output
-        command="status"
-        content={["Output"]}
+        content={[
+          {
+            command: "status",
+            messages: ["Output"],
+          },
+        ]}
         helpMessage="Help message"
         // Initially render with the help visible.
         showHelp={true}
@@ -90,8 +106,12 @@ describe("Output", () => {
     );
     rerender(
       <Output
-        command="status"
-        content={["Output"]}
+        content={[
+          {
+            command: "status",
+            messages: ["Output"],
+          },
+        ]}
         helpMessage="Help message"
         // Rerender with the help hidden.
         showHelp={false}
@@ -108,8 +128,12 @@ describe("Output", () => {
     const content = [`\u001b[1;39mApp\n\u001b[0m\u001b[33munknown`];
     renderComponent(
       <Output
-        command="status"
-        content={content}
+        content={[
+          {
+            command: "status",
+            messages: content,
+          },
+        ]}
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={vi.fn()}
@@ -124,8 +148,12 @@ describe("Output", () => {
     const messages = ["Model       Controller", "k8s         workloads"];
     renderComponent(
       <Output
-        command="remove-unit"
-        content={messages}
+        content={[
+          {
+            command: "remove-unit",
+            messages,
+          },
+        ]}
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={vi.fn()}
@@ -153,8 +181,12 @@ describe("Output", () => {
     const messages = ["Model       Controller", "k8s         workloads"];
     renderComponent(
       <Output
-        command="remove-unit"
-        content={messages}
+        content={[
+          {
+            command: "remove-unit",
+            messages,
+          },
+        ]}
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={vi.fn()}
@@ -181,8 +213,12 @@ describe("Output", () => {
     const messages = ["Model       Controller", "k8s         workloads"];
     renderComponent(
       <Output
-        command="status"
-        content={messages}
+        content={[
+          {
+            command: "status",
+            messages,
+          },
+        ]}
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={vi.fn()}
@@ -206,8 +242,12 @@ describe("Output", () => {
     const customId = "custom";
     renderComponent(
       <Output
-        command="status"
-        content={messages}
+        content={[
+          {
+            command: "status",
+            messages,
+          },
+        ]}
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={vi.fn()}
@@ -228,8 +268,12 @@ describe("Output", () => {
     const messages = ["Model       Controller", "k8s         workloads"];
     renderComponent(
       <Output
-        command="remove-unit"
-        content={messages}
+        content={[
+          {
+            command: "remove-unit",
+            messages,
+          },
+        ]}
         helpMessage="Help message"
         showHelp={false}
         setShouldShowHelp={vi.fn()}
@@ -246,5 +290,101 @@ describe("Output", () => {
     expect(await screen.findByTestId(TestId.CODE)).toHaveTextContent(
       "Model Controller",
     );
+  });
+
+  it("should scroll to the bottom when new commands are sent", async () => {
+    const { rerender } = render(
+      <Output
+        content={[
+          {
+            command: "status",
+            messages: ["Output"],
+          },
+        ]}
+        helpMessage="Help message"
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+      />,
+    );
+    const content = screen.getByTestId(TestId.CONTENT);
+    const scrollToSpy = vi.spyOn(content, "scrollTo");
+    // Mock the scroll height as this is not being rendered in a real DOM.
+    Object.defineProperty(content, "scrollHeight", {
+      configurable: true,
+      value: 500,
+    });
+    content.scrollTop = 350;
+    Object.defineProperty(content, "clientHeight", {
+      configurable: true,
+      value: 50,
+    });
+    rerender(
+      <Output
+        content={[
+          {
+            command: "status",
+            messages: ["Output1"],
+          },
+          {
+            command: "help",
+            messages: ["Output2"],
+          },
+        ]}
+        helpMessage="Help message"
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+      />,
+    );
+    expect(scrollToSpy).toHaveBeenCalledWith({
+      top: 500,
+    });
+    scrollToSpy.mockRestore();
+  });
+
+  it("should not scroll to the bottom when user has scrolled up", async () => {
+    const { rerender } = render(
+      <Output
+        content={[
+          {
+            command: "status",
+            messages: ["Output"],
+          },
+        ]}
+        helpMessage="Help message"
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+      />,
+    );
+    const content = screen.getByTestId(TestId.CONTENT);
+    const scrollToSpy = vi.spyOn(content, "scrollTo");
+    // Mock the scroll height as this is not being rendered in a real DOM.
+    Object.defineProperty(content, "scrollHeight", {
+      configurable: true,
+      value: 500,
+    });
+    content.scrollTop = 250;
+    Object.defineProperty(content, "clientHeight", {
+      configurable: true,
+      value: 50,
+    });
+    rerender(
+      <Output
+        content={[
+          {
+            command: "status",
+            messages: ["Output1"],
+          },
+          {
+            command: "help",
+            messages: ["Output2"],
+          },
+        ]}
+        helpMessage="Help message"
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+      />,
+    );
+    expect(scrollToSpy).not.toHaveBeenCalled();
+    scrollToSpy.mockRestore();
   });
 });
