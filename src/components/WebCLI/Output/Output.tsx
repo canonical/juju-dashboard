@@ -6,7 +6,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { processTableLinks, processCommandOutput } from "../utils";
 
-import { HELP_HEIGHT, CONSIDER_CLOSED, DEFAULT_HEIGHT } from "./consts";
+import {
+  HELP_HEIGHT,
+  CONSIDER_CLOSED,
+  DEFAULT_HEIGHT,
+  AUTO_SCROLL_DISTANCE,
+} from "./consts";
 import type { Props } from "./types";
 import { TestId } from "./types";
 
@@ -42,7 +47,20 @@ const WebCLIOutput = ({
 
   useEffect(() => {
     if (contentChanged && outputRef.current) {
-      outputRef.current.scrollTo({ top: outputRef.current.scrollHeight });
+      const newResponseHeight = document.querySelector(
+        ".webcli__output-content-response:last-child",
+      )?.clientHeight;
+      const scrollHeight = outputRef.current.scrollHeight;
+      // Get the distance the scroll area is from the bottom.
+      const distance =
+        scrollHeight -
+        (outputRef.current.clientHeight +
+          outputRef.current.scrollTop +
+          // Need to get the position from the bottom before the new content in.
+          (newResponseHeight || 0));
+      if (distance <= AUTO_SCROLL_DISTANCE) {
+        outputRef.current.scrollTo({ top: scrollHeight });
+      }
     }
   }, [contentChanged]);
 
@@ -144,6 +162,7 @@ const WebCLIOutput = ({
       height !== DEFAULT_HEIGHT
     ) {
       setHeight(DEFAULT_HEIGHT);
+      outputRef.current?.scrollTo({ top: outputRef.current.scrollHeight });
     }
   }, [content, contentChanged, height]);
 
@@ -166,7 +185,7 @@ const WebCLIOutput = ({
       response = defaultProcessOutput(command, messages);
     }
     return (
-      <div key={`message-${i}`}>
+      <div key={`message-${i}`} className="webcli__output-content-response">
         <div>$ {command}</div>
         {response}
       </div>

@@ -311,7 +311,12 @@ describe("Output", () => {
     // Mock the scroll height as this is not being rendered in a real DOM.
     Object.defineProperty(content, "scrollHeight", {
       configurable: true,
-      value: 111,
+      value: 500,
+    });
+    content.scrollTop = 350;
+    Object.defineProperty(content, "clientHeight", {
+      configurable: true,
+      value: 50,
     });
     rerender(
       <Output
@@ -331,8 +336,55 @@ describe("Output", () => {
       />,
     );
     expect(scrollToSpy).toHaveBeenCalledWith({
-      top: 111,
+      top: 500,
     });
+    scrollToSpy.mockRestore();
+  });
+
+  it("should not scroll to the bottom when user has scrolled up", async () => {
+    const { rerender } = render(
+      <Output
+        content={[
+          {
+            command: "status",
+            messages: ["Output"],
+          },
+        ]}
+        helpMessage="Help message"
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+      />,
+    );
+    const content = screen.getByTestId(TestId.CONTENT);
+    const scrollToSpy = vi.spyOn(content, "scrollTo");
+    // Mock the scroll height as this is not being rendered in a real DOM.
+    Object.defineProperty(content, "scrollHeight", {
+      configurable: true,
+      value: 500,
+    });
+    content.scrollTop = 250;
+    Object.defineProperty(content, "clientHeight", {
+      configurable: true,
+      value: 50,
+    });
+    rerender(
+      <Output
+        content={[
+          {
+            command: "status",
+            messages: ["Output1"],
+          },
+          {
+            command: "help",
+            messages: ["Output2"],
+          },
+        ]}
+        helpMessage="Help message"
+        showHelp={false}
+        setShouldShowHelp={vi.fn()}
+      />,
+    );
+    expect(scrollToSpy).not.toHaveBeenCalled();
     scrollToSpy.mockRestore();
   });
 });
