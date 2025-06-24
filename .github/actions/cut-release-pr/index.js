@@ -31684,79 +31684,11 @@ module.exports = parseParams
 var __webpack_exports__ = {};
 
 // EXTERNAL MODULE: ../node_modules/@actions/core/lib/core.js
-var lib_core = __nccwpck_require__(6618);
+var core = __nccwpck_require__(6618);
 // EXTERNAL MODULE: ../node_modules/@actions/github/lib/github.js
-var lib_github = __nccwpck_require__(2146);
-;// CONCATENATED MODULE: ./src/lib/versioning/labels.ts
-/**
- * Mapping between a pull request label and the version.
- */
-const PULL_REQUEST_VERSION_LABELS = {
-    "version: major": "major",
-    "version: minor": "minor",
-    "version: patch": "patch",
-};
-/**
- * Pull request label that indicates the pull request is to be included in the changelog.
- */
-const PULL_REQUEST_CHANGELOG_LABEL = "changelog";
-/**
- * Mapping between a pull request label and the severity.
- */
-const SEVERITY_LABELS = {
-    "release-severity: major": "major",
-    "release-severity: minor": "minor",
-};
-/**
- * Determine the version from a collection of labels. If no version label is detected, `null` will
- * be returned.
- */
-function versionFromLabels(labels) {
-    let version = null;
-    for (const label of labels) {
-        if (label in PULL_REQUEST_VERSION_LABELS) {
-            if (version !== null) {
-                throw new Error("multiple version labels detected.");
-            }
-            version = PULL_REQUEST_VERSION_LABELS[label];
-            continue;
-        }
-    }
-    return version;
-}
-/**
- * Determine if a list of labels includes a label for changelog.
- */
-function changelogFromLabels(labels) {
-    let changelog = false;
-    for (const label of labels) {
-        if (label === PULL_REQUEST_CHANGELOG_LABEL) {
-            changelog = true;
-            continue;
-        }
-    }
-    return changelog;
-}
-/**
- * Determine the severity from a collection of labels. If no severity label is detected, `null`
- * will be returned.
- */
-function severityFromLabels(labels) {
-    let severity = null;
-    for (const label of labels) {
-        if (label in SEVERITY_LABELS) {
-            if (severity !== null) {
-                throw new Error("multiple severity labels detected.");
-            }
-            severity = SEVERITY_LABELS[label];
-            continue;
-        }
-    }
-    return severity;
-}
-
+var github = __nccwpck_require__(2146);
 // EXTERNAL MODULE: ../node_modules/@actions/exec/lib/exec.js
-var lib_exec = __nccwpck_require__(3274);
+var exec = __nccwpck_require__(3274);
 ;// CONCATENATED MODULE: ./src/lib/git.ts
 
 /**
@@ -31769,7 +31701,7 @@ const GITHUB_ACTIONS_BOT = {
     email: "41898282+github-actions[bot]@users.noreply.github.com",
     name: "github-actions[bot]",
 };
-class git_Git {
+class Git {
     /**
      * User configuration.
      */
@@ -31827,6 +31759,139 @@ class git_Git {
     }
 }
 
+;// CONCATENATED MODULE: ./src/lib/github/pull-request.ts
+class PullRequest {
+    octokit;
+    pullRequest;
+    /**
+     * This is the identifier used by Octokit for pull request adjacent requests.
+     */
+    identifier;
+    constructor(octokit, repository, pullRequest) {
+        this.octokit = octokit;
+        this.pullRequest = pullRequest;
+        this.identifier = {
+            ...repository,
+            pull_number: pullRequest.number,
+        };
+    }
+    get number() {
+        return this.pullRequest.number;
+    }
+    get title() {
+        return this.pullRequest.title;
+    }
+    get body() {
+        return this.pullRequest.body;
+    }
+    get labels() {
+        return this.pullRequest.labels;
+    }
+    get head() {
+        return this.pullRequest.head.ref;
+    }
+    get base() {
+        return this.pullRequest.base.ref;
+    }
+    async close() {
+        await this.update({
+            state: "closed",
+        });
+    }
+    async setLabels(labels) {
+        const { data: newLabels } = await this.octokit.rest.issues.setLabels({
+            repo: this.identifier.repo,
+            owner: this.identifier.owner,
+            issue_number: this.identifier.pull_number,
+            labels,
+        });
+        // Manually update the labels, instead of re-fetching.
+        this.pullRequest.labels = newLabels;
+    }
+    async update(params) {
+        const { data: pullRequest } = await this.octokit.rest.pulls.update({
+            ...this.identifier,
+            ...params,
+        });
+        this.pullRequest = pullRequest;
+    }
+    /**
+     * Fetch a repository using `owner/repo`.
+     */
+    static async get(octokit, repository, number) {
+        const { data: pullRequest } = await octokit.rest.pulls.get({
+            ...repository,
+            pull_number: number,
+        });
+        return new PullRequest(octokit, repository, pullRequest);
+    }
+}
+
+;// CONCATENATED MODULE: ./src/lib/github/repository.ts
+
+class Repository {
+    octokit;
+    repo;
+    /**
+     * Identifier components for the repository, corresponding to `owner/repo`.
+     */
+    identifier;
+    constructor(octokit, repo) {
+        this.octokit = octokit;
+        this.repo = repo;
+        this.identifier = { repo: repo.name, owner: repo.owner.login };
+    }
+    /**
+     * Fetch all branches on this repository, and return them as an async iterator.
+     */
+    async *branches(params = {}) {
+        const iter = this.octokit.paginate.iterator(this.octokit.rest.repos.listBranches, {
+            ...this.identifier,
+            ...params,
+        });
+        for await (const { data: branches } of iter) {
+            yield* branches;
+        }
+    }
+    /**
+     * Fetch all pull requests for this repository, and produce them in an async iterator.
+     */
+    async *pullRequests(params = {}) {
+        const iter = this.octokit.paginate.iterator(this.octokit.rest.pulls.list, {
+            ...this.identifier,
+            ...params,
+        });
+        for await (const { data: pullRequests } of iter) {
+            for (const pullRequest of pullRequests) {
+                yield new PullRequest(this.octokit, this.identifier, pullRequest);
+            }
+        }
+    }
+    /**
+     * Create a new pull request in this repository.
+     */
+    async createPullRequest(params) {
+        const { data: pullRequest } = await this.octokit.rest.pulls.create({
+            ...this.identifier,
+            ...params,
+        });
+        return new PullRequest(this.octokit, this.identifier, pullRequest);
+    }
+    /**
+     * Return the default branch name configured for this repository.
+     */
+    get defaultBranch() {
+        return this.repo.default_branch;
+    }
+    /**
+     * Fetch a repository using `owner/repo`.
+     */
+    static async get(octokit, identifier) {
+        const { data: fetchedRepo } = await octokit.rest.repos.get(identifier);
+        return new Repository(octokit, fetchedRepo);
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/lib/changelog.ts
 
 /** Marker to indicate the start of the changelog items. */
@@ -31861,8 +31926,8 @@ function generate(releaseBranch, items) {
  * For the provided changelog text, parse out all of the items within it.
  */
 function parse(changelog) {
-    const [_preamble, changelogEnd] = util.splitOnce(changelog, CHANGELOG_START_MARKER, false);
-    const [items, _] = util.splitOnce(changelogEnd, CHANGELOG_END_MARKER);
+    const [_preamble, changelogEnd] = splitOnce(changelog, CHANGELOG_START_MARKER, false);
+    const [items, _] = splitOnce(changelogEnd, CHANGELOG_END_MARKER);
     const changelogItems = [];
     let currentItem = "";
     for (let item of items.trim().split("\n")) {
@@ -31902,7 +31967,7 @@ async function getNextCutVersion(ctx, severity) {
         // Parse out release information from branches formatted as `release/X.Y`.
         let branchInfo;
         try {
-            branchInfo = versioning.versioningInfoFromBranch(name);
+            branchInfo = versioningInfoFromBranch(name);
         }
         catch (_err) {
             branchInfo = null;
@@ -31971,7 +32036,7 @@ async function createNextCutPr(ctx, severity, { items } = {}) {
         base: releaseBranch,
         head: cutBranch,
         title: `chore(release): cut ${version.major}.${version.minor} release`,
-        body: changelog.generate(releaseBranch, items ?? []),
+        body: generate(releaseBranch, items ?? []),
     });
     // Add labels to the PR.
     await ctx.octokit.rest.issues.setLabels({
@@ -32005,17 +32070,17 @@ async function getCutPr(ctx, severity) {
     }
     // Find the severity of the PR.
     const cutPr = cutPrs[0];
-    const prSeverity = versioning.severityFromLabels(cutPr.labels.map(({ name }) => name));
+    const prSeverity = severityFromLabels(cutPr.labels.map(({ name }) => name));
     if (prSeverity === null) {
         throw new Error(`release cut PR #${cutPr.number} doesn't have an associated release severity tag.`);
     }
     // If the merged PR can fit inside the existing cut PR, just re-use it.
-    if (versioning.severityFits(prSeverity, severity)) {
+    if (severityFits(prSeverity, severity)) {
         return cutPr;
     }
     // Create the higher severity PR
     const newCutPr = await createNextCutPr(ctx, severity, {
-        items: changelog.parse(cutPr.body),
+        items: parse(cutPr.body),
     });
     // Close the lower severity PR.
     await cutPr.close();
@@ -32036,45 +32101,72 @@ function splitOnce(str, sep, allowEmpty = true) {
     return [parts[0], parts[1]];
 }
 
-;// CONCATENATED MODULE: ./src/lib/index.ts
-
-
-
-
-
-
-
-
-
-
-async function createCtx(fallback) {
-    // Configure octokit.
-    const githubToken = core.getInput("github-token");
-    const octokit = github.getOctokit(githubToken);
-    // Fetch the repository that the action is running in.
-    const repo = await Repository.get(octokit, github.context.repo);
-    // Fetch the pull request that triggered the action, if available.
-    let pr = undefined;
-    let prNumber = github.context.payload.pull_request?.number;
-    if (prNumber === undefined && fallback?.pullRequestInput !== undefined) {
-        // Try using fallback input.
-        const inputPrNumber = Number(core.getInput(fallback.pullRequestInput));
-        if (!isNaN(inputPrNumber)) {
-            prNumber = inputPrNumber;
+;// CONCATENATED MODULE: ./src/lib/versioning/labels.ts
+/**
+ * Mapping between a pull request label and the version.
+ */
+const PULL_REQUEST_VERSION_LABELS = {
+    "version: major": "major",
+    "version: minor": "minor",
+    "version: patch": "patch",
+};
+/**
+ * Pull request label that indicates the pull request is to be included in the changelog.
+ */
+const PULL_REQUEST_CHANGELOG_LABEL = "changelog";
+/**
+ * Mapping between a pull request label and the severity.
+ */
+const SEVERITY_LABELS = {
+    "release-severity: major": "major",
+    "release-severity: minor": "minor",
+};
+/**
+ * Determine the version from a collection of labels. If no version label is detected, `null` will
+ * be returned.
+ */
+function versionFromLabels(labels) {
+    let version = null;
+    for (const label of labels) {
+        if (label in PULL_REQUEST_VERSION_LABELS) {
+            if (version !== null) {
+                throw new Error("multiple version labels detected.");
+            }
+            version = PULL_REQUEST_VERSION_LABELS[label];
+            continue;
         }
     }
-    if (prNumber !== undefined) {
-        pr = await PullRequest.get(octokit, repo.identifier, prNumber);
+    return version;
+}
+/**
+ * Determine if a list of labels includes a label for changelog.
+ */
+function changelogFromLabels(labels) {
+    let changelog = false;
+    for (const label of labels) {
+        if (label === PULL_REQUEST_CHANGELOG_LABEL) {
+            changelog = true;
+            continue;
+        }
     }
-    const git = new Git();
-    await git.configUser();
-    return {
-        octokit,
-        context: github.context,
-        repo,
-        git,
-        pr,
-    };
+    return changelog;
+}
+/**
+ * Determine the severity from a collection of labels. If no severity label is detected, `null`
+ * will be returned.
+ */
+function severityFromLabels(labels) {
+    let severity = null;
+    for (const label of labels) {
+        if (label in SEVERITY_LABELS) {
+            if (severity !== null) {
+                throw new Error("multiple severity labels detected.");
+            }
+            severity = SEVERITY_LABELS[label];
+            continue;
+        }
+    }
+    return severity;
 }
 
 ;// CONCATENATED MODULE: ./src/lib/versioning/branch.ts
@@ -32131,50 +32223,94 @@ function versioningInfoFromBranch(branch) {
     };
 }
 
+;// CONCATENATED MODULE: ./src/lib/versioning/severity.ts
+/**
+ * Check if the `inner` severity fits within the `outer` severity.
+ */
+function severityFits(outer, inner) {
+    return outer === "major" || outer === inner;
+}
+/**
+ * Given a version type, determine the associated release severity.
+ */
+function severityFromVersion(version) {
+    if (version === "patch" || version === "minor") {
+        return "minor";
+    }
+    return "major";
+}
+
 ;// CONCATENATED MODULE: ./src/lib/versioning/index.ts
 
 
 
 
-;// CONCATENATED MODULE: ./src/update-changelog/main.ts
+;// CONCATENATED MODULE: ./src/lib/index.ts
 
+
+
+
+
+
+
+
+
+
+async function createCtx(fallback) {
+    // Configure octokit.
+    const githubToken = core.getInput("github-token");
+    const octokit = github.getOctokit(githubToken);
+    // Fetch the repository that the action is running in.
+    const repo = await Repository.get(octokit, github.context.repo);
+    // Fetch the pull request that triggered the action, if available.
+    let pr = undefined;
+    let prNumber = github.context.payload.pull_request?.number;
+    if (prNumber === undefined && fallback?.pullRequestInput !== undefined) {
+        // Try using fallback input.
+        const inputPrNumber = Number(core.getInput(fallback.pullRequestInput));
+        if (!isNaN(inputPrNumber)) {
+            prNumber = inputPrNumber;
+        }
+    }
+    if (prNumber !== undefined) {
+        pr = await PullRequest.get(octokit, repo.identifier, prNumber);
+    }
+    const git = new Git();
+    await git.configUser();
+    return {
+        octokit,
+        context: github.context,
+        repo,
+        git,
+        pr,
+    };
+}
+
+;// CONCATENATED MODULE: ./src/cut-release-pr/main.ts
 
 
 async function run() {
-    // Configure octokit.
-    const githubToken = lib_core.getInput("github-token");
-    const octokit = lib_github.getOctokit(githubToken);
-    // Pull inputs.
-    const mergedPullRequest = Number(lib_core.getInput("merged-pull-request", {
-        required: true,
-        trimWhitespace: true,
-    }));
-    if (isNaN(mergedPullRequest)) {
-        throw new Error("invalid input: `merged-pull-request`");
+    const ctx = await createCtx({ pullRequestInput: "pull-request" });
+    if (!ctx.pr) {
+        throw new Error("`cut-release-pr` can only be run when triggered from a merged PR");
     }
-    // Fetch the pull request.
-    const { data: pullRequest } = await octokit.rest.pulls.get({
-        repo: lib_github.context.repo.repo,
-        owner: lib_github.context.repo.owner,
-        // TODO: Should this be passed as an input, or use the PR which this action is triggered against?
-        pull_number: mergedPullRequest,
+    const labels = ctx.pr.labels.map(({ name }) => name);
+    // Determine if the PR should be included in the changelog.
+    const prChangelog = changelogFromLabels(labels);
+    if (!prChangelog) {
+        return;
+    }
+    // Determine the severity of the pull request.
+    const prVersion = versionFromLabels(labels);
+    // Find the cut PR.
+    const cutPr = await getCutPr(ctx, severityFromVersion(prVersion));
+    // Update the PR changelog.
+    await cutPr.update({
+        body: appendItem(cutPr.body, ctx.pr.title, cutPr.base),
     });
-    // Determine if the pull request target is correct for the change type.
-    const targetBranch = pullRequest.base.ref;
-    const isDefaultBranch = targetBranch === pullRequest.base.repo.default_branch;
-    const releaseInfo = versioningInfoFromBranch(targetBranch);
-    if (!isDefaultBranch && releaseInfo === null) {
-        throw new Error("invalid PR target :(");
-    }
-    if (isDefaultBranch) {
-        // TODO: Update changelog for main branch
-    }
-    else {
-        // TODO: Update changelog for release branch
-    }
 }
 
-;// CONCATENATED MODULE: ./src/update-changelog/index.ts
+;// CONCATENATED MODULE: ./src/cut-release-pr/index.ts
 
 void run();
 
