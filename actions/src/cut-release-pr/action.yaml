@@ -1,0 +1,15 @@
+name: Cut release PR
+description: Cut a release PR
+
+runs:
+  using: node20
+  main: index.js
+
+inputs:
+  github-token:
+    description: "GitHub Token (usually `secrets.GITHUB_TOKEN`)."
+    required: true
+
+  pull-request:
+    description: "Pull request number to trigger action against. If the action was triggered by a PR, it will be used instead."
+    required: false
