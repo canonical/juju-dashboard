@@ -18,9 +18,11 @@ import { JIMMRelation } from "juju/jimm/JIMMV4";
 import { DEFAULT_AUDIT_EVENTS_LIMIT } from "store/juju/slice";
 import type {
   AuditEventsState,
+  CommandHistory,
   Controller,
   ControllerLocation,
   CrossModelQueryState,
+  HistoryItem,
   JujuState,
   ModelData,
   ModelFeatures,
@@ -274,9 +276,17 @@ export const rebacState = Factory.define<ReBACState>(() => ({
   relationships: [],
 }));
 
+export const commandHistoryItem = Factory.define<HistoryItem>(() => ({
+  command: "status",
+  messages: [],
+}));
+
+export const commandHistoryState = Factory.define<CommandHistory>(() => ({}));
+
 export const jujuStateFactory = Factory.define<JujuState>(() => ({
   auditEvents: auditEventsStateFactory.build(),
   crossModelQuery: crossModelQueryStateFactory.build(),
+  commandHistory: commandHistoryState.build(),
   controllers: null,
   models: {},
   modelsLoaded: false,

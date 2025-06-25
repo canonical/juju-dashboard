@@ -15,7 +15,11 @@ import {
   authUserInfoFactory,
 } from "testing/factories/general";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
-import { controllerFactory } from "testing/factories/juju/juju";
+import {
+  controllerFactory,
+  commandHistoryState,
+  commandHistoryItem,
+} from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
   modelWatcherModelDataFactory,
@@ -87,6 +91,73 @@ describe("JujuCLI", () => {
 
   afterEach(() => {
     WS.clean();
+  });
+
+  it("displays history that is stored in Redux", async () => {
+    const messages = [
+      "Model         Controller           Cloud/Region         Version    SLA          Timestamp",
+      "test-model    localhost-localhost  localhost/localhost  3.2-beta3  unsupported  01:17:46Z",
+    ];
+    state.juju.commandHistory = commandHistoryState.build({
+      abc123: [
+        commandHistoryItem.build({
+          command: "status",
+          messages,
+        }),
+      ],
+      def567: [
+        commandHistoryItem.build({
+          command: "this model has a different UUID",
+          messages: ["wrong model"],
+        }),
+      ],
+    });
+    renderComponent(<JujuCLI />, { path, url, state });
+    expect(screen.getByTestId(OutputTestId.CONTENT)).toHaveTextContent(
+      ["$ status", ...messages].join(""),
+      { normalizeWhitespace: false },
+    );
+  });
+
+  it("stores new history in redux", async () => {
+    state.juju.commandHistory = commandHistoryState.build({
+      abc123: [
+        commandHistoryItem.build({
+          command: "help",
+          messages: ["first message"],
+        }),
+      ],
+      def567: [
+        commandHistoryItem.build({
+          command: "this model has a different UUID",
+          messages: ["wrong model"],
+        }),
+      ],
+    });
+    const { store } = renderComponent(<JujuCLI />, { path, url, state });
+    await server.connected;
+    const input = screen.getByRole("textbox", {
+      name: WebCLILabel.COMMAND,
+    });
+    await userEvent.type(input, "status{enter}");
+    const messages = [
+      "Model         Controller           Cloud/Region         Version    SLA          Timestamp",
+      "test-model    localhost-localhost  localhost/localhost  3.2-beta3  unsupported  01:17:46Z",
+    ];
+    messages.forEach((message) => {
+      server.send(JSON.stringify({ output: [message] }));
+    });
+    server.send(JSON.stringify({ done: true }));
+    expect(store.getState().juju.commandHistory).toStrictEqual({
+      ...state.juju.commandHistory,
+      abc123: [
+        ...state.juju.commandHistory.abc123,
+        commandHistoryItem.build({
+          command: "status",
+          messages,
+        }),
+      ],
+    });
   });
 
   it("shows the CLI in juju 2.9", async () => {

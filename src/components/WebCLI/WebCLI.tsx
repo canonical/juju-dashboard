@@ -6,12 +6,12 @@ import useInlineErrors from "hooks/useInlineErrors";
 import useLocalStorage from "hooks/useLocalStorage";
 import bakery from "juju/bakery";
 import type { Credential } from "store/general/types";
+import type { HistoryItem, CommandHistory } from "store/juju/types";
 import { externalURLs } from "urls";
 import { getUserName } from "utils";
 
 import type { OutputProps } from "./Output";
 import WebCLIOutput from "./Output";
-import type { HistoryItem } from "./Output/types";
 import Connection from "./connection";
 import { MAX_HISTORY } from "./consts";
 import { Label, TestId } from "./types";
@@ -24,9 +24,11 @@ enum InlineErrors {
 type Props = {
   controllerWSHost: string;
   credentials?: Credential | null;
+  history?: CommandHistory;
   modelUUID: string;
   onCommandSent: (command?: string) => void;
   activeUser?: string;
+  onHistoryChange?: (modelUUID: string, historyItem: HistoryItem) => void;
   /**
    * When overriding this function then ANSI codes need to be manually handled.
    */
@@ -42,11 +44,13 @@ type Authentication = {
 };
 
 const WebCLI = ({
+  activeUser,
   controllerWSHost,
   credentials,
+  history,
   modelUUID,
   onCommandSent,
-  activeUser,
+  onHistoryChange,
   processOutput,
   protocol = "wss",
   tableLinks,
@@ -57,7 +61,7 @@ const WebCLI = ({
   const [historyPosition, setHistoryPosition] = useState(0);
   const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [output, setOutput] = useState<HistoryItem[]>([]);
+  const [output, setOutput] = useState<CommandHistory>(history || {});
   const lastCommand = useRef<string | null>(null);
   const [cliHistory, setCLIHistory] = useLocalStorage<string[]>(
     "cliHistory",
@@ -147,16 +151,20 @@ const WebCLI = ({
       messageCallback: (messages: string[]) => {
         const command = lastCommand.current;
         if (command) {
-          setOutput((previousOutput) => [
+          setOutput((previousOutput) => ({
             ...previousOutput,
-            { command, messages },
-          ]);
+            [modelUUID]: [
+              ...(modelUUID in previousOutput ? previousOutput[modelUUID] : []),
+              { command, messages },
+            ],
+          }));
+          onHistoryChange?.(modelUUID, { command, messages });
         }
       },
       setLoading,
     }).connect();
     connection.current = conn;
-  }, [setInlineError, wsAddress]);
+  }, [modelUUID, onHistoryChange, setInlineError, wsAddress]);
 
   useEffect(
     () => () => {
@@ -236,7 +244,7 @@ const WebCLI = ({
   return (
     <div className="webcli is-dark" data-testid={TestId.COMPONENT}>
       <WebCLIOutput
-        content={output}
+        content={output && modelUUID in output ? output[modelUUID] : []}
         showHelp={shouldShowHelp || hasInlineError(InlineErrors.AUTHENTICATION)}
         setShouldShowHelp={setShouldShowHelp}
         tableLinks={tableLinks}

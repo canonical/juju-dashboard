@@ -1150,3 +1150,8 @@ export const getReBACRelationshipsLoaded = createSelector(
   [(state, requestId: string) => getReBACRelationships(state, requestId)],
   (permission) => permission?.loaded ?? false,
 );
+
+export const getCommandHistory = createSelector(
+  [slice],
+  ({ commandHistory }) => commandHistory,
+);

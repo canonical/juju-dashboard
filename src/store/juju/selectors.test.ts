@@ -33,6 +33,8 @@ import {
   modelSecretsContentFactory,
   rebacState,
   rebacRelationshipFactory,
+  commandHistoryState,
+  commandHistoryItem,
 } from "testing/factories/juju/juju";
 import {
   applicationInfoFactory,
@@ -129,6 +131,7 @@ import {
   getReBACRelationshipsLoaded,
   getReBACPermissions,
   getReBACPermission,
+  getCommandHistory,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -2510,5 +2513,17 @@ describe("selectors", () => {
         ),
       ).toBe(true);
     });
+  });
+
+  it("getCommandHistory", () => {
+    const commandHistory = commandHistoryState.build({
+      abc1234: [commandHistoryItem.build()],
+    });
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        commandHistory,
+      }),
+    });
+    expect(getCommandHistory(state)).toStrictEqual(commandHistory);
   });
 });

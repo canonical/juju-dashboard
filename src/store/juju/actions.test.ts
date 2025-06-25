@@ -7,6 +7,7 @@ import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
   listSecretResultFactory,
   relationshipTupleFactory,
+  commandHistoryItem,
 } from "testing/factories/juju/juju";
 
 import { actions } from "./slice";
@@ -513,6 +514,17 @@ describe("actions", () => {
     expect(actions.removeCheckRelations({ requestId })).toStrictEqual({
       type: "juju/removeCheckRelations",
       payload: { requestId },
+    });
+  });
+
+  it("removeCheckRelations", () => {
+    const payload = {
+      modelUUID: "abc123",
+      historyItem: commandHistoryItem.build({ command: "status" }),
+    };
+    expect(actions.addCommandHistory(payload)).toStrictEqual({
+      type: "juju/addCommandHistory",
+      payload,
     });
   });
 });

@@ -34,6 +34,7 @@ import type {
   ModelSecrets,
   SecretsContent,
   ReBACAllowed,
+  HistoryItem,
 } from "./types";
 
 export const DEFAULT_AUDIT_EVENTS_LIMIT = 50;
@@ -119,6 +120,7 @@ const slice = createSlice({
       loaded: false,
       loading: false,
     },
+    commandHistory: {},
     controllers: null,
     models: {},
     modelsError: null,
@@ -589,6 +591,20 @@ const slice = createSlice({
       if (existingIndex >= 0) {
         state.rebac.relationships.splice(existingIndex, 1);
       }
+    },
+    addCommandHistory: (
+      state,
+      {
+        payload: { modelUUID, historyItem },
+      }: PayloadAction<{
+        modelUUID: string;
+        historyItem: HistoryItem;
+      }>,
+    ) => {
+      if (!(modelUUID in state.commandHistory)) {
+        state.commandHistory[modelUUID] = [];
+      }
+      state.commandHistory[modelUUID].push(historyItem);
     },
   },
 });

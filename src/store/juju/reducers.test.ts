@@ -22,6 +22,8 @@ import {
   rebacAllowedFactory,
   rebacRelationshipFactory,
   rebacState,
+  commandHistoryState,
+  commandHistoryItem,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -1391,6 +1393,31 @@ describe("reducers", () => {
       ...state,
       rebac: rebacState.build({
         relationships: [],
+      }),
+    });
+  });
+
+  it("addCommandHistory", () => {
+    const state = jujuStateFactory.build({
+      commandHistory: commandHistoryState.build({
+        abc1234: [commandHistoryItem.build({ command: "help" })],
+      }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.addCommandHistory({
+          modelUUID: "abc1234",
+          historyItem: commandHistoryItem.build({ command: "status" }),
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      commandHistory: commandHistoryState.build({
+        abc1234: [
+          commandHistoryItem.build({ command: "help" }),
+          commandHistoryItem.build({ command: "status" }),
+        ],
       }),
     });
   });
