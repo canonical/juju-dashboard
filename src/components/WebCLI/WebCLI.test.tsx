@@ -6,6 +6,10 @@ import { vi } from "vitest";
 
 import bakery from "juju/bakery";
 import { generalStateFactory, configFactory } from "testing/factories/general";
+import {
+  commandHistoryState,
+  commandHistoryItem,
+} from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
@@ -53,6 +57,26 @@ describe("WebCLI", () => {
     renderComponent(<WebCLI {...props} />);
     await server.connected;
     expect(document.querySelector(".webcli")).toMatchSnapshot();
+  });
+
+  it("displays preloaded history", async () => {
+    const messages = [
+      "Model         Controller",
+      "test-model    localhost-localhost",
+    ];
+    const commandHistory = commandHistoryState.build({
+      abc123: [
+        commandHistoryItem.build({
+          command: "status",
+          messages: messages,
+        }),
+      ],
+    });
+    renderComponent(<WebCLI {...props} history={commandHistory} />);
+    expect(await screen.findByTestId(OutputTestId.CONTENT)).toHaveTextContent(
+      ["$ status", messages.join("\n")].join(""),
+      { normalizeWhitespace: false },
+    );
   });
 
   it("shows the help in the output when the ? is clicked", async () => {
@@ -312,6 +336,26 @@ describe("WebCLI", () => {
         "style",
         "height: 300px;",
       );
+    });
+  });
+
+  it("calls the onHistoryChange callback when it receives messages", async () => {
+    const onHistoryChange = vi.fn();
+    renderComponent(<WebCLI {...props} onHistoryChange={onHistoryChange} />);
+    await server.connected;
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status{enter}");
+    const messages = [
+      "Model         Controller           Cloud/Region         Version    SLA          Timestamp",
+      "test-model    localhost-localhost  localhost/localhost  3.2-beta3  unsupported  01:17:46Z",
+    ];
+    messages.forEach((message) => {
+      server.send(JSON.stringify({ output: [message] }));
+    });
+    server.send(JSON.stringify({ done: true }));
+    expect(onHistoryChange).toHaveBeenCalledWith("abc123", {
+      command: "status",
+      messages,
     });
   });
 

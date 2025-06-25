@@ -100,6 +100,7 @@ export const checkAuthMiddleware: Middleware<
       jujuActions.addCheckRelations.type,
       jujuActions.checkRelations.type,
       jujuActions.removeCheckRelations.type,
+      jujuActions.addCommandHistory.type,
     ];
 
     const thunkAllowlist = [

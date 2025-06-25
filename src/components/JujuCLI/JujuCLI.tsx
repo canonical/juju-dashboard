@@ -10,12 +10,14 @@ import {
   getIsJuju,
   getActiveUserTag,
 } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
 import {
+  getCommandHistory,
   getControllerDataByUUID,
   getModelInfo,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-import { useAppSelector } from "store/store";
+import { useAppDispatch, useAppSelector } from "store/store";
 import { externalURLs } from "urls";
 import urls from "urls";
 import { getMajorMinorVersion } from "utils";
@@ -87,16 +89,14 @@ const processHelp = (messages: string[]) => {
 const JujuCLI = () => {
   const routeParams = useParams<EntityDetailsRoute>();
   const sendAnalytics = useAnalytics();
+  const dispatch = useAppDispatch();
   const { userName, modelName } = routeParams;
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );
   const modelInfo = useAppSelector((state) => getModelInfo(state, modelUUID));
-
   const isJuju = useAppSelector(getIsJuju);
-
   const [showWebCLI, setShowWebCLI] = useState(false);
-
   // In a JAAS environment the controllerUUID will be the sub controller not
   // the primary controller UUID that we connect to.
   const controllerUUID = modelInfo?.["controller-uuid"];
@@ -116,10 +116,10 @@ const JujuCLI = () => {
       .replace("wss://", "")
       .replace("/api", "") || null;
   const wsProtocol = primaryControllerData?.[0].split("://")[0] ?? "wss";
-
   const activeUser = useAppSelector((state) =>
     getActiveUserTag(state, primaryControllerData?.[0]),
   );
+  const commandHistory = useAppSelector(getCommandHistory);
 
   function onCommandSent(_command?: string) {
     sendAnalytics({
@@ -145,8 +145,12 @@ const JujuCLI = () => {
     <WebCLI
       controllerWSHost={controllerWSHost}
       credentials={credentials}
+      history={commandHistory}
       modelUUID={modelUUID}
       onCommandSent={onCommandSent}
+      onHistoryChange={(modelUUID, historyItem) =>
+        dispatch(jujuActions.addCommandHistory({ modelUUID, historyItem }))
+      }
       activeUser={activeUser}
       processOutput={{
         [CLICommand.HELP]: {

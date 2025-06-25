@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import type { HistoryItem } from "store/juju/types";
+
 export type Block = {
   header: string;
   rows: string[];
@@ -53,11 +55,6 @@ export type ProcessCommand = {
 } & CommandHandler;
 
 export type ProcessOutput = Record<string, ProcessCommand>;
-
-export type HistoryItem = {
-  command: string;
-  messages: string[];
-};
 
 export type Props = {
   content: HistoryItem[];
