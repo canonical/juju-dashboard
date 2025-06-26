@@ -29,6 +29,10 @@ export class PullRequest {
     return this.pullRequest.number;
   }
 
+  public get title() {
+    return this.pullRequest.title;
+  }
+
   public get body() {
     return this.pullRequest.body;
   }
