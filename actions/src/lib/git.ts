@@ -70,6 +70,13 @@ export default class Git {
   }
 
   /**
+   * Move a branch to point at a new target. Target can be a ref or a branch name.
+   */
+  async moveBranch(name: string, target: string) {
+    await this.exec("branch", "--force", name, target);
+  }
+
+  /**
    * Stage and commit the specified files, with a commit message.
    */
   async commit(message: string, files: string[]) {

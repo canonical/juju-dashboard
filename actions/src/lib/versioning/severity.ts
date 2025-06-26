@@ -1,5 +1,9 @@
 import type { Severity, Version } from "./types";
 
+export function isSeverity(severity: string): severity is Severity {
+  return ["minor", "major"].includes(severity);
+}
+
 /**
  * Check if the `inner` severity fits within the `outer` severity.
  */
