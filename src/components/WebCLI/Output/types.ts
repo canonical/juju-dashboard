@@ -60,8 +60,8 @@ export type Props = {
   content: HistoryItem[];
   helpMessage: ReactNode;
   loading?: boolean;
-  processOutput?: ProcessOutput;
-  tableLinks?: TableLinks;
+  processOutput?: ProcessOutput | null;
+  tableLinks?: TableLinks | null;
   showHelp: boolean;
   setShouldShowHelp: (showHelp: boolean) => void;
 };

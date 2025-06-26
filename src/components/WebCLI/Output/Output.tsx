@@ -1,11 +1,8 @@
 import { useListener, usePrevious } from "@canonical/react-components";
-import Ansi from "@curvenote/ansi-to-react";
 import fastDeepEqual from "fast-deep-equal/es6";
-import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { processTableLinks, processCommandOutput } from "../utils";
-
+import OutputCommand from "./OutputCommand";
 import {
   HELP_HEIGHT,
   CONSIDER_CLOSED,
@@ -14,10 +11,6 @@ import {
 } from "./consts";
 import type { Props } from "./types";
 import { TestId } from "./types";
-
-const defaultProcessOutput = (_command: string, messages: string[]) => (
-  <Ansi>{messages.map((message) => `${message}\n`).join("")}</Ansi>
-);
 
 const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
 
@@ -166,31 +159,14 @@ const WebCLIOutput = ({
     }
   }, [content, contentChanged, height]);
 
-  const output = content.map(({ command, messages }, i) => {
-    let response: ReactNode = null;
-    // Handle custom renders. If a renderer doesn't return anything then it
-    // falls through to the next handler.
-    try {
-      if (tableLinks) {
-        response = processTableLinks(command, messages, tableLinks);
-      }
-      if (!response && processOutput) {
-        response = processCommandOutput(command, messages, processOutput);
-      }
-      if (!response) {
-        response = defaultProcessOutput(command, messages);
-      }
-    } catch (err) {
-      // If the provided processor fails (e.g. if the data isn't what was expected) then fall back to the default.
-      response = defaultProcessOutput(command, messages);
-    }
-    return (
-      <div key={`message-${i}`} className="webcli__output-content-response">
-        <div>$ {command}</div>
-        {response}
-      </div>
-    );
-  });
+  const output = content.map((historyItem, i) => (
+    <OutputCommand
+      {...historyItem}
+      key={`message-${i}`}
+      tableLinks={tableLinks}
+      processOutput={processOutput}
+    />
+  ));
 
   return (
     <div className="webcli__output" style={{ height: `${height}px` }}>
