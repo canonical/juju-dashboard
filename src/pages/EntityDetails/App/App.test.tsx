@@ -73,8 +73,8 @@ describe("Entity Details App", () => {
       }),
       juju: jujuStateFactory.build({
         models: {
-          abc123: modelListInfoFactory.build({
-            uuid: "abc123",
+          test123: modelListInfoFactory.build({
+            uuid: "test123",
             name: "canonical-kubernetes",
             wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
@@ -95,7 +95,7 @@ describe("Entity Details App", () => {
           }),
         },
         modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build({
+          test123: modelWatcherModelDataFactory.build({
             applications: {
               etcd: applicationInfoFactory.build(),
             },
@@ -141,9 +141,9 @@ describe("Entity Details App", () => {
   });
 
   it("does not display the machine column for k8s", async () => {
-    expect(state.juju.modelWatcherData?.abc123.model.type).toBeTruthy();
-    if (state.juju.modelWatcherData?.abc123.model.type) {
-      state.juju.modelWatcherData.abc123.model.type = "kubernetes";
+    expect(state.juju.modelWatcherData?.test123.model.type).toBeTruthy();
+    if (state.juju.modelWatcherData?.test123.model.type) {
+      state.juju.modelWatcherData.test123.model.type = "kubernetes";
     }
     renderComponent(<App />, { path, url, state });
     expect(
@@ -251,8 +251,8 @@ describe("Entity Details App", () => {
 
   it("does not fail if a subordinate is not related to another application", async () => {
     const modelWatcherData = state.juju.modelWatcherData;
-    if (modelWatcherData && "abc123" in modelWatcherData) {
-      modelWatcherData["abc123"].units = {};
+    if (modelWatcherData && "test123" in modelWatcherData) {
+      modelWatcherData["test123"].units = {};
     }
     renderComponent(<App />, { path, url, state });
     expect(screen.getByText(Label.NO_UNITS)).toBeInTheDocument();
@@ -265,7 +265,7 @@ describe("Entity Details App", () => {
       screen.getByRole("button", { name: Label.CONFIGURE }),
     );
     expect(router.state.location.search).toEqual(
-      "?panel=config&entity=etcd&charm=cs%3Aceph-mon-55&modelUUID=abc123",
+      "?panel=config&entity=etcd&charm=cs%3Aceph-mon-55&modelUUID=test123",
     );
   });
 

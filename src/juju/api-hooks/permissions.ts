@@ -36,21 +36,21 @@ export const useReBAC = <A, C>(
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const rebacEnabled = useAppSelector(isReBACEnabled);
-  const previousPayload = usePrevious(payload, false);
+  const previousCleanup = usePrevious(payloadCleanup, true);
+  const previousPayload = usePrevious(payload, true);
+  // Check if it has changed using deepEqual so that it ignores changes if the
+  // object has a new reference, but the values are the same.
   const payloadChanged = !fastDeepEqual(payload, previousPayload);
 
   useCleanupOnUnmount(cleanupAction, cleanup, payloadCleanup);
 
   useEffect(() => {
     if (
-      // Only fetch it if it doesn't already exist in the store.
-      !loading &&
-      !loaded &&
+      // Only fetch it if it doesn't already exist in the store or if the
+      // payload changes
+      ((!loading && !loaded) || payloadChanged) &&
       wsControllerURL &&
       payload &&
-      // Ignore changes if the object has a new reference, but the values are
-      // the same.
-      payloadChanged &&
       // Only check the relation if the controller supports rebac.
       rebacEnabled
     ) {
@@ -69,10 +69,10 @@ export const useReBAC = <A, C>(
 
   // Clean up the store if the payload changes.
   useEffect(() => {
-    if (cleanup && payloadChanged && payloadCleanup) {
-      dispatch(cleanupAction(payloadCleanup));
+    if (cleanup && payloadChanged && previousCleanup) {
+      dispatch(cleanupAction(previousCleanup));
     }
-  }, [cleanup, cleanupAction, dispatch, payloadChanged, payloadCleanup]);
+  }, [cleanup, cleanupAction, dispatch, payloadChanged, previousCleanup]);
 };
 
 export const useCheckPermissions = (

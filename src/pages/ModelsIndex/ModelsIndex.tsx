@@ -5,6 +5,7 @@ import {
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import type { ReactNode } from "react";
+import { useId } from "react";
 import { Link } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
@@ -14,7 +15,10 @@ import SegmentedControl from "components/SegmentedControl";
 import useModelAttributes from "hooks/useModelAttributes";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
+import { useCheckRelations } from "juju/api-hooks/permissions";
+import { JIMMRelation } from "juju/jimm/JIMMV4";
 import MainContent from "layout/MainContent";
+import { getControllerUserTag } from "store/general/selectors";
 import {
   getGroupedModelStatusCounts,
   getModelData,
@@ -62,6 +66,17 @@ export default function Models() {
   const modelData = useAppSelector(getModelData);
   const { clouds, regions, owners, credentials } =
     useModelAttributes(modelData);
+  const controllerUser = useAppSelector(getControllerUserTag);
+  const requestId = useId();
+  const relations =
+    controllerUser && modelData && Object.keys(modelData).length > 0
+      ? Object.keys(modelData).map((modelUUID) => ({
+          object: controllerUser,
+          relation: JIMMRelation.ADMINISTRATOR,
+          target_object: `model-${modelUUID}`,
+        }))
+      : null;
+  useCheckRelations(requestId, relations, true);
 
   // Generate chips from available model data
   const generateChips = (lead: string, values: string[]) => {

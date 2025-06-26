@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 
-import { Label as AccessButtonLabel } from "components/ModelTableList/AccessButton/types";
+import { Label as AccessColumnLabel } from "components/ModelTableList/AccessColumn/types";
 import { TestId as StatusGroupTestId } from "components/ModelTableList/StatusGroup/types";
 import {
   Label as ShareModelLabel,
@@ -41,7 +41,7 @@ test.describe("Model Access Control", () => {
     const row = page.getByRole("row", { name: model.name });
     await row.getByTestId(StatusGroupTestId.COLUMN_UPDATED).hover();
     await page
-      .getByRole("button", { name: AccessButtonLabel.ACCESS_BUTTON })
+      .getByRole("button", { name: AccessColumnLabel.ACCESS_BUTTON })
       .click();
 
     await expect(page.getByTestId(ShareModelTestId.PANEL)).toBeInViewport();

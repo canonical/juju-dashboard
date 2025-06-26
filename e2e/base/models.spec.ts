@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 
-import { Label as AccessButtonLabel } from "components/ModelTableList/AccessButton/types";
+import { Label as AccessColumnLabel } from "components/ModelTableList/AccessColumn/types";
 import { Label as ModelLabel } from "pages/EntityDetails/Model/types";
 import { Label as EntityDetailsLabel } from "pages/EntityDetails/types";
 import urls from "urls";
@@ -64,7 +64,7 @@ test.describe("Models", () => {
     // The access button only appears on hover.
     await page.getByRole("link", { name: sharedModel.name }).hover();
     await expect(
-      page.getByRole("button", { name: AccessButtonLabel.ACCESS_BUTTON }),
+      page.getByRole("button", { name: AccessColumnLabel.ACCESS_BUTTON }),
     ).not.toBeVisible();
   });
 
