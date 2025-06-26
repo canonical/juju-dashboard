@@ -4,12 +4,12 @@ import type { Context } from "@actions/github/lib/context";
 import type { GitHub } from "@actions/github/lib/utils";
 
 import Git from "./git";
-import type { GithubPullRequest } from "./github";
-import { Repository } from "./github";
+import { PullRequest, Repository } from "./github";
 
 export { default as Git } from "./git";
 export * as changelog from "./changelog";
 export * as github from "./github";
+export * as release from "./release";
 export * as util from "./util";
 export * as versioning from "./versioning";
 
@@ -18,7 +18,7 @@ export type Ctx = {
   context: Context;
   repo: Repository;
   git: Git;
-  pr?: GithubPullRequest;
+  pr?: PullRequest;
 };
 
 export async function createCtx(fallback?: {
@@ -32,7 +32,7 @@ export async function createCtx(fallback?: {
   const repo = await Repository.get(octokit, github.context.repo);
 
   // Fetch the pull request that triggered the action, if available.
-  let pr: GithubPullRequest | undefined = undefined;
+  let pr: PullRequest | undefined = undefined;
   let prNumber = github.context.payload.pull_request?.number;
 
   if (prNumber === undefined && fallback?.pullRequestInput !== undefined) {
@@ -45,11 +45,7 @@ export async function createCtx(fallback?: {
   }
 
   if (prNumber !== undefined) {
-    ({ data: pr } = await octokit.rest.pulls.get({
-      repo: github.context.repo.repo,
-      owner: github.context.repo.owner,
-      pull_number: prNumber,
-    }));
+    pr = await PullRequest.get(octokit, repo.identifier, prNumber);
   }
 
   const git = new Git();
