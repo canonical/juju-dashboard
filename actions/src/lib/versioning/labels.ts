@@ -15,6 +15,11 @@ export const PULL_REQUEST_VERSION_LABELS: Record<string, Version> = {
 export const PULL_REQUEST_CHANGELOG_LABEL = "changelog";
 
 /**
+ * Pull request label that indicates the pull request is a relase cut.
+ */
+export const RELEASE_CUT_LABEL = "release: cut";
+
+/**
  * Mapping between a pull request label and the severity.
  */
 export const SEVERITY_LABELS: Record<string, Severity> = {
@@ -81,4 +86,14 @@ export function severityFromLabels(labels: string[]): Severity | null {
   }
 
   return severity;
+}
+
+export function labelFromSeverity(severity: Severity): string {
+  for (const [label, labelSeverity] of Object.entries(SEVERITY_LABELS)) {
+    if (labelSeverity === severity) {
+      return label;
+    }
+  }
+
+  throw new Error("no label for severity.");
 }

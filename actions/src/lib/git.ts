@@ -70,6 +70,13 @@ export default class Git {
   }
 
   /**
+   * Move a branch to point at a new target. Target can be a ref or a branch name.
+   */
+  async moveBranch(name: string, target: string) {
+    await this.exec("branch", "--force", name, target);
+  }
+
+  /**
    * Stage and commit the specified files, with a commit message.
    */
   async commit(message: string, files: string[]) {
@@ -79,7 +86,25 @@ export default class Git {
   /**
    * Push the listed branches to the origin.
    */
-  async push(...branches: string[]) {
-    await this.exec("push", this.origin, ...branches);
+  async push(
+    options: { force?: boolean },
+    ...branches: string[]
+  ): Promise<void>;
+  async push(...branches: string[]): Promise<void>;
+  async push(
+    maybeOptions: { force?: boolean } | string = {},
+    ...branches: string[]
+  ) {
+    if (typeof maybeOptions === "string") {
+      branches.unshift(maybeOptions);
+      maybeOptions = {};
+    }
+
+    const flags = [];
+    if (maybeOptions.force === true) {
+      flags.push("--force");
+    }
+
+    await this.exec("push", ...flags, this.origin, ...branches);
   }
 }
