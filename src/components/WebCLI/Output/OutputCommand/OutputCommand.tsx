@@ -7,8 +7,6 @@ import { processTableLinks, processCommandOutput } from "../../utils";
 
 import type { Props } from "./types";
 
-type RestProps = Omit<Props, "messages">;
-
 const defaultProcessOutput = (_command: string, messages: string[]) => (
   <Ansi>{messages.map((message) => `${message}\n`).join("")}</Ansi>
 );
@@ -45,15 +43,4 @@ const OutputCommand = ({
   );
 };
 
-const arePropsEqual = (oldProps: Props, newProps: Props) => {
-  const { messages: oldMessages, ...oldRest } = oldProps;
-  const { messages: newMessages, ...newRest } = newProps;
-  for (const key in Object.keys(newRest)) {
-    if (newRest[key as keyof RestProps] !== oldRest[key as keyof RestProps]) {
-      return false;
-    }
-  }
-  return fastDeepEqual(oldMessages, newMessages);
-};
-
-export default React.memo(OutputCommand, arePropsEqual);
+export default React.memo(OutputCommand, fastDeepEqual);

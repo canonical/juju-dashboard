@@ -1,9 +1,10 @@
 import Ansi from "@curvenote/ansi-to-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
 import WebCLI from "components/WebCLI";
+import type { TableLinks } from "components/WebCLI/Output/types";
 import useAnalytics from "hooks/useAnalytics";
 import {
   getUserPass,
@@ -86,6 +87,14 @@ const processHelp = (messages: string[]) => {
   );
 };
 
+const processOutput = {
+  [CLICommand.HELP]: {
+    // This should match "help" but not "help bootstrap" etc.
+    exact: true,
+    process: processHelp,
+  },
+};
+
 const JujuCLI = () => {
   const routeParams = useParams<EntityDetailsRoute>();
   const sendAnalytics = useAnalytics();
@@ -128,6 +137,75 @@ const JujuCLI = () => {
     });
   }
 
+  const tableLinks = useMemo<TableLinks | null>(
+    () =>
+      modelInfo
+        ? {
+            [CLICommand.STATUS]: {
+              exact: false,
+              blocks: {
+                App: {
+                  App: (column) => ({
+                    link: urls.model.app.index({
+                      userName: modelInfo.owner,
+                      modelName: modelInfo.name,
+                      appName: column.value,
+                    }),
+                  }),
+                },
+                Machine: {
+                  Machine: (column) => ({
+                    link: urls.model.machine({
+                      userName: modelInfo.owner,
+                      modelName: modelInfo.name,
+                      machineId: column.value,
+                    }),
+                  }),
+                  Address: (column) => ({
+                    externalLink: `http://${column.value}`,
+                  }),
+                },
+                Model: {
+                  Controller: () => ({
+                    link: urls.controllers,
+                  }),
+                  Model: () => ({
+                    link: urls.model.index({
+                      userName: modelInfo.owner,
+                      modelName: modelInfo.name,
+                    }),
+                  }),
+                },
+                Unit: {
+                  Unit: (column) => {
+                    const [appName] = column.value.split("/");
+                    return {
+                      link: urls.model.unit({
+                        userName: modelInfo.owner,
+                        modelName: modelInfo.name,
+                        appName,
+                        unitId: column.value.replace("/", "-").replace("*", ""),
+                      }),
+                    };
+                  },
+                  Machine: (column) => ({
+                    link: urls.model.machine({
+                      userName: modelInfo.owner,
+                      modelName: modelInfo.name,
+                      machineId: column.value,
+                    }),
+                  }),
+                  "Public address": (column) => ({
+                    externalLink: `http://${column.value}`,
+                  }),
+                },
+              },
+            },
+          }
+        : null,
+    [modelInfo],
+  );
+
   useEffect(() => {
     if (isJuju && getMajorMinorVersion(modelInfo?.version) >= 2.9) {
       // The Web CLI is only available in Juju controller versions 2.9 and
@@ -152,76 +230,9 @@ const JujuCLI = () => {
         dispatch(jujuActions.addCommandHistory({ modelUUID, historyItem }))
       }
       activeUser={activeUser}
-      processOutput={{
-        [CLICommand.HELP]: {
-          // This should match "help" but not "help bootstrap" etc.
-          exact: true,
-          process: processHelp,
-        },
-      }}
+      processOutput={processOutput}
       protocol={wsProtocol}
-      tableLinks={{
-        [CLICommand.STATUS]: {
-          exact: false,
-          blocks: {
-            App: {
-              App: (column) => ({
-                link: urls.model.app.index({
-                  userName: modelInfo.owner,
-                  modelName: modelInfo.name,
-                  appName: column.value,
-                }),
-              }),
-            },
-            Machine: {
-              Machine: (column) => ({
-                link: urls.model.machine({
-                  userName: modelInfo.owner,
-                  modelName: modelInfo.name,
-                  machineId: column.value,
-                }),
-              }),
-              Address: (column) => ({
-                externalLink: `http://${column.value}`,
-              }),
-            },
-            Model: {
-              Controller: () => ({
-                link: urls.controllers,
-              }),
-              Model: () => ({
-                link: urls.model.index({
-                  userName: modelInfo.owner,
-                  modelName: modelInfo.name,
-                }),
-              }),
-            },
-            Unit: {
-              Unit: (column) => {
-                const [appName] = column.value.split("/");
-                return {
-                  link: urls.model.unit({
-                    userName: modelInfo.owner,
-                    modelName: modelInfo.name,
-                    appName,
-                    unitId: column.value.replace("/", "-").replace("*", ""),
-                  }),
-                };
-              },
-              Machine: (column) => ({
-                link: urls.model.machine({
-                  userName: modelInfo.owner,
-                  modelName: modelInfo.name,
-                  machineId: column.value,
-                }),
-              }),
-              "Public address": (column) => ({
-                externalLink: `http://${column.value}`,
-              }),
-            },
-          },
-        },
-      }}
+      tableLinks={tableLinks}
     />
   );
 };

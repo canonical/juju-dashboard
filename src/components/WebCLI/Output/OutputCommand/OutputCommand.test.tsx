@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 import { renderComponent } from "testing/utils";
 
@@ -123,5 +123,140 @@ describe("OutputCommand", () => {
     expect(document.querySelector("body")).toHaveTextContent(
       "Model Controller",
     );
+  });
+
+  it("does not rerender if the props don't change", async () => {
+    const messages = ["Model       Controller", "k8s         workloads"];
+    const process = vi
+      .fn()
+      .mockImplementation((messages) => (
+        <div data-testid="custom">{messages[0]}</div>
+      ));
+    const processOutput = {
+      "remove-unit": {
+        exact: false,
+        process,
+      },
+    };
+    const { rerender } = render(
+      <OutputCommand
+        command={"remove-unit"}
+        messages={messages}
+        processOutput={processOutput}
+      />,
+    );
+    expect(process).toHaveBeenCalledOnce();
+    rerender(
+      <OutputCommand
+        command={"remove-unit"}
+        messages={messages}
+        processOutput={processOutput}
+      />,
+    );
+    expect(process).toHaveBeenCalledOnce();
+  });
+
+  it("does not rerender if the the messages array has the same content but a new reference", async () => {
+    const messages = ["Model       Controller", "k8s         workloads"];
+    const process = vi
+      .fn()
+      .mockImplementation((messages) => (
+        <div data-testid="custom">{messages[0]}</div>
+      ));
+    const processOutput = {
+      "remove-unit": {
+        exact: false,
+        process,
+      },
+    };
+    const { rerender } = render(
+      <OutputCommand
+        command={"remove-unit"}
+        messages={messages}
+        processOutput={processOutput}
+      />,
+    );
+    expect(process).toHaveBeenCalledOnce();
+    rerender(
+      <OutputCommand
+        command={"remove-unit"}
+        messages={[...messages]}
+        processOutput={processOutput}
+      />,
+    );
+    expect(process).toHaveBeenCalledOnce();
+  });
+
+  it("rerenders if one of the non-messages props change", async () => {
+    const messages = ["Model       Controller", "k8s         workloads"];
+    const process = vi
+      .fn()
+      .mockImplementation((messages) => (
+        <div data-testid="custom">{messages[0]}</div>
+      ));
+    const { rerender } = render(
+      <OutputCommand
+        command={"remove-unit"}
+        messages={messages}
+        processOutput={{
+          "remove-unit": {
+            exact: false,
+            process,
+          },
+        }}
+      />,
+    );
+    const newProcess = vi
+      .fn()
+      .mockImplementation((messages) => (
+        <div data-testid="custom">{messages[0]}</div>
+      ));
+    expect(process).toHaveBeenCalledOnce();
+    rerender(
+      <OutputCommand
+        command={"remove-unit"}
+        messages={messages}
+        processOutput={{
+          "remove-unit": {
+            exact: false,
+            process: newProcess,
+          },
+        }}
+      />,
+    );
+    expect(process).toHaveBeenCalledOnce();
+    expect(newProcess).toHaveBeenCalledOnce();
+  });
+
+  it("rerenders if the messages array changes", async () => {
+    const messages = ["Model       Controller", "k8s         workloads"];
+    const process = vi
+      .fn()
+      .mockImplementation((messages) => (
+        <div data-testid="custom">{messages[0]}</div>
+      ));
+    const processOutput = {
+      "remove-unit": {
+        exact: false,
+        process: process,
+      },
+    };
+    const { rerender } = render(
+      <OutputCommand
+        command={"remove-unit"}
+        messages={messages}
+        processOutput={processOutput}
+      />,
+    );
+    expect(process).toHaveBeenCalledOnce();
+    messages.push("new message");
+    rerender(
+      <OutputCommand
+        command={"remove-unit"}
+        messages={messages}
+        processOutput={processOutput}
+      />,
+    );
+    expect(process).toHaveBeenCalledOnce();
   });
 });
