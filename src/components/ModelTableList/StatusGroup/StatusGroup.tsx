@@ -10,10 +10,10 @@ import {
 } from "store/juju/selectors";
 import type { Controllers, ModelData } from "store/juju/types";
 import type { Filters, Status } from "store/juju/utils/models";
-import { canAdministerModel, extractOwnerName } from "store/juju/utils/models";
+import { extractOwnerName } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 
-import AccessButton from "../AccessButton/AccessButton";
+import AccessColumn from "../AccessColumn/AccessColumn";
 import CloudCell from "../CloudCell/CloudCell";
 import ModelSummary from "../ModelSummary";
 import {
@@ -130,18 +130,14 @@ function generateModelTableDataByStatus(
           {
             "data-testid": TestId.COLUMN_UPDATED,
             content: (
-              <>
-                {canAdministerModel(activeUser, model?.info?.users) && (
-                  <AccessButton modelName={model.model.name} />
-                )}
-                <span className="model-access-alt">{lastUpdated}</span>
-              </>
+              <AccessColumn
+                modelName={model?.model?.name}
+                activeUser={activeUser}
+              >
+                {lastUpdated}
+              </AccessColumn>
             ),
-            className: `u-align--right lrg-screen-access-cell ${
-              canAdministerModel(activeUser, model?.info?.users)
-                ? "has-permission"
-                : ""
-            }`,
+            className: "u-align--right lrg-screen-access-cell",
           },
         ],
         sortData: {

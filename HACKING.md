@@ -41,6 +41,7 @@ contribute and what kinds of contributions are welcome.
     - [Forward ports](#forward-ports)
     - [Set up Juju Dashboard](#set-up-juju-dashboard)
     - [Restarting JIMM](#restarting-jimm)
+    - [Adding users](#adding-users)
   - [Self signed certificates](#self-signed-certificates)
   - [Juju on M1 Macs](#juju-on-m1-macs)
 - [Building the Docker image](#building-the-docker-image)
@@ -685,6 +686,26 @@ Each time you start the multipass container you need to do the following:
 1. [Forward ports](#forward-ports)
 2. Recreate the JIMM environment with `make qa-lxd`.
 3. Now you can start the dashboard as normal.
+
+#### Adding users
+
+The QA deployment uses Keycloak to manage users. The deployment includes a web
+UI which can be found at http://keycloak.localhost:8082/.
+
+Log in using `jimm` and `jimm` and go to the
+[jimm](http://keycloak.localhost:8082/admin/master/console/#/jimm/) realm
+(switch realms using the dropdown at the top of the sidebar).
+
+Go to [Users](http://keycloak.localhost:8082/admin/master/console/#/jimm/users) and then [Add user](http://keycloak.localhost:8082/admin/master/console/#/jimm/users/add-user).
+
+Fill in the username and email, set 'Email verified' to 'yes' and submit the
+form.
+
+On the user details page click on the 'Credentials' tab and set a password.
+
+You can now give the user access in all the normal ways such as `juju
+grant-cloud [user@email] add-model localhost` and you can log in as the user with `juju
+login` and enter the details you set above.
 
 ### Self signed certificates
 
