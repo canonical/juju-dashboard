@@ -293,7 +293,6 @@ const WebCLI = ({
             ref={inputRef}
             aria-label={Label.COMMAND}
             placeholder={Label.COMMAND}
-            disabled={hasInlineError(InlineErrors.CONNECTION)}
           />
         </form>
         <div className="webcli__input-help">
