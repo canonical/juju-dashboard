@@ -590,14 +590,43 @@ describe("WebCLI", () => {
     ).toHaveTextContent(`ERROR: ${Label.UNKNOWN_ERROR}`);
   });
 
-  it("should display error when trying to send message over an unopened connection", async () => {
+  it("should reconnect when trying to send message after disconnection", async () => {
     renderComponent(<WebCLI {...props} />);
     await server.connected;
+    // Disconnect the websocket.
     server.close();
+    await server.closed;
+    // Once closed we can't reopen it, so create a new websocket ready to be
+    // connected to.
+    server = new WS("wss://localhost:1234/model/abc123/commands");
     const input = screen.getByRole("textbox");
-    await userEvent.type(input, "status --color{enter}");
-    expect(
-      document.querySelector(".webcli__output-content code"),
-    ).toHaveTextContent(`ERROR: ${Label.NOT_OPEN_ERROR}`);
+    await userEvent.type(input, "status{enter}");
+    const client = await server.connected;
+    await expect(server).toReceiveMessage(
+      JSON.stringify({
+        user: "eggman@external",
+        credentials: "somelongpassword",
+        commands: ["status"],
+      }),
+    );
+    expect(client.readyState).toBe(WebSocket.OPEN);
+  });
+
+  it("should display an error when trying to send message when it can't reconnect", async () => {
+    renderComponent(<WebCLI {...props} />);
+    const client = await server.connected;
+    server.close();
+    await server.closed;
+    expect(client.readyState).toBe(WebSocket.CLOSED);
+    const input = screen.getByRole("textbox");
+    await userEvent.type(input, "status{enter}");
+    // At this point it will try to reconnect to the server, which has been
+    // manually closed so it will return an error.
+    await waitFor(() => {
+      expect(
+        document.querySelector(".webcli__output-content code"),
+      ).toHaveTextContent(`ERROR: ${Label.CONNECTION_ERROR}`);
+      expect(client.readyState).toBe(WebSocket.CLOSED);
+    });
   });
 });

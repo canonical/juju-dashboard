@@ -173,7 +173,7 @@ const WebCLI = ({
     [],
   );
 
-  const handleCommandSubmit = (ev: FormEvent<HTMLFormElement>) => {
+  const handleCommandSubmit = async (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     setShouldShowHelp(false);
     // We need to get the most up to date connection information in the event
@@ -216,18 +216,22 @@ const WebCLI = ({
     // Reset the position in case the user was navigating through the history.
     setHistoryPosition(0);
 
-    if (connection.current?.isOpen()) {
-      lastCommand.current = command;
-      connection.current?.send(
-        JSON.stringify({
-          ...authentication,
-          commands: [command],
-        }),
-      );
-      onCommandSent(command);
-    } else {
-      setInlineError(InlineErrors.CONNECTION, Label.NOT_OPEN_ERROR);
+    if (!connection.current?.isOpen()) {
+      try {
+        await connection.current?.reconnect();
+      } catch (error) {
+        setInlineError(InlineErrors.CONNECTION, Label.CONNECTION_ERROR);
+        return;
+      }
     }
+    lastCommand.current = command;
+    connection.current?.send(
+      JSON.stringify({
+        ...authentication,
+        commands: [command],
+      }),
+    );
+    onCommandSent(command);
     if (inputRef.current) {
       inputRef.current.value = ""; // Clear the input after sending the message.
     }
@@ -245,7 +249,7 @@ const WebCLI = ({
     <div className="webcli is-dark" data-testid={TestId.COMPONENT}>
       <WebCLIOutput
         content={output && modelUUID in output ? output[modelUUID] : []}
-        showHelp={shouldShowHelp || hasInlineError(InlineErrors.AUTHENTICATION)}
+        showHelp={shouldShowHelp || hasInlineError()}
         setShouldShowHelp={setShouldShowHelp}
         tableLinks={tableLinks}
         helpMessage={
@@ -271,7 +275,13 @@ const WebCLI = ({
       />
       <div className="webcli__input">
         <div className="webcli__input-prompt">$ juju</div>
-        <form onSubmit={handleCommandSubmit}>
+        <form
+          onSubmit={(event) => {
+            handleCommandSubmit(event).catch(() =>
+              setInlineError(InlineErrors.CONNECTION, Label.UNKNOWN_ERROR),
+            );
+          }}
+        >
           <input
             autoComplete="off"
             autoCorrect="off"
@@ -283,7 +293,6 @@ const WebCLI = ({
             ref={inputRef}
             aria-label={Label.COMMAND}
             placeholder={Label.COMMAND}
-            disabled={hasInlineError(InlineErrors.CONNECTION)}
           />
         </form>
         <div className="webcli__input-help">

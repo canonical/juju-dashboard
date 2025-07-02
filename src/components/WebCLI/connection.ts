@@ -37,12 +37,18 @@ class Connection {
     return this.#address;
   }
 
-  connect() {
+  connect(onOpen?: () => void, onError?: (event: Event) => void) {
     const ws = new WebSocket(this.#address);
-    ws.onopen = this.#wsOnOpen;
+    ws.onopen = () => {
+      this.#wsOnOpen();
+      onOpen?.();
+    };
     ws.onclose = this.#wsOnClose;
     ws.onmessage = this.#handleMessage.bind(this);
-    ws.onerror = this.#wsOnError;
+    ws.onerror = (event) => {
+      this.#wsOnError(event);
+      onError?.(event);
+    };
     this.#ws = ws;
     return this;
   }
@@ -58,6 +64,12 @@ class Connection {
       this.#setLoading(false);
     }
     this.#messageBuffer = [];
+  }
+
+  reconnect() {
+    return new Promise<void>((resolve, reject) => {
+      this.connect(resolve, reject);
+    });
   }
 
   isOpen() {
