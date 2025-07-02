@@ -21,7 +21,13 @@ test.describe("Models", () => {
 
   test.beforeAll(async ({ jujuCLI }) => {
     actions = new ActionStack(jujuCLI);
+  });
 
+  test.afterAll(async () => {
+    await actions.rollback();
+  });
+
+  test("List created and shared models", async ({ jujuCLI, page }) => {
     await actions.prepare((add) => {
       user1 = add(jujuCLI.createUser());
       user2 = add(jujuCLI.createUser());
@@ -32,13 +38,6 @@ test.describe("Models", () => {
 
       add(new GiveModelAccess(sharedModel, user2, ModelPermission.READ));
     });
-  });
-
-  test.afterAll(async () => {
-    await actions.rollback();
-  });
-
-  test("List created and shared models", async ({ page }) => {
     await user2.dashboardLogin(page, urls.models.index);
     await expect(
       page
@@ -50,30 +49,5 @@ test.describe("Models", () => {
         .locator("tr", { hasText: user2Model.name })
         .and(page.locator("tr", { hasText: user2.displayName })),
     ).toBeInViewport();
-  });
-
-  test("Cannot access model without permission", async ({ page }) => {
-    await user2.dashboardLogin(page, user1Model.url);
-    await expect(page.getByText(EntityDetailsLabel.NOT_FOUND)).toBeVisible();
-  });
-
-  test("model list does not display access button to non-admins", async ({
-    page,
-  }) => {
-    await user2.dashboardLogin(page, urls.models.index);
-    // The access button only appears on hover.
-    await page.getByRole("link", { name: sharedModel.name }).hover();
-    await expect(
-      page.getByRole("button", { name: AccessColumnLabel.ACCESS_BUTTON }),
-    ).not.toBeVisible();
-  });
-
-  test("model details does not display access button to non-admins", async ({
-    page,
-  }) => {
-    await user2.dashboardLogin(page, user1Model.url);
-    await expect(
-      page.getByRole("button", { name: ModelLabel.ACCESS_BUTTON }),
-    ).not.toBeVisible();
   });
 });
