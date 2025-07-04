@@ -102,13 +102,19 @@ export async function createNextCutPr(
   // Push all branches.
   await ctx.git.push(releaseBranch, cutBranch);
 
+  const header = `> [!important]
+  > Merge this PR to open the \`${releaseBranch}\` branch, and prepare for a release.
+
+  ---
+  `;
+
   // Create a pull request from `cutBranch` onto `releaseBranch`.
   const cutPr = await ctx.repo.createPullRequest({
     base: releaseBranch,
     head: cutBranch,
 
     title: `chore(release): cut ${version.major}.${version.minor} release`,
-    body: changelog.generate(releaseBranch, items ?? []),
+    body: changelog.generate(header, items ?? []),
   });
 
   // Add labels to the PR.
@@ -167,7 +173,7 @@ export async function getCutPr(
 
   // Create the higher severity PR
   const newCutPr = await createNextCutPr(ctx, severity, {
-    items: changelog.parse(cutPr.body),
+    items: changelog.parse(cutPr.body).items,
   });
 
   // Close the lower severity PR.

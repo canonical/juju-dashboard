@@ -31910,21 +31910,10 @@ const CHANGELOG_START_MARKER = "<!-- changelog -->";
 /** Marker to indicate the end of the changelog items. */
 const CHANGELOG_END_MARKER = "<!-- /changelog -->";
 /**
- * Generate the changelog header for the provided release branch.
- */
-function changelogHeader(releaseBranch) {
-    return `> [!important]
-> Merge this PR to open the \`${releaseBranch}\` branch, and prepare for a release.
-
----
-`;
-}
-/**
  * For the provided release branch and items, generate the changelog.
  */
-function generate(releaseBranch, items) {
-    let changelog = changelogHeader(releaseBranch);
-    changelog += "# What's changed?\n";
+function generate(header, items) {
+    let changelog = header;
     changelog += `${CHANGELOG_START_MARKER}\n`;
     // TODO: Categorise changelog based on item severity.
     for (const item of items) {
@@ -31937,32 +31926,33 @@ function generate(releaseBranch, items) {
  * For the provided changelog text, parse out all of the items within it.
  */
 function parse(changelog) {
-    const [_preamble, changelogEnd] = util.splitOnce(changelog, CHANGELOG_START_MARKER, false);
-    const [items, _] = util.splitOnce(changelogEnd, CHANGELOG_END_MARKER);
-    const changelogItems = [];
+    const [header, changelogEnd] = util.splitOnce(changelog, CHANGELOG_START_MARKER, false);
+    const [changelogItems, _] = util.splitOnce(changelogEnd, CHANGELOG_END_MARKER);
+    const items = [];
     let currentItem = "";
-    for (let item of items.trim().split("\n")) {
+    for (let item of changelogItems.trim().split("\n")) {
         // Test if the item is the start of a new bullet point.
         if (item.startsWith("- ")) {
-            changelogItems.push(currentItem);
+            items.push(currentItem);
             currentItem = "";
             // Strip off the bullet point.
             item = item.slice(2);
         }
         currentItem += item.trim() + "\n";
     }
-    changelogItems.push(currentItem);
-    return changelogItems
-        .map((item) => item.trim())
-        .filter((item) => item.length > 0);
+    items.push(currentItem);
+    return {
+        items: items.map((item) => item.trim()).filter((item) => item.length > 0),
+        header,
+    };
 }
 /**
  * Append an item to the changelog, for a release branch.
  */
-function appendItem(changelog, item, releaseBranch) {
-    const items = parse(changelog);
+function appendItem(changelog, item) {
+    const { header, items } = parse(changelog);
     items.push(item);
-    return generate(releaseBranch, items);
+    return generate(header, items);
 }
 
 ;// CONCATENATED MODULE: ./src/lib/versioning/labels.ts
@@ -32122,12 +32112,17 @@ async function createNextCutPr(ctx, severity, { items } = {}) {
     ]);
     // Push all branches.
     await ctx.git.push(releaseBranch, cutBranch);
+    const header = `> [!important]
+  > Merge this PR to open the \`${releaseBranch}\` branch, and prepare for a release.
+
+  ---
+  `;
     // Create a pull request from `cutBranch` onto `releaseBranch`.
     const cutPr = await ctx.repo.createPullRequest({
         base: releaseBranch,
         head: cutBranch,
         title: `chore(release): cut ${version.major}.${version.minor} release`,
-        body: changelog.generate(releaseBranch, items ?? []),
+        body: changelog.generate(header, items ?? []),
     });
     // Add labels to the PR.
     await cutPr.setLabels([RELEASE_CUT_LABEL, labelFromSeverity(severity)]);
@@ -32167,7 +32162,7 @@ async function getCutPr(ctx, severity) {
     }
     // Create the higher severity PR
     const newCutPr = await createNextCutPr(ctx, severity, {
-        items: changelog.parse(cutPr.body),
+        items: changelog.parse(cutPr.body).items,
     });
     // Close the lower severity PR.
     await cutPr.close();
