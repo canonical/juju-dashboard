@@ -1,0 +1,19 @@
+name: Get PR severity
+description: Get PR severity
+
+runs:
+  using: node20
+  main: index.js
+
+inputs:
+  github-token:
+    description: "GitHub Token (usually `secrets.GITHUB_TOKEN`)."
+    required: true
+
+  pr-number:
+    description: "PR to fetch severity for. Will default to PR that triggered this action if not provided."
+    required: false
+
+outputs:
+  severity:
+    description: "Severity of the pull request. Will be `minor` or `major`."
