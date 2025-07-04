@@ -7,11 +7,9 @@
     // reset the vanilla pre styling
     background-color: inherit;
     border: none;
+    overflow-wrap: anywhere;
     padding: 0;
-
-    // extra styles
     white-space: pre-wrap;
-    word-break: break-word;
   }
 
   .config-panel__hide-button {
