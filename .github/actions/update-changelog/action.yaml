@@ -3,4 +3,17 @@ description: Update changelog for a given pull request.
 
 runs:
   using: node20
-  main: dist/index.js
+  main: index.js
+
+inputs:
+  github-token:
+    description: "GitHub Token (usually `secrets.GITHUB_TOKEN`)."
+    required: true
+
+  cut-pr-number:
+    description: "PR which contains the changelog to be updated. Can be generated using `cut-release-pr` action."
+    required: true
+
+  pr-number:
+    description: "Merged PR which will be added to the changelog. Will default to PR that triggered this action if not provided."
+    required: false
