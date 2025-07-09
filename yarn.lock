@@ -198,9 +198,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:2.7.8":
-  version: 2.7.8
-  resolution: "@canonical/react-components@npm:2.7.8"
+"@canonical/react-components@npm:2.7.9":
+  version: 2.7.9
+  resolution: "@canonical/react-components@npm:2.7.9"
   dependencies:
     "@types/jest": "npm:29.5.14"
     "@types/node": "npm:20.17.19"
@@ -219,7 +219,7 @@ __metadata:
     react: ^18.0.0 || ^19.0.0
     react-dom: ^18.0.0 || ^19.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 10c0/32d5dc2487a679985b3f0fb7a0e6cb7e25e460653c331d0bab61bef9b40cbce963197a2b96bf213c250643135109a4391d7e82b6a8d9ed478acc7580910abaff
+  checksum: 10c0/87de5ff0b8ada264b4da38e81a64be65879d1427791a2d63c03f8e15375256de30a97ffb22ef263d4b3e7530ab77506b80e696edf79078c2ee037a9b9cb559a1
   languageName: node
   linkType: hard
 
@@ -8657,7 +8657,7 @@ __metadata:
   dependencies:
     "@canonical/jujulib": "npm:8.0.1"
     "@canonical/macaroon-bakery": "npm:1.3.2"
-    "@canonical/react-components": "npm:2.7.8"
+    "@canonical/react-components": "npm:2.7.9"
     "@canonical/rebac-admin": "npm:0.0.1-alpha.12"
     "@curvenote/ansi-to-react": "npm:7.0.0"
     "@eslint/compat": "npm:1.2.7"
