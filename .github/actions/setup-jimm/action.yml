@@ -53,7 +53,7 @@ runs:
         sudo snap install yq vault
         sudo snap install --channel=3/edge jimmctl
     - name: Setup Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
     - name: Set up IAM
       shell: bash
       run: |
