@@ -27,7 +27,7 @@ import {
 } from "store/juju/selectors";
 import type { Controller } from "store/juju/types";
 import { useAppSelector } from "store/store";
-import urls from "urls";
+import urls, { externalURLs } from "urls";
 import { breakLines } from "utils";
 
 import ControllersOverview from "./ControllerOverview";
@@ -218,7 +218,7 @@ const ControllersIndex = () => {
                     controller.{" "}
                     <a
                       className="p-list__link"
-                      href="https://juju.is/docs/olm/upgrading"
+                      href={externalURLs.upgradingThings}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
