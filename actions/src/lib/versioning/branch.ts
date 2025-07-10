@@ -6,6 +6,7 @@ import { util } from "@/lib";
  * Prefix for release branches.
  */
 export const RELEASE_BRANCH_PREFIX = "release";
+export const CUT_BRANCH_PREFIX = "cut";
 
 /**
  * Parse a branch name into its version information. If the provided branch isn't a release
@@ -59,4 +60,19 @@ export function versioningInfoFromBranch(
     minorVersion,
     isMajorRelease: minorVersion === 0,
   };
+}
+
+/**
+ * Test if the provided branch is a release branch.
+ */
+export function isReleaseBranch(branch: string): boolean {
+  try {
+    return versioningInfoFromBranch(branch) !== null;
+  } catch (_err) {
+    return false;
+  }
+}
+
+export function isCutReleaseBranch(branch: string): boolean {
+  return branch.startsWith(`${CUT_BRANCH_PREFIX}/${RELEASE_BRANCH_PREFIX}`);
 }

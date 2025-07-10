@@ -17,8 +17,9 @@ export * as versioning from "./versioning";
 export type Ctx = {
   octokit: InstanceType<typeof GitHub>;
   core: typeof core;
-  context: Context;
+  context: Context & { refName: string };
   exec: typeof exec.exec;
+  execOutput: typeof exec.getExecOutput;
   repo: Repository;
   git: Git;
   pr?: PullRequest;
@@ -57,8 +58,12 @@ export async function createCtx(fallback?: {
   return {
     octokit,
     core,
-    context: github.context,
+    context: Object.assign(
+      { refName: process.env["GITHUB_REF_NAME"] },
+      github.context,
+    ),
     exec: exec.exec,
+    execOutput: exec.getExecOutput,
     repo,
     git,
     pr,

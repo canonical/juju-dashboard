@@ -70,6 +70,13 @@ export default class Git {
   }
 
   /**
+   * Run `git fetch`.
+   */
+  async fetch() {
+    await this.exec("fetch");
+  }
+
+  /**
    * Move a branch to point at a new target. Target can be a ref or a branch name.
    */
   async moveBranch(name: string, target: string) {
