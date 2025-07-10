@@ -90,7 +90,7 @@ exports[`Error Boundary > renders without crashing and matches snapshot 1`] = `
           Further debugging can be done
            
           <a
-            href="https://juju.is/docs/olm/troubleshooting"
+            href="https://documentation.ubuntu.com/juju/latest/howto/manage-your-deployment/index.html#troubleshoot-your-deployment"
             rel="noopener noreferrer"
             target="_blank"
           >

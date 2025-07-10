@@ -9,6 +9,7 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { externalURLs } from "urls";
 
 import { renderCounts } from "../../counts";
 
@@ -120,7 +121,7 @@ export default function ApplicationsTab() {
         There are no applications associated with this model. Learn about{" "}
         <a
           className="p-link--external"
-          href="https://juju.is/docs/deploying-applications"
+          href={externalURLs.deployingApplication}
         >
           deploying applications
         </a>
