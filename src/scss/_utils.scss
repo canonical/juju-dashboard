@@ -63,9 +63,9 @@
 
 .p-tooltip--fixed-width .p-tooltip__message {
   @media (max-width: $breakpoint-x-small) {
+    overflow-wrap: anywhere;
     white-space: normal;
     width: 80vw;
-    word-break: break-word;
   }
 }
 

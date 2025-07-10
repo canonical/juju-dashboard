@@ -20,7 +20,7 @@
   }
 
   &__message {
-    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 
   i {
