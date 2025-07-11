@@ -181,11 +181,16 @@ describe("cut-release-pr", () => {
         // Branches created
         expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
           1,
+          "main",
+          "origin/main",
+        );
+        expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
+          2,
           "release/1.2",
           "main",
         );
         expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
-          2,
+          3,
           "cut/release/1.2",
           "main",
         );
@@ -242,11 +247,16 @@ describe("cut-release-pr", () => {
         // Branches created
         expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
           1,
+          "main",
+          "origin/main",
+        );
+        expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
+          2,
           "release/2.0",
           "main",
         );
         expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
-          2,
+          3,
           "cut/release/2.0",
           "main",
         );
@@ -365,6 +375,11 @@ describe("cut-release-pr", () => {
             // Branches created
             expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
               1,
+              "main",
+              "origin/main",
+            );
+            expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
+              2,
               `cut/release/${versionPrefix}.0-beta.${betaVersion}`,
               "main",
             );
@@ -491,6 +506,11 @@ describe("cut-release-pr", () => {
           // Branches created
           expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
             1,
+            "main",
+            "origin/main",
+          );
+          expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
+            2,
             `cut/release/${candidateVersion}`,
             "main",
           );

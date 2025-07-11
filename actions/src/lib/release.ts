@@ -148,6 +148,10 @@ export async function createNextCutPr(
 
   // Pre-fetch branches
   await ctx.git.fetch();
+  await ctx.git.createBranch(
+    ctx.repo.defaultBranch,
+    `origin/${ctx.repo.defaultBranch}`,
+  );
 
   // Determine the next version
   if (ctx.context.refName === ctx.git.mainBranch) {
