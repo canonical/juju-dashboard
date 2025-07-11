@@ -153,6 +153,8 @@ export async function createNextCutPr(
     `origin/${ctx.repo.defaultBranch}`,
   );
 
+  console.log(ctx.context.refName, ctx.git.mainBranch);
+
   // Determine the next version
   if (ctx.context.refName === ctx.git.mainBranch) {
     // Create a new release branch, and the standard cut branch pointed to it.
