@@ -32224,6 +32224,7 @@ async function createNextCutPr(ctx, severity, { items } = {}) {
     // Pre-fetch branches
     await ctx.git.fetch();
     await ctx.git.createBranch(ctx.repo.defaultBranch, `origin/${ctx.repo.defaultBranch}`);
+    console.log(ctx.context.refName, ctx.git.mainBranch);
     // Determine the next version
     if (ctx.context.refName === ctx.git.mainBranch) {
         // Create a new release branch, and the standard cut branch pointed to it.
