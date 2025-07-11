@@ -32244,7 +32244,7 @@ async function createNextCutPr(ctx, severity, { items } = {}) {
         releaseBranch = ctx.context.refName;
     }
     // Create the cut branch.
-    await ctx.git.createBranch(cutBranch, `origin/${ctx.repo.defaultBranch}`);
+    await ctx.git.createBranch(cutBranch, releaseBranch);
     // Checkout cut branch.
     await ctx.git.checkout(cutBranch);
     // Update the version in the package.json.
