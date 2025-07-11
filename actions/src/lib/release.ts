@@ -78,7 +78,7 @@ export async function getNextReleaseVersion(
 ): Promise<string> {
   const packageVersion = await ctx
     .execOutput("yq", ["-r", ".version", "./package.json"])
-    .then(({ stdout }) => stdout);
+    .then(({ stdout }) => stdout.trim());
 
   if (releaseKind === "beta") {
     // If already a beta version, just increment the beta tag. If not a beta version, increment the
@@ -148,8 +148,6 @@ export async function createNextCutPr(
 
   // Pre-fetch branches
   await ctx.git.fetch();
-
-  console.log(ctx.context.refName, ctx.git.mainBranch);
 
   // Determine the next version
   if (ctx.context.refName === ctx.git.mainBranch) {
