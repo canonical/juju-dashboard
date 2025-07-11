@@ -31746,6 +31746,12 @@ class Git {
         await this.exec("branch", "-c", oldBranch, name);
     }
     /**
+     * Run `git fetch`.
+     */
+    async fetch() {
+        await this.exec("fetch");
+    }
+    /**
      * Move a branch to point at a new target. Target can be a ref or a branch name.
      */
     async moveBranch(name, target) {
@@ -32035,7 +32041,77 @@ function labelFromSeverity(severity) {
     throw new Error("no label for severity.");
 }
 
+;// CONCATENATED MODULE: ./src/lib/versioning/branch.ts
+
+/**
+ * Prefix for release branches.
+ */
+const RELEASE_BRANCH_PREFIX = "release";
+const CUT_BRANCH_PREFIX = "cut";
+/**
+ * Parse a branch name into its version information. If the provided branch isn't a release
+ * branch, `null` will be returned.
+ *
+ * A release branch begins with `release/`.
+ *
+ * @param branch - Branch name to parse.
+ * @returns {ReleaseInfo} Release information parsed from the branch name.
+ * @returns {null} Returned if the branch isn't a release branch.
+ * @throws {Error} If the branch is a malformed release branch, an error will be thrown.
+ */
+function versioningInfoFromBranch(branch) {
+    let prefix;
+    let versionStr;
+    try {
+        [prefix, versionStr] = splitOnce(branch, "/");
+    }
+    catch (_e) {
+        prefix = undefined;
+        versionStr = undefined;
+    }
+    if (prefix !== RELEASE_BRANCH_PREFIX) {
+        // Unexpected branch format, so mustn't be a release branch.
+        return null;
+    }
+    // Ensure the numbered versions are valid.
+    let majorVersion;
+    let minorVersion;
+    try {
+        [majorVersion, minorVersion] = splitOnce(versionStr, ".", false)
+            .map((version) => Number(version))
+            .filter((version) => !isNaN(version) && Number.isSafeInteger(version));
+    }
+    catch (_e) {
+        majorVersion = undefined;
+        minorVersion = undefined;
+    }
+    if (majorVersion === undefined || minorVersion === undefined) {
+        throw new Error(`malformed release branch name: ${branch}`);
+    }
+    return {
+        version: `${majorVersion}.${minorVersion}`,
+        majorVersion,
+        minorVersion,
+        isMajorRelease: minorVersion === 0,
+    };
+}
+/**
+ * Test if the provided branch is a release branch.
+ */
+function isReleaseBranch(branch) {
+    try {
+        return versioningInfoFromBranch(branch) !== null;
+    }
+    catch (_err) {
+        return false;
+    }
+}
+function isCutReleaseBranch(branch) {
+    return branch.startsWith(`${CUT_BRANCH_PREFIX}/${RELEASE_BRANCH_PREFIX}`);
+}
+
 ;// CONCATENATED MODULE: ./src/lib/release.ts
+
 
 
 /**
@@ -32086,32 +32162,99 @@ async function getNextCutVersion(ctx, severity) {
     return version;
 }
 /**
+ * Determine the next release version.
+ */
+async function getNextReleaseVersion(ctx, releaseKind) {
+    const packageVersion = await ctx
+        .execOutput("yq", ["-r", ".version", "./package.json"])
+        .then(({ stdout }) => stdout);
+    if (releaseKind === "beta") {
+        // If already a beta version, just increment the beta tag. If not a beta version, increment the
+        // patch version and add a beta tag.
+        if (packageVersion.includes("-beta.")) {
+            const [baseVersion, betaVersionStr] = packageVersion.split("-beta.");
+            // Increment the beta tag
+            const betaVersion = Number(betaVersionStr) + 1;
+            if (isNaN(betaVersion)) {
+                throw new Error(`unable to process beta version: ${packageVersion}`);
+            }
+            return `${baseVersion}-beta.${betaVersion}`;
+        }
+        else {
+            // Increment the minor version before adding the beta tag.
+            const [major, minor, patch] = packageVersion
+                .split(".")
+                // If `x` is in the package.json version, incrementing it should result in `0`.
+                .map((part) => (part === "x" ? -1 : Number(part)));
+            return `${major}.${minor}.${patch + 1}-beta.0`;
+        }
+    }
+    else if (releaseKind === "candidate") {
+        // Candidate versions use the existing beta version, but drop the beta tag.
+        if (!packageVersion.includes("-beta.")) {
+            throw new Error(`candidate versions may only be created from beta versions, but found: ${packageVersion}`);
+        }
+        return packageVersion.split("-beta.")[0];
+    }
+    throw new Error(`unknown release kind: ${releaseKind}`);
+}
+/**
+ * Determine the release kind that should be created for the merged branch.
+ */
+function determineReleaseKind(ctx, branch) {
+    if (isCutReleaseBranch(branch) && branch.includes("-beta")) {
+        // Beta release was just merged, create a candidate release.
+        return "candidate";
+    }
+    // All other merged branches cause a beta release.
+    return "beta";
+}
+/**
  * Create a pull request for the next release cut.
  */
 async function createNextCutPr(ctx, severity, { items } = {}) {
+    /** Name of the release branch, which will be the target for the PR. */
+    let releaseBranch;
+    /** Name of the cut branch, which the PR will merge into the release branch. */
+    let cutBranch;
+    /** New version for this cut PR, which will be added to `package.json`. */
+    let version;
+    /** Pretty variant of the version, for use in headers/messages. */
+    let versionPretty;
+    // Pre-fetch branches
+    await ctx.git.fetch();
     // Determine the next version
-    const version = await getNextCutVersion(ctx, severity);
-    const releaseBranch = `release/${version.major}.${version.minor}`;
-    const cutBranch = `cut/${releaseBranch}`;
-    // Create branches starting at the default branch.
-    await Promise.all([releaseBranch, cutBranch].map(async (branchName) => {
-        await ctx.git.createBranch(branchName, ctx.repo.defaultBranch);
-    }));
+    if (ctx.context.refName === ctx.git.mainBranch) {
+        // Create a new release branch, and the standard cut branch pointed to it.
+        const { major, minor } = await getNextCutVersion(ctx, severity);
+        releaseBranch = `${RELEASE_BRANCH_PREFIX}/${major}.${minor}`;
+        version = `${major}.${minor}.x`;
+        versionPretty = `${major}.${minor}`;
+        cutBranch = `${CUT_BRANCH_PREFIX}/${releaseBranch}`;
+        // Create the release branch.
+        await ctx.git.createBranch(releaseBranch, ctx.repo.defaultBranch);
+        await ctx.git.push(releaseBranch);
+    }
+    else {
+        // Assuming already on `release/x.y` branch
+        const releaseKind = determineReleaseKind(ctx, ctx.pr.head);
+        version = await getNextReleaseVersion(ctx, releaseKind);
+        versionPretty = version;
+        cutBranch = `${CUT_BRANCH_PREFIX}/${RELEASE_BRANCH_PREFIX}/${version}`;
+        releaseBranch = ctx.context.refName;
+    }
+    // Create the cut branch.
+    await ctx.git.createBranch(cutBranch, ctx.repo.defaultBranch);
     // Checkout cut branch.
     await ctx.git.checkout(cutBranch);
     // Update the version in the package.json.
-    const packageVersion = `${version.major}.${version.minor}.0`;
-    await ctx.exec("yq", [
-        "-i",
-        `.version = "${packageVersion}"`,
-        "./package.json",
-    ]);
+    await ctx.exec("yq", ["-i", `.version = "${version}"`, "./package.json"]);
     // Commit package.json change.
-    await ctx.git.commit(`update package.json version to ${packageVersion}`, [
+    await ctx.git.commit(`update package.json version to ${version}`, [
         "./package.json",
     ]);
     // Push all branches.
-    await ctx.git.push(releaseBranch, cutBranch);
+    await ctx.git.push(cutBranch);
     const header = `> [!important]
   > Merge this PR to open the \`${releaseBranch}\` branch, and prepare for a release.
 
@@ -32121,7 +32264,7 @@ async function createNextCutPr(ctx, severity, { items } = {}) {
     const cutPr = await ctx.repo.createPullRequest({
         base: releaseBranch,
         head: cutBranch,
-        title: `chore(release): cut ${version.major}.${version.minor} release`,
+        title: `chore(release): cut ${versionPretty} release`,
         body: generate(header, items ?? []),
     });
     // Add labels to the PR.
@@ -32134,12 +32277,43 @@ async function createNextCutPr(ctx, severity, { items } = {}) {
  * be 'upgraded' to the correct severity.
  */
 async function getCutPr(ctx, severity) {
+    // Determine if the requested severity is valid for this branch.
+    if (ctx.context.refName !== ctx.git.mainBranch) {
+        const versioningInfo = versioningInfoFromBranch(ctx.context.refName);
+        if (!versioningInfo.isMajorRelease && severity === "major") {
+            throw new Error("major PR merged into minor release branch");
+        }
+    }
     // Find all open cut PRs.
     const cutPrs = [];
     for await (const pr of ctx.repo.pullRequests({ state: "open" })) {
         // Skip any PRs which don't have the release cut label.
         if (!pr.labels.find(({ name }) => name === RELEASE_CUT_LABEL)) {
             continue;
+        }
+        if (ctx.context.refName === ctx.git.mainBranch) {
+            // Running on `main` branch.
+            if (!isCutReleaseBranch(pr.head)) {
+                // Pull request doesn't start with `cut/release`, so ignore it.
+                continue;
+            }
+            const releasePortion = pr.head.slice(`${CUT_BRANCH_PREFIX}/`.length);
+            if (!isReleaseBranch(releasePortion)) {
+                // Pull request isn't in format `cut/release/x.y`, ignore it
+                continue;
+            }
+            // Pull request branch is `cut/release/x.y`. There should only ever be one of these at a
+            // time.
+        }
+        else if (isReleaseBranch(ctx.context.refName)) {
+            // Already running on a `release/*` branch, so ensure pull requests have the correct base.
+            if (pr.base !== ctx.context.refName) {
+                continue;
+            }
+        }
+        else {
+            // Running on some other branch, abort.
+            throw new Error(`cannot fetch cut PR of non-main or release branch: ${ctx.context.refName}`);
         }
         cutPrs.push(pr);
     }
@@ -32181,60 +32355,6 @@ function splitOnce(str, sep, allowEmpty = true) {
         throw new Error(`expected split to produce 2 items, but found ${parts.length}`);
     }
     return [parts[0], parts[1]];
-}
-
-;// CONCATENATED MODULE: ./src/lib/versioning/branch.ts
-
-/**
- * Prefix for release branches.
- */
-const RELEASE_BRANCH_PREFIX = "release";
-/**
- * Parse a branch name into its version information. If the provided branch isn't a release
- * branch, `null` will be returned.
- *
- * A release branch begins with `release/`.
- *
- * @param branch - Branch name to parse.
- * @returns {ReleaseInfo} Release information parsed from the branch name.
- * @returns {null} Returned if the branch isn't a release branch.
- * @throws {Error} If the branch is a malformed release branch, an error will be thrown.
- */
-function versioningInfoFromBranch(branch) {
-    let prefix;
-    let versionStr;
-    try {
-        [prefix, versionStr] = splitOnce(branch, "/");
-    }
-    catch (_e) {
-        prefix = undefined;
-        versionStr = undefined;
-    }
-    if (prefix !== RELEASE_BRANCH_PREFIX) {
-        // Unexpected branch format, so mustn't be a release branch.
-        return null;
-    }
-    // Ensure the numbered versions are valid.
-    let majorVersion;
-    let minorVersion;
-    try {
-        [majorVersion, minorVersion] = splitOnce(versionStr, ".", false)
-            .map((version) => Number(version))
-            .filter((version) => !isNaN(version) && Number.isSafeInteger(version));
-    }
-    catch (_e) {
-        majorVersion = undefined;
-        minorVersion = undefined;
-    }
-    if (majorVersion === undefined || minorVersion === undefined) {
-        throw new Error(`malformed release branch name: ${branch}`);
-    }
-    return {
-        version: `${majorVersion}.${minorVersion}`,
-        majorVersion,
-        minorVersion,
-        isMajorRelease: minorVersion === 0,
-    };
 }
 
 ;// CONCATENATED MODULE: ./src/lib/versioning/severity.ts
@@ -32298,8 +32418,9 @@ async function createCtx(fallback) {
     return {
         octokit,
         core: core,
-        context: github.context,
+        context: Object.assign({ refName: process.env["GITHUB_REF_NAME"] }, github.context),
         exec: exec.exec,
+        execOutput: exec.getExecOutput,
         repo,
         git,
         pr,
@@ -32311,9 +32432,11 @@ async function createCtx(fallback) {
 async function run(ctx, { severity }) {
     // Fetch or create the cut PR.
     const pr = await getCutPr(ctx, severity);
-    // Ensure that PR is up to date with main.
-    await ctx.git.moveBranch(pr.base, ctx.git.mainBranch);
-    await ctx.git.push({ force: true }, pr.base);
+    // Ensure that PR is up to date with main, if triggered by a PR to main.
+    if (ctx.context.refName === ctx.git.mainBranch) {
+        await ctx.git.moveBranch(pr.base, ctx.git.mainBranch);
+        await ctx.git.push({ force: true }, pr.base);
+    }
     return { cutPrNumber: pr.number, cutBranch: pr.base };
 }
 
