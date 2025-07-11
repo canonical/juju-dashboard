@@ -31742,7 +31742,7 @@ class Git {
     /**
      * Create a new branch starting at `oldBranch`. If not provided, the main branch will be assumed.
      */
-    async createBranch(name, oldBranch = this.mainBranch) {
+    async createBranch(name, oldBranch = `${this.origin}/${this.mainBranch}`) {
         await this.exec("branch", name, oldBranch);
     }
     /**
@@ -32167,7 +32167,7 @@ async function getNextCutVersion(ctx, severity) {
 async function getNextReleaseVersion(ctx, releaseKind) {
     const packageVersion = await ctx
         .execOutput("yq", ["-r", ".version", "./package.json"])
-        .then(({ stdout }) => stdout);
+        .then(({ stdout }) => stdout.trim());
     if (releaseKind === "beta") {
         // If already a beta version, just increment the beta tag. If not a beta version, increment the
         // patch version and add a beta tag.
@@ -32223,7 +32223,6 @@ async function createNextCutPr(ctx, severity, { items } = {}) {
     let versionPretty;
     // Pre-fetch branches
     await ctx.git.fetch();
-    console.log(ctx.context.refName, ctx.git.mainBranch);
     // Determine the next version
     if (ctx.context.refName === ctx.git.mainBranch) {
         // Create a new release branch, and the standard cut branch pointed to it.
@@ -32233,7 +32232,7 @@ async function createNextCutPr(ctx, severity, { items } = {}) {
         versionPretty = `${major}.${minor}`;
         cutBranch = `${CUT_BRANCH_PREFIX}/${releaseBranch}`;
         // Create the release branch.
-        await ctx.git.createBranch(releaseBranch, ctx.repo.defaultBranch);
+        await ctx.git.createBranch(releaseBranch, `origin/${ctx.repo.defaultBranch}`);
         await ctx.git.push(releaseBranch);
     }
     else {
@@ -32245,7 +32244,7 @@ async function createNextCutPr(ctx, severity, { items } = {}) {
         releaseBranch = ctx.context.refName;
     }
     // Create the cut branch.
-    await ctx.git.createBranch(cutBranch, ctx.repo.defaultBranch);
+    await ctx.git.createBranch(cutBranch, `origin/${ctx.repo.defaultBranch}`);
     // Checkout cut branch.
     await ctx.git.checkout(cutBranch);
     // Update the version in the package.json.
