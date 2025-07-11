@@ -31743,7 +31743,7 @@ class Git {
      * Create a new branch starting at `oldBranch`. If not provided, the main branch will be assumed.
      */
     async createBranch(name, oldBranch = this.mainBranch) {
-        await this.exec("branch", "-C", oldBranch, name);
+        await this.exec("branch", name, oldBranch);
     }
     /**
      * Run `git fetch`.
