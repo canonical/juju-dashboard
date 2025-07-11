@@ -187,7 +187,7 @@ describe("cut-release-pr", () => {
         expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
           2,
           "cut/release/1.2",
-          "origin/main",
+          "release/1.2",
         );
 
         // Update package.json version
@@ -248,7 +248,7 @@ describe("cut-release-pr", () => {
         expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
           2,
           "cut/release/2.0",
-          "origin/main",
+          "release/2.0",
         );
 
         // Update package.json version
@@ -366,7 +366,7 @@ describe("cut-release-pr", () => {
             expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
               1,
               `cut/release/${versionPrefix}.0-beta.${betaVersion}`,
-              "origin/main",
+              `release/${versionPrefix}`,
             );
 
             // Update package.json version
@@ -492,7 +492,7 @@ describe("cut-release-pr", () => {
           expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
             1,
             `cut/release/${candidateVersion}`,
-            "origin/main",
+            `release/${version}`,
           );
 
           // Update package.json version
