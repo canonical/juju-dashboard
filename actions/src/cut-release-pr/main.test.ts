@@ -95,6 +95,7 @@ describe("cut-release-pr", () => {
         push: vi.fn(),
       },
       repo: {
+        defaultBranch: "main",
         pullRequests: vi.fn(),
         branches: vi
           .fn()
