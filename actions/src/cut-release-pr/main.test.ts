@@ -96,6 +96,7 @@ describe("cut-release-pr", () => {
         fetch: vi.fn(),
       },
       repo: {
+        defaultBranch: "main",
         pullRequests: vi.fn(),
         branches: vi
           .fn()
@@ -181,12 +182,12 @@ describe("cut-release-pr", () => {
         expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
           1,
           "release/1.2",
-          undefined,
+          "main",
         );
         expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
           2,
           "cut/release/1.2",
-          undefined,
+          "main",
         );
 
         // Update package.json version
@@ -242,12 +243,12 @@ describe("cut-release-pr", () => {
         expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
           1,
           "release/2.0",
-          undefined,
+          "main",
         );
         expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
           2,
           "cut/release/2.0",
-          undefined,
+          "main",
         );
 
         // Update package.json version
@@ -365,7 +366,7 @@ describe("cut-release-pr", () => {
             expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
               1,
               `cut/release/${versionPrefix}.0-beta.${betaVersion}`,
-              undefined,
+              "main",
             );
 
             // Update package.json version
@@ -491,7 +492,7 @@ describe("cut-release-pr", () => {
           expect(ctx.git.createBranch).toHaveBeenNthCalledWith(
             1,
             `cut/release/${candidateVersion}`,
-            undefined,
+            "main",
           );
 
           // Update package.json version
