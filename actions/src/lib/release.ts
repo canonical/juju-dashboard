@@ -159,7 +159,10 @@ export async function createNextCutPr(
     cutBranch = `${CUT_BRANCH_PREFIX}/${releaseBranch}`;
 
     // Create the release branch.
-    await ctx.git.createBranch(releaseBranch, ctx.repo.defaultBranch);
+    await ctx.git.createBranch(
+      releaseBranch,
+      `origin/${ctx.repo.defaultBranch}`,
+    );
     await ctx.git.push(releaseBranch);
   } else {
     // Assuming already on `release/x.y` branch
@@ -172,7 +175,7 @@ export async function createNextCutPr(
   }
 
   // Create the cut branch.
-  await ctx.git.createBranch(cutBranch, ctx.repo.defaultBranch);
+  await ctx.git.createBranch(cutBranch, `origin/${ctx.repo.defaultBranch}`);
 
   // Checkout cut branch.
   await ctx.git.checkout(cutBranch);
