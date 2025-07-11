@@ -31743,7 +31743,7 @@ class Git {
      * Create a new branch starting at `oldBranch`. If not provided, the main branch will be assumed.
      */
     async createBranch(name, oldBranch = this.mainBranch) {
-        await this.exec("branch", "-c", oldBranch, name);
+        await this.exec("branch", "-C", oldBranch, name);
     }
     /**
      * Run `git fetch`.
@@ -32223,6 +32223,7 @@ async function createNextCutPr(ctx, severity, { items } = {}) {
     let versionPretty;
     // Pre-fetch branches
     await ctx.git.fetch();
+    await ctx.git.createBranch(ctx.repo.defaultBranch, `origin/${ctx.repo.defaultBranch}`);
     // Determine the next version
     if (ctx.context.refName === ctx.git.mainBranch) {
         // Create a new release branch, and the standard cut branch pointed to it.
