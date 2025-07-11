@@ -32223,7 +32223,6 @@ async function createNextCutPr(ctx, severity, { items } = {}) {
     let versionPretty;
     // Pre-fetch branches
     await ctx.git.fetch();
-    await ctx.git.createBranch(ctx.repo.defaultBranch, `origin/${ctx.repo.defaultBranch}`);
     console.log(ctx.context.refName, ctx.git.mainBranch);
     // Determine the next version
     if (ctx.context.refName === ctx.git.mainBranch) {
