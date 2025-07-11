@@ -146,6 +146,9 @@ export async function createNextCutPr(
   /** Pretty variant of the version, for use in headers/messages. */
   let versionPretty: string;
 
+  // Pre-fetch branches
+  await ctx.git.fetch();
+
   // Determine the next version
   if (ctx.context.refName === ctx.git.mainBranch) {
     // Create a new release branch, and the standard cut branch pointed to it.

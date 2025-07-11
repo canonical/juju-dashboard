@@ -93,6 +93,7 @@ describe("cut-release-pr", () => {
         moveBranch: vi.fn(),
         commit: vi.fn(),
         push: vi.fn(),
+        fetch: vi.fn(),
       },
       repo: {
         defaultBranch: "main",
