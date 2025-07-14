@@ -145,6 +145,8 @@ export async function createNextCutPr(
   let version: string;
   /** Pretty variant of the version, for use in headers/messages. */
   let versionPretty: string;
+  /** Header for the PR. */
+  let header: string = "";
 
   // Pre-fetch branches
   await ctx.git.fetch();
@@ -157,6 +159,9 @@ export async function createNextCutPr(
     version = `${major}.${minor}.x`;
     versionPretty = `${major}.${minor}`;
     cutBranch = `${CUT_BRANCH_PREFIX}/${releaseBranch}`;
+
+    header = `> [!important]
+    > Merge this PR to open the \`${releaseBranch}\` branch, and prepare for a release.`;
 
     // Create the release branch.
     await ctx.git.createBranch(
@@ -172,6 +177,9 @@ export async function createNextCutPr(
     versionPretty = version;
     cutBranch = `${CUT_BRANCH_PREFIX}/${RELEASE_BRANCH_PREFIX}/${version}`;
     releaseBranch = ctx.context.refName;
+
+    header = `> [!important]
+    > Merge this PR to release \`${version}\`.`;
   }
 
   // Create the cut branch.
@@ -191,11 +199,10 @@ export async function createNextCutPr(
   // Push all branches.
   await ctx.git.push(cutBranch);
 
-  const header = `> [!important]
-  > Merge this PR to open the \`${releaseBranch}\` branch, and prepare for a release.
-
-  ---
-  `;
+  // Add some whitespace around the header.
+  if (header) {
+    header += "\n---\n";
+  }
 
   // Create a pull request from `cutBranch` onto `releaseBranch`.
   const cutPr = await ctx.repo.createPullRequest({

@@ -222,7 +222,7 @@ describe("cut-release-pr", () => {
           base: "release/1.2",
           head: "cut/release/1.2",
           title: "chore(release): cut 1.2 release",
-          body: expect.any(String),
+          body: expect.stringContaining(`\`release/1.2\` branch`),
         });
         expect(createdPr.setLabels).toHaveBeenCalledExactlyOnceWith([
           "release: cut",
@@ -283,7 +283,7 @@ describe("cut-release-pr", () => {
           base: "release/2.0",
           head: "cut/release/2.0",
           title: "chore(release): cut 2.0 release",
-          body: expect.any(String),
+          body: expect.stringContaining(`\`release/2.0\` branch`),
         });
         expect(createdPr.setLabels).toHaveBeenCalledExactlyOnceWith([
           "release: cut",
@@ -403,7 +403,9 @@ describe("cut-release-pr", () => {
               base: `release/${versionPrefix}`,
               head: `cut/release/${versionPrefix}.0-beta.${betaVersion}`,
               title: `chore(release): cut ${versionPrefix}.0-beta.${betaVersion} release`,
-              body: expect.any(String),
+              body: expect.stringContaining(
+                `${versionPrefix}.0-beta.${betaVersion}`,
+              ),
             });
             expect(createdPr.setLabels).toHaveBeenCalledExactlyOnceWith([
               "release: cut",
@@ -604,7 +606,7 @@ describe("cut-release-pr", () => {
             base: `release/${version}`,
             head: `cut/release/${candidateVersion}`,
             title: `chore(release): cut ${candidateVersion} release`,
-            body: expect.any(String),
+            body: expect.stringContaining(version),
           });
           expect(createdPr.setLabels).toHaveBeenCalledExactlyOnceWith([
             "release: cut",
