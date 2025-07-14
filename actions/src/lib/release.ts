@@ -278,7 +278,22 @@ export async function getCutPr(
 
   // If there are no open cut PRs, can create one as needed.
   if (cutPrs.length === 0) {
-    return await createNextCutPr(ctx, severity);
+    let items: string[] | undefined;
+
+    // Only transfer changelog for merged `cut/release/x.y` PRs.
+    const isNewReleasePr = isReleaseBranch(
+      ctx.pr.head.slice(`${CUT_BRANCH_PREFIX}/`.length),
+    );
+    if (isNewReleasePr) {
+      // Try parse changelog items out, but ignore if it fails.
+      try {
+        items = changelog.parse(ctx.pr.body).items;
+      } catch (_e) {
+        items = undefined;
+      }
+    }
+
+    return await createNextCutPr(ctx, severity, { items });
   }
 
   // Find the severity of the PR.

@@ -16,18 +16,20 @@ function mockPr({
   base = "main",
   head,
   labels = [],
+  body = "",
 }: {
   number?: number;
   base?: string;
   head: string;
   labels?: string[];
+  body?: string;
 }) {
   return {
     number,
     base,
     head,
     labels: labels.map((name) => ({ name })),
-    body: `\n${CHANGELOG_START_MARKER}\n${CHANGELOG_END_MARKER}\n`,
+    body,
   };
 }
 
@@ -38,6 +40,7 @@ function mockCutPr({
   headSuffix,
   number = 123,
   additionalLabels = [],
+  changelog = [],
 }: {
   /** Severity of the pull request. */
   severity?: Severity;
@@ -53,6 +56,7 @@ function mockCutPr({
   defaultLabels?: boolean;
   /** Additional labels to add to the pull request. */
   additionalLabels?: string[];
+  changelog?: string[];
 } = {}) {
   const labels = [
     "release: cut",
@@ -73,6 +77,12 @@ function mockCutPr({
     base: `release/${version}`,
     head: `cut/release/${version}${headBranchSuffix}`,
     labels,
+    body: [
+      "",
+      CHANGELOG_START_MARKER,
+      ...changelog.map((item) => `- ${item}`),
+      CHANGELOG_END_MARKER,
+    ].join("\n"),
   });
 }
 
@@ -439,6 +449,81 @@ describe("cut-release-pr", () => {
         });
       },
     );
+  });
+
+  describe("cut release branch", () => {
+    beforeEach(() => {
+      ctx.repo.pullRequests = vi.fn().mockReturnValue(asyncIterable([]));
+    });
+
+    it("seeds changelog from release cut branch", async ({ expect }) => {
+      ctx.pr = mockCutPr({
+        changelog: ["item a", "item b", "item c"],
+      }) as PullRequest;
+      ctx.context.refName = ctx.pr.base;
+      ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.x" });
+
+      const createdPr = {
+        ...mockCutPr({
+          patchVersion: 0,
+          headSuffix: "beta.0",
+        }),
+        setLabels: vi.fn(),
+      };
+      ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
+
+      await expect(run(ctx, { severity: "major" })).resolves.toStrictEqual({
+        cutPrNumber: 123,
+        cutBranch: "release/1.0",
+      });
+
+      // Pull request created with labels
+      expect(ctx.repo.createPullRequest).toHaveBeenCalledExactlyOnceWith({
+        base: `release/1.0`,
+        head: `cut/release/1.0.0-beta.0`,
+        title: `chore(release): cut 1.0.0-beta.0 release`,
+        body: expect.stringContaining("- item a\n- item b\n- item c"),
+      });
+      expect(createdPr.setLabels).toHaveBeenCalledExactlyOnceWith([
+        "release: cut",
+        `release-severity: major`,
+      ]);
+    });
+
+    it("ignores changelog of non-first release cut PR", async ({ expect }) => {
+      ctx.pr = mockCutPr({
+        patchVersion: 0,
+        headSuffix: "beta.0",
+        changelog: ["item a", "item b", "item c"],
+      }) as PullRequest;
+      ctx.context.refName = ctx.pr.base;
+      ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.0-beta.0" });
+
+      const createdPr = {
+        ...mockCutPr({
+          patchVersion: 0,
+        }),
+        setLabels: vi.fn(),
+      };
+      ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
+
+      await expect(run(ctx, { severity: "major" })).resolves.toStrictEqual({
+        cutPrNumber: 123,
+        cutBranch: "release/1.0",
+      });
+
+      // Pull request created with labels
+      expect(ctx.repo.createPullRequest).toHaveBeenCalledExactlyOnceWith({
+        base: `release/1.0`,
+        head: `cut/release/1.0.0`,
+        title: `chore(release): cut 1.0.0 release`,
+        body: expect.not.stringContaining("- item a\n- item b\n- item c"),
+      });
+      expect(createdPr.setLabels).toHaveBeenCalledExactlyOnceWith([
+        "release: cut",
+        `release-severity: major`,
+      ]);
+    });
   });
 
   describe("merged beta branch", () => {
