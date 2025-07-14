@@ -1,0 +1,15 @@
+{
+  "short_name": "Juju",
+  "name": "Juju",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": "/",
+  "display": "fullscreen",
+  "theme_color": "#E9531F",
+  "background_color": "#ffffff"
+}

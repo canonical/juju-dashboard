@@ -757,8 +757,8 @@ The Docker image is used by the [Juju Dashboard Kubernetes
 charm](https://github.com/canonical/juju-dashboard-charm) and is uploaded as a
 [resource in
 Charmhub](https://charmhub.io/juju-dashboard-k8s/resources/dashboard-image).
-There is a full guide for building the Docker image and Kubernetes charm in the
-[juju-dashboard-charm](https://github.com/canonical/juju-dashboard-charm#building-and-testing-the-k8s-charm)
+There is a full guide for building the Docker image and Kubernetes charm
+[here](/docs/building-charms.md#building-and-testing-the-k8s-charm)
 repo.
 
 The Dockerfile is also used by the PR demo service which builds a Docker image

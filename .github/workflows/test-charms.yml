@@ -1,0 +1,47 @@
+name: Test
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "./charms/**"
+  pull_request:
+    paths:
+      - "./charms/**"
+
+jobs:
+  test-machine:
+    name: Test machine charm
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./charms/machine-charm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install requirements
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements-dev.txt
+      - name: Run tests
+        run: ./run_tests
+  test-k8s:
+    name: Test K8s charm
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./charms/k8s-charm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install requirements
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements-dev.txt
+      - name: Run tests
+        run: ./run_tests

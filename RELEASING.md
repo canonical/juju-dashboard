@@ -35,13 +35,10 @@ yarn install
 yarn build
 ```
 
-Next clone the [juju-dashboard-charm
-repo](https://github.com/canonical/juju-dashboard-charm).
+Next navigate to the `charms` folder.
 
 ```shell
-cd ..
-git clone git@github.com:canonical/juju-dashboard-charm.git
-cd juju-dashboard-charm/machine-charm
+cd ./charms/machine-charm
 ```
 
 Remove the built dashboard files and replace them with the dashboard files that
@@ -49,11 +46,11 @@ were built above.
 
 ```shell
 rm -rf src/dist/*
-cp -r ../../juju-dashboard/build/* src/dist
+cp -r ../../build/* src/dist
 ```
 
 Then follow the instructions to [build and
-deploy](https://github.com/canonical/juju-dashboard-charm#building-and-testing-the-machine-charm)
+deploy](/docs/building-charms.md#building-and-testing-the-machine-charm)
 the machine charm and finally, follow the [QA steps](#qa-steps).
 
 #### Local k8s controller
@@ -64,18 +61,8 @@ can be quite tricky, but is possible even inside a Multipass container. We have
 guide](/docs/multipass-microk8s.md) for how you can set this up.
 
 Once you have K8s running then shell or ssh into the Multipass container that is
-running K8s and continue with these instructions.
-
-Clone the [juju-dashboard-charm
-repo](https://github.com/canonical/juju-dashboard-charm).
-
-```shell
-git clone git@github.com:canonical/juju-dashboard-charm.git
-cd juju-dashboard-charm
-```
-
-Then follow the instructions to [build and
-deploy](https://github.com/canonical/juju-dashboard-charm#building-and-testing-the-k8s-charm)
+running K8s and follow the instructions to [build and
+deploy](/docs/building-charms.md#building-and-testing-the-k8s-charm)
 the Kubernetes charm and finally, follow the [QA steps](#qa-steps).
 
 ### QA steps
@@ -181,22 +168,14 @@ https://charmhub.io/juju-dashboard-k8s/collaboration
 
 ### Machine charm
 
-Fork and clone the [juju-dashboard-charm
-repo](https://github.com/canonical/juju-dashboard-charm).
-
-```shell
-git clone git@github.com:<your-username>/juju-dashboard-charm.git
-cd juju-dashboard-charm
-```
-
 Update the dashboard to the latest release:
 
 ```shell
-./scripts/update-machine-charm-dashboard.sh
+./actions/scripts/update-machine-charm-dashboard.sh
 ```
 
 [Build and
-deploy](https://github.com/canonical/juju-dashboard-charm#building-and-testing-the-machine-charm)
+deploy](/docs/building-charms.md#building-and-testing-the-machine-charm)
 the machine charm and follow the [QA steps](#qa-steps) to confirm it is working.
 
 If you've deployed inside a Multipass container you will need access to the
@@ -215,31 +194,23 @@ lxc config device add [inst-id] portforward8080 proxy listen=tcp:0.0.0.0:8080 co
 Now create a PR to land the update dashboard package.
 
 Next follow the [release
-steps](https://github.com/canonical/juju-dashboard-charm#machine-charm) to
+steps](/docs/building-charms.md#machine-charm) to
 publish the charm to the edge channel.
 
 [Deploy the edge machine charm](https://github.com/canonical/juju-dashboard#deploy) in a
 controller and [check that the dashboard works](#qa-steps).
 
 Finally, follow the [release
-steps](https://github.com/canonical/juju-dashboard-charm#machine-charm) again to
+steps](/docs/building-charms.md#machine-charm) again to
 publish the charm to either the beta or stable channel depending on whether this
 release is ready for general use.
 
 ### Kubernetes charm
 
-Fork and clone the [juju-dashboard-charm
-repo](https://github.com/canonical/juju-dashboard-charm).
-
-```shell
-git clone git@github.com:<your-username>/juju-dashboard-charm.git
-cd juju-dashboard-charm
-```
-
 [Build and
-deploy](https://github.com/canonical/juju-dashboard-charm#building-and-testing-the-k8s-charm)
+deploy](/docs/building-charms.md#building-and-testing-the-k8s-charm)
 the Kubernetes charm (using the [build from
-source](https://github.com/canonical/juju-dashboard-charm?tab=readme-ov-file#building-from-source)
+source](/docs/building-charms.md#building-from-source)
 steps to build a new Docker image with the latest dashboard code) and follow the [QA steps](#qa-steps) to confirm it is working.
 
 If you've deployed inside a Multipass container you will need access to the
@@ -254,7 +225,7 @@ The K8s charm does not need to commit any changes to the repo as a
 Docker image is published to Charmhub instead.
 
 Next follow the [release
-steps](https://github.com/canonical/juju-dashboard-charm#k8s-charm) to
+steps](/docs/building-charms.md#k8s-charm) to
 upload the docker resource and publish the charm to the edge channel (you can
 skip the checkout and docker build steps if you've just completed them in the
 previous step).
@@ -263,7 +234,7 @@ previous step).
 controller inside Kubernetes and [check that the dashboard works](#qa-steps).
 
 Finally, follow the [release
-steps](https://github.com/canonical/juju-dashboard-charm#k8s-charm) again
+steps](/docs/building-charms.md#k8s-charm) again
 (skipping the image upload as you can use the previously uploaded resource) to
 publish the charm to either the beta or stable channel depending on whether this
 release is ready for general use.
