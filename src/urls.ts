@@ -60,10 +60,24 @@ const urls = {
 };
 
 export const externalURLs = {
-  newIssue: "https://github.com/canonical/juju-dashboard/issues/new",
-  cliHelp: "https://juju.is/docs/olm/the-juju-web-cli",
+  addModel:
+    "https://documentation.ubuntu.com/juju/latest/howto/manage-models/#heading--add-a-model",
+  cliHelp:
+    "https://documentation.ubuntu.com/juju/latest/reference/juju-web-cli/",
   cliHelpCommand: (command: string) =>
     `https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/${command.replace(/^\//, "")}`,
+  deployingApplication:
+    "https://documentation.ubuntu.com/juju/latest/howto/manage-applications/#deploy-an-application",
+  machine: "https://documentation.ubuntu.com/juju/latest/reference/machine/",
+  manageAccess:
+    "https://documentation.ubuntu.com/juju/latest/howto/manage-users/index.html#manage-access-at-the-controller-model-application-or-offer-level",
+  modelAccess:
+    "https://documentation.ubuntu.com/juju/latest/howto/manage-users/#heading--model-access",
+  newIssue: "https://github.com/canonical/juju-dashboard/issues/new",
+  troubleshootDeployment:
+    "https://documentation.ubuntu.com/juju/latest/howto/manage-your-deployment/index.html#troubleshoot-your-deployment",
+  upgradingThings:
+    "https://documentation.ubuntu.com/juju/latest/reference/upgrading-things/",
 };
 
 export const rebacURLS = generateReBACURLS(urls.permissions);

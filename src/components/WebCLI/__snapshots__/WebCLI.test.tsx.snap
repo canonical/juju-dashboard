@@ -48,7 +48,7 @@ exports[`WebCLI > renders correctly 1`] = `
         Welcome to the Juju Web CLI - see the
          
         <a
-          href="https://juju.is/docs/olm/the-juju-web-cli"
+          href="https://documentation.ubuntu.com/juju/latest/reference/juju-web-cli/"
           rel="noreferrer"
           target="_blank"
         >

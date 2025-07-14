@@ -19,7 +19,7 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
-import urls from "urls";
+import urls, { externalURLs } from "urls";
 
 import ModelTabs from "./Model/ModelTabs";
 import { Label, TestId } from "./types";
@@ -81,10 +81,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
                 {userName}
                 ". If this is a model that belongs to another user then check
                 that you have been{" "}
-                <a href="https://juju.is/docs/olm/manage-users#heading--model-access">
-                  granted access
-                </a>
-                .
+                <a href={externalURLs.modelAccess}>granted access</a>.
               </p>
               <p>
                 <Link to={urls.models.index}>View all models</Link>

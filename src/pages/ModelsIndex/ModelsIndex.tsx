@@ -29,7 +29,7 @@ import {
 import { pluralize } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 import type { ModelsGroupedBy } from "urls";
-import urls from "urls";
+import urls, { externalURLs } from "urls";
 
 import { Label, TestId } from "./types";
 
@@ -118,15 +118,9 @@ export default function Models() {
         <div className="models">
           <h3>{Label.NOT_FOUND}</h3>
           <p>
-            Learn about{" "}
-            <a href="https://juju.is/docs/olm/manage-models#heading--add-a-model">
-              adding models
-            </a>{" "}
-            or{" "}
-            <a href="https://juju.is/docs/olm/manage-users#heading--model-access">
-              granting access
-            </a>{" "}
-            to existing models.
+            Learn about <a href={externalURLs.addModel}>adding models</a> or{" "}
+            <a href={externalURLs.modelAccess}>granting access</a> to existing
+            models.
           </p>
         </div>
       );

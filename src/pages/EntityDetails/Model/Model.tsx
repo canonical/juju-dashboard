@@ -33,6 +33,7 @@ import {
   generateOffersRows,
   generateRelationRows,
 } from "tables/tableRows";
+import { externalURLs } from "urls";
 
 import ApplicationsTab from "./ApplicationsTab";
 import Logs from "./Logs";
@@ -175,10 +176,7 @@ const Model = () => {
           ) : (
             <span data-testid="no-machines-msg">
               There are no machines in this model -{" "}
-              <a
-                className="p-link--external"
-                href="https://juju.is/docs/olm/machines"
-              >
+              <a className="p-link--external" href={externalURLs.machine}>
                 learn more about machines
               </a>
             </span>
@@ -235,7 +233,7 @@ const Model = () => {
                 There are no integrations associated with this model -{" "}
                 <a
                   className="p-link--external"
-                  href="https://juju.is/integration"
+                  href="https://documentation.ubuntu.com/juju/latest/reference/relation/"
                 >
                   learn more about integration
                 </a>
