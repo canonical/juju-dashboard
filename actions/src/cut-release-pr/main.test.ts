@@ -320,6 +320,25 @@ describe("cut-release-pr", () => {
         );
       });
     });
+
+    it("rejects if multiple release branches are detected", async ({
+      expect,
+    }) => {
+      ctx.repo.pullRequests = vi
+        .fn()
+        .mockReturnValue(
+          asyncIterable([
+            mockCutPr({ number: 222, version: "1.2" }),
+            mockCutPr({ number: 111, version: "1.3" }),
+          ]),
+        );
+
+      await expect(run(ctx, { severity: "minor" })).rejects.toThrow(
+        "Multiple open cut PRs were found, only one can exist: #222, #111",
+      );
+
+      expect(ctx.repo.pullRequests).toHaveBeenCalledOnce();
+    });
   });
 
   describe.for([
