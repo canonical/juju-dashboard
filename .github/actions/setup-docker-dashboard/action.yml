@@ -34,14 +34,15 @@ runs:
         DOCKER_BUILDKIT=1 docker build -t juju-dashboard:local .
     - name: Configure Dashboard
       run: |
-        echo -e "
-          var jujuDashboardConfig = {
-            controllerAPIEndpoint: \"${{ inputs.controller-ws-address }}\",
-            baseAppURL: \"/\",
-            identityProviderURL: \"\",
-            isJuju: ${{ inputs.is-juju }},
-            analyticsEnabled: false,
-          };" > public/config.js
+        cat << EOF > public/config.js
+        var jujuDashboardConfig = {
+          controllerAPIEndpoint: "${{ inputs.controller-ws-address }}",
+          baseAppURL: "/",
+          identityProviderURL: "",
+          isJuju: ${{ inputs.is-juju }},
+          analyticsEnabled: false,
+        };
+        EOF
       shell: bash
     - name: Run the Docker image
       if: ${{ inputs.run == 'true' }}
