@@ -7,9 +7,6 @@ outputs:
   dashboard-source:
     description: The source of the dashboard, either `source` if it should be built from source, or `charm` if it's a released charm.
     value: ${{ steps.config.outputs.dashboard-source }}
-  dashboard-charm-ref:
-    description: Checkout ref for the `juju-dashboard-charm` repository. Only present if `dashboard-source` is `source`.
-    value: ${{ steps.config.outputs.dashboard-charm-ref }}
   dashboard-charm-channel:
     description: Charm channel to perform tests on, instead of building from source. Only present if `dashboard-source` is `charm`.
     value: ${{ steps.config.outputs.dashboard-charm-channel }}
@@ -38,7 +35,6 @@ runs:
       env:
         PULL_REQUEST_HEAD_REF: ${{ github.event.pull_request.head.sha }}
         RELEASE_TARGET_COMMITISH: ${{ github.event.release.target_commitish }}
-        INPUTS_DASHBOARD_CHARM_REF: ${{ github.event.inputs.dashboard-charm-ref }}
         INPUTS_JIMM_VERSION: ${{ github.event.inputs.jimm-version }}
         INPUTS_JUJU_CHANNEL: ${{ github.event.inputs.juju-channel }}
         INPUTS_DASHBOARD_SOURCE: ${{ github.event.inputs.dashboard-source }}
@@ -107,7 +103,6 @@ runs:
         echo "=============================="
         export_variable "repo-ref" "$REPO_REF"
         export_variable "dashboard-source" "$DASHBOARD_SOURCE"
-        export_variable "dashboard-charm-ref" "$DASHBOARD_CHARM_REF"
         export_variable "dashboard-charm-channel" "$DASHBOARD_CHARM_CHANNEL"
         export_variable "machine-bundled-dashboard" "$MACHINE_BUNDLED_DASHBOARD"
         export_variable "k8s-dashboard-resource" "$K8S_DASHBOARD_RESOURCE"

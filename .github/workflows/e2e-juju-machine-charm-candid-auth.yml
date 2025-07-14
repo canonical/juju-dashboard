@@ -37,7 +37,6 @@ jobs:
           bundled-dashboard: ${{ steps.config.outputs.machine-bundled-dashboard }}
           dashboard-ref: ${{ steps.config.outputs.repo-ref }}
           charm-channel: ${{ steps.config.outputs.dashboard-charm-channel }}
-          dashboard-charm-ref: ${{ steps.config.outputs.dashboard-charm-ref }}
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:

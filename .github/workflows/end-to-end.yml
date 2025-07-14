@@ -20,10 +20,10 @@ on:
         required: true
         type: choice
         options:
-        - branch
-        - release
-        - charm
-        - bundled
+          - branch
+          - release
+          - charm
+          - bundled
       source-identifier:
         description: |
           Identifier for the dashboard source:
@@ -43,11 +43,6 @@ on:
         required: false
         type: string
         default: 3/stable
-      dashboard-charm-ref:
-        description: Git ref to use for `juju-dashboard-charm` repository. Only valid if `dashboard-source` is `branch` or `release`.
-        required: false
-        type: string
-        default: main
 
 permissions: read-all
 

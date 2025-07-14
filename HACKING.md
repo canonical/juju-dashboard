@@ -754,7 +754,7 @@ an amd64 machine for testing._
 ## Building the Docker image
 
 The Docker image is used by the [Juju Dashboard Kubernetes
-charm](https://github.com/canonical/juju-dashboard-charm) and is uploaded as a
+charm](https://charmhub.io/juju-dashboard-k8s) and is uploaded as a
 [resource in
 Charmhub](https://charmhub.io/juju-dashboard-k8s/resources/dashboard-image).
 There is a full guide for building the Docker image and Kubernetes charm
@@ -794,8 +794,7 @@ apps are not mutually exclusive._
 
 Charms that are on your local filesystem can be built and deployed to a model.
 In this example we will use the Postgresql charm, but this process can also be
-used for the [dashboard
-charms](https://github.com/canonical/juju-dashboard-charm).
+used for the [dashboard charms](/charms).
 
 First, get a copy of the code:
 
