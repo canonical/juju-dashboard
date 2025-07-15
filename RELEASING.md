@@ -171,7 +171,7 @@ https://charmhub.io/juju-dashboard-k8s/collaboration
 Update the dashboard to the latest release:
 
 ```shell
-./actions/scripts/update-machine-charm-dashboard.sh
+./charms/scripts/update-machine-charm.sh
 ```
 
 [Build and

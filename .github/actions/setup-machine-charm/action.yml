@@ -49,8 +49,8 @@ runs:
     - name: Set up Juju Dashboard release with specified version
       if: ${{ env.build_type == 'dashboard-version' }}
       run: |
-        cd './actions/scripts'
-        ./scripts/update-machine-charm-dashboard.sh '${{ inputs.dashboard-version }}'
+        cd '${{ github.workspace }}/charms'
+        ./scripts/update-machine-charm.sh '${{ inputs.dashboard-version }}'
       shell: bash
     - name: Build Juju Dashboard for release
       if: ${{ env.build_type == 'checkout' }}

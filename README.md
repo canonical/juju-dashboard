@@ -93,7 +93,7 @@ bug you can [discuss the issue](#community) with us first.
 Juju Dashboard integrates with a number of parts of the Juju ecosystem. Filing
 bugs for the relevant codebase will help the issue to be seen by the right team:
 
-- Issues with [Juju Dashboard](https://github.com/canonical/juju-dashboard/issues/new/choose).
+- Issues with [Juju Dashboard or the dashboard charms](https://github.com/canonical/juju-dashboard/issues/new/choose).
 - Issues with [Juju](https://bugs.launchpad.net/juju/+filebug) itself or its APIs.
 - Issues with the [jaas.ai website](https://github.com/canonical/jaas.ai/issues).
 - Issues with the [juju.is website](https://github.com/canonical/juju.is/issues/new).

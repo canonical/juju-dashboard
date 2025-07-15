@@ -1,7 +1,8 @@
 #! /bin/bash
+SCRIPT_PATH=$(dirname "$(realpath "$0")")
 
 DASHBOARD_VERSION=${1:-latest}
-dist_path=../../charms/machine-charm/src/dist
+dist_path="$SCRIPT_PATH/../machine-charm/src/dist"
 
 # delete existing version
 rm -rf $dist_path/*
