@@ -1,0 +1,32 @@
+name: Test Charms
+on:
+  push:
+    paths:
+      - "charms/**"
+  pull_request:
+    paths:
+      - "charms/**"
+
+jobs:
+  test-charm:
+    name: Test ${{ matrix.charm-type }} charm
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        charm-type: [machine, k8s]
+    defaults:
+      run:
+        working-directory: "charms/${{ matrix.charm-type }}-charm"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install requirements
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements-dev.txt
+      - name: Run tests
+        run: ./run_tests

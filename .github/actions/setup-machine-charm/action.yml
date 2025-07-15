@@ -18,9 +18,6 @@ inputs:
       - latest/stable
       - latest/beta
       - latest/edge
-  dashboard-charm-ref:
-    description: Git reference to use when cloning charm repository.
-    required: false
   controller-app:
     required: false
     description: The Juju controller application.
@@ -49,18 +46,11 @@ runs:
           echo 'build_type=checkout' >> "$GITHUB_ENV"
         fi
       shell: bash
-    - name: Check out Juju Dashboard charm
-      if: ${{ env.build_type != 'charm-release' }}
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ inputs.dashboard-charm-ref }}
-        repository: canonical/juju-dashboard-charm
-        path: juju-dashboard-charm
     - name: Set up Juju Dashboard release with specified version
       if: ${{ env.build_type == 'dashboard-version' }}
       run: |
-        cd '${{ github.workspace }}/juju-dashboard-charm'
-        ./scripts/update-machine-charm-dashboard.sh '${{ inputs.dashboard-version }}'
+        cd '${{ github.workspace }}/charms'
+        ./scripts/update-machine-charm.sh '${{ inputs.dashboard-version }}'
       shell: bash
     - name: Build Juju Dashboard for release
       if: ${{ env.build_type == 'checkout' }}
@@ -69,7 +59,7 @@ runs:
         cd '${{ github.workspace }}'
         yarn install
         yarn build
-        cd '${{ github.workspace }}/juju-dashboard-charm/machine-charm'
+        cd '${{ github.workspace }}/charms/machine-charm'
         rm -rf src/dist/*
         cp -r ${{ github.workspace }}/build/* src/dist
     - name: Install charmcraft
@@ -91,7 +81,7 @@ runs:
           # This command is retired as it sometimes fails with the following error:.
           # Failed to wait for snap refreshes to complete.
           # error: daemon is stopping to wait for socket activation
-          cd '${{ github.workspace }}/juju-dashboard-charm/machine-charm'
+          cd '${{ github.workspace }}/charms/machine-charm'
           charmcraft pack
     - name: Switch to controller
       run: juju switch '${{ inputs.controller-model }}'
@@ -102,7 +92,7 @@ runs:
       shell: bash
     - name: Deploy built charm
       if: ${{ env.build_type != 'charm-release' }}
-      run: juju deploy ${{ github.workspace }}/juju-dashboard-charm/machine-charm/juju-dashboard*.charm dashboard
+      run: juju deploy ${{ github.workspace }}/charms/machine-charm/juju-dashboard*.charm dashboard
       shell: bash
     - name: Integrate charm
       run: juju integrate '${{ inputs.controller-app }}' dashboard
@@ -115,9 +105,4 @@ runs:
         command: juju wait-for application dashboard
     - name: Disable analytics
       run: juju config dashboard analytics-enabled=false
-      shell: bash
-    - name: Clean up
-      run: |
-        # Delete build files to save space. Pass `|| true` so that an error is not thrown if the directories don't exist.
-        rm -rf '${{ github.workspace }}/juju-dashboard-charm' || true
       shell: bash

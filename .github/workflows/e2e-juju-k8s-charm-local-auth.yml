@@ -43,7 +43,6 @@ jobs:
           dashboard-ref: ${{ steps.config.outputs.repo-ref }}
           dashboard-resource: ${{ steps.config.outputs.k8s-dashboard-resource }}
           charm-channel: ${{ steps.config.outputs.dashboard-charm-channel }}
-          dashboard-charm-ref: ${{ steps.config.outputs.dashboard-charm-ref }}
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:
