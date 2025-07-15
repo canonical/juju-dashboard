@@ -1,0 +1,59 @@
+name: Set up Juju Dashboard using Docker
+description: Set up Juju Dashboard using the Docker image.
+inputs:
+  dashboard-ref:
+    description: Git reference to build dashboard from.
+    default: main
+    required: false
+  run:
+    description: Whether to run the dashboard after building the image.
+    required: false
+  controller-ws-address:
+    description: The address of the Juju controller.
+    required: true
+  is-juju:
+    description: Whether the controller is a Juju (not JIMM) controller.
+    required: false
+    default: true
+outputs:
+  address:
+    description: The address of the Docker container (if the run option is `true`).
+    value: ${{ steps.dashboard-address.outputs.address }}
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Juju Dashboard release
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.dashboard-ref }}
+        path: juju-dashboard-release
+    - name: Build Juju Dashboard image
+      shell: bash
+      run: |
+        cd '${{ github.workspace }}/juju-dashboard-release'
+        DOCKER_BUILDKIT=1 docker build -t juju-dashboard:local .
+    - name: Configure Dashboard
+      run: |
+        cat << EOF > public/config.js
+        var jujuDashboardConfig = {
+          controllerAPIEndpoint: "${{ inputs.controller-ws-address }}",
+          baseAppURL: "/",
+          identityProviderURL: "",
+          isJuju: ${{ inputs.is-juju }},
+          analyticsEnabled: false,
+        };
+        EOF
+      shell: bash
+    - name: Run the Docker image
+      if: ${{ inputs.run == 'true' }}
+      run: docker run --name juju-dashboard --detach juju-dashboard:local
+      shell: bash
+    - name: Wait for container to be ready
+      if: ${{ inputs.run == 'true' }}
+      run: while [ "$(docker inspect -f {{.State.Running}} juju-dashboard)" != "true" ]; do sleep 1; done
+      shell: bash
+    - name: Get the dashboard address
+      id: dashboard-address
+      if: ${{ inputs.run == 'true' }}
+      run: echo "address=$(docker container inspect juju-dashboard --format '{{ .NetworkSettings.IPAddress }}')" >> "$GITHUB_OUTPUT"
+      shell: bash
