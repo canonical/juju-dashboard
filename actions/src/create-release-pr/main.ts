@@ -118,15 +118,19 @@ export async function run(ctx: Ctx) {
     let changelogItems: string[] = [];
 
     const mergedVersion = parseReleaseBranch(ctx.pr.head);
-    if (mergedVersion?.preRelease?.identifier === "beta") {
-      // If this action was triggered by a merged beta branch, create a candidate release.
-      packageVersion = bumpPackageVersion(packageVersion, "candidate");
+    if (mergedVersion !== null) {
+      if (mergedVersion.preRelease?.identifier === "beta") {
+        // If this action was triggered by a merged beta branch, create a candidate release.
+        packageVersion = bumpPackageVersion(packageVersion, "candidate");
 
-      try {
-        // Seed the changelog from the merged beta PR.
-        changelogItems = changelog.parse(ctx.pr.body).items;
-      } catch (_e) {
-        changelogItems = [];
+        try {
+          // Seed the changelog from the merged beta PR.
+          changelogItems = changelog.parse(ctx.pr.body).items;
+        } catch (_e) {
+          changelogItems = [];
+        }
+      } else {
+        // TODO: Don't create beta release if candidate release was just merged.
       }
     } else if (ctx.pr.head.startsWith("cut/")) {
       // TODO: Fix this once cut-pr is refactored
