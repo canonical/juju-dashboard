@@ -3,7 +3,10 @@ import type { PullRequest } from "@/lib/github";
 import { getPackageVersion, setPackageVersion } from "@/lib/package";
 import { parseVersion, serialiseVersion, type Version } from "@/lib/version";
 import { changelogFromLabels, type VersioningInfo } from "@/lib/versioning";
-import { versioningInfoFromBranch } from "@/lib/versioning/branch";
+import {
+  CUT_BRANCH_PREFIX,
+  versioningInfoFromBranch,
+} from "@/lib/versioning/branch";
 
 export function bumpPackageVersion(
   versionStr: string,
@@ -84,6 +87,25 @@ export async function run(ctx: Ctx) {
     throw new Error("This action can only be run on a `release/x.y` branch.");
   }
 
+  // Try seed the changelog if running against a PR.
+  const changelogItems: string[] = [];
+  if (ctx.pr) {
+    if (
+      ctx.pr.head.startsWith(CUT_BRANCH_PREFIX) ||
+      ctx.pr.head.startsWith(RELEASE_BRANCH_PREFIX)
+    ) {
+      // Triggered from a merged cut or release branch, so re-use the changelog.
+      try {
+        changelogItems.push(...changelog.parse(ctx.pr.body).items);
+      } catch (err) {
+        void err;
+      }
+    } else if (changelogFromLabels(ctx.pr.labels.map(({ name }) => name))) {
+      // Triggered from a PR that's indicated it should be included in the changelog, so add it.
+      changelogItems.push(ctx.pr.title);
+    }
+  }
+
   // Find an existing release PR for this branch.
   const openPrs = ctx.repo.pullRequests({
     state: "open",
@@ -115,33 +137,18 @@ export async function run(ctx: Ctx) {
   } else {
     // Fetch the current package version, and bump it as required.
     let packageVersion = await getPackageVersion(ctx);
-    let changelogItems: string[] = [];
 
     const mergedVersion = parseReleaseBranch(ctx.pr.head);
     if (mergedVersion !== null) {
       if (mergedVersion.preRelease?.identifier === "beta") {
         // If this action was triggered by a merged beta branch, create a candidate release.
         packageVersion = bumpPackageVersion(packageVersion, "candidate");
-
-        try {
-          // Seed the changelog from the merged beta PR.
-          changelogItems = changelog.parse(ctx.pr.body).items;
-        } catch (_e) {
-          changelogItems = [];
-        }
       } else {
         // TODO: Don't create beta release if candidate release was just merged.
       }
     } else if (ctx.pr.head.startsWith("cut/")) {
       // TODO: Fix this once cut-pr is refactored
       packageVersion = bumpPackageVersion(packageVersion, "beta");
-
-      try {
-        // Seed the changelog from the merged cut PR.
-        changelogItems = changelog.parse(ctx.pr.body).items;
-      } catch (_e) {
-        changelogItems = [];
-      }
     } else {
       // Always assume a beta release is being generated.
       packageVersion = bumpPackageVersion(packageVersion, "beta");
@@ -170,7 +177,8 @@ export async function run(ctx: Ctx) {
 
 ---
 `;
-    const body = changelog.generate(header, changelogItems);
+    // Start with an empty changelog, as it will be filled after it's created.
+    const body = changelog.generate(header, []);
 
     // Create new release PR.
     releasePr = await ctx.repo.createPullRequest({
@@ -183,10 +191,14 @@ export async function run(ctx: Ctx) {
   }
 
   // Optionally update the changelog if the merged PR allows it.
-  if (changelogFromLabels(ctx.pr.labels.map(({ name }) => name))) {
+  if (changelogItems.length > 0) {
     // Update the changelog with this merged PR.
-    const body = changelog.appendItem(releasePr.body, ctx.pr.title);
-    await releasePr.update({ body });
+    await releasePr.update({
+      body: changelogItems.reduce(
+        (body, item) => changelog.appendItem(body, item),
+        releasePr.body,
+      ),
+    });
   }
 
   return {

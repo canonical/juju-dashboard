@@ -53,12 +53,15 @@ describe("cut-release-pr", () => {
         number: 111,
         changelog: ["item a", "item b"],
       }) as PullRequest;
-      ctx.repo.createPullRequest = vi.fn().mockResolvedValue(
-        mockPr({
+      const createdPr = {
+        ...mockPr({
           number: 222,
           head: headBranch,
+          body: changelog.generate("# Some header", []),
         }),
-      );
+        update: vi.fn(),
+      };
+      ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
       ctx.execOutput = vi.fn().mockResolvedValue({ stdout: packageVersion });
 
       await expect(run(ctx)).resolves.toStrictEqual({
@@ -92,6 +95,10 @@ describe("cut-release-pr", () => {
         head: headBranch,
         base: "release/1.0",
         title: `Release ${version}-beta.0`,
+        body: expect.any(String),
+      });
+
+      expect(createdPr.update).toHaveBeenCalledExactlyOnceWith({
         body: expect.stringContaining("- item a\n- item b"),
       });
     },
@@ -227,12 +234,15 @@ describe("cut-release-pr", () => {
       head: "release/1.0.0-beta.0",
       body: changelog.generate("# Some header", ["item a", "item b", "item c"]),
     }) as PullRequest;
-    ctx.repo.createPullRequest = vi.fn().mockResolvedValue(
-      mockPr({
+    const createdPr = {
+      ...mockPr({
         number: 222,
         head: "release/1.0.0",
+        body: changelog.generate("# Some header", []),
       }),
-    );
+      update: vi.fn(),
+    };
+    ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
     ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.0-beta.0" });
 
     await expect(run(ctx)).resolves.toStrictEqual({
@@ -268,6 +278,10 @@ describe("cut-release-pr", () => {
       head: "release/1.0.0",
       base: "release/1.0",
       title: "Release 1.0.0",
+      body: expect.any(String),
+    });
+
+    expect(createdPr.update).toHaveBeenCalledExactlyOnceWith({
       body: expect.stringContaining("- item a\n- item b\n- item c"),
     });
   });
