@@ -130,6 +130,7 @@ export async function run(ctx: Ctx) {
     const releaseBranch = branch.shortRelease.serialise(major, minor);
 
     // Create the cut and release branches
+    await ctx.git.fetch();
     await ctx.git.createBranch(cutBranch);
     await ctx.git.createBranch(releaseBranch);
 

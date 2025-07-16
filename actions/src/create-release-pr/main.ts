@@ -108,24 +108,25 @@ export async function run(ctx: Ctx) {
     // Fetch the current package version, and bump it as required.
     let packageVersion = parseVersion(await getPackageVersion(ctx));
 
-    const mergedVersion = branch.release.parse(ctx.pr.head);
-    if (mergedVersion !== null) {
-      if (mergedVersion.preRelease?.identifier === "beta") {
-        // If this action was triggered by a merged beta branch, create a candidate release.
-        packageVersion = bumpPackageVersion(packageVersion, "candidate");
-      } else {
-        // TODO: Don't create beta release if candidate release was just merged.
-      }
-    } else if (branch.cut.test(ctx.pr.head)) {
-      packageVersion = bumpPackageVersion(packageVersion, "beta");
-    } else {
+    if (ctx.pr) {
       // Always assume a beta release is being generated.
       packageVersion = bumpPackageVersion(packageVersion, "beta");
+
+      const mergedVersion = branch.release.parse(ctx.pr.head);
+      if (mergedVersion !== null) {
+        if (mergedVersion.preRelease?.identifier === "beta") {
+          // If this action was triggered by a merged beta branch, create a candidate release.
+          packageVersion = bumpPackageVersion(packageVersion, "candidate");
+        } else {
+          // TODO: Don't create beta release if candidate release was just merged.
+        }
+      }
     }
 
     // Create and checkout the new release branch.
     const baseBranch = ctx.context.refName;
     const releaseBranch = branch.release.serialise(packageVersion);
+    await ctx.git.fetch();
     await ctx.git.createBranch(releaseBranch);
     await ctx.git.checkout(releaseBranch);
 
