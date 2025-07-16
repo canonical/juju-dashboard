@@ -68,6 +68,10 @@ export class PullRequest {
     this.pullRequest.labels = newLabels;
   }
 
+  public hasLabel(label: string) {
+    return this.labels.find(({ name }) => name === label) !== undefined;
+  }
+
   public async update(
     params: RequestParameters<Octokit["rest"]["pulls"]["update"]>,
   ) {

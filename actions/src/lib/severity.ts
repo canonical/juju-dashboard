@@ -1,4 +1,13 @@
-import type { Severity, Version } from "./types";
+/**
+ * Corresponds to the release branch types of the 'stable mainline' approach, where all branches
+ * are either a major or minor branch.
+ */
+export type Severity = "major" | "minor";
+
+/**
+ * Components of a SemVer version.
+ */
+export type Version = "major" | "minor" | "patch";
 
 export function isSeverity(severity: string): severity is Severity {
   return ["minor", "major"].includes(severity);

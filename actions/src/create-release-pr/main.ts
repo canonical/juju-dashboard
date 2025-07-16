@@ -1,29 +1,23 @@
-import { changelog, type Ctx } from "@/lib";
+import { branch, changelog, type Ctx } from "@/lib";
 import type { PullRequest } from "@/lib/github";
+import { CHANGELOG_LABEL } from "@/lib/labels";
 import { getPackageVersion, setPackageVersion } from "@/lib/package";
 import { parseVersion, serialiseVersion, type Version } from "@/lib/version";
-import { changelogFromLabels, type VersioningInfo } from "@/lib/versioning";
-import {
-  CUT_BRANCH_PREFIX,
-  versioningInfoFromBranch,
-} from "@/lib/versioning/branch";
 
 export function bumpPackageVersion(
-  versionStr: string,
+  version: Version,
   bumpKind: "beta",
   options?: { versionComponent?: "major" | "minor" | "patch" },
-): string;
+): Version;
 export function bumpPackageVersion(
-  versionStr: string,
+  version: Version,
   bumpKind: "candidate",
-): string;
+): Version;
 export function bumpPackageVersion(
-  versionStr: string,
+  version: Version,
   bumpKind: "beta" | "candidate",
   options: { versionComponent?: "major" | "minor" | "patch" } = {},
 ) {
-  const version = parseVersion(versionStr);
-
   if (bumpKind === "beta") {
     if (version.preRelease?.identifier === "beta") {
       // Already a beta version, bump the number.
@@ -41,7 +35,7 @@ export function bumpPackageVersion(
   } else if (bumpKind === "candidate") {
     if (version.preRelease.identifier !== "beta") {
       throw new Error(
-        `Candidate versions can only be created from beta versions, but found: ${versionStr}`,
+        `Candidate versions can only be created from beta versions, but found: ${serialiseVersion(version)}`,
       );
     }
 
@@ -49,35 +43,14 @@ export function bumpPackageVersion(
     version.preRelease = undefined;
   }
 
-  return serialiseVersion(version);
-}
-
-const RELEASE_BRANCH_PREFIX = "release";
-
-/**
- * Release branches are in the form `release/{version}`, where `version` is the semver of the
- * release that will be made.
- */
-function parseReleaseBranch(branch: string): Version | null {
-  const [prefix, versionStr, ...rest] = branch.split("/");
-
-  if (prefix !== RELEASE_BRANCH_PREFIX || rest.length > 0) {
-    return null;
-  }
-
-  try {
-    return parseVersion(versionStr);
-  } catch (_e) {
-    // Any malformed versions mean that it's not a release branch.
-    return null;
-  }
+  return version;
 }
 
 export async function run(ctx: Ctx) {
   // Extract versioning information for the current branch.
-  let versioningInfo: VersioningInfo | null;
+  let versioningInfo: { major: number; minor: number } | null;
   try {
-    versioningInfo = versioningInfoFromBranch(ctx.context.refName);
+    versioningInfo = branch.shortRelease.parse(ctx.context.refName);
   } catch (_e) {
     versioningInfo = null;
   }
@@ -90,17 +63,14 @@ export async function run(ctx: Ctx) {
   // Try seed the changelog if running against a PR.
   const changelogItems: string[] = [];
   if (ctx.pr) {
-    if (
-      ctx.pr.head.startsWith(CUT_BRANCH_PREFIX) ||
-      ctx.pr.head.startsWith(RELEASE_BRANCH_PREFIX)
-    ) {
+    if (branch.cut.test(ctx.pr.head) || branch.release.test(ctx.pr.head)) {
       // Triggered from a merged cut or release branch, so re-use the changelog.
       try {
         changelogItems.push(...changelog.parse(ctx.pr.body).items);
       } catch (err) {
         void err;
       }
-    } else if (changelogFromLabels(ctx.pr.labels.map(({ name }) => name))) {
+    } else if (ctx.pr.hasLabel(CHANGELOG_LABEL)) {
       // Triggered from a PR that's indicated it should be included in the changelog, so add it.
       changelogItems.push(ctx.pr.title);
     }
@@ -114,7 +84,7 @@ export async function run(ctx: Ctx) {
   const matchingPrs: { pr: PullRequest; version: Version }[] = [];
   for await (const pr of openPrs) {
     // Select all PRs based on the branch.
-    const version = parseReleaseBranch(pr.head);
+    const version = branch.release.parse(pr.head);
     if (version !== null) {
       matchingPrs.push({ pr, version });
     }
@@ -136,9 +106,9 @@ export async function run(ctx: Ctx) {
     releaseVersion = serialiseVersion(version);
   } else {
     // Fetch the current package version, and bump it as required.
-    let packageVersion = await getPackageVersion(ctx);
+    let packageVersion = parseVersion(await getPackageVersion(ctx));
 
-    const mergedVersion = parseReleaseBranch(ctx.pr.head);
+    const mergedVersion = branch.release.parse(ctx.pr.head);
     if (mergedVersion !== null) {
       if (mergedVersion.preRelease?.identifier === "beta") {
         // If this action was triggered by a merged beta branch, create a candidate release.
@@ -146,8 +116,7 @@ export async function run(ctx: Ctx) {
       } else {
         // TODO: Don't create beta release if candidate release was just merged.
       }
-    } else if (ctx.pr.head.startsWith("cut/")) {
-      // TODO: Fix this once cut-pr is refactored
+    } else if (branch.cut.test(ctx.pr.head)) {
       packageVersion = bumpPackageVersion(packageVersion, "beta");
     } else {
       // Always assume a beta release is being generated.
@@ -156,24 +125,25 @@ export async function run(ctx: Ctx) {
 
     // Create and checkout the new release branch.
     const baseBranch = ctx.context.refName;
-    const branch = `${RELEASE_BRANCH_PREFIX}/${packageVersion}`;
-    await ctx.git.createBranch(branch);
-    await ctx.git.checkout(branch);
+    const releaseBranch = branch.release.serialise(packageVersion);
+    await ctx.git.createBranch(releaseBranch);
+    await ctx.git.checkout(releaseBranch);
 
     // Write the version back.
-    await setPackageVersion(ctx, packageVersion);
+    const packageVersionStr = serialiseVersion(packageVersion);
+    await setPackageVersion(ctx, packageVersionStr);
 
     // Commit the bumped package.
-    await ctx.git.commit(`bump package.json version to ${packageVersion}`, [
+    await ctx.git.commit(`bump package.json version to ${packageVersionStr}`, [
       "./package.json",
     ]);
-    await ctx.git.push(branch);
+    await ctx.git.push(releaseBranch);
 
     // Restore branch back to where it was.
     await ctx.git.checkout(baseBranch);
 
     const header = `> [!important]
-> Merging this PR will publish ${packageVersion}
+> Merging this PR will publish ${packageVersionStr}
 
 ---
 `;
@@ -182,12 +152,12 @@ export async function run(ctx: Ctx) {
 
     // Create new release PR.
     releasePr = await ctx.repo.createPullRequest({
-      head: branch,
+      head: releaseBranch,
       base: baseBranch,
-      title: `Release ${packageVersion}`,
+      title: `Release ${packageVersionStr}`,
       body,
     });
-    releaseVersion = packageVersion;
+    releaseVersion = packageVersionStr;
   }
 
   // Optionally update the changelog if the merged PR allows it.

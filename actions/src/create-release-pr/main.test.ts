@@ -5,10 +5,11 @@ import { bumpPackageVersion, run } from "./main";
 import { changelog, type Ctx } from "@/lib";
 import { CHANGELOG_END_MARKER, CHANGELOG_START_MARKER } from "@/lib/changelog";
 import type { PullRequest } from "@/lib/github";
+import { CHANGELOG_LABEL } from "@/lib/labels";
 import { asyncIterable, mockCutPr, mockPr } from "@/lib/test-utils";
-import { PULL_REQUEST_CHANGELOG_LABEL } from "@/lib/versioning/labels";
+import { parseVersion } from "@/lib/version";
 
-describe("cut-release-pr", () => {
+describe("create-release-pr", () => {
   let ctx: Ctx;
 
   beforeEach(() => {
@@ -107,7 +108,7 @@ describe("cut-release-pr", () => {
   it.for([
     [
       "with changelog label",
-      [PULL_REQUEST_CHANGELOG_LABEL] as string[],
+      [CHANGELOG_LABEL] as string[],
       `${CHANGELOG_START_MARKER}\n- my cool feature\n${CHANGELOG_END_MARKER}`,
     ],
     ["without changelog label", [] as string[], null],
@@ -189,7 +190,7 @@ describe("cut-release-pr", () => {
       number: 111,
       title: "my cool feature",
       head: "feat/some-feature",
-      labels: [PULL_REQUEST_CHANGELOG_LABEL],
+      labels: [CHANGELOG_LABEL],
     }) as PullRequest;
     const EXISTING_RELEASE_PR = {
       ...mockPr({
@@ -304,8 +305,10 @@ describe("bumpPackageVersion", () => {
       "%s (%s component)",
       ([version, versionComponent, expectedVersion], { expect }) => {
         expect(
-          bumpPackageVersion(version, "beta", { versionComponent }),
-        ).toEqual(expectedVersion);
+          bumpPackageVersion(parseVersion(version), "beta", {
+            versionComponent,
+          }),
+        ).toEqual(parseVersion(expectedVersion));
       },
     );
   });
@@ -316,8 +319,8 @@ describe("bumpPackageVersion", () => {
         ["1.2.3-beta.0", "1.2.3"],
         ["1.2.3-beta.1", "1.2.3"],
       ] as const)("%s", ([version, expectedVersion], { expect }) => {
-        expect(bumpPackageVersion(version, "candidate")).toEqual(
-          expectedVersion,
+        expect(bumpPackageVersion(parseVersion(version), "candidate")).toEqual(
+          parseVersion(expectedVersion),
         );
       });
     });
@@ -327,9 +330,9 @@ describe("bumpPackageVersion", () => {
         ["missing `beta` pre-release", "1.2.3"],
         ["`alpha` pre-release", "1.2.3-alpha.0"],
       ] as const)("%s", ([version], { expect }) => {
-        expect(() => bumpPackageVersion(version, "candidate")).toThrow(
-          "Candidate versions can only be created from beta versions",
-        );
+        expect(() =>
+          bumpPackageVersion(parseVersion(version), "candidate"),
+        ).toThrow("Candidate versions can only be created from beta versions");
       });
     });
   });

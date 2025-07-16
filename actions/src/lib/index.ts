@@ -10,9 +10,8 @@ import { PullRequest, Repository } from "./github";
 export { default as Git } from "./git";
 export * as changelog from "./changelog";
 export * as github from "./github";
-export * as release from "./release";
 export * as util from "./util";
-export * as versioning from "./versioning";
+export { default as branch } from "./branch";
 
 export type Ctx = {
   octokit: InstanceType<typeof GitHub>;

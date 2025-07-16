@@ -1,6 +1,6 @@
-import { type Ctx, changelog, versioning } from "@/lib";
+import { type Ctx, changelog } from "@/lib";
 import { PullRequest } from "@/lib/github";
-import { PULL_REQUEST_CHANGELOG_LABEL } from "@/lib/versioning/labels";
+import { CHANGELOG_LABEL } from "@/lib/labels";
 
 export async function run(ctx: Ctx, { cutPrNumber }: { cutPrNumber: number }) {
   if (!ctx.pr) {
@@ -11,9 +11,9 @@ export async function run(ctx: Ctx, { cutPrNumber }: { cutPrNumber: number }) {
 
   ctx.core.info(`running on pull request #${ctx.pr.number}`);
 
-  if (!versioning.changelogFromLabels(ctx.pr.labels.map(({ name }) => name))) {
+  if (!ctx.pr.hasLabel(CHANGELOG_LABEL)) {
     ctx.core.info(
-      `pull request doesn't have the ${PULL_REQUEST_CHANGELOG_LABEL} label, skipping`,
+      `pull request doesn't have the ${CHANGELOG_LABEL} label, skipping`,
     );
 
     return;

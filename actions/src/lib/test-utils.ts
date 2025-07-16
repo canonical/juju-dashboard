@@ -1,5 +1,5 @@
 import { CHANGELOG_END_MARKER, CHANGELOG_START_MARKER } from "./changelog";
-import type { Severity } from "./versioning";
+import type { Severity } from "./severity";
 
 export async function* asyncIterable<T>(items: T[]) {
   yield* items;
@@ -27,6 +27,7 @@ export function mockPr({
     labels: labels.map((name) => ({ name })),
     title,
     body,
+    hasLabel: (label: string) => labels.includes(label),
   };
 }
 
@@ -72,7 +73,7 @@ export function mockCutPr({
   return mockPr({
     number,
     base: `release/${version}`,
-    head: `cut/release/${version}${headBranchSuffix}`,
+    head: `cut/${version}${headBranchSuffix}`,
     labels,
     body: [
       "",

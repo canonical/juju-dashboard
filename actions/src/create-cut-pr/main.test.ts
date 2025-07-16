@@ -1,9 +1,20 @@
-import { describe, beforeEach, it, vi } from "vitest";
+import type { OctokitResponse } from "@octokit/types";
+import { describe, afterEach, beforeEach, it, vi } from "vitest";
 
-import { run } from "./main";
+import { getNextCutVersion, run } from "./main";
 
 import { changelog, type Ctx } from "@/lib";
-import type { PullRequest } from "@/lib/github";
+import {
+  Repository,
+  type GithubRepository,
+  type Octokit,
+  type PullRequest,
+} from "@/lib/github";
+import {
+  CHANGELOG_LABEL,
+  MAJOR_SEVERITY_LABEL,
+  MINOR_SEVERITY_LABEL,
+} from "@/lib/labels";
 import { asyncIterable, mockPr } from "@/lib/test-utils";
 
 describe("create-cut-pr", () => {
@@ -54,15 +65,15 @@ describe("create-cut-pr", () => {
     });
 
     describe.for([
-      ["minor", minorVersion],
-      ["major", majorVersion],
+      [MINOR_SEVERITY_LABEL, minorVersion],
+      [MAJOR_SEVERITY_LABEL, majorVersion],
     ])("with %s feature branch", ([severity, version]) => {
       beforeEach(() => {
         ctx.pr = mockPr({
           number: 111,
           title: "my feature",
           head: "feat/my-feature",
-          labels: ["changelog", `version: ${severity}`],
+          labels: [CHANGELOG_LABEL, severity],
         }) as PullRequest;
       });
 
@@ -162,7 +173,7 @@ describe("create-cut-pr", () => {
           number: 111,
           title: "my feature",
           head: "feat/my-feature",
-          labels: ["changelog", "version: major"],
+          labels: [CHANGELOG_LABEL, MAJOR_SEVERITY_LABEL],
         }) as PullRequest;
 
         const cutPr = {
@@ -288,6 +299,99 @@ describe("create-cut-pr", () => {
       });
 
       expect(createdPr.update).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe("getNextCutVersion", () => {
+  const octokit = {
+    rest: { repos: { listBranches: {} } },
+    paginate: { iterator: vi.fn() },
+  } as unknown as Octokit;
+
+  const ctx: Ctx = {
+    repo: new Repository(octokit, {
+      owner: { login: "some-owner" },
+      name: "some-repository",
+    } as unknown as GithubRepository),
+    octokit,
+  } as unknown as Ctx;
+
+  function mockListBranches(branches: string[]) {
+    return vi.spyOn(ctx.octokit.paginate, "iterator").mockImplementation(() => {
+      return (async function* () {
+        yield {
+          data: branches.map((branch) => ({ name: branch })),
+        } as OctokitResponse<unknown>;
+      })();
+    });
+  }
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("falls back to `0.0` if no release branches found", async ({ expect }) => {
+    mockListBranches([]);
+    expect(await getNextCutVersion(ctx, "minor")).toStrictEqual({
+      major: 0,
+      minor: 0,
+    });
+  });
+
+  it("produces next minor version", async ({ expect }) => {
+    mockListBranches([
+      "release/0.0",
+      "release/0.1",
+      "release/1.0",
+      "release/1.1",
+    ]);
+    expect(await getNextCutVersion(ctx, "minor")).toStrictEqual({
+      major: 1,
+      minor: 2,
+    });
+  });
+
+  it("produces next major version", async ({ expect }) => {
+    mockListBranches([
+      "release/0.0",
+      "release/0.1",
+      "release/1.0",
+      "release/1.1",
+    ]);
+    expect(await getNextCutVersion(ctx, "major")).toStrictEqual({
+      major: 2,
+      minor: 0,
+    });
+  });
+
+  it("handles out of order branches", async ({ expect }) => {
+    mockListBranches([
+      "release/1.0",
+      "release/0.1",
+      "release/0.0",
+      "release/1.1",
+    ]);
+    expect(await getNextCutVersion(ctx, "major")).toStrictEqual({
+      major: 2,
+      minor: 0,
+    });
+  });
+
+  it("ignores non-release branches", async ({ expect }) => {
+    mockListBranches([
+      "release/0.0",
+      "release/1.2.3",
+      "release/0.1",
+      "something-cool",
+      "release/1.0",
+      "feat/important",
+      "release/1.1",
+      "cut/release/1.2",
+    ]);
+    expect(await getNextCutVersion(ctx, "major")).toStrictEqual({
+      major: 2,
+      minor: 0,
     });
   });
 });
