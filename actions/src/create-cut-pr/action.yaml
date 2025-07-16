@@ -10,13 +10,9 @@ inputs:
     description: "GitHub Token (usually `secrets.GITHUB_TOKEN`)."
     required: true
 
-  severity:
-    description: "Severity of the release. Must be either `minor` or `major`."
-    default: "minor"
-
 outputs:
   cut-pr-number:
-    description: Number of the cut release PR.
+    description: Number of the cut PR.
 
   cut-branch:
     description: Name of the release branch that has been cut.
