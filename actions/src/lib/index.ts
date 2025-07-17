@@ -10,15 +10,15 @@ import { PullRequest, Repository } from "./github";
 export { default as Git } from "./git";
 export * as changelog from "./changelog";
 export * as github from "./github";
-export * as release from "./release";
 export * as util from "./util";
-export * as versioning from "./versioning";
+export { default as branch } from "./branch";
 
 export type Ctx = {
   octokit: InstanceType<typeof GitHub>;
   core: typeof core;
-  context: Context;
+  context: Context & { refName: string };
   exec: typeof exec.exec;
+  execOutput: typeof exec.getExecOutput;
   repo: Repository;
   git: Git;
   pr?: PullRequest;
@@ -57,8 +57,12 @@ export async function createCtx(fallback?: {
   return {
     octokit,
     core,
-    context: github.context,
+    context: Object.assign(
+      { refName: process.env["GITHUB_REF_NAME"] },
+      github.context,
+    ),
     exec: exec.exec,
+    execOutput: exec.getExecOutput,
     repo,
     git,
     pr,
