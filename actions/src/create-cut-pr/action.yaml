@@ -1,5 +1,5 @@
-name: Cut release PR
-description: Cut a release PR
+name: Create cut PR
+description: Create a cut PR
 
 runs:
   using: node20
