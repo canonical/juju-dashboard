@@ -108,10 +108,10 @@ export async function run(ctx: Ctx) {
     // Fetch the current package version, and bump it as required.
     let packageVersion = parseVersion(await getPackageVersion(ctx));
 
-    if (ctx.pr) {
-      // Always assume a beta release is being generated.
-      packageVersion = bumpPackageVersion(packageVersion, "beta");
+    // Always assume a beta release is being generated.
+    packageVersion = bumpPackageVersion(packageVersion, "beta");
 
+    if (ctx.pr) {
       const mergedVersion = branch.release.parse(ctx.pr.head);
       if (mergedVersion !== null) {
         if (mergedVersion.preRelease?.identifier === "beta") {
