@@ -32171,7 +32171,7 @@ const branch = {
         },
     },
 };
-/* harmony default export */ const lib_branch = ((/* unused pure expression or super */ null && (branch)));
+/* harmony default export */ const lib_branch = (branch);
 
 ;// CONCATENATED MODULE: ./src/lib/index.ts
 
@@ -32222,34 +32222,194 @@ const CHANGELOG_LABEL = "changelog";
 const MAJOR_SEVERITY_LABEL = "severity: major";
 const MINOR_SEVERITY_LABEL = "severity: minor";
 
-;// CONCATENATED MODULE: ./src/update-changelog/main.ts
-
-
-
-async function run(ctx, { cutPrNumber }) {
-    if (!ctx.pr) {
-        throw new Error("this action must be triggered from a `pull_request` event, or provided a `pr_number`.");
-    }
-    ctx.core.info(`running on pull request #${ctx.pr.number}`);
-    if (!ctx.pr.hasLabel(CHANGELOG_LABEL)) {
-        ctx.core.info(`pull request doesn't have the ${CHANGELOG_LABEL} label, skipping`);
-        return;
-    }
-    const cutPr = await PullRequest.get(ctx.octokit, ctx.repo.identifier, cutPrNumber);
-    ctx.core.info(`using release cut pull request #${cutPr.number}`);
-    const updatedBody = appendItem(cutPr.body, ctx.pr.title);
-    await cutPr.update({ body: updatedBody });
+;// CONCATENATED MODULE: ./src/lib/package.ts
+/**
+ * Read and parse the version from `package.json`.
+ */
+async function getPackageVersion(ctx) {
+    const { stdout } = await ctx.execOutput("yq", [
+        "-r",
+        ".version",
+        "./package.json",
+    ]);
+    return stdout.trim();
+}
+/**
+ * Update `package.json` with the provided version.
+ */
+async function setPackageVersion(ctx, version) {
+    await ctx.exec("yq", ["-i", `.version = "${version}"`, "./package.json"]);
 }
 
-;// CONCATENATED MODULE: ./src/update-changelog/index.ts
+;// CONCATENATED MODULE: ./src/create-release-pr/main.ts
+
+
+
+
+function bumpPackageVersion(version, bumpKind, options = {}) {
+    if (bumpKind === "beta") {
+        if (version.preRelease?.identifier === "beta") {
+            // Already a beta version, bump the number.
+            version.preRelease.number += 1;
+        }
+        else {
+            // Increment the patch for the next version.
+            version[options.versionComponent ?? "patch"] += 1;
+            // Set the beta component.
+            version.preRelease = {
+                identifier: "beta",
+                number: 0,
+            };
+        }
+    }
+    else if (bumpKind === "candidate") {
+        if (version.preRelease.identifier !== "beta") {
+            throw new Error(`Candidate versions can only be created from beta versions, but found: ${serialiseVersion(version)}`);
+        }
+        // Clear the beta pre-release for the candidate version.
+        version.preRelease = undefined;
+    }
+    return version;
+}
+async function run(ctx) {
+    // Extract versioning information for the current branch.
+    let versioningInfo;
+    try {
+        versioningInfo = lib_branch.shortRelease.parse(ctx.context.refName);
+    }
+    catch (_e) {
+        versioningInfo = null;
+    }
+    // Ensure running on `release/x.y` branch.
+    if (versioningInfo === null) {
+        throw new Error("This action can only be run on a `release/x.y` branch.");
+    }
+    // Try seed the changelog if running against a PR.
+    const changelogItems = [];
+    if (ctx.pr) {
+        if (lib_branch.cut.test(ctx.pr.head) ||
+            lib_branch.release.test(ctx.pr.head, { preRelease: true })) {
+            // Triggered from a merged cut branch, so re-use the changelog.
+            try {
+                changelogItems.push(...parse(ctx.pr.body).items);
+            }
+            catch (err) {
+                void err;
+            }
+        }
+        else if (lib_branch.release.test(ctx.pr.head, { preRelease: false })) {
+            // Running on a merged release branch, no need to continue action.
+            ctx.core.info(`Action triggered on merged release PR (#${ctx.pr.number}), exiting.`);
+            return {};
+        }
+        else if (ctx.pr.hasLabel(CHANGELOG_LABEL)) {
+            // Triggered from a PR that's indicated it should be included in the changelog, so add it.
+            changelogItems.push(ctx.pr.title);
+        }
+    }
+    // Find an existing release PR for this branch.
+    const openPrs = ctx.repo.pullRequests({
+        state: "open",
+        base: ctx.context.refName,
+    });
+    const matchingPrs = [];
+    for await (const pr of openPrs) {
+        // Select all PRs based on the branch.
+        const version = lib_branch.release.parse(pr.head);
+        if (version !== null) {
+            matchingPrs.push({ pr, version });
+        }
+    }
+    // Create or select the release PR.
+    let releasePr;
+    let releaseVersion;
+    if (matchingPrs.length > 1) {
+        // Multiple release PRs for this branch, which is invalid.
+        throw new Error(`Multiple release PRs were found, when only one can exist: ${matchingPrs.map(({ pr: { number } }) => `#${number}`).join(", ")}`);
+    }
+    else if (matchingPrs.length === 1) {
+        // Single release PR found.
+        const { pr, version } = matchingPrs[0];
+        if (!version.preRelease) {
+            // Save the existing changelog.
+            // WARN: This means that the beta PR will contain the changelog for ALL previous beta prs...
+            changelogItems.push(...parse(pr.body).items);
+            // This was a candidate release PR, however new changes have been pushed so it's now outdated.
+            await pr.close();
+        }
+        else {
+            releasePr = pr;
+            releaseVersion = serialiseVersion(version);
+        }
+    }
+    if (!releasePr) {
+        // Fetch the current package version, and bump it as required.
+        let packageVersion = parseVersion(await getPackageVersion(ctx));
+        // Always assume a beta release is being generated.
+        packageVersion = bumpPackageVersion(packageVersion, "beta");
+        if (ctx.pr) {
+            const mergedVersion = lib_branch.release.parse(ctx.pr.head);
+            if (mergedVersion !== null) {
+                if (mergedVersion.preRelease?.identifier === "beta") {
+                    // If this action was triggered by a merged beta branch, create a candidate release.
+                    packageVersion = bumpPackageVersion(packageVersion, "candidate");
+                }
+            }
+        }
+        // Create and checkout the new release branch.
+        const baseBranch = ctx.context.refName;
+        const releaseBranch = lib_branch.release.serialise(packageVersion);
+        await ctx.git.fetch();
+        await ctx.git.createBranch(releaseBranch, baseBranch);
+        await ctx.git.checkout(releaseBranch);
+        // Write the version back.
+        const packageVersionStr = serialiseVersion(packageVersion);
+        await setPackageVersion(ctx, packageVersionStr);
+        // Commit the bumped package.
+        await ctx.git.commit(`bump package.json version to ${packageVersionStr}`, [
+            "./package.json",
+        ]);
+        await ctx.git.push({ force: true }, releaseBranch);
+        // Restore branch back to where it was.
+        await ctx.git.checkout(baseBranch);
+        const header = `> [!important]
+> Merging this PR will publish ${packageVersionStr}
+
+---
+`;
+        // Start with an empty changelog, as it will be filled after it's created.
+        const body = generate(header, []);
+        // Create new release PR.
+        releasePr = await ctx.repo.createPullRequest({
+            head: releaseBranch,
+            base: baseBranch,
+            title: `Release ${packageVersionStr}`,
+            body,
+        });
+        releaseVersion = packageVersionStr;
+    }
+    // Optionally update the changelog if the merged PR allows it.
+    if (changelogItems.length > 0) {
+        // Update the changelog with this merged PR.
+        await releasePr.update({
+            body: changelogItems.reduce((body, item) => appendItem(body, item), releasePr.body),
+        });
+    }
+    return {
+        releasePrNumber: releasePr.number,
+        releasePrHead: releasePr.head,
+        releaseVersion,
+    };
+}
+
+;// CONCATENATED MODULE: ./src/create-release-pr/index.ts
 
 
 void (async () => {
-    const ctx = await createCtx({ pullRequestInput: "pr-number" });
-    const cutPrNumber = Number(ctx.core.getInput("cut-pr-number", { required: true }));
-    if (isNaN(cutPrNumber)) {
-        throw new Error("`cut-pr-number` must be provided.");
-    }
-    await run(ctx, { cutPrNumber });
+    const ctx = await createCtx();
+    const output = await run(ctx);
+    ctx.core.setOutput("release-pr-number", output.releasePrNumber);
+    ctx.core.setOutput("release-pr-head", output.releasePrHead);
+    ctx.core.setOutput("release-version", output.releaseVersion);
 })();
 

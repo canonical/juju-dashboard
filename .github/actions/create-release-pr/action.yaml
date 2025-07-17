@@ -1,0 +1,21 @@
+name: Cut release PR
+description: Cut a release PR
+
+runs:
+  using: node20
+  main: index.js
+
+inputs:
+  github-token:
+    description: "GitHub Token (usually `secrets.GITHUB_TOKEN`)."
+    required: true
+
+outputs:
+  release-pr-number:
+    description: Number of the release PR.
+
+  release-pr-head:
+    description: Head of the release PR.
+
+  release-version:
+    description: Version of the created release.
