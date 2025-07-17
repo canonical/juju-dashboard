@@ -84,8 +84,21 @@ const branch = {
      * @param branchName - Branch name to test.
      * @returns `true` if the branch name is a valid release branch.
      */
-    test: (branchName: string) => {
-      return branch.release.parse(branchName) !== null;
+    test: (
+      branchName: string,
+      { preRelease }: { preRelease?: boolean } = {},
+    ) => {
+      const version = branch.release.parse(branchName);
+
+      if (version === null) {
+        return false;
+      }
+
+      if (preRelease) {
+        return (version.preRelease !== undefined) === preRelease;
+      }
+
+      return true;
     },
   },
   /** `release/x.y` */

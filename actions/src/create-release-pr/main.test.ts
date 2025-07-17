@@ -14,6 +14,9 @@ describe("create-release-pr", () => {
 
   beforeEach(() => {
     ctx = {
+      core: {
+        info: vi.fn(),
+      },
       context: {},
       git: {
         mainBranch: "main",
@@ -368,6 +371,32 @@ describe("create-release-pr", () => {
     expect(createdPr.update).toHaveBeenCalledExactlyOnceWith({
       body: expect.stringContaining("- item a\n- item b"),
     });
+  });
+
+  it("doesn't create new release PR for merged release PR", async ({
+    expect,
+  }) => {
+    ctx.context.refName = "release/1.0";
+    ctx.pr = mockPr({
+      number: 111,
+      title: "Release 1.0.0",
+      head: "release/1.0.0",
+    }) as PullRequest;
+
+    await expect(run(ctx)).resolves.toStrictEqual({});
+
+    // Verify git operations.
+    expect(ctx.git.createBranch).not.toHaveBeenCalled();
+    expect(ctx.git.checkout).not.toHaveBeenCalled();
+    expect(ctx.git.commit).not.toHaveBeenCalled();
+    expect(ctx.git.push).not.toHaveBeenCalled();
+
+    // Ensure package version was read and written.
+    expect(ctx.execOutput).not.toHaveBeenCalled();
+    expect(ctx.exec).not.toHaveBeenCalled();
+
+    // Ensure created PR.
+    expect(ctx.repo.createPullRequest).not.toHaveBeenCalled();
   });
 });
 

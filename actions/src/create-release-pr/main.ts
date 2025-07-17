@@ -63,13 +63,22 @@ export async function run(ctx: Ctx) {
   // Try seed the changelog if running against a PR.
   const changelogItems: string[] = [];
   if (ctx.pr) {
-    if (branch.cut.test(ctx.pr.head) || branch.release.test(ctx.pr.head)) {
-      // Triggered from a merged cut or release branch, so re-use the changelog.
+    if (
+      branch.cut.test(ctx.pr.head) ||
+      branch.release.test(ctx.pr.head, { preRelease: true })
+    ) {
+      // Triggered from a merged cut branch, so re-use the changelog.
       try {
         changelogItems.push(...changelog.parse(ctx.pr.body).items);
       } catch (err) {
         void err;
       }
+    } else if (branch.release.test(ctx.pr.head, { preRelease: false })) {
+      // Running on a merged release branch, no need to continue action.
+      ctx.core.info(
+        `Action triggered on merged release PR (#${ctx.pr.number}), exiting.`,
+      );
+      return {};
     } else if (ctx.pr.hasLabel(CHANGELOG_LABEL)) {
       // Triggered from a PR that's indicated it should be included in the changelog, so add it.
       changelogItems.push(ctx.pr.title);
@@ -129,8 +138,6 @@ export async function run(ctx: Ctx) {
         if (mergedVersion.preRelease?.identifier === "beta") {
           // If this action was triggered by a merged beta branch, create a candidate release.
           packageVersion = bumpPackageVersion(packageVersion, "candidate");
-        } else {
-          // TODO: Don't create beta release if candidate release was just merged.
         }
       }
     }
