@@ -127,7 +127,7 @@ export async function run(ctx: Ctx) {
     const baseBranch = ctx.context.refName;
     const releaseBranch = branch.release.serialise(packageVersion);
     await ctx.git.fetch();
-    await ctx.git.createBranch(releaseBranch);
+    await ctx.git.createBranch(releaseBranch, baseBranch);
     await ctx.git.checkout(releaseBranch);
 
     // Write the version back.

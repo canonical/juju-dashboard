@@ -72,7 +72,10 @@ describe("create-release-pr", () => {
       });
 
       // Verify git operations.
-      expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(headBranch);
+      expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
+        headBranch,
+        "release/1.0",
+      );
       expect(ctx.git.checkout).toBeCalledTimes(2);
       expect(ctx.git.checkout).toHaveBeenNthCalledWith(1, headBranch);
       expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
@@ -142,6 +145,7 @@ describe("create-release-pr", () => {
       // Verify git operations.
       expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
         "release/1.0.0-beta.0",
+        "release/1.0",
       );
       expect(ctx.git.checkout).toBeCalledTimes(2);
       expect(ctx.git.checkout).toHaveBeenNthCalledWith(
@@ -255,6 +259,7 @@ describe("create-release-pr", () => {
     // Verify git operations.
     expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
       "release/1.0.0",
+      "release/1.0",
     );
     expect(ctx.git.checkout).toBeCalledTimes(2);
     expect(ctx.git.checkout).toHaveBeenNthCalledWith(1, "release/1.0.0");
