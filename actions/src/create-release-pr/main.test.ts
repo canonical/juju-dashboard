@@ -79,7 +79,10 @@ describe("create-release-pr", () => {
       expect(ctx.git.checkout).toHaveBeenNthCalledWith(1, headBranch);
       expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
       expect(ctx.git.commit).toHaveBeenCalledTimes(1);
-      expect(ctx.git.push).toHaveBeenCalledExactlyOnceWith(headBranch);
+      expect(ctx.git.push).toHaveBeenCalledExactlyOnceWith(
+        { force: true },
+        headBranch,
+      );
 
       // Ensure package version was read and written.
       expect(ctx.execOutput).toHaveBeenCalledExactlyOnceWith("yq", [
@@ -154,6 +157,7 @@ describe("create-release-pr", () => {
       expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
       expect(ctx.git.commit).toHaveBeenCalledTimes(1);
       expect(ctx.git.push).toHaveBeenCalledExactlyOnceWith(
+        { force: true },
         "release/1.0.0-beta.0",
       );
 
@@ -264,7 +268,10 @@ describe("create-release-pr", () => {
     expect(ctx.git.checkout).toHaveBeenNthCalledWith(1, "release/1.0.0");
     expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
     expect(ctx.git.commit).toHaveBeenCalledTimes(1);
-    expect(ctx.git.push).toHaveBeenCalledExactlyOnceWith("release/1.0.0");
+    expect(ctx.git.push).toHaveBeenCalledExactlyOnceWith(
+      { force: true },
+      "release/1.0.0",
+    );
 
     // Ensure package version was read and written.
     expect(ctx.execOutput).toHaveBeenCalledExactlyOnceWith("yq", [

@@ -150,7 +150,7 @@ export async function run(ctx: Ctx) {
     await ctx.git.commit(`bump package.json version to ${packageVersionStr}`, [
       "./package.json",
     ]);
-    await ctx.git.push(releaseBranch);
+    await ctx.git.push({ force: true }, releaseBranch);
 
     // Restore branch back to where it was.
     await ctx.git.checkout(baseBranch);
