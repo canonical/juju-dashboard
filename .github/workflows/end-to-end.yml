@@ -47,33 +47,9 @@ on:
 permissions: read-all
 
 jobs:
-  juju-machine-local:
-    name: Test Juju, machine-charm and local-auth
-    uses: ./.github/workflows/e2e-juju-machine-charm-local-auth.yml
-    secrets: inherit
-    if: |
-      github.event_name != 'pull_request' || (
-        (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
-        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))
-  juju-machine-candid:
-    name: Test Juju, machine-charm and candid-auth
-    uses: ./.github/workflows/e2e-juju-machine-charm-candid-auth.yml
-    secrets: inherit
-    if: |
-      github.event_name != 'pull_request' || (
-        (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
-        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))
-  juju-k8s-local:
-    name: Test Juju, k8s-charm and local-auth
-    uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml
-    secrets: inherit
-    if: |
-      github.event_name != 'pull_request' || (
-        (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
-        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))
-  jimm-k8s-oidc:
-    name: Test JIMM, k8s-charm and oidc-auth
-    uses: ./.github/workflows/e2e-jimm-k8s-charm-oidc-auth.yml
+  jimm-docker-keycloak:
+    name: Test JIMM, Docker deployed dashboard and Keycloak OIDC auth
+    uses: ./.github/workflows/e2e-jimm-docker-keycloak.yml
     secrets: inherit
     if: |
       github.event_name != 'pull_request' || (

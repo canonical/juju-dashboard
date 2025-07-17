@@ -19,6 +19,8 @@ export type TestOptions = {
   admin: {
     name: string;
     password: string;
+    identityName?: string;
+    identityPassword?: string;
   };
 };
 
@@ -63,6 +65,8 @@ export const test = base.extend<Fixtures>({
       admin: {
         name: getEnv("ADMIN_USERNAME"),
         password: getEnv("ADMIN_PASSWORD"),
+        identityName: getEnv("ADMIN_IDENTITY_USERNAME"),
+        identityPassword: getEnv("ADMIN_IDENTITY_PASSWORD"),
       },
       controllerName: getEnv("CONTROLLER_NAME"),
       jujuEnv: getEnv("JUJU_ENV") as JujuEnv,
