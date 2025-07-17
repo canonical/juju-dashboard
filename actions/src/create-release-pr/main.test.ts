@@ -15,7 +15,6 @@ describe("create-release-pr", () => {
   beforeEach(() => {
     ctx = {
       context: {},
-      pr: {},
       git: {
         mainBranch: "main",
         configUser: vi.fn(),
@@ -289,6 +288,78 @@ describe("create-release-pr", () => {
 
     expect(createdPr.update).toHaveBeenCalledExactlyOnceWith({
       body: expect.stringContaining("- item a\n- item b\n- item c"),
+    });
+  });
+
+  it("closes candidate release if new changes pushed", async ({ expect }) => {
+    ctx.context.refName = "release/1.0";
+    const createdPr = {
+      ...mockPr({
+        number: 222,
+        head: "release/1.0.0-beta.1",
+        body: changelog.generate("# Some header", ["item a", "item b"]),
+      }),
+      update: vi.fn(),
+    };
+    ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
+    ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.0-beta.0" });
+    const EXISTING_RELEASE_PR = {
+      ...mockPr({
+        number: 111,
+        head: "release/1.0.0",
+        body: changelog.generate("# Some header", ["item a", "item b"]),
+      }),
+      close: vi.fn(),
+    };
+    ctx.repo.pullRequests = vi
+      .fn()
+      .mockReturnValue(asyncIterable([EXISTING_RELEASE_PR]));
+
+    await expect(run(ctx)).resolves.toStrictEqual({
+      releasePrNumber: 222,
+      releasePrHead: "release/1.0.0-beta.1",
+      releaseVersion: "1.0.0-beta.1",
+    });
+
+    // Verify git operations.
+    expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
+      "release/1.0.0-beta.1",
+      "release/1.0",
+    );
+    expect(ctx.git.checkout).toBeCalledTimes(2);
+    expect(ctx.git.checkout).toHaveBeenNthCalledWith(1, "release/1.0.0-beta.1");
+    expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
+    expect(ctx.git.commit).toHaveBeenCalledTimes(1);
+    expect(ctx.git.push).toHaveBeenCalledExactlyOnceWith(
+      { force: true },
+      "release/1.0.0-beta.1",
+    );
+
+    // Ensure package version was read and written.
+    expect(ctx.execOutput).toHaveBeenCalledExactlyOnceWith("yq", [
+      "-r",
+      ".version",
+      "./package.json",
+    ]);
+    expect(ctx.exec).toHaveBeenCalledExactlyOnceWith("yq", [
+      "-i",
+      `.version = "1.0.0-beta.1"`,
+      "./package.json",
+    ]);
+
+    // Ensure previous PR closed.
+    expect(EXISTING_RELEASE_PR.close).toHaveBeenCalledTimes(1);
+
+    // Ensure created PR.
+    expect(ctx.repo.createPullRequest).toHaveBeenCalledExactlyOnceWith({
+      head: "release/1.0.0-beta.1",
+      base: "release/1.0",
+      title: "Release 1.0.0-beta.1",
+      body: expect.any(String),
+    });
+
+    expect(createdPr.update).toHaveBeenCalledExactlyOnceWith({
+      body: expect.stringContaining("- item a\n- item b"),
     });
   });
 });

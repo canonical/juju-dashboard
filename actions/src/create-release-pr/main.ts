@@ -102,9 +102,21 @@ export async function run(ctx: Ctx) {
   } else if (matchingPrs.length === 1) {
     // Single release PR found.
     const { pr, version } = matchingPrs[0];
-    releasePr = pr;
-    releaseVersion = serialiseVersion(version);
-  } else {
+
+    if (!version.preRelease) {
+      // Save the existing changelog.
+      // WARN: This means that the beta PR will contain the changelog for ALL previous beta prs...
+      changelogItems.push(...changelog.parse(pr.body).items);
+
+      // This was a candidate release PR, however new changes have been pushed so it's now outdated.
+      await pr.close();
+    } else {
+      releasePr = pr;
+      releaseVersion = serialiseVersion(version);
+    }
+  }
+
+  if (!releasePr) {
     // Fetch the current package version, and bump it as required.
     let packageVersion = parseVersion(await getPackageVersion(ctx));
 
