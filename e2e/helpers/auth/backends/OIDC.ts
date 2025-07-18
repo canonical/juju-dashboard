@@ -85,19 +85,27 @@ export class OIDCUser extends LocalUser {
   }
 
   override async cliLogin() {
+    console.log("CLI login start", new Date().toLocaleString());
     let retry = 3;
     // This login is retried as sometimes the login fails if it is too slow and an error is displayed:
     // `cannot log into controller "jimm-k8s": connection is shut down`.
     while (retry-- > 0) {
+      console.time("CLI login attempt");
       try {
         await OIDC.loginCLI({
           username: this.cliUsername,
           password: this.password,
         });
+        console.timeEnd("CLI login attempt");
+        console.log("CLI login end", new Date().toLocaleString());
         return;
       } catch (error) {
         if (retry === 0) {
           throw error;
+        } else {
+          console.timeEnd("CLI login attempt");
+          console.log("CLI login end", new Date().toLocaleString());
+          console.log(`CLI login failed, retrying (#${3 - retry} of 3).`);
         }
       }
     }
