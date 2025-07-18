@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { Link, Outlet, useLocation } from "react-router";
 
 import Banner from "components/Banner";
+import DevBar from "components/DevBar";
 import Logo from "components/Logo";
 import PrimaryNav from "components/PrimaryNav";
 import { DARK_THEME } from "consts";
@@ -78,6 +79,7 @@ const BaseLayout = () => {
         }}
         reverseOrder={true}
       />
+      {import.meta.env.DEV && <DevBar />}
     </>
   );
 };

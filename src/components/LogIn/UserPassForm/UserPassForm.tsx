@@ -1,14 +1,11 @@
-import { unwrapResult } from "@reduxjs/toolkit";
 import type { FormEvent } from "react";
 
-import bakery from "juju/bakery";
-import { thunks as appThunks } from "store/app";
-import { actions as generalActions } from "store/general";
 import { getWSControllerURL } from "store/general/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
-import { logger } from "utils/logger";
 
 import { Label } from "../types";
+
+import { login } from "./login";
 
 interface LoginElements extends HTMLFormControlsCollection {
   username: HTMLInputElement;
@@ -26,19 +23,7 @@ const UserPassForm = () => {
     const elements = ev.currentTarget.elements;
     const user = elements.username.value;
     const password = elements.password.value;
-    dispatch(generalActions.cleanupLoginErrors());
-    dispatch(
-      generalActions.storeUserPass({
-        wsControllerURL,
-        credential: { user, password },
-      }),
-    );
-    dispatch(generalActions.updateLoginLoading(true));
-    if (bakery) {
-      dispatch(appThunks.connectAndStartPolling())
-        .then(unwrapResult)
-        .catch((error) => logger.error(Label.POLLING_ERROR, error));
-    }
+    login(dispatch, wsControllerURL, { user, password });
   }
 
   return (
