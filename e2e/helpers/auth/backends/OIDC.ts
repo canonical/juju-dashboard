@@ -1,17 +1,12 @@
 import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
-import { chromium } from "playwright";
 
-import { getEnv, exec, findLine, addFeatureFlags } from "../../../utils";
+import { getEnv, exec, addFeatureFlags } from "../../../utils";
 import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
 import { LocalUser } from "./Local";
-
-type Secret = {
-  username: string;
-  password: string;
-};
+import { deviceCodeLogin, Secret } from "./utils";
 
 export class CreateOIDCUser implements Action<OIDCUser> {
   constructor(
@@ -121,38 +116,12 @@ export class OIDC {
     user: Secret,
     registerController = false,
   ): Promise<void> {
-    // Begin the login. The controller only needs to be registered the first
-    // time (which is done when the workflow uses this function to log in to add
-    // the controller).
-    const loginProc = exec(
-      `juju login${registerController ? " test-jimm.local:443" : ""} -c ${getEnv("CONTROLLER_NAME")}`,
+    await deviceCodeLogin(
+      user,
+      /(?<=enter code ).\w+/,
+      OIDC.uiLogin,
+      registerController ? "test-jimm.local:443" : null,
     );
-    if (!loginProc.child.stderr) {
-      throw new Error("No output from login command.");
-    }
-    // Find the login line.
-    const loginLine = await findLine(loginProc.child.stderr, (line) =>
-      line.startsWith("Please visit"),
-    );
-    const loginURL = loginLine.match(/http\S+/)?.[0];
-    const loginCode = loginLine.match(/(?<=enter code ).\w+/)?.[0];
-    if (!loginURL || !loginCode) {
-      throw new Error("Login details not found.");
-    }
-    // Prepare a browser instance to go to the URL.
-    const browser = await chromium.launch();
-    // Manually set the context to ignore HTTPS errors, for the case where this
-    // function is called outside of the PlayWright runner to log in during the
-    // workflow.
-    const context = await browser.newContext({ ignoreHTTPSErrors: true });
-    const page = await context.newPage();
-    await page.goto(loginURL);
-    // Login with user credentials.
-    await OIDC.uiLogin(page, user, loginCode);
-    // Wait for the original process to finish.
-    await loginProc;
-    // Exit the browser so the script will finish when called outside of Playwright.
-    await browser.close();
   }
 
   private static async uiLogin(page: Page, secret: Secret, code: string) {
