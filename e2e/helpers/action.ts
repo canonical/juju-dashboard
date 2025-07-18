@@ -45,7 +45,10 @@ export class ActionStack {
     // Let the user function queue actions
     const value = prepare_fn((action) => {
       actions.push(action);
-      return action.result();
+      console.time("run action");
+      const result = action.result();
+      console.timeEnd("run action");
+      return result;
     });
 
     // Run each action
@@ -77,8 +80,10 @@ export class ActionStack {
     let action: Action<unknown> | undefined;
     while ((action = this.actions.pop())) {
       console.log(`Action: ${action.debug()}`);
+      console.time("rollback action");
 
       await action.rollback(this.jujuCLI);
+      console.timeEnd("rollback action");
 
       console.log();
     }
