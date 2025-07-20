@@ -283,7 +283,7 @@ export const generateIconPath = (charmId: string) => {
     // "ch:amd64/xenial/content-cache-425".match(/\/(?:(?<release>.+)\/)?(?<charmName>.+)-\d+/).groups
     // Object { release: "xenial", charmName: "content-cache" }
     const charmName = charmId.match(
-      /\/(?:(?<release>.+)\/)?(?<charmName>.+)-\d+/,
+      /:(?:(?<release>.+)\/)?(?<charmName>.+)-\d+/,
     )?.groups?.["charmName"];
     if (charmName) {
       return `https://charmhub.io/${charmName}/icon`;

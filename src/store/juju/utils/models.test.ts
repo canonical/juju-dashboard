@@ -106,6 +106,18 @@ describe("generateIconPath", () => {
   });
 
   it("should return a icon URI for a charmhub charm path", () => {
+    const charmId = "ch:content-cache-425";
+    const iconPath = generateIconPath(charmId);
+    expect(iconPath).toBe("https://charmhub.io/content-cache/icon");
+  });
+
+  it("should return a icon URI for a charmhub charm path with architecture", () => {
+    const charmId = "ch:amd64/content-cache-425";
+    const iconPath = generateIconPath(charmId);
+    expect(iconPath).toBe("https://charmhub.io/content-cache/icon");
+  });
+
+  it("should return a icon URI for a charmhub charm path with architecture and series", () => {
     const charmId = "ch:amd64/xenial/content-cache-425";
     const iconPath = generateIconPath(charmId);
     expect(iconPath).toBe("https://charmhub.io/content-cache/icon");
