@@ -280,12 +280,16 @@ export const generateIconPath = (charmId: string) => {
   }
   if (charmId.indexOf("ch:") === 0) {
     // Regex explanation:
-    // "ch:amd64/xenial/content-cache-425".match(/\/(.+)\/(.+)-\d+/)
-    // Array(3) [ "/xenial/content-cache-425", "xenial", "content-cache" ]
-    const charmName = charmId.match(/\/(.+)\/(.+)-\d+/)?.[2];
-    return `https://charmhub.io/${charmName}/icon`;
+    // "ch:amd64/xenial/content-cache-425".match(/\/(?:(?<release>.+)\/)?(?<charmName>.+)-\d+/).groups
+    // Object { release: "xenial", charmName: "content-cache" }
+    const charmName = charmId.match(
+      /:(?:(?<release>.+)\/)?(?<charmName>.+)-\d+/,
+    )?.groups?.["charmName"];
+    if (charmName) {
+      return `https://charmhub.io/${charmName}/icon`;
+    }
   }
-  return "";
+  return defaultCharmIcon;
 };
 
 export const extractRelationEndpoints = (relation: {
