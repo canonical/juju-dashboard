@@ -19,10 +19,6 @@ const USER_CREDENTIALS_KEY = "DEV__user-credentials";
 const AUTO_LOGIN_KEY = "DEV__auto-login";
 
 export default {
-  useShouldRender: () => {
-    const isJuju = useAppSelector(getIsJuju);
-    return isJuju ?? false;
-  },
   Title: () => {
     const wsControllerURL = useAppSelector(getWSControllerURL);
     const userIsLoggedIn = useAppSelector((state) =>
@@ -38,6 +34,7 @@ export default {
     );
   },
   Widget: () => {
+    const isJuju = useAppSelector(getIsJuju);
     const wsControllerURL = useAppSelector(getWSControllerURL);
 
     const [credential, setCredential] = useLocalStorage(USER_CREDENTIALS_KEY, {
@@ -54,6 +51,10 @@ export default {
     }) {
       setCredential(credential);
       sendToast("Saved user credentials");
+    }
+
+    if (!isJuju) {
+      return null;
     }
 
     return (
