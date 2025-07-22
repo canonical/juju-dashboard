@@ -50,7 +50,7 @@ describe("create-cut-pr", () => {
     ["with no other release branches", [], "0.0", "0.0"],
     ["with one other release branch", ["release/1.0"], "1.1", "2.0"],
     [
-      "with multiple other release branch",
+      "with multiple other release branches",
       ["release/1.0", "release/1.1", "release/2.0"],
       "2.1",
       "3.0",

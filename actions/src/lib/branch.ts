@@ -6,7 +6,7 @@ import { parseVersion, serialiseVersion, type Version } from "./version";
 export const RELEASE_BRANCH_PREFIX = "release";
 
 /**
- * Cut branches are in the form `cur/x.y`.
+ * Cut branches are in the form `cut/x.y`.
  */
 export const CUT_BRANCH_PREFIX = "cut";
 
