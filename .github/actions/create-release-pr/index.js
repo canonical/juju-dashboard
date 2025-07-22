@@ -32018,7 +32018,7 @@ function serialiseVersion(version) {
  */
 const RELEASE_BRANCH_PREFIX = "release";
 /**
- * Cut branches are in the form `cur/x.y`.
+ * Cut branches are in the form `cut/x.y`.
  */
 const CUT_BRANCH_PREFIX = "cut";
 /**
@@ -32332,7 +32332,7 @@ async function run(ctx) {
         const { pr, version } = matchingPrs[0];
         if (!version.preRelease) {
             // Save the existing changelog.
-            // WARN: This means that the beta PR will contain the changelog for ALL previous beta prs...
+            // WARN: This means that the beta PR will contain the changelog for ALL previous beta PRs.
             changelogItems.push(...parse(pr.body).items);
             // This was a candidate release PR, however new changes have been pushed so it's now outdated.
             await pr.close();

@@ -32018,7 +32018,7 @@ function serialiseVersion(version) {
  */
 const RELEASE_BRANCH_PREFIX = "release";
 /**
- * Cut branches are in the form `cur/x.y`.
+ * Cut branches are in the form `cut/x.y`.
  */
 const CUT_BRANCH_PREFIX = "cut";
 /**
@@ -32267,7 +32267,7 @@ function severityFromVersion(version) {
 
 
 /**
- * Determine what the next cut version will be, based existing release/x.y` branches in the repo.
+ * Determine what the next cut version will be, based existing `release/x.y` branches in the repo.
  */
 async function getNextCutVersion(ctx, severity) {
     let version = null;
