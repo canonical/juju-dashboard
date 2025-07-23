@@ -5,7 +5,7 @@ import { setPackageVersion } from "@/lib/package";
 import { severityFits, type Severity } from "@/lib/severity";
 
 /**
- * Determine what the next cut version will be, based existing `release/x.y` branches in the repo.
+ * Determine what the next cut version will be, based on existing `release/x.y` branches in the repo.
  */
 export async function getNextCutVersion(
   ctx: Ctx,
