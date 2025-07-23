@@ -6,6 +6,8 @@ export function shell(command: string) {
 
 export function exec(command: string, ...args: string[]) {
   const process = childProcess.spawn(command, args);
+  process.stdout.setEncoding("utf8");
+  process.stderr.setEncoding("utf8");
 
   const exit = new Promise((resolve, reject) => {
     process.on("close", (code, signal) => {
