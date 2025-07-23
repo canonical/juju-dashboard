@@ -1,9 +1,7 @@
 import type { Browser } from "@playwright/test";
 import { type Page } from "@playwright/test";
 
-import { addFeatureFlags } from "../../../utils";
-import { exec } from "../../../utils/exec";
-import { findLine } from "../../../utils/findLine";
+import { addFeatureFlags, findLine, exec, shell } from "../../../utils";
 import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
@@ -51,7 +49,7 @@ export class CreateCandidUser implements Action<CandidUser> {
 
     // Ensure the user has the correct grant to allow them to login.
     const user = this.result();
-    await exec(`juju grant '${user.cliUsername}' 'login'`);
+    await exec("juju", "grant", user.cliUsername, "login").exit;
   }
 
   async rollback(jujuCLI: JujuCLI) {
@@ -59,7 +57,7 @@ export class CreateCandidUser implements Action<CandidUser> {
 
     // Revoke the user's grant.
     const user = this.result();
-    await exec(`juju revoke '${user.cliUsername}' 'login'`);
+    await exec("juju", "revoke", user.cliUsername, "login").exit;
 
     // Remove the user from Candid.
     const candidConfig = await getCandidConfig();
@@ -101,25 +99,22 @@ export class CandidUser extends LocalUser {
   }
 
   override async cliLogin() {
-    await exec("juju logout");
+    await exec("juju", "logout").exit;
 
     // Begin the login
-    const loginProc = exec("juju login");
+    const loginProc = exec("juju", "login");
 
-    if (!loginProc.child.stderr) {
+    if (!loginProc.stderr) {
       throw new Error("couldn't capture stderr when fetching login URL");
     }
 
     // Find the login URL
-    const loginUrl = await findLine(
-      loginProc.child.stderr,
-      (line, allLines) => {
-        return (
-          allLines.at(-2) === "If it does not open, please open this URL:" &&
-          line.startsWith("http")
-        );
-      },
-    );
+    const loginUrl = await findLine(loginProc.stderr, (line, allLines) => {
+      return (
+        allLines.at(-2) === "If it does not open, please open this URL:" &&
+        line.startsWith("http")
+      );
+    });
 
     // Prepare a browser instance to go to the URL
     const context = await this.browser.newContext();
@@ -130,7 +125,7 @@ export class CandidUser extends LocalUser {
     await this.candidUILogin(page);
 
     // Wait for the original process to finish.
-    await loginProc;
+    await loginProc.exit;
 
     await context.close();
   }
@@ -160,7 +155,7 @@ type CandidConfigUsers = Record<
 >;
 
 async function getCandidConfig(): Promise<CandidConfig> {
-  return JSON.parse((await exec(`yq -oj '${CONFIG_PATH}'`)).stdout);
+  return JSON.parse(await exec("yq", "-oj", CONFIG_PATH).output());
 }
 
 async function setCandidConfig(config: CandidConfig): Promise<void> {
@@ -168,7 +163,7 @@ async function setCandidConfig(config: CandidConfig): Promise<void> {
   const writeCommand = `yq -P -oy  <<- EOF | sudo tee '${CONFIG_PATH}'
       ${JSON.stringify(config)}
       EOF`;
-  await exec(writeCommand);
+  await shell(writeCommand).exit;
 
   await restartCandid();
 }
@@ -187,10 +182,10 @@ function getStaticUsers(candidConfig: CandidConfig): CandidConfigUsers {
 }
 
 async function restartCandid(): Promise<void> {
-  await exec("sudo snap restart candid");
+  await shell("sudo snap restart candid").exit;
   while (true) {
-    const output = await exec("snap changes candid");
-    const inProgress = output.stdout
+    const output = await exec("snap", "changes", "candid").output();
+    const inProgress = output
       .trim()
       // Pull out each line
       .split("\n")

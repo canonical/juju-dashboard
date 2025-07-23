@@ -26,17 +26,26 @@ export class GiveAccess<Entity extends Model | Controller>
     jimmCommand: string,
   ) {
     if (jujuCLI.jujuEnv == JujuEnv.JUJU) {
-      const entityName =
-        this.tag === "controller" ? "" : `'${this.entityName}'`;
+      const entityName = this.tag === "controller" ? "" : this.entityName;
       await this.entity.owner.cliLogin();
       await exec(
-        `juju ${jujuCommand} '${this.user.cliUsername}' '${this.access}' '${entityName}'`,
-      );
+        "juju",
+        jujuCommand,
+        this.user.cliUsername,
+        this.access,
+        entityName,
+      ).exit;
     } else {
       await jujuCLI.loginIdentityCLIAdmin();
       await exec(
-        `jimmctl auth relation ${jimmCommand} 'user-${this.user.cliUsername}' '${this.jimmAccess[this.access]}' '${[this.tag, this.entityName].join("-")}'`,
-      );
+        "jimmctl",
+        "auth",
+        "relation",
+        jimmCommand,
+        `user-${this.user.cliUsername}`,
+        this.jimmAccess[this.access],
+        `${this.tag}-${this.entityName}`,
+      ).exit;
     }
   }
 
