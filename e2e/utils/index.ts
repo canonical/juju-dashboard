@@ -1,5 +1,5 @@
 export { addFeatureFlags } from "./addFeatureFlags";
-export { exec } from "./exec";
+export { exec, shell } from "./exec";
 export { findLine } from "./findLine";
 export { generateRandomName } from "./generateRandomName";
 export { getEnv } from "./getEnv";

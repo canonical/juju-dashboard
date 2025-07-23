@@ -1,8 +1,7 @@
 import type { Page } from "@playwright/test";
 
 import type { User } from "..";
-import { addFeatureFlags, juju } from "../../../utils";
-import { exec } from "../../../utils/exec";
+import { addFeatureFlags, juju, exec, shell } from "../../../utils";
 import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
@@ -19,18 +18,28 @@ export class CreateLocalUser implements Action<LocalUser> {
   async run(jujuCLI: JujuCLI) {
     await jujuCLI.loginLocalCLIAdmin();
     await exec(
-      `juju add-user --controller '${jujuCLI.controller}' '${this.username}'`,
-    );
-    await exec(
+      "juju",
+      "add-user",
+      "--controller",
+      jujuCLI.controller,
+      this.username,
+    ).exit;
+    await shell(
       `{ echo ${this.password}; echo ${this.password}; } | juju change-user-password '${this.username}'`,
-    );
+    ).exit;
   }
 
   async rollback(jujuCLI: JujuCLI) {
     await jujuCLI.loginLocalCLIAdmin();
     await exec(
-      `juju remove-user --yes --quiet --controller '${jujuCLI.controller}' '${this.username}'`,
-    );
+      "juju",
+      "remove-user",
+      "--yes",
+      "--quiet",
+      "--controller",
+      jujuCLI.controller,
+      this.username,
+    ).exit;
   }
 
   debug(): string {

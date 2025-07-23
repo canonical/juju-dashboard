@@ -38,12 +38,12 @@ export class ActionStack {
   constructor(private jujuCLI: JujuCLI) {}
 
   public async prepare<T = void>(
-    prepare_fn: (add: <S>(action: Action<S>) => S) => T,
+    prepareFn: (add: <S>(action: Action<S>) => S) => T,
   ) {
     const actions: Action<unknown>[] = [];
 
     // Let the user function queue actions
-    const value = prepare_fn((action) => {
+    const value = prepareFn((action) => {
       actions.push(action);
       return action.result();
     });

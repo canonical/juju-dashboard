@@ -87,7 +87,7 @@ export class JujuCLI {
   async loginLocalCLIAdmin(): Promise<void> {
     if (this.jujuEnv === JujuEnv.JIMM) {
       // In JIMM the CLI admin is only available when in the JIMM controller.
-      await exec(`juju switch ${getEnv("JIMM_CONTROLLER_NAME")}`);
+      await exec("juju", "switch", getEnv("JIMM_CONTROLLER_NAME")).exit;
     }
     await this.localAdmin.cliLogin();
   }
@@ -128,8 +128,12 @@ class BootstrapAction implements Action<User> {
     if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
       // Grant access to the cloud.
       await exec(
-        `juju grant-cloud '${user.cliUsername}' ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
-      );
+        "juju",
+        "grant-cloud",
+        user.cliUsername,
+        CloudAccessType.ADD_MODEL,
+        jujuCLI.provider,
+      ).exit;
     }
 
     // Login as the user.
@@ -140,8 +144,13 @@ class BootstrapAction implements Action<User> {
     // oauth token which is required in some scenarios (e.g. adding secrets when
     // using microk8s).
     await exec(
-      `juju update-credential ${jujuCLI.provider} ${jujuCLI.provider} -c '${jujuCLI.controller}'`,
-    );
+      "juju",
+      "update-credential",
+      jujuCLI.provider,
+      jujuCLI.provider,
+      "-c",
+      jujuCLI.controller,
+    ).exit;
   }
 
   /**
@@ -154,8 +163,14 @@ class BootstrapAction implements Action<User> {
 
     // Remove the user's credential
     await exec(
-      `juju remove-credential --force -c '${jujuCLI.controller}' '${jujuCLI.provider}' '${user.cliUsername}'`,
-    );
+      "juju",
+      "remove-credential",
+      "--force",
+      "-c",
+      jujuCLI.controller,
+      jujuCLI.provider,
+      user.cliUsername,
+    ).exit;
 
     if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
       // Granting clouds must be done by the JIMM admin.
@@ -168,8 +183,14 @@ class BootstrapAction implements Action<User> {
     if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
       // Remove the user's access to the cloud
       await exec(
-        `juju revoke-cloud -c '${jujuCLI.controller}' ${user.cliUsername} ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
-      );
+        "juju",
+        "revoke-cloud",
+        "-c",
+        jujuCLI.controller,
+        user.cliUsername,
+        CloudAccessType.ADD_MODEL,
+        jujuCLI.provider,
+      ).exit;
     }
 
     await this.userAction.rollback(jujuCLI);

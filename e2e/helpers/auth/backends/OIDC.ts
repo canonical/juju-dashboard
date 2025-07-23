@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 import { chromium } from "playwright";
 
-import { getEnv, exec, findLine, addFeatureFlags } from "../../../utils";
+import { getEnv, exec, shell, findLine, addFeatureFlags } from "../../../utils";
 import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
@@ -21,33 +21,52 @@ export class CreateOIDCUser implements Action<OIDCUser> {
 
   async run(jujuCLI: JujuCLI) {
     await jujuCLI.loginLocalCLIAdmin();
-    await exec(`juju switch iam`);
+    await exec("juju", "switch", "iam").exit;
     // Create the identity in Kratos.
     const userOutput =
-      await exec(`curl $(juju show-unit kratos/0 | yq '.kratos/0.address'):4434/admin/identities --request POST -sL --header "Content-Type: application/json" --data '{
+      await shell(`curl $(juju show-unit kratos/0 | yq '.kratos/0.address'):4434/admin/identities --request POST -sL --header "Content-Type: application/json" --data '{
       "schema_id": "admin_v0",
       "traits": {
         "email": "${this.username}@example.com"
       }
-    }' | yq .id`);
+    }' | yq .id`).output();
     const secretOutput = await exec(
-      `juju add-secret password-secret-${this.username} password=${this.password}`,
-    );
-    await exec(`juju grant-secret password-secret-${this.username} kratos`);
+      "juju",
+      "add-secret",
+      `password-secret-${this.username}`,
+      `password=${this.password}`,
+    ).output();
     await exec(
-      `juju run kratos/0 reset-password identity-id='${userOutput.stdout}' password-secret-id='${secretOutput.stdout}'`,
-    );
-    await exec(`juju remove-secret password-secret-${this.username}`);
+      "juju",
+      "grant-secret",
+      `password-secret-${this.username}`,
+      "kratos",
+    ).exit;
+    await exec(
+      "juju",
+      "run",
+      "kratos/0",
+      "reset-password",
+      `identity-id='${userOutput}'`,
+      `password-secret-id='${secretOutput}'`,
+    ).exit;
+    await exec("juju", "remove-secret", `password-secret-${this.username}`)
+      .exit;
     console.log(`OIDC user created: ${this.username}`);
   }
 
   async rollback(jujuCLI: JujuCLI) {
-    await exec(`juju switch ${getEnv("JIMM_CONTROLLER_NAME")}:iam`);
+    await exec("juju", "switch", `${getEnv("JIMM_CONTROLLER_NAME")}:iam`).exit;
     await jujuCLI.loginLocalCLIAdmin();
     const user = this.result();
     await exec(
-      `juju run --format=json kratos/0 delete-identity email='${user.dashboardUsername}'`,
-    );
+      "juju",
+      "run",
+      "--format=json",
+      "kratos/0",
+      "delete-identity",
+      `email='${user.dashboardUsername}'`,
+    ).exit;
     console.log(`OIDC user deleted: ${this.username}`);
   }
 
@@ -125,13 +144,19 @@ export class OIDC {
     // time (which is done when the workflow uses this function to log in to add
     // the controller).
     const loginProc = exec(
-      `juju login${registerController ? " test-jimm.local:443" : ""} -c ${getEnv("CONTROLLER_NAME")}`,
+      "juju",
+      ...[
+        "login",
+        registerController ? "test-jimm.local:443" : null,
+        "-c",
+        getEnv("CONTROLLER_NAME"),
+      ].filter((arg) => arg !== null),
     );
-    if (!loginProc.child.stderr) {
+    if (!loginProc.stderr) {
       throw new Error("No output from login command.");
     }
     // Find the login line.
-    const loginLine = await findLine(loginProc.child.stderr, (line) =>
+    const loginLine = await findLine(loginProc.stderr, (line) =>
       line.startsWith("Please visit"),
     );
     const loginURL = loginLine.match(/http\S+/)?.[0];
@@ -150,7 +175,7 @@ export class OIDC {
     // Login with user credentials.
     await OIDC.uiLogin(page, user, loginCode);
     // Wait for the original process to finish.
-    await loginProc;
+    await loginProc.exit;
     // Exit the browser so the script will finish when called outside of Playwright.
     await browser.close();
   }
