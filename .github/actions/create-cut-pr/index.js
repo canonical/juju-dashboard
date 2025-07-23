@@ -32267,7 +32267,7 @@ function severityFromVersion(version) {
 
 
 /**
- * Determine what the next cut version will be, based existing `release/x.y` branches in the repo.
+ * Determine what the next cut version will be, based on existing `release/x.y` branches in the repo.
  */
 async function getNextCutVersion(ctx, severity) {
     let version = null;
