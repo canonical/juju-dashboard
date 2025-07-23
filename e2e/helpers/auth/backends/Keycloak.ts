@@ -1,13 +1,14 @@
 import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
-import { chromium } from "playwright";
 
-import { getEnv, exec, findLine, addFeatureFlags } from "../../../utils";
+import { addFeatureFlags } from "../../../utils";
 import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
 import { LocalUser } from "./Local";
 import { deviceCodeLogin, Secret } from "./utils";
+
+const KEYCLOAK_DEVICE_CODE_REGEX = /(?<=enter code ).\w+-\w+/;
 
 export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
   constructor(
@@ -16,22 +17,23 @@ export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
     private identityUsername?: string | null,
     private identityPassword?: string | null,
   ) {
-    this.username = username;
-    this.password = password;
     this.identityUsername = identityUsername || username;
     this.identityPassword = identityPassword || password;
   }
 
   async run(jujuCLI: JujuCLI) {
     console.error("NOT IMPLEMENTED");
+    // TODO: https://warthogs.atlassian.net/browse/WD-23523
   }
 
   async rollback(jujuCLI: JujuCLI) {
     console.error("NOT IMPLEMENTED");
+    // TODO: https://warthogs.atlassian.net/browse/WD-23523
   }
 
   debug(): string {
     return "NOT IMPLEMENTED";
+    // TODO: https://warthogs.atlassian.net/browse/WD-23523
   }
 
   result(): KeycloakOIDCUser {
@@ -115,7 +117,7 @@ export class KeycloakOIDC {
   static async loginCLI(user: Secret): Promise<void> {
     await deviceCodeLogin(
       user,
-      /(?<=enter code ).\w+-\w+/,
+      KEYCLOAK_DEVICE_CODE_REGEX,
       KeycloakOIDC.uiLogin,
     );
   }

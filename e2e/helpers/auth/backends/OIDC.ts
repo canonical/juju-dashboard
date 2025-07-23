@@ -8,6 +8,8 @@ import type { JujuCLI } from "../../juju-cli";
 import { LocalUser } from "./Local";
 import { deviceCodeLogin, Secret } from "./utils";
 
+const IAM_DEVICE_CODE_REGEX = /(?<=enter code ).\w+/;
+
 export class CreateOIDCUser implements Action<OIDCUser> {
   constructor(
     private username: string,
@@ -118,7 +120,7 @@ export class OIDC {
   ): Promise<void> {
     await deviceCodeLogin(
       user,
-      /(?<=enter code ).\w+/,
+      IAM_DEVICE_CODE_REGEX,
       OIDC.uiLogin,
       registerController ? "test-jimm.local:443" : null,
     );
