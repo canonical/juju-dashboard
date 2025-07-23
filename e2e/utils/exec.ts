@@ -1,5 +1,23 @@
 import childProcess from "node:child_process";
 
+export class CommandError extends Error {
+  constructor(message: string, command: string, args: string[]) {
+    super(`${message}: ${command} ${args.join(" ")}`);
+  }
+}
+
+export class StatusError extends CommandError {
+  constructor(status: number, command: string, args: string[]) {
+    super(`Exit with non-zero status code (${status})`, command, args);
+  }
+}
+
+export class SignalError extends CommandError {
+  constructor(signal: string, command: string, args: string[]) {
+    super(`Process terminated with signal (${signal})`, command, args);
+  }
+}
+
 export function shell(command: string) {
   return exec("/bin/bash", "-c", "--", command);
 }
@@ -14,17 +32,11 @@ export function exec(command: string, ...args: string[]) {
       if (code === 0) {
         resolve();
       } else if (code !== null) {
-        return reject(
-          new Error(
-            `Exit with non-zero status code (${code}): ${command} ${args.join(" ")}`,
-          ),
-        );
+        return reject(new StatusError(code, command, args));
+      } else if (signal) {
+        reject(new SignalError(signal, command, args));
       } else {
-        reject(
-          new Error(
-            `Process terminated with signal (${signal}): ${command} ${args.join(" ")}`,
-          ),
-        );
+        reject(new CommandError("Unknown process error", command, args));
       }
     });
   });

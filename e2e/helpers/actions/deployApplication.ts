@@ -1,5 +1,6 @@
 import type { Provider } from "../../fixtures/setup";
 import { exec, generateRandomName } from "../../utils";
+import { StatusError } from "../../utils/exec";
 import type { Action } from "../action";
 import { Application, type Model } from "../objects";
 import { CharmName } from "../objects/application";
@@ -33,8 +34,15 @@ export class DeployApplication implements Action<Application> {
       "wait-for",
       "application",
       this.application.name,
-      `--query='name=="${this.application.name}" && (status=="active" || status=="blocked" || status=="error")`,
-    ).exit;
+      `--query='name=="${this.application.name}" && (status=="active" || status=="blocked" || status=="error")'`,
+    ).exit.catch((err) => {
+      // Ignore non-zero status codes
+      if (err instanceof StatusError) {
+        return;
+      }
+
+      throw err;
+    });
   }
 
   async rollback() {
