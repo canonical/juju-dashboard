@@ -40,4 +40,7 @@ echo "id=$DASHBOARD_IMAGE_ID"
 sudo snap install charmcraft --classic
 
 # 3. Pack the charm
-charmcraft pack
+(
+    cd "$SCRIPT_PATH"
+    charmcraft pack
+)
