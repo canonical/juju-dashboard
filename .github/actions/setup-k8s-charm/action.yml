@@ -47,6 +47,7 @@ runs:
         ref: ${{ inputs.dashboard-ref }}
         path: juju-dashboard-release
     - name: Get the image and build the charm
+      id: dashboard-image
       if: ${{ env.build_type != 'charm-release' }}
       shell: bash
       run: |
@@ -54,6 +55,10 @@ runs:
           "${{ env.build_type }}" \
           "${{ inputs.dashboard-resource }}" \
           >> "$GITHUB_OUTPUT"
+    - name: Import dashboard image to microK8s
+      if: ${{ env.build_type == 'source' }}
+      shell: bash
+      run: docker image save juju-dashboard:local | sudo microk8s ctr image import -
     - name: Switch to controller
       run: juju switch '${{ inputs.controller-model }}'
       shell: bash
