@@ -43,7 +43,7 @@ runs:
           echo 'build_type=bundled-dashboard' >> "$GITHUB_ENV"
         else
           # Build dashboard from source.
-          echo 'build_type=checkout' >> "$GITHUB_ENV"
+          echo 'build_type=source' >> "$GITHUB_ENV"
         fi
       shell: bash
     - name: Set up Juju Dashboard release

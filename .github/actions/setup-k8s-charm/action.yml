@@ -37,11 +37,11 @@ runs:
           echo 'build_type=dashboard-resource' >> "$GITHUB_ENV"
         else
           # Build dashboard from source.
-          echo 'build_type=checkout' >> "$GITHUB_ENV"
+          echo 'build_type=source' >> "$GITHUB_ENV"
         fi
       shell: bash
     - name: Set up Juju Dashboard release
-      if: ${{ env.build_type == 'checkout' }}
+      if: ${{ env.build_type == 'source' }}
       uses: actions/checkout@v4
       with:
         ref: ${{ inputs.dashboard-ref }}
