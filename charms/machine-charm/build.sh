@@ -55,8 +55,25 @@ while [ -n "$(snap changes charmcraft 2>/dev/null | awk '/^[0-9]+/ {if ($2 != "D
 done
 sleep 1
 
-# 4. Pack the charm
-(
-    cd "$SCRIPT_PATH"
-    charmcraft pack
-)
+# 4. Try to pack the charm with retries
+# This command is retried as it sometimes fails with the following error:
+# Failed to wait for snap refreshes to complete.
+# error: daemon is stopping to wait for socket activation
+MAX_ATTEMPTS=3
+ATTEMPT=1
+SUCCESS=false
+
+while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+    if (cd "$SCRIPT_PATH" && charmcraft pack); then
+        SUCCESS=true
+        break # Success, exit retry loop
+    else
+        echo "Charmcraft pack failed on attempt $ATTEMPT." >&2
+        ATTEMPT=$((ATTEMPT + 1))
+    fi
+done
+
+if [ "$SUCCESS" = false ]; then
+    echo "Error: All $MAX_ATTEMPTS attempts to pack the charm failed." >&2
+    exit 1 # Fail the script if charmcraft pack never succeeds
+fi
