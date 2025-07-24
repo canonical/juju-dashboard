@@ -70,9 +70,9 @@ runs:
     - name: Wait for charm to be ready
       uses: nick-fields/retry@v3
       with:
-        timeout_minutes: 10
-        max_attempts: 2 # Retry the wait-for in case it gets stuck and times out. If it fails on the second try it's probably a real error.
-        command: juju wait-for application dashboard
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
+        command: juju wait-for application dashboard --timeout=1m
     - name: Disable analytics
       run: juju config dashboard analytics-enabled=false
       shell: bash
