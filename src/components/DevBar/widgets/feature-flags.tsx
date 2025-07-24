@@ -47,6 +47,7 @@ export default {
                         <Button
                           hasIcon
                           onClick={() => arrayHelpers.remove(index)}
+                          type="button"
                         >
                           <Icon name="delete" />
                         </Button>
@@ -59,7 +60,11 @@ export default {
                     ))}
 
                     <div className="dev-bar__form-controls">
-                      <Button hasIcon onClick={() => arrayHelpers.push("")}>
+                      <Button
+                        hasIcon
+                        onClick={() => arrayHelpers.push("")}
+                        type="button"
+                      >
                         <Icon name="plus" />
                         <span>Add Flag</span>
                       </Button>

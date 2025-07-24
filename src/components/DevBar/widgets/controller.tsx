@@ -76,9 +76,12 @@ export default {
 
     useEffect(() => {
       if (!connection) {
-        setHint(
-          "Unable to connect to controller. Visit the controller URL, and ensure that HTTPS certificates have been accepted.",
-        );
+        if (wsControllerURL) {
+          // Don't override any existing error.
+          setHint(
+            "Unable to connect to controller. Visit the controller URL, and ensure that HTTPS certificates have been accepted.",
+          );
+        }
 
         return;
       }
@@ -86,7 +89,7 @@ export default {
       setHint(null);
       setItems((items) => ({
         ...items,
-        "Sever version": connection.serverVersion,
+        "Server version": connection.serverVersion,
         "Controller access": connection.user?.["controller-access"],
         Identity: connection.user?.identity,
       }));
@@ -104,7 +107,7 @@ export default {
           return { ...items };
         });
       };
-    }, [connection]);
+    }, [wsControllerURL, connection]);
 
     return (
       <>
