@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 
-import { addFeatureFlags } from "../../../utils";
+import { addFeatureFlags, exec } from "../../../utils";
 import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
@@ -22,18 +22,38 @@ export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
   }
 
   async run(jujuCLI: JujuCLI) {
-    console.error("NOT IMPLEMENTED");
-    // TODO: https://warthogs.atlassian.net/browse/WD-23523
+    await jujuCLI.loginLocalCLIAdmin();
+    // Give the keycloak user acccess to a file to store the login credentials in.
+    await exec(
+      'docker exec --user root keycloak sh -c "touch /kcadm.config && chown keycloak /kcadm.config"',
+    );
+    // Log in to the keycloak API. This is done each time as the token might expire during the test run.
+    await exec(
+      'docker exec keycloak sh -c "kcadm.sh config credentials --user jimm --password jimm --server http://0.0.0.0:8082/ --realm master --config /kcadm.config"',
+    );
+    await exec(
+      `docker exec keycloak sh -c "kcadm.sh create users -s username=${this.identityUsername} -s enabled=true -s email=${this.identityUsername}@example.com -r jimm --config /kcadm.config"`,
+    );
+    await exec(
+      `docker exec keycloak sh -c "kcadm.sh set-password -r jimm --username ${this.identityUsername} --new-password ${this.identityPassword} --config /kcadm.config"`,
+    );
+    console.log(`Keycloak OIDC user created: ${this.identityUsername}`);
   }
 
   async rollback(jujuCLI: JujuCLI) {
-    console.error("NOT IMPLEMENTED");
-    // TODO: https://warthogs.atlassian.net/browse/WD-23523
+    await jujuCLI.loginLocalCLIAdmin();
+    const user = this.result();
+    const userId = await exec(
+      `docker exec keycloak sh -c "kcadm.sh get users -q exact=true -q username=${user.identityUsername} -r jimm --config /kcadm.config" | yq .[0].id`,
+    );
+    await exec(
+      `docker exec keycloak sh -c "kcadm.sh delete users/'${userId.stdout.trim()}' -r jimm --config /kcadm.config"`,
+    );
+    console.log(`Keycloak OIDC user deleted: ${user.identityUsername}`);
   }
 
   debug(): string {
-    return "NOT IMPLEMENTED";
-    // TODO: https://warthogs.atlassian.net/browse/WD-23523
+    return `Create Keycloak OIDC user '${this.identityUsername}' (password '${this.identityPassword}')`;
   }
 
   result(): KeycloakOIDCUser {
