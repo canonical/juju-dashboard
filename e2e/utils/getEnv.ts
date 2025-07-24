@@ -1,8 +1,13 @@
 /**
- * Fetch a variable from the environment. If it is not present, an error will be thrown.
+ * Fetch a variable from the environment. If it is not present and no fallback is provided, an error will be thrown.
  */
-export function getEnv(key: string): string {
+export function getEnv(key: string): string;
+export function getEnv<F>(key: string, fallback?: F): string | F;
+export function getEnv<F>(key: string, fallback?: F): string | F {
   if (!(key in process.env) || !process.env[key]) {
+    if (fallback !== undefined) {
+      return fallback;
+    }
     throw new Error(`${key} not present in environment`);
   }
 
