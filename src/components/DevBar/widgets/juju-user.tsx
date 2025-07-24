@@ -1,5 +1,5 @@
-import { Button, Form, FormikField, Input } from "@canonical/react-components";
-import { Formik } from "formik";
+import { Button, FormikField, Input } from "@canonical/react-components";
+import { Formik, Form } from "formik";
 import { useEffect, useState } from "react";
 
 import { login } from "components/LogIn/UserPassForm";

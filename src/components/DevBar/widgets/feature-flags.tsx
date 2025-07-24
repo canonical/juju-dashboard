@@ -1,5 +1,5 @@
-import { Button, Form, FormikField, Icon } from "@canonical/react-components";
-import { FieldArray, Formik } from "formik";
+import { Button, FormikField, Icon } from "@canonical/react-components";
+import { FieldArray, Form, Formik } from "formik";
 
 import { ENABLED_FLAGS } from "consts";
 import useLocalStorage from "hooks/useLocalStorage";
