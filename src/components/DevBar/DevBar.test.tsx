@@ -4,6 +4,7 @@ import { vi } from "vitest";
 import * as LocalStorage from "hooks/useLocalStorage";
 import { rootStateFactory } from "testing/factories";
 import { renderComponent } from "testing/utils";
+
 import DevBar from "./DevBar";
 
 describe("DevBar", () => {
