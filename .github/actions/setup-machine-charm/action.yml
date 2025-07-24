@@ -46,43 +46,13 @@ runs:
           echo 'build_type=checkout' >> "$GITHUB_ENV"
         fi
       shell: bash
-    - name: Set up Juju Dashboard release with specified version
-      if: ${{ env.build_type == 'dashboard-version' }}
-      run: |
-        cd '${{ github.workspace }}/charms'
-        ./scripts/update-machine-charm.sh '${{ inputs.dashboard-version }}'
-      shell: bash
-    - name: Build Juju Dashboard for release
-      if: ${{ env.build_type == 'checkout' }}
+    - name: Set up Juju Dashboard release
+      if: ${{ env.build_type != 'charm-release' }}
       shell: bash
       run: |
-        cd '${{ github.workspace }}'
-        yarn install
-        yarn build
-        cd '${{ github.workspace }}/charms/machine-charm'
-        rm -rf src/dist/*
-        cp -r ${{ github.workspace }}/build/* src/dist
-    - name: Install charmcraft
-      if: ${{ env.build_type != 'charm-release' }}
-      run: sudo snap install charmcraft --classic
-      shell: bash
-    - name: Wait for charmcraft snap
-      if: ${{ env.build_type != 'charm-release' }}
-      uses: ./.github/actions/wait-for-snap
-      with:
-        snap: charmcraft
-    - name: Build the charm
-      if: ${{ env.build_type != 'charm-release' }}
-      uses: nick-fields/retry@v3
-      with:
-        timeout_minutes: 10
-        max_attempts: 3
-        command: |
-          # This command is retired as it sometimes fails with the following error:.
-          # Failed to wait for snap refreshes to complete.
-          # error: daemon is stopping to wait for socket activation
-          cd '${{ github.workspace }}/charms/machine-charm'
-          charmcraft pack
+        "${{ github.workspace }}/charms/machine-charm/build.sh" \
+          "${{ env.build_type }}" \
+          "${{ inputs.dashboard-version }}"
     - name: Switch to controller
       run: juju switch '${{ inputs.controller-model }}'
       shell: bash
