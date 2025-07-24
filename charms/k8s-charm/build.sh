@@ -20,7 +20,7 @@ if [ "$BUILD_TYPE" == "checkout" ]; then
 
     # Attempt to import image into microk8s if available
     if command -v microk8s &> /dev/null; then
-        docker image save juju-dashboard:local | sudo microk8s ctr image import -
+        docker image save juju-dashboard:local | sudo microk8s ctr image import - >/dev/null
     fi
     DASHBOARD_IMAGE_ID="juju-dashboard:local"
 
