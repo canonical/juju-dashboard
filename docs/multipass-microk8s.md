@@ -109,30 +109,17 @@ git clone https://github.com/canonical/juju-dashboard.git
 cd juju-dashboard
 ```
 
-Build and import the Docker image:
+Run the script to build the image and the charm:
 
 ```shell
-DOCKER_BUILDKIT=1 docker build -t juju-dashboard .
-docker image save juju-dashboard | microk8s ctr image import -
-```
-
-Now navigate to the root of this repo and get the dashboard charm:
-
-```shell
-cd ./charms/k8s-charm/
-```
-
-Install Charmcraft:
-
-```shell
-sudo snap install charmcraft --classic
 lxd init --auto
+./charms/k8s-charm/build.sh
 ```
 
-Build the charm:
+Import the Docker image:
 
 ```shell
-charmcraft pack
+docker image save juju-dashboard | microk8s ctr image import -
 ```
 
 If you're on ARM (e.g. an M1 Mac) then run:
