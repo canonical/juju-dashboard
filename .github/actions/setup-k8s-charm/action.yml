@@ -37,57 +37,28 @@ runs:
           echo 'build_type=dashboard-resource' >> "$GITHUB_ENV"
         else
           # Build dashboard from source.
-          echo 'build_type=checkout' >> "$GITHUB_ENV"
+          echo 'build_type=source' >> "$GITHUB_ENV"
         fi
       shell: bash
     - name: Set up Juju Dashboard release
-      if: ${{ env.build_type == 'checkout' }}
+      if: ${{ env.build_type == 'source' }}
       uses: actions/checkout@v4
       with:
         ref: ${{ inputs.dashboard-ref }}
         path: juju-dashboard-release
-    - name: Build Juju Dashboard image
-      if: ${{ env.build_type == 'checkout' }}
-      shell: bash
-      run: |
-        cd '${{ github.workspace }}/juju-dashboard-release'
-        DOCKER_BUILDKIT=1 docker build -t juju-dashboard:local .
-        docker image save juju-dashboard:local | sudo microk8s ctr image import -
-    - name: Choose dashboard image
+    - name: Get the image and build the charm
       id: dashboard-image
+      if: ${{ env.build_type != 'charm-release' }}
       shell: bash
-      if: ${{ env.build_type == 'checkout' || env.build_type == 'dashboard-resource' }}
       run: |
-        case '${{ env.build_type }}' in
-          'checkout')
-            ID='juju-dashboard:local'
-          ;;
-          'dashboard-resource')
-            ID='canonicalwebteam/juju-dashboard:${{ inputs.dashboard-resource }}'
-          ;;
-        esac
-        echo "id=$ID" >> "$GITHUB_OUTPUT"
-    - name: Install charmcraft
-      if: ${{ env.build_type != 'charm-release' }}
-      run: sudo snap install charmcraft --classic
+        "${{ github.workspace }}/charms/k8s-charm/build.sh" \
+          "${{ env.build_type }}" \
+          "${{ inputs.dashboard-resource }}" \
+          >> "$GITHUB_OUTPUT"
+    - name: Import dashboard image to microK8s
+      if: ${{ env.build_type == 'source' }}
       shell: bash
-    - name: Wait for charmcraft snap
-      if: ${{ env.build_type != 'charm-release' }}
-      uses: ./.github/actions/wait-for-snap
-      with:
-        snap: charmcraft
-    - name: Build the charm
-      if: ${{ env.build_type != 'charm-release' }}
-      uses: nick-fields/retry@v3
-      with:
-        timeout_minutes: 10
-        max_attempts: 3
-        command: |
-          # This command is retired as it sometimes fails with the following error:.
-          # Failed to wait for snap refreshes to complete.
-          # error: daemon is stopping to wait for socket activation
-          cd ${{ github.workspace }}/charms/k8s-charm
-          charmcraft pack
+      run: docker image save juju-dashboard:local | sudo microk8s ctr image import -
     - name: Switch to controller
       run: juju switch '${{ inputs.controller-model }}'
       shell: bash

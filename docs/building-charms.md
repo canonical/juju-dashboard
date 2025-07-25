@@ -36,12 +36,12 @@ Once you login following the instructions in the output of `juju dashboard` you 
 
 ## Update the dashboard to latest version
 
-This script pulls the latest Github release of the dashboard and extracts it to the appropriate folder in `machine-charm`:
+This script can be used to pull the intended Github release of the dashboard as well as pack the charm:
 
-Note: you can optionally pass a dashboard release tag to the script e.g. `./charms/scripts/update-machine-charm.sh 1.2.3`
+Note: you can optionally pass a dashboard release tag to the script e.g. `./charms/machine-charm/build.sh dashboard-version 1.2.3`
 
 ```sh
-./charms/scripts/update-machine-charm.sh
+./charms/machine-charm/build.sh dashboard-version latest
 ```
 
 # Building and Testing the k8s charm
@@ -150,8 +150,8 @@ You must tell your browser to trust the controller's cert in order to get a work
 
 ```sh
 charmcraft login
-cd ./charms/machine-charm
-charmcraft pack
+# This will build the assets from source
+./charms/machine-charm/build.sh
 charmcraft upload juju-dashboard*.charm
 # If upload fails with "No keyring found to store or retrieve credentials from."
 # Run charmcraft login --export ~/secrets.auth
@@ -161,26 +161,13 @@ charmcraft release juju-dashboard --channel=... --revision=[output-from-upload]
 
 ## K8s charm
 
-### Update the Docker image
-
-```sh
-# From the root of Juju Dashboard repo
-DOCKER_BUILDKIT=1 docker build -t juju-dashboard .
-```
-
-Get the the docker image ID with `docker image inspect juju-dashboard | grep "Id"`
+### Update the Docker image and the charm
 
 ```sh
 charmcraft login
+# This will build the image and pack the charm. It also prints the Docker image ID.
+./charms/k8s-charm/build.sh
 charmcraft upload-resource juju-dashboard-k8s dashboard-image --image=[image-id]
-```
-
-### Update the charm
-
-```sh
-charmcraft login
-cd ./charms/k8s-charm
-charmcraft pack
 charmcraft upload juju-dashboard-k8s*.charm
 charmcraft release juju-dashboard-k8s --channel=... --revision=[output-from-upload] --resource=dashboard-image:[resource-revision-number]
 ```
