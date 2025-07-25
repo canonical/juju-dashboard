@@ -139,7 +139,7 @@ describe("Label", () => {
       urls.model.tab({
         userName: "eggman@external",
         modelName: "test-model",
-        tab: getTab("applications")!,
+        tab: getTab("applications"),
       }),
     );
   });
@@ -153,7 +153,7 @@ describe("Label", () => {
       urls.model.tab({
         userName: "eggman@external",
         modelName: "test-model",
-        tab: getTab("machines")!,
+        tab: getTab("machines"),
       }),
     );
   });
@@ -167,7 +167,7 @@ describe("Label", () => {
       urls.model.tab({
         userName: "eggman@external",
         modelName: "test-model",
-        tab: getTab("offers")!,
+        tab: getTab("offers"),
       }),
     );
   });
@@ -181,7 +181,7 @@ describe("Label", () => {
       urls.model.tab({
         userName: "eggman@external",
         modelName: "test-model",
-        tab: getTab("relations")!,
+        tab: getTab("relations"),
       }),
     );
   });

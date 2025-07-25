@@ -74,6 +74,7 @@ export default [
       "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/no-misused-promises": "error",
+      "@typescript-eslint/no-non-null-assertion": "error",
       "prefer-promise-reject-errors": "error",
       "@typescript-eslint/await-thenable": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],

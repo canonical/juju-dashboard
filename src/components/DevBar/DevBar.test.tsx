@@ -52,7 +52,7 @@ describe("DevBar", () => {
       state: rootStateFactory.build(),
     });
 
-    await userEvent.click(result.container.getElementsByTagName("button")[0]!);
+    await userEvent.click(result.getByRole("button", { name: "" }));
     expect(setMinimised).toHaveBeenCalledExactlyOnceWith(false);
   });
 });
