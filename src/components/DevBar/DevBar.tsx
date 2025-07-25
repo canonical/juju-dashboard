@@ -18,11 +18,11 @@ export default function DevBar() {
 
   return (
     <div className="dev-bar">
-      {minimised && (
-        <Button hasIcon onClick={() => setMinimised(false)} appearance="">
+      {minimised ? (
+        <Button hasIcon onClick={() => setMinimised(false)}>
           <Icon name="code" />
         </Button>
-      )}
+      ) : null}
 
       <Card highlighted className={classNames({ minimised })}>
         <Button hasIcon onClick={() => setMinimised(true)}>

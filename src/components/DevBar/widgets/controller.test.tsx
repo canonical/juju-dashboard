@@ -53,17 +53,14 @@ describe("Title", () => {
 
       expect(result.baseElement).toHaveTextContent("Controller");
 
-      const spans = result.baseElement.getElementsByTagName("span");
-      expect(spans).toHaveLength(1);
-      expect(spans[0]).toHaveClass("show-status");
+      const status = result.getByText(connectionStr);
+      expect(status).toHaveClass("show-status");
 
       if (connected) {
-        expect(spans[0]).toHaveClass("positive");
+        expect(status).toHaveClass("positive");
       } else {
-        expect(spans[0]).not.toHaveClass("positive");
+        expect(status).not.toHaveClass("positive");
       }
-
-      expect(spans[0]).toHaveTextContent(connectionStr);
     },
   );
 });
@@ -84,13 +81,9 @@ describe("Widget", () => {
     ].map(([label, value], i) => [i, label, value] as const);
 
     for (const [i, label, value] of expectedItems) {
-      const item = grid.children.item(i)!;
-
-      const labelEl = item.children.item(0);
-      const valueEl = item.children.item(1);
-
-      expect(labelEl).toHaveTextContent(label);
-      expect(valueEl).toHaveTextContent(value);
+      const item = grid.children[i];
+      expect(item.children[0]).toHaveTextContent(label);
+      expect(item.children[1]).toHaveTextContent(value);
     }
   });
 
@@ -112,13 +105,9 @@ describe("Widget", () => {
     ].map(([label, value], i) => [i, label, value] as const);
 
     for (const [i, label, value] of expectedItems) {
-      const item = grid.children.item(i)!;
-
-      const labelEl = item.children.item(0);
-      const valueEl = item.children.item(1);
-
-      expect(labelEl).toHaveTextContent(label);
-      expect(valueEl).toHaveTextContent(value);
+      const item = grid.children[i];
+      expect(item.children[0]).toHaveTextContent(label);
+      expect(item.children[1]).toHaveTextContent(value);
     }
   });
 

@@ -51,23 +51,19 @@ describe("Title", () => {
     [true, loggedInState()],
     [false, loggedOutState()],
   ] as const)("logged in %s", ([loggedIn, state], { expect }) => {
-    const {
-      result,
-      result: { container },
-    } = renderComponent(<Title />, { state });
+    const { result } = renderComponent(<Title />, { state });
 
-    expect(container).toHaveTextContent("Juju User");
+    expect(result.container).toHaveTextContent("Juju User");
 
-    const spans = result.baseElement.getElementsByTagName("span");
-    expect(spans).toHaveLength(1);
-    expect(spans[0]).toHaveClass("show-status");
+    const message = result.getByText(/Logged/);
+    expect(message).toHaveClass("show-status");
 
     if (loggedIn) {
-      expect(spans[0]).toHaveClass("positive");
-      expect(spans[0]).toHaveTextContent("Logged in");
+      expect(message).toHaveClass("positive");
+      expect(message).toHaveTextContent("Logged in");
     } else {
-      expect(spans[0]).not.toHaveClass("positive");
-      expect(spans[0]).toHaveTextContent("Logged out");
+      expect(message).not.toHaveClass("positive");
+      expect(message).toHaveTextContent("Logged out");
     }
   });
 });
@@ -129,9 +125,7 @@ describe("Widget", () => {
         state: loggedOutState(),
       });
 
-      const enabledBox = result.container.querySelector(
-        "input[type=checkbox]",
-      )!;
+      const enabledBox = result.getByRole("checkbox");
       expect(enabledBox).not.toBeChecked();
       expect(loginSpy).not.toHaveBeenCalled();
 
@@ -149,9 +143,7 @@ describe("Widget", () => {
         state: loggedOutState(),
       });
 
-      const enabledBox = result.container.querySelector(
-        "input[type=checkbox]",
-      )!;
+      const enabledBox = result.getByRole("checkbox");
       expect(enabledBox).toBeChecked();
 
       expect(loginSpy).toHaveBeenCalledTimes(1);

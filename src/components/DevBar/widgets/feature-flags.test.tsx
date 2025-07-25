@@ -33,15 +33,13 @@ describe("Widget", () => {
   ] as const)("render %s flag(s)", ([amount, flags], { expect }) => {
     vi.spyOn(LocalStorage, "default").mockReturnValue([flags, vi.fn()]);
 
-    const {
-      result: { container },
-    } = renderComponent(<Widget />);
+    const { result } = renderComponent(<Widget />);
 
-    const inputs = container.getElementsByTagName("input");
+    const inputs = result.queryAllByRole("textbox");
 
     expect(inputs).toHaveLength(amount);
     for (let i = 0; i < amount; i++) {
-      expect(inputs.item(i)).toHaveValue(flags[i]);
+      expect(inputs[i]).toHaveValue(flags[i]);
     }
   });
 
@@ -55,9 +53,7 @@ describe("Widget", () => {
     const { result } = renderComponent(<Widget />);
 
     // Delete button
-    await userEvent.click(
-      result.container.getElementsByTagName("button").item(0)!,
-    );
+    await userEvent.click(result.getAllByRole("button", { name: "" })[0]);
     expect(setFlags).not.toHaveBeenCalled();
 
     // Save changes
@@ -75,11 +71,11 @@ describe("Widget", () => {
     const { result } = renderComponent(<Widget />);
 
     // Edit new flag
-    const inputs = result.container.getElementsByTagName("input");
+    const inputs = result.getAllByRole("textbox");
     expect(inputs).toHaveLength(3);
-    expect(inputs.item(1)).toHaveValue("flag-b");
+    expect(inputs[1]).toHaveValue("flag-b");
 
-    await userEvent.type(inputs.item(1)!, "-new");
+    await userEvent.type(inputs[1], "-new");
 
     // Save changes
     await userEvent.click(result.getByText("Save"));
@@ -100,15 +96,15 @@ describe("Widget", () => {
     const { result } = renderComponent(<Widget />);
 
     // Add button
-    await userEvent.click(result.getByText("Add Flag"));
+    await userEvent.click(result.getByRole("button", { name: "Add Flag" }));
     expect(setFlags).not.toHaveBeenCalled();
 
     // Edit new flag
-    const inputs = result.container.getElementsByTagName("input");
+    const inputs = result.getAllByRole("textbox");
     expect(inputs).toHaveLength(3);
-    expect(inputs.item(2)).toHaveValue("");
+    expect(inputs[2]).toHaveValue("");
 
-    await userEvent.type(inputs.item(2)!, "new-flag");
+    await userEvent.type(inputs[2], "new-flag");
 
     // Save changes
     await userEvent.click(result.getByText("Save"));

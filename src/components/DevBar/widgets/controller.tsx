@@ -17,7 +17,7 @@ export default {
       getControllerConnection(state, wsControllerURL),
     );
 
-    const connected = connection !== undefined;
+    const connected = Boolean(connection);
 
     return (
       <StatusTitle
@@ -33,8 +33,8 @@ export default {
       getControllerConnection(state, wsControllerURL),
     );
 
-    const [hint, setHint] = useState(null as string | null);
-    const [items, setItems] = useState({} as Record<string, React.ReactNode>);
+    const [hint, setHint] = useState<string | null>(null);
+    const [items, setItems] = useState<Record<string, React.ReactNode>>({});
 
     useEffect(() => {
       if (!wsControllerURL) {

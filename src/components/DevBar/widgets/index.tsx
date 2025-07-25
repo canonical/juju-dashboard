@@ -11,7 +11,7 @@ export function useWidgets() {
   const sections = WIDGETS.map(({ Title, Widget }) => {
     const title = <Title />;
 
-    if (title === null) {
+    if (!title) {
       return null;
     }
 
