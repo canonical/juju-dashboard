@@ -5,11 +5,11 @@ inputs:
     description: Unique identifier for this test run that will be used for uploading test results.
     required: true
   run:
-    default: 'true'
+    default: "true"
     description: Whether to run the test suite.
     required: false
   setup:
-    default: 'true'
+    default: "true"
     description: Whether to set up Playwright.
     required: false
 
@@ -33,13 +33,18 @@ runs:
     - name: Get dashboard address
       if: ${{ inputs.run == 'true' }}
       id: dashboard
-      run: echo "address=http://$(address=$(juju show-unit dashboard/0 | yq '.dashboard/0.public-address'); if [ "$address" != "null" ]; then echo $address; else juju show-unit dashboard/0 | yq '.dashboard/0.address'; fi):8080" >> $GITHUB_OUTPUT
+      run: |
+        if [[ -z "${DASHBOARD_ADDRESS}" ]]; then
+          echo "address=http://$(address=$(juju show-unit dashboard/0 | yq '.dashboard/0.public-address'); if [ "$address" != "null" ]; then echo $address; else juju show-unit dashboard/0 | yq '.dashboard/0.address'; fi):8080" >> $GITHUB_OUTPUT
+        else
+          echo "address=http://$DASHBOARD_ADDRESS" >> $GITHUB_OUTPUT
+        fi
       shell: bash
     - name: Run Playwright tests
       if: ${{ inputs.run == 'true' }}
       run: yarn playwright test
       shell: bash
-      env: 
+      env:
         DASHBOARD_ADDRESS: ${{ steps.dashboard.outputs.address }}
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() && inputs.run == 'true' }}

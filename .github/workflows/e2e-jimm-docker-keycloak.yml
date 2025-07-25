@@ -1,0 +1,84 @@
+name: "E2E tests: JIMM, Docker dashboard and Keycloak"
+
+on:
+  workflow_call:
+    inputs:
+      admin-username:
+        required: false
+        type: string
+        description: The username to use when logging in as the admin user.
+        default: admin
+      admin-password:
+        required: false
+        type: string
+        description: The password to use when logging in as the admin user.
+        default: test
+
+permissions: read-all
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - name: Checkout Juju Dashboard repo
+        uses: actions/checkout@v4
+      - name: Configure action
+        id: config
+        uses: ./.github/actions/prepare-action
+      - name: Set up Juju Dashboard Docker image
+        id: docker-dashboard
+        uses: ./.github/actions/setup-docker-dashboard
+        with:
+          dashboard-ref: ${{ github.ref }} # Use the dashboard version from this branch.
+          run: true
+          is-juju: false
+          controller-ws-address: ws://jimm.localhost:17070/api
+      - name: Checkout JIMM repo
+        uses: actions/checkout@v4
+        with:
+          repository: canonical/jimm
+          path: jimm
+      - name: Update JIMM with the dashboard address
+        run: |
+          sed -i -e 's/JIMM_DASHBOARD_FINAL_REDIRECT_URL: "https:\/\/jaas.ai"/CORS_ALLOWED_ORIGINS: "http:\/\/${{ steps.docker-dashboard.outputs.address }}"\n      JIMM_DASHBOARD_LOCATION: "http:\/\/${{ steps.docker-dashboard.outputs.address }}"\n      JIMM_DASHBOARD_FINAL_REDIRECT_URL: "http:\/\/${{ steps.docker-dashboard.outputs.address }}"/g' jimm/docker-compose.common.yaml
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: "jimm/go.mod"
+      - name: Go vendor to speed up docker build
+        run: cd jimm && go mod vendor
+      - name: Start JIMM (pull request)
+        uses: ./jimm/.github/actions/test-server
+        with:
+          jimm-version: dev
+          juju-channel: "3.6/edge"
+          ghcr-pat: ${{ secrets.GITHUB_TOKEN }}
+          dump-logs: true
+      - name: Set the CLI admin's password
+        run: |
+          juju switch ${{ env.CONTROLLER_NAME }}
+          echo '${{ inputs.admin-password }}' | juju change-user-password --no-prompt
+      - name: Restart JIMM
+        run: docker restart jimm
+      - name: Install jimmctl
+        run: sudo snap install --channel=3 jimmctl
+      - name: Run tests
+        uses: ./.github/actions/run-playwright
+        with:
+          test-identifier: e2e-jimm-docker-keycloak
+        env:
+          JIMM_CONTROLLER_NAME: ${{ env.CONTROLLER_NAME }}
+          CONTROLLER_NAME: jimm
+          DASHBOARD_ADDRESS: ${{ steps.docker-dashboard.outputs.address }}
+          AUTH_MODE: oidc
+          AUTH_VARIANT: keycloak
+          JUJU_ENV: jimm
+          PROVIDER: localhost
+          ADMIN_USERNAME: ${{ inputs.admin-username }}
+          ADMIN_PASSWORD: ${{ inputs.admin-password }}
+          ADMIN_IDENTITY_USERNAME: jimm-test
+          ADMIN_IDENTITY_PASSWORD: password
