@@ -9,10 +9,12 @@ describe("generate", () => {
       "second feature",
     ]);
     expect(changelog).toEqual(`# Some header
+
 <!-- changelog -->
 - first feature
 - second feature
-<!-- /changelog -->`);
+<!-- /changelog -->
+`);
   });
 
   it("handles item with new line", ({ expect }) => {
@@ -21,18 +23,22 @@ describe("generate", () => {
       "second feature",
     ]);
     expect(changelog).toEqual(`# Some header
+
 <!-- changelog -->
 - first feature
 with details
 - second feature
-<!-- /changelog -->`);
+<!-- /changelog -->
+`);
   });
 
   it("handles no items", ({ expect }) => {
     const changelog = generate("# Some header\n", []);
     expect(changelog).toEqual(`# Some header
+
 <!-- changelog -->
-<!-- /changelog -->`);
+<!-- /changelog -->
+`);
   });
 });
 
@@ -102,11 +108,13 @@ describe("appendItem", () => {
 
 ---
 # What's changed?
+
 <!-- changelog -->
 - first feature
 - second feature
 - third feature
-<!-- /changelog -->`,
+<!-- /changelog -->
+`,
     );
   });
 });

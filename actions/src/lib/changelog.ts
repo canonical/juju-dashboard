@@ -11,14 +11,14 @@ export const CHANGELOG_END_MARKER = "<!-- /changelog -->";
 export function generate(header: string, items: string[]): string {
   let changelog = header;
 
-  changelog += `${CHANGELOG_START_MARKER}\n`;
+  changelog += `\n${CHANGELOG_START_MARKER}\n`;
 
   // TODO: Categorise changelog based on item severity.
   for (const item of items) {
     changelog += `- ${item}\n`;
   }
 
-  changelog += `${CHANGELOG_END_MARKER}`;
+  changelog += `${CHANGELOG_END_MARKER}\n`;
 
   return changelog;
 }

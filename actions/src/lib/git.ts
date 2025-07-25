@@ -65,8 +65,18 @@ export default class Git {
   /**
    * Create a new branch starting at `oldBranch`. If not provided, the main branch will be assumed.
    */
-  async createBranch(name: string, oldBranch: string = this.mainBranch) {
-    await this.exec("branch", "-c", oldBranch, name);
+  async createBranch(
+    name: string,
+    oldBranch: string = `${this.origin}/${this.mainBranch}`,
+  ) {
+    await this.exec("branch", name, oldBranch);
+  }
+
+  /**
+   * Run `git fetch`.
+   */
+  async fetch() {
+    await this.exec("fetch");
   }
 
   /**
