@@ -35,7 +35,10 @@ test.describe("Authentication Validation", () => {
     if (process.env.AUTH_MODE === "candid") {
       expectedText = LogInLabel.LOADING;
     } else if (process.env.AUTH_MODE === "oidc") {
-      expectedText = "incorrect username or password";
+      expectedText =
+        process.env.AUTH_VARIANT === "keycloak"
+          ? "Invalid username or password."
+          : "incorrect username or password";
     }
     await expect(page.getByText(expectedText)).toBeVisible();
   });
@@ -62,12 +65,16 @@ test.describe("Authentication Validation", () => {
         page.getByText(LogInLabel.AUTHENTICATE).first(),
       ).toBeVisible();
     } else {
+      await context.clearCookies({ name: "jimm-browser-session" });
       await context.addCookies([
         {
           name: "jimm-browser-session",
           value: "random",
           path: "/",
-          domain: "test-jimm.local",
+          domain:
+            process.env.AUTH_VARIANT === "keycloak"
+              ? "jimm.localhost"
+              : "test-jimm.local",
           httpOnly: true,
           secure: true,
           sameSite: "None",

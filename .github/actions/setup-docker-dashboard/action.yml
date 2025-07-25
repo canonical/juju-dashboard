@@ -27,14 +27,9 @@ runs:
       with:
         ref: ${{ inputs.dashboard-ref }}
         path: juju-dashboard-release
-    - name: Build Juju Dashboard image
-      shell: bash
-      run: |
-        cd '${{ github.workspace }}/juju-dashboard-release'
-        DOCKER_BUILDKIT=1 docker build -t juju-dashboard:local .
     - name: Configure Dashboard
       run: |
-        cat << EOF > public/config.js
+        cat << EOF > ${{ github.workspace }}/juju-dashboard-release/public/config.js
         var jujuDashboardConfig = {
           controllerAPIEndpoint: "${{ inputs.controller-ws-address }}",
           baseAppURL: "/",
@@ -44,6 +39,11 @@ runs:
         };
         EOF
       shell: bash
+    - name: Build Juju Dashboard image
+      shell: bash
+      run: |
+        cd '${{ github.workspace }}/juju-dashboard-release'
+        DOCKER_BUILDKIT=1 docker build -t juju-dashboard:local .
     - name: Run the Docker image
       if: ${{ inputs.run == 'true' }}
       run: docker run --name juju-dashboard --detach juju-dashboard:local
