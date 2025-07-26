@@ -45,5 +45,6 @@ export const deviceCodeLogin = async (
   // Wait for the original process to finish.
   await loginProc;
   // Exit the browser so the script will finish when called outside of Playwright.
+  await context.close();
   await browser.close();
 };
