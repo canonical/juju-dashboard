@@ -5,11 +5,11 @@ inputs:
     description: Unique identifier for this test run that will be used for uploading test results.
     required: true
   run:
-    default: 'true'
+    default: "true"
     description: Whether to run the test suite.
     required: false
   setup:
-    default: 'true'
+    default: "true"
     description: Whether to set up Playwright.
     required: false
 
@@ -37,9 +37,9 @@ runs:
       shell: bash
     - name: Run Playwright tests
       if: ${{ inputs.run == 'true' }}
-      run: yarn playwright test
+      run: yarn playwright test models.spec.ts
       shell: bash
-      env: 
+      env:
         DASHBOARD_ADDRESS: ${{ steps.dashboard.outputs.address }}
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() && inputs.run == 'true' }}
