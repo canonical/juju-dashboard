@@ -588,8 +588,7 @@ Next follow the first three steps in the [Starting the
 environment](https://github.com/canonical/jimm/tree/v3/local#starting-the-environment)
 section of the JIMM docs.
 
-Now follow the [Q/A Using
-jimmctl](https://github.com/canonical/jimm/tree/v3/local#qa-using-jimmctl)
+Now follow the [Q/A Setup](https://github.com/canonical/jimm/tree/v3/local#qa-setup)
 steps.
 
 Then you can run the LXD environment with the [`make qa-lxd`](https://github.com/canonical/jimm/tree/v3/local#all-in-one-commands) script.

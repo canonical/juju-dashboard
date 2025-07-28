@@ -50,8 +50,7 @@ runs:
     - name: Set up deps
       shell: bash
       run: |
-        sudo snap install yq vault
-        sudo snap install --channel=3/edge jimmctl
+        sudo snap install yq vault jaas
     - name: Setup Go
       uses: actions/setup-go@v5
     - name: Set up IAM
@@ -165,12 +164,12 @@ runs:
         timeout_minutes: 10
         max_attempts: 3
         command: |
-            STATUS=$(juju status --format json | yq .applications.ingress.application-status.current)
-            if [ "$STATUS" == "error" ]; then
-              # Sometimes the ingress unit will get into an error state, so resolve and try again.
-              juju resolved ingress/0
-            fi
-            juju wait-for unit ingress/0
+          STATUS=$(juju status --format json | yq .applications.ingress.application-status.current)
+          if [ "$STATUS" == "error" ]; then
+            # Sometimes the ingress unit will get into an error state, so resolve and try again.
+            juju resolved ingress/0
+          fi
+          juju wait-for unit ingress/0
     - name: Set up ingress hostname and certs
       shell: bash
       run: |
@@ -212,8 +211,7 @@ runs:
     - name: Register workload controller with JIMM
       shell: bash
       run: |
-        jimmctl controller-info '${{ steps.workloads-controller.outputs.name }}' ~/snap/jimmctl/common/k8s-controller-info.yaml --local --tls-hostname juju-apiserver
-        jimmctl add-controller ~/snap/jimmctl/common/k8s-controller-info.yaml
+        juju jaas register-controller '${{ steps.workloads-controller.outputs.name }}' --local --tls-hostname juju-apiserver
         juju update-credentials microk8s --controller ${{ steps.workloads-controller.outputs.public }}
     - name: Wait for JIMM
       uses: nick-fields/retry@v3

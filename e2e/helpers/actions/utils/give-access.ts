@@ -35,7 +35,7 @@ export class GiveAccess<Entity extends Model | Controller>
     } else {
       await jujuCLI.loginIdentityCLIAdmin();
       await exec(
-        `jimmctl auth relation ${jimmCommand} 'user-${this.user.cliUsername}' '${this.jimmAccess[this.access]}' '${[this.tag, this.entityName].join("-")}'`,
+        `juju jaas ${jimmCommand} 'user-${this.user.cliUsername}' '${this.jimmAccess[this.access]}' '${[this.tag, this.entityName].join("-")}'`,
       );
     }
   }
@@ -45,11 +45,11 @@ export class GiveAccess<Entity extends Model | Controller>
   }
 
   async run(jujuCLI: JujuCLI) {
-    await this.action(jujuCLI, "grant", "add");
+    await this.action(jujuCLI, "grant", "add-permission");
   }
 
   async rollback(jujuCLI: JujuCLI) {
-    await this.action(jujuCLI, "revoke", "remove");
+    await this.action(jujuCLI, "revoke", "remove-permission");
   }
 
   result(): void {}
