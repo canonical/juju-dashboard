@@ -12,13 +12,13 @@ DASHBOARD_IMAGE_ID=""
 
 # 1. Build or reuse the Juju Dashboard Docker image
 if [ "$BUILD_TYPE" == "source" ]; then
+    DASHBOARD_IMAGE_ID="dashboard-image:local"
+    
     # Navigate to the root and build the image in a subshell
     (
         cd "$ROOT_DIR"
-        DOCKER_BUILDKIT=1 docker build -t juju-dashboard:local .
+        DOCKER_BUILDKIT=1 docker build -t "$DASHBOARD_IMAGE_ID" .
     )
-
-    DASHBOARD_IMAGE_ID="juju-dashboard:local"
 
 elif [ "$BUILD_TYPE" == "dashboard-resource" ]; then
     # The ID comes directly from the input resource
