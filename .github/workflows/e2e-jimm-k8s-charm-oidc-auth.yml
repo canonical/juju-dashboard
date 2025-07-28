@@ -24,6 +24,11 @@ jobs:
       matrix:
         node-version: [22.x]
     steps:
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+          detached: true
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
         with:
@@ -54,7 +59,7 @@ jobs:
         with:
           charm-channel: ${{ steps.config.outputs.dashboard-charm-channel }}
           controller-app: jimm
-          controller-model: '${{ steps.jimm.outputs.jimm-controller-name }}:jimm'
+          controller-model: "${{ steps.jimm.outputs.jimm-controller-name }}:jimm"
           dashboard-charm-ref: ${{ steps.config.outputs.dashboard-charm-ref }}
           dashboard-ref: ${{ steps.config.outputs.repo-ref }}
           dashboard-resource: ${{ steps.config.outputs.k8s-dashboard-resource }}
