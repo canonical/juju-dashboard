@@ -11,6 +11,6 @@ charmcraft login \
     --charm=juju-dashboard \
     --charm=juju-dashboard-k8s \
     --permission=package-manage \
-    --permission=package-view-revisions
+    --permission=package-view
 
 echo 'Upload token to https://github.com/canonical/juju-dashboard/settings/secrets/actions/CHARMHUB_TOKEN'
