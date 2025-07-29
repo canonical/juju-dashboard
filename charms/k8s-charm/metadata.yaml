@@ -25,6 +25,7 @@ resources:
     type: oci-image
     description: |
       Canonical build of the dashboard (canonicalwebteam/juju-dashboard:latest)
+    upstream-source: dashboard-image:local
 
 provides:
   dashboard:
