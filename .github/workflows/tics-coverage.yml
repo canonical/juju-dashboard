@@ -2,11 +2,15 @@ name: Upload TICS report
 on:
   schedule:
     - cron: "0 22 * * 5"
+  workflow_dispatch: # Allows manual triggering
+  push:
+    branches:
+      - update-tics-runner # Remove before merge
 permissions: read-all
 
 jobs:
   TICS:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, amd64, tiobe, noble]
     strategy:
       matrix:
         node-version: [22.x]
@@ -26,12 +30,16 @@ jobs:
         with:
           name: juju-dashboard-coverage
           path: coverage
-      - name: Produce TICS report
-        shell: bash
-        run: |
-          set -x
-          export TICSAUTHTOKEN=${{ secrets.TICSAUTHTOKEN }}
-          curl --silent --show-error "https://canonical.tiobe.com/tiobeweb/TICS/api/public/v1/fapi/installtics/Script?cfg=default&platform=linux&url=https://canonical.tiobe.com/tiobeweb/TICS/" > install_tics.sh
-          . ./install_tics.sh
-          cp .github/workflows/tiobe_archive.txt /tmp/
-          TICSQServer -project juju-dashboard -tmpdir /tmp/tics -archivefile /tmp/tiobe_archive.txt -branchdir .
+      - name: Copy archive
+        run: cp .github/workflows/tiobe_archive.txt /tmp/
+      - name: Run TICS analysis with github-action
+        uses: tiobe/tics-github-action@v3
+        with:
+          mode: qserver
+          project: juju-dashboard
+          branchdir: .
+          viewerUrl: https://canonical.tiobe.com/tiobeweb/TICS/api/cfg?name=default
+          ticsAuthToken: ${{ secrets.TICSAUTHTOKEN }}
+          installTics: true
+          tmpdir: /tmp/tics
+          additionalFlags: -archivefile /tmp/tiobe_archive.txt
