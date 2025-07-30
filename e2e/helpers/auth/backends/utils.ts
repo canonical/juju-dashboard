@@ -1,5 +1,4 @@
-import type { Page } from "@playwright/test";
-import { chromium } from "playwright";
+import type { Browser, Page } from "@playwright/test";
 
 import { getEnv, exec, findLine } from "../../../utils";
 
@@ -9,6 +8,7 @@ export type Secret = {
 };
 
 export const deviceCodeLogin = async (
+  browser: Browser,
   user: Secret,
   codeRegex: RegExp,
   loginMethod: (page: Page, secret: Secret, code: string) => Promise<void>,
@@ -32,8 +32,6 @@ export const deviceCodeLogin = async (
   if (!loginURL || !loginCode) {
     throw new Error("Login details not found.");
   }
-  // Prepare a browser instance to go to the URL.
-  const browser = await chromium.launch();
   // Manually set the context to ignore HTTPS errors, for the case where this
   // function is called outside of the PlayWright runner to log in during the
   // workflow.
@@ -45,5 +43,5 @@ export const deviceCodeLogin = async (
   // Wait for the original process to finish.
   await loginProc;
   // Exit the browser so the script will finish when called outside of Playwright.
-  await browser.close();
+  await context.close();
 };

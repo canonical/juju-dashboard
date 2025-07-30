@@ -36,7 +36,7 @@ export class JujuCLI {
     public jujuEnv: JujuEnv,
     public controller: string,
     public provider: string,
-    browser: Browser,
+    public browser: Browser,
   ) {
     this.users = new Users(browser);
     const { username, password, identityUsername, identityPassword } =
@@ -102,20 +102,20 @@ export class JujuCLI {
    * @note This user won't necessarily be present in the auth backend, so don't try use it within
    * tests. This is primarily intended to assist with forceful clean-up.
    */
-  async loginLocalCLIAdmin(): Promise<void> {
+  async loginLocalCLIAdmin(browser: Browser): Promise<void> {
     if (this.jujuEnv === JujuEnv.JIMM) {
       // In JIMM the CLI admin is only available when in the JIMM controller.
       await exec(`juju switch ${getEnv("JIMM_CONTROLLER_NAME")}`);
     }
-    await this.localAdmin.cliLogin();
+    await this.localAdmin.cliLogin(browser);
   }
 
   /**
    * Login as the JIMM workload controller's OIDC identity. This will use the
    * credentials passed in via the environment.
    */
-  async loginIdentityCLIAdmin(): Promise<void> {
-    await this.identityAdmin.cliLogin();
+  async loginIdentityCLIAdmin(browser: Browser): Promise<void> {
+    await this.identityAdmin.cliLogin(browser);
   }
 }
 
@@ -137,10 +137,10 @@ class BootstrapAction implements Action<User> {
 
     if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
       // Granting clouds must be done by the JIMM admin.
-      await jujuCLI.loginIdentityCLIAdmin();
+      await jujuCLI.loginIdentityCLIAdmin(jujuCLI.browser);
     } else {
       // Bootstrap must be done by the admin.
-      await jujuCLI.loginLocalCLIAdmin();
+      await jujuCLI.loginLocalCLIAdmin(jujuCLI.browser);
     }
 
     if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
@@ -151,7 +151,7 @@ class BootstrapAction implements Action<User> {
     }
 
     // Login as the user.
-    await user.cliLogin();
+    await user.cliLogin(jujuCLI.browser);
 
     // Use the client credentials for this user (stored in
     // ~/.local/share/juju/credentials.yaml). This allows authentication via the
@@ -168,7 +168,7 @@ class BootstrapAction implements Action<User> {
   async rollback(jujuCLI: JujuCLI) {
     const user = this.result();
 
-    await user.cliLogin();
+    await user.cliLogin(jujuCLI.browser);
 
     // Remove the user's credential
     await exec(
@@ -177,10 +177,10 @@ class BootstrapAction implements Action<User> {
 
     if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
       // Granting clouds must be done by the JIMM admin.
-      await jujuCLI.loginIdentityCLIAdmin();
+      await jujuCLI.loginIdentityCLIAdmin(jujuCLI.browser);
     } else {
       // Bootstrap must be done by the admin.
-      await jujuCLI.loginLocalCLIAdmin();
+      await jujuCLI.loginLocalCLIAdmin(jujuCLI.browser);
     }
 
     if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {

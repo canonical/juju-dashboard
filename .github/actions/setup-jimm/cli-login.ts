@@ -1,3 +1,4 @@
+import { chromium } from "@playwright/test";
 import { OIDC } from "../../../e2e/helpers/auth/backends";
 
 const username = process.env.USERNAME;
@@ -8,7 +9,10 @@ if (!username || !password) {
   );
 }
 console.log("Logging in to JIMM.");
+// Prepare a browser instance to go to the URL.
+const browser = await chromium.launch();
 await OIDC.loginCLI(
+  browser,
   {
     username,
     password,
@@ -16,4 +20,5 @@ await OIDC.loginCLI(
   // Register the controller.
   true,
 );
+browser.close();
 console.log("Logged in.");
