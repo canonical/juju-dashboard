@@ -20,6 +20,8 @@ test.describe("Models", () => {
   let user2Model: Model;
 
   test.beforeAll(async ({ jujuCLI }) => {
+    // Give the beforeAll enough time to create the models:
+    test.setTimeout(300000);
     actions = new ActionStack(jujuCLI);
 
     await actions.prepare((add) => {
