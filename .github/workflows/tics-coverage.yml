@@ -30,8 +30,6 @@ jobs:
         with:
           name: juju-dashboard-coverage
           path: coverage
-      - name: Copy archive
-        run: cp .github/workflows/tiobe_archive.txt /tmp/
       - name: Run TICS analysis with github-action
         uses: tiobe/tics-github-action@v3
         with:
@@ -42,4 +40,4 @@ jobs:
           ticsAuthToken: ${{ secrets.TICSAUTHTOKEN }}
           installTics: true
           tmpdir: /tmp/tics
-          additionalFlags: -archivefile /tmp/tiobe_archive.txt
+          additionalFlags: -archivefile '${{ github.workspace }}/.github/workflows/tiobe_archive.txt'
