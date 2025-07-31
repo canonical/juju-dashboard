@@ -11,6 +11,7 @@ charmcraft login \
     --charm=juju-dashboard \
     --charm=juju-dashboard-k8s \
     --permission=package-manage \
-    --permission=package-view
+    --permission=package-view \
+    --ttl 2419200 # 28 days
 
 echo 'Upload token to https://github.com/canonical/juju-dashboard/settings/secrets/actions/CHARMHUB_TOKEN'
