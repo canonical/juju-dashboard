@@ -117,7 +117,7 @@ describe("create-release-pr", () => {
     [
       "with changelog label",
       [CHANGELOG_LABEL] as string[],
-      `${CHANGELOG_START_MARKER}\n- my cool feature\n${CHANGELOG_END_MARKER}`,
+      `${CHANGELOG_START_MARKER}\n- my cool feature by @user (#111)\n${CHANGELOG_END_MARKER}`,
     ],
     ["without changelog label", [] as string[], null],
   ] as const)(

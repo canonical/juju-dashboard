@@ -28,6 +28,7 @@ export function mockPr({
     title,
     body,
     hasLabel: (label: string) => labels.includes(label),
+    changelogEntry: () => `${title} by @user (#${number})`,
   };
 }
 
