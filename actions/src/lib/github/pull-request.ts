@@ -48,7 +48,7 @@ export class PullRequest {
   public get base() {
     return this.pullRequest.base.ref;
   }
-  
+
   /**
    * Generate the changelog entry for this pull request.
    */
