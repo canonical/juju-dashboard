@@ -37,3 +37,5 @@ __pycache__
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+charmhub-token.auth
