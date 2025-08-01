@@ -15,6 +15,7 @@ pkg/
 /.idea/
 public/config.local.js
 .nfs.*
+/charms/machine-charm/src/dist
 
 .yarn/*
 !.yarn/patches
