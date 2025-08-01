@@ -15,7 +15,7 @@ Building the machine charm is fairly straightforward. You need a machine with Ju
 
 # Build the charm
 cd ./charms/machine-charm
-charmcraft pack
+./build.sh
 
 # Bootstrap a test controller. Make a make a model, and deploy an application, so that the dashboard has things to show.
 juju bootstrap localhost localhost-test
@@ -106,7 +106,7 @@ You're finally ready to build the charm! Change to the root directory of this re
 ```sh
 # Build the charm
 cd ./charms/k8s-charm
-charmcraft pack
+./build.sh
 
 # Switch to the controller model and deploy the dashboard
 juju switch controller

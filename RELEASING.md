@@ -32,21 +32,13 @@ manually update the charm.
 git clone git@github.com:canonical/juju-dashboard.git
 cd juju-dashboard
 yarn install
-yarn build
 ```
 
-Next navigate to the `charms` folder.
+Next navigate to the `charms` folder and run the build script to generate the charm.
 
 ```shell
 cd ./charms/machine-charm
-```
-
-Remove the built dashboard files and replace them with the dashboard files that
-were built above.
-
-```shell
-rm -rf src/dist/*
-cp -r ../../build/* src/dist
+./build.sh
 ```
 
 Then follow the instructions to [build and
