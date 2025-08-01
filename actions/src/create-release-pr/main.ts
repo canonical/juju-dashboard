@@ -115,7 +115,7 @@ export async function run(ctx: Ctx) {
     if (!version.preRelease) {
       // Save the existing changelog.
       // WARN: This means that the beta PR will contain the changelog for ALL previous beta PRs.
-      changelogItems.push(...changelog.parse(pr.body).items);
+      changelogItems.unshift(...changelog.parse(pr.body).items);
 
       // This was a candidate release PR, however new changes have been pushed so it's now outdated.
       await pr.close();
