@@ -32,17 +32,21 @@ fi
 # Output the Dashboard Image ID for GitHub Actions
 echo "id=$DASHBOARD_IMAGE_ID"
 
-# 2. Install charmcraft
-sudo snap install charmcraft --classic
+# 2. Install charmcraft if required
+if ! which charmcraft ; then
+    echo "Charmcraft CLI not detected, installing with snap."
 
-# 3. Wait for snap changes
-while [ -n "$(snap changes charmcraft 2>/dev/null | awk '/^[0-9]+/ {if ($2 != "Done") print $2 }')" ]; do
-  echo "Waiting for 'charmcraft' snap changes on host to finish..."
-  sleep 1
-done
-sleep 1
+    sudo snap install charmcraft --classic
 
-# 4. Try to pack the charm with retries
+    # 2.5. Wait for snap changes
+    while [ -n "$(snap changes charmcraft 2>/dev/null | awk '/^[0-9]+/ {if ($2 != "Done") print $2 }')" ]; do
+    echo "Waiting for 'charmcraft' snap changes on host to finish..."
+    sleep 1
+    done
+    sleep 1
+fi
+
+# 3. Try to pack the charm with retries
 # This command is retried as it sometimes fails with the following error:
 # Failed to wait for snap refreshes to complete.
 # error: daemon is stopping to wait for socket activation
@@ -60,7 +64,7 @@ while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
     fi
 done
 
-if [ "$SUCCESS" = false ]; then
+if [ "$SUCCESS" = 'false' ]; then
     echo "Error: All $MAX_ATTEMPTS attempts to pack the charm failed." >&2
     exit 1 # Fail the script if charmcraft pack never succeeds
 fi
