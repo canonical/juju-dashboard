@@ -81,7 +81,7 @@ export async function run(ctx: Ctx) {
       return {};
     } else if (ctx.pr.hasLabel(CHANGELOG_LABEL)) {
       // Triggered from a PR that's indicated it should be included in the changelog, so add it.
-      changelogItems.push(ctx.pr.title);
+      changelogItems.push(ctx.pr.changelogEntry());
     }
   }
 

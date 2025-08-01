@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # The name of all available actions.
-declare -a ACTIONS=("create-cut-pr" "create-release-pr")
+declare -a ACTIONS=("create-cut-pr" "create-release-pr" "extract-changelog")
 
 # Additional files to copy into the built action.
 declare -a ADDITIONAL_FILES=("README.md" "action.yaml")

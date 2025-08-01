@@ -1,0 +1,15 @@
+name: Extract changelog
+description: Extract the generated changelog from a PR.
+
+runs:
+  using: node20
+  main: index.js
+
+inputs:
+  github-token:
+    description: "GitHub Token (usually `secrets.GITHUB_TOKEN`)."
+    required: true
+
+outputs:
+  changelog:
+    description: String containing changelog items as a markdown list.

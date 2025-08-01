@@ -49,6 +49,13 @@ export class PullRequest {
     return this.pullRequest.base.ref;
   }
 
+  /**
+   * Generate the changelog entry for this pull request.
+   */
+  public changelogEntry() {
+    return `${this.title} by @${this.pullRequest.user.login} (#${this.number})`;
+  }
+
   public async close() {
     await this.update({
       state: "closed",

@@ -31810,6 +31810,12 @@ class PullRequest {
     get base() {
         return this.pullRequest.base.ref;
     }
+    /**
+     * Generate the changelog entry for this pull request.
+     */
+    changelogEntry() {
+        return `${this.title} by @${this.pullRequest.user.login} (#${this.number})`;
+    }
     async close() {
         await this.update({
             state: "closed",
@@ -32304,7 +32310,7 @@ async function run(ctx) {
         }
         else if (ctx.pr.hasLabel(CHANGELOG_LABEL)) {
             // Triggered from a PR that's indicated it should be included in the changelog, so add it.
-            changelogItems.push(ctx.pr.title);
+            changelogItems.push(ctx.pr.changelogEntry());
         }
     }
     // Find an existing release PR for this branch.
