@@ -49,13 +49,13 @@ jobs:
           version=$(jq -r .version package.json)
           track=$(echo "$version" | grep -Po '^\d+\.\d+')
 
-          channel="$track/beta/ci"
+          channel="$track/beta"
 
           is_pre_release="true"
 
           if echo $version | grep -P '^\d+\.\d+\.\d+$' ; then
             # Can promote from beta to candidate immediately
-            promote_channel="$track/candidate/ci"
+            promote_channel="$track/candidate
 
             is_pre_release="false"
           fi
