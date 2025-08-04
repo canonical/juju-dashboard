@@ -1,0 +1,21 @@
+name: Create cut PR
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+permissions: write-all
+
+jobs:
+  create-cut-pr:
+    name: "Create cut PR"
+    runs-on: "ubuntu-latest"
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: .github/actions/create-cut-pr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

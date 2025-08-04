@@ -1,0 +1,165 @@
+name: Promote release to stable
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+permissions: write-all
+
+jobs:
+  check-valid-promotion:
+    name: Check promotion conditions
+    runs-on: ubuntu-22.04
+
+    outputs:
+      tag: ${{ steps.tag.outputs.name }}
+      track: ${{ steps.tag.outputs.track }}
+      risk: ${{ steps.tag.outputs.risk }}
+      branch: ${{ steps.tag.outputs.branch }}
+
+      origin-channel: ${{ steps.channel.outputs.origin }}
+      destination-channel: ${{ steps.channel.outputs.destination }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Only run on `release/x.y` branches
+        run: |
+          # Unfortunately, this step is required since GitHub doesn't allow glob filtering on
+          # the head branch of a PR
+          if [ -z $(echo '${{ github.ref_name }}' | grep -P '^release/\d+\.\d+$') ]; then
+              echo 'Not running on a full release branch. Cancelling workflow.'
+
+              gh run cancel ${{ github.run_id }}
+              gh run watch ${{ github.run_id }}
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract track tag information
+        id: tag
+        run: |
+          # Find the latest tag on the branch
+          latest_tag="$(git describe --tags --match 'track/*' --abbrev=0)"
+
+          # Get all tags on this commit
+          tags_on_commit="$(git tag --points-at "$latest_tag" | grep '^track/')"
+
+          stable_tag="$(echo "$tags_on_commit" | ( grep stable || true ) | head -n 1)"
+          candidate_tag="$(echo "$tags_on_commit" | ( grep candidate || true ) | head -n 1)"
+
+          # Prefer stable tag
+          if [ ! -z "$stable_tag" ]; then
+            tag="$stable_tag"
+          else
+            tag="$candidate_tag"
+          fi
+
+          parts="$(echo "$tag" | sed -e 's%/%\n%g' | sed -e 1d)"
+
+          # Split into lines and extract information
+          readarray -t lines <<< "$parts"
+          track="${lines[0]}"
+          risk="${lines[1]}"
+          branch="${lines[2]}"
+
+          echo "name=$tag" | tee -a "$GITHUB_OUTPUT"
+          echo "track=$track" | tee -a "$GITHUB_OUTPUT"
+          echo "risk=$risk" | tee -a "$GITHUB_OUTPUT"
+          echo "branch=$branch" | tee -a "$GITHUB_OUTPUT"
+
+      - name: Generate channel information
+        id: channel
+        run: |
+          origin='${{ steps.tag.outputs.track }}/candidate'
+          destination='${{ steps.tag.outputs.track }}/stable'
+
+          branch='${{ steps.tag.outputs.branch }}'
+
+          if [ ! -z "$branch" ]; then
+            # Add branch information to the channels
+            origin="$origin/$branch"
+            destination="$destination/$branch"
+          fi
+
+          echo "origin=$origin" | tee -a "$GITHUB_OUTPUT"
+          echo "destination=$destination" | tee -a "$GITHUB_OUTPUT"
+
+  promote-candidate:
+    name: Promote to stable
+    needs: [check-valid-promotion]
+    runs-on: ubuntu-22.04
+
+    if: ${{ needs.check-valid-promotion.outputs.risk == 'candidate' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        charm-kind: [k8s, machine]
+
+    outputs:
+      origin: ${{ needs.check-valid-promotion.outputs.origin-channel }}
+      destination: ${{ needs.check-valid-promotion.outputs.destination-channel }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.check-valid-promotion.outputs.tag }}
+      - name: Promote charm to stable
+        uses: andogq/charming-actions/promote-charm@fix/promote-charm-branch # TODO: Replace this once canonical/charming-actions#162 merges
+        with:
+          credentials: "${{ secrets.CHARMHUB_TOKEN }}"
+          origin-channel: "${{ needs.check-valid-promotion.outputs.origin-channel }}"
+          destination-channel: "${{ needs.check-valid-promotion.outputs.destination-channel }}"
+          charm-path: charms/${{ matrix.charm-kind }}-charm
+          charmcraft-channel: latest/stable
+
+  post-promotion:
+    name: Post promotion operations
+    needs: [check-valid-promotion, promote-candidate]
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+          ref: ${{ needs.check-valid-promotion.outputs.tag }}
+      - name: Tag commit
+        id: tags
+        run: |
+          tag='track/${{ needs.check-valid-promotion.outputs.destination-channel }}'
+
+          echo "Creating tag '$tag' at $(git rev-parse --short HEAD)"
+
+          # Tag the current commit, force updating if required
+          git tag -f "$tag"
+
+          git push --tags --force
+
+  already-promoted:
+    name: Candidate already promoted
+    needs: [check-valid-promotion]
+    runs-on: ubuntu-22.04
+
+    if: ${{ needs.check-valid-promotion.outputs.risk == 'stable' }}
+
+    steps:
+      - run: |
+          echo '::notice title=Candidate was already promoted::The ${{ needs.check-valid-promotion.track }} track already contains the latest candidate.'
+
+  no-candidate:
+    name: No candidate
+    needs: [check-valid-promotion]
+    runs-on: ubuntu-22.04
+
+    if: ${{ needs.check-valid-promotion.outputs.risk != 'stable' && needs.check-valid-promotion.outputs.risk != 'candidate' }}
+
+    steps:
+      - run: |
+          echo '::error title=No candidate to promote::The ${{ needs.check-valid-promotion.track }} track does not have any candidates to promote.'
+          exit 1

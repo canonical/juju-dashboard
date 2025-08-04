@@ -8,11 +8,29 @@ inputs:
   webhook-url:
     description: Webhook URL to send use.
     required: true
+  message:
+    description: Custom message to send, instead of default 'workflow failed'.
+    required: false
+    default: ""
 
 runs:
   using: composite
   steps:
-    - name: Send notification
+    - name: Send workflow failure notification
       shell: bash
+      if: inputs.message == ''
       run: |
-        curl -X POST -F "workflow=${{ github.workflow }}" -F "repo_name=${{ github.repository }}" -F "action_id=${{ github.run_id }}" ${{ inputs.webhook-url }}?room=${{ inputs.channel }}
+        curl -X POST \
+            -F 'workflow=${{ github.workflow }}' \
+            -F 'repo_name=${{ github.repository }}' \
+            -F 'action_id=${{ github.run_id }}' \
+            '${{ inputs.webhook-url }}?room=${{ inputs.channel }}'
+    - name: Send workflow with custom message
+      shell: bash
+      if: inputs.message != ''
+      run: |
+        # URI encode the mesage using JQ
+        message="$(echo -n "$message" | jq -sRr @uri)"
+
+        curl -X POST \
+            "${{ secrets.WEBBOT_URL }}?room=${{ inputs.channel }}&custom_message=$message"
