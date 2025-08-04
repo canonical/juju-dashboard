@@ -2,6 +2,7 @@ import { MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import type { ReactNode } from "react";
 
+import MigrateButton from "components/MigrateButton";
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
@@ -125,6 +126,9 @@ export default function CloudGroup({ filters }: Props) {
               </AccessColumn>
             ),
             className: "u-align--right lrg-screen-access-cell",
+          },
+          {
+            content: <MigrateButton modelName={model.model.name} />,
           },
         ],
         sortData: {
