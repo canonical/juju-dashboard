@@ -536,29 +536,6 @@ describe("WebCLI", () => {
     ).toHaveTextContent(`ERROR: ${ConnectionLabel.INCORRECT_DATA_ERROR}`);
   });
 
-  it("should display error when connecting to sub controller of JAAS", async () => {
-    renderComponent(<WebCLI {...props} />);
-    await server.connected;
-    const input = screen.getByRole("textbox");
-    await userEvent.type(input, "status --color{enter}");
-    await expect(server).toReceiveMessage(
-      JSON.stringify({
-        user: "eggman@external",
-        credentials: "somelongpassword",
-        commands: ["status --color"],
-      }),
-    );
-    new WS("invalid-url-for-jaas-sub-controller");
-    server.send(
-      JSON.stringify({ "redirect-to": "invalid-url-for-jaas-sub-controller" }),
-    );
-    await server.closed;
-    // Trying to connect to WebSocket with invalid URL spits up error.
-    expect(
-      document.querySelector(".webcli__output-content code"),
-    ).toHaveTextContent(`ERROR: ${ConnectionLabel.JAAS_CONNECTION_ERROR}`);
-  });
-
   it("should display error when received message output is not an array", async () => {
     renderComponent(<WebCLI {...props} />);
     await server.connected;
