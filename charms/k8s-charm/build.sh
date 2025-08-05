@@ -33,7 +33,7 @@ fi
 echo "id=$DASHBOARD_IMAGE_ID"
 
 # 2. Install charmcraft if required
-if ! which charmcraft ; then
+if [ ! $(which charmcraft) ]; then
     echo "Charmcraft CLI not detected, installing with snap." >&2
 
     sudo snap install charmcraft --classic
