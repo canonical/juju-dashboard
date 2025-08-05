@@ -7,6 +7,8 @@ on:
     paths:
       - "charms/**"
 
+permissions: read-all
+
 jobs:
   test-charm:
     name: Test ${{ matrix.charm-type }} charm
