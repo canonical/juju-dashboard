@@ -32,7 +32,7 @@ export default class Git {
   /**
    * Execute the provided git command.
    */
-  public async exec(...args: string[]) {
+  private async exec(...args: string[]) {
     return exec.exec("git", args);
   }
 
