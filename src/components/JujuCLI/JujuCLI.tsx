@@ -184,7 +184,9 @@ const JujuCLI = () => {
                         userName: modelInfo.owner,
                         modelName: modelInfo.name,
                         appName,
-                        unitId: column.value.replace("/", "-").replace("*", ""),
+                        unitId: column.value
+                          .replaceAll("/", "-")
+                          .replaceAll("*", ""),
                       }),
                     };
                   },
