@@ -12,6 +12,8 @@ on:
     paths:
       - "actions/**"
 
+permissions: read-all
+
 jobs:
   test:
     name: Run tests
