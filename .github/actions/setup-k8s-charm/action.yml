@@ -58,7 +58,7 @@ runs:
     - name: Import dashboard image to microK8s
       if: ${{ env.build_type == 'source' }}
       shell: bash
-      run: docker image save juju-dashboard:local | sudo microk8s ctr image import -
+      run: docker image save '${{ steps.dashboard-image.outputs.id }}' | sudo microk8s ctr image import -
     - name: Switch to controller
       run: juju switch '${{ inputs.controller-model }}'
       shell: bash
