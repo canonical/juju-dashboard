@@ -44,7 +44,10 @@ jobs:
           path: jimm
       - name: Update JIMM with the dashboard address
         run: |
-          sed -i -e 's/JIMM_DASHBOARD_FINAL_REDIRECT_URL: "https:\/\/jaas.ai"/CORS_ALLOWED_ORIGINS: "http:\/\/${{ steps.docker-dashboard.outputs.address }}"\n      JIMM_DASHBOARD_LOCATION: "http:\/\/${{ steps.docker-dashboard.outputs.address }}"\n      JIMM_DASHBOARD_FINAL_REDIRECT_URL: "http:\/\/${{ steps.docker-dashboard.outputs.address }}"/g' jimm/docker-compose.common.yaml
+          sudo snap install yq
+          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_FINAL_REDIRECT_URL = "http://${{ steps.docker-dashboard.outputs.address }}"' /var/snap/candid/current/config.yaml
+          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_LOCATION = "http://${{ steps.docker-dashboard.outputs.address }}"' /var/snap/candid/current/config.yaml
+          yq -i '.services.jimm-base.environment.CORS_ALLOWED_ORIGINS = "http://${{ steps.docker-dashboard.outputs.address }}"' /var/snap/candid/current/config.yaml
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
@@ -63,7 +66,10 @@ jobs:
           juju switch ${{ env.CONTROLLER_NAME }}
           echo '${{ inputs.admin-password }}' | juju change-user-password --no-prompt
       - name: Restart JIMM
-        run: docker restart jimm
+        run: docker restart jimm # Fixes a context cancelled issue when fetching models from the dashboard.
+      - name: Wait for JIMM container to be ready
+        run: while [ "$(docker inspect -f {{.State.Restarting}} jimm)" == "true" ]; do sleep 1; done
+        shell: bash
       - name: Install jaas plugin
         run: sudo snap install jaas
       - name: Run tests
