@@ -64,8 +64,8 @@ jobs:
           echo '${{ inputs.admin-password }}' | juju change-user-password --no-prompt
       - name: Restart JIMM
         run: docker restart jimm
-      - name: Install jimmctl
-        run: sudo snap install --channel=3 jimmctl
+      - name: Install jaas plugin
+        run: sudo snap install jaas
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:
