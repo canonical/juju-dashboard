@@ -16,6 +16,6 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v4
-      - uses: .github/actions/create-release-pr
+      - uses: ./.github/actions/create-release-pr
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

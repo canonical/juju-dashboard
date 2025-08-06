@@ -140,6 +140,12 @@ jobs:
           git tag -f "$tag"
 
           git push --tags --force
+      - name: Send notification
+        uses: ./.github/actions/send-notification
+        with:
+          webhook-url: "${{ secrets.WEBBOT_URL }}"
+          message: |
+            Successfully promoted Juju Dashboard charm from `${{ needs.check-valid-promotion.outputs.origin-channel }}` to `${{ needs.check-valid-promotion.outputs.destination-channel }}`.
 
   already-promoted:
     name: Candidate already promoted

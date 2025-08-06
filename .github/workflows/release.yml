@@ -66,7 +66,7 @@ jobs:
           echo "track=$track" | tee -a "$GITHUB_OUTPUT"
           echo "is-pre-release=$is_pre_release" | tee -a "$GITHUB_OUTPUT"
       - name: Extract changelog
-        uses: .github/actions/extract-changelog
+        uses: ./.github/actions/extract-changelog
         id: changelog
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -145,7 +145,7 @@ jobs:
           github-tag: false
       - name: Promote charm
         if: needs.pre-release.outputs.promote-channel != ''
-        uses: andogq/charming-actions/promote-charm@fix/promote-charm-branch
+        uses: andogq/charming-actions/promote-charm@fix/promote-charm-branch # TODO: Replace this once canonical/charming-actions#162 merges
         with:
           credentials: "${{ secrets.CHARMHUB_TOKEN }}"
           origin-channel: "${{ needs.pre-release.outputs.channel }}"
@@ -154,14 +154,14 @@ jobs:
           charmcraft-channel: latest/stable
 
       - name: Send notification
-        uses: .github/actions/send-notification
+        uses: ./.github/actions/send-notification
         with:
           webhook-url: "${{ secrets.WEBBOT_URL }}"
           message: |
             Successfully published Juju Dashboard ${{ matrix.charm-kind }} charm `${{ needs.pre-release.outputs.version }}` to `${{ needs.pre-release.outputs.promote-channel || needs.pre-release.outputs.channel }}`
       - name: Send notification on failure
         if: failure()
-        uses: .github/actions/send-notification
+        uses: ./.github/actions/send-notification
         with:
           webhook-url: "${{ secrets.WEBBOT_URL }}"
 

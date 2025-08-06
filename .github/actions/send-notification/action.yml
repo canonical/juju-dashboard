@@ -25,7 +25,7 @@ runs:
             -F 'repo_name=${{ github.repository }}' \
             -F 'action_id=${{ github.run_id }}' \
             '${{ inputs.webhook-url }}?room=${{ inputs.channel }}'
-    - name: Send workflow with custom message
+    - name: Send notification with custom message
       shell: bash
       if: inputs.message != ''
       run: |
