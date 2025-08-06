@@ -45,9 +45,9 @@ jobs:
       - name: Update JIMM with the dashboard address
         run: |
           sudo snap install yq
-          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_FINAL_REDIRECT_URL = "http://${{ steps.docker-dashboard.outputs.address }}"' /var/snap/candid/current/config.yaml
-          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_LOCATION = "http://${{ steps.docker-dashboard.outputs.address }}"' /var/snap/candid/current/config.yaml
-          yq -i '.services.jimm-base.environment.CORS_ALLOWED_ORIGINS = "http://${{ steps.docker-dashboard.outputs.address }}"' /var/snap/candid/current/config.yaml
+          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_FINAL_REDIRECT_URL = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
+          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_LOCATION = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
+          yq -i '.services.jimm-base.environment.CORS_ALLOWED_ORIGINS = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
