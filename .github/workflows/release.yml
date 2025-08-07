@@ -223,7 +223,7 @@ jobs:
         with:
           name: "Juju Dashboard ${{ needs.pre-release.outputs.version }}"
           tag: ${{ steps.tags.outputs.version-tag }}
-          allowUpdates: true # TODO: Maybe temporary?
+          allowUpdates: true
           replacesArtifacts: true
           prerelease: ${{ steps.pre-release.outputs.is-pre-release }}
           artifacts: release-artifacts/**/*.charm
