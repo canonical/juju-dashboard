@@ -1,0 +1,237 @@
+name: Release Juju Dashboard
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - "release/*"
+
+permissions: write-all
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  pre-release:
+    name: "Determine release parameters"
+    runs-on: ubuntu-22.04
+
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+
+    outputs:
+      version: ${{ steps.params.outputs.version }}
+      channel: ${{ steps.params.outputs.channel }}
+      promote-channel: ${{ steps.params.outputs.promote-channel }}
+      track: ${{ steps.params.outputs.track }}
+      is-pre-release: ${{ steps.params.outputs.is-pre-release }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Only run on `release/x.y.z[-suffix]` branches
+        if: github.event_name == 'pull_request'
+        run: |
+          # Unfortunately, this step is required since GitHub doesn't allow glob filtering on
+          # the head branch of a PR.
+          if [ -z $(echo '${{ github.head_ref }}' | grep -P '^release/\d+\.\d+\.\d+') ]; then
+              echo 'Not running on a full release branch. Cancelling workflow.'
+
+              gh run cancel ${{ github.run_id }}
+              gh run watch ${{ github.run_id }}
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Determine release Charmhub parameters
+        id: params
+        run: |
+          version=$(jq -r .version package.json)
+          track=$(echo "$version" | grep -Po '^\d+\.\d+')
+
+          channel="$track/beta"
+
+          is_pre_release="true"
+
+          if echo $version | grep -P '^\d+\.\d+\.\d+$' ; then
+            # Can promote from beta to candidate immediately
+            promote_channel="$track/candidate
+
+            is_pre_release="false"
+          fi
+
+          echo "version=$version" | tee -a "$GITHUB_OUTPUT"
+          echo "channel=$channel" | tee -a "$GITHUB_OUTPUT"
+          echo "promote-channel=$promote_channel" | tee -a "$GITHUB_OUTPUT"
+          echo "track=$track" | tee -a "$GITHUB_OUTPUT"
+          echo "is-pre-release=$is_pre_release" | tee -a "$GITHUB_OUTPUT"
+      - name: Extract changelog
+        uses: ./.github/actions/extract-changelog
+        id: changelog
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    name: "Release Juju Dashboard"
+    runs-on: ubuntu-22.04
+
+    needs: [pre-release]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        charm-kind: [k8s, machine]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LXD
+        uses: canonical/setup-lxd@main
+      - name: Build dashboard
+        working-directory: charms/${{ matrix.charm-kind }}-charm
+        id: build
+        run: |
+          OUTPUT=$(./build.sh)
+
+          if [ '${{ matrix.charm-kind }}' = 'k8s' ]; then
+              echo "$OUTPUT" | grep '^id=' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Get charm path
+        id: post-build
+        run: |
+          CHARM_PATH=$(ls -1 charms/${{ matrix.charm-kind }}-charm/*.charm)
+
+          if [ $(echo "$CHARM_PATH" | wc -l) -ne 1 ]; then
+            echo "Multiple charm artifacts found:"
+            echo "$CHARM_PATH"
+            exit 1
+          fi
+
+          echo "charm-path=$CHARM_PATH" | tee -a "$GITHUB_OUTPUT"
+          echo "charm-dir=$(dirname $CHARM_PATH)" | tee -a "$GITHUB_OUTPUT"
+          echo "charm-name=$(basename $CHARM_PATH)" | tee -a "$GITHUB_OUTPUT"
+      - name: Save charm artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: juju-dashboard-${{ matrix.charm-kind }}.charm
+          path: ${{ steps.post-build.outputs.charm-path }}
+      - name: Create new tracks, if required
+        run: |
+          track='${{ needs.pre-release.outputs.track }}'
+          charm_name="$(yq '.name' '${{ steps.post-build.outputs.charm-dir }}/metadata.yaml')"
+
+          authorization_header="Macaroon $(echo '${{ secrets.CHARMHUB_TOKEN }}' | base64 -d | jq -r .v)"
+
+          jq_filter=".metadata.tracks[].name | select(. == \"$track\")"
+
+          matching_track="$(curl -H "Authorization: $authorization_header" -H 'Content-type: application/json' "https://api.charmhub.io/v1/charm/$charm_name" | jq -r "$jq_filter")"
+
+          if [ "$matching_track" = '' ]; then
+            echo "Creating '$track' track for '$charm_name'"
+            CHARMCRAFT_AUTH='${{ secrets.CHARMHUB_TOKEN }}' charmcraft create-track "$charm_name" "$track"
+          else
+            echo "'$track' track for '$charm_name' already created. Continuing..."
+          fi
+      - name: Upload charm
+        uses: canonical/charming-actions/upload-charm@main
+        with:
+          credentials: "${{ secrets.CHARMHUB_TOKEN }}"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          channel: "${{ needs.pre-release.outputs.channel }}"
+          charm-path: "${{ steps.post-build.outputs.charm-dir }}"
+          built-charm-path: "${{ steps.post-build.outputs.charm-name }}"
+          upload-image: true
+          pull-image: false
+          charmcraft-channel: latest/stable
+          github-tag: false
+      - name: Promote charm
+        if: needs.pre-release.outputs.promote-channel != ''
+        uses: andogq/charming-actions/promote-charm@fix/promote-charm-branch # TODO: Replace this once canonical/charming-actions#162 merges
+        with:
+          credentials: "${{ secrets.CHARMHUB_TOKEN }}"
+          origin-channel: "${{ needs.pre-release.outputs.channel }}"
+          destination-channel: "${{ needs.pre-release.outputs.promote-channel }}"
+          charm-path: ${{ steps.post-build.outputs.charm-dir }}
+          charmcraft-channel: latest/stable
+
+      - name: Send notification
+        uses: ./.github/actions/send-notification
+        with:
+          webhook-url: "${{ secrets.WEBBOT_URL }}"
+          message: |
+            Successfully published Juju Dashboard ${{ matrix.charm-kind }} charm `${{ needs.pre-release.outputs.version }}` to `${{ needs.pre-release.outputs.promote-channel || needs.pre-release.outputs.channel }}`
+      - name: Send notification on failure
+        if: failure()
+        uses: ./.github/actions/send-notification
+        with:
+          webhook-url: "${{ secrets.WEBBOT_URL }}"
+
+  post-release:
+    name: "Create tags and releases"
+    runs-on: ubuntu-22.04
+
+    needs: [pre-release, release]
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+      - name: Tag commits
+        id: tags
+        run: |
+          create_or_update_tag () {
+            tag="$1"
+
+            echo "Creating tag '$tag' at $(git rev-parse --short HEAD)"
+
+            # Tag the current commit, force updating if required
+            git tag -f "$tag"
+          }
+
+          # Tag original channel
+          create_or_update_tag 'track/${{ needs.pre-release.outputs.channel }}'
+
+          # Tag promoted channel, if required
+          if [ ! -z '${{ needs.pre-release.outputs.promote-channel }}' ]; then
+            create_or_update_tag 'track/${{ needs.pre-release.outputs.promote-channel }}'
+          fi
+
+          # Tag version
+          version_tag='v${{ needs.pre-release.outputs.version }}'
+          create_or_update_tag "$version_tag"
+
+          git push --tags --force
+
+          echo "version-tag=$version_tag" | tee -a "$GITHUB_OUTPUT"
+
+      - name: "Download k8s charm artifact"
+        uses: actions/download-artifact@v4
+        with:
+          name: juju-dashboard-k8s.charm
+          path: release-artifacts
+      - name: "Download machine charm artifact"
+        uses: actions/download-artifact@v4
+        with:
+          name: juju-dashboard-machine.charm
+          path: release-artifacts
+
+      - name: "Create release"
+        uses: ncipollo/release-action@v1
+        with:
+          name: "Juju Dashboard ${{ needs.pre-release.outputs.version }}"
+          tag: ${{ steps.tags.outputs.version-tag }}
+          allowUpdates: true
+          replacesArtifacts: true
+          prerelease: ${{ steps.pre-release.outputs.is-pre-release }}
+          artifacts: release-artifacts/**/*.charm
+          body: |
+            Published `${{ steps.tags.outputs.version-tag }}` to Charmhub on `${{ needs.pre-release.outputs.promote-channel || needs.pre-release.outputs.channel }}` channel.
+
+            ---
+
+            # Changelog
+
+            ${{ needs.pre-release.outputs.changelog }}

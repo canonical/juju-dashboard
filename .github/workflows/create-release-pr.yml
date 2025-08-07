@@ -1,0 +1,21 @@
+name: Create release PR
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - release/*
+
+permissions: write-all
+
+jobs:
+  create-release-pr:
+    name: "Create release PR"
+    runs-on: "ubuntu-latest"
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/create-release-pr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
