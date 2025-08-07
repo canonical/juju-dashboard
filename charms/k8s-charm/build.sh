@@ -13,7 +13,7 @@ DASHBOARD_IMAGE_ID=""
 # 1. Build or reuse the Juju Dashboard Docker image
 if [ "$BUILD_TYPE" == "source" ]; then
     DASHBOARD_IMAGE_ID="dashboard-image:local"
-    
+
     # Navigate to the root and build the image in a subshell
     (
         cd "$ROOT_DIR"
@@ -24,8 +24,8 @@ elif [ "$BUILD_TYPE" == "dashboard-resource" ]; then
     # The ID comes directly from the input resource
     DASHBOARD_IMAGE_ID="canonicalwebteam/juju-dashboard:${DASHBOARD_RESOURCE}"
 else
-    echo "Error: Invalid BUILD_TYPE specified: '$BUILD_TYPE'."
-    echo "Accepted types are 'source' (default) or 'dashboard-resource'."
+    echo "Error: Invalid BUILD_TYPE specified: '$BUILD_TYPE'." >&2
+    echo "Accepted types are 'source' (default) or 'dashboard-resource'." >&2
     exit 1
 fi
 
@@ -33,15 +33,15 @@ fi
 echo "id=$DASHBOARD_IMAGE_ID"
 
 # 2. Install charmcraft if required
-if ! which charmcraft ; then
-    echo "Charmcraft CLI not detected, installing with snap."
+if [ ! $(which charmcraft) ]; then
+    echo "Charmcraft CLI not detected, installing with snap." >&2
 
     sudo snap install charmcraft --classic
 
     # 2.5. Wait for snap changes
     while [ -n "$(snap changes charmcraft 2>/dev/null | awk '/^[0-9]+/ {if ($2 != "Done") print $2 }')" ]; do
-    echo "Waiting for 'charmcraft' snap changes on host to finish..."
-    sleep 1
+        echo "Waiting for 'charmcraft' snap changes on host to finish..." >&2
+        sleep 1
     done
     sleep 1
 fi

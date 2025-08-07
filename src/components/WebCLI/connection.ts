@@ -2,7 +2,6 @@ import { toErrorString } from "utils";
 
 export enum Label {
   INCORRECT_DATA_ERROR = "Invalid response from the server.",
-  JAAS_CONNECTION_ERROR = "Unable to connect to JAAS controller.",
 }
 
 type Options = {
@@ -95,21 +94,6 @@ class Connection {
       }
       if (!data || typeof data !== "object") {
         throw new Error(Label.INCORRECT_DATA_ERROR);
-      }
-      if (
-        "redirect-to" in data &&
-        data["redirect-to"] &&
-        typeof data["redirect-to"] === "string"
-      ) {
-        try {
-          // This is a JAAS controller and we need to instead
-          // connect to the sub controller.
-          this.disconnect();
-          this.#address = data["redirect-to"];
-          this.connect();
-        } catch (error) {
-          throw new Error(Label.JAAS_CONNECTION_ERROR);
-        }
       }
       if ("done" in data && data.done) {
         // This is the last message so send the entire message.
