@@ -20,6 +20,8 @@ test.describe("cross model queries", () => {
   let app: Application;
 
   test.beforeAll(async ({ jujuCLI, testOptions }) => {
+    // Give the beforeAll enough time to finish the setup:
+    test.setTimeout(300000);
     actions = new ActionStack(jujuCLI);
     await actions.prepare((add) => {
       user = add(jujuCLI.createUser());

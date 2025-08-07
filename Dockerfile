@@ -34,7 +34,8 @@ RUN apt update && apt install --yes nginx
 
 WORKDIR /srv
 
-COPY nginx.conf /etc/nginx/sites-available/default
+# Optionally copy over the nginx.conf. When deployed with the charm this file will be created at run time.
+COPY nginx.conf* /etc/nginx/sites-available/default
 COPY entrypoint entrypoint
 COPY --from=build-js /srv/build .
 

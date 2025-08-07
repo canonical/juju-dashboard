@@ -27,14 +27,9 @@ runs:
       with:
         ref: ${{ inputs.dashboard-ref }}
         path: juju-dashboard-release
-    - name: Build Juju Dashboard image
-      shell: bash
-      run: |
-        cd '${{ github.workspace }}/juju-dashboard-release'
-        DOCKER_BUILDKIT=1 docker build -t juju-dashboard:local .
     - name: Configure Dashboard
       run: |
-        cat << EOF > public/config.js
+        cat << EOF > ${{ github.workspace }}/juju-dashboard-release/public/config.js
         var jujuDashboardConfig = {
           controllerAPIEndpoint: "${{ inputs.controller-ws-address }}",
           baseAppURL: "/",
@@ -44,14 +39,28 @@ runs:
         };
         EOF
       shell: bash
+    - name: Configure nginx
+      run: |
+        pip install jinja2-cli
+        cd '${{ github.workspace }}/juju-dashboard-release'
+        echo '{"port": 80, "dashboard_root": "/srv"}' | jinja2 charms/k8s-charm/src/nginx.conf.j2 > nginx.conf
+      shell: bash
+    - name: Build Juju Dashboard image
+      shell: bash
+      run: |
+        cd '${{ github.workspace }}/juju-dashboard-release'
+        DOCKER_BUILDKIT=1 docker build -t juju-dashboard:local .
     - name: Run the Docker image
       if: ${{ inputs.run == 'true' }}
       run: docker run --name juju-dashboard --detach juju-dashboard:local
       shell: bash
     - name: Wait for container to be ready
       if: ${{ inputs.run == 'true' }}
-      run: while [ "$(docker inspect -f {{.State.Running}} juju-dashboard)" != "true" ]; do sleep 1; done
-      shell: bash
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 1
+        max_attempts: 2
+        command: while [ "$(docker inspect -f {{.State.Running}} juju-dashboard)" != "true" ]; do sleep 1; done
     - name: Get the dashboard address
       id: dashboard-address
       if: ${{ inputs.run == 'true' }}
