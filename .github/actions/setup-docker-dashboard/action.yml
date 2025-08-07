@@ -56,8 +56,11 @@ runs:
       shell: bash
     - name: Wait for container to be ready
       if: ${{ inputs.run == 'true' }}
-      run: while [ "$(docker inspect -f {{.State.Running}} juju-dashboard)" != "true" ]; do sleep 1; done
-      shell: bash
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 1
+        max_attempts: 2
+        command: while [ "$(docker inspect -f {{.State.Running}} juju-dashboard)" != "true" ]; do sleep 1; done
     - name: Get the dashboard address
       id: dashboard-address
       if: ${{ inputs.run == 'true' }}

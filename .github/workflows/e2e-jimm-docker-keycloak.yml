@@ -68,8 +68,11 @@ jobs:
       - name: Restart JIMM
         run: docker restart jimm # Fixes a context cancelled issue when fetching models from the dashboard.
       - name: Wait for JIMM container to be ready
-        run: while [ "$(docker inspect -f {{.State.Restarting}} jimm)" == "true" ]; do sleep 1; done
-        shell: bash
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 1
+          max_attempts: 2
+          command: while [ "$(docker inspect -f {{.State.Restarting}} jimm)" == "true" ]; do sleep 1; done
       - name: Install jaas plugin
         run: sudo snap install jaas
       - name: Run tests
