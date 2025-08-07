@@ -38,6 +38,8 @@ contribute and what kinds of contributions are welcome.
   - [Deployed JIMM controller](#deployed-jimm-controller)
   - [Local JIMM controller](#local-jimm-controller)
     - [Set up JIMM](#set-up-jimm)
+    - [Creating the Multipass instance](#creating-the-multipass-instance)
+    - [Login to Keycloak](#login-to-keycloak)
     - [Forward ports](#forward-ports)
     - [Set up Juju Dashboard](#set-up-juju-dashboard)
     - [Restarting JIMM](#restarting-jimm)
@@ -55,8 +57,6 @@ contribute and what kinds of contributions are welcome.
 To get started working on the dashboard you will need to set up a local
 development environment and you will also need access to a Juju controller (JAAS may be
 sufficient to get started).
-
-Once set up you might like to take a look at our [codebase overview and development guidelines](#codebase-and-development-guidelines).
 
 If you want to you can set up the dashboard inside a
 [Multipass](https://multipass.run) container. This will provide a clean
@@ -77,10 +77,14 @@ On Ubuntu you can install Node.js with:
 sudo snap install node --classic
 ```
 
-On macOs Node.js can be [installed via the instructions](https://nodejs.org/en/download/package-manager#macos).
+On macOs, Node.js can be [installed via the instructions](https://nodejs.org/en/download/package-manager#macos).
 
 Next, follow the [Yarn install
 instructions](https://yarnpkg.com/getting-started/install).
+
+### Dotrun vs Yarn
+
+To use the dashboard with [Dotrun](https://github.com/canonical/dotrun) just replace `yarn ...` commands with `dotrun ...`.
 
 Now you will need to get a copy of the dashboard. Go to the [dashboard
 repo](https://github.com/canonical/juju-dashboard), login and fork it.
@@ -104,7 +108,7 @@ Then start the dashboard with:
 yarn start
 ```
 
-Next you can move on to configuring a Juju controller to use with the dashboard.
+Next you can move on to [configuring](#controller-configuration) a Juju controller to use with the dashboard.
 
 ### Controller configuration
 
@@ -131,9 +135,7 @@ isJuju: true,
 Don't forget to [accept the self signed certificate](#self-signed-certificates)
 for the controller.
 
-### Dotrun vs Yarn
-
-To use the dashboard with [Dotrun](https://github.com/canonical/dotrun) just replace `yarn ...` commands with `dotrun ...`.
+Once set up you might like to take a look at our [codebase overview and development guidelines](#codebase-and-development-guidelines).
 
 ## Codebase and development guidelines
 
@@ -260,16 +262,17 @@ Vanilla Framework elements.
 
 ## Juju controllers in Multipass
 
-The easiest way to set up a juju controller is inside a
+The easiest way to set up a Juju controller is inside a
 [Multipass](https://multipass.run) container. This allows you cleanly add and
 remove controllers as necessary and provides a way to have multiple controllers
 running at once (with different Juju versions if needed).
 
-There are three main types of deployment:
+There are four main types of deployment:
 
 - [Juju controller](#juju-controller)
 - [Juju with Kubernetes](./docs/multipass-microk8s.md)
-- [JIMM controller](#jimm-controller)
+- [Deployed JIMM controller](#deployed-jimm-controller)
+- [Local JIMM controller](#local-jimm-controller)
 
 ### Juju controller
 
@@ -546,25 +549,7 @@ https://jimm-dashboard.k8s.dev.canonical.com
 
 ### Local JIMM controller
 
-First, create a new Multipass container. You may need to adjust the resources
-depending on your host machine, but you will need to allocate at least 20GB of
-disk space.
-
-```shell
-multipass launch --cpus 2 --disk 20G --memory 8G --name jimm
-```
-
-Copy your ssh key into the container. You can do this manually or use this one-liner:
-
-```shell
-cat ~/.ssh/id_[key-name].pub | multipass exec jimm -- tee -a .ssh/authorized_keys
-```
-
-SSH into the container:
-
-```shell
-ssh -A ubuntu@[multipass.ip]
-```
+For this, you need Multipass and a local copy of the [JIMM](https://github.com/canonical/jimm) repository on your host machine.
 
 #### Set up JIMM
 
@@ -584,16 +569,33 @@ nano docker-compose.common.yaml
 
 Set `JIMM_DASHBOARD_FINAL_REDIRECT_URL` and `CORS_ALLOWED_ORIGINS` to `"http://jimm.localhost:8036"`.
 
-Next follow the first three steps in the [Starting the
-environment](https://github.com/canonical/jimm/tree/v3/local#starting-the-environment)
-section of the JIMM docs.
+#### Creating the Multipass instance
 
-Now follow the [Q/A Setup](https://github.com/canonical/jimm/tree/v3/local#qa-setup)
-steps.
+We will be using the [`qa-lxd-multipass.sh`](https://github.com/canonical/jimm/blob/v3/local/jimm/qa-lxd-multipass.sh) script for setting our local JAAS environment up. This script allocates minimum amount of resources required to set up a Multipass instance but you can tweak the values as per your host machine [here](https://github.com/canonical/jimm/blob/4dc453250ff509d31d77840faea6d1e5c8b8c8c4/local/jimm/qa-lxd-multipass.sh#L24).
 
-Then you can run the LXD environment with the [`make qa-lxd`](https://github.com/canonical/jimm/tree/v3/local#all-in-one-commands) script.
+Now, you can run this script:
 
-_NOTE: `make qa-lxd` may not succeed on the first run._
+> Note: The `INSECURE_SECRET_STORAGE` option makes JIMM store secrets in Postgresql for persistence, which is necessary for container restarts. Without this flag, secrets are lost when the Vault container restarts, causing `missing target controller credentials` errors.
+
+```shell
+cd ./local/jimm
+INSECURE_SECRET_STORAGE=true ./qa-lxd-multipass.sh
+```
+
+Wait for the instance to complete setting up. This may take a while but if it takes any longer than 20 minutes, you may have to tweak the resource values in the script. For example, you might need to allocate more CPU or memory space:
+
+```shell
+multipass launch --cpus 4 --memory 16G docker -n $VM_NAME
+```
+
+#### Login to Keycloak
+
+After a while, it will prompt you to login to Keycloak with a code. Use the following credentials to login and grant access from Keycloak.
+
+- Name: `jimm-test`
+- Password: `password`
+
+After this point, the controller should start bootstrapping. When this is done, you already have a local JAAS setup on your Multipass instance. Now, all that is required is to forward ports to view this on the dashboard.
 
 #### Forward ports
 
@@ -602,57 +604,20 @@ Multipass container, you can use an SSH port forward. This will also enable
 access to the Multipass using the hostnames set up inside the Multipass e.g.
 jimm.localhost.
 
-On Linux, ports below 1024 are privileged. The easiest way to get around this is
-to port forward as root.
-
-Start by generating SSH keys for root:
+Navigate to the JIMM repository on your host machine and run the following script to forward all necessary ports:
 
 ```shell
-sudo ssh-keygen
+cd ./local/jimm
+./qa-lxd-multipass-forward.sh --wait
 ```
 
-Copy your root ssh key into the container. You can do this manually or use this one-liner:
-
-```shell
-sudo cat /root/.ssh/id_[key-name].pub | multipass exec jimm -- tee -a .ssh/authorized_keys
-```
-
-Now from your host machine run the following:
-
-```shell
-export JIMM_CONTAINER=[multipass.ip]
-sudo ssh -A -L :8082:$JIMM_CONTAINER:8082 -L :17070:$JIMM_CONTAINER:17070  -L :443:$JIMM_CONTAINER:443 -L :8036:$JIMM_CONTAINER:8036 ubuntu@$JIMM_CONTAINER
-```
+Leave this running in a terminal.
 
 #### Set up Juju Dashboard
 
-Inside the JIMM Multipass, get your fork of the dashboard:
+You don't need a copy of the dashboard source code in the Multipass instance. You can use the one on your host as all necessary ports are already forwarded between the two in the previous step.
 
-```shell
-cd ~
-git clone git@github.com:[your-username]/juju-dashboard.git
-cd juju-dashboard
-```
-
-Install Node.js an Yarn:
-
-```shell
-sudo snap install node --classic
-```
-
-Install the dependencies:
-
-```shell
-yarn install
-```
-
-Copy the configuration file:
-
-```shell
-cp public/config.js public/config.local.js
-```
-
-Edit the file:
+Edit the configuration file from your local dashboard's source code:
 
 ```shell
 nano public/config.local.js
@@ -661,7 +626,8 @@ nano public/config.local.js
 Change the configuration as follows:
 
 ```shell
-controllerAPIEndpoint: "ws://jimm.localhost:17070/api",
+controllerAPIEndpoint: "wss://jimm.localhost/api",
+isJuju: false
 ```
 
 Now you can start the dashboard with:
@@ -676,15 +642,24 @@ To access the dashboard you can visit:
 http://jimm.localhost:8036/
 ```
 
-To log in you need to use the username and password listed in: [Controller set up](https://github.com/canonical/jimm/tree/v3/local#controller-set-up).
-
 #### Restarting JIMM
 
 Each time you start the multipass container you need to do the following:
 
-1. [Forward ports](#forward-ports)
-2. Recreate the JIMM environment with `make qa-lxd`.
-3. Now you can start the dashboard as normal.
+1. Restart all services from `docker compose` in your Multipass instance
+
+```shell
+docker compose --profile dev up -d
+```
+
+2. Restart JIMM service to make sure it is aligned with others
+
+```shell
+docker restart jimm
+```
+
+3. [Forward ports](#forward-ports)
+4. Now you can start the dashboard as normal.
 
 #### Adding users
 
