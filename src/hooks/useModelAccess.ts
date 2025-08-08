@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useMemo } from "react";
 
 import { useCheckRelations } from "juju/api-hooks/permissions";
 import { JIMMRelation } from "juju/jimm/JIMMV4";
@@ -40,30 +40,34 @@ const useModelAccess = (modelUUID?: string | null, cleanup?: boolean) => {
   const jujuAccess = useAppSelector((state) =>
     getModelAccess(state, modelUUID),
   );
-  const relations =
-    isJIMM && controllerUser && modelUUID
-      ? [
-          {
-            object: controllerUser,
-            relation: JIMMRelation.ADMINISTRATOR,
-            target_object: `model-${modelUUID}`,
-          },
-          {
-            object: controllerUser,
-            relation: JIMMRelation.WRITER,
-            target_object: `model-${modelUUID}`,
-          },
-          {
-            object: controllerUser,
-            relation: JIMMRelation.READER,
-            target_object: `model-${modelUUID}`,
-          },
-        ]
-      : null;
+  const relations = useMemo(
+    () =>
+      isJIMM && controllerUser && modelUUID
+        ? [
+            {
+              object: controllerUser,
+              relation: JIMMRelation.ADMINISTRATOR,
+              target_object: `model-${modelUUID}`,
+            },
+            {
+              object: controllerUser,
+              relation: JIMMRelation.WRITER,
+              target_object: `model-${modelUUID}`,
+            },
+            {
+              object: controllerUser,
+              relation: JIMMRelation.READER,
+              target_object: `model-${modelUUID}`,
+            },
+          ]
+        : null,
+    [controllerUser, isJIMM, modelUUID],
+  );
   const permissions = useAppSelector((state) =>
     getReBACPermissions(state, relations),
   );
-  const requestId = useId();
+  // TODO undo
+  const requestId = "useModelAccess";
   useCheckRelations(requestId, relations, cleanup);
   if (isJuju) {
     return jujuAccess;

@@ -1,5 +1,7 @@
 import type { JujuCLI } from "./juju-cli";
 
+const TEST_KEY = "Running test";
+
 /**
  * An action is a reversible side-effect executed within the test environment. Action
  * implementations are free to capture any required state as member properties, and use them for
@@ -49,8 +51,10 @@ export class ActionStack {
     });
 
     // Run each action
+    const TIME_KEY = "Setup actions";
+    console.time(TIME_KEY);
     console.log("---------------------");
-    console.log("Beginning action run.");
+    console.log(TIME_KEY, "starting.");
     for (const action of actions) {
       console.log(`Action: ${action.debug()}`);
 
@@ -59,20 +63,25 @@ export class ActionStack {
 
       await action.run(this.jujuCLI).catch((error) => {
         console.error("Error encountered during action, aborting:", error);
+        console.timeEnd(TIME_KEY);
         throw error;
       });
 
+      console.timeLog(TIME_KEY, "Action complete.");
       console.log();
     }
-    console.log("Action run complete.");
+    console.timeEnd(TIME_KEY);
+    console.log(TIME_KEY, "complete.");
     console.log("--------------------");
 
     return value;
   }
 
   public async rollback(): Promise<void> {
+    const TIME_KEY = "Action stack rollback";
+    console.time(TIME_KEY);
     console.log("--------------------------------");
-    console.log("Beginning action stack rollback.");
+    console.log(TIME_KEY, "starting.");
 
     let action: Action<unknown> | undefined;
     while ((action = this.actions.pop())) {
@@ -80,10 +89,12 @@ export class ActionStack {
 
       await action.rollback(this.jujuCLI);
 
+      console.timeLog(TIME_KEY, "Action complete.");
       console.log();
     }
 
-    console.log("Action stack rollback complete.");
+    console.timeEnd(TIME_KEY);
+    console.log(TIME_KEY, "complete.");
     console.log("-------------------------------");
   }
 }

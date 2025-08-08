@@ -1,4 +1,6 @@
+import { usePrevious } from "@canonical/react-components";
 import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import fastDeepEqual from "fast-deep-equal/es6";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, useOutletContext, useMatch } from "react-router";
@@ -82,19 +84,36 @@ export const useCleanupOnUnmount = <P>(
 ) => {
   const dispatch = useDispatch();
   const cleanupPayload = useRef<(() => void) | null>(null);
+  const previousCleanup = usePrevious(cleanupAction, true);
+  const previousPayload = usePrevious(payload, true);
+  // Check if it has changed using deepEqual so that it ignores changes if the
+  // objects have a new reference, but the values are the same.
+  const cleanupChanged = !fastDeepEqual(cleanupAction, previousCleanup);
+  const payloadChanged = !fastDeepEqual(payload, previousPayload);
 
   // Store the cleanup action in a ref, this is required otherwise the cleanup
   // action will get called whenever any of the args change instead of when the
   // component is unmounted.
   useEffect(() => {
-    if (cleanupEnabled && payload) {
+    if (cleanupEnabled && payload && (cleanupChanged || payloadChanged)) {
+      console.log("update cleanup action");
       cleanupPayload.current = () => dispatch(cleanupAction(payload));
     }
-  }, [cleanupEnabled, cleanupAction, dispatch, payload]);
+  }, [
+    cleanupEnabled,
+    cleanupAction,
+    dispatch,
+    payload,
+    cleanupChanged,
+    payloadChanged,
+  ]);
 
   // Clean up the store when the component that is using the hook gets unmounted.
   useEffect(
     () => () => {
+      if (cleanupPayload.current) {
+        console.log("clean up on unmount");
+      }
       cleanupPayload.current?.();
     },
     [],

@@ -85,7 +85,7 @@ export abstract class User {
   /**
    * Use this user to authenticate with the Juju CLI.
    */
-  abstract cliLogin(): Promise<void>;
+  abstract cliLogin(browser: Browser): Promise<void>;
 
   /**
    * Get the username for this user suitable for use on the CLI.

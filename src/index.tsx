@@ -141,9 +141,7 @@ function bootstrap() {
 
   getRoot()?.render(
     <Provider store={reduxStore}>
-      <StrictMode>
-        <App />
-      </StrictMode>
+      <App />
     </Provider>,
   );
 }

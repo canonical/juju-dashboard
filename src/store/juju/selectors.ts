@@ -778,6 +778,10 @@ export const getModelUUID = createSelector(
   },
 );
 
+export const getModelUUIDs = createSelector([getModelData], (modelData) =>
+  Object.keys(modelData).map((modelUUID) => modelUUID),
+);
+
 /**
     Returns a model status for the supplied modelUUID.
     @param modelUUID The model UUID to fetch the status for
@@ -1120,6 +1124,16 @@ export const getReBACPermissionLoaded = createSelector(
   },
 );
 
+export const getReBACPermissionErrors = createSelector(
+  [
+    (state, tuple?: RelationshipTuple | null) =>
+      getReBACPermission(state, tuple),
+  ],
+  (permission) => {
+    return permission?.errors ?? false;
+  },
+);
+
 export const hasReBACPermission = createSelector(
   [
     (state, tuple?: RelationshipTuple | null) =>
@@ -1149,6 +1163,11 @@ export const getReBACRelationshipsLoading = createSelector(
 export const getReBACRelationshipsLoaded = createSelector(
   [(state, requestId: string) => getReBACRelationships(state, requestId)],
   (permission) => permission?.loaded ?? false,
+);
+
+export const getReBACRelationshipsErrors = createSelector(
+  [(state, requestId: string) => getReBACRelationships(state, requestId)],
+  (permission) => permission?.errors,
 );
 
 export const getCommandHistory = createSelector(

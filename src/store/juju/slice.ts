@@ -78,11 +78,16 @@ const updateCheckRelation = (
   state: JujuState,
   tuple: RelationshipTuple,
   changes: Omit<Partial<ReBACAllowed>, "tuple">,
+  ignoreIfLoading = false,
 ) => {
   const existingIndex = state.rebac.allowed.findIndex((relation) =>
     fastDeepEqual(relation.tuple, tuple),
   );
   if (existingIndex >= 0) {
+    // Don't update the state if it's already loading.
+    if (ignoreIfLoading && state.rebac.allowed[existingIndex].loading) {
+      return;
+    }
     state.rebac.allowed[existingIndex] = {
       ...state.rebac.allowed[existingIndex],
       ...changes,
@@ -97,11 +102,16 @@ const updateCheckRelation = (
 };
 
 const startCheckRelation = (state: JujuState, tuple: RelationshipTuple) => {
-  updateCheckRelation(state, tuple, {
-    errors: null,
-    loaded: false,
-    loading: true,
-  });
+  updateCheckRelation(
+    state,
+    tuple,
+    {
+      errors: null,
+      loaded: false,
+      loading: true,
+    },
+    true,
+  );
 };
 
 const slice = createSlice({
@@ -518,6 +528,7 @@ const slice = createSlice({
         tuples: RelationshipTuple[];
       }>,
     ) => {
+      console.log("addCheckRelations", JSON.stringify(payload));
       payload.tuples.forEach((tuple, i) => {
         updateCheckRelation(state, tuple, {
           ...(payload.permissions[i] ? payload.permissions[i] : {}),
@@ -555,6 +566,7 @@ const slice = createSlice({
         tuples: RelationshipTuple[];
       }>,
     ) => {
+      console.log("addCheckRelationsErrors", JSON.stringify(payload));
       payload.tuples.forEach((tuple) => {
         updateCheckRelation(state, tuple, {
           loading: false,
@@ -585,6 +597,7 @@ const slice = createSlice({
       state,
       { payload }: PayloadAction<{ requestId: string }>,
     ) => {
+      console.log("removeCheckRelations", JSON.stringify(payload));
       const existingIndex = state.rebac.relationships.findIndex(
         (relation) => relation.requestId === payload.requestId,
       );

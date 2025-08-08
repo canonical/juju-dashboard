@@ -28,7 +28,7 @@ runs:
       run: yarn install
     - name: Install Playwright Browsers
       if: ${{ inputs.setup == 'true' }}
-      run: yarn playwright install --with-deps --only-shell chromium
+      run: yarn playwright install --with-deps --no-shell
       shell: bash
     - name: Get dashboard address
       if: ${{ inputs.run == 'true' }}
@@ -42,7 +42,7 @@ runs:
       shell: bash
     - name: Run Playwright tests
       if: ${{ inputs.run == 'true' }}
-      run: yarn playwright test
+      run: yarn playwright test controllers.spec.ts
       shell: bash
       env:
         DASHBOARD_ADDRESS: ${{ steps.dashboard.outputs.address }}

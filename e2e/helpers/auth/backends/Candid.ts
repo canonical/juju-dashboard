@@ -47,7 +47,7 @@ export class CreateCandidUser implements Action<CandidUser> {
     await setCandidConfig(candidConfig);
     console.log(`Candid user created: ${this.username}`);
 
-    await jujuCLI.loginLocalCLIAdmin();
+    await jujuCLI.loginLocalCLIAdmin(jujuCLI.browser);
 
     // Ensure the user has the correct grant to allow them to login.
     const user = this.result();
@@ -55,7 +55,7 @@ export class CreateCandidUser implements Action<CandidUser> {
   }
 
   async rollback(jujuCLI: JujuCLI) {
-    await jujuCLI.loginLocalCLIAdmin();
+    await jujuCLI.loginLocalCLIAdmin(jujuCLI.browser);
 
     // Revoke the user's grant.
     const user = this.result();
@@ -100,7 +100,7 @@ export class CandidUser extends LocalUser {
     await page.reload();
   }
 
-  override async cliLogin() {
+  override async cliLogin(browser: Browser) {
     await exec("juju logout");
 
     // Begin the login

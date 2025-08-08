@@ -1,5 +1,5 @@
 import { JujuEnv } from "../../fixtures/setup";
-import { exec, generateRandomName } from "../../utils";
+import { exec, generateRandomName, juju } from "../../utils";
 import type { Action } from "../action";
 import type { User } from "../auth";
 import type { JujuCLI } from "../juju-cli";
@@ -21,7 +21,7 @@ export class AddModel implements Action<Model> {
       // In JIMM models need to be added to the workloads controller.
       await exec(`juju switch '${jujuCLI.controller}'`);
     }
-    await this.model.owner.cliLogin();
+    await this.model.owner.cliLogin(jujuCLI.browser);
     await exec(`juju add-model '${this.model.name}'`);
   }
 
@@ -29,7 +29,7 @@ export class AddModel implements Action<Model> {
     if (jujuCLI.jujuEnv == JujuEnv.JIMM) {
       await exec(`juju switch '${jujuCLI.controller}'`);
     }
-    await this.model.owner.cliLogin();
+    await this.model.owner.cliLogin(jujuCLI.browser);
     await exec(
       `juju destroy-model ${this.model.name} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
     );
