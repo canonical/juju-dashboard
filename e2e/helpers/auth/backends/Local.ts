@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import type { Browser, Page } from "@playwright/test";
 
 import type { User } from "..";
 import { addFeatureFlags, juju } from "../../../utils";
@@ -17,7 +17,7 @@ export class CreateLocalUser implements Action<LocalUser> {
   }
 
   async run(jujuCLI: JujuCLI) {
-    await jujuCLI.loginLocalCLIAdmin();
+    await jujuCLI.loginLocalCLIAdmin(jujuCLI.browser);
     await exec(
       `juju add-user --controller '${jujuCLI.controller}' '${this.username}'`,
     );
@@ -27,7 +27,7 @@ export class CreateLocalUser implements Action<LocalUser> {
   }
 
   async rollback(jujuCLI: JujuCLI) {
-    await jujuCLI.loginLocalCLIAdmin();
+    await jujuCLI.loginLocalCLIAdmin(jujuCLI.browser);
     await exec(
       `juju remove-user --yes --quiet --controller '${jujuCLI.controller}' '${this.username}'`,
     );
@@ -60,7 +60,7 @@ export class LocalUser implements User {
     await this.enterCredentials(page);
   }
 
-  async cliLogin() {
+  async cliLogin(browser: Browser) {
     await juju.login(this.cliUsername, this.password);
   }
 

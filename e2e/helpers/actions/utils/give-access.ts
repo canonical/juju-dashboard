@@ -28,12 +28,12 @@ export class GiveAccess<Entity extends Model | Controller>
     if (jujuCLI.jujuEnv == JujuEnv.JUJU) {
       const entityName =
         this.tag === "controller" ? "" : `'${this.entityName}'`;
-      await this.entity.owner.cliLogin();
+      await this.entity.owner.cliLogin(jujuCLI.browser);
       await exec(
         `juju ${jujuCommand} '${this.user.cliUsername}' '${this.access}' '${entityName}'`,
       );
     } else {
-      await jujuCLI.loginIdentityCLIAdmin();
+      await jujuCLI.loginIdentityCLIAdmin(jujuCLI.browser);
       await exec(
         `juju jaas ${jimmCommand} 'user-${this.user.cliUsername}' '${this.jimmAccess[this.access]}' '${[this.tag, this.entityName].join("-")}'`,
       );
