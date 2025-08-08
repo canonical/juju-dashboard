@@ -1,6 +1,7 @@
 import { MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 
+import MigrateButton from "components/MigrateButton";
 import ModelDetailsLink from "components/ModelDetailsLink";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import {
@@ -138,6 +139,9 @@ function generateModelTableDataByStatus(
               </AccessColumn>
             ),
             className: "u-align--right lrg-screen-access-cell",
+          },
+          {
+            content: <MigrateButton modelName={model.model.name} />,
           },
         ],
         sortData: {

@@ -1,0 +1,62 @@
+.share-model {
+  .add-user-btn {
+    display: flex;
+    margin-bottom: 0;
+    padding-left: 0.5rem;
+
+    @media (min-width: $breakpoint-small) {
+      display: none;
+    }
+  }
+
+  .p-notification--negative {
+    margin: 0 1rem;
+  }
+
+  .p-radio {
+    margin-bottom: 1rem;
+
+    .help-text {
+      color: $color-mid-dark;
+      display: block;
+      font-size: #{map-get($font-sizes, small)}rem;
+      text-indent: 0;
+    }
+  }
+
+  .action-wrapper {
+    display: flex;
+    margin-top: 2rem;
+
+    button {
+      margin-left: auto;
+    }
+  }
+
+  .share-cards {
+    &__heading {
+      display: flex;
+
+      button {
+        margin-bottom: 0.5rem;
+        margin-left: auto;
+        padding-left: 1rem;
+      }
+    }
+  }
+
+  // Toggle the cards and form view on small screens
+  @media (max-width: $breakpoint-small) {
+    [data-mobile-show-add-user="false"] & {
+      .aside-split-col--right {
+        display: none !important;
+      }
+    }
+
+    [data-mobile-show-add-user="true"] & {
+      .aside-split-col--left {
+        display: none !important;
+      }
+    }
+  }
+}

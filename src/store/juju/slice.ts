@@ -17,6 +17,7 @@ import type {
   CheckRelationResponse,
   CrossModelQueryRequest,
   CrossModelQueryResponse,
+  InitiateMigrationResults,
   RelationshipTuple,
 } from "juju/jimm/JIMMV4";
 import type {
@@ -113,6 +114,13 @@ const slice = createSlice({
       loaded: false,
       loading: false,
       limit: DEFAULT_AUDIT_EVENTS_LIMIT,
+    },
+    migrateModel: {
+      results: null,
+      uuid: null,
+      loading: false,
+      loaded: false,
+      errors: null,
     },
     crossModelQuery: {
       results: null,
@@ -239,6 +247,48 @@ const slice = createSlice({
       _action: PayloadAction<FindAuditEventsRequest & WsControllerURLParam>,
     ) => {
       state.auditEvents.loading = true;
+    },
+    listControllers: (
+      state,
+      _action: PayloadAction<
+        {
+          modelUUID: string;
+          poll?: number;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.migrateModel.loading = true;
+      state.migrateModel.errors = null;
+      state.migrateModel.loaded = false;
+      state.migrateModel.results = null;
+    },
+    migrateModel: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          targetController: string;
+          poll?: number;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.migrateModel.uuid = action.payload.modelUUID;
+      state.migrateModel.loading = true;
+      state.migrateModel.errors = null;
+      state.migrateModel.loaded = false;
+      state.migrateModel.results = null;
+    },
+    updateMigrateModelResults: (
+      state,
+      { payload }: PayloadAction<InitiateMigrationResults>,
+    ) => {
+      state.migrateModel.results = payload.results;
+      state.migrateModel.loading = false;
+      state.migrateModel.errors = null;
+      state.migrateModel.loaded = true;
+    },
+    migrateModelErrors: (state, { payload }: PayloadAction<string | null>) => {
+      state.migrateModel.errors = payload;
     },
     updateAuditEvents: (state, { payload }: PayloadAction<AuditEvent[]>) => {
       state.auditEvents.items = payload;
