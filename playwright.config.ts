@@ -19,10 +19,10 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "list",
   use: {
-    video: "on",
+    video: "on-first-retry",
     baseURL: process.env.DASHBOARD_ADDRESS,
     trace: "on-first-retry",
-    screenshot: "on",
+    screenshot: "only-on-failure",
     ignoreHTTPSErrors: true,
   },
   timeout: BASE_TIMEOUT * TEST_TIMEOUT_MULT,
@@ -30,7 +30,7 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: { ...devices["Desktop Chrome"], channel: "chromium" },
     },
   ],
 });

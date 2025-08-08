@@ -30,6 +30,9 @@ runs:
         echo "Disk space"
         echo "-------------------------------------"
         df -h
+        echo "RAM"
+        echo "-------------------------------------"
+        free -m
     - name: Juju logs
       if: ${{ inputs.juju-env == 'juju' }}
       shell: bash

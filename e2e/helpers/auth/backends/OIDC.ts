@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import type { Browser, Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 
 import { getEnv, exec, addFeatureFlags } from "../../../utils";
@@ -17,7 +17,7 @@ export class CreateOIDCUser implements Action<OIDCUser> {
   ) {}
 
   async run(jujuCLI: JujuCLI) {
-    await jujuCLI.loginLocalCLIAdmin();
+    await jujuCLI.loginLocalCLIAdmin(jujuCLI.browser);
     await exec(`juju switch iam`);
     // Create the identity in Kratos.
     const userOutput =
@@ -40,7 +40,7 @@ export class CreateOIDCUser implements Action<OIDCUser> {
 
   async rollback(jujuCLI: JujuCLI) {
     await exec(`juju switch ${getEnv("JIMM_CONTROLLER_NAME")}:iam`);
-    await jujuCLI.loginLocalCLIAdmin();
+    await jujuCLI.loginLocalCLIAdmin(jujuCLI.browser);
     const user = this.result();
     await exec(
       `juju run --format=json kratos/0 delete-identity email='${user.dashboardUsername}'`,
@@ -81,13 +81,13 @@ export class OIDCUser extends LocalUser {
     await page.reload();
   }
 
-  override async cliLogin() {
+  override async cliLogin(browser: Browser) {
     let retry = 3;
     // This login is retried as sometimes the login fails if it is too slow and an error is displayed:
     // `cannot log into controller "jimm-k8s": connection is shut down`.
     while (retry-- > 0) {
       try {
-        await OIDC.loginCLI({
+        await OIDC.loginCLI(browser, {
           username: this.cliUsername,
           password: this.password,
         });
@@ -115,10 +115,12 @@ export class OIDCUser extends LocalUser {
 
 export class OIDC {
   static async loginCLI(
+    browser: Browser,
     user: Secret,
     registerController = false,
   ): Promise<void> {
     await deviceCodeLogin(
+      browser,
       user,
       IAM_DEVICE_CODE_REGEX,
       OIDC.uiLogin,

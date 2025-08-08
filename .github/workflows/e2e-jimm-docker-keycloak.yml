@@ -24,6 +24,11 @@ jobs:
       matrix:
         node-version: [22.x]
     steps:
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+          detached: true
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v4
       - name: Configure action
