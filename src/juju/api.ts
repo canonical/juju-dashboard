@@ -294,7 +294,10 @@ export async function fetchAndStoreModelStatus(
     same controller as provided by the wsControllerURL`.
   @returns The full modelInfo.
 */
-async function fetchModelInfo(conn: ConnectionWithFacades, modelUUID: string) {
+export async function fetchModelInfo(
+  conn: ConnectionWithFacades,
+  modelUUID: string,
+) {
   const modelInfo = await conn.facades.modelManager?.modelInfo({
     entities: [{ tag: `model-${modelUUID}` }],
   });

@@ -10,6 +10,7 @@ import {
   findAuditEvents,
   checkRelation,
   checkRelations,
+  migrateModel,
   Label,
 } from "./api";
 
@@ -265,6 +266,62 @@ describe("JIMM API", () => {
       } as unknown as Connection;
       await expect(
         checkRelations(conn, [relationshipTupleFactory.build()]),
+      ).rejects.toMatchObject(new Error("Uh oh!"));
+    });
+  });
+
+  describe("migrateModel", () => {
+    it("initiates model migration with supplied params", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            migrateModel: vi.fn(() => Promise.resolve(true)),
+          },
+        },
+      } as unknown as Connection;
+      const response = await migrateModel(conn, "my-model", "target");
+      expect(conn.facades.jimM.migrateModel).toHaveBeenCalledWith(
+        "my-model",
+        "target",
+      );
+      expect(response).toStrictEqual(true);
+    });
+
+    it("handles errors", async () => {
+      const error = new Error("Request failed");
+      const conn = {
+        facades: {
+          jimM: {
+            migrateModel: vi.fn().mockImplementation(() => {
+              throw error;
+            }),
+          },
+        },
+      } as unknown as Connection;
+      await expect(migrateModel(conn, "my-model", "target")).rejects.toBe(
+        error,
+      );
+    });
+
+    it("handles no JIMM connection", async () => {
+      const conn = {
+        facades: {},
+      } as unknown as Connection;
+      await expect(
+        migrateModel(conn, "my-model", "target"),
+      ).rejects.toMatchObject(new Error(Label.NO_JIMM));
+    });
+
+    it("should handle exceptions", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            migrateModel: vi.fn(() => Promise.reject(new Error("Uh oh!"))),
+          },
+        },
+      } as unknown as Connection;
+      await expect(
+        migrateModel(conn, "my-model", "target"),
       ).rejects.toMatchObject(new Error("Uh oh!"));
     });
   });
