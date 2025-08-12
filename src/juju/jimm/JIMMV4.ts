@@ -1,7 +1,8 @@
 import type { ConnectionInfo, Transport } from "@canonical/jujulib";
+import type { InitiateMigrationResults } from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
 import { autoBind } from "@canonical/jujulib/dist/api/utils";
 
-import JIMMV3 from "./JIMMV3";
+import JIMMV3, { type ControllerInfo } from "./JIMMV3";
 
 // As typed in JIMM:
 // https://github.com/canonical/jimm/blob/1da76ed2d8dba741f5880f32c073f85f7d518904/api/params/params.go#L344
@@ -55,14 +56,10 @@ export type CheckRelationsResponse = {
   results: CheckRelationResponse[];
 };
 
-export type InitiateMigrationResult = {
-  error?: Error;
-  "migration-id": string;
-  "model-tag": string;
-};
-
-export type InitiateMigrationResults = {
-  results: InitiateMigrationResult[];
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/c82e0cbba03387031a46ec3a48494803dce16995/pkg/api/params/params.go#L217
+export type ListControllersResponse = {
+  controllers: ControllerInfo[];
 };
 
 class JIMMV4 extends JIMMV3 {
@@ -131,6 +128,20 @@ class JIMMV4 extends JIMMV3 {
           specs: [
             { "model-tag": modelUUID, "target-controller": targetController },
           ],
+        },
+      };
+      this._transport.write(req, resolve, reject);
+    });
+  }
+
+  listMigrationTargets(modelTag: string): Promise<ListControllersResponse> {
+    return new Promise((resolve, reject) => {
+      const req = {
+        type: "JIMM",
+        request: "ListMigrationTargets",
+        version: 4,
+        params: {
+          "model-tag": modelTag,
         },
       };
       this._transport.write(req, resolve, reject);
