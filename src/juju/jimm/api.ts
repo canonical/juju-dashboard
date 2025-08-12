@@ -1,7 +1,11 @@
 import type { ConnectionWithFacades } from "juju/types";
 
 import type { FindAuditEventsRequest, AuditEvents } from "./JIMMV3";
-import type { CrossModelQueryResponse, RelationshipTuple } from "./JIMMV4";
+import type {
+  CrossModelQueryResponse,
+  InitiateMigrationResults,
+  RelationshipTuple,
+} from "./JIMMV4";
 
 export enum Label {
   NO_JIMM = "Not connected to JIMM.",
@@ -72,3 +76,20 @@ export const checkRelations = async (
   }
   return await conn.facades.jimM.checkRelations(tuples);
 };
+
+export function migrateModel(
+  conn: ConnectionWithFacades,
+  modelName: string,
+  targetController: string,
+) {
+  return new Promise<InitiateMigrationResults>((resolve, reject) => {
+    if (conn?.facades?.jimM) {
+      conn.facades.jimM
+        .migrateModel(modelName, targetController)
+        .then((migrateModelResponse) => resolve(migrateModelResponse))
+        .catch((error) => reject(error));
+    } else {
+      reject(new Error(Label.NO_JIMM));
+    }
+  });
+}
