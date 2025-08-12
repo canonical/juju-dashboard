@@ -135,4 +135,21 @@ describe("JIMMV4", () => {
       expect.any(Function),
     );
   });
+
+  it("listMigrationTargets", async () => {
+    const jimm = new JIMMV4(transport, connectionInfo);
+    void jimm.listMigrationTargets("my-model");
+    expect(transport.write).toHaveBeenCalledWith(
+      {
+        type: "JIMM",
+        request: "ListMigrationTargets",
+        version: 4,
+        params: {
+          "model-tag": "my-model",
+        },
+      },
+      expect.any(Function),
+      expect.any(Function),
+    );
+  });
 });

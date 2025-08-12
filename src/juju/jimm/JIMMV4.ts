@@ -1,7 +1,7 @@
 import type { ConnectionInfo, Transport } from "@canonical/jujulib";
 import { autoBind } from "@canonical/jujulib/dist/api/utils";
 
-import JIMMV3 from "./JIMMV3";
+import JIMMV3, { type ControllerInfo } from "./JIMMV3";
 
 // As typed in JIMM:
 // https://github.com/canonical/jimm/blob/1da76ed2d8dba741f5880f32c073f85f7d518904/api/params/params.go#L344
@@ -131,6 +131,22 @@ class JIMMV4 extends JIMMV3 {
           specs: [
             { "model-tag": modelUUID, "target-controller": targetController },
           ],
+        },
+      };
+      this._transport.write(req, resolve, reject);
+    });
+  }
+
+  listMigrationTargets(
+    modelUUID: string,
+  ): Promise<{ controllers: ControllerInfo[] | null }> {
+    return new Promise((resolve, reject) => {
+      const req = {
+        type: "JIMM",
+        request: "ListMigrationTargets",
+        version: 4,
+        params: {
+          "model-tag": modelUUID,
         },
       };
       this._transport.write(req, resolve, reject);

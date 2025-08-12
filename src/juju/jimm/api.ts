@@ -1,6 +1,10 @@
 import type { ConnectionWithFacades } from "juju/types";
 
-import type { FindAuditEventsRequest, AuditEvents } from "./JIMMV3";
+import type {
+  FindAuditEventsRequest,
+  AuditEvents,
+  ControllerInfo,
+} from "./JIMMV3";
 import type {
   CrossModelQueryResponse,
   InitiateMigrationResults,
@@ -92,4 +96,24 @@ export function migrateModel(
       reject(new Error(Label.NO_JIMM));
     }
   });
+}
+
+export function listMigrationTargets(
+  conn: ConnectionWithFacades,
+  modelName: string,
+) {
+  return new Promise<{ controllers: ControllerInfo[] | null }>(
+    (resolve, reject) => {
+      if (conn?.facades?.jimM) {
+        conn.facades.jimM
+          .listMigrationTargets(modelName)
+          .then((listMigrationTargetsResponse) =>
+            resolve(listMigrationTargetsResponse),
+          )
+          .catch((error) => reject(error));
+      } else {
+        reject(new Error(Label.NO_JIMM));
+      }
+    },
+  );
 }

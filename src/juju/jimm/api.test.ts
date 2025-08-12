@@ -12,6 +12,7 @@ import {
   checkRelations,
   migrateModel,
   Label,
+  listMigrationTargets,
 } from "./api";
 
 describe("JIMM API", () => {
@@ -322,6 +323,61 @@ describe("JIMM API", () => {
       } as unknown as Connection;
       await expect(
         migrateModel(conn, "my-model", "target"),
+      ).rejects.toMatchObject(new Error("Uh oh!"));
+    });
+  });
+
+  describe("listMigrationTargets", () => {
+    it("fetches the list of valid target controllers for model migration with supplied params", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            listMigrationTargets: vi.fn(() => Promise.resolve(true)),
+          },
+        },
+      } as unknown as Connection;
+      const response = await listMigrationTargets(conn, "my-model");
+      expect(conn.facades.jimM.listMigrationTargets).toHaveBeenCalledWith(
+        "my-model",
+      );
+      expect(response).toStrictEqual(true);
+    });
+
+    it("handles errors", async () => {
+      const error = new Error("Request failed");
+      const conn = {
+        facades: {
+          jimM: {
+            listMigrationTargets: vi.fn().mockImplementation(() => {
+              throw error;
+            }),
+          },
+        },
+      } as unknown as Connection;
+      await expect(listMigrationTargets(conn, "my-model")).rejects.toBe(error);
+    });
+
+    it("handles no JIMM connection", async () => {
+      const conn = {
+        facades: {},
+      } as unknown as Connection;
+      await expect(
+        listMigrationTargets(conn, "my-model"),
+      ).rejects.toMatchObject(new Error(Label.NO_JIMM));
+    });
+
+    it("should handle exceptions", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            listMigrationTargets: vi.fn(() =>
+              Promise.reject(new Error("Uh oh!")),
+            ),
+          },
+        },
+      } as unknown as Connection;
+      await expect(
+        listMigrationTargets(conn, "my-model"),
       ).rejects.toMatchObject(new Error("Uh oh!"));
     });
   });
