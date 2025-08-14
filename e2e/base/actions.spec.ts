@@ -50,8 +50,11 @@ test.describe("Actions", () => {
 
     // Open the actions panel for the corresponding application
     await page
-      .locator(`label[for="table-checkbox-${application.name}/0"]`)
-      .click();
+      .getByRole("checkbox", { name: `Select unit ${application.name}/0` })
+      .click({
+        // The actual checkbox is hidden so force click on it.
+        force: true,
+      });
     await page.getByTestId(AppTestId.RUN_ACTION_BUTTON).click();
 
     await expect(page.getByTestId(ActionsPanelTestId.PANEL)).toBeInViewport();

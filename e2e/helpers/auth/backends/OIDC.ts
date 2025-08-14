@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import type { Browser, Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 
 import { getEnv, exec, addFeatureFlags } from "../../../utils";
@@ -6,7 +6,8 @@ import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
 import { LocalUser } from "./Local";
-import { deviceCodeLogin, Secret } from "./utils";
+import type { Secret } from "./utils";
+import { deviceCodeLogin } from "./utils";
 
 const IAM_DEVICE_CODE_REGEX = /(?<=enter code ).\w+/;
 
@@ -81,13 +82,13 @@ export class OIDCUser extends LocalUser {
     await page.reload();
   }
 
-  override async cliLogin() {
+  override async cliLogin(browser: Browser) {
     let retry = 3;
     // This login is retried as sometimes the login fails if it is too slow and an error is displayed:
     // `cannot log into controller "jimm-k8s": connection is shut down`.
     while (retry-- > 0) {
       try {
-        await OIDC.loginCLI({
+        await OIDC.loginCLI(browser, {
           username: this.cliUsername,
           password: this.password,
         });
@@ -115,10 +116,12 @@ export class OIDCUser extends LocalUser {
 
 export class OIDC {
   static async loginCLI(
+    browser: Browser,
     user: Secret,
     registerController = false,
   ): Promise<void> {
     await deviceCodeLogin(
+      browser,
       user,
       IAM_DEVICE_CODE_REGEX,
       OIDC.uiLogin,
