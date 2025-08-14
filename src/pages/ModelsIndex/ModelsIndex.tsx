@@ -5,7 +5,7 @@ import {
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import type { ReactNode } from "react";
-import { useRef } from "react";
+import { useId } from "react";
 import { Link } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
@@ -68,7 +68,11 @@ export default function Models() {
   const { clouds, regions, owners, credentials } =
     useModelAttributes(modelData);
   const controllerUser = useAppSelector(getControllerUserTag);
-  const requestId = useRef(crypto.randomUUID());
+  // Each place the relations are checked needs to use a unique ID. The useId
+  // hook should return an ID that is unique across the app, but this may need to
+  // be replaced with a more robust implementation if there are conflicts.
+  const requestId = useId();
+  console.log("Models", requestId);
   const relations =
     controllerUser && modelUUIDs.length
       ? modelUUIDs.map((modelUUID) => ({
@@ -77,7 +81,7 @@ export default function Models() {
           target_object: `model-${modelUUID}`,
         }))
       : null;
-  useCheckRelations(requestId.current, relations, true);
+  useCheckRelations(requestId, relations, true);
 
   // Generate chips from available model data
   const generateChips = (lead: string, values: string[]) => {
