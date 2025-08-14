@@ -63,7 +63,7 @@ const useModelAccess = (modelUUID?: string | null, cleanup?: boolean) => {
   const permissions = useAppSelector((state) =>
     getReBACPermissions(state, relations),
   );
-  const requestId = useRef(new Date().getTime().toString());
+  const requestId = useRef(crypto.randomUUID());
   useCheckRelations(requestId.current, relations, cleanup);
   if (isJuju) {
     return jujuAccess;

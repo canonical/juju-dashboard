@@ -68,7 +68,7 @@ export default function Models() {
   const { clouds, regions, owners, credentials } =
     useModelAttributes(modelData);
   const controllerUser = useAppSelector(getControllerUserTag);
-  const requestId = useRef(new Date().getTime().toString());
+  const requestId = useRef(crypto.randomUUID());
   const relations =
     controllerUser && modelUUIDs.length
       ? modelUUIDs.map((modelUUID) => ({

@@ -100,7 +100,7 @@ export const useCheckPermissions = (
     jujuActions.removeCheckRelation,
     loading,
     loaded,
-    !!errors,
+    !!errors?.length,
     tuple ? { tuple } : null,
     tuple ? { tuple } : null,
     cleanup,
