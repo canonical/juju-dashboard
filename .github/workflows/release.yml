@@ -55,7 +55,7 @@ jobs:
 
           if echo $version | grep -P '^\d+\.\d+\.\d+$' ; then
             # Can promote from beta to candidate immediately
-            promote_channel="$track/candidate
+            promote_channel="$track/candidate"
 
             is_pre_release="false"
           fi
