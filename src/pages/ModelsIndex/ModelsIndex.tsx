@@ -24,6 +24,7 @@ import {
   getModelData,
   getModelListLoaded,
   getModelsError,
+  getModelUUIDs,
   hasModels,
 } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
@@ -62,15 +63,19 @@ export default function Models() {
   const modelsError = useAppSelector(getModelsError);
   const modelsLoaded = useAppSelector(getModelListLoaded);
   const hasSomeModels = useAppSelector(hasModels);
-  // loop model data and pull out filter panel data
   const modelData = useAppSelector(getModelData);
+  const modelUUIDs = useAppSelector(getModelUUIDs);
   const { clouds, regions, owners, credentials } =
     useModelAttributes(modelData);
   const controllerUser = useAppSelector(getControllerUserTag);
+  // Each place the relations are checked needs to use a unique ID. The useId
+  // hook should return an ID that is unique across the app, but this may need to
+  // be replaced with a more robust implementation if there are conflicts.
   const requestId = useId();
+  console.log("Models", requestId);
   const relations =
-    controllerUser && modelData && Object.keys(modelData).length > 0
-      ? Object.keys(modelData).map((modelUUID) => ({
+    controllerUser && modelUUIDs.length
+      ? modelUUIDs.map((modelUUID) => ({
           object: controllerUser,
           relation: JIMMRelation.ADMINISTRATOR,
           target_object: `model-${modelUUID}`,

@@ -132,6 +132,8 @@ import {
   getReBACPermissions,
   getReBACPermission,
   getCommandHistory,
+  getReBACPermissionErrors,
+  getModelUUIDs,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -873,6 +875,31 @@ describe("selectors", () => {
     ).toStrictEqual(false);
   });
 
+  it("getReBACPermissionErrors exists", () => {
+    const tuple = relationshipTupleFactory.build({
+      object: "user-eggman@external",
+      relation: JIMMRelation.ADMINISTRATOR,
+      target_object: JIMMTarget.JIMM_CONTROLLER,
+    });
+    expect(
+      getReBACPermissionErrors(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            rebac: {
+              allowed: [
+                rebacAllowedFactory.build({
+                  tuple,
+                  errors: "Uh oh!",
+                }),
+              ],
+            },
+          }),
+        }),
+        tuple,
+      ),
+    ).toEqual("Uh oh!");
+  });
+
   it("hasReBACPermission exists", () => {
     const tuple = relationshipTupleFactory.build({
       object: "user-eggman@external",
@@ -1173,6 +1200,21 @@ describe("selectors", () => {
         "eggman/test-model",
       ),
     ).toBeNull();
+  });
+
+  it("getModelUUIDs handles incorrect owner name", () => {
+    expect(
+      getModelUUIDs(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelData: {
+              abc123: modelDataFactory.build(),
+              def456: modelDataFactory.build(),
+            },
+          }),
+        }),
+      ),
+    ).toStrictEqual(["abc123", "def456"]);
   });
 
   it("getModelStatus handles incorrect owner name", () => {

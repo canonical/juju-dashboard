@@ -174,10 +174,10 @@ describe("useStatusView", () => {
 describe("useCleanupOnUnmount", () => {
   it("dispatches on unmount", () => {
     const action = vi.fn().mockImplementation(createAction("action"));
-    const payload = "payload";
+    const payload = { pay: "load" };
     const { unmount } = renderWrappedHook(() =>
       useCleanupOnUnmount(
-        action as unknown as ActionCreatorWithPayload<string>,
+        action as unknown as ActionCreatorWithPayload<Record<string, string>>,
         true,
         payload,
       ),
@@ -188,10 +188,10 @@ describe("useCleanupOnUnmount", () => {
 
   it("does not dispatch on unmount if cleanup is not enabled", () => {
     const action = vi.fn().mockImplementation(createAction("action"));
-    const payload = "payload";
+    const payload = { pay: "load" };
     const { unmount } = renderWrappedHook(() =>
       useCleanupOnUnmount(
-        action as unknown as ActionCreatorWithPayload<string>,
+        action as unknown as ActionCreatorWithPayload<Record<string, string>>,
         false,
         payload,
       ),
@@ -200,20 +200,20 @@ describe("useCleanupOnUnmount", () => {
     expect(action).not.toHaveBeenCalled();
   });
 
-  it("dispatches a updated action on unmount if it changes", () => {
+  it("dispatches an updated action on unmount if it changes", () => {
     const firstAction = vi.fn().mockImplementation(createAction("action"));
     const newAction = vi.fn().mockImplementation(createAction("action2"));
-    const firstPayload = "payload";
-    const newPayload = "payload2";
+    const firstPayload = { pay: "load" };
+    const newPayload = { pay: "load2" };
     type Args = {
       action?: unknown;
       enabled?: boolean;
-      payload?: string;
+      payload?: Record<string, string>;
     };
     const { rerender, unmount } = renderWrappedHook(
       ({ action, enabled, payload }: Args = {}) =>
         useCleanupOnUnmount(
-          action as unknown as ActionCreatorWithPayload<string>,
+          action as unknown as ActionCreatorWithPayload<Record<string, string>>,
           enabled,
           payload,
         ),
@@ -235,5 +235,38 @@ describe("useCleanupOnUnmount", () => {
     // called, but RTL unmounts the component when rerendering so it always gets
     // called.
     expect(newAction).toHaveBeenCalledWith(newPayload);
+  });
+
+  it("dispatches an updated payload on unmount if it changes", () => {
+    const cleanup = vi.fn().mockImplementation(createAction("action"));
+    const firstPayload = { pay: "load" };
+    const newPayload = { pay: "load2" };
+    type Args = {
+      action?: unknown;
+      enabled?: boolean;
+      payload?: Record<string, string>;
+    };
+    const { rerender, unmount } = renderWrappedHook(
+      ({ action, enabled, payload }: Args = {}) =>
+        useCleanupOnUnmount(
+          action as unknown as ActionCreatorWithPayload<Record<string, string>>,
+          enabled,
+          payload,
+        ),
+      {
+        initialProps: {
+          action: cleanup,
+          enabled: true,
+          payload: firstPayload,
+        },
+      },
+    );
+    rerender({
+      action: cleanup,
+      enabled: true,
+      payload: newPayload,
+    });
+    unmount();
+    expect(cleanup).toHaveBeenCalledWith(newPayload);
   });
 });
