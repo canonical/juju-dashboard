@@ -366,7 +366,9 @@ export function generateUnitRows(
               value={unitId}
               data-testid={fieldID}
             />
-            <span className="p-checkbox__label" id={ariaLabeledBy}></span>
+            <span className="p-checkbox__label" id={ariaLabeledBy}>
+              <span className="u-off-screen">Select unit {unitId}</span>
+            </span>
           </label>
         ),
       });
