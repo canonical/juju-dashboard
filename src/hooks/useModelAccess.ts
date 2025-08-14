@@ -63,6 +63,9 @@ const useModelAccess = (modelUUID?: string | null, cleanup?: boolean) => {
   const permissions = useAppSelector((state) =>
     getReBACPermissions(state, relations),
   );
+  // Each place the relations are checked needs to use a unique ID. The useId
+  // hook should return an ID that is unique across the app, but this may need to
+  // be replaced with a more robust implementation if there are conflicts.
   const requestId = useId();
   useCheckRelations(requestId, relations, cleanup);
   if (isJuju) {
