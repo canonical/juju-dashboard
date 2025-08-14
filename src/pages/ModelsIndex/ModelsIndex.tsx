@@ -5,7 +5,7 @@ import {
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import type { ReactNode } from "react";
-import { useId } from "react";
+import { useRef } from "react";
 import { Link } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
@@ -24,6 +24,7 @@ import {
   getModelData,
   getModelListLoaded,
   getModelsError,
+  getModelUUIDs,
   hasModels,
 } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
@@ -62,21 +63,21 @@ export default function Models() {
   const modelsError = useAppSelector(getModelsError);
   const modelsLoaded = useAppSelector(getModelListLoaded);
   const hasSomeModels = useAppSelector(hasModels);
-  // loop model data and pull out filter panel data
   const modelData = useAppSelector(getModelData);
+  const modelUUIDs = useAppSelector(getModelUUIDs);
   const { clouds, regions, owners, credentials } =
     useModelAttributes(modelData);
   const controllerUser = useAppSelector(getControllerUserTag);
-  const requestId = useId();
+  const requestId = useRef(new Date().getTime().toString());
   const relations =
-    controllerUser && modelData && Object.keys(modelData).length > 0
-      ? Object.keys(modelData).map((modelUUID) => ({
+    controllerUser && modelUUIDs.length
+      ? modelUUIDs.map((modelUUID) => ({
           object: controllerUser,
           relation: JIMMRelation.ADMINISTRATOR,
           target_object: `model-${modelUUID}`,
         }))
       : null;
-  useCheckRelations(requestId, relations, true);
+  useCheckRelations(requestId.current, relations, true);
 
   // Generate chips from available model data
   const generateChips = (lead: string, values: string[]) => {

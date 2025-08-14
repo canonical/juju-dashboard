@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useRef } from "react";
 
 import { useCheckRelations } from "juju/api-hooks/permissions";
 import { JIMMRelation } from "juju/jimm/JIMMV4";
@@ -63,8 +63,8 @@ const useModelAccess = (modelUUID?: string | null, cleanup?: boolean) => {
   const permissions = useAppSelector((state) =>
     getReBACPermissions(state, relations),
   );
-  const requestId = useId();
-  useCheckRelations(requestId, relations, cleanup);
+  const requestId = useRef(new Date().getTime().toString());
+  useCheckRelations(requestId.current, relations, cleanup);
   if (isJuju) {
     return jujuAccess;
   }

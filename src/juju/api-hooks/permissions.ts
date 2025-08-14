@@ -21,6 +21,8 @@ import {
   getReBACRelationshipsLoaded,
   getReBACRelationshipsLoading,
   getReBACPermissions,
+  getReBACRelationshipsErrors,
+  getReBACPermissionErrors,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
@@ -29,6 +31,7 @@ export const useReBAC = <A, C>(
   cleanupAction: ActionCreatorWithPayload<C>,
   loading: boolean,
   loaded: boolean,
+  hasError: boolean,
   payload?: A | null,
   payloadCleanup?: C | null,
   cleanup?: boolean,
@@ -46,6 +49,8 @@ export const useReBAC = <A, C>(
 
   useEffect(() => {
     if (
+      // Don't fetch if the last call resulted in an error otherwise the hook will enter an infinite loop.
+      !hasError &&
       // Only fetch it if it doesn't already exist in the store or if the
       // payload changes
       ((!loading && !loaded) || payloadChanged) &&
@@ -65,6 +70,7 @@ export const useReBAC = <A, C>(
     wsControllerURL,
     payloadChanged,
     fetchAction,
+    hasError,
   ]);
 
   // Clean up the store if the payload changes.
@@ -86,11 +92,15 @@ export const useCheckPermissions = (
   const loading = useAppSelector((state) =>
     getReBACPermissionLoading(state, tuple),
   );
+  const errors = useAppSelector((state) =>
+    getReBACPermissionErrors(state, tuple),
+  );
   useReBAC(
     jujuActions.checkRelation,
     jujuActions.removeCheckRelation,
     loading,
     loaded,
+    !!errors,
     tuple ? { tuple } : null,
     tuple ? { tuple } : null,
     cleanup,
@@ -152,6 +162,9 @@ export const useCheckRelations = (
   const loading = useAppSelector((state) =>
     getReBACRelationshipsLoading(state, requestId),
   );
+  const errors = useAppSelector((state) =>
+    getReBACRelationshipsErrors(state, requestId),
+  );
   const permissions = useAppSelector((state) =>
     getReBACPermissions(state, tuples),
   );
@@ -160,6 +173,7 @@ export const useCheckRelations = (
     jujuActions.removeCheckRelations,
     loading,
     loaded,
+    !!errors,
     tuples ? { requestId, tuples } : null,
     { requestId },
     cleanup,

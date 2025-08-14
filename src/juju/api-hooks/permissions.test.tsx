@@ -196,6 +196,33 @@ describe("useCheckPermissions", () => {
     });
   });
 
+  it("does not fetch a relation if there was an error", async () => {
+    const tuple = {
+      object: "user-eggman@external",
+      relation: JIMMRelation.MEMBER,
+      target_object: "group-admins",
+    };
+    state.juju.rebac.allowed = [
+      rebacAllowedFactory.build({
+        tuple: tuple,
+        errors: "Uh oh!",
+      }),
+    ];
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderHook(() => useCheckPermissions(tuple), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelation.type,
+        ),
+      ).toBeUndefined();
+    });
+  });
+
   it("cleans up a previous relation if the tuple changes", async () => {
     const tuple = {
       object: "user-eggman@external",
@@ -804,6 +831,38 @@ describe("useCheckRelations", () => {
     const relationships = rebacRelationshipFactory.build({
       requestId,
       loaded: true,
+    });
+    state.juju.rebac.relationships = [relationships];
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderHook(() => useCheckRelations(requestId, tuples), {
+      wrapper: (props) => (
+        <ComponentProviders {...props} path="/" store={store} />
+      ),
+    });
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === jujuActions.checkRelations.type,
+        ),
+      ).toBeUndefined();
+    });
+  });
+
+  it("does not fetch the relationships if there is an error", async () => {
+    const requestId = "12345";
+    const tuples = [
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-admins",
+      }),
+      relationshipTupleFactory.build({
+        object: "user-eggman@external",
+        target_object: "group-readers",
+      }),
+    ];
+    const relationships = rebacRelationshipFactory.build({
+      requestId,
+      errors: ["Uh oh!"],
     });
     state.juju.rebac.relationships = [relationships];
     const [store, actions] = createStore(state, { trackActions: true });
