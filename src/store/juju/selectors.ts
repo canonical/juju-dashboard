@@ -145,6 +145,14 @@ export const getCrossModelQueryState = createSelector(
 );
 
 /**
+  Fetches the migration from state.
+*/
+export const getMigrationState = createSelector(
+  [slice],
+  (sliceState) => sliceState.migrateModel,
+);
+
+/**
   Fetches the cross model query results from state.
 */
 export const getCrossModelQueryResults = createSelector(

@@ -6,6 +6,7 @@ import { Auth } from "auth";
 import {
   fetchAllModelStatuses,
   fetchControllerList,
+  fetchModelInfo,
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
@@ -14,6 +15,7 @@ import {
   checkRelations,
   crossModelQuery,
   findAuditEvents,
+  migrateModel,
 } from "juju/jimm/api";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
@@ -422,6 +424,56 @@ export const modelPollerMiddleware: Middleware<
             errors: errorMessage,
           }),
         );
+      }
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
+    } else if (
+      isSpecificAction<ReturnType<typeof jujuActions.migrateModel>>(
+        action,
+        jujuActions.migrateModel.type,
+      )
+    ) {
+      // Intercept migrateModel actions and fetch and store
+      // the modelUUID via the controller connection.
+      const { wsControllerURL, modelUUID, targetController } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+
+      let result;
+      try {
+        result = await migrateModel(conn, modelUUID, targetController);
+        let pollCount = 0;
+        let modelInfo = await fetchModelInfo(conn, modelUUID);
+        let isMigrationComplete = false;
+        do {
+          modelInfo = await fetchModelInfo(conn, modelUUID);
+          isMigrationComplete =
+            modelInfo?.results[0].error?.code === "redirection required";
+          // Allow the polling to run a certain number of times in tests.
+          if (process.env.NODE_ENV === "test") {
+            if (pollCount === action.payload.poll) {
+              break;
+            }
+          }
+          pollCount++;
+          // Wait 1s then start again.
+          await new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(true);
+            }, 1000);
+          });
+        } while (!isMigrationComplete);
+        reduxStore.dispatch(jujuActions.updateMigrateModelResults(result));
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Could not migrate model";
+        reduxStore.dispatch(jujuActions.migrateModelErrors(errorMessage));
       }
       // The action has already been passed to the next middleware
       // at the top of this handler.

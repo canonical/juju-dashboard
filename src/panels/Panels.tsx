@@ -10,6 +10,7 @@ import AuditLogsFilterPanel from "./AuditLogsFilterPanel";
 import CharmsAndActionsPanel from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import ConfigPanel from "./ConfigPanel/ConfigPanel";
 import GrantSecretPanel from "./GrantSecretPanel";
+import MigrateModelPanel from "./MigrateModelPanel";
 import RemoveSecretPanel from "./RemoveSecretPanel";
 
 export default function Panels() {
@@ -38,6 +39,8 @@ export default function Panels() {
         return canManageSecrets ? <GrantSecretPanel /> : null;
       case "remove-secret":
         return canManageSecrets ? <RemoveSecretPanel /> : null;
+      case "migrate-model":
+        return <MigrateModelPanel />;
       default:
         return null;
     }
