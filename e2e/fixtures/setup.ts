@@ -77,6 +77,17 @@ export const test = base.extend<Fixtures>({
       ),
     );
   },
+  page: async ({ page }, use) => {
+    await page.route("**/*", async (route, request) => {
+      // Speed up the tests by blocking requests such as the fonts on assets.ubuntu.com and icons from charmhub.io.
+      if (["media", "font", "image"].includes(request.resourceType())) {
+        await route.abort();
+      } else {
+        await route.continue();
+      }
+    });
+    await use(page);
+  },
 });
 
 export default test;
