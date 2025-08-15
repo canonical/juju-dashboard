@@ -33,4 +33,4 @@ runs:
         message="$(echo -n "$message" | jq -sRr @uri)"
 
         curl -X POST \
-            "${{ secrets.WEBBOT_URL }}?room=${{ inputs.channel }}&custom_message=$message"
+            "${{ inputs.webhook-url }}?room=${{ inputs.channel }}&custom_message=$message"
