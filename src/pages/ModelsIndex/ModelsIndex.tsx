@@ -72,7 +72,6 @@ export default function Models() {
   // hook should return an ID that is unique across the app, but this may need to
   // be replaced with a more robust implementation if there are conflicts.
   const requestId = useId();
-  console.log("Models", requestId);
   const relations =
     controllerUser && modelUUIDs.length
       ? modelUUIDs.map((modelUUID) => ({
