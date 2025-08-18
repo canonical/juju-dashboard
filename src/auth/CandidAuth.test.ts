@@ -1,7 +1,5 @@
 import type { Mock, MockInstance } from "vitest";
 
-import * as jujuApi from "juju/api";
-import type { ConnectionWithFacades } from "juju/types";
 import { thunks as appThunks } from "store/app";
 
 import { Auth } from "./Auth";
@@ -45,35 +43,6 @@ describe("CandidAuth", () => {
       await Auth.instance.logout();
       expect(dispatch).toHaveBeenCalledOnce();
       expect(connectAndStartPollingMock).toHaveBeenCalledOnce();
-    });
-  });
-
-  describe("afterControllerListFetched", () => {
-    let jujuDisableControllerUUIDMaskingMock: MockInstance;
-
-    beforeEach(() => {
-      jujuDisableControllerUUIDMaskingMock = vi.spyOn(
-        jujuApi,
-        "disableControllerUUIDMasking",
-      );
-    });
-
-    it("mask disable success", async () => {
-      jujuDisableControllerUUIDMaskingMock.mockReturnValue(Promise.resolve());
-      await Auth.instance.afterControllerListFetched(
-        {} as ConnectionWithFacades,
-      );
-      expect(jujuDisableControllerUUIDMaskingMock).toHaveBeenCalledOnce();
-    });
-
-    it("mask disable error", async () => {
-      jujuDisableControllerUUIDMaskingMock.mockRejectedValue(
-        new Error("some error"),
-      );
-      await Auth.instance.afterControllerListFetched(
-        {} as ConnectionWithFacades,
-      );
-      expect(jujuDisableControllerUUIDMaskingMock).toHaveBeenCalledOnce();
     });
   });
 });

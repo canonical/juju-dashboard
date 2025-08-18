@@ -1,8 +1,10 @@
 import type { ConnectOptions } from "@canonical/jujulib";
 import { unwrapResult } from "@reduxjs/toolkit";
 
+import * as jujuApi from "juju/api";
 import * as jimmListeners from "juju/jimm/listeners";
 import * as jimmThunks from "juju/jimm/thunks";
+import type { ConnectionWithFacades } from "juju/types";
 import { actions as generalActions } from "store/general";
 import { listenerMiddleware } from "store/listenerMiddleware";
 import type { AppDispatch } from "store/store";
@@ -61,5 +63,18 @@ export class OIDCAuth extends pollingMixin(Auth) {
     return {
       loginWithSessionCookie: true,
     };
+  }
+
+  override async afterControllerListFetched(
+    conn: ConnectionWithFacades,
+  ): Promise<void> {
+    // This call will be a noop if the user isn't an administrator
+    // on the JIMM controller we're connected to.
+    try {
+      await jujuApi.disableControllerUUIDMasking(conn);
+    } catch (err) {
+      // Silently fail, if this doesn't work then the user isn't authorized
+      // to perform the action.
+    }
   }
 }
