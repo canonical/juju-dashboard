@@ -1,9 +1,7 @@
-import type { Mock, MockInstance } from "vitest";
+import type { Mock } from "vitest";
 
-import * as jujuApi from "juju/api";
 import * as jimmListeners from "juju/jimm/listeners";
 import * as jimmThunks from "juju/jimm/thunks";
-import type { ConnectionWithFacades } from "juju/types";
 import { actions as generalActions } from "store/general";
 
 import { Auth } from "./Auth";
@@ -101,35 +99,6 @@ describe("OIDCAuth", () => {
   it("jujulibConnectOptions", () => {
     expect(Auth.instance.jujulibConnectOptions()).to.deep.equal({
       loginWithSessionCookie: true,
-    });
-  });
-
-  describe("afterControllerListFetched", () => {
-    let jujuDisableControllerUUIDMaskingMock: MockInstance;
-
-    beforeEach(() => {
-      jujuDisableControllerUUIDMaskingMock = vi.spyOn(
-        jujuApi,
-        "disableControllerUUIDMasking",
-      );
-    });
-
-    it("mask disable success", async () => {
-      jujuDisableControllerUUIDMaskingMock.mockReturnValue(Promise.resolve());
-      await Auth.instance.afterControllerListFetched(
-        {} as ConnectionWithFacades,
-      );
-      expect(jujuDisableControllerUUIDMaskingMock).toHaveBeenCalledOnce();
-    });
-
-    it("mask disable error", async () => {
-      jujuDisableControllerUUIDMaskingMock.mockRejectedValue(
-        new Error("some error"),
-      );
-      await Auth.instance.afterControllerListFetched(
-        {} as ConnectionWithFacades,
-      );
-      expect(jujuDisableControllerUUIDMaskingMock).toHaveBeenCalledOnce();
     });
   });
 });
