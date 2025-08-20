@@ -15,12 +15,6 @@ website:
   - https://juju.is
   - https://charmhub.io
 
-bases:
-  - name: ubuntu
-    channel: focal
-    architectures:
-      - amd64
-
 provides:
   dashboard:
     interface: http
