@@ -4,6 +4,7 @@ import { isAction, type Middleware } from "redux";
 
 import { Auth } from "auth";
 import {
+  disableControllerUUIDMasking,
   fetchAllModelStatuses,
   fetchControllerList,
   loginWithBakery,
@@ -122,13 +123,13 @@ export const modelPollerMiddleware: Middleware<
 
         const isProduction = import.meta.env.PROD;
         const analyticsEnabled = getAnalyticsEnabled(reduxStore.getState());
-        const isJuju = (!!getIsJuju(reduxStore.getState())).toString();
+        const isJuju = !!getIsJuju(reduxStore.getState());
         const dashboardVersion = getAppVersion(reduxStore.getState()) ?? "";
         const controllerVersion = conn.info.serverVersion ?? "";
 
         analytics(
           !!analyticsEnabled,
-          { dashboardVersion, controllerVersion, isJuju },
+          { dashboardVersion, controllerVersion, isJuju: isJuju.toString() },
           {
             category: "Authentication",
             action: `User Login (${Auth.instance.name})`,
@@ -181,7 +182,16 @@ export const modelPollerMiddleware: Middleware<
           reduxStore.dispatch,
           reduxStore.getState,
         );
-        await Auth.instance.afterControllerListFetched(conn);
+        if (!isJuju) {
+          // This call will be a noop if the user isn't an administrator
+          // on the JIMM controller we're connected to.
+          try {
+            await disableControllerUUIDMasking(conn);
+          } catch (err) {
+            // Silently fail, if this doesn't work then the user isn't authorized
+            // to perform the action.
+          }
+        }
 
         let pollCount = 0;
         do {
