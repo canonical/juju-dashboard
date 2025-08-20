@@ -1,16 +1,79 @@
-# Copyright 2022 Canonical Ltd.
-# See LICENSE file for licensing details.
-# Learn more about charmcraft.yaml configuration at:
-# https://juju.is/docs/sdk/charmcraft-config
+# This file configures the charm.
+# See https://juju.is/docs/sdk/charmcraft-config for guidance.
+
 type: "charm"
 
-parts:
-  charm:
-    charm-python-packages: [setuptools>80.0]
+# Charm metadata
+name: juju-dashboard-k8s
+title: Juju Dashboard k8s
+summary: View the real-time status of your Juju environment.
+description: |
+  Juju Dashboard displays your controllers and models, allowing you to see the status of your deployments, manage access, run actions and configure applications.
+links:
+  documentation: https://discourse.charmhub.io/t/juju-dashboard-k8s-docs-index/10773
+  website:
+  - https://juju.is
+  source:
+  - https://github.com/canonical/juju-dashboard
+  issues:
+  - https://github.com/canonical/juju-dashboard/issues
 
+resources:
+  dashboard-image:
+    type: oci-image
+    description: |
+      Canonical build of the dashboard (canonicalwebteam/juju-dashboard:latest)
+    upstream-source: dashboard-image:local
+
+assumes:
+  - k8s-api
+  - juju >= 3.0
+
+containers:
+  dashboard:
+    resource: dashboard-image
+
+# Charm integrations
+provides:
+  dashboard:
+    interface: http
+
+requires:
+  controller:
+    interface: juju-dashboard
+  nginx-route:
+    interface: nginx-route
+
+# Charm build options
 base: ubuntu@24.04
-
 platforms:
   all:
     build-on: [amd64, arm64]
     build-for: [all]
+parts:
+  charm:
+    charm-python-packages: [setuptools>80.0]
+
+# Charm config
+config:
+  options:
+    controller-url:
+      default:
+      description: The URL to connect to the controller with. Provided by the controller when related; if defined will override the value provided on the controller relation.
+      type: string
+    identity-provider-url:
+      default:
+      description: The url used to communicate with the identity provider if available. Provided by the controller when related; if defined will override the value provided on the controller relation.
+      type: string
+    is-juju:
+      default: true
+      description: Whether this is a Juju or JAAS environment. Provided by the controller when related; if defined will override the value provided on the controller relation.
+      type: boolean
+    port:
+      default: 8080
+      description: The port to serve the dashboard on.
+      type: int
+    analytics-enabled:
+      default: true
+      description: Whether Google Analytics and Sentry error tracking is enabled. This data is used to improve Juju Dashboard.
+      type: boolean
