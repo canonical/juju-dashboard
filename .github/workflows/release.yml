@@ -71,7 +71,33 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  release:
+  release-docker-image:
+    name: "Release Docker image to GHCR"
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
+
+    needs: [pre-release]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ghcr.io/canonical/juju-dashboard:${{ needs.pre-release.outputs.version }}
+
+  release-charms:
     name: "Release Juju Dashboard"
     runs-on: ubuntu-22.04
 
@@ -169,7 +195,7 @@ jobs:
     name: "Create tags and releases"
     runs-on: ubuntu-22.04
 
-    needs: [pre-release, release]
+    needs: [pre-release, release-charms]
 
     defaults:
       run:
