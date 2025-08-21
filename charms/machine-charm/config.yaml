@@ -18,9 +18,6 @@ options:
     default: 8080
     description: The port to serve the dashboard on.
     type: int
-  dns-name:
-    description: DNS of the Juju dashboard.
-    type: string
   analytics-enabled:
     default: true
     description: Whether Google Analytics and Sentry error tracking is enabled. This data is used to improve Juju Dashboard.

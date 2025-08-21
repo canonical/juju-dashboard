@@ -7,6 +7,7 @@ from unittest import mock
 from ops.model import ActiveStatus, BlockedStatus
 from ops.testing import Harness
 
+
 import charm
 
 FAKE_ENDPOINT = {
@@ -21,9 +22,8 @@ FAKE_ENDPOINT = {
 
 class TestDashboardRelation(unittest.TestCase):
 
-    @mock.patch('charm.hookenv')
     @mock.patch('charm.os.system')
-    def setUp(self, mock_system, mock_hookenv):
+    def setUp(self, mock_system):
         self.harness = Harness(charm.JujuDashboardCharm)
         self.addCleanup(self.harness.cleanup)
         self.harness.begin_with_initial_hooks()
@@ -67,17 +67,19 @@ class TestDashboardRelation(unittest.TestCase):
         )
 
     @mock.patch("charm.Environment")
-    @mock.patch('charm.hookenv')
     @mock.patch('charm.os.system')
-    def test_config_changed(self, mock_system, mock_hookenv, mock_env):
-        self.assertFalse(mock_hookenv.open_port.called)
-        self.harness.update_config({"dns-name": "dashboard.test"})
-        self.assertTrue(mock_hookenv.open_port.called)
+    def test_config_changed(self, mock_system, mock_env):
+        ports = self.harness.model.unit.opened_ports()
+        self.assertEqual(len(ports), 1)
+        self.assertEqual(list(ports)[0].port, 8080)
+        self.harness.update_config({"port": 123})
+        ports = self.harness.model.unit.opened_ports()
+        self.assertEqual(len(ports), 1)
+        self.assertEqual(list(ports)[0].port, 123)
 
     @mock.patch("charm.Environment")
-    @mock.patch('charm.hookenv')
     @mock.patch('charm.os.system')
-    def test_config_changed_no_relation(self, mock_system, mock_hookenv, mock_env):
+    def test_config_changed_no_relation(self, mock_system, mock_env):
         self.harness.remove_relation(self.rel_id)
         self.harness.model.unit.status = ActiveStatus()
         self.harness.update_config({"is-juju": True})
@@ -87,26 +89,32 @@ class TestDashboardRelation(unittest.TestCase):
         )
 
     @mock.patch("charm.Environment")
-    @mock.patch('charm.hookenv')
     @mock.patch('charm.os.system')
-    def test_update_status(self, mock_system, mock_hookenv, mock_env):
+    def test_update_status(self, mock_system, mock_env):
         self.harness.disable_hooks()
-        self.harness.update_config({"dns-name": "dashboard.test"})
+        self.harness.update_config({"port": 123})
         self.harness.enable_hooks()
-        self.assertFalse(mock_hookenv.open_port.called)
+        ports = self.harness.model.unit.opened_ports()
+        self.assertEqual(len(ports), 1)
+        self.assertEqual(list(ports)[0].port, 8080)
         self.harness.charm.on.update_status.emit()
-        self.assertTrue(mock_hookenv.open_port.called)
+        ports = self.harness.model.unit.opened_ports()
+        self.assertEqual(len(ports), 1)
+        self.assertEqual(list(ports)[0].port, 123)
 
     @mock.patch("charm.Environment")
-    @mock.patch('charm.hookenv')
     @mock.patch('charm.os.system')
-    def test_upgrade_charm(self, mock_system, mock_hookenv, mock_env):
+    def test_upgrade_charm(self, mock_system, mock_env):
         self.harness.disable_hooks()
-        self.harness.update_config({"dns-name": "dashboard.test"})
+        self.harness.update_config({"port": 123})
         self.harness.enable_hooks()
-        self.assertFalse(mock_hookenv.open_port.called)
+        ports = self.harness.model.unit.opened_ports()
+        self.assertEqual(len(ports), 1)
+        self.assertEqual(list(ports)[0].port, 8080)
         self.harness.charm.on.upgrade_charm.emit()
-        self.assertTrue(mock_hookenv.open_port.called)
+        ports = self.harness.model.unit.opened_ports()
+        self.assertEqual(len(ports), 1)
+        self.assertEqual(list(ports)[0].port, 123)
 
     @mock.patch("charm.Environment")
     @mock.patch('charm.os.system')
