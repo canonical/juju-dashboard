@@ -1,7 +1,7 @@
-import type { ConnectionWithFacades } from "juju/types";
+import type { ConnectionWithFacades, Facades } from "juju/types";
 
 import type { FindAuditEventsRequest } from "./JIMMV3";
-import type { RelationshipTuple } from "./JIMMV4";
+import type { MigrateModelInfo, RelationshipTuple } from "./JIMMV4";
 
 export enum Label {
   NO_JIMM = "Not connected to JIMM.",
@@ -22,80 +22,75 @@ export const endpoints = () => {
 };
 
 /**
-  Fetch audit events via the JIMM facade on the given controller connection.
+ * A wrapper function that performs the JIMM facade check before executing
+ * the provided async function.
  */
-export async function findAuditEvents(
+const withJimmCheck = <T>(
   conn: ConnectionWithFacades,
-  params?: FindAuditEventsRequest,
-) {
+  facadeMethod: (jimm: NonNullable<Facades["jimM"]>) => Promise<T>,
+): Promise<T> => {
   if (!conn.facades.jimM) {
     throw new Error(Label.NO_JIMM);
   }
-  return await conn.facades.jimM.findAuditEvents(params);
-}
+  return facadeMethod(conn.facades.jimM);
+};
+
+/**
+  Fetch audit events via the JIMM facade on the given controller connection.
+ */
+export const findAuditEvents = async (
+  conn: ConnectionWithFacades,
+  params?: FindAuditEventsRequest,
+) => {
+  return withJimmCheck(conn, (jimm) => jimm.findAuditEvents(params));
+};
 
 /**
   Query all the available models and each entity within the model.
  */
-export async function crossModelQuery(
+export const crossModelQuery = async (
   conn: ConnectionWithFacades,
   query: string,
-) {
-  if (!conn.facades.jimM) {
-    throw new Error(Label.NO_JIMM);
-  }
-  return await conn.facades.jimM.crossModelQuery(query);
-}
+) => {
+  return withJimmCheck(conn, (jimm) => jimm.crossModelQuery(query));
+};
 
 /**
  Check if a user has the specified relation to a resource. 
  */
-export async function checkRelation(
+export const checkRelation = async (
   conn: ConnectionWithFacades,
   tuple: RelationshipTuple,
-) {
-  if (!conn.facades.jimM) {
-    throw new Error(Label.NO_JIMM);
-  }
-  return await conn.facades.jimM.checkRelation(tuple);
-}
+) => {
+  return withJimmCheck(conn, (jimm) => jimm.checkRelation(tuple));
+};
 
 /**
  Perform an authorisation check for a list of tuples.
  */
-export async function checkRelations(
+export const checkRelations = async (
   conn: ConnectionWithFacades,
   tuples: RelationshipTuple[],
-) {
-  if (!conn.facades.jimM) {
-    throw new Error(Label.NO_JIMM);
-  }
-  return await conn.facades.jimM.checkRelations(tuples);
-}
+) => {
+  return withJimmCheck(conn, (jimm) => jimm.checkRelations(tuples));
+};
 
 /**
  Initiate an internal model migration via the JIMM facade.
  */
-export async function migrateModel(
+export const migrateModel = async (
   conn: ConnectionWithFacades,
-  modelName: string,
-  targetController: string,
-) {
-  if (!conn.facades.jimM) {
-    throw new Error(Label.NO_JIMM);
-  }
-  return await conn.facades.jimM.migrateModel(modelName, targetController);
-}
+  migrationSpecs: MigrateModelInfo[],
+) => {
+  return withJimmCheck(conn, (jimm) => jimm.migrateModel(migrationSpecs));
+};
 
 /**
  Fetch the list of valid target controllers for an internal model migration.
  */
-export async function listMigrationTargets(
+export const listMigrationTargets = async (
   conn: ConnectionWithFacades,
   modelTag: string,
-) {
-  if (!conn.facades.jimM) {
-    throw new Error(Label.NO_JIMM);
-  }
-  return await conn.facades.jimM.listMigrationTargets(modelTag);
-}
+) => {
+  return withJimmCheck(conn, (jimm) => jimm.listMigrationTargets(modelTag));
+};

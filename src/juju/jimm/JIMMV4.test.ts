@@ -121,7 +121,9 @@ describe("JIMMV4", () => {
 
   it("migrateModel", async () => {
     const jimm = new JIMMV4(transport, connectionInfo);
-    void jimm.migrateModel("my-model", "target");
+    void jimm.migrateModel([
+      { "model-tag": "my-model", "target-controller": "target" },
+    ]);
     expect(transport.write).toHaveBeenCalledWith(
       {
         type: "JIMM",

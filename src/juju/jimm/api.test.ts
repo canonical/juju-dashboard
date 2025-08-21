@@ -280,11 +280,12 @@ describe("JIMM API", () => {
           },
         },
       } as unknown as Connection;
-      const response = await migrateModel(conn, "my-model", "target");
-      expect(conn.facades.jimM.migrateModel).toHaveBeenCalledWith(
-        "my-model",
-        "target",
-      );
+      const response = await migrateModel(conn, [
+        { "model-tag": "my-model", "target-controller": "target" },
+      ]);
+      expect(conn.facades.jimM.migrateModel).toHaveBeenCalledWith([
+        { "model-tag": "my-model", "target-controller": "target" },
+      ]);
       expect(response).toStrictEqual(true);
     });
 
@@ -299,9 +300,11 @@ describe("JIMM API", () => {
           },
         },
       } as unknown as Connection;
-      await expect(migrateModel(conn, "my-model", "target")).rejects.toBe(
-        error,
-      );
+      await expect(
+        migrateModel(conn, [
+          { "model-tag": "my-model", "target-controller": "target" },
+        ]),
+      ).rejects.toBe(error);
     });
 
     it("handles no JIMM connection", async () => {
@@ -309,7 +312,9 @@ describe("JIMM API", () => {
         facades: {},
       } as unknown as Connection;
       await expect(
-        migrateModel(conn, "my-model", "target"),
+        migrateModel(conn, [
+          { "model-tag": "my-model", "target-controller": "target" },
+        ]),
       ).rejects.toMatchObject(new Error(Label.NO_JIMM));
     });
 
@@ -322,7 +327,9 @@ describe("JIMM API", () => {
         },
       } as unknown as Connection;
       await expect(
-        migrateModel(conn, "my-model", "target"),
+        migrateModel(conn, [
+          { "model-tag": "my-model", "target-controller": "target" },
+        ]),
       ).rejects.toMatchObject(new Error("Uh oh!"));
     });
   });

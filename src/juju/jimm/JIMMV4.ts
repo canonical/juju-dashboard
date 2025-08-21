@@ -57,6 +57,13 @@ export type CheckRelationsResponse = {
 };
 
 // As typed in JIMM:
+// https://github.com/canonical/jimm/blob/c82e0cbba03387031a46ec3a48494803dce16995/pkg/api/params/params.go#L482
+export type MigrateModelInfo = {
+  "model-tag": string;
+  "target-controller": string;
+};
+
+// As typed in JIMM:
 // https://github.com/canonical/jimm/blob/c82e0cbba03387031a46ec3a48494803dce16995/pkg/api/params/params.go#L217
 export type ListControllersResponse = {
   controllers: ControllerInfo[];
@@ -115,20 +122,13 @@ class JIMMV4 extends JIMMV3 {
     });
   }
 
-  migrateModel(
-    modelUUID: string,
-    targetController: string,
-  ): Promise<InitiateMigrationResults> {
+  migrateModel(specs: MigrateModelInfo[]): Promise<InitiateMigrationResults> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
         request: "MigrateModel",
         version: 4,
-        params: {
-          specs: [
-            { "model-tag": modelUUID, "target-controller": targetController },
-          ],
-        },
+        params: { specs },
       };
       this._transport.write(req, resolve, reject);
     });
