@@ -108,7 +108,7 @@ jobs:
         if: ${{ matrix.charm-kind == 'k8s' }}
         run: |
           FINAL_TAG='ghcr.io/canonical/juju-dashboard:${{ needs.pre-release.outputs.version }}'
-          docker image tag ${{ steps.build.id }} "$FINAL_TAG"
+          docker image tag '${{ steps.build.outputs.id }}' "$FINAL_TAG"
           docker image push "$FINAL_TAG"
       - name: Get charm path
         id: post-build
