@@ -7,7 +7,6 @@ from unittest import mock
 from ops.model import ActiveStatus, BlockedStatus
 from ops.testing import Harness
 
-
 import charm
 
 FAKE_ENDPOINT = {
