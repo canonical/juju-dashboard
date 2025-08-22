@@ -7,7 +7,6 @@
 import logging
 import os
 
-from charmhelpers.core import hookenv  # FIXME: This needs to be ported to ops.
 from charms.juju_dashboard.v0.juju_dashboard import JujuDashData, JujuDashReq
 from charms.nginx_ingress_integrator.v0.nginx_route import require_nginx_route
 from jinja2 import Environment, FileSystemLoader
@@ -55,16 +54,17 @@ class JujuDashboardCharm(CharmBase):
             charm=self,
             service_hostname=self.app.name,
             service_name=self.app.name,
-            service_port=8080,
+            service_port=self.config.get('port'),
         )
 
     def _on_install(self, _):
         os.system("apt install -y nginx")  # FIXME: use linux system tools
-        hookenv.open_port(8080)
+        self.unit.set_ports(self.config.get('port'))
         self.unit.status = MaintenanceStatus("Awaiting controller relation.")
 
     def _on_dashboard_relation_changed(self, event):
-        event.relation.data[self.app]["port"] = "8080"
+        event.relation.data[self.app]["port"] = self.config.get('port')
+        event.relation.data[self.unit]["port"] = self.config.get('port')
 
     def _on_relation_departed(self, _):
         self.unit.status = BlockedStatus("Missing controller integration")
@@ -113,16 +113,14 @@ class JujuDashboardCharm(CharmBase):
         if not controller_url.startswith('https://'):
             controller_url = 'https://{}'.format(controller_url)
 
-        if self.config.get('dns-name'):
-            hookenv.open_port(443)
-            hookenv.close_port(8080)
+        self.unit.set_ports(self.config.get("port"))
 
         nginx_template = env.get_template("src/nginx.conf.template")
         nginx_template = nginx_template.stream(
             controller_ws_api=controller_url,
             dashboard_root=os.getcwd(),
-            dns_name=self.config.get('dns-name'),
-            is_juju=self._bool(is_juju)
+            is_juju=self._bool(is_juju),
+            port=self.config.get("port")
         ).dump("/etc/nginx/sites-available/default")
 
         nginx_status = os.system("sudo systemctl restart nginx")
