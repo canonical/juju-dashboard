@@ -6,6 +6,7 @@ on:
       - closed
     branches:
       - "release/*"
+  workflow_dispatch:
 
 permissions: write-all
 
@@ -68,6 +69,7 @@ jobs:
       - name: Extract changelog
         uses: ./.github/actions/extract-changelog
         id: changelog
+        if: github.event_name == 'pull_request'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
