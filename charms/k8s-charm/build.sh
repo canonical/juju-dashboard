@@ -17,7 +17,7 @@ if [ "$BUILD_TYPE" == "source" ]; then
     # Navigate to the root and build the image in a subshell
     (
         cd "$ROOT_DIR"
-        DOCKER_BUILDKIT=1 docker build --platform linux/amd64,linux/arm64 -t "$DASHBOARD_IMAGE_ID" .
+        DOCKER_BUILDKIT=1 docker build -t "$DASHBOARD_IMAGE_ID" .
     )
 
 elif [ "$BUILD_TYPE" == "dashboard-resource" ]; then

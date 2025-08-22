@@ -109,7 +109,7 @@ jobs:
         run: |
           FINAL_TAG='ghcr.io/canonical/juju-dashboard:${{ needs.pre-release.outputs.version }}'
           docker image tag ${{ steps.build.id }} "$FINAL_TAG"
-          docker image push "$FINAL_TAG" --platform 'linux/amd64,linux/arm64'
+          docker image push "$FINAL_TAG"
       - name: Get charm path
         id: post-build
         run: |
