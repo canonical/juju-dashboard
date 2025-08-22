@@ -16,8 +16,6 @@ from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus
 
 logger = logging.getLogger(__name__)
 
-DASHBOARD_PORT = 8080
-
 
 class JujuDashboardKubernetesCharm(CharmBase):
     """Juju Dashboard Kubernetes Charm
@@ -64,15 +62,16 @@ class JujuDashboardKubernetesCharm(CharmBase):
             charm=self,
             service_hostname=self.app.name,
             service_name=self.app.name,
-            service_port=DASHBOARD_PORT,
+            service_port=self.config.get("port"),
         )
 
     def _on_install(self, _):
         self.unit.status = MaintenanceStatus("Awaiting controller relation.")
 
     def _on_dashboard_relation_changed(self, event):
-        """When something relates to the dashboard, tell it that we speak on port 8080."""
-        event.relation.data[self.app]["port"] = DASHBOARD_PORT
+        """When something relates to the dashboard, tell it the port the service is avilable on."""
+        event.relation.data[self.app]["port"] = self.config.get("port")
+        event.relation.data[self.unit]["port"] = self.config.get("port")
 
     def _on_relation_departed(self, event: RelationEvent):
         self.unit.status = BlockedStatus("Missing controller integration")
@@ -97,7 +96,8 @@ class JujuDashboardKubernetesCharm(CharmBase):
 
     def _update(self, event, controller_url, identity_provider_url, is_juju):
         dashboard_config, nginx_config = self._render_config(
-            controller_url, identity_provider_url, is_juju)
+            controller_url, identity_provider_url, is_juju
+        )
         container = self.unit.get_container("dashboard")
         if not container.can_connect():
             event.defer()
@@ -126,10 +126,10 @@ class JujuDashboardKubernetesCharm(CharmBase):
         config_template = env.get_template("src/config.js.j2")
         config = config_template.render(
             base_app_url="/",
-            controller_api_endpoint=("" if self._bool(is_juju) else controller_url) + "/api",
+            controller_api_endpoint=f"{'' if self._bool(is_juju) else controller_url}/api",
             identity_provider_url=identity_provider_url,
             is_juju=is_juju,
-            analytics_enabled=self.config.get('analytics-enabled'),
+            analytics_enabled=self.config.get("analytics-enabled"),
         )
 
         nginx_template = env.get_template("src/nginx.conf.j2")
@@ -137,7 +137,7 @@ class JujuDashboardKubernetesCharm(CharmBase):
             # nginx proxy_pass expects the protocol to be https
             controller_ws_api=controller_url.replace("wss://", "https://"),
             dashboard_root="/srv",
-            port=DASHBOARD_PORT,
+            port=self.config.get("port"),
             is_juju=self._bool(is_juju),
         )
 
@@ -168,7 +168,8 @@ class JujuDashboardKubernetesCharm(CharmBase):
         container.push("/srv/config.js", dashboard_config)
         container.push("/etc/nginx/sites-available/default", nginx_config)
 
-        container.autostart()
+        container.replan()
+        container.restart("dashboard")
 
 
 if __name__ == "__main__":
