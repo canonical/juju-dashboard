@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import {
   configFactory,
@@ -15,11 +16,20 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import AccessColumn from "./AccessColumn";
+import ModelActions from "./ModelActions";
 import { Label } from "./types";
 
-describe("AccessColumn", () => {
-  it("displays an access button and content", () => {
+describe("ModelActions", () => {
+  it("displays the actions menu", () => {
+    renderComponent(
+      <ModelActions activeUser="eggman@external" modelName="test-model" />,
+    );
+    expect(
+      screen.getByRole("button", { name: "Toggle menu" }),
+    ).toBeInTheDocument();
+  });
+
+  it("shows option to manage access if user has permission", async () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
@@ -60,26 +70,25 @@ describe("AccessColumn", () => {
         },
       }),
     });
-    const content = "From Donaldson's Dairy";
     renderComponent(
-      <AccessColumn activeUser="eggman@external" modelName="test1">
-        {content}
-      </AccessColumn>,
+      <ModelActions activeUser="eggman@external" modelName="test1" />,
       { state },
     );
+
+    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
     expect(
-      screen.getByRole("button", { name: Label.ACCESS_BUTTON }),
+      screen.queryByRole("button", { name: Label.ACCESS }),
     ).toBeInTheDocument();
   });
 
-  it("does not display the access button if the user does not have permission", () => {
+  it("does not show the option to manage access if the user does not have permission", async () => {
     renderComponent(
-      <AccessColumn activeUser="eggman@external" modelName="test-model">
-        From Donaldson's Dairy
-      </AccessColumn>,
+      <ModelActions activeUser="eggman@external" modelName="test-model" />,
     );
+
+    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
     expect(
-      screen.queryByRole("button", { name: Label.ACCESS_BUTTON }),
+      screen.queryByRole("button", { name: Label.ACCESS }),
     ).not.toBeInTheDocument();
   });
 });
