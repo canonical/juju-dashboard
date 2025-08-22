@@ -1,7 +1,6 @@
 import { expect } from "@playwright/test";
 
-import { Label as AccessColumnLabel } from "components/ModelTableList/AccessColumn/types";
-import { TestId as StatusGroupTestId } from "components/ModelTableList/StatusGroup/types";
+import { TestId as StatusGroupTestId } from "components/ModelTableList/types";
 import {
   Label as ShareModelLabel,
   TestId as ShareModelTestId,
