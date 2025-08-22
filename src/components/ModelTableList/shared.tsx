@@ -92,6 +92,10 @@ export const generateTableHeaders = (
       sortKey: "lastUpdated",
       className: "u-align--right",
     },
+    {
+      content: "Actions",
+      sortKey: "actions",
+    },
   ];
   // Remove any null headers that aren't being shown.
   return rows.reduce<MainTableHeader[]>((headers, row) => {

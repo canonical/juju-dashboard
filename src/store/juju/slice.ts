@@ -12,11 +12,16 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import fastDeepEqual from "fast-deep-equal/es6";
 
-import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm/JIMMV3";
+import type {
+  AuditEvent,
+  ControllerInfo,
+  FindAuditEventsRequest,
+} from "juju/jimm/JIMMV3";
 import type {
   CheckRelationResponse,
   CrossModelQueryRequest,
   CrossModelQueryResponse,
+  InitiateMigrationResults,
   RelationshipTuple,
 } from "juju/jimm/JIMMV4";
 import type {
@@ -113,6 +118,19 @@ const slice = createSlice({
       loaded: false,
       loading: false,
       limit: DEFAULT_AUDIT_EVENTS_LIMIT,
+    },
+    migrateModel: {
+      results: null,
+      uuid: null,
+      loading: false,
+      loaded: false,
+      errors: null,
+    },
+    migrationTargets: {
+      results: null,
+      loading: false,
+      loaded: false,
+      errors: null,
     },
     crossModelQuery: {
       results: null,
@@ -239,6 +257,58 @@ const slice = createSlice({
       _action: PayloadAction<FindAuditEventsRequest & WsControllerURLParam>,
     ) => {
       state.auditEvents.loading = true;
+    },
+    fetchMigrationTargets: (
+      state,
+      _action: PayloadAction<
+        {
+          modelTag: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.migrationTargets.loading = true;
+      state.migrationTargets.errors = null;
+      state.migrationTargets.loaded = false;
+      state.migrationTargets.results = null;
+    },
+    updateMigrationTargets: (
+      state,
+      action: PayloadAction<
+        { controllers: ControllerInfo[] | null } & WsControllerURLParam
+      >,
+    ) => {
+      state.migrationTargets.loading = false;
+      state.migrationTargets.errors = null;
+      state.migrationTargets.loaded = true;
+      state.migrationTargets.results = action.payload.controllers;
+    },
+    migrateModel: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          targetController: string;
+          poll?: number;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.migrateModel.uuid = action.payload.modelUUID;
+      state.migrateModel.loading = true;
+      state.migrateModel.errors = null;
+      state.migrateModel.loaded = false;
+      state.migrateModel.results = null;
+    },
+    updateMigrateModelResults: (
+      state,
+      { payload }: PayloadAction<InitiateMigrationResults>,
+    ) => {
+      state.migrateModel.results = payload.results;
+      state.migrateModel.loading = false;
+      state.migrateModel.errors = null;
+      state.migrateModel.loaded = true;
+    },
+    migrateModelErrors: (state, { payload }: PayloadAction<string | null>) => {
+      state.migrateModel.errors = payload;
     },
     updateAuditEvents: (state, { payload }: PayloadAction<AuditEvent[]>) => {
       state.auditEvents.items = payload;
