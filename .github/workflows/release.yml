@@ -95,6 +95,19 @@ jobs:
           if [ '${{ matrix.charm-kind }}' = 'k8s' ]; then
               echo "$OUTPUT" | grep '^id=' >> "$GITHUB_OUTPUT"
           fi
+      - name: Log in to GitHub Container Registry
+        if: ${{ matrix.charm-kind == 'k8s' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload docker image
+        if: ${{ matrix.charm-kind == 'k8s' }}
+        run: |
+          FINAL_TAG='ghcr.io/canonical/juju-dashboard:${{ needs.pre-release.outputs.version }}'
+          docker image tag ${{ steps.build.id }} "$FINAL_TAG"
+          docker image push "$FINAL_TAG" --platform 'linux/amd64,linux/arm64'
       - name: Get charm path
         id: post-build
         run: |
