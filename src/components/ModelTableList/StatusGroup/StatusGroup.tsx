@@ -1,6 +1,7 @@
 import { MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 
+import ModelActions from "components/ModelActions";
 import ModelDetailsLink from "components/ModelDetailsLink";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import {
@@ -13,7 +14,6 @@ import type { Filters, Status } from "store/juju/utils/models";
 import { extractOwnerName } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 
-import AccessColumn from "../AccessColumn/AccessColumn";
 import CloudCell from "../CloudCell/CloudCell";
 import ModelSummary from "../ModelSummary";
 import {
@@ -130,14 +130,21 @@ function generateModelTableDataByStatus(
           {
             "data-testid": TestId.COLUMN_UPDATED,
             content: (
-              <AccessColumn
-                modelName={model?.model?.name}
-                activeUser={activeUser}
-              >
+              <TruncatedTooltip message={lastUpdated}>
                 {lastUpdated}
-              </AccessColumn>
+              </TruncatedTooltip>
             ),
             className: "u-align--right lrg-screen-access-cell",
+          },
+          {
+            "data-testid": TestId.COLUMN_ACTIONS,
+            content: (
+              <ModelActions
+                activeUser={activeUser}
+                modelUUID={model?.uuid}
+                modelName={model.model.name}
+              />
+            ),
           },
         ],
         sortData: {

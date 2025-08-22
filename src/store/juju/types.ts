@@ -9,6 +9,8 @@ import type { ControllerInfo } from "juju/jimm/JIMMV3";
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type {
   CrossModelQueryResponse,
+  InitiateMigrationResult,
+  InitiateMigrationResults,
   RelationshipTuple,
 } from "juju/jimm/JIMMV4";
 import type {
@@ -75,6 +77,17 @@ export type CrossModelQueryState = GenericState<
   results: CrossModelQueryResponse["results"] | null;
 };
 
+export type MigrateModelState = GenericState<
+  InitiateMigrationResult["error"] | string
+> & {
+  uuid: string | null;
+  results: InitiateMigrationResults["results"] | null;
+};
+
+export type MigrationTargetsState = GenericState<ControllerInfo[] | null> & {
+  results: ControllerInfo[] | null;
+};
+
 export type SecretsContent = GenericState<string> & {
   content?: SecretValueResult["data"] | null;
 };
@@ -115,9 +128,11 @@ export type CommandHistory = Record<string, HistoryItem[]>;
 
 export type JujuState = {
   auditEvents: AuditEventsState;
+  migrateModel: MigrateModelState;
   crossModelQuery: CrossModelQueryState;
   commandHistory: CommandHistory;
   controllers: Controllers | null;
+  migrationTargets: MigrationTargetsState;
   models: ModelsList;
   modelsError: string | null;
   modelsLoaded: boolean;

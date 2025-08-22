@@ -2,6 +2,7 @@ import { MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import type { ReactNode } from "react";
 
+import ModelActions from "components/ModelActions";
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
@@ -14,7 +15,6 @@ import type { Filters } from "store/juju/utils/models";
 import { getModelStatusGroupData } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 
-import AccessColumn from "../AccessColumn";
 import CloudCell from "../CloudCell/CloudCell";
 import ModelSummary from "../ModelSummary";
 import {
@@ -106,14 +106,21 @@ export default function OwnerGroup({ filters }: Props) {
           {
             "data-testid": "column-updated",
             content: (
-              <AccessColumn
-                modelName={model?.info?.name}
-                activeUser={activeUser}
-              >
+              <TruncatedTooltip message={lastUpdated}>
                 {lastUpdated}
-              </AccessColumn>
+              </TruncatedTooltip>
             ),
             className: "u-align--right lrg-screen-access-cell",
+          },
+          {
+            "data-testid": "column-actions",
+            content: (
+              <ModelActions
+                activeUser={activeUser}
+                modelUUID={model?.uuid}
+                modelName={model.model.name}
+              />
+            ),
           },
         ],
         sortData: {

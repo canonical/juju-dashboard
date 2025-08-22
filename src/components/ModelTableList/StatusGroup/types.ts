@@ -7,4 +7,5 @@ export enum TestId {
   COLUMN_CREDENTIAL = "column-credential",
   COLUMN_CONTROLLER = "column-controller",
   COLUMN_UPDATED = "column-updated",
+  COLUMN_ACTIONS = "column-actions",
 }
