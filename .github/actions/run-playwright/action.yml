@@ -21,8 +21,6 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: "yarn"
-        cache-dependency-path: ${{ github.action_path }}/../../../yarn.lock
     - name: Install dependencies
       if: ${{ inputs.setup == 'true' }}
       # action_path is .github/actions/run-playwright so we 
