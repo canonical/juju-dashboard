@@ -81,14 +81,15 @@ describe("ModelActions", () => {
     ).toBeInTheDocument();
   });
 
-  it("does not show the option to manage access if the user does not have permission", async () => {
+  it("disables the option to manage access if the user does not have permission", async () => {
     renderComponent(
       <ModelActions activeUser="eggman@external" modelName="test-model" />,
     );
 
     await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
-    expect(
-      screen.queryByRole("button", { name: Label.ACCESS }),
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: Label.ACCESS })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
   });
 });

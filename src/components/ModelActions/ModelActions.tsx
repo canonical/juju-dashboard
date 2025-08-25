@@ -24,29 +24,28 @@ const ModelActions = ({ modelName, activeUser }: Props) => {
     <ContextualMenu
       hasToggleIcon
       links={[
-        canConfigureModel
-          ? {
-              children: Label.ACCESS,
-              className: "model-access",
-              ...(isJuju
-                ? {
-                    onClick: (event) => {
-                      event.stopPropagation();
-                      setPanelQs(
-                        {
-                          model: modelName,
-                          panel: "share-model",
-                        },
-                        { replace: true },
-                      );
+        {
+          children: Label.ACCESS,
+          className: "model-access",
+          disabled: !canConfigureModel,
+          ...(isJuju
+            ? {
+                onClick: (event) => {
+                  event.stopPropagation();
+                  setPanelQs(
+                    {
+                      model: modelName,
+                      panel: "share-model",
                     },
-                  }
-                : {
-                    element: Link,
-                    to: rebacURLS.groups.index,
-                  }),
-            }
-          : {},
+                    { replace: true },
+                  );
+                },
+              }
+            : {
+                element: Link,
+                to: rebacURLS.groups.index,
+              }),
+        },
       ]}
     />
   );
