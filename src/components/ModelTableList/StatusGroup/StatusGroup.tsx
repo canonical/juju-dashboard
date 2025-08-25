@@ -3,7 +3,7 @@ import type { Filters } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 
 import ModelTable from "../ModelTable";
-import { TestId } from "../types";
+import { GroupBy, TestId } from "../types";
 
 export default function StatusGroup({ filters }: { filters: Filters }) {
   const { alert, blocked, running } = useAppSelector((state) =>
@@ -16,7 +16,7 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
       {blocked.length ? (
         <ModelTable
           models={blocked}
-          groupBy="status"
+          groupBy={GroupBy.STATUS}
           groupLabel="Blocked"
           emptyStateMessage={emptyStateMsg}
         />
@@ -24,7 +24,7 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
       {alert.length ? (
         <ModelTable
           models={alert}
-          groupBy="status"
+          groupBy={GroupBy.STATUS}
           groupLabel="Alert"
           emptyStateMessage={emptyStateMsg}
         />
@@ -32,7 +32,7 @@ export default function StatusGroup({ filters }: { filters: Filters }) {
       {running.length ? (
         <ModelTable
           models={running}
-          groupBy="status"
+          groupBy={GroupBy.STATUS}
           groupLabel="Running"
           emptyStateMessage={emptyStateMsg}
         />

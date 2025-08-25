@@ -2,6 +2,7 @@ import { MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 
 import ModelActions from "components/ModelActions";
+import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { getActiveUsers, getControllerData } from "store/juju/selectors";
@@ -13,7 +14,6 @@ import {
 import { useAppSelector } from "store/store";
 
 import CloudCell from "../CloudCell";
-import ModelNameCell from "../ModelNameCell";
 import ModelSummary from "../ModelSummary";
 import WarningMessage from "../StatusGroup/WarningMessage";
 import {
@@ -24,7 +24,7 @@ import {
   getLastUpdated,
   getRegion,
 } from "../shared";
-import { TestId } from "../types";
+import { GroupBy, TestId } from "../types";
 
 /**
   Returns the model info and statuses in the proper format for the table data.
@@ -35,7 +35,7 @@ function generateModelTableList(
   models: ModelData[],
   activeUsers: Record<string, string>,
   controllers: Controllers | null,
-  groupBy: "status" | "owner" | "cloud",
+  groupBy: GroupBy,
   groupLabel?: string,
 ) {
   const modelsList: MainTableRow[] = [];
@@ -54,8 +54,15 @@ function generateModelTableList(
         "data-testid": TestId.COLUMN_NAME,
         content: (
           <>
-            <ModelNameCell model={model} />
-            {groupBy === "status" && groupLabel === "blocked" ? (
+            <TruncatedTooltip message={model.model.name}>
+              <ModelDetailsLink
+                modelName={model.model.name}
+                ownerTag={model.info?.["owner-tag"]}
+              >
+                {model.model.name}
+              </ModelDetailsLink>
+            </TruncatedTooltip>
+            {groupBy === GroupBy.STATUS && groupLabel === "Blocked" ? (
               <WarningMessage model={model} />
             ) : null}
           </>
@@ -72,7 +79,7 @@ function generateModelTableList(
         className: "u-overflow--visible",
       },
       // Conditionally include columns based on the group type
-      ...(groupBy !== "owner"
+      ...(groupBy !== GroupBy.OWNER
         ? [
             {
               "data-testid": TestId.COLUMN_OWNER,
@@ -82,7 +89,7 @@ function generateModelTableList(
             },
           ]
         : []),
-      ...(groupBy !== "status"
+      ...(groupBy !== GroupBy.STATUS
         ? [
             {
               "data-testid": TestId.COLUMN_STATUS,
@@ -91,7 +98,7 @@ function generateModelTableList(
             },
           ]
         : []),
-      ...(groupBy === "cloud"
+      ...(groupBy === GroupBy.CLOUD
         ? [
             {
               "data-testid": TestId.COLUMN_REGION,
@@ -142,9 +149,9 @@ function generateModelTableList(
 
     const sortData = {
       name: model.model.name,
-      ...(groupBy !== "owner" ? { owner } : {}),
-      ...(groupBy !== "status" ? { status: highestStatus } : {}),
-      ...(groupBy === "cloud" ? { region } : { cloud }),
+      ...(groupBy !== GroupBy.OWNER ? { owner } : {}),
+      ...(groupBy !== GroupBy.STATUS ? { status: highestStatus } : {}),
+      ...(groupBy === GroupBy.CLOUD ? { region } : { cloud }),
       credential,
       controller,
       lastUpdated,
@@ -164,7 +171,7 @@ function generateModelTableList(
 
 type Props = {
   models: ModelData[];
-  groupBy: "status" | "owner" | "cloud";
+  groupBy: GroupBy;
   groupLabel: string;
   emptyStateMessage?: string;
 };
@@ -177,18 +184,14 @@ export default function ModelTable({
 }: Props) {
   const activeUsers = useAppSelector(getActiveUsers);
   const controllers = useAppSelector(getControllerData);
-  let headerOptions = {};
-  if (groupBy === "status") {
-    headerOptions = {
-      showCloud: true,
-      showOwner: true,
-      ...(groupLabel === "Blocked" ? { showHeaderStatus: true } : {}),
-    };
-  } else if (groupBy === "owner") {
-    headerOptions = { showCloud: true, showStatus: true };
-  } else if (groupBy === "cloud") {
-    headerOptions = { showOwner: true, showStatus: true };
-  }
+  const headerOptions = {
+    showCloud: [GroupBy.STATUS, GroupBy.OWNER].includes(groupBy),
+    showOwner: [GroupBy.STATUS, GroupBy.CLOUD].includes(groupBy),
+    showStatus: [GroupBy.OWNER, GroupBy.CLOUD].includes(groupBy),
+    ...(groupLabel === "Blocked" && groupBy === GroupBy.STATUS
+      ? { showHeaderStatus: true }
+      : {}),
+  };
 
   return (
     <MainTable

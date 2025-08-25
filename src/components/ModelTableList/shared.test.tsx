@@ -136,13 +136,13 @@ describe("shared", () => {
   describe("generateTableHeaders", () => {
     it("can display an owner column", () => {
       const headers = generateTableHeaders("status", 5, { showOwner: true });
-      expect(headers).toHaveLength(7);
+      expect(headers).toHaveLength(8);
       expect(headers[2].content).toBe("Owner");
     });
 
     it("can display a status column", () => {
       const headers = generateTableHeaders("status", 5, { showStatus: true });
-      expect(headers).toHaveLength(7);
+      expect(headers).toHaveLength(8);
       expect(headers[2].content).toBe("Status");
     });
 
@@ -151,7 +151,7 @@ describe("shared", () => {
         showOwner: true,
         showStatus: true,
       });
-      expect(headers).toHaveLength(8);
+      expect(headers).toHaveLength(9);
       expect(headers[2].content).toBe("Owner");
       expect(headers[3].content).toBe("Status");
     });

@@ -5,7 +5,7 @@ import type { Filters } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 
 import ModelTable from "../ModelTable";
-import { TestId } from "../types";
+import { GroupBy, TestId } from "../types";
 
 type Props = {
   filters: Filters;
@@ -21,7 +21,7 @@ export default function OwnerGroup({ filters }: Props) {
     ownerTables.push(
       <ModelTable
         key={owner}
-        groupBy="owner"
+        groupBy={GroupBy.OWNER}
         groupLabel={owner}
         models={groupedAndFilteredData[owner]}
       />,
