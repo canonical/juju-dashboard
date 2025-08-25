@@ -10,64 +10,77 @@ from ops.testing import Harness
 import charm
 
 FAKE_ENDPOINT = {
-    "bind-addresses": [{
-        "macaddress": "",
-        "interface-name": "foo",
-        "addresses": [{"address": "10.10.10.10", "cidr": "10.10.10.0/24"}],
-    }],
+    "bind-addresses": [
+        {
+            "macaddress": "",
+            "interface-name": "foo",
+            "addresses": [{"address": "10.10.10.10", "cidr": "10.10.10.0/24"}],
+        }
+    ],
     "ingress-addresses": ["10.10.10.11"],
 }
 
 
 class TestDashboardRelation(unittest.TestCase):
 
-    @mock.patch('charm.os.system')
+    @mock.patch("charm.os.system")
     def setUp(self, mock_system):
         self.harness = Harness(charm.JujuDashboardCharm)
         self.addCleanup(self.harness.cleanup)
         self.harness.begin_with_initial_hooks()
 
-        self.harness.framework.model._backend.network_get = \
+        self.harness.framework.model._backend.network_get = (
             lambda endpoint_name, relation_id: FAKE_ENDPOINT
+        )
 
-        self.rel_id = self.harness.add_relation('controller', 'juju-controller')
+        self.rel_id = self.harness.add_relation("controller", "juju-controller")
         self.harness.add_relation_unit(self.rel_id, "juju-controller/0")
 
-    @mock.patch("charm.Environment")
-    @mock.patch('charm.os.system')
-    def test_relation(self, mock_system, mock_env):
+    @mock.patch("pathlib.Path.write_text")
+    @mock.patch("charm.os.system")
+    def test_relation(self, mock_system, mock_write):
         mock_system.return_value = 0
 
-        self.harness.update_relation_data(self.rel_id, "juju-controller", {
-            "controller-url": "api/some/controller/url",  # TODO: get real data
-            "identity-provider-url": "api/some/provider/url",
-            "is-juju": "True"
-        })
+        self.harness.update_relation_data(
+            self.rel_id,
+            "juju-controller",
+            {
+                "controller-url": "api/some/controller/url",  # TODO: get real data
+                "identity-provider-url": "api/some/provider/url",
+                "is-juju": "True",
+            },
+        )
 
         self.assertEqual(self.harness.model.unit.status, ActiveStatus())
-        self.assertTrue(mock_env.called)  # Verify that we tried to write templates.
+        self.assertTrue(mock_write.called)  # Verify that we tried to write templates.
 
     def test_missing_controller_url(self):
         # We should fail with a blocked status if the relation data is incomplete.
-        self.harness.update_relation_data(self.rel_id, "juju-controller", {
-            "controller-url": "",
-            "identity-provider-url": "api/some/provider/url",
-            "is-juju": "True"
-        })
+        self.harness.update_relation_data(
+            self.rel_id,
+            "juju-controller",
+            {
+                "controller-url": "",
+                "identity-provider-url": "api/some/provider/url",
+                "is-juju": "True",
+            },
+        )
 
-        self.assertEqual(self.harness.model.unit.status, BlockedStatus("Missing controller URL"))
+        self.assertEqual(
+            self.harness.model.unit.status, BlockedStatus("Missing controller URL")
+        )
 
     def test_relation_departed(self):
         self.harness.model.unit.status = ActiveStatus()
         self.harness.remove_relation(self.rel_id)
         self.assertEqual(
             self.harness.model.unit.status,
-            BlockedStatus("Missing controller integration")
+            BlockedStatus("Missing controller integration"),
         )
 
-    @mock.patch("charm.Environment")
-    @mock.patch('charm.os.system')
-    def test_config_changed(self, mock_system, mock_env):
+    @mock.patch("pathlib.Path.write_text")
+    @mock.patch("charm.os.system")
+    def test_config_changed(self, mock_system, mock_write):
         ports = self.harness.model.unit.opened_ports()
         self.assertEqual(len(ports), 1)
         self.assertEqual(list(ports)[0].port, 8080)
@@ -76,20 +89,20 @@ class TestDashboardRelation(unittest.TestCase):
         self.assertEqual(len(ports), 1)
         self.assertEqual(list(ports)[0].port, 123)
 
-    @mock.patch("charm.Environment")
-    @mock.patch('charm.os.system')
-    def test_config_changed_no_relation(self, mock_system, mock_env):
+    @mock.patch("pathlib.Path.write_text")
+    @mock.patch("charm.os.system")
+    def test_config_changed_no_relation(self, mock_system, mock_write):
         self.harness.remove_relation(self.rel_id)
         self.harness.model.unit.status = ActiveStatus()
         self.harness.update_config({"is-juju": True})
         self.assertEqual(
             self.harness.model.unit.status,
-            BlockedStatus("Missing controller integration")
+            BlockedStatus("Missing controller integration"),
         )
 
-    @mock.patch("charm.Environment")
-    @mock.patch('charm.os.system')
-    def test_update_status(self, mock_system, mock_env):
+    @mock.patch("pathlib.Path.write_text")
+    @mock.patch("charm.os.system")
+    def test_update_status(self, mock_system, mock_write):
         self.harness.disable_hooks()
         self.harness.update_config({"port": 123})
         self.harness.enable_hooks()
@@ -101,9 +114,9 @@ class TestDashboardRelation(unittest.TestCase):
         self.assertEqual(len(ports), 1)
         self.assertEqual(list(ports)[0].port, 123)
 
-    @mock.patch("charm.Environment")
-    @mock.patch('charm.os.system')
-    def test_upgrade_charm(self, mock_system, mock_env):
+    @mock.patch("pathlib.Path.write_text")
+    @mock.patch("charm.os.system")
+    def test_upgrade_charm(self, mock_system, mock_write):
         self.harness.disable_hooks()
         self.harness.update_config({"port": 123})
         self.harness.enable_hooks()
@@ -115,18 +128,21 @@ class TestDashboardRelation(unittest.TestCase):
         self.assertEqual(len(ports), 1)
         self.assertEqual(list(ports)[0].port, 123)
 
-    @mock.patch("charm.Environment")
-    @mock.patch('charm.os.system')
-    def test_could_not_start_nginx(self, mock_system, mock_env):
+    @mock.patch("pathlib.Path.write_text")
+    @mock.patch("charm.os.system")
+    def test_could_not_start_nginx(self, mock_system, mock_write):
         mock_system.return_value = -1
 
-        self.harness.update_relation_data(self.rel_id, "juju-controller", {
-            "controller-url": "api/some/controller/url",  # TODO: get real data
-            "identity-provider-url": "api/some/provider/url",
-            "is-juju": "True"
-        })
+        self.harness.update_relation_data(
+            self.rel_id,
+            "juju-controller",
+            {
+                "controller-url": "api/some/controller/url",  # TODO: get real data
+                "identity-provider-url": "api/some/provider/url",
+                "is-juju": "True",
+            },
+        )
 
         self.assertEqual(
-            self.harness.model.unit.status,
-            BlockedStatus("Could not start nginx")
+            self.harness.model.unit.status, BlockedStatus("Could not start nginx")
         )
