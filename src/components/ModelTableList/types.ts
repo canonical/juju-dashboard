@@ -13,3 +13,9 @@ export enum TestId {
   COLUMN_STATUS = "column-status",
   COLUMN_REGION = "column-region",
 }
+
+export enum GroupBy {
+  STATUS = "status",
+  OWNER = "owner",
+  CLOUD = "cloud",
+}

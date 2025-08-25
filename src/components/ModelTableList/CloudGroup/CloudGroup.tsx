@@ -5,7 +5,7 @@ import type { Filters } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 
 import ModelTable from "../ModelTable";
-import { TestId } from "../types";
+import { GroupBy, TestId } from "../types";
 
 type Props = {
   filters: Filters;
@@ -21,16 +21,16 @@ export default function CloudGroup({ filters }: Props) {
     cloudTables.push(
       <ModelTable
         key={cloud}
-        groupBy="cloud"
+        groupBy={GroupBy.CLOUD}
         groupLabel={cloud}
         models={groupedAndFilteredData[cloud]}
       />,
     );
-
-    return (
-      <div className="cloud-group" data-testid={TestId.CLOUD_GROUP}>
-        {cloudTables}
-      </div>
-    );
   }
+
+  return (
+    <div className="cloud-group" data-testid={TestId.CLOUD_GROUP}>
+      {cloudTables}
+    </div>
+  );
 }
