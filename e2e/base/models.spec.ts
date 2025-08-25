@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 
-import { Label as AccessColumnLabel } from "components/ModelTableList/AccessColumn/types";
+import { Label as AccessLabel } from "components/ModelActions/types";
 import { Label as ModelLabel } from "pages/EntityDetails/Model/types";
 import { Label as EntityDetailsLabel } from "pages/EntityDetails/types";
 import urls from "urls";
@@ -59,15 +59,12 @@ test.describe("Models", () => {
     await expect(page.getByText(EntityDetailsLabel.NOT_FOUND)).toBeVisible();
   });
 
-  test("model list does not display access button to non-admins", async ({
-    page,
-  }) => {
+  test("model list disables access button to non-admins", async ({ page }) => {
     await user2.dashboardLogin(page, urls.models.index);
-    // The access button only appears on hover.
-    await page.getByRole("link", { name: sharedModel.name }).hover();
+    await page.getByRole("button", { name: "Toggle menu" }).click();
     await expect(
-      page.getByRole("button", { name: AccessColumnLabel.ACCESS_BUTTON }),
-    ).not.toBeVisible();
+      page.getByRole("button", { name: AccessLabel.ACCESS }),
+    ).toHaveAttribute("aria-disabled", "true");
   });
 
   test("model details does not display access button to non-admins", async ({

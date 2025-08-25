@@ -1,2 +1,2 @@
 export { default } from "./StatusGroup";
-export { TestId as StatusGroupTestId } from "./types";
+export { TestId as StatusGroupTestId } from "../types";
