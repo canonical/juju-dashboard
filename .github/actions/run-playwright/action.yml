@@ -12,15 +12,19 @@ inputs:
     default: "true"
     description: Whether to set up Playwright.
     required: false
+  node-version:
+    description: The Node.js version to use.
+    required: false
+    default: "22"
 
 runs:
   using: "composite"
   steps:
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Install Node.js
       if: ${{ inputs.setup == 'true' }}
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ inputs.node-version }}
     - name: Install dependencies
       if: ${{ inputs.setup == 'true' }}
       # action_path is .github/actions/run-playwright so we 
