@@ -20,23 +20,35 @@ inputs:
 runs:
   using: "composite"
   steps:
+
+    # github.action_path is .github/actions/run-playwright so we need to 
+    # go up three levels to get to the repo root. Some actions don't accept
+    # relative paths so we normalize it first here.
+    - name: Normalize repo root path
+      id: repo-root
+      run: |
+        REPO_ROOT=$(realpath "${{ github.action_path }}/../../..")
+        echo "repo_root=$REPO_ROOT" >> $GITHUB_OUTPUT
+      shell: bash
+
     - name: Install Node.js
       if: ${{ inputs.setup == 'true' }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
+
     - name: Install dependencies
       if: ${{ inputs.setup == 'true' }}
-      # action_path is .github/actions/run-playwright so we 
-      # need to go up three levels to get to the repo root.
-      working-directory: ${{ github.action_path }}/../../..
+      working-directory: ${{ steps.repo-root.outputs.repo_root }}
       shell: bash
       run: yarn install
+
     - name: Install Playwright Browsers
       if: ${{ inputs.setup == 'true' }}
-      working-directory: ${{ github.action_path }}/../../..
+      working-directory: ${{ steps.repo-root.outputs.repo_root }}
       run: yarn playwright install --with-deps --only-shell chromium
       shell: bash
+
     - name: Get dashboard address
       if: ${{ inputs.run == 'true' }}
       id: dashboard
@@ -47,17 +59,19 @@ runs:
           echo "address=http://$DASHBOARD_ADDRESS" >> $GITHUB_OUTPUT
         fi
       shell: bash
+
     - name: Run Playwright tests
       if: ${{ inputs.run == 'true' }}
-      working-directory: ${{ github.action_path }}/../../..
+      working-directory: ${{ steps.repo-root.outputs.repo_root }}
       run: yarn playwright test
       shell: bash
       env:
         DASHBOARD_ADDRESS: ${{ steps.dashboard.outputs.address }}
+
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() && inputs.run == 'true' }}
       with:
         name: ${{ inputs.test-identifier }}
-        path: ${{ github.action_path }}/../../../test-results/
+        path: ${{ steps.repo-root.outputs.repo_root }}/test-results/
         retention-days: 30
 
