@@ -13,4 +13,4 @@
 
 python3 /srv/config.py
 
-nginx -g "daemon off;"
+exec nginx -g "daemon off;"
