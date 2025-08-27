@@ -12,10 +12,6 @@ inputs:
     default: "true"
     description: Whether to set up Playwright.
     required: false
-  node-version:
-    description: The Node.js version to use.
-    required: false
-    default: "22"
 
 runs:
   using: "composite"
@@ -35,7 +31,7 @@ runs:
       if: ${{ inputs.setup == 'true' }}
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ inputs.node-version }}
+        node-version: ${{ matrix.node-version || '22' }}
 
     - name: Install dependencies
       if: ${{ inputs.setup == 'true' }}
