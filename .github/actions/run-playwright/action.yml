@@ -48,9 +48,12 @@ runs:
     - name: Get dashboard address
       if: ${{ inputs.run == 'true' }}
       id: dashboard
+      # If the DASHBOARD_ADDRESS env var is set, use that, and allow
+      # the caller to set the scheme (http/https), otherwise assume http
+      # for testing a charmed deployment.
       run: |
         if [[ -z "${DASHBOARD_ADDRESS}" ]]; then
-          echo "address=$(address=$(juju show-unit dashboard/0 | yq '.dashboard/0.public-address'); if [ "$address" != "null" ]; then echo $address; else juju show-unit dashboard/0 | yq '.dashboard/0.address'; fi):8080" >> $GITHUB_OUTPUT
+          echo "address=http://$(address=$(juju show-unit dashboard/0 | yq '.dashboard/0.public-address'); if [ "$address" != "null" ]; then echo $address; else juju show-unit dashboard/0 | yq '.dashboard/0.address'; fi):8080" >> $GITHUB_OUTPUT
         else
           echo "address=$DASHBOARD_ADDRESS" >> $GITHUB_OUTPUT
         fi
