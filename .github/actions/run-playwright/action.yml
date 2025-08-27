@@ -50,9 +50,9 @@ runs:
       id: dashboard
       run: |
         if [[ -z "${DASHBOARD_ADDRESS}" ]]; then
-          echo "address=http://$(address=$(juju show-unit dashboard/0 | yq '.dashboard/0.public-address'); if [ "$address" != "null" ]; then echo $address; else juju show-unit dashboard/0 | yq '.dashboard/0.address'; fi):8080" >> $GITHUB_OUTPUT
+          echo "address=$(address=$(juju show-unit dashboard/0 | yq '.dashboard/0.public-address'); if [ "$address" != "null" ]; then echo $address; else juju show-unit dashboard/0 | yq '.dashboard/0.address'; fi):8080" >> $GITHUB_OUTPUT
         else
-          echo "address=http://$DASHBOARD_ADDRESS" >> $GITHUB_OUTPUT
+          echo "address=$DASHBOARD_ADDRESS" >> $GITHUB_OUTPUT
         fi
       shell: bash
 

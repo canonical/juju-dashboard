@@ -82,7 +82,7 @@ jobs:
         env:
           JIMM_CONTROLLER_NAME: ${{ env.CONTROLLER_NAME }}
           CONTROLLER_NAME: jimm
-          DASHBOARD_ADDRESS: ${{ steps.docker-dashboard.outputs.address }}
+          DASHBOARD_ADDRESS: http://${{ steps.docker-dashboard.outputs.address }}
           AUTH_MODE: oidc
           AUTH_VARIANT: keycloak
           JUJU_ENV: jimm
