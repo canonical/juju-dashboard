@@ -91,7 +91,7 @@ describe("CloudGroup", () => {
     expect(within(tables[0]).getAllByRole("row")).toHaveLength(3);
   });
 
-  it("model access button is present in cloud group", () => {
+  it("model actions menu is present in cloud group", () => {
     state.general = generalStateFactory.build({
       config: configFactory.build({
         isJuju: true,
@@ -122,9 +122,7 @@ describe("CloudGroup", () => {
     renderComponent(<CloudGroup filters={filters} />, { state });
     const firstContentRow = screen.getAllByRole("row")[1];
     expect(
-      within(firstContentRow).getByRole("button", {
-        name: "Access",
-      }),
+      within(firstContentRow).getByRole("button", { name: "Toggle menu" }),
     ).toBeInTheDocument();
     expect(within(firstContentRow).getAllByRole("gridcell")[7]).toHaveClass(
       "lrg-screen-access-cell",
