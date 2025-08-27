@@ -57,8 +57,8 @@ jobs:
       - name: Start JIMM (pull request)
         uses: ./jimm/.github/actions/test-server
         with:
-          jimm-version: dev
-          juju-channel: "3.6/edge"
+          jimm-version: v3.2.2
+          juju-channel: "3.6/stable"
           ghcr-pat: ${{ secrets.GITHUB_TOKEN }}
           dump-logs: true
       - name: Set the CLI admin's password
@@ -66,13 +66,13 @@ jobs:
           juju switch ${{ env.CONTROLLER_NAME }}
           echo '${{ inputs.admin-password }}' | juju change-user-password --no-prompt
       - name: Restart JIMM
-        run: docker restart jimm # Fixes a context cancelled issue when fetching models from the dashboard.
+        run: docker restart jimm-test # Fixes a context cancelled issue when fetching models from the dashboard.
       - name: Wait for JIMM container to be ready
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 1
           max_attempts: 2
-          command: while [ "$(docker inspect -f {{.State.Restarting}} jimm)" == "true" ]; do sleep 1; done
+          command: while [ "$(docker inspect -f {{.State.Restarting}} jimm-test)" == "true" ]; do sleep 1; done
       - name: Install jaas plugin
         run: sudo snap install jaas
       - name: Run tests
@@ -82,7 +82,7 @@ jobs:
         env:
           JIMM_CONTROLLER_NAME: ${{ env.CONTROLLER_NAME }}
           CONTROLLER_NAME: jimm
-          DASHBOARD_ADDRESS: ${{ steps.docker-dashboard.outputs.address }}
+          DASHBOARD_ADDRESS: http://${{ steps.docker-dashboard.outputs.address }}
           AUTH_MODE: oidc
           AUTH_VARIANT: keycloak
           JUJU_ENV: jimm
