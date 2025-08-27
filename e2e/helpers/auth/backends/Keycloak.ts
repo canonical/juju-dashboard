@@ -22,7 +22,6 @@ export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
   }
 
   async run(jujuCLI: JujuCLI) {
-    await jujuCLI.loginLocalCLIAdmin();
     // Give the keycloak user acccess to a file to store the login credentials in.
     await exec(
       'docker exec --user root keycloak sh -c "touch /kcadm.config && chown keycloak /kcadm.config"',
@@ -41,7 +40,6 @@ export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
   }
 
   async rollback(jujuCLI: JujuCLI) {
-    await jujuCLI.loginLocalCLIAdmin();
     const user = this.result();
     const userId = await exec(
       `docker exec keycloak sh -c "kcadm.sh get users -q exact=true -q username=${user.identityUsername} -r jimm --config /kcadm.config" | yq .[0].id`,
