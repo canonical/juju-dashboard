@@ -95,6 +95,7 @@ export const generateTableHeaders = (
     {
       content: "Actions",
       sortKey: "actions",
+      className: "u-align--right",
     },
   ];
   // Remove any null headers that aren't being shown.

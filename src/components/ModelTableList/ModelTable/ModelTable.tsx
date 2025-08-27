@@ -1,5 +1,8 @@
 import { MainTable } from "@canonical/react-components";
-import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import type {
+  MainTableCell,
+  MainTableRow,
+} from "@canonical/react-components/dist/components/MainTable/MainTable";
 
 import ModelActions from "components/ModelActions";
 import ModelDetailsLink from "components/ModelDetailsLink";
@@ -25,6 +28,17 @@ import {
   getRegion,
 } from "../shared";
 import { GroupBy, TestId } from "../types";
+
+const getConditionalCell = (
+  excludedGroup: GroupBy,
+  currentGroup: GroupBy,
+  column: MainTableCell,
+  columnForExcludedGroup?: MainTableCell,
+): MainTableCell[] => {
+  if (currentGroup === excludedGroup)
+    return columnForExcludedGroup ? [columnForExcludedGroup] : [];
+  return [column];
+};
 
 /**
   Returns the model info and statuses in the proper format for the table data.
@@ -78,45 +92,34 @@ function generateModelTableList(
         ),
         className: "u-overflow--visible",
       },
-      // Conditionally include columns based on the group type
-      ...(groupBy !== GroupBy.OWNER
-        ? [
-            {
-              "data-testid": TestId.COLUMN_OWNER,
-              content: (
-                <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>
-              ),
-            },
-          ]
-        : []),
-      ...(groupBy !== GroupBy.STATUS
-        ? [
-            {
-              "data-testid": TestId.COLUMN_STATUS,
-              content: <Status status={highestStatus} />,
-              className: "u-capitalise",
-            },
-          ]
-        : []),
-      ...(groupBy === GroupBy.CLOUD
-        ? [
-            {
-              "data-testid": TestId.COLUMN_REGION,
-              content: (
-                <TruncatedTooltip message={region}>{region}</TruncatedTooltip>
-              ),
-            },
-          ]
-        : [
-            {
-              "data-testid": TestId.COLUMN_CLOUD,
-              content: (
-                <TruncatedTooltip message={generateCloudAndRegion(model)}>
-                  {cloud}
-                </TruncatedTooltip>
-              ),
-            },
-          ]),
+      // Conditionally include cells based on the group type
+      ...getConditionalCell(GroupBy.OWNER, groupBy, {
+        "data-testid": TestId.COLUMN_OWNER,
+        content: <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>,
+      }),
+      ...getConditionalCell(GroupBy.STATUS, groupBy, {
+        "data-testid": TestId.COLUMN_STATUS,
+        content: <Status status={highestStatus} />,
+        className: "u-capitalise",
+      }),
+      ...getConditionalCell(
+        GroupBy.CLOUD,
+        groupBy,
+        {
+          "data-testid": TestId.COLUMN_CLOUD,
+          content: (
+            <TruncatedTooltip message={generateCloudAndRegion(model)}>
+              {cloud}
+            </TruncatedTooltip>
+          ),
+        },
+        {
+          "data-testid": TestId.COLUMN_REGION,
+          content: (
+            <TruncatedTooltip message={region}>{region}</TruncatedTooltip>
+          ),
+        },
+      ),
       {
         "data-testid": TestId.COLUMN_CREDENTIAL,
         content: (
@@ -144,6 +147,7 @@ function generateModelTableList(
         content: (
           <ModelActions activeUser={activeUser} modelName={model.model.name} />
         ),
+        className: "u-align--right",
       },
     ];
 

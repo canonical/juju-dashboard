@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import type { RootState } from "store/store";
 import {
   configFactory,
   generalStateFactory,
@@ -20,17 +21,9 @@ import ModelActions from "./ModelActions";
 import { Label } from "./types";
 
 describe("ModelActions", () => {
-  it("displays the actions menu", () => {
-    renderComponent(
-      <ModelActions activeUser="eggman@external" modelName="test-model" />,
-    );
-    expect(
-      screen.getByRole("button", { name: "Toggle menu" }),
-    ).toBeInTheDocument();
-  });
-
-  it("shows option to manage access if user has permission", async () => {
-    const state = rootStateFactory.build({
+  let state: RootState;
+  beforeEach(() => {
+    state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
           isJuju: true,
@@ -70,6 +63,18 @@ describe("ModelActions", () => {
         },
       }),
     });
+  });
+
+  it("displays the actions menu", () => {
+    renderComponent(
+      <ModelActions activeUser="eggman@external" modelName="test-model" />,
+    );
+    expect(
+      screen.getByRole("button", { name: "Toggle menu" }),
+    ).toBeInTheDocument();
+  });
+
+  it("shows option to manage access if user has permission", async () => {
     renderComponent(
       <ModelActions activeUser="eggman@external" modelName="test1" />,
       { state },
@@ -79,6 +84,19 @@ describe("ModelActions", () => {
     expect(
       screen.queryByRole("button", { name: Label.ACCESS }),
     ).toBeInTheDocument();
+  });
+
+  it("shows the panel to share model if user has permission", async () => {
+    const { router } = renderComponent(
+      <ModelActions activeUser="eggman@external" modelName="test1" />,
+      { state },
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.ACCESS }));
+    expect(router.state.location.search).toEqual(
+      "?model=test1&panel=share-model",
+    );
   });
 
   it("disables the option to manage access if the user does not have permission", async () => {

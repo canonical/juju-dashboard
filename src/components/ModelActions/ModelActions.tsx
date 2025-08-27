@@ -23,10 +23,11 @@ const ModelActions = ({ modelName, activeUser }: Props) => {
   return (
     <ContextualMenu
       hasToggleIcon
+      toggleAppearance="base"
+      toggleClassName="has-icon u-no-margin--bottom"
       links={[
         {
           children: Label.ACCESS,
-          className: "model-access",
           disabled: !canConfigureModel,
           ...(isJuju
             ? {
