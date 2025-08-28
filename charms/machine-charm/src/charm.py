@@ -8,15 +8,15 @@ import logging
 import os
 from pathlib import Path
 
+from charms.haproxy.v1.haproxy_route import HaproxyRouteRequirer
 from charms.juju_dashboard.v0.juju_dashboard import JujuDashData, JujuDashReq
 from charms.nginx_ingress_integrator.v0.nginx_route import require_nginx_route
-from charms.haproxy.v1.haproxy_route import HaproxyRouteRequirer
-from config import Config, to_bool
-
 from ops.charm import CharmBase
 from ops.framework import StoredState
 from ops.main import main
 from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus
+
+from config import Config, to_bool
 
 logger = logging.getLogger(__name__)
 
