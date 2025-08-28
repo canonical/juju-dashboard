@@ -1,2 +1,3 @@
 ops
 jinja2
+pydantic

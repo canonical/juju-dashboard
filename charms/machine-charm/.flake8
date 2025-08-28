@@ -7,3 +7,5 @@ exclude:
   build
   dist
   *.egg_info
+  lib/charms/haproxy
+  ._*
