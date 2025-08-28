@@ -36,7 +36,7 @@ jobs:
           dashboard-ref: ${{ github.ref }} # Use the dashboard version from this branch.
           run: true
           is-juju: false
-          controller-ws-address: ws://jimm.localhost:17070/api
+          controller-ws-address: ws://jimm.localhost:17070
       - name: Checkout JIMM repo
         uses: actions/checkout@v4
         with:

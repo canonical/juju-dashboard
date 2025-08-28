@@ -5,11 +5,12 @@
 # Learn more at: https://juju.is/docs/sdk
 
 import logging
-import os
+from pathlib import Path
 
 from charms.juju_dashboard.v0.juju_dashboard import JujuDashData, JujuDashReq
 from charms.nginx_ingress_integrator.v0.nginx_route import require_nginx_route
-from jinja2 import Environment, FileSystemLoader
+from config import Config, to_bool
+
 from ops.charm import CharmBase, RelationEvent
 from ops.main import main
 from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus
@@ -95,9 +96,16 @@ class JujuDashboardKubernetesCharm(CharmBase):
         self._update(event, **data)
 
     def _update(self, event, controller_url, identity_provider_url, is_juju):
-        dashboard_config, nginx_config = self._render_config(
-            controller_url, identity_provider_url, is_juju
+        config = Config(
+            config_dir=str(Path(__file__).parent.resolve()),
+            controller_url=controller_url,
+            identity_provider_url=identity_provider_url,
+            is_juju=to_bool(is_juju),
+            analytics_enabled=to_bool(self.config.get("analytics-enabled")),
+            dashboard_root="/srv",
+            port=self.config.get("port"),
         )
+        dashboard_config, nginx_config = config.generate()
         container = self.unit.get_container("dashboard")
         if not container.can_connect():
             event.defer()
@@ -107,41 +115,6 @@ class JujuDashboardKubernetesCharm(CharmBase):
         self._configure(container, dashboard_config, nginx_config)
 
         self.unit.status = ActiveStatus()
-
-    def _bool(self, boolean_variable):
-        if type(boolean_variable) is str:
-            return boolean_variable.lower() == "true"
-        return boolean_variable
-
-    def _render_config(self, controller_url, identity_provider_url, is_juju):
-        """
-        Given data from the controller relation, render config templates.
-
-        Returns the dashboard and nginx template as strings.
-        """
-
-        env = Environment(loader=FileSystemLoader(os.getcwd()))
-        env.filters["bool"] = self._bool
-
-        config_template = env.get_template("src/config.js.j2")
-        config = config_template.render(
-            base_app_url="/",
-            controller_api_endpoint=f"{'' if self._bool(is_juju) else controller_url}/api",
-            identity_provider_url=identity_provider_url,
-            is_juju=is_juju,
-            analytics_enabled=self.config.get("analytics-enabled"),
-        )
-
-        nginx_template = env.get_template("src/nginx.conf.j2")
-        nginx_config = nginx_template.render(
-            # nginx proxy_pass expects the protocol to be https
-            controller_ws_api=controller_url.replace("wss://", "https://"),
-            dashboard_root="/srv",
-            port=self.config.get("port"),
-            is_juju=self._bool(is_juju),
-        )
-
-        return config, nginx_config
 
     def _configure(self, container, dashboard_config, nginx_config):
         """
