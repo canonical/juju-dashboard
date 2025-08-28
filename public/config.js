@@ -1,6 +1,5 @@
 // If a new key is added to this config then be sure to also add the key and
-// value to the golang template in config.js.go and to the Web Team's demo
-// config in config.demo.js.
+// value to the Web Team's demo config in config.demo.js.
 // eslint-disable-next-line no-unused-vars
 var jujuDashboardConfig = {
   // API host to allow app to connect and retrieve models. This address should
