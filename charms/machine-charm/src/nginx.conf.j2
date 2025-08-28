@@ -7,7 +7,7 @@ server {
     listen {{port}} default_server;
     listen [::]:{{port}} default_server;
 
-    root {{dashboard_root}}/src/dist;
+    root {{dashboard_root}};
     index index.html;
 
     server_name _;
