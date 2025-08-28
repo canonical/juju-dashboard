@@ -26,33 +26,15 @@ runs:
       uses: actions/checkout@v4
       with:
         ref: ${{ inputs.dashboard-ref }}
-        path: juju-dashboard-local-release
-    - name: Configure Dashboard
-      run: |
-        cat << EOF > ${{ github.workspace }}/juju-dashboard-local-release/public/config.js
-        var jujuDashboardConfig = {
-          controllerAPIEndpoint: "${{ inputs.controller-ws-address }}",
-          baseAppURL: "/",
-          identityProviderURL: "",
-          isJuju: ${{ inputs.is-juju }},
-          analyticsEnabled: false,
-        };
-        EOF
-      shell: bash
-    - name: Configure nginx
-      run: |
-        pip install jinja2-cli
-        cd '${{ github.workspace }}/juju-dashboard-local-release'
-        echo '{"port": 80, "dashboard_root": "/srv"}' | jinja2 charms/k8s-charm/src/nginx.conf.j2 > nginx.conf
-      shell: bash
+        path: juju-dashboard-release
     - name: Build Juju Dashboard image
       shell: bash
       run: |
-        cd '${{ github.workspace }}/juju-dashboard-local-release'
-        DOCKER_BUILDKIT=1 docker build -t juju-dashboard-local:local .
+        cd '${{ github.workspace }}/juju-dashboard-release'
+        DOCKER_BUILDKIT=1 docker build -t juju-dashboard:local .
     - name: Run the Docker image
       if: ${{ inputs.run == 'true' }}
-      run: docker run --name juju-dashboard-local --detach juju-dashboard-local:local
+      run: docker run --name juju-dashboard --detach -e DASHBOARD_PORT=80 -e DASHBOARD_CONTROLLER_URL="${{ inputs.controller-ws-address }}" -e DASHBOARD_IS_JUJU="${{ inputs.is-juju }}" -e DASHBOARD_ANALYTICS_ENABLED=false juju-dashboard:local
       shell: bash
     - name: Wait for container to be ready
       if: ${{ inputs.run == 'true' }}
@@ -60,9 +42,9 @@ runs:
       with:
         timeout_minutes: 1
         max_attempts: 2
-        command: while [ "$(docker inspect -f {{.State.Running}} juju-dashboard-local)" != "true" ]; do sleep 1; done
+        command: while [ "$(docker inspect -f {{.State.Running}} juju-dashboard)" != "true" ]; do sleep 1; done
     - name: Get the dashboard address
       id: dashboard-address
       if: ${{ inputs.run == 'true' }}
-      run: echo "address=$(docker container inspect juju-dashboard-local --format '{{ .NetworkSettings.IPAddress }}')" >> "$GITHUB_OUTPUT"
+      run: echo "address=$(docker container inspect juju-dashboard --format '{{ .NetworkSettings.IPAddress }}')" >> "$GITHUB_OUTPUT"
       shell: bash

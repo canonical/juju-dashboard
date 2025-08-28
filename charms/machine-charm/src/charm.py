@@ -6,10 +6,12 @@
 
 import logging
 import os
+from pathlib import Path
 
 from charms.juju_dashboard.v0.juju_dashboard import JujuDashData, JujuDashReq
 from charms.nginx_ingress_integrator.v0.nginx_route import require_nginx_route
-from jinja2 import Environment, FileSystemLoader
+from config import Config, to_bool
+
 from ops.charm import CharmBase
 from ops.framework import StoredState
 from ops.main import main
@@ -31,19 +33,24 @@ class JujuDashboardCharm(CharmBase):
     - The dashboard relation allows an http proxy to connect to the dashboard charm.
 
     """
+
     _stored = StoredState()
 
     def __init__(self, *args):
         super().__init__(*args)
         self.framework.observe(self.on.install, self._on_install)
-        self.framework.observe(self.on["controller"].relation_changed,
-                               self._on_controller_relation_changed)
-        self.framework.observe(self.on["controller"].relation_departed,
-                               self._on_relation_departed)
-        self.framework.observe(self.on["dashboard"].relation_changed,
-                               self._on_dashboard_relation_changed)
-        self.framework.observe(self.on["dashboard"].relation_departed,
-                               self._on_relation_departed)
+        self.framework.observe(
+            self.on["controller"].relation_changed, self._on_controller_relation_changed
+        )
+        self.framework.observe(
+            self.on["controller"].relation_departed, self._on_relation_departed
+        )
+        self.framework.observe(
+            self.on["dashboard"].relation_changed, self._on_dashboard_relation_changed
+        )
+        self.framework.observe(
+            self.on["dashboard"].relation_departed, self._on_relation_departed
+        )
         self.framework.observe(self.on.config_changed, self._on_config_changed)
         self.framework.observe(self.on.update_status, self._on_config_changed)
         self.framework.observe(self.on.upgrade_charm, self._on_config_changed)
@@ -54,17 +61,17 @@ class JujuDashboardCharm(CharmBase):
             charm=self,
             service_hostname=self.app.name,
             service_name=self.app.name,
-            service_port=self.config.get('port'),
+            service_port=self.config.get("port"),
         )
 
     def _on_install(self, _):
         os.system("apt install -y nginx")  # FIXME: use linux system tools
-        self.unit.set_ports(self.config.get('port'))
+        self.unit.set_ports(self.config.get("port"))
         self.unit.status = MaintenanceStatus("Awaiting controller relation.")
 
     def _on_dashboard_relation_changed(self, event):
-        event.relation.data[self.app]["port"] = self.config.get('port')
-        event.relation.data[self.unit]["port"] = self.config.get('port')
+        event.relation.data[self.app]["port"] = self.config.get("port")
+        event.relation.data[self.unit]["port"] = self.config.get("port")
 
     def _on_relation_departed(self, _):
         self.unit.status = BlockedStatus("Missing controller integration")
@@ -95,34 +102,18 @@ class JujuDashboardCharm(CharmBase):
     def _configure(self, controller_url, identity_provider_url, is_juju):
         """Configure and restart our nginx and juju-dashboard services."""
 
-        # Load up nginx templates and poke at system.
-        env = Environment(loader=FileSystemLoader(os.getcwd()))
-        env.filters['bool'] = self._bool
-
-        config_template = env.get_template("src/config.js.template")
-        config_template.stream(
-            base_app_url="/",
-            controller_api_endpoint=("" if self._bool(is_juju) else controller_url) + "/api",
+        current_path = Path(__file__).parent.resolve()
+        config = Config(
+            config_dir=str(current_path),
+            controller_url=controller_url,
             identity_provider_url=identity_provider_url,
-            is_juju=is_juju,
-            analytics_enabled=self.config.get('analytics-enabled')
-        ).dump("src/dist/config.js")
-
-        # nginx proxy_pass expects the protocol to be https
-        controller_url = controller_url.replace("wss://", "https://")
-        if not controller_url.startswith('https://'):
-            controller_url = 'https://{}'.format(controller_url)
-
+            is_juju=to_bool(is_juju),
+            analytics_enabled=to_bool(self.config.get("analytics-enabled")),
+            dashboard_root=str(current_path / "dist"),
+            port=self.config.get("port"),
+        )
+        config.write()
         self.unit.set_ports(self.config.get("port"))
-
-        nginx_template = env.get_template("src/nginx.conf.template")
-        nginx_template = nginx_template.stream(
-            controller_ws_api=controller_url,
-            dashboard_root=os.getcwd(),
-            is_juju=self._bool(is_juju),
-            port=self.config.get("port")
-        ).dump("/etc/nginx/sites-available/default")
-
         nginx_status = os.system("sudo systemctl restart nginx")
         # If restarting nginx returns a 0 status it should have been successful
         if nginx_status == 0:
