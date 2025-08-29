@@ -5,11 +5,14 @@ import type {
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
 
 import ModelActions from "components/ModelActions";
-import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import { getActiveUsers, getControllerData } from "store/juju/selectors";
-import type { Controllers, ModelData } from "store/juju/types";
+import {
+  getActiveUsers,
+  getControllerData,
+  getMigrationState,
+} from "store/juju/selectors";
+import type { Controllers, MigrationState, ModelData } from "store/juju/types";
 import {
   extractOwnerName,
   getModelStatusGroupData,
@@ -17,8 +20,8 @@ import {
 import { useAppSelector } from "store/store";
 
 import CloudCell from "../CloudCell";
+import ModelNameCell from "../ModelNameCell";
 import ModelSummary from "../ModelSummary";
-import WarningMessage from "../StatusGroup/WarningMessage";
 import {
   generateCloudAndRegion,
   generateTableHeaders,
@@ -50,6 +53,7 @@ function generateModelTableList(
   activeUsers: Record<string, string>,
   controllers: Controllers | null,
   groupBy: GroupBy,
+  migrationState: MigrationState,
   groupLabel?: string,
 ) {
   const modelsList: MainTableRow[] = [];
@@ -62,24 +66,18 @@ function generateModelTableList(
     const credential = getCredential(model);
     const controller = getControllerName(model, controllers);
     const lastUpdated = getLastUpdated(model);
+    const { loading, loaded } = migrationState[model.uuid] ?? {};
 
     const columns = [
       {
         "data-testid": TestId.COLUMN_NAME,
         content: (
-          <>
-            <TruncatedTooltip message={model.model.name}>
-              <ModelDetailsLink
-                modelName={model.model.name}
-                ownerTag={model.info?.["owner-tag"]}
-              >
-                {model.model.name}
-              </ModelDetailsLink>
-            </TruncatedTooltip>
-            {groupBy === GroupBy.STATUS && groupLabel === "Blocked" ? (
-              <WarningMessage model={model} />
-            ) : null}
-          </>
+          <ModelNameCell
+            loading={loading && !loaded}
+            model={model}
+            groupBy={groupBy}
+            groupLabel={groupLabel}
+          />
         ),
       },
       {
@@ -145,7 +143,11 @@ function generateModelTableList(
       {
         "data-testid": TestId.COLUMN_ACTIONS,
         content: (
-          <ModelActions activeUser={activeUser} modelName={model.model.name} />
+          <ModelActions
+            activeUser={activeUser}
+            modelUUID={model?.uuid}
+            modelName={model.model.name}
+          />
         ),
         className: "u-align--right",
       },
@@ -188,6 +190,7 @@ export default function ModelTable({
 }: Props) {
   const activeUsers = useAppSelector(getActiveUsers);
   const controllers = useAppSelector(getControllerData);
+  const migrationState = useAppSelector(getMigrationState);
   const headerOptions = {
     showCloud: [GroupBy.STATUS, GroupBy.OWNER].includes(groupBy),
     showOwner: [GroupBy.STATUS, GroupBy.CLOUD].includes(groupBy),
@@ -208,6 +211,7 @@ export default function ModelTable({
         activeUsers,
         controllers,
         groupBy,
+        migrationState,
         groupLabel,
       )}
     />

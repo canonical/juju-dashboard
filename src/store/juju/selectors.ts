@@ -145,6 +145,14 @@ export const getCrossModelQueryState = createSelector(
 );
 
 /**
+  Fetches the migration from state.
+*/
+export const getMigrationState = createSelector(
+  [slice],
+  (sliceState) => sliceState.migrateModel,
+);
+
+/**
   Fetches the cross model query results from state.
 */
 export const getCrossModelQueryResults = createSelector(
@@ -289,6 +297,16 @@ export const getModelsError = createSelector(
 export const getControllerData = createSelector(
   [slice],
   (sliceState) => sliceState.controllers,
+);
+
+/**
+  Fetches the migration target controllers from state.
+  @param state The application state.
+  @returns The list of controller data or null if none found.
+*/
+export const getMigrationTargets = createSelector(
+  [slice],
+  (sliceState) => sliceState.migrationTargets.results,
 );
 
 export const getControllersCount = createSelector([slice], (sliceState) => {
