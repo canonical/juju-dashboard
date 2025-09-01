@@ -35,8 +35,7 @@ class TestDashboardRelation(unittest.TestCase):
             lambda endpoint_name, relation_id: FAKE_ENDPOINT
         )
 
-        self.rel_id = self.harness.add_relation(
-            "controller", "juju-controller")
+        self.rel_id = self.harness.add_relation("controller", "juju-controller")
         self.harness.add_relation_unit(self.rel_id, "juju-controller/0")
 
     def tearDown(self):
@@ -74,8 +73,7 @@ class TestDashboardRelation(unittest.TestCase):
         )
 
         self.assertEqual(
-            self.harness.model.unit.status, BlockedStatus(
-                "Missing controller URL")
+            self.harness.model.unit.status, BlockedStatus("Missing controller URL")
         )
 
     def test_relation_departed(self):
@@ -93,8 +91,7 @@ class TestDashboardRelation(unittest.TestCase):
         self.assertEqual(len(ports), 1)
         self.assertEqual(list(ports)[0].port, 8080)
         self.assertFalse(
-            self.mock_haproxy_requirer.return_value
-                .provide_haproxy_route_requirements.called
+            self.mock_haproxy_requirer.return_value.provide_haproxy_route_requirements.called
         )
         self.harness.update_config({"port": 123})
         ports = self.harness.model.unit.opened_ports()
@@ -107,7 +104,7 @@ class TestDashboardRelation(unittest.TestCase):
 
     @mock.patch("pathlib.Path.write_text")
     @mock.patch("charm.os.system")
-    def test_config_changed_no_relation(self, mock_system, mock_wri):
+    def test_config_changed_no_relation(self, mock_system, mock_write):
         self.harness.remove_relation(self.rel_id)
         self.harness.model.unit.status = ActiveStatus()
         self.harness.update_config({"is-juju": True})
@@ -160,6 +157,5 @@ class TestDashboardRelation(unittest.TestCase):
         )
 
         self.assertEqual(
-            self.harness.model.unit.status, BlockedStatus(
-                "Could not start nginx")
+            self.harness.model.unit.status, BlockedStatus("Could not start nginx")
         )
