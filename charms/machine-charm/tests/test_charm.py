@@ -25,6 +25,8 @@ class TestDashboardRelation(unittest.TestCase):
 
     @mock.patch("charm.os.system")
     def setUp(self, mock_system):
+        self.haproxy_patcher = mock.patch("charm.HaproxyRouteRequirer")
+        self.mock_haproxy_requirer = self.haproxy_patcher.start()
         self.harness = Harness(charm.JujuDashboardCharm)
         self.addCleanup(self.harness.cleanup)
         self.harness.begin_with_initial_hooks()
@@ -35,6 +37,9 @@ class TestDashboardRelation(unittest.TestCase):
 
         self.rel_id = self.harness.add_relation("controller", "juju-controller")
         self.harness.add_relation_unit(self.rel_id, "juju-controller/0")
+
+    def tearDown(self):
+        self.haproxy_patcher.stop()
 
     @mock.patch("pathlib.Path.write_text")
     @mock.patch("charm.os.system")
@@ -52,7 +57,8 @@ class TestDashboardRelation(unittest.TestCase):
         )
 
         self.assertEqual(self.harness.model.unit.status, ActiveStatus())
-        self.assertTrue(mock_write.called)  # Verify that we tried to write templates.
+        # Verify that we tried to write templates.
+        self.assertTrue(mock_write.called)
 
     def test_missing_controller_url(self):
         # We should fail with a blocked status if the relation data is incomplete.
@@ -84,10 +90,17 @@ class TestDashboardRelation(unittest.TestCase):
         ports = self.harness.model.unit.opened_ports()
         self.assertEqual(len(ports), 1)
         self.assertEqual(list(ports)[0].port, 8080)
+        self.assertFalse(
+            self.mock_haproxy_requirer.return_value.provide_haproxy_route_requirements.called
+        )
         self.harness.update_config({"port": 123})
         ports = self.harness.model.unit.opened_ports()
         self.assertEqual(len(ports), 1)
         self.assertEqual(list(ports)[0].port, 123)
+        haproxy_instance = self.mock_haproxy_requirer.return_value
+        haproxy_instance.provide_haproxy_route_requirements.assert_called_once_with(
+            "juju-dashboard", ports=[123]
+        )
 
     @mock.patch("pathlib.Path.write_text")
     @mock.patch("charm.os.system")

@@ -8,14 +8,15 @@ import logging
 import os
 from pathlib import Path
 
+from charms.haproxy.v1.haproxy_route import HaproxyRouteRequirer
 from charms.juju_dashboard.v0.juju_dashboard import JujuDashData, JujuDashReq
 from charms.nginx_ingress_integrator.v0.nginx_route import require_nginx_route
-from config import Config, to_bool
-
 from ops.charm import CharmBase
 from ops.framework import StoredState
 from ops.main import main
 from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus
+
+from config import Config, to_bool
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +64,12 @@ class JujuDashboardCharm(CharmBase):
             service_name=self.app.name,
             service_port=self.config.get("port"),
         )
+        self._haproxy_route_requirer = HaproxyRouteRequirer(
+            self,
+            "haproxy-route",
+            ports=[self.config.get("port")],
+            service=self.app.name,
+        )
 
     def _on_install(self, _):
         os.system("apt install -y nginx")  # FIXME: use linux system tools
@@ -93,6 +100,9 @@ class JujuDashboardCharm(CharmBase):
 
         data = JujuDashData(relation.data[relation.app])
         self._configure(**data)
+        self._haproxy_route_requirer.provide_haproxy_route_requirements(
+            self.app.name, ports=[self.config.get("port")]
+        )
 
     def _bool(self, boolean_variable):
         if type(boolean_variable) is str:
