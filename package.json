@@ -136,7 +136,6 @@
     "typescript": "5.8.2",
     "vite": "7.0.3",
     "vite-plugin-html": "3.2.2",
-    "vite-plugin-node-polyfills": "0.23.0",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.0.9",
     "vitest-fetch-mock": "0.4.5"
