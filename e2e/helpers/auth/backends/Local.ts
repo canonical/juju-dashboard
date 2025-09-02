@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import type { Browser, Page } from "@playwright/test";
 
 import type { User } from "..";
 import { addFeatureFlags, juju } from "../../../utils";
@@ -60,7 +60,7 @@ export class LocalUser implements User {
     await this.enterCredentials(page);
   }
 
-  async cliLogin() {
+  async cliLogin(_browser: Browser) {
     await juju.login(this.cliUsername, this.password);
   }
 

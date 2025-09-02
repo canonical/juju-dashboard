@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import type { Browser, Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 
 import { addFeatureFlags, exec } from "../../../utils";
@@ -6,7 +6,8 @@ import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
 import { LocalUser } from "./Local";
-import { deviceCodeLogin, Secret } from "./utils";
+import type { Secret } from "./utils";
+import { deviceCodeLogin } from "./utils";
 
 const KEYCLOAK_DEVICE_CODE_REGEX = /(?<=enter code ).\w+-\w+/;
 
@@ -22,7 +23,6 @@ export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
   }
 
   async run(jujuCLI: JujuCLI) {
-    await jujuCLI.loginLocalCLIAdmin();
     // Give the keycloak user acccess to a file to store the login credentials in.
     await exec(
       'docker exec --user root keycloak sh -c "touch /kcadm.config && chown keycloak /kcadm.config"',
@@ -41,7 +41,6 @@ export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
   }
 
   async rollback(jujuCLI: JujuCLI) {
-    await jujuCLI.loginLocalCLIAdmin();
     const user = this.result();
     const userId = await exec(
       `docker exec keycloak sh -c "kcadm.sh get users -q exact=true -q username=${user.identityUsername} -r jimm --config /kcadm.config" | yq .[0].id`,
@@ -101,13 +100,13 @@ export class KeycloakOIDCUser extends LocalUser {
     await page.reload();
   }
 
-  override async cliLogin() {
+  override async cliLogin(browser: Browser) {
     let retry = 3;
     // This login is retried as sometimes the login fails if it is too slow and an error is displayed:
     // `cannot log into controller "jimm": connection is shut down`.
     while (retry-- > 0) {
       try {
-        await KeycloakOIDC.loginCLI({
+        await KeycloakOIDC.loginCLI(browser, {
           username: this.identityUsername,
           password: this.identityPassword,
         });
@@ -134,8 +133,9 @@ export class KeycloakOIDCUser extends LocalUser {
 }
 
 export class KeycloakOIDC {
-  static async loginCLI(user: Secret): Promise<void> {
+  static async loginCLI(browser: Browser, user: Secret): Promise<void> {
     await deviceCodeLogin(
+      browser,
       user,
       KEYCLOAK_DEVICE_CODE_REGEX,
       KeycloakOIDC.uiLogin,

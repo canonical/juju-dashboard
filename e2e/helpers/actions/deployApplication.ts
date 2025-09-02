@@ -1,6 +1,7 @@
 import type { Provider } from "../../fixtures/setup";
 import { exec, generateRandomName } from "../../utils";
 import type { Action } from "../action";
+import type { JujuCLI } from "../juju-cli";
 import { Application, type Model } from "../objects";
 import { CharmName } from "../objects/application";
 
@@ -18,8 +19,8 @@ export class DeployApplication implements Action<Application> {
     this.application = new Application(name, charm, model);
   }
 
-  async run() {
-    await this.model.owner.cliLogin();
+  async run(jujuCLI: JujuCLI) {
+    await this.model.owner.cliLogin(jujuCLI.browser);
     await exec(
       `juju deploy '${this.application.charm}' '${this.application.name}' -m '${this.model.name}'`,
     );
@@ -28,8 +29,8 @@ export class DeployApplication implements Action<Application> {
     );
   }
 
-  async rollback() {
-    await this.model.owner.cliLogin();
+  async rollback(jujuCLI: JujuCLI) {
+    await this.model.owner.cliLogin(jujuCLI.browser);
     await exec(
       `juju remove-application '${this.application.name}' -m '${this.model.name}' --force --destroy-storage --no-prompt --no-wait`,
     );

@@ -3,9 +3,8 @@ import type { Browser, Page } from "@playwright/test";
 import { generateRandomName } from "../../utils";
 import type { Action } from "../action";
 
+import type { AuthImplementation } from "./AuthImplementation";
 import { CreateOIDCUser, CreateCandidUser, CreateLocalUser } from "./backends";
-
-import type { AuthImplementation } from ".";
 import { CreateKeycloakOIDCUser } from "./backends/Keycloak";
 
 /**
@@ -85,7 +84,7 @@ export abstract class User {
   /**
    * Use this user to authenticate with the Juju CLI.
    */
-  abstract cliLogin(): Promise<void>;
+  abstract cliLogin(browser: Browser): Promise<void>;
 
   /**
    * Get the username for this user suitable for use on the CLI.

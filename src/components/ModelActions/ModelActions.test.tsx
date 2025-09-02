@@ -1,5 +1,7 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
+import type { RootState } from "store/store";
 import {
   configFactory,
   generalStateFactory,
@@ -15,12 +17,13 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
-import AccessColumn from "./AccessColumn";
+import ModelActions from "./ModelActions";
 import { Label } from "./types";
 
-describe("AccessColumn", () => {
-  it("displays an access button and content", () => {
-    const state = rootStateFactory.build({
+describe("ModelActions", () => {
+  let state: RootState;
+  beforeEach(() => {
+    state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         config: configFactory.build({
           isJuju: true,
@@ -60,26 +63,51 @@ describe("AccessColumn", () => {
         },
       }),
     });
-    const content = "From Donaldson's Dairy";
+  });
+
+  it("displays the actions menu", () => {
     renderComponent(
-      <AccessColumn activeUser="eggman@external" modelName="test1">
-        {content}
-      </AccessColumn>,
-      { state },
+      <ModelActions activeUser="eggman@external" modelName="test-model" />,
     );
     expect(
-      screen.getByRole("button", { name: Label.ACCESS_BUTTON }),
+      screen.getByRole("button", { name: "Toggle menu" }),
     ).toBeInTheDocument();
   });
 
-  it("does not display the access button if the user does not have permission", () => {
+  it("shows option to manage access if user has permission", async () => {
     renderComponent(
-      <AccessColumn activeUser="eggman@external" modelName="test-model">
-        From Donaldson's Dairy
-      </AccessColumn>,
+      <ModelActions activeUser="eggman@external" modelName="test1" />,
+      { state },
     );
+
+    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
     expect(
-      screen.queryByRole("button", { name: Label.ACCESS_BUTTON }),
-    ).not.toBeInTheDocument();
+      screen.queryByRole("button", { name: Label.ACCESS }),
+    ).toBeInTheDocument();
+  });
+
+  it("shows the panel to share model if user has permission", async () => {
+    const { router } = renderComponent(
+      <ModelActions activeUser="eggman@external" modelName="test1" />,
+      { state },
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.ACCESS }));
+    expect(router.state.location.search).toEqual(
+      "?model=test1&panel=share-model",
+    );
+  });
+
+  it("disables the option to manage access if the user does not have permission", async () => {
+    renderComponent(
+      <ModelActions activeUser="eggman@external" modelName="test-model" />,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    expect(screen.getByRole("link", { name: Label.ACCESS })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
   });
 });

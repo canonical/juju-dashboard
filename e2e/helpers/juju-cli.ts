@@ -36,7 +36,7 @@ export class JujuCLI {
     public jujuEnv: JujuEnv,
     public controller: string,
     public provider: string,
-    browser: Browser,
+    public browser: Browser,
   ) {
     this.users = new Users(browser);
     const { username, password, identityUsername, identityPassword } =
@@ -107,7 +107,7 @@ export class JujuCLI {
       // In JIMM the CLI admin is only available when in the JIMM controller.
       await exec(`juju switch ${getEnv("JIMM_CONTROLLER_NAME")}`);
     }
-    await this.localAdmin.cliLogin();
+    await this.localAdmin.cliLogin(this.browser);
   }
 
   /**
@@ -115,7 +115,7 @@ export class JujuCLI {
    * credentials passed in via the environment.
    */
   async loginIdentityCLIAdmin(): Promise<void> {
-    await this.identityAdmin.cliLogin();
+    await this.identityAdmin.cliLogin(this.browser);
   }
 }
 
@@ -151,7 +151,7 @@ class BootstrapAction implements Action<User> {
     }
 
     // Login as the user.
-    await user.cliLogin();
+    await user.cliLogin(jujuCLI.browser);
 
     // Use the client credentials for this user (stored in
     // ~/.local/share/juju/credentials.yaml). This allows authentication via the
@@ -168,7 +168,7 @@ class BootstrapAction implements Action<User> {
   async rollback(jujuCLI: JujuCLI) {
     const user = this.result();
 
-    await user.cliLogin();
+    await user.cliLogin(jujuCLI.browser);
 
     // Remove the user's credential
     await exec(

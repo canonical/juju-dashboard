@@ -30,12 +30,13 @@ RUN yarn run build
 
 FROM ubuntu:noble
 
-RUN apt update && apt install --yes nginx
+RUN apt update && apt install --yes nginx python3-jinja2
 
 WORKDIR /srv
 
-# Optionally copy over the nginx.conf. When deployed with the charm this file will be created at run time.
-COPY nginx.conf* /etc/nginx/sites-available/default
+COPY ./charms/k8s-charm/src/config.js.j2 .
+COPY ./charms/k8s-charm/src/nginx.conf.j2 .
+COPY ./charms/k8s-charm/src/config.py .
 COPY entrypoint entrypoint
 COPY --from=build-js /srv/build .
 

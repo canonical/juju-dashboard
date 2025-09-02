@@ -646,10 +646,10 @@ http://jimm.localhost:8036/
 
 Each time you start the multipass container you need to do the following:
 
-1. Restart all services from `docker compose` in your Multipass instance
+1. Restart all services from `docker compose` in your Multipass instance (use the `INSECURE_SECRET_STORAGE` option if you used it during the initial setup)
 
 ```shell
-docker compose --profile dev up -d
+INSECURE_SECRET_STORAGE=true docker compose --profile dev up -d
 ```
 
 2. Restart JIMM service to make sure it is aligned with others
@@ -658,8 +658,18 @@ docker compose --profile dev up -d
 docker restart jimm
 ```
 
-3. [Forward ports](#forward-ports)
-4. Now you can start the dashboard as normal.
+3. Restart all your workloads controllers
+
+```shell
+juju controllers
+# Run the following for each non-JIMM controller you have. The <controller-name> is qa-lxd unless you have bootstrapped other controllers too.
+juju show-controller <controller-name> | yq '.[].controller-machines.[].instance-id' | xargs lxc restart
+```
+
+With the above, we are fetching the correct public key from JIMM which happens on restart.
+
+4. [Forward ports](#forward-ports)
+5. Now you can start the dashboard as normal.
 
 #### Adding users
 

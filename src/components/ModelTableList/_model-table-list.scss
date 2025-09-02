@@ -17,35 +17,12 @@
 }
 
 .models {
-  .model-access {
-    display: none;
-    font-size: #{map-get($font-sizes, small)}rem;
-    line-height: 1.5;
-    margin-bottom: 0;
-    width: 100%;
-  }
-
   .lrg-screen-access-cell {
     button {
       margin-left: auto;
       margin-right: 0;
       max-width: 100px;
       text-align: center;
-    }
-  }
-
-  @include desktop {
-    tr:hover {
-      .model-access {
-        display: block;
-        margin-bottom: 0;
-        padding: 0;
-        width: 100%;
-      }
-
-      .has-permission .model-access-alt {
-        display: none;
-      }
     }
   }
 
