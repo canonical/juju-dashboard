@@ -249,7 +249,7 @@ export const modelPollerMiddleware: Middleware<
           }
 
           // Allow the polling to run a certain number of times in tests.
-          if (process.env.NODE_ENV === "test") {
+          if (import.meta.env.NODE_ENV === "test") {
             if (pollCount === action.payload.poll) {
               break;
             }
