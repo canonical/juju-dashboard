@@ -13,7 +13,7 @@ import type { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
 import { rootStateFactory } from "testing/factories";
-import { generalStateFactory } from "testing/factories/general";
+import { configFactory, generalStateFactory } from "testing/factories/general";
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
   controllerFactory,
@@ -70,6 +70,9 @@ describe("model poller", () => {
       },
     }),
     general: {
+      config: configFactory.build({
+        isJuju: true,
+      }),
       controllerConnections: {
         [wsControllerURL]: {
           user: {
@@ -261,10 +264,6 @@ describe("model poller", () => {
       LocalAuth.prototype,
       "beforeControllerConnect",
     );
-    const afterControllerListFetchedSpy = vi.spyOn(
-      LocalAuth.prototype,
-      "afterControllerListFetched",
-    );
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
     });
@@ -294,7 +293,6 @@ describe("model poller", () => {
       fakeStore.getState,
     );
     expect(beforeControllerConnect).toHaveBeenCalledOnce();
-    expect(afterControllerListFetchedSpy).toHaveBeenCalledOnce();
   });
 
   it("disables the controller features if JIMM < 4", async () => {
@@ -404,6 +402,7 @@ describe("model poller", () => {
   });
 
   it("does not disable masking when running on Juju", async () => {
+    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
     const disableControllerUUIDMasking = vi.spyOn(
       jujuModule,
       "disableControllerUUIDMasking",
@@ -419,6 +418,30 @@ describe("model poller", () => {
     await runMiddleware();
     expect(next).not.toHaveBeenCalled();
     expect(disableControllerUUIDMasking).not.toHaveBeenCalled();
+  });
+
+  it("disables masking when using JIMM", async () => {
+    const disableControllerUUIDMasking = vi.spyOn(
+      jujuModule,
+      "disableControllerUUIDMasking",
+    );
+    conn.facades.modelManager.listModels.mockResolvedValue({
+      "user-models": [],
+    });
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    await runMiddleware({
+      payload: {
+        controllers,
+        isJuju: false,
+        poll: 0,
+      },
+    });
+    expect(next).not.toHaveBeenCalled();
+    expect(disableControllerUUIDMasking).toHaveBeenCalledWith(conn);
   });
 
   it("fails silently if the user is not authorised to disable masking", async () => {

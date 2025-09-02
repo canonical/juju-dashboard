@@ -67,15 +67,6 @@ export class Auth {
   async logout(): Promise<void> {}
 
   /**
-   * Executed after the controller list is fetched.
-   *
-   * @param conn - Controller connection.
-   */
-  async afterControllerListFetched(
-    conn: ConnectionWithFacades,
-  ): Promise<void> {}
-
-  /**
    * Executed before a connection is initiated with a controller.
    *
    * @returns Whether to continue the connection attempt.

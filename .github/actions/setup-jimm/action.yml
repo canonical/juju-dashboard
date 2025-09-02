@@ -61,12 +61,12 @@ runs:
     - name: Wait for IAM
       uses: nick-fields/retry@v3
       with:
-        timeout_minutes: 10
-        max_attempts: 2 # Retry the wait-for in case it gets stuck and times out. If it fails on the second try it's probably a real error.
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
         command: |
           # Wait for everything to be ready except kratos-external-idp-integrator
           # which will remain as blocked as we're not using an external identity provider.
-          juju wait-for model iam --query='forEach(applications, app => (app.name == "kratos-external-idp-integrator" && app.status=="blocked") || (app.name != "kratos-external-idp-integrator" && app.status=="active"))'
+          juju wait-for model iam --timeout=1m --query='forEach(applications, app => (app.name == "kratos-external-idp-integrator" && app.status=="blocked") || (app.name != "kratos-external-idp-integrator" && app.status=="active"))'
     - name: Create IAM offers for cross-model relations
       shell: bash
       run: |
@@ -78,9 +78,9 @@ runs:
     - name: Wait for Kratos
       uses: nick-fields/retry@v3
       with:
-        timeout_minutes: 10
-        max_attempts: 2 # Retry the wait-for in case it gets stuck and times out. If it fails on the second try it's probably a real error.
-        command: juju wait-for unit kratos/0
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
+        command: juju wait-for unit kratos/0 --timeout=1m
     - name: Create admin user
       shell: bash
       run: |
@@ -101,9 +101,9 @@ runs:
     - name: Wait for Postgres
       uses: nick-fields/retry@v3
       with:
-        timeout_minutes: 10
-        max_attempts: 2 # Retry the wait-for in case it gets stuck and times out. If it fails on the second try it's probably a real error.
-        command: juju wait-for unit postgresql/0 # Wait for postgres to prevent issues when relating to openfga: https://github.com/canonical/openfga-operator/issues/25.
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
+        command: juju wait-for unit postgresql/0 --timeout=1m # Wait for postgres to prevent issues when relating to openfga: https://github.com/canonical/openfga-operator/issues/25.
     - name: Add JIMM relations
       shell: bash
       run: |
@@ -115,15 +115,15 @@ runs:
     - name: Wait for openfga
       uses: nick-fields/retry@v3
       with:
-        timeout_minutes: 10
-        max_attempts: 3
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
         command: |
           STATUS=$(juju status --format json | yq .applications.openfga.application-status.current)
           if [ "$STATUS" == "error" ]; then
             # Sometimes the openfga unit will get into an error state, so resolve and try again.
             juju resolved openfga/0
           fi
-          juju wait-for unit openfga/0
+          juju wait-for unit openfga/0 --timeout=1m
     - name: Add JIMM relations and certs
       shell: bash
       run: |
@@ -131,6 +131,12 @@ runs:
         juju relate jimm admin/iam.self-signed-certificates
         juju deploy self-signed-certificates jimm-cert
         juju relate ingress:certificates jimm-cert:certificates
+    - name: Wait for vault
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
+        command: juju wait-for application vault --timeout=1m --query='name=="vault" && status=="blocked"'
     - name: Set up Vault
       shell: bash
       run: |
@@ -161,15 +167,15 @@ runs:
     - name: Wait for ingress
       uses: nick-fields/retry@v3
       with:
-        timeout_minutes: 10
-        max_attempts: 3
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
         command: |
           STATUS=$(juju status --format json | yq .applications.ingress.application-status.current)
           if [ "$STATUS" == "error" ]; then
             # Sometimes the ingress unit will get into an error state, so resolve and try again.
             juju resolved ingress/0
           fi
-          juju wait-for unit ingress/0
+          juju wait-for unit ingress/0 --timeout=1m
     - name: Set up ingress hostname and certs
       shell: bash
       run: |
@@ -180,9 +186,9 @@ runs:
     - name: Wait for JIMM
       uses: nick-fields/retry@v3
       with:
-        timeout_minutes: 10
-        max_attempts: 2 # Retry the wait-for in case it gets stuck and times out. If it fails on the second try it's probably a real error.
-        command: juju wait-for unit jimm/0 # Wait for JIMM to be ready if it's still making config changes.
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
+        command: juju wait-for unit jimm/0 --timeout=1m # Wait for JIMM to be ready if it's still making config changes.
     - name: Bootstrap workloads controller
       id: workloads-controller
       shell: bash
@@ -216,20 +222,20 @@ runs:
     - name: Wait for JIMM
       uses: nick-fields/retry@v3
       with:
-        timeout_minutes: 10
-        max_attempts: 2 # Retry the wait-for in case it gets stuck and times out. If it fails on the second try it's probably a real error.
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
         command: |
           juju switch '${{ steps.jimm-controller.outputs.name }}:jimm'
           # Wait for JIMM to be ready if it's still making config changes.
-          juju wait-for unit jimm/0
+          juju wait-for unit jimm/0 --timeout=1m
     - name: Restart JIMM
       shell: bash
       run: sudo microk8s kubectl delete pod jimm-0 -n jimm # Fix ListModels issue:
     - name: Wait for JIMM pod to be recreated
       uses: nick-fields/retry@v3
       with:
-        timeout_minutes: 10
-        max_attempts: 2
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
         continue_on_error: true # Sometimes the error persists after a retry but it seems to work anyway.
         command: |
           juju switch '${{ steps.jimm-controller.outputs.name }}:jimm'
@@ -238,4 +244,4 @@ runs:
             # Sometimes the jimm unit will get into an error state, so resolve and try again.
             juju resolved jimm/0
           fi
-          juju wait-for application jimm --query='name=="jimm" && (status=="active" || status=="error")'
+          juju wait-for application jimm --timeout=1m --query='name=="jimm" && (status=="active" || status=="error")'

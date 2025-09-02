@@ -38,7 +38,7 @@ elif [ "$BUILD_TYPE" == "dashboard-version" ]; then
 
     # Clean up downloaded tarball and temporary config files
     rm -f *.tar.bz2
-    rm -f $CHARM_DIST_PATH/config.js.go $CHARM_DIST_PATH/config.local.js
+    rm -f $CHARM_DIST_PATH/config.local.js
 else
     echo "Error: Invalid BUILD_TYPE specified: '$BUILD_TYPE'."
     echo "Accepted types are 'source' (default) or 'dashboard-version'."

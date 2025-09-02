@@ -30,3 +30,5 @@ requires:
     interface: juju-dashboard
   nginx-route:
     interface: nginx-route
+  haproxy-route:
+    interface: haproxy-route

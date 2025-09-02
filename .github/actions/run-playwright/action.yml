@@ -16,39 +16,61 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Use Node.js ${{ matrix.node-version }}
+
+    # github.action_path is .github/actions/run-playwright so we need to 
+    # go up three levels to get to the repo root. Some actions don't accept
+    # relative paths so we normalize it first here.
+    - name: Normalize repo root path
+      id: repo-root
+      run: |
+        REPO_ROOT=$(realpath "${{ github.action_path }}/../../..")
+        echo "repo_root=$REPO_ROOT" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Install Node.js
       if: ${{ inputs.setup == 'true' }}
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: "yarn"
+        node-version: ${{ matrix.node-version || '22' }}
+
     - name: Install dependencies
       if: ${{ inputs.setup == 'true' }}
+      working-directory: ${{ steps.repo-root.outputs.repo_root }}
       shell: bash
       run: yarn install
+
     - name: Install Playwright Browsers
       if: ${{ inputs.setup == 'true' }}
+      working-directory: ${{ steps.repo-root.outputs.repo_root }}
       run: yarn playwright install --with-deps --only-shell chromium
       shell: bash
+
     - name: Get dashboard address
       if: ${{ inputs.run == 'true' }}
       id: dashboard
+      # If the DASHBOARD_ADDRESS env var is set, use that, and allow
+      # the caller to set the scheme (http/https), otherwise assume http
+      # for testing a charmed deployment.
       run: |
         if [[ -z "${DASHBOARD_ADDRESS}" ]]; then
           echo "address=http://$(address=$(juju show-unit dashboard/0 | yq '.dashboard/0.public-address'); if [ "$address" != "null" ]; then echo $address; else juju show-unit dashboard/0 | yq '.dashboard/0.address'; fi):8080" >> $GITHUB_OUTPUT
         else
-          echo "address=http://$DASHBOARD_ADDRESS" >> $GITHUB_OUTPUT
+          echo "address=$DASHBOARD_ADDRESS" >> $GITHUB_OUTPUT
         fi
       shell: bash
+
     - name: Run Playwright tests
       if: ${{ inputs.run == 'true' }}
+      working-directory: ${{ steps.repo-root.outputs.repo_root }}
       run: yarn playwright test
       shell: bash
       env:
         DASHBOARD_ADDRESS: ${{ steps.dashboard.outputs.address }}
+
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() && inputs.run == 'true' }}
       with:
         name: ${{ inputs.test-identifier }}
-        path: test-results/
+        path: ${{ steps.repo-root.outputs.repo_root }}/test-results/
         retention-days: 30
+
