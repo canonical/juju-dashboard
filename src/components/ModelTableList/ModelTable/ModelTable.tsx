@@ -3,10 +3,17 @@ import type {
   MainTableCell,
   MainTableRow,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import { useEffect } from "react";
+import reactHotToast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 import ModelActions from "components/ModelActions";
 import Status from "components/Status";
+import ToastCard from "components/ToastCard";
+import type { ToastInstance } from "components/ToastCard";
 import TruncatedTooltip from "components/TruncatedTooltip";
+import { getWSControllerURL } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
 import {
   getActiveUsers,
   getControllerData,
@@ -191,6 +198,8 @@ export default function ModelTable({
   const activeUsers = useAppSelector(getActiveUsers);
   const controllers = useAppSelector(getControllerData);
   const migrationState = useAppSelector(getMigrationState);
+  const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
+  const dispatch = useDispatch();
   const headerOptions = {
     showCloud: [GroupBy.STATUS, GroupBy.OWNER].includes(groupBy),
     showOwner: [GroupBy.STATUS, GroupBy.CLOUD].includes(groupBy),
@@ -199,6 +208,45 @@ export default function ModelTable({
       ? { showHeaderStatus: true }
       : {}),
   };
+
+  useEffect(() => {
+    Object.entries(migrationState).forEach(([uuid, status]) => {
+      // Check if the migration has completed and is not in a loading state.
+      // The `status.loaded` check is key.
+      if (status.loaded && !status.loading) {
+        // Handle a successful migration
+        if (status.results?.["migration-id"]) {
+          reactHotToast.custom((toast: ToastInstance) => (
+            <ToastCard type="positive" toastInstance={toast}>
+              Model migration completed for {uuid} successfully
+            </ToastCard>
+          ));
+        }
+        // Handle a failed migration
+        else if (status.errors) {
+          reactHotToast.custom((toast: ToastInstance) => (
+            <ToastCard type="negative" toastInstance={toast}>
+              {typeof status.errors === "string"
+                ? status.errors
+                : "Unable to upgrade model"}
+            </ToastCard>
+          ));
+        }
+
+        // Dispatch the clear action to remove this entry from the state.
+        // This prevents the useEffect from re-running for this item.
+        dispatch(
+          jujuActions.clearModelMigration({
+            modelUUID: uuid,
+            wsControllerURL,
+          }),
+        );
+      }
+    });
+
+    // The dependencies are just the state and dispatch
+    // since `Object.entries` creates a new array on each render
+  }, [migrationState, wsControllerURL, dispatch]);
 
   return (
     <MainTable

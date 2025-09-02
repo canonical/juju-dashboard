@@ -1,6 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import type { InitiateMigrationResults } from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
+import type { InitiateMigrationResult } from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
 import type {
   ModelInfoResults,
   UserModelList,
@@ -293,10 +293,12 @@ const slice = createSlice({
     },
     updateMigrateModelResults: (
       state,
-      action: PayloadAction<{
-        modelUUID: string;
-        results: InitiateMigrationResults["results"];
-      }>,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          results: Omit<InitiateMigrationResult, "error">;
+        } & WsControllerURLParam
+      >,
     ) => {
       state.migrateModel[action.payload.modelUUID] = {
         loading: false,
@@ -307,10 +309,12 @@ const slice = createSlice({
     },
     migrateModelErrors: (
       state,
-      action: PayloadAction<{
-        modelUUID: string;
-        error: string;
-      }>,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          error: string;
+        } & WsControllerURLParam
+      >,
     ) => {
       state.migrateModel[action.payload.modelUUID] = {
         loading: false,
@@ -318,6 +322,16 @@ const slice = createSlice({
         loaded: true,
         results: null,
       };
+    },
+    clearModelMigration: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      delete state.migrateModel[action.payload.modelUUID];
     },
     // This action can be dispatched to fetch audit events which is handled in
     // the model-poller middleware.

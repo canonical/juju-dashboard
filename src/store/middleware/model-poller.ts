@@ -456,18 +456,24 @@ export const modelPollerMiddleware: Middleware<
         return;
       }
 
-      let result;
       try {
-        result = await migrateModel(conn, [
+        const { results } = await migrateModel(conn, [
           { "model-tag": modelUUID, "target-controller": targetController },
         ]);
+        if (results[0].error) {
+          throw new Error(results[0].error.message);
+        }
         let pollCount = 0;
         let modelInfo = await fetchModelInfo(conn, modelUUID);
         let isMigrationComplete = false;
         do {
           modelInfo = await fetchModelInfo(conn, modelUUID);
-          isMigrationComplete =
-            modelInfo?.results[0].error?.code === "redirection required";
+          const migrationStart = modelInfo?.results[0].result?.migration?.start;
+          const migrationEnd = modelInfo?.results[0].result?.migration?.end;
+          isMigrationComplete = !!migrationStart && !migrationEnd;
+          if (!!migrationStart && !!migrationEnd) {
+            throw new Error("Migration has failed");
+          }
           // Allow the polling to run a certain number of times in tests.
           if (process.env.NODE_ENV === "test") {
             if (pollCount === action.payload.poll) {
@@ -485,14 +491,22 @@ export const modelPollerMiddleware: Middleware<
         reduxStore.dispatch(
           jujuActions.updateMigrateModelResults({
             modelUUID,
-            results: result.results,
+            results: {
+              "migration-id": results[0]["migration-id"],
+              "model-tag": results[0]["model-tag"],
+            },
+            wsControllerURL,
           }),
         );
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Could not migrate model";
         reduxStore.dispatch(
-          jujuActions.migrateModelErrors({ modelUUID, error: errorMessage }),
+          jujuActions.migrateModelErrors({
+            modelUUID,
+            error: errorMessage,
+            wsControllerURL,
+          }),
         );
       }
       // The action has already been passed to the next middleware
