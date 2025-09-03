@@ -25,7 +25,7 @@ test.describe("cross model queries", () => {
     actions = new ActionStack(jujuCLI);
     await actions.prepare((add) => {
       user = add(jujuCLI.createUser());
-      const model = add(new AddModel(user));
+      const model = add(new AddModel(jujuCLI, user));
       add(
         new GiveControllerAccess(
           jujuCLI.controllerInstance,

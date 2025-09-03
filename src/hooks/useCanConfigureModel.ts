@@ -11,7 +11,9 @@ import { useAppSelector } from "store/store";
 
 const useCheckJujuPermissions = (modelUUID: string, enabled?: boolean) => {
   const activeUser = useAppSelector((state) => getActiveUser(state, modelUUID));
+  console.log("activeUser", activeUser);
   const modelStatusData = useModelStatus(modelUUID);
+  console.log("modelStatusData?.info?.users", modelStatusData?.info?.users);
   return (
     enabled &&
     !!activeUser &&

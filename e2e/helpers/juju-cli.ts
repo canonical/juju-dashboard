@@ -28,7 +28,7 @@ export class JujuCLI {
    * Auth backend that is currently in use.
    */
   private users: Users;
-  private localAdmin: User;
+  public localAdmin: User;
   public identityAdmin: User;
   public controllerInstance: Controller;
 
@@ -107,7 +107,7 @@ export class JujuCLI {
       // In JIMM the CLI admin is only available when in the JIMM controller.
       await exec(`juju switch ${getEnv("JIMM_CONTROLLER_NAME")}`);
     }
-    await this.localAdmin.cliLogin(this.browser);
+    // await this.localAdmin.cliLogin(this.browser);
   }
 
   /**
@@ -115,7 +115,11 @@ export class JujuCLI {
    * credentials passed in via the environment.
    */
   async loginIdentityCLIAdmin(): Promise<void> {
-    await this.identityAdmin.cliLogin(this.browser);
+    if (this.jujuEnv === JujuEnv.JIMM) {
+      // In JIMM the identity admin is only available when in the workloads controller.
+      await exec(`juju switch ${this.controller}`);
+    }
+    // await this.identityAdmin.cliLogin(this.browser);
   }
 }
 
@@ -135,31 +139,31 @@ class BootstrapAction implements Action<User> {
 
     const user = this.result();
 
-    if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
-      // Granting clouds must be done by the JIMM admin.
-      await jujuCLI.loginIdentityCLIAdmin();
-    } else {
-      // Bootstrap must be done by the admin.
-      await jujuCLI.loginLocalCLIAdmin();
-    }
+    // if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
+    //   // Granting clouds must be done by the JIMM admin.
+    //   await jujuCLI.loginIdentityCLIAdmin();
+    // } else {
+    //   // Bootstrap must be done by the admin.
+    //   await jujuCLI.loginLocalCLIAdmin();
+    // }
 
-    if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
-      // Grant access to the cloud.
-      await exec(
-        `juju grant-cloud '${user.cliUsername}' ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
-      );
-    }
+    // if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
+    //   // Grant access to the cloud.
+    //   await exec(
+    //     `juju grant-cloud '${user.cliUsername}' ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
+    //   );
+    // }
 
     // Login as the user.
-    await user.cliLogin(jujuCLI.browser);
+    // await user.cliLogin(jujuCLI.browser);
 
     // Use the client credentials for this user (stored in
     // ~/.local/share/juju/credentials.yaml). This allows authentication via the
     // oauth token which is required in some scenarios (e.g. adding secrets when
     // using microk8s).
-    await exec(
-      `juju update-credential ${jujuCLI.provider} ${jujuCLI.provider} -c '${jujuCLI.controller}'`,
-    );
+    // await exec(
+    //   `juju update-credential ${jujuCLI.provider} ${jujuCLI.provider} -c '${jujuCLI.controller}'`,
+    // );
   }
 
   /**
@@ -168,26 +172,26 @@ class BootstrapAction implements Action<User> {
   async rollback(jujuCLI: JujuCLI) {
     const user = this.result();
 
-    await user.cliLogin(jujuCLI.browser);
+    // await user.cliLogin(jujuCLI.browser);
 
     // Remove the user's credential
-    await exec(
-      `juju remove-credential --force -c '${jujuCLI.controller}' '${jujuCLI.provider}' '${user.cliUsername}'`,
-    );
+    // await exec(
+    //   `juju remove-credential --force -c '${jujuCLI.controller}' '${jujuCLI.provider}' '${user.cliUsername}'`,
+    // );
 
-    if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
-      // Granting clouds must be done by the JIMM admin.
-      await jujuCLI.loginIdentityCLIAdmin();
-    } else {
-      // Bootstrap must be done by the admin.
-      await jujuCLI.loginLocalCLIAdmin();
-    }
+    // if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
+    //   // Granting clouds must be done by the JIMM admin.
+    //   await jujuCLI.loginIdentityCLIAdmin();
+    // } else {
+    //   // Bootstrap must be done by the admin.
+    //   await jujuCLI.loginLocalCLIAdmin();
+    // }
 
     if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
       // Remove the user's access to the cloud
-      await exec(
-        `juju revoke-cloud -c '${jujuCLI.controller}' ${user.cliUsername} ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
-      );
+      // await exec(
+      //   `juju revoke-cloud -c '${jujuCLI.controller}' ${user.cliUsername} ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
+      // );
     }
 
     await this.userAction.rollback(jujuCLI);

@@ -32,7 +32,7 @@ test.describe("Actions", () => {
 
     await actions.prepare((add) => {
       user = add(jujuCLI.createUser());
-      model = add(new AddModel(user));
+      model = add(new AddModel(jujuCLI, user));
       application = add(new DeployApplication(model, testOptions.provider));
     });
   });
