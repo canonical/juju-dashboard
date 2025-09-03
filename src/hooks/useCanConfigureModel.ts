@@ -14,7 +14,9 @@ const useCheckJujuPermissions = (
   enabled: boolean = false,
 ) => {
   const activeUser = useAppSelector((state) => getActiveUser(state, modelUUID));
+  console.log("activeUser", activeUser);
   const modelStatusData = useModelStatus(modelUUID);
+  console.log("modelStatusData?.info?.users", modelStatusData?.info?.users);
   return (
     enabled &&
     activeUser !== null &&

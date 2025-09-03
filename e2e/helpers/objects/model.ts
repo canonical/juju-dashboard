@@ -18,16 +18,38 @@ export class Model {
     public owner: User,
   ) {}
 
+  public get path(): string {
+    let username = this.owner.cliUsername;
+    if (process.env.AUTH_VARIANT == "keycloak") {
+      username = `${this.owner.dashboardUsername}@canonical.com`;
+    } else if (process.env.AUTH_MODE == "candid") {
+      username = this.owner.dashboardUsername.replace("@external", "");
+    }
+    return `${username}/${this.name}`;
+  }
+
   public get url(): string {
+    let username = this.owner.cliUsername;
+    if (process.env.AUTH_VARIANT == "keycloak") {
+      username = `${this.owner.dashboardUsername}@canonical.com`;
+    } else if (process.env.AUTH_MODE == "candid") {
+      username = this.owner.dashboardUsername.replace("@external", "");
+    }
     return urls.model.index({
-      userName: this.owner.cliUsername,
+      userName: username,
       modelName: this.name,
     });
   }
 
   public tab(tab: ModelTab): string {
+    let username = this.owner.cliUsername;
+    if (process.env.AUTH_VARIANT == "keycloak") {
+      username = `${this.owner.dashboardUsername}@canonical.com`;
+    } else if (process.env.AUTH_MODE == "candid") {
+      username = this.owner.dashboardUsername.replace("@external", "");
+    }
     return urls.model.tab({
-      userName: this.owner.cliUsername,
+      userName: username,
       modelName: this.name,
       tab,
     });

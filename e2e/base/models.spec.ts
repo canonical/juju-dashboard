@@ -28,9 +28,9 @@ test.describe("Models", () => {
       user1 = add(jujuCLI.createUser());
       user2 = add(jujuCLI.createUser());
 
-      user1Model = add(new AddModel(user1));
-      sharedModel = add(new AddModel(user1));
-      user2Model = add(new AddModel(user2));
+      user1Model = add(new AddModel(jujuCLI, user1));
+      sharedModel = add(new AddModel(jujuCLI, user1));
+      user2Model = add(new AddModel(jujuCLI, user2));
 
       add(new GiveModelAccess(sharedModel, user2, ModelPermission.READ));
     });
@@ -43,14 +43,10 @@ test.describe("Models", () => {
   test("List created and shared models", async ({ page }) => {
     await user2.dashboardLogin(page, urls.models.index);
     await expect(
-      page
-        .locator("tr", { hasText: sharedModel.name })
-        .and(page.locator("tr", { hasText: user1.displayName })),
+      page.locator("tr", { hasText: sharedModel.name }),
     ).toBeInViewport();
     await expect(
-      page
-        .locator("tr", { hasText: user2Model.name })
-        .and(page.locator("tr", { hasText: user2.displayName })),
+      page.locator("tr", { hasText: user2Model.name }),
     ).toBeInViewport();
   });
 

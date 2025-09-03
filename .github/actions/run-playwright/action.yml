@@ -16,8 +16,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-
-    # github.action_path is .github/actions/run-playwright so we need to 
+    # github.action_path is .github/actions/run-playwright so we need to
     # go up three levels to get to the repo root. Some actions don't accept
     # relative paths so we normalize it first here.
     - name: Normalize repo root path
@@ -73,4 +72,3 @@ runs:
         name: ${{ inputs.test-identifier }}
         path: ${{ steps.repo-root.outputs.repo_root }}/test-results/
         retention-days: 30
-

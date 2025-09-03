@@ -34,8 +34,17 @@ runs:
       if: inputs.merge-config != ''
       run: |
         sudo yq eval-all '. as $item ireduce ({}; . * $item)' -i /var/snap/candid/current/config.yaml '${{ inputs.merge-config }}'
-        sudo snap restart candid
     - name: Wait for candid snap to restart
+      if: inputs.merge-config != ''
+      uses: ./.github/actions/wait-for-snap
+      with:
+        snap: candid
+    - name: Restart Candid snap
+      shell: bash
+      if: inputs.merge-config != ''
+      run: sudo snap restart candid
+    - name: Wait for candid snap to restart
+      if: inputs.merge-config != ''
       uses: ./.github/actions/wait-for-snap
       with:
         snap: candid
