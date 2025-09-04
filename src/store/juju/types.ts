@@ -1,4 +1,5 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
+import type { ErrorResult } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type {
   ListSecretResult,
@@ -75,6 +76,10 @@ export type CrossModelQueryState = GenericState<
   results: CrossModelQueryResponse["results"] | null;
 };
 
+export type DestroyModelState = GenericState<ErrorResult["error"] | string>;
+
+export type DestroyState = Record<string, DestroyModelState>;
+
 export type SecretsContent = GenericState<string> & {
   content?: SecretValueResult["data"] | null;
 };
@@ -116,6 +121,7 @@ export type CommandHistory = Record<string, HistoryItem[]>;
 export type JujuState = {
   auditEvents: AuditEventsState;
   crossModelQuery: CrossModelQueryState;
+  destroyModel: DestroyState;
   commandHistory: CommandHistory;
   controllers: Controllers | null;
   models: ModelsList;
