@@ -52,6 +52,8 @@ export type Resource = {
   owner?: string;
 };
 
+const JUJU_UPDATE_URL = "https://juju.is/latest.json";
+
 export const test = base.extend<Fixtures>({
   testOptions: [
     {
@@ -87,6 +89,9 @@ export const test = base.extend<Fixtures>({
         ["media", "font", "image"].includes(request.resourceType())
       ) {
         console.debug("Blocked external request:", request.url());
+        await route.abort();
+      } else if (url.toString() === JUJU_UPDATE_URL) {
+        console.debug(`Blocking update check to \`${JUJU_UPDATE_URL}\``);
         await route.abort();
       } else {
         await route.continue();
