@@ -209,7 +209,10 @@ export async function fetchModelStatus(
       if (isLoggedIn(getState(), wsControllerURL)) {
         try {
           status =
-            (await conn?.facades.client?.fullStatus({ patterns: [] })) ?? null;
+            (await conn?.facades.client?.fullStatus({
+              patterns: [],
+              "include-storage": true,
+            })) ?? null;
           if (!status) {
             throw new Error("Status not returned.");
           }
