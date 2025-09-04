@@ -1,7 +1,7 @@
-import { ContextualMenu } from "@canonical/react-components";
-import type { FC } from "react";
+import { ContextualMenu, usePortal } from "@canonical/react-components";
 import { Link } from "react-router";
 
+import DestroyModelDialog from "components/DestroyModelDialog";
 import { useCanConfigureModelWithUUID } from "hooks/useCanConfigureModel";
 import { useQueryParams } from "hooks/useQueryParams";
 import { getIsJuju } from "store/general/selectors";
@@ -20,36 +20,61 @@ const ModelActions: FC<Props> = ({ modelName, modelUUID }: Props) => {
   });
   const canConfigureModel = useCanConfigureModelWithUUID(false, modelUUID);
   const isJuju = useAppSelector(getIsJuju);
+  const {
+    openPortal,
+    closePortal,
+    isOpen: showDestroyModel,
+    Portal,
+  } = usePortal();
 
   return (
-    <ContextualMenu
-      hasToggleIcon
-      toggleAppearance="base"
-      toggleClassName="has-icon u-no-margin--bottom"
-      links={[
-        {
-          children: Label.ACCESS,
-          disabled: !canConfigureModel,
-          ...(isJuju
-            ? {
-                onClick: (event): void => {
-                  event.stopPropagation();
-                  setPanelQs(
-                    {
-                      model: modelName,
-                      panel: "share-model",
-                    },
-                    { replace: true },
-                  );
-                },
-              }
-            : {
-                element: Link,
-                to: rebacURLS.groups.index,
-              }),
-        },
-      ]}
-    />
+    <>
+      {showDestroyModel && (
+        <Portal>
+          <DestroyModelDialog
+            modelName={modelName}
+            modelUUID={modelUUID}
+            closePortal={closePortal}
+          />
+        </Portal>
+      )}
+      <ContextualMenu
+        hasToggleIcon
+        toggleAppearance="base"
+        toggleClassName="has-icon u-no-margin--bottom"
+        links={[
+          {
+            children: Label.ACCESS,
+            disabled: !canConfigureModel,
+            ...(isJuju
+              ? {
+                  onClick: (event) => {
+                    event.stopPropagation();
+                    setPanelQs(
+                      {
+                        model: modelName,
+                        panel: "share-model",
+                      },
+                      { replace: true },
+                    );
+                  },
+                }
+              : {
+                  element: Link,
+                  to: rebacURLS.groups.index,
+                }),
+          },
+          {
+            children: Label.DESTROY,
+            disabled: !canConfigureModel,
+            onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+              event.stopPropagation();
+              openPortal(event);
+            },
+          },
+        ]}
+      />
+    </>
   );
 };
 

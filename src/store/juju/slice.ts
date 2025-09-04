@@ -1,6 +1,7 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type {
+  DestroyModelParams,
   ModelInfoResults,
   UserModelList,
 } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
@@ -122,6 +123,7 @@ const slice = createSlice({
       loaded: false,
       loading: false,
     },
+    destroyModel: {},
     commandHistory: {},
     controllers: null,
     models: {},
@@ -185,6 +187,7 @@ const slice = createSlice({
         offers: action.payload.status.offers,
         relations: action.payload.status.relations,
         "remote-applications": action.payload.status["remote-applications"],
+        storage: action.payload.status.storage,
       };
       // The status doesn't contain a top level uuid and when this data is
       // fetched it doesn't contain the UUID.
@@ -234,6 +237,35 @@ const slice = createSlice({
     },
     clearControllerData: (state) => {
       state.controllers = {};
+    },
+    destroyModels: (
+      state,
+      action: PayloadAction<
+        {
+          models: DestroyModelParams[];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      action.payload.models.forEach(
+        (model) =>
+          (state.destroyModel[model["model-tag"]] = {
+            loading: true,
+            errors: null,
+            loaded: false,
+          }),
+      );
+    },
+    removeModel: (
+      state,
+      action: PayloadAction<
+        { models: DestroyModelParams[] } & WsControllerURLParam
+      >,
+    ) => {
+      action.payload.models.forEach((model) => {
+        delete state.models[model["model-tag"].split("model-")[1]];
+        delete state.destroyModel[model["model-tag"]];
+      });
+      state.modelsLoaded = true;
     },
     // This action can be dispatched to fetch audit events which is handled in
     // the model-poller middleware.
