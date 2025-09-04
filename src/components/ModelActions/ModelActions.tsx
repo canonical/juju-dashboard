@@ -1,6 +1,7 @@
-import { ContextualMenu } from "@canonical/react-components";
+import { ContextualMenu, usePortal } from "@canonical/react-components";
 import { Link } from "react-router";
 
+import DestroyModelDialog from "components/DestroyModelDialog";
 import useCanConfigureModel from "hooks/useCanConfigureModel";
 import { useQueryParams } from "hooks/useQueryParams";
 import { getIsJuju } from "store/general/selectors";
@@ -9,7 +10,7 @@ import { rebacURLS } from "urls";
 
 import { Label, type Props } from "./types";
 
-const ModelActions = ({ modelName, activeUser }: Props) => {
+const ModelActions = ({ modelName, modelUUID, activeUser }: Props) => {
   const [, setPanelQs] = useQueryParams<{
     model: string | null;
     panel: string | null;
@@ -19,36 +20,61 @@ const ModelActions = ({ modelName, activeUser }: Props) => {
   });
   const canConfigureModel = useCanConfigureModel(false, modelName, activeUser);
   const isJuju = useAppSelector(getIsJuju);
+  const {
+    openPortal,
+    closePortal,
+    isOpen: showDestroyModel,
+    Portal,
+  } = usePortal();
 
   return (
-    <ContextualMenu
-      hasToggleIcon
-      toggleAppearance="base"
-      toggleClassName="has-icon u-no-margin--bottom"
-      links={[
-        {
-          children: Label.ACCESS,
-          disabled: !canConfigureModel,
-          ...(isJuju
-            ? {
-                onClick: (event) => {
-                  event.stopPropagation();
-                  setPanelQs(
-                    {
-                      model: modelName,
-                      panel: "share-model",
-                    },
-                    { replace: true },
-                  );
-                },
-              }
-            : {
-                element: Link,
-                to: rebacURLS.groups.index,
-              }),
-        },
-      ]}
-    />
+    <>
+      {showDestroyModel && (
+        <Portal>
+          <DestroyModelDialog
+            modelName={modelName}
+            modelUUID={modelUUID}
+            closePortal={closePortal}
+          />
+        </Portal>
+      )}
+      <ContextualMenu
+        hasToggleIcon
+        toggleAppearance="base"
+        toggleClassName="has-icon u-no-margin--bottom"
+        links={[
+          {
+            children: Label.ACCESS,
+            disabled: !canConfigureModel,
+            ...(isJuju
+              ? {
+                  onClick: (event) => {
+                    event.stopPropagation();
+                    setPanelQs(
+                      {
+                        model: modelName,
+                        panel: "share-model",
+                      },
+                      { replace: true },
+                    );
+                  },
+                }
+              : {
+                  element: Link,
+                  to: rebacURLS.groups.index,
+                }),
+          },
+          {
+            children: Label.DESTROY,
+            disabled: !canConfigureModel,
+            onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+              event.stopPropagation();
+              openPortal(event);
+            },
+          },
+        ]}
+      />
+    </>
   );
 };
 

@@ -145,7 +145,11 @@ function generateModelTableList(
       {
         "data-testid": TestId.COLUMN_ACTIONS,
         content: (
-          <ModelActions activeUser={activeUser} modelName={model.model.name} />
+          <ModelActions
+            activeUser={activeUser}
+            modelUUID={model.uuid}
+            modelName={model.model.name}
+          />
         ),
         className: "u-align--right",
       },

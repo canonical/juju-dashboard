@@ -182,6 +182,7 @@ const slice = createSlice({
         offers: action.payload.status.offers,
         relations: action.payload.status.relations,
         "remote-applications": action.payload.status["remote-applications"],
+        storage: action.payload.status.storage,
       };
       // The status doesn't contain a top level uuid and when this data is
       // fetched it doesn't contain the UUID.
