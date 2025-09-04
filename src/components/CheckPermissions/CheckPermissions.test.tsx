@@ -23,7 +23,7 @@ describe("CheckPermissions", () => {
     expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
   });
 
-  it("displays a page not found message if it's not allowed", () => {
+  it("displays secret content if it's allowed", () => {
     renderComponent(
       <CheckPermissions allowed>secret content</CheckPermissions>,
     );

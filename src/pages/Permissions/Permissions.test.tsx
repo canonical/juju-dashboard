@@ -78,33 +78,39 @@ describe("Permissions", () => {
     vi.restoreAllMocks();
   });
 
-  it("it doesn't display ReBAC Admin if the feature is disabled", () => {
-    state.general.controllerFeatures = controllerFeaturesStateFactory.build({
-      "wss://controller.example.com": controllerFeaturesFactory.build({
-        rebac: false,
-      }),
-    });
-    renderComponent(<Permissions />, { state });
-    expect(screen.queryByText("Canonical ReBAC Admin")).not.toBeInTheDocument();
-    expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
-  });
-
-  it("it doesn't display ReBAC Admin if the user does not have permission", () => {
-    state.juju.rebac.allowed = [
-      rebacAllowedFactory.build({
-        tuple: relationshipTupleFactory.build({
-          object: "user-eggman@external",
-          relation: JIMMRelation.ADMINISTRATOR,
-          target_object: JIMMTarget.JIMM_CONTROLLER,
+  describe("it doesn't display ReBAC Admin", () => {
+    it("if the feature is disabled", () => {
+      state.general.controllerFeatures = controllerFeaturesStateFactory.build({
+        "wss://controller.example.com": controllerFeaturesFactory.build({
+          rebac: false,
         }),
-        allowed: false,
-        loading: false,
-        loaded: true,
-      }),
-    ];
-    renderComponent(<Permissions />, { state });
-    expect(screen.queryByText("Canonical ReBAC Admin")).not.toBeInTheDocument();
-    expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
+      });
+      renderComponent(<Permissions />, { state });
+      expect(
+        screen.queryByText("Canonical ReBAC Admin"),
+      ).not.toBeInTheDocument();
+      expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
+    });
+
+    it("if the user does not have permission", () => {
+      state.juju.rebac.allowed = [
+        rebacAllowedFactory.build({
+          tuple: relationshipTupleFactory.build({
+            object: "user-eggman@external",
+            relation: JIMMRelation.ADMINISTRATOR,
+            target_object: JIMMTarget.JIMM_CONTROLLER,
+          }),
+          allowed: false,
+          loading: false,
+          loaded: true,
+        }),
+      ];
+      renderComponent(<Permissions />, { state });
+      expect(
+        screen.queryByText("Canonical ReBAC Admin"),
+      ).not.toBeInTheDocument();
+      expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
+    });
   });
 
   it("displays ReBAC Admin", () => {

@@ -97,7 +97,7 @@ describe("OIDCAuth", () => {
   });
 
   it("jujulibConnectOptions", () => {
-    expect(Auth.instance.jujulibConnectOptions()).to.deep.equal({
+    expect(Auth.instance.jujulibConnectOptions()).toStrictEqual({
       loginWithSessionCookie: true,
     });
   });

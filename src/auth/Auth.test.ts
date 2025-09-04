@@ -15,7 +15,7 @@ describe("Auth base class", () => {
   it("overrides singleton instance", () => {
     const instance1 = new Auth(vi.fn(), AuthMethod.LOCAL);
     const instance2 = new Auth(vi.fn(), AuthMethod.LOCAL);
-    expect(Auth.instance).not.to.equal(instance1);
+    expect(Auth.instance).to.not.equal(instance1);
     expect(Auth.instance).to.equal(instance2);
   });
 
@@ -25,6 +25,6 @@ describe("Auth base class", () => {
       instance.beforeControllerConnect({
         wsControllerURL: "wss://1.2.3.4/api",
       }),
-    ).resolves.to.equal(true);
+    ).resolves.equal(true);
   });
 });

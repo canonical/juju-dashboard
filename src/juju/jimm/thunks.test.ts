@@ -52,7 +52,7 @@ describe("thunks", () => {
     });
   });
 
-  it("whoami handles non-authenticated user", async () => {
+  it("whoami handles non-authenticated user (403)", async () => {
     fetchMock.mockResponseOnce(JSON.stringify({}), { status: 403 });
     const action = whoami();
     const response = await action(vi.fn(), vi.fn(), null);
@@ -62,7 +62,7 @@ describe("thunks", () => {
     expect(unwrapResult(response)).toBeNull();
   });
 
-  it("whoami handles non-authenticated user", async () => {
+  it("whoami handles non-authenticated user (401)", async () => {
     fetchMock.mockResponseOnce(JSON.stringify({}), { status: 401 });
     const action = whoami();
     const response = await action(vi.fn(), vi.fn(), null);

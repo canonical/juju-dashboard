@@ -517,7 +517,7 @@ describe("actions", () => {
     });
   });
 
-  it("removeCheckRelations", () => {
+  it("addCommandHistory", () => {
     const payload = {
       modelUUID: "abc123",
       historyItem: commandHistoryItem.build({ command: "status" }),
