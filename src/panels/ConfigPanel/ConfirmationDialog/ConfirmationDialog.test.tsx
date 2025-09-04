@@ -314,7 +314,6 @@ describe("ConfirmationDialog", () => {
     expect(
       screen.getByRole("button", { name: Label.GRANT_CONFIRM_BUTTON }),
     ).toBeInTheDocument();
-    expect(screen);
     expect(
       screen.getByText(
         "Would you like to grant access to this application for the following secrets?",
