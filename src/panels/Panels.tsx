@@ -11,6 +11,7 @@ import CharmsAndActionsPanel from "./CharmsAndActionsPanel/CharmsAndActionsPanel
 import ConfigPanel from "./ConfigPanel/ConfigPanel";
 import GrantSecretPanel from "./GrantSecretPanel";
 import RemoveSecretPanel from "./RemoveSecretPanel";
+import UpgradeModelPanel from "./UpgradeModelPanel";
 
 export default function Panels() {
   const [panelQs] = useQueryParams<{ panel: string | null }>({
@@ -38,6 +39,8 @@ export default function Panels() {
         return canManageSecrets ? <GrantSecretPanel /> : null;
       case "remove-secret":
         return canManageSecrets ? <RemoveSecretPanel /> : null;
+      case "upgrade-model":
+        return <UpgradeModelPanel />;
       default:
         return null;
     }

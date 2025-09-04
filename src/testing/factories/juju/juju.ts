@@ -24,6 +24,7 @@ import type {
   CrossModelQueryState,
   HistoryItem,
   JujuState,
+  MigrationTargetsState,
   ModelData,
   ModelFeatures,
   ModelFeaturesState,
@@ -198,6 +199,14 @@ export const listSecretResultFactory = Factory.define<ListSecretResult>(() => ({
   version: 1,
 }));
 
+export const migrationTargetsStateFactory =
+  Factory.define<MigrationTargetsState>(() => ({
+    results: null,
+    loading: false,
+    loaded: false,
+    errors: null,
+  }));
+
 export const auditEventsStateFactory = Factory.define<AuditEventsState>(() => ({
   items: null,
   errors: null,
@@ -287,6 +296,8 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   auditEvents: auditEventsStateFactory.build(),
   crossModelQuery: crossModelQueryStateFactory.build(),
   commandHistory: commandHistoryState.build(),
+  migrateModel: {},
+  migrationTargets: migrationTargetsStateFactory.build(),
   controllers: null,
   models: {},
   modelsLoaded: false,
