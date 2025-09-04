@@ -100,7 +100,7 @@
     "@types/clone-deep": "4.0.4",
     "@types/d3": "7.4.3",
     "@types/lodash.mergewith": "4.6.9",
-    "@types/node": "20.17.28",
+    "@types/node": "20.19.12",
     "@types/prismjs": "1.26.5",
     "@types/react": "19.0.12",
     "@types/react-dom": "19.0.4",
