@@ -9,7 +9,8 @@ import { rebacURLS } from "urls";
 
 import { Label, type Props } from "./types";
 
-const ModelActions = ({ modelName, activeUser }: Props) => {
+const ModelActions = ({ modelName, modelOwner }: Props) => {
+  console.log("modelOwner", modelOwner);
   const [, setPanelQs] = useQueryParams<{
     model: string | null;
     panel: string | null;
@@ -17,7 +18,7 @@ const ModelActions = ({ modelName, activeUser }: Props) => {
     model: null,
     panel: null,
   });
-  const canConfigureModel = useCanConfigureModel(false, modelName, activeUser);
+  const canConfigureModel = useCanConfigureModel(false, modelName, modelOwner);
   const isJuju = useAppSelector(getIsJuju);
 
   return (

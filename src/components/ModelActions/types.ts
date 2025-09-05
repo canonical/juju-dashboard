@@ -3,7 +3,7 @@ import type { PropsWithChildren } from "react";
 
 export type Props = {
   modelName: string;
-  activeUser: string;
+  modelOwner: string;
 } & PropsWithChildren &
   Partial<ButtonProps>;
 

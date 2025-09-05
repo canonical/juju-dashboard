@@ -8,7 +8,7 @@ import ModelActions from "components/ModelActions";
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import { getActiveUsers, getControllerData } from "store/juju/selectors";
+import { getControllerData } from "store/juju/selectors";
 import type { Controllers, ModelData } from "store/juju/types";
 import {
   extractOwnerName,
@@ -28,6 +28,7 @@ import {
   getRegion,
 } from "../shared";
 import { GroupBy, TestId } from "../types";
+import { getUserName } from "utils";
 
 const getConditionalCell = (
   excludedGroup: GroupBy,
@@ -47,14 +48,12 @@ const getConditionalCell = (
 */
 function generateModelTableList(
   models: ModelData[],
-  activeUsers: Record<string, string>,
   controllers: Controllers | null,
   groupBy: GroupBy,
   groupLabel?: string,
 ) {
   const modelsList: MainTableRow[] = [];
   models.forEach((model) => {
-    const activeUser = activeUsers[model.uuid];
     const { highestStatus } = getModelStatusGroupData(model);
     const owner = model.info ? extractOwnerName(model.info["owner-tag"]) : null;
     const region = getRegion(model);
@@ -145,7 +144,10 @@ function generateModelTableList(
       {
         "data-testid": TestId.COLUMN_ACTIONS,
         content: (
-          <ModelActions activeUser={activeUser} modelName={model.model.name} />
+          <ModelActions
+            modelOwner={getUserName(model.info?.["owner-tag"] || "")}
+            modelName={model.model.name}
+          />
         ),
         className: "u-align--right",
       },
@@ -186,7 +188,6 @@ export default function ModelTable({
   groupLabel,
   emptyStateMessage = "",
 }: Props) {
-  const activeUsers = useAppSelector(getActiveUsers);
   const controllers = useAppSelector(getControllerData);
   const headerOptions = {
     showCloud: [GroupBy.STATUS, GroupBy.OWNER].includes(groupBy),
@@ -203,13 +204,7 @@ export default function ModelTable({
       className="p-main-table"
       sortable
       emptyStateMsg={emptyStateMessage}
-      rows={generateModelTableList(
-        models,
-        activeUsers,
-        controllers,
-        groupBy,
-        groupLabel,
-      )}
+      rows={generateModelTableList(models, controllers, groupBy, groupLabel)}
     />
   );
 }
