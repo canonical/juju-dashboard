@@ -2,11 +2,17 @@
   "/src/"
 
 'TESTCODE_FILE' =>
-  "/src/test/" ||
+  "/src/testing/" ||
+  "/src/.+\.test\..+" ||
   "/src/[^/]+/.+\.test\..+" ||
   "/actions/src/[^/]+/.+\.test\..+"
 
 
 'GENERATED_FILE' =>
-  "/.github/actions/update-changelog"
-  // Add generated actions here.
+  "/.github/actions/update-changelog" ||
+  "/src/.+\.d\.ts"
+
+
+'INFRA_FILE' =>
+  "/.+\.config\..+"
+
