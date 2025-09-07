@@ -3,7 +3,7 @@ import { Form, Formik } from "formik";
 import type { JSX } from "react";
 import { useId } from "react";
 
-import { type AuditLogFilters } from "components/AuditLogsTable/AuditLogsTableFilters/AuditLogsTableFilters";
+import type { AuditLogFilters } from "components/AuditLogsTable/AuditLogsTableFilters/AuditLogsTableFilters";
 import { DEFAULT_AUDIT_LOG_FILTERS } from "components/AuditLogsTable/AuditLogsTableFilters/consts";
 import Panel from "components/Panel";
 import { useQueryParams } from "hooks/useQueryParams";

@@ -1,5 +1,5 @@
 import { Button, Chip, Icon, Tooltip } from "@canonical/react-components";
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import ActionBar from "components/ActionBar/ActionBar";
 import { useQueryParams } from "hooks/useQueryParams";

@@ -3,7 +3,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import bakery from "juju/bakery";
 import { thunks } from "store/app";
 import { actions } from "store/general";
-import { type AppDispatch } from "store/store";
+import type { AppDispatch } from "store/store";
 import { logger } from "utils/logger";
 
 import { Label } from "../types";

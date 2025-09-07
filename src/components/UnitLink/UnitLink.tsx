@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { type PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { Link } from "react-router";
 
 import { useModelByUUIDDetails } from "components/hooks";
