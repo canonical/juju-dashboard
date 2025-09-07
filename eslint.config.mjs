@@ -76,6 +76,7 @@ export default [
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/no-misused-promises": "error",
       "@typescript-eslint/no-non-null-assertion": "error",
+      "@typescript-eslint/no-import-type-side-effects": "error",
       "prefer-promise-reject-errors": "error",
       "@typescript-eslint/await-thenable": "error",
       "no-shadow": "off",

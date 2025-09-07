@@ -9,7 +9,7 @@ import { useState } from "react";
 import { JSONTree } from "react-json-tree";
 import "prismjs/components/prism-json";
 
-import { type CrossModelQueryResponse } from "juju/jimm/JIMMV4";
+import type { CrossModelQueryResponse } from "juju/jimm/JIMMV4";
 
 import { CodeSnippetView } from "../types";
 

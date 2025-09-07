@@ -6,7 +6,7 @@ import type { EntityDetailsRoute } from "components/Routes";
 import SecretLabel from "components/secrets/SecretLabel";
 import useAnalytics from "hooks/useAnalytics";
 import useCanManageSecrets from "hooks/useCanManageSecrets";
-import { type SetError } from "hooks/useInlineErrors";
+import type { SetError } from "hooks/useInlineErrors";
 import { useGrantSecret, useSetApplicationConfig } from "juju/api-hooks";
 import type { usePanelQueryParams } from "panels/hooks";
 import { ConfirmType as DefaultConfirmType } from "panels/types";
