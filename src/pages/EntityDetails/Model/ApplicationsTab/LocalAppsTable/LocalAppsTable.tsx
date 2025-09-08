@@ -1,7 +1,6 @@
 import { MainTable, Button, Icon } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import classnames from "classnames";
-import type { MouseEvent } from "react";
 import { useMemo } from "react";
 import { useParams } from "react-router";
 
@@ -75,7 +74,7 @@ const LocalAppsTable = ({ applications }: Props) => {
     headers = addSelectAllColumn(headers, selectAll, handleSelectAll);
     rows = addSelectColumn(rows, applications, handleSelect);
   }
-  const handleRunAction = async (event: MouseEvent) => {
+  const handleRunAction = async (event: React.MouseEvent) => {
     event.stopPropagation();
     sendAnalytics({
       category: "ApplicationSearch",

@@ -81,6 +81,8 @@ export default [
       "@typescript-eslint/await-thenable": "error",
       "no-shadow": "off",
       "@typescript-eslint/no-shadow": "error",
+      "no-redeclare": "off",
+      "@typescript-eslint/no-redeclare": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
       "import/first": ["error"],

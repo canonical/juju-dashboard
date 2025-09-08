@@ -4,7 +4,7 @@ import { Factory } from "fishery";
 import type {
   Config,
   ControllerFeatures,
-  Credential,
+  AuthCredential,
   GeneralState,
   ControllerFeaturesState,
 } from "store/general/types";
@@ -17,7 +17,7 @@ export const configFactory = Factory.define<Config>(() => ({
   analyticsEnabled: true,
 }));
 
-export const credentialFactory = Factory.define<Credential>(() => ({
+export const credentialFactory = Factory.define<AuthCredential>(() => ({
   user: "user-eggman@external",
   password: "verysecure123",
 }));

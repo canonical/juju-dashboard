@@ -1,7 +1,7 @@
 import {
   Icon,
   MainTable,
-  Notification,
+  Notification as ReactNotification,
   Tooltip,
 } from "@canonical/react-components";
 import type {
@@ -261,13 +261,13 @@ const ControllersIndex = () => {
     >
       <div className="controllers">
         {visitURLs?.map((visitURL) => (
-          <Notification severity="caution" key={visitURL}>
+          <ReactNotification severity="caution" key={visitURL}>
             Controller authentication required.{" "}
             <AuthenticationButton appearance="link" visitURL={visitURL}>
               Authenticate
             </AuthenticationButton>
             .
-          </Notification>
+          </ReactNotification>
         ))}
         <div className="controllers--header">
           <div className="controllers__heading">

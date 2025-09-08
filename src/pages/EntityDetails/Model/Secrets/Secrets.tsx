@@ -1,4 +1,8 @@
-import { Notification, Button, Icon } from "@canonical/react-components";
+import {
+  Notification as ReactNotification,
+  Button,
+  Icon,
+} from "@canonical/react-components";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router";
@@ -53,9 +57,9 @@ const Secrets = () => {
   let content: ReactNode;
   if (secretsErrors) {
     content = (
-      <Notification severity="negative" title="Error">
+      <ReactNotification severity="negative" title="Error">
         {secretsErrors}
-      </Notification>
+      </ReactNotification>
     );
   } else {
     content = (

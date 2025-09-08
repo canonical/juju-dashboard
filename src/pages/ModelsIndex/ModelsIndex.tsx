@@ -1,6 +1,6 @@
 import {
   Button,
-  Notification,
+  Notification as ReactNotification,
   SearchAndFilter,
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
@@ -216,13 +216,13 @@ export default function Models() {
       titleClassName="u-no-max-width u-full-width"
     >
       {modelsError ? (
-        <Notification severity="negative" title="Error">
+        <ReactNotification severity="negative" title="Error">
           {modelsError} Try{" "}
           <Button appearance="link" onClick={() => window.location.reload()}>
             refreshing
           </Button>{" "}
           the page.
-        </Notification>
+        </ReactNotification>
       ) : null}
       {content}
     </MainContent>

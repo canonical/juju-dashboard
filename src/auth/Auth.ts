@@ -3,8 +3,7 @@
 
 import type { ConnectOptions, Credentials } from "@canonical/jujulib";
 
-import type { ConnectionWithFacades } from "juju/types";
-import type { Credential } from "store/general/types";
+import type { AuthCredential } from "store/general/types";
 import type { AppDispatch } from "store/store";
 import { logger } from "utils/logger";
 
@@ -12,7 +11,7 @@ import type { AuthMethod } from ".";
 
 export type ControllerData = {
   wsControllerURL: string;
-  credentials?: Credential;
+  credentials?: AuthCredential;
 };
 
 /**
@@ -92,7 +91,7 @@ export class Auth {
    * @returns Credentials to provide to jujulib for connection.
    */
   determineCredentials(
-    credential?: Credential | null,
+    credential?: AuthCredential | null,
   ): Credentials | undefined {
     return undefined;
   }

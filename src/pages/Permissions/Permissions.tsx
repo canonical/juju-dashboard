@@ -39,7 +39,7 @@ const navItems = [
   },
 ];
 
-const Permissions = (): JSX.Element => {
+const PermissionsPage = (): JSX.Element => {
   const logout = useLogout();
   const rebacEnabled = useAppSelector(isReBACEnabled);
   const { permitted, loading } = useIsJIMMAdmin();
@@ -88,4 +88,4 @@ const Permissions = (): JSX.Element => {
   );
 };
 
-export default Permissions;
+export default PermissionsPage;

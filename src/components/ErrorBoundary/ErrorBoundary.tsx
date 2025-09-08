@@ -1,7 +1,7 @@
 import {
   CodeSnippet,
   CodeSnippetBlockAppearance,
-  Notification,
+  Notification as ReactNotification,
   Strip,
 } from "@canonical/react-components";
 import * as Sentry from "@sentry/browser";
@@ -56,12 +56,12 @@ export default class ErrorBoundary extends Component<Props, State> {
     if (hasError) {
       return (
         <Strip>
-          <Notification severity="negative" title="Error">
+          <ReactNotification severity="negative" title="Error">
             Something has gone wrong. If this issue persists,{" "}
             <a href={url} rel="noopener noreferrer" target="_blank">
               please raise an issue on GitHub.
             </a>
-          </Notification>
+          </ReactNotification>
           <CodeSnippet
             blocks={[
               ...(error?.message

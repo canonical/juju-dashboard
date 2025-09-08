@@ -1,16 +1,11 @@
 import type { PropsWithSpread } from "@canonical/react-components";
 import classnames from "classnames";
-import type {
-  HTMLProps,
-  KeyboardEvent,
-  MouseEvent,
-  PropsWithChildren,
-} from "react";
+import type { HTMLProps, PropsWithChildren } from "react";
 import { useRef } from "react";
 
 type Props = PropsWithSpread<
   {
-    onClick: (event: MouseEvent | KeyboardEvent) => void;
+    onClick: (event: React.MouseEvent | React.KeyboardEvent) => void;
   },
   HTMLProps<HTMLDivElement>
 > &

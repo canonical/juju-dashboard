@@ -1,4 +1,7 @@
-import { Notification, Strip } from "@canonical/react-components";
+import {
+  Notification as ReactNotification,
+  Strip,
+} from "@canonical/react-components";
 import * as Sentry from "@sentry/browser";
 import type { LogLevelDesc } from "loglevel";
 import { StrictMode } from "react";
@@ -106,9 +109,9 @@ function bootstrap() {
   if (error || !config) {
     getRoot()?.render(
       <Strip>
-        <Notification severity="negative" title="Error">
+        <ReactNotification severity="negative" title="Error">
           The dashboard is not configured correctly. {error}
-        </Notification>
+        </ReactNotification>
       </Strip>,
     );
     logger.error(error);

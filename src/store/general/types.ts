@@ -14,12 +14,12 @@ export type ControllerConnections = Record<string, ConnectionInfo>;
 
 export type PingerIntervalIds = Record<string, number>;
 
-export type Credential = {
+export type AuthCredential = {
   user: string;
   password: string;
 };
 
-export type Credentials = Record<string, Credential>;
+export type Credentials = Record<string, AuthCredential>;
 
 export type ControllerFeatures = {
   // TODO: the crossModelQueries and auditLogs feature flags can be removed once JIMM facade 4 is available on

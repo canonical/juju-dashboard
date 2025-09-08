@@ -2,7 +2,7 @@ import {
   CodeSnippet,
   CodeSnippetBlockAppearance,
 } from "@canonical/react-components";
-import { Highlight } from "prism-react-renderer";
+import { Highlight as PrismHighlight } from "prism-react-renderer";
 import Prism from "prismjs/components/prism-core";
 import type { JSX } from "react";
 import { useState } from "react";
@@ -50,7 +50,7 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
   );
 
   return (
-    <Highlight
+    <PrismHighlight
       code={JSON.stringify(code, null, 2)}
       language="json"
       prism={Prism}
@@ -127,7 +127,7 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
           ]}
         />
       )}
-    </Highlight>
+    </PrismHighlight>
   );
 };
 
