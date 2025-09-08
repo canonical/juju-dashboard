@@ -45,11 +45,11 @@ export default {
 
     useAutoLogin(autoLogin, wsControllerURL, credential);
 
-    function saveUserCredentials(credential: {
+    function saveUserCredentials(userCredential: {
       user: string;
       password: string;
     }) {
-      setCredential(credential);
+      setCredential(userCredential);
       sendToast("Saved user credentials");
     }
 

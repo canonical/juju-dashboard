@@ -52,8 +52,8 @@ export default {
       );
       httpsControllerURL.pathname = "/";
 
-      setItems((items) => ({
-        ...items,
+      setItems((currentItems) => ({
+        ...currentItems,
         "Controller URL": (
           <a
             href={httpsControllerURL.toString()}
@@ -66,10 +66,10 @@ export default {
       }));
 
       return () => {
-        setItems((items) => {
-          delete items["Controller URL"];
+        setItems((currentItems) => {
+          delete currentItems["Controller URL"];
 
-          return { ...items };
+          return { ...currentItems };
         });
       };
     }, [wsControllerURL]);
@@ -87,24 +87,24 @@ export default {
       }
 
       setHint(null);
-      setItems((items) => ({
-        ...items,
+      setItems((currentItems) => ({
+        ...currentItems,
         "Server version": connection.serverVersion,
         "Controller access": connection.user?.["controller-access"],
         Identity: connection.user?.identity,
       }));
 
       return () => {
-        setItems((items) => {
+        setItems((currentItems) => {
           for (const key of [
             "Server version",
             "Controller access",
             "Identity",
           ]) {
-            delete items[key];
+            delete currentItems[key];
           }
 
-          return { ...items };
+          return { ...currentItems };
         });
       };
     }, [wsControllerURL, connection]);

@@ -182,7 +182,7 @@ describe("Action Logs", () => {
 
   it("orders by most recent first by default", async () => {
     const yesterday = add(new Date(), { days: -1 });
-    const mockOperationResults = operationResultsFactory.build({
+    const mockResults = operationResultsFactory.build({
       results: [
         operationResultFactory.build({
           actions: [
@@ -207,7 +207,7 @@ describe("Action Logs", () => {
       ],
     });
     vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(() =>
-      vi.fn().mockImplementation(() => Promise.resolve(mockOperationResults)),
+      vi.fn().mockImplementation(() => Promise.resolve(mockResults)),
     );
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
@@ -227,8 +227,8 @@ describe("Action Logs", () => {
   });
 
   it("handles unknown dates", async () => {
-    const completed = new Date("0001-01-01T00:00:00Z");
-    const mockActionResults = actionResultsFactory.build({
+    const completedDate = new Date("0001-01-01T00:00:00Z");
+    const mockResults = actionResultsFactory.build({
       results: [
         actionResultFactory.build({
           action: actionFactory.build({
@@ -236,7 +236,7 @@ describe("Action Logs", () => {
             receiver: "unit-easyrsa-0",
             name: "list-disks",
           }),
-          completed: completed.toISOString(),
+          completed: completedDate.toISOString(),
           log: [
             actionMessageFactory.build({
               message: "log message 1",
@@ -246,7 +246,7 @@ describe("Action Logs", () => {
       ],
     });
     vi.spyOn(actionsHooks, "useQueryActionsList").mockImplementation(() =>
-      vi.fn().mockImplementation(() => Promise.resolve(mockActionResults)),
+      vi.fn().mockImplementation(() => Promise.resolve(mockResults)),
     );
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
@@ -259,7 +259,7 @@ describe("Action Logs", () => {
   });
 
   it("handles no completed date", async () => {
-    const mockOperationResults = operationResultsFactory.build({
+    const mockResults = operationResultsFactory.build({
       results: [
         operationResultFactory.build({
           actions: [
@@ -276,7 +276,7 @@ describe("Action Logs", () => {
       ],
     });
     vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(() =>
-      vi.fn().mockImplementation(() => Promise.resolve(mockOperationResults)),
+      vi.fn().mockImplementation(() => Promise.resolve(mockResults)),
     );
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
@@ -315,7 +315,7 @@ describe("Action Logs", () => {
   });
 
   it("does not display a toggle when there is neither STOUT or STDERR", async () => {
-    const mockActionResults = actionResultsFactory.build({
+    const mockResults = actionResultsFactory.build({
       results: [
         actionResultFactory.build({
           log: undefined,
@@ -324,7 +324,7 @@ describe("Action Logs", () => {
       ],
     });
     vi.spyOn(actionsHooks, "useQueryActionsList").mockImplementation(() =>
-      vi.fn().mockImplementation(() => Promise.resolve(mockActionResults)),
+      vi.fn().mockImplementation(() => Promise.resolve(mockResults)),
     );
     renderComponent(<ActionLogs />, { path, url, state });
     const rows = await screen.findAllByRole("row");

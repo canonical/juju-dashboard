@@ -62,8 +62,8 @@ export default function Unit() {
   const filteredApplicationList = useMemo(() => {
     const filteredApps: ApplicationData = {};
     if (applications && unit) {
-      const appName = unit.application;
-      filteredApps[appName] = applications[appName];
+      const name = unit.application;
+      filteredApps[name] = applications[name];
     }
     return filteredApps;
   }, [applications, unit]);

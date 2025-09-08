@@ -19,25 +19,25 @@ export default function ActionOptions({ name, data, onValuesChange }: Props) {
 
   const collectedOptions = useMemo(() => {
     const collectOptions: ActionOptionsType = [];
-    Object.keys(action.params.properties).forEach((name) => {
-      const property = action.params.properties[name];
+    Object.keys(action.params.properties).forEach((propertyName) => {
+      const property = action.params.properties[propertyName];
       const required = action.params.required;
       collectOptions.push({
-        name: name,
+        name: propertyName,
         description: property.description,
         type: property.type,
-        required: required ? required.includes(name) : false,
+        required: required ? required.includes(propertyName) : false,
       });
     });
     return collectOptions;
   }, [action.params.properties, action.params.required]);
 
   const initialValues = useMemo(() => {
-    const initialValues: { [key: string]: string } = {};
+    const intial: { [key: string]: string } = {};
     collectedOptions.forEach((option) => {
-      initialValues[`${name}-${option.name}`] = "";
+      intial[`${name}-${option.name}`] = "";
     });
-    return initialValues;
+    return intial;
   }, [name, collectedOptions]);
 
   return (

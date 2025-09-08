@@ -26,16 +26,14 @@ function useInlineErrors(
   const setError = useCallback(
     (key: InlineError["key"], error: InlineError["error"]) => {
       setInlineErrors((prevInlineErrors) => {
-        const inlineErrors = cloneDeep(prevInlineErrors);
-        const existing = inlineErrors.find(
-          (inlineError) => inlineError.key === key,
-        );
+        const errors = cloneDeep(prevInlineErrors);
+        const existing = errors.find((inlineError) => inlineError.key === key);
         if (!existing) {
-          inlineErrors.push({ key, error });
+          errors.push({ key, error });
         } else {
           existing.error = error;
         }
-        return inlineErrors;
+        return errors;
       });
     },
     [],

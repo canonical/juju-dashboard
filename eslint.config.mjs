@@ -77,6 +77,8 @@ export default [
       "@typescript-eslint/no-non-null-assertion": "error",
       "prefer-promise-reject-errors": "error",
       "@typescript-eslint/await-thenable": "error",
+      "no-shadow": "off",
+      "@typescript-eslint/no-shadow": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
       "import/first": ["error"],

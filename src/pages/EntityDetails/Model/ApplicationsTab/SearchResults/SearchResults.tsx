@@ -47,13 +47,13 @@ const SearchResults = () => {
       return;
     }
     const searchedApps = fuse.search(filterQuery).map(({ item }) => item);
-    const filteredApplications: ApplicationData = {};
+    const filtered: ApplicationData = {};
     searchedApps.forEach((application) => {
       if ("name" in application && applications[application.name]) {
-        filteredApplications[application.name] = application;
+        filtered[application.name] = application;
       }
     });
-    setFilteredApplications(filteredApplications);
+    setFilteredApplications(filtered);
     // On a new search reset the selected applications.
     dispatch(
       jujuActions.updateSelectedApplications({
