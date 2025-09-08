@@ -1,12 +1,12 @@
 import type { AuthUserInfo } from "@canonical/jujulib/dist/api/facades/admin/AdminV3";
 import { Factory } from "fishery";
 
-import {
-  type Config,
-  type ControllerFeatures,
-  type Credential,
-  type GeneralState,
-  type ControllerFeaturesState,
+import type {
+  Config,
+  ControllerFeatures,
+  Credential,
+  GeneralState,
+  ControllerFeaturesState,
 } from "store/general/types";
 
 export const configFactory = Factory.define<Config>(() => ({

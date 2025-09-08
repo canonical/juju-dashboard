@@ -67,13 +67,13 @@ describe("ModelTableList", () => {
       appSelectors,
       "getGroupedByStatusAndFilteredModelData",
     );
-    const tables = [
+    const statusTables = [
       { groupedBy: "status", component: StatusGroupTestId.STATUS_GROUP },
       { groupedBy: "status", component: StatusGroupTestId.STATUS_GROUP },
       { groupedBy: "status", component: StatusGroupTestId.STATUS_GROUP },
     ];
     const filters = { cloud: ["aws"] };
-    tables.forEach((table) => {
+    statusTables.forEach((table) => {
       renderComponent(
         <ModelTableList groupedBy={table.groupedBy} filters={filters} />,
         { state },

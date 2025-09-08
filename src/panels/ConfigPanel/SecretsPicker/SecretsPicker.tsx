@@ -75,14 +75,14 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
   } else {
     const secretLinks: MenuLink<ButtonProps> | undefined = secrets?.reduce<
       ButtonProps[]
-    >((links, secret) => {
+    >((linkList, secret) => {
       if (!secretIsAppOwned(secret)) {
-        links.push({
+        linkList.push({
           children: <SecretLabel secret={secret} />,
           onClick: () => setValue(secret.uri),
         });
       }
-      return links;
+      return linkList;
     }, []);
     if (canManageSecrets) {
       const addButton: MenuLink<ButtonProps> = {

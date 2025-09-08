@@ -16,7 +16,7 @@ const AppSearchBox = () => {
   });
   const [filterQuery, setFilterQuery] = useState(query.filterQuery);
 
-  const updateQuery = (query: string) => {
+  const updateQuery = (queryString: string) => {
     // Clear any previously selected apps as they might not exist in the new
     // search results.
     dispatch(
@@ -24,7 +24,7 @@ const AppSearchBox = () => {
         selectedApplications: [],
       }),
     );
-    setQuery({ filterQuery: query });
+    setQuery({ filterQuery: queryString });
   };
 
   return (

@@ -228,8 +228,10 @@ const JujuCLI = () => {
       history={commandHistory}
       modelUUID={modelUUID}
       onCommandSent={onCommandSent}
-      onHistoryChange={(modelUUID, historyItem) =>
-        dispatch(jujuActions.addCommandHistory({ modelUUID, historyItem }))
+      onHistoryChange={(uuid, historyItem) =>
+        dispatch(
+          jujuActions.addCommandHistory({ modelUUID: uuid, historyItem }),
+        )
       }
       activeUser={activeUser}
       processOutput={processOutput}

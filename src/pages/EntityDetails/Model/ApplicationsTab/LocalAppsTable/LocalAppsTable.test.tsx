@@ -248,7 +248,7 @@ describe("LocalAppsTable", () => {
       selectedApplications: Object.values(apps ?? {}),
     });
     const action = actions.find(
-      (action) => action.type === expectedAction.type,
+      (dispatchedAction) => dispatchedAction.type === expectedAction.type,
     ) as typeof expectedAction;
     expect(action.payload.selectedApplications).toHaveLength(
       expectedAction.payload.selectedApplications.length,

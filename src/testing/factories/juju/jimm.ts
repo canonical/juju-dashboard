@@ -2,17 +2,17 @@ import { Factory } from "fishery";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 
-import {
-  type CrossModelQueryEndpoint,
-  type CrossModelQuery,
-  type CrossModelQueryApplication,
-  type CrossModelQueryApplicationEndpoint,
-  type CrossModelQueryMachine,
-  type CrossModelQueryModel,
-  type CrossModelQueryStatus,
-  type CrossModelQueryUnit,
-  type CrossModelQueryController,
-  type CrossModelQueryOffer,
+import type {
+  CrossModelQueryEndpoint,
+  CrossModelQuery,
+  CrossModelQueryApplication,
+  CrossModelQueryApplicationEndpoint,
+  CrossModelQueryMachine,
+  CrossModelQueryModel,
+  CrossModelQueryStatus,
+  CrossModelQueryUnit,
+  CrossModelQueryController,
+  CrossModelQueryOffer,
 } from "./jimm-types";
 
 export const auditEventFactory = Factory.define<AuditEvent>(() => ({

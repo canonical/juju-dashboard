@@ -225,20 +225,20 @@ export const modelPollerMiddleware: Middleware<
                   }),
                 );
               }
-            } catch (error) {
+            } catch (listError) {
               let errorMessage;
               if (
-                error instanceof Error &&
-                (error.message === ModelsError.LOAD_ALL_MODELS ||
-                  error.message === ModelsError.LOAD_SOME_MODELS)
+                listError instanceof Error &&
+                (listError.message === ModelsError.LOAD_ALL_MODELS ||
+                  listError.message === ModelsError.LOAD_SOME_MODELS)
               ) {
                 errorMessage = pollCount
                   ? ModelsError.LOAD_LATEST_MODELS
-                  : error.message;
+                  : listError.message;
               } else {
                 errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
               }
-              logger.error(errorMessage, error);
+              logger.error(errorMessage, listError);
               reduxStore.dispatch(
                 jujuActions.updateModelsError({
                   modelsError: errorMessage,
@@ -249,7 +249,7 @@ export const modelPollerMiddleware: Middleware<
           }
 
           // Allow the polling to run a certain number of times in tests.
-          if (process.env.NODE_ENV === "test") {
+          if (import.meta.env.NODE_ENV === "test") {
             if (pollCount === action.payload.poll) {
               break;
             }

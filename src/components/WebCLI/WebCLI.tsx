@@ -208,11 +208,11 @@ const WebCLI = ({
       return;
     }
     const command = (formFields.command as HTMLInputElement).value.trim();
-    let history = cliHistory.concat([command]);
-    if (history.length > MAX_HISTORY) {
-      history = history.slice(-MAX_HISTORY);
+    let updatedHistory = cliHistory.concat([command]);
+    if (updatedHistory.length > MAX_HISTORY) {
+      updatedHistory = updatedHistory.slice(-MAX_HISTORY);
     }
-    setCLIHistory(history);
+    setCLIHistory(updatedHistory);
     // Reset the position in case the user was navigating through the history.
     setHistoryPosition(0);
 

@@ -1,7 +1,10 @@
+import logging
 import os
 from pathlib import Path
-
 from jinja2 import Environment, FileSystemLoader
+
+
+logger = logging.getLogger(__name__)
 
 
 def to_bool(boolean_variable) -> bool:
@@ -64,15 +67,23 @@ class Config:
 if __name__ == "__main__":
     controller_url = os.environ.get("DASHBOARD_CONTROLLER_URL")
     if controller_url is None:
-        raise Exception("DASHBOARD_CONTROLLER_URL environment variable not provided")
-    dashboard_root = getattr(os.environ, "DASHBOARD_ROOT", "/srv")
-    config = Config(
-        config_dir=os.environ.get("DASHBOARD_CONFIG_DIR", "/srv"),
-        controller_url=controller_url,
-        identity_provider_url=os.environ.get("DASHBOARD_IDENTITY_PROVIDER_URL", None),
-        is_juju=to_bool(os.environ.get("DASHBOARD_IS_JUJU", True)),
-        analytics_enabled=to_bool(os.environ.get("DASHBOARD_ANALYTICS_ENABLED", True)),
-        dashboard_root=dashboard_root,
-        port=int(os.environ.get("DASHBOARD_PORT", 8080)),
-    )
-    config.write()
+        logger.debug(
+            "DASHBOARD_CONTROLLER_URL environment variable not provided. "
+            "Generating configs will be skipped."
+        )
+    else:
+        dashboard_root = getattr(os.environ, "DASHBOARD_ROOT", "/srv")
+        config = Config(
+            config_dir=os.environ.get("DASHBOARD_CONFIG_DIR", "/srv"),
+            controller_url=controller_url,
+            identity_provider_url=os.environ.get(
+                "DASHBOARD_IDENTITY_PROVIDER_URL", None
+            ),
+            is_juju=to_bool(os.environ.get("DASHBOARD_IS_JUJU", True)),
+            analytics_enabled=to_bool(
+                os.environ.get("DASHBOARD_ANALYTICS_ENABLED", True)
+            ),
+            dashboard_root=dashboard_root,
+            port=int(os.environ.get("DASHBOARD_PORT", 8080)),
+        )
+        config.write()
