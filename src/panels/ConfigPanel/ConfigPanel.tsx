@@ -152,9 +152,9 @@ export default function ConfigPanel(): JSX.Element {
     setConfig(newConfig);
   }
 
-  function checkAllDefaults(config: Config) {
-    const shouldShow = Object.keys(config).some((key) => {
-      const cfg = config[key];
+  function checkAllDefaults(configOptions: Config) {
+    const shouldShow = Object.keys(configOptions).some((key) => {
+      const cfg = configOptions[key];
       if (isSet(cfg.newValue)) {
         if (cfg.newValue === cfg.default) {
           return false;

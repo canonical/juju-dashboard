@@ -26,10 +26,15 @@ export const getControllerName = (
   let controllerName: string | null = null;
   Object.entries(controllers ?? {}).some(
     (controller) =>
-      !!controller[1].some((controller) => {
-        if ("uuid" in controller && controllerUUID === controller.uuid) {
+      !!controller[1].some((controllerData) => {
+        if (
+          "uuid" in controllerData &&
+          controllerUUID === controllerData.uuid
+        ) {
           controllerName =
-            "name" in controller ? (controller.name ?? null) : controller.path;
+            "name" in controllerData
+              ? (controllerData.name ?? null)
+              : controllerData.path;
         }
         return !!controllerName;
       }),

@@ -395,7 +395,7 @@ export function generateUnitRows(
         const subordinate = subordinates[key];
         const address = subordinate["public-address"];
         const workloadStatus = subordinate["workload-status"].current;
-        const columns: MainTableCell[] = [
+        const subordinateColumns: MainTableCell[] = [
           {
             content: (
               <Link to={generateUnitURL(modelParams, unitId)}>
@@ -432,13 +432,13 @@ export function generateUnitRows(
 
         if (showCheckbox) {
           // Add an extra column if the checkbox is shown on the parent.
-          columns.splice(0, 0, {
+          subordinateColumns.splice(0, 0, {
             content: "",
           });
         }
 
         unitRows.push({
-          columns,
+          columns: subordinateColumns,
           // This is using the parent data for sorting so that they stick to
           // their parent while being sorted. This isn't fool-proof but it's
           // the best we have for the current design and table implementation.
@@ -470,10 +470,13 @@ export function generateMachineRows(
     return [];
   }
 
-  const generateMachineApps = (machineId: string, units: UnitData | null) => {
+  const generateMachineApps = (
+    machineId: string,
+    machineUnits: UnitData | null,
+  ) => {
     const appsOnMachine: [string, string][] = [];
-    units &&
-      Object.values(units).forEach((unitInfo) => {
+    machineUnits &&
+      Object.values(machineUnits).forEach((unitInfo) => {
         if (machineId === unitInfo["machine-id"]) {
           appsOnMachine.push([unitInfo.application, unitInfo["charm-url"]]);
         }

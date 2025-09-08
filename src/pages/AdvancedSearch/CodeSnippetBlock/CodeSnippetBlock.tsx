@@ -74,7 +74,7 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
                     return (
                       <span key={i} {...lineProps}>
                         {line.map((token, key) => {
-                          const { style: _style, ...tokenProps } =
+                          const { style: _tokenStyle, ...tokenProps } =
                             getTokenProps({
                               token,
                             });

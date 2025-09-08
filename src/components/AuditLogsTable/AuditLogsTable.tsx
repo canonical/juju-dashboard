@@ -94,7 +94,7 @@ const AuditLogsTable = () => {
     if (!auditLogs) {
       return [];
     }
-    const tableData = auditLogs.map((auditLogsEntry) => {
+    const data = auditLogs.map((auditLogsEntry) => {
       const time = <RelativeDate datetime={auditLogsEntry.time} />;
       const user = getUserName(auditLogsEntry["user-tag"]);
       const facadeName = auditLogsEntry["facade-name"];
@@ -109,7 +109,7 @@ const AuditLogsTable = () => {
         facadeVersion,
       };
     });
-    return tableData;
+    return data;
   }, [auditLogs]);
 
   return (

@@ -48,8 +48,8 @@ describe("OutputCommand", () => {
         processOutput={{
           "remove-unit": {
             exact: false,
-            process: (messages) => (
-              <div data-testid="custom">{messages[0]}</div>
+            process: (messageList) => (
+              <div data-testid="custom">{messageList[0]}</div>
             ),
           },
         }}
@@ -129,8 +129,8 @@ describe("OutputCommand", () => {
     const messages = ["Model       Controller", "k8s         workloads"];
     const process = vi
       .fn()
-      .mockImplementation((messages) => (
-        <div data-testid="custom">{messages[0]}</div>
+      .mockImplementation((messagesList) => (
+        <div data-testid="custom">{messagesList[0]}</div>
       ));
     const processOutput = {
       "remove-unit": {
@@ -160,8 +160,8 @@ describe("OutputCommand", () => {
     const messages = ["Model       Controller", "k8s         workloads"];
     const process = vi
       .fn()
-      .mockImplementation((messages) => (
-        <div data-testid="custom">{messages[0]}</div>
+      .mockImplementation((messagesList) => (
+        <div data-testid="custom">{messagesList[0]}</div>
       ));
     const processOutput = {
       "remove-unit": {
@@ -191,8 +191,8 @@ describe("OutputCommand", () => {
     const messages = ["Model       Controller", "k8s         workloads"];
     const process = vi
       .fn()
-      .mockImplementation((messages) => (
-        <div data-testid="custom">{messages[0]}</div>
+      .mockImplementation((messagesList) => (
+        <div data-testid="custom">{messagesList[0]}</div>
       ));
     const { rerender } = render(
       <OutputCommand
@@ -208,8 +208,8 @@ describe("OutputCommand", () => {
     );
     const newProcess = vi
       .fn()
-      .mockImplementation((messages) => (
-        <div data-testid="custom">{messages[0]}</div>
+      .mockImplementation((messagesList) => (
+        <div data-testid="custom">{messagesList[0]}</div>
       ));
     expect(process).toHaveBeenCalledOnce();
     rerender(
@@ -232,8 +232,8 @@ describe("OutputCommand", () => {
     const messages = ["Model       Controller", "k8s         workloads"];
     const process = vi
       .fn()
-      .mockImplementation((messages) => (
-        <div data-testid="custom">{messages[0]}</div>
+      .mockImplementation((messagesList) => (
+        <div data-testid="custom">{messagesList[0]}</div>
       ));
     const processOutput = {
       "remove-unit": {

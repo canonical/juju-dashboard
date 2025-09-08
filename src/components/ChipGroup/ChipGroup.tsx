@@ -9,9 +9,9 @@ type Props = {
 };
 
 const ChipGroup = ({ chips, className, descriptor }: Props) => {
-  const getLabelType = (descriptor?: string | null) => {
+  const getLabelType = (labelDescriptor?: string | null) => {
     let label;
-    switch (descriptor) {
+    switch (labelDescriptor) {
       case "localApps":
         label = "Local applications";
         break;
@@ -27,10 +27,10 @@ const ChipGroup = ({ chips, className, descriptor }: Props) => {
     return label;
   };
 
-  const getSumTotal = (chips?: Chip | null) => {
+  const getSumTotal = (chipGroup?: Chip | null) => {
     let total = 0;
-    chips &&
-      Object.values(chips).forEach((chipValue) => {
+    chipGroup &&
+      Object.values(chipGroup).forEach((chipValue) => {
         total += chipValue;
       });
     return total;
