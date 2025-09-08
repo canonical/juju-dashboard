@@ -11,7 +11,7 @@ import prettier from "eslint-plugin-prettier";
 import promise from "eslint-plugin-promise";
 import react from "eslint-plugin-react";
 import reactRefresh from "eslint-plugin-react-refresh";
-import vitest from "eslint-plugin-vitest";
+import vitest from "@vitest/eslint-plugin";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,7 +37,7 @@ export default [
   {
     plugins: {
       prettier: fixupPluginRules(prettier),
-      vitest,
+      vitest: fixupPluginRules(vitest),
       promise: fixupPluginRules(promise),
       "react-refresh": reactRefresh,
       react: fixupPluginRules(react),
@@ -71,6 +71,7 @@ export default [
       react: { version: "detect" },
     },
     rules: {
+      ...vitest.configs.recommended.rules,
       "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/no-misused-promises": "error",
