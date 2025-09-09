@@ -25,17 +25,22 @@ type CallHandler<R, A extends unknown[]> =
   | ((connection: ConnectionWithFacades, ...args: A) => Promise<R>)
   | ((connection: ConnectionWithFacades) => Promise<R>);
 
-export const useModelConnectionCallback = (modelUUID?: string) => {
-  const wsControllerURL = useAppSelector((state) =>
-    getModelByUUID(state, modelUUID),
-  )?.wsControllerURL;
+export const useModelConnectionCallback = (modelUUID: string | null = null) => {
+  const wsControllerURL =
+    useAppSelector((state) => getModelByUUID(state, modelUUID))
+      ?.wsControllerURL ?? null;
   const credentials = useAppSelector((state) =>
     getUserPass(state, wsControllerURL),
   );
 
   return useCallback(
     (response: ModelConnectionCallback) => {
-      if (!wsControllerURL || !modelUUID) {
+      if (
+        wsControllerURL === null ||
+        !wsControllerURL ||
+        modelUUID === null ||
+        !modelUUID
+      ) {
         // Don't attempt to make the call until the model and controller details
         // are available.
         return;
@@ -59,8 +64,8 @@ export const useModelConnectionCallback = (modelUUID?: string) => {
 
 export const useCallWithConnectionPromise = <R, A extends unknown[]>(
   handler: CallHandler<R, A>,
-  userName?: string,
-  modelName?: string,
+  userName: string | null,
+  modelName: string | null,
 ) => {
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
@@ -88,8 +93,8 @@ export const useCallWithConnection = <R, A extends unknown[]>(
   handler: CallHandler<R, A>,
   onSuccess: (response: R) => void,
   onError: (error: string) => void,
-  userName?: string,
-  modelName?: string,
+  userName: string | null = null,
+  modelName: string | null = null,
 ) => {
   const callbackHandler = useCallback(
     (connection: ConnectionWithFacades, ...args: A) => {

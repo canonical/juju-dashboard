@@ -10,14 +10,15 @@ import { TestId } from "./types";
 
 const MainContent = ({
   children,
-  loading,
-  secondaryNav,
+  loading = false,
+  secondaryNav = null,
   title,
   titleClassName,
   titleComponent,
   ...props
 }: Props) => {
-  const hasSecondaryNav = !!secondaryNav?.items.length;
+  const hasSecondaryNav =
+    secondaryNav !== null && secondaryNav.items.length > 0;
   return (
     <div
       id="main-content"

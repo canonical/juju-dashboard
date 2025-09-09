@@ -60,7 +60,7 @@ const checkHighestStatus = (highestStatus: Status) => {
 export const getModelStatusGroupData = (model: ModelData) => {
   let highestStatus = statusOrder[0]; // Set the highest status to the lowest.
   const messages: { message: string; appName: string; unitId?: string }[] = [];
-  const applications = model.applications || {};
+  const applications = model.applications ?? {};
   Object.keys(applications).forEach((appName) => {
     const app = applications[appName];
     const { status: appStatus } = getApplicationStatusGroup(app);
@@ -73,7 +73,7 @@ export const getModelStatusGroupData = (model: ModelData) => {
       });
       return;
     }
-    const units = app.units || {}; // subordinates do not have units.
+    const units = app.units ?? {}; // subordinates do not have units.
     Object.keys(units).forEach((unitId) => {
       const unit = units[unitId];
       const { status: unitStatus } = getUnitStatusGroup(unit);
@@ -223,10 +223,12 @@ export const extractCloudName = (tag = "") => {
   @param cloudTag The cloudTag identifier returns from the API
   @returns The simplified cloud string
 */
-export const extractCredentialName = (tag?: string) => {
+export const extractCredentialName = (tag: string | null = null) => {
   // @ is not there in local boostraps
   // cloudcred-localhost_admin_localhost
-  if (!tag) return "-";
+  if (tag === null || !tag) {
+    return "-";
+  }
   const cred = tag.split("cloudcred-")[1];
   if (cred.indexOf("@") > -1) {
     return cred.split("@")[0].split("_")[1];
@@ -282,10 +284,11 @@ export const generateIconPath = (charmId: string) => {
     // Regex explanation:
     // "ch:amd64/xenial/content-cache-425".match(/\/(?:(?<release>.+)\/)?(?<charmName>.+)-\d+/).groups
     // Object { release: "xenial", charmName: "content-cache" }
-    const charmName = charmId.match(
-      /:(?:(?<release>.+)\/)?(?<charmName>.+)-\d+/,
-    )?.groups?.["charmName"];
-    if (charmName) {
+    const charmName =
+      charmId.match(/:(?:(?<release>.+)\/)?(?<charmName>.+)-\d+/)?.groups?.[
+        "charmName"
+      ] ?? null;
+    if (charmName !== null && charmName) {
       return `https://charmhub.io/${charmName}/icon`;
     }
   }

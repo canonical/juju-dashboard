@@ -54,9 +54,9 @@ const Panel = forwardRef<HTMLDivElement, Props>(
     {
       checkCanClose,
       children,
-      drawer,
+      drawer = null,
       panelClassName,
-      splitContent,
+      splitContent = null,
       title,
       onRemovePanelQueryParams,
       ...props
@@ -77,10 +77,13 @@ const Panel = forwardRef<HTMLDivElement, Props>(
     );
 
     const titleId = useId();
+    const isSplit = props.isSplit ?? false;
     const content = (
       <>
         <div className="side-panel__content-scrolling">{children}</div>
-        {drawer ? <div className="side-panel__drawer">{drawer}</div> : null}
+        {drawer !== null ? (
+          <div className="side-panel__drawer">{drawer}</div>
+        ) : null}
       </>
     );
     return (
@@ -97,18 +100,18 @@ const Panel = forwardRef<HTMLDivElement, Props>(
               <Icon name="close">Close</Icon>
             </Button>
           }
-          contentClassName={props.isSplit ? "aside-split-wrapper" : null}
+          contentClassName={isSplit ? "aside-split-wrapper" : null}
           forwardRef={ref}
           title={<span id={titleId}>{title}</span>}
         >
-          {props.isSplit ? (
+          {isSplit ? (
             <div className="aside-split-col aside-split-col--left">
               {content}
             </div>
           ) : (
             content
           )}
-          {props.isSplit && splitContent ? (
+          {isSplit && splitContent !== null ? (
             <div className="aside-split-col aside-split-col--right">
               <div className="side-panel__split-content">{splitContent}</div>
             </div>

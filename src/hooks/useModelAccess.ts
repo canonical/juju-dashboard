@@ -33,7 +33,10 @@ const getHighestAccess = (relations: ReBACAllowed[]) => {
   );
 };
 
-const useModelAccess = (modelUUID?: string | null, cleanup?: boolean) => {
+const useModelAccess = (
+  modelUUID: string | null = null,
+  cleanup: boolean = false,
+) => {
   const isJuju = useAppSelector(getIsJuju);
   const isJIMM = useAppSelector(getIsJIMM);
   const controllerUser = useAppSelector(getControllerUserTag);
@@ -41,7 +44,11 @@ const useModelAccess = (modelUUID?: string | null, cleanup?: boolean) => {
     getModelAccess(state, modelUUID),
   );
   const relations =
-    isJIMM && controllerUser && modelUUID
+    isJIMM &&
+    controllerUser !== null &&
+    controllerUser &&
+    modelUUID !== null &&
+    modelUUID
       ? [
           {
             object: controllerUser,

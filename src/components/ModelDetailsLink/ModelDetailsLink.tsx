@@ -35,7 +35,7 @@ const ModelDetailsLink = ({
   modelName,
   ownerTag,
   children,
-  replaceLabel,
+  replaceLabel = false,
   uuid,
   view,
   ...props
@@ -43,7 +43,7 @@ const ModelDetailsLink = ({
   // This component's props require either uuid or modelName to exist,
   // but this characteristic gets lost when the props are destructured.
   const { modelName: model, userName: owner } = useModelByUUIDDetails(
-    uuid
+    uuid !== undefined && uuid
       ? ({ uuid } as UUIDProps)
       : ({
           ownerTag,
@@ -54,7 +54,7 @@ const ModelDetailsLink = ({
   // we need to check for their existence and supply reasonable fallbacks if it
   // isn't available. Once we have a single API call for all the data this check
   // can be removed.
-  if (!owner || !model) {
+  if (owner === null || !owner || model === null || !model) {
     // We will just return an unclickable name until we get an owner tag as
     // without it we can't create a reliable link.
     return <>{children}</>;
@@ -67,7 +67,7 @@ const ModelDetailsLink = ({
   return (
     <Link
       to={
-        view
+        view !== undefined && Boolean(view)
           ? urls.model.tab({ userName, modelName: model, tab: view })
           : urls.model.index({ userName, modelName: model })
       }

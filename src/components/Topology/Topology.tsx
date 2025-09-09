@@ -97,11 +97,15 @@ const computeMaxXY = (annotations: AnnotationData | null) => {
   @returns The position value with the delta applied.
 */
 const applyDelta = (
-  position?: number | string | null,
-  delta?: number | string | null,
+  position: number | string | null = null,
+  delta: number | string | null = null,
 ) =>
-  (typeof position === "number" ? position : parseFloat(position || "0")) +
-  -(typeof delta === "number" ? delta : parseFloat(delta || "0"));
+  (typeof position === "number"
+    ? position
+    : parseFloat((position !== null && position) || "0")) +
+  -(typeof delta === "number"
+    ? delta
+    : parseFloat((delta !== null && delta) || "0"));
 
 /**
   Generates the relation positions for the two endpoints based on the
@@ -121,7 +125,9 @@ const getRelationPosition = (data: string[]) => {
     const node = element?.node();
     if (node && "getAttribute" in node) {
       const transform = node.getAttribute("transform");
-      return transform ? translateValues.exec(transform) : null;
+      return transform !== null && transform
+        ? translateValues.exec(transform)
+        : null;
     }
   };
   const getData = (

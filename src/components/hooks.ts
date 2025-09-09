@@ -14,6 +14,7 @@ import type { BaseLayoutContext } from "layout/BaseLayout";
 import type { StatusView } from "layout/Status";
 import { getModelByUUID } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import type { Nullable } from "types";
 import urls from "urls";
 import getUserName from "utils/getUserName";
 
@@ -32,11 +33,17 @@ type UUIDProps = {
 type ModelByUUIDDetailsProps = NameProps | UUIDProps;
 
 export const useEntityDetailsParams = () => {
-  const { userName, modelName, appName, unitId, machineId } =
-    useParams<EntityDetailsRoute>();
+  const {
+    userName = null,
+    modelName = null,
+    appName = null,
+    unitId = null,
+    machineId = null,
+  } = useParams<EntityDetailsRoute>();
   return {
     appName,
-    isNestedEntityPage: !!appName || !!unitId || !!machineId,
+    isNestedEntityPage:
+      Boolean(appName) || Boolean(unitId) || Boolean(machineId),
     machineId,
     modelName,
     unitId,
@@ -44,12 +51,23 @@ export const useEntityDetailsParams = () => {
   };
 };
 
-export const useModelIndexParams = (): Partial<ModelIndexRoute> => {
-  return useMatch(urls.model.index(null))?.params ?? {};
+export const useModelIndexParams = (): Nullable<ModelIndexRoute> => {
+  const { userName, modelName } =
+    useMatch(urls.model.index(null))?.params ?? {};
+  return {
+    modelName: modelName ?? null,
+    userName: userName ?? null,
+  };
 };
 
-export const useModelAppParams = (): Partial<ModelAppRoute> => {
-  return useMatch(urls.model.app.index(null))?.params ?? {};
+export const useModelAppParams = (): Nullable<ModelAppRoute> => {
+  const { appName, userName, modelName } =
+    useMatch(urls.model.app.index(null))?.params ?? {};
+  return {
+    appName: appName ?? null,
+    modelName: modelName ?? null,
+    userName: userName ?? null,
+  };
 };
 
 export const useModelByUUIDDetails = ({
@@ -58,10 +76,10 @@ export const useModelByUUIDDetails = ({
   modelName,
 }: ModelByUUIDDetailsProps) => {
   const modelDetails = useAppSelector((state) => getModelByUUID(state, uuid));
-  const owner = uuid ? modelDetails?.ownerTag : ownerTag;
-  const model = uuid ? modelDetails?.name : modelName;
+  const owner = uuid !== undefined && uuid ? modelDetails?.ownerTag : ownerTag;
+  const model = uuid !== undefined && uuid ? modelDetails?.name : modelName;
   const userName = typeof owner === "string" ? getUserName(owner) : null;
-  return { modelName: model, userName };
+  return { modelName: model ?? null, userName: userName ?? null };
 };
 
 export const useStatusView = (statusView: StatusView) => {
@@ -79,8 +97,8 @@ export const useStatusView = (statusView: StatusView) => {
 // Dispatch a cleanup action when a component unmounts.
 export const useCleanupOnUnmount = <P>(
   cleanupAction: ActionCreatorWithPayload<P>,
-  cleanupEnabled?: boolean,
-  payload?: P | null,
+  cleanupEnabled: boolean = false,
+  payload: P | null = null,
 ) => {
   const dispatch = useDispatch();
   const cleanupPayload = useRef<(() => void) | null>(null);
@@ -95,7 +113,11 @@ export const useCleanupOnUnmount = <P>(
   // action will get called whenever any of the args change instead of when the
   // component is unmounted.
   useEffect(() => {
-    if (cleanupEnabled && payload && (cleanupChanged || payloadChanged)) {
+    if (
+      cleanupEnabled &&
+      payload !== null &&
+      (cleanupChanged || payloadChanged)
+    ) {
       cleanupPayload.current = () => dispatch(cleanupAction(payload));
     }
   }, [

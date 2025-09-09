@@ -56,10 +56,14 @@ const shouldShow = (segment: string, activeView: string) => {
       }
       return segment === activeView;
   }
+  return false;
 };
 
-const generateCloudAndRegion = (cloudTag: string, region?: string) => {
-  if (cloudTag && region) {
+const generateCloudAndRegion = (
+  cloudTag: string,
+  region: string | null = null,
+) => {
+  if (cloudTag && region !== null && region) {
     return `${extractCloudName(cloudTag)} / ${region}`;
   }
   return "";
@@ -68,7 +72,7 @@ const generateCloudAndRegion = (cloudTag: string, region?: string) => {
 const Model = () => {
   const modelStatusData = useModelStatus();
 
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
 
   const [query] = useQueryParams<{
     entity: string | null;
@@ -100,7 +104,7 @@ const Model = () => {
   const modelAccess = useModelAccess(modelUUID);
 
   const machinesTableRows = useMemo(() => {
-    return modelName && userName
+    return modelName !== null && modelName && userName !== null && userName
       ? generateMachineRows(
           machines,
           units,
@@ -149,7 +153,7 @@ const Model = () => {
         {modelInfoData && (
           <EntityInfo
             data={{
-              access: modelAccess || "unknown",
+              access: modelAccess ?? "unknown",
               controller: modelInfoData.type,
               "Cloud/Region": generateCloudAndRegion(
                 modelInfoData["cloud"],

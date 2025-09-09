@@ -174,11 +174,11 @@ export function createStore(
 ): [EnhancedStore<RootState>, UnknownAction[]];
 export function createStore(
   state: RootState,
-  options?: { trackActions?: false },
+  options?: { trackActions: false },
 ): EnhancedStore<RootState>;
 export function createStore(
   state: RootState,
-  options: { trackActions?: boolean } = {},
+  options: { trackActions: boolean } = { trackActions: false },
 ) {
   const actions: UnknownAction[] = [];
   const store = configureStore({

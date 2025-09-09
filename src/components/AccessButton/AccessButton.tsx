@@ -10,7 +10,7 @@ import type { Props } from "./types";
 
 const AccessButton = ({
   children,
-  displayIcon,
+  displayIcon = false,
   modelName,
   ...props
 }: Props) => {

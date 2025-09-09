@@ -27,7 +27,7 @@ const ConnectionError = ({ children }: PropsWithChildren) => {
   );
 
   useEffect(() => {
-    if (auditLogsErrors) {
+    if (auditLogsErrors !== null && auditLogsErrors) {
       reactHotToast.custom((toast: ToastInstance) => (
         <ToastCard type="negative" toastInstance={toast}>
           {generateErrorContent(auditLogsErrors)}
@@ -36,7 +36,7 @@ const ConnectionError = ({ children }: PropsWithChildren) => {
     }
   }, [auditLogsErrors]);
 
-  if (error) {
+  if (error !== null && error) {
     return (
       <Strip>
         <ReactNotification severity="negative" title="Error">

@@ -24,7 +24,7 @@ export const getConfig = createSelector(
  */
 export const getIsJuju = createSelector(
   [slice],
-  (sliceState) => sliceState?.config?.isJuju,
+  (sliceState) => sliceState?.config?.isJuju ?? false,
 );
 
 /**
@@ -43,7 +43,7 @@ export const getIsJIMM = createSelector([getIsJuju], (isJuju) => !isJuju);
  */
 export const getAnalyticsEnabled = createSelector(
   [slice],
-  (sliceState) => sliceState?.config?.analyticsEnabled,
+  (sliceState) => sliceState?.config?.analyticsEnabled ?? false,
 );
 
 export const getVisitURLs = createSelector(
@@ -65,7 +65,7 @@ export const getUserPass = createSelector(
 
 export const getConnectionError = createSelector(
   [slice],
-  (sliceState) => sliceState?.connectionError,
+  (sliceState) => sliceState?.connectionError ?? null,
 );
 
 /**
@@ -75,7 +75,7 @@ export const getConnectionError = createSelector(
 */
 export const getLoginErrors = createSelector(
   [slice],
-  (sliceState) => sliceState?.login?.errors,
+  (sliceState) => sliceState?.login?.errors ?? null,
 );
 
 /**
@@ -85,7 +85,7 @@ export const getLoginErrors = createSelector(
 */
 export const getLoginLoading = createSelector(
   [slice],
-  (sliceState) => sliceState?.login?.loading,
+  (sliceState) => sliceState?.login?.loading ?? false,
 );
 
 /**
@@ -142,7 +142,7 @@ export const getControllerFeatureEnabled = createSelector(
     (_state, _wsControllerURL, feature: keyof ControllerFeatures) => feature,
   ],
   (controllerFeatures, wsControllerURL, feature) =>
-    controllerFeatures?.[wsControllerURL]?.[feature],
+    controllerFeatures?.[wsControllerURL]?.[feature] ?? false,
 );
 
 /**
@@ -156,7 +156,8 @@ export const getActiveUserTag = createSelector(
     slice,
     (state, wsControllerURL) => getControllerConnection(state, wsControllerURL),
   ],
-  (_sliceState, controllerConnection) => controllerConnection?.user?.identity,
+  (_sliceState, controllerConnection) =>
+    controllerConnection?.user?.identity ?? null,
 );
 
 export const getActiveUserControllerAccess = createSelector(
@@ -175,7 +176,7 @@ export const getActiveUserControllerAccess = createSelector(
 */
 export const isLoggedIn = createSelector(
   [slice, (state, wsControllerURL) => getActiveUserTag(state, wsControllerURL)],
-  (_sliceState, userTag) => !!userTag,
+  (_sliceState, userTag) => userTag !== null && !!userTag,
 );
 
 /**
@@ -184,7 +185,7 @@ export const isLoggedIn = createSelector(
 */
 export const getWSControllerURL = createSelector(
   getConfig,
-  (config) => config?.controllerAPIEndpoint,
+  (config) => config?.controllerAPIEndpoint ?? null,
 );
 
 export const getControllerUserTag = createSelector(

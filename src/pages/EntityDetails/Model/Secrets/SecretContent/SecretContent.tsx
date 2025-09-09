@@ -40,9 +40,9 @@ const SecretContent = ({ secretURI }: Props) => {
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );
-  const wsControllerURL = useAppSelector((state) =>
-    getModelByUUID(state, modelUUID),
-  )?.wsControllerURL;
+  const wsControllerURL =
+    useAppSelector((state) => getModelByUUID(state, modelUUID))
+      ?.wsControllerURL ?? null;
   const secret = useAppSelector((state) =>
     getSecretByURI(state, modelUUID, secretURI),
   );
@@ -83,7 +83,7 @@ const SecretContent = ({ secretURI }: Props) => {
             className="info-panel__modal"
             close={() => {
               closePortal();
-              if (wsControllerURL) {
+              if (wsControllerURL !== null && wsControllerURL) {
                 dispatch(
                   jujuActions.clearSecretsContent({
                     modelUUID,
@@ -125,7 +125,7 @@ const SecretContent = ({ secretURI }: Props) => {
             {contentLoaded && !contentLoading ? (
               <>
                 <hr />
-                {contentError ? (
+                {contentError !== null && contentError ? (
                   <ReactNotification severity="negative" title="Error:">
                     {contentError}
                   </ReactNotification>

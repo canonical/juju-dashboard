@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 type Props = {
   name: string;
   description: string;
-  selectedInput?: string | undefined;
+  selectedInput?: string | null;
   onSelect: (inputName: string) => void;
   children: ReactNode;
 };
@@ -13,7 +13,7 @@ export default function RadioInputBox({
   name,
   children,
   description,
-  selectedInput,
+  selectedInput = null,
   onSelect,
 }: Props): JSX.Element {
   const [opened, setOpened] = useState<boolean>(false);

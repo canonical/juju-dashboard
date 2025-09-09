@@ -29,7 +29,7 @@ type Props = {
 const Fields = ({
   hideConfirm,
   handleRemoveSecret,
-  secretURI,
+  secretURI = null,
   showConfirm,
 }: Props): JSX.Element => {
   const { modelName, userName } = useModelIndexParams();
@@ -47,7 +47,9 @@ const Fields = ({
 
   return (
     <>
-      {(secret?.revisions.length ?? 0) > 1 && secretURI ? (
+      {(secret?.revisions.length ?? 0) > 1 &&
+      secretURI !== null &&
+      secretURI ? (
         <>
           <FormikField
             id={Label.REMOVE_ALL}
@@ -65,8 +67,8 @@ const Fields = ({
       ) : (
         <p>
           This secret has one revision{" "}
-          {latestRevision ? ` (${latestRevision})` : ""} and will be completely
-          removed.
+          {latestRevision !== null ? ` (${latestRevision})` : ""} and will be
+          completely removed.
         </p>
       )}
       {showConfirm ? (

@@ -9,7 +9,7 @@ const WIDGETS: Widget[] = [controller, featureFlags, jujuUser];
 
 export function useWidgets() {
   const sections = WIDGETS.map(({ Title, Widget }) => {
-    const title = <Title />;
+    const title = Title ? <Title /> : null;
 
     if (!title) {
       return null;

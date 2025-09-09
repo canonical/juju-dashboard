@@ -40,7 +40,7 @@ export default function ModelDetails() {
       try {
         const response = await startModelWatcher(modelUUID, appState, dispatch);
         conn = response.conn;
-        watcherHandle = response.watcherHandle;
+        watcherHandle = response.watcherHandle ?? null;
         pingerIntervalId = response.pingerIntervalId;
         // Fetch additional model data for pre Juju 3.2.
         if (getMajorMinorVersion(conn?.info.serverVersion) < 3.2) {
@@ -65,7 +65,7 @@ export default function ModelDetails() {
       void loadFullData();
     }
     return () => {
-      if (watcherHandle && pingerIntervalId && conn) {
+      if (watcherHandle && pingerIntervalId !== null && conn) {
         stopModelWatcher(
           conn,
           watcherHandle["watcher-id"],

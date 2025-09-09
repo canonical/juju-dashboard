@@ -10,7 +10,7 @@ import { Label } from "../types";
 
 export function login(
   dispatch: AppDispatch,
-  wsControllerURL: string | undefined,
+  wsControllerURL: string | null,
   { user, password }: { user: string; password: string },
 ) {
   dispatch(actions.cleanupLoginErrors());
@@ -21,7 +21,8 @@ export function login(
     }),
   );
   dispatch(actions.updateLoginLoading(true));
-  if (bakery) {
+  const hasBakery = Boolean(bakery);
+  if (hasBakery) {
     dispatch(thunks.connectAndStartPolling())
       .then(unwrapResult)
       .catch((error) => logger.error(Label.POLLING_ERROR, error));

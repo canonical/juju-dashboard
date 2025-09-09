@@ -24,7 +24,7 @@ export default function ToastCard({
   type,
   undo,
 }: Props) {
-  let iconName;
+  let iconName: string | null = null;
   switch (type) {
     case "positive":
       iconName = "success";
@@ -52,7 +52,9 @@ export default function ToastCard({
       data-testid="toast-card"
     >
       <div className="toast-card__body">
-        {iconName && <i className={`p-icon--${iconName}`}>{iconName}</i>}
+        {iconName !== null && iconName ? (
+          <i className={`p-icon--${iconName}`}>{iconName}</i>
+        ) : null}
         <div className="toast-card__message">{children}</div>
         <i
           className="p-icon--close"

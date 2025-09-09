@@ -14,8 +14,8 @@ export enum Label {
 }
 
 export const useGetActionsForApplication = (
-  userName?: string,
-  modelName?: string,
+  userName: string | null = null,
+  modelName: string | null = null,
 ) => {
   const handler = useCallback(
     (connection: ConnectionWithFacades, appName: string) => {
@@ -32,8 +32,8 @@ export const useGetActionsForApplication = (
 };
 
 export const useExecuteActionOnUnits = (
-  userName?: string,
-  modelName?: string,
+  userName: string | null = null,
+  modelName: string | null = null,
 ) => {
   const handler = useCallback(
     (
@@ -63,8 +63,8 @@ export const useExecuteActionOnUnits = (
 };
 
 export const useQueryOperationsList = (
-  userName?: string,
-  modelName?: string,
+  userName: string | null = null,
+  modelName: string | null = null,
 ) => {
   const handler = useCallback(
     (
@@ -90,7 +90,10 @@ export const useQueryOperationsList = (
   return useCallWithConnectionPromise(handler, userName, modelName);
 };
 
-export const useQueryActionsList = (userName?: string, modelName?: string) => {
+export const useQueryActionsList = (
+  userName: string | null = null,
+  modelName: string | null = null,
+) => {
   const handler = useCallback(
     (connection: ConnectionWithFacades, queryArgs: Entities) => {
       if (!connection.facades.action) {

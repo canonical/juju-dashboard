@@ -14,7 +14,13 @@ const MachineLink = ({ uuid, machineId, children }: Props): JSX.Element => {
   const { userName, modelName } = useModelByUUIDDetails({ uuid });
 
   // If at least one of the bellow values is falsy, we can't form a valid Link.
-  if (!userName || !modelName || !machineId) {
+  if (
+    userName === null ||
+    !userName ||
+    modelName === null ||
+    !modelName ||
+    !machineId
+  ) {
     return <>{children}</>;
   }
 

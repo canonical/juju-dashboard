@@ -59,7 +59,7 @@ const TruncatedTooltip = ({
     // Watch the content for resizes to check if the truncation changes.
     resizeObserver.observe(element);
     return () => {
-      if (truncatedNode) {
+      if (truncatedNode !== null) {
         resizeObserver.unobserve(element);
       }
     };

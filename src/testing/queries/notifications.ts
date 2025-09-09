@@ -22,7 +22,7 @@ export const queryAllNotificationsByText = (
         ? `.p-notification--${severity}`
         : `.toast-card[data-type="${severity}"]`,
     );
-    if (message && notification) {
+    if (notification) {
       notifications.push(notification);
     }
   });

@@ -33,16 +33,17 @@ const WarningMessage = ({ model }: Props) => {
     </ModelDetailsLink>
   );
   const list: ListItem[] = messages.slice(0, 5).map((message) => {
-    const unitId = message.unitId ? message.unitId.replace("/", "-") : null;
+    const unitId =
+      message.unitId !== undefined ? message.unitId.replace("/", "-") : null;
     const appName = message.appName;
     return {
       className: "u-truncate",
       content: (
         <>
-          {unitId || appName}:{" "}
+          {unitId !== null || appName}:{" "}
           <Link
             to={
-              unitId
+              unitId !== null
                 ? urls.model.unit({ userName, modelName, appName, unitId })
                 : urls.model.app.index({ userName, modelName, appName })
             }

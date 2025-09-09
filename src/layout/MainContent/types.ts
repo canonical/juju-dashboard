@@ -12,7 +12,7 @@ export type Props = {
   secondaryNav?: {
     title: ReactNode;
     items: SecondaryNavigationProps["items"];
-  };
+  } | null;
   title?: ReactNode;
   titleClassName?: PanelProps["titleClassName"];
   titleComponent?: PanelProps["titleComponent"];

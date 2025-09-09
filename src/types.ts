@@ -26,7 +26,7 @@ export const isPayloadAction = (
 ): action is PayloadAction<Record<string, unknown>> =>
   isAction(action) &&
   "payload" in action &&
-  !!action.payload &&
+  action.payload !== null &&
   typeof action.payload === "object";
 
 export const isSpecificAction = <A extends Action>(
@@ -37,3 +37,7 @@ export const isSpecificAction = <A extends Action>(
 export enum FeatureFlags {
   REBAC = "rebac",
 }
+
+export type Nullable<T> = {
+  [P in keyof T]: T[P] | null;
+};

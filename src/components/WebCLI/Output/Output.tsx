@@ -17,7 +17,7 @@ const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
 const WebCLIOutput = ({
   content,
   helpMessage,
-  loading,
+  loading = false,
   processOutput,
   showHelp,
   setShouldShowHelp,
@@ -40,9 +40,9 @@ const WebCLIOutput = ({
 
   useEffect(() => {
     if (contentChanged && outputRef.current) {
-      const newResponseHeight = document.querySelector(
-        ".webcli__output-content-response:last-child",
-      )?.clientHeight;
+      const newResponseHeight =
+        document.querySelector(".webcli__output-content-response:last-child")
+          ?.clientHeight ?? 0;
       const scrollHeight = outputRef.current.scrollHeight;
       // Get the distance the scroll area is from the bottom.
       const distance =
@@ -50,7 +50,7 @@ const WebCLIOutput = ({
         (outputRef.current.clientHeight +
           outputRef.current.scrollTop +
           // Need to get the position from the bottom before the new content in.
-          (newResponseHeight || 0));
+          newResponseHeight);
       if (distance <= AUTO_SCROLL_DISTANCE) {
         outputRef.current.scrollTo({ top: scrollHeight });
       }

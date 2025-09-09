@@ -26,7 +26,9 @@ export default function ActionOptions({ name, data, onValuesChange }: Props) {
         name: propertyName,
         description: property.description,
         type: property.type,
-        required: required ? required.includes(propertyName) : false,
+        required: Array.isArray(required)
+          ? required.includes(propertyName)
+          : false,
       });
     });
     return collectOptions;

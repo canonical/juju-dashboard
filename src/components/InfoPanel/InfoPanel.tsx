@@ -35,7 +35,7 @@ const infoPanelDimensions = () => {
 };
 
 const InfoPanel = () => {
-  const { modelName, userName } = useParams<EntityDetailsRoute>();
+  const { modelName = null, userName = null } = useParams<EntityDetailsRoute>();
 
   const {
     openPortal,
@@ -80,7 +80,7 @@ const InfoPanel = () => {
           <Modal
             className="info-panel__modal"
             close={closePortal}
-            title={modelName?.split("/")[1] || modelName}
+            title={modelName?.split("/")[1] ?? modelName}
           >
             <Topology
               width={width}

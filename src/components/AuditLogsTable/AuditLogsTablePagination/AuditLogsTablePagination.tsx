@@ -36,7 +36,7 @@ const scrollToTop = () => {
 
 const AuditLogsTablePagination = ({
   className,
-  showLimit,
+  showLimit = false,
   ...props
 }: Props) => {
   const dispatch = useAppDispatch();

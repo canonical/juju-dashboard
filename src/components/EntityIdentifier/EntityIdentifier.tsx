@@ -7,11 +7,15 @@ type Props = {
   subordinate?: boolean;
 };
 
-const EntityIdentifier = ({ charmId, name, subordinate = false }: Props) => {
+const EntityIdentifier = ({
+  charmId = null,
+  name,
+  subordinate = false,
+}: Props) => {
   return (
     <TruncatedTooltip message={name} wrapperClassName="entity-name">
       {subordinate && <span className="subordinate"></span>}
-      {charmId && <CharmIcon name={name} charmId={charmId} />}
+      {charmId !== null ? <CharmIcon name={name} charmId={charmId} /> : null}
       {name}
     </TruncatedTooltip>
   );

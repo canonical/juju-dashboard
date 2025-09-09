@@ -123,7 +123,7 @@ const JujuCLI = () => {
     primaryControllerData?.[0]
       .replace("ws://", "")
       .replace("wss://", "")
-      .replace("/api", "") || null;
+      .replace("/api", "") ?? null;
   const wsProtocol = primaryControllerData?.[0].split("://")[0] ?? "wss";
   const activeUser = useAppSelector((state) =>
     getActiveUserTag(state, primaryControllerData?.[0]),
@@ -218,7 +218,12 @@ const JujuCLI = () => {
     }
   }, [modelInfo, isJuju]);
 
-  if (!showWebCLI || !controllerWSHost || !modelInfo) {
+  if (
+    !showWebCLI ||
+    controllerWSHost === null ||
+    !controllerWSHost ||
+    !modelInfo
+  ) {
     return null;
   }
   return (

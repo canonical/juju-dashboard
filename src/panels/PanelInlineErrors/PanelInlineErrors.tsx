@@ -12,10 +12,10 @@ const PanelInlineErrors = ({
   inlineErrors,
   scrollArea,
 }: Props): JSX.Element | null =>
-  inlineErrors && inlineErrors.some((error) => !!error) ? (
+  inlineErrors && inlineErrors.some((error = null) => error !== null) ? (
     <ScrollOnRender scrollArea={scrollArea}>
       {inlineErrors.map((error, index) =>
-        error ? (
+        error !== null ? (
           <ReactNotification key={index} severity="negative">
             {error}
           </ReactNotification>

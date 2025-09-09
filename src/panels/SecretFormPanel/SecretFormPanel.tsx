@@ -11,7 +11,7 @@ type Props = {
   update?: boolean;
 };
 
-const SecretFormPanel = ({ update }: Props) => {
+const SecretFormPanel = ({ update = false }: Props) => {
   const scrollArea = useRef<HTMLDivElement>(null);
   const formId = useId();
   const [queryParams, , handleRemovePanelQueryParams] = usePanelQueryParams<{

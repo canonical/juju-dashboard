@@ -183,27 +183,28 @@ export const getSecretsState = createSelector(
 
 export const getModelSecretsState = createSelector(
   [getSecretsState, (_state: RootState, modelUUID: string | null) => modelUUID],
-  (secrets, modelUUID) => (modelUUID ? secrets[modelUUID] : null),
+  (secrets, modelUUID) =>
+    modelUUID !== null && modelUUID ? secrets[modelUUID] : null,
 );
 
 export const getModelSecrets = createSelector(
   [getModelSecretsState],
-  (secrets) => secrets?.items,
+  (secrets) => secrets?.items ?? null,
 );
 
 export const getSecretsErrors = createSelector(
   [getModelSecretsState],
-  (secrets) => secrets?.errors,
+  (secrets) => secrets?.errors ?? null,
 );
 
 export const getSecretsLoaded = createSelector(
   [getModelSecretsState],
-  (secrets) => secrets?.loaded,
+  (secrets) => secrets?.loaded ?? false,
 );
 
 export const getSecretsLoading = createSelector(
   [getModelSecretsState],
-  (secrets) => secrets?.loading,
+  (secrets) => secrets?.loading ?? false,
 );
 
 export const getSecretByURI = createSelector(
@@ -213,7 +214,7 @@ export const getSecretByURI = createSelector(
       secretURI,
   ],
   (secrets, secretURI) =>
-    secretURI ? secrets?.find(({ uri }) => uri === secretURI) : null,
+    secretURI !== null ? secrets?.find(({ uri }) => uri === secretURI) : null,
 );
 
 export const getSecretLatestRevision = createSelector(
@@ -223,27 +224,27 @@ export const getSecretLatestRevision = createSelector(
 
 export const getSecretsContentState = createSelector(
   [getModelSecretsState],
-  (secrets) => secrets?.content,
+  (secrets) => secrets?.content ?? null,
 );
 
 export const getSecretsContent = createSelector(
   [getSecretsContentState],
-  (content) => content?.content,
+  (content) => content?.content ?? null,
 );
 
 export const getSecretsContentErrors = createSelector(
   [getSecretsContentState],
-  (content) => content?.errors,
+  (content) => content?.errors ?? null,
 );
 
 export const getSecretsContentLoaded = createSelector(
   [getSecretsContentState],
-  (content) => content?.loaded,
+  (content) => content?.loaded ?? false,
 );
 
 export const getSecretsContentLoading = createSelector(
   [getSecretsContentState],
-  (content) => content?.loading,
+  (content) => content?.loading ?? false,
 );
 
 export const getModelFeaturesState = createSelector(
@@ -258,12 +259,12 @@ export const getModelFeatures = createSelector(
 
 export const getCanListSecrets = createSelector(
   [getModelFeatures],
-  (modelFeatures) => modelFeatures?.listSecrets,
+  (modelFeatures) => modelFeatures?.listSecrets ?? false,
 );
 
 export const getCanManageSecrets = createSelector(
   [getModelFeatures],
-  (modelFeatures) => modelFeatures?.manageSecrets,
+  (modelFeatures) => modelFeatures?.manageSecrets ?? false,
 );
 
 /**
@@ -273,7 +274,7 @@ export const getCanManageSecrets = createSelector(
 */
 export const getModelData = createSelector(
   [slice],
-  (sliceState) => sliceState.modelData ?? null,
+  (sliceState) => sliceState.modelData,
 );
 
 export const getModelsError = createSelector(
@@ -320,8 +321,9 @@ export const getFullModelNames = createSelector(
     controllers
       ? Object.values(modelList)?.reduce<string[]>((modelNames, model) => {
           const controller =
-            model.wsControllerURL in controllers &&
-            controllers[model.wsControllerURL][0];
+            model.wsControllerURL in controllers
+              ? controllers[model.wsControllerURL][0]
+              : null;
           if (controller && "name" in controller) {
             modelNames.push(`${controller.name}/${model.name}`);
           }
@@ -334,13 +336,15 @@ export const getFullModelNames = createSelector(
   Get a model by UUID.
 */
 export const getModelByUUID = createSelector(
-  [getModelList, (_, uuid?: string | null) => uuid],
-  (modelList, uuid) => (uuid ? modelList?.[uuid] : null),
+  [getModelList, (_, uuid: string | null = null) => uuid],
+  (modelList, uuid) =>
+    uuid !== null && uuid in modelList ? modelList[uuid] : null,
 );
 
 export const getModelDataByUUID = createSelector(
-  [getModelData, (_, modelUUID?: string | null) => modelUUID],
-  (modelData, modelUUID) => (modelUUID ? modelData[modelUUID] : null),
+  [getModelData, (_, modelUUID: string | null = null) => modelUUID],
+  (modelData, modelUUID) =>
+    modelUUID != null && modelUUID in modelData ? modelData[modelUUID] : null,
 );
 
 /**
@@ -351,7 +355,8 @@ export const getFullModelName = createSelector(
   (model, controllers) => {
     const controller =
       controllers &&
-      model?.wsControllerURL &&
+      model &&
+      model.wsControllerURL &&
       model.wsControllerURL in controllers
         ? controllers[model.wsControllerURL][0]
         : null;
@@ -380,11 +385,10 @@ export const getActiveUsers = createSelector(
   (models, state) => {
     const activeUsers: Record<string, string> = {};
     Object.entries(models).forEach(([modelUUID, model]) => {
-      const user = getActiveUserTag(state, model.wsControllerURL)?.replace(
-        "user-",
-        "",
-      );
-      if (user) {
+      const user =
+        getActiveUserTag(state, model.wsControllerURL)?.replace("user-", "") ??
+        null;
+      if (user !== null && user) {
         activeUsers[modelUUID] = user;
       }
     });
@@ -455,7 +459,9 @@ export const getActiveUser = createSelector(
   [getModelByUUID, (state: RootState) => state],
   (model, state) => {
     const activeUserTag = getActiveUserTag(state, model?.wsControllerURL);
-    return activeUserTag ? getUserName(activeUserTag) : undefined;
+    return activeUserTag !== null && activeUserTag
+      ? getUserName(activeUserTag)
+      : null;
   },
 );
 
@@ -472,14 +478,16 @@ export const getModelAccess = createSelector(
     (state: RootState) => state,
   ],
   (model, modelData, activeUser, state) => {
-    const controllerAccess = getActiveUserControllerAccess(
-      state,
-      model?.wsControllerURL,
+    const controllerAccess =
+      getActiveUserControllerAccess(state, model?.wsControllerURL) ?? null;
+    const modelUser =
+      (modelData?.info?.users ?? []).find(({ user }) => user === activeUser) ??
+      null;
+    return (
+      (modelUser !== null && modelUser.access) ||
+      (controllerAccess !== null && controllerAccess) ||
+      null
     );
-    const modelUser = (modelData?.info?.users ?? []).find(
-      ({ user }) => user === activeUser,
-    );
-    return modelUser?.access || controllerAccess || null;
   },
 );
 
@@ -526,13 +534,19 @@ export const getModelInfo = createSelector(
 export const getModelUUIDFromList = createSelector(
   [
     getModelList,
-    (_state: RootState, modelName?: string | null) => modelName || null,
-    (_state: RootState, _modelName, ownerName?: string | null) =>
-      ownerName || null,
+    (_state: RootState, modelName: string | null = null) => modelName,
+    (_state: RootState, _modelName, ownerName: string | null = null) =>
+      ownerName,
   ],
   (modelList: ModelsList, modelName, ownerName) => {
     let modelUUID = "";
-    if (!modelList || !modelName || !ownerName) {
+    if (
+      modelList === null ||
+      modelName === null ||
+      !modelName ||
+      ownerName === null ||
+      !ownerName
+    ) {
       return modelUUID;
     }
     Object.entries(modelList).some(([_key, { name, ownerTag, uuid }]) => {
@@ -677,8 +691,12 @@ export const getFilteredModelData = createSelector(
 
     // Collect segments from filter data
     Object.entries(filters).forEach((filter) => {
-      if (filter[1].length === 0) return;
-      if (!filterSegments[filter[0]]) {
+      if (filter[1].length === 0) {
+        return;
+      }
+      const segment =
+        filter[0] in filterSegments ? filterSegments[filter[0]] : null;
+      if (!segment) {
         filterSegments[filter[0]] = [];
       }
       filterSegments[filter[0]].push(filter[1]);
@@ -692,7 +710,7 @@ export const getFilteredModelData = createSelector(
         "info" in data
           ? extractCredentialName(data.info?.["cloud-credential-tag"])
           : null;
-      const region = "model" in data ? data.model.region : null;
+      const region = "model" in data ? (data.model.region ?? null) : null;
       const owner = data.info ? extractOwnerName(data.info["owner-tag"]) : null;
       // Combine all of the above to create string for fuzzy custom search
       const combinedModelAttributes = [
@@ -710,17 +728,21 @@ export const getFilteredModelData = createSelector(
           const values: string[] = valuesArr[0];
           switch (segment) {
             case "cloud":
-              return !cloud || !values.includes(cloud);
+              return cloud === null || !cloud || !values.includes(cloud);
             case "credential":
               if ("info" in data) {
-                return !credential || !values.includes(credential);
+                return (
+                  credential === null ||
+                  !credential ||
+                  !values.includes(credential)
+                );
               }
               break;
             case "region":
-              return !region || !values.includes(region);
+              return region === null || !region || !values.includes(region);
             case "owner":
               if ("info" in data) {
-                return !owner || !values.includes(owner);
+                return owner === null || !owner || !values.includes(owner);
               }
               break;
             case "custom":
@@ -754,23 +776,21 @@ export const getModelUUID = createSelector(
   (modelData, name) => {
     let owner = null;
     let modelName = null;
-    if (name?.includes("/")) {
+    if (name !== null && name?.includes("/")) {
       [owner, modelName] = name.split("/");
     } else {
       modelName = name;
     }
-    if (modelData) {
-      for (const uuid in modelData) {
-        const model = modelData[uuid].info;
-        if (model && model.name === modelName) {
-          if (owner) {
-            if (model["owner-tag"] === `user-${owner}`) {
-              // If this is a shared model then we'll also have an owner name
-              return uuid;
-            }
-          } else {
+    for (const uuid in modelData) {
+      const model = modelData[uuid].info;
+      if (model && model.name === modelName) {
+        if (owner !== null && owner) {
+          if (model["owner-tag"] === `user-${owner}`) {
+            // If this is a shared model then we'll also have an owner name
             return uuid;
           }
+        } else {
+          return uuid;
         }
       }
     }
@@ -788,9 +808,12 @@ export const getModelUUIDs = createSelector([getModelData], (modelData) =>
     @returns The memoized selector to return the model status.
   */
 export const getModelStatus = createSelector(
-  [getModelData, (_state: RootState, modelUUID?: string | null) => modelUUID],
+  [
+    getModelData,
+    (_state: RootState, modelUUID: string | null = null) => modelUUID,
+  ],
   (modelData, modelUUID) =>
-    modelUUID ? (modelData?.[modelUUID] ?? null) : null,
+    modelUUID !== null && modelUUID ? (modelData?.[modelUUID] ?? null) : null,
 );
 
 /**
@@ -812,14 +835,12 @@ export const getGroupedByCloudAndFilteredModelData = createSelector(
   getFilteredModelData,
   (modelData) => {
     const grouped: Record<string, ModelData[]> = {};
-    if (!modelData) {
-      return grouped;
-    }
     for (const modelUUID in modelData) {
       const model = modelData[modelUUID];
       if (model.info) {
         const cloud = extractCloudName(model.info["cloud-tag"]);
-        if (!grouped[cloud]) {
+        const cloudGroup = cloud in grouped ? grouped[cloud] : null;
+        if (!cloudGroup) {
           grouped[cloud] = [];
         }
         grouped[cloud].push(model);
@@ -838,14 +859,12 @@ export const getGroupedByOwnerAndFilteredModelData = createSelector(
   getFilteredModelData,
   (modelData) => {
     const grouped: Record<string, ModelData[]> = {};
-    if (!modelData) {
-      return grouped;
-    }
     for (const modelUUID in modelData) {
       const model = modelData[modelUUID];
       if (model.info) {
         const owner = extractOwnerName(model.info["owner-tag"]);
-        if (!grouped[owner]) {
+        const ownerGroup = owner in grouped ? grouped[owner] : null;
+        if (!ownerGroup) {
           grouped[owner] = [];
         }
         grouped[owner].push(model);
@@ -876,9 +895,6 @@ export const getGroupedMachinesDataByStatus = createSelector(
       alert: [],
       running: [],
     };
-    if (!modelData) {
-      return grouped;
-    }
     for (const modelUUID in modelData) {
       const model = modelData[modelUUID];
       for (const machineID in model.machines) {
@@ -902,9 +918,6 @@ export const getGroupedUnitsDataByStatus = createSelector(
       alert: [],
       running: [],
     };
-    if (!modelData) {
-      return grouped;
-    }
     for (const modelUUID in modelData) {
       const model = modelData[modelUUID];
       for (const applicationID in model.applications) {
@@ -931,9 +944,6 @@ export const getGroupedApplicationsDataByStatus = createSelector(
       alert: [],
       running: [],
     };
-    if (!modelData) {
-      return grouped;
-    }
     for (const modelUUID in modelData) {
       const model = modelData[modelUUID];
       for (const applicationID in model.applications) {
@@ -996,10 +1006,12 @@ export const getControllerDataByUUID = createSelector(
 export const getModelControllerDataByUUID = createSelector(
   [
     getControllerData,
-    (_state: RootState, controllerUUID?: string) => controllerUUID,
+    (_state: RootState, controllerUUID: string | null = null) => controllerUUID,
   ],
   (controllerData, controllerUUID) => {
-    if (!controllerData || !controllerUUID) return null;
+    if (!controllerData || controllerUUID === null || !controllerUUID) {
+      return null;
+    }
     let modelController: (Controllers[0][0] & { url?: string }) | null = null;
     let controllerURL;
     for (const controller of Object.entries(controllerData)) {
@@ -1042,9 +1054,9 @@ export const getCharms = createSelector(slice, (sliceState) => {
  * @returns A list of applications that are selected.
  */
 export const getSelectedApplications = createSelector(
-  [slice, (_state: RootState, charmURL?: string) => charmURL],
+  [slice, (_state: RootState, charmURL: string | null = null) => charmURL],
   (sliceState, charmURL) => {
-    if (!charmURL) {
+    if (charmURL === null || !charmURL) {
       return sliceState.selectedApplications;
     }
     return sliceState.selectedApplications.filter(
@@ -1068,7 +1080,8 @@ export const getSelectedCharm = createSelector(
 export const isKubernetesModel = createSelector(
   [
     getModelDataByUUID,
-    (state, uuid?: string | null) => (uuid ? getModelInfo(state, uuid) : null),
+    (state, uuid: string | null = null) =>
+      uuid !== null && uuid ? getModelInfo(state, uuid) : null,
   ],
   (modelData, modelInfo) =>
     modelData?.info?.["provider-type"] === "kubernetes" ||
@@ -1130,7 +1143,7 @@ export const getReBACPermissionErrors = createSelector(
       getReBACPermission(state, tuple),
   ],
   (permission) => {
-    return permission?.errors;
+    return permission?.errors ?? null;
   },
 );
 

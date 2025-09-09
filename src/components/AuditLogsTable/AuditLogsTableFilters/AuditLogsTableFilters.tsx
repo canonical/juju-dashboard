@@ -21,7 +21,7 @@ const generateFilters = (
 ) =>
   // Reduce to remove filters that are not set.
   Object.entries(filters).reduce<ReactNode[]>((chips, [filter, value]) => {
-    if (value) {
+    if (value !== null && value) {
       chips.push(
         <Chip
           className="u-no-margin--bottom"
@@ -41,7 +41,7 @@ const AuditLogsTableFilters = () => {
   >({ ...DEFAULT_AUDIT_LOG_FILTERS, page: null });
   // Extract just the filters so that they can be looped over.
   const { page: _page, ...filters } = queryParams;
-  const hasFilters = Object.values(filters).some((filter) => !!filter);
+  const hasFilters = Object.values(filters).some((filter) => Boolean(filter));
   return hasFilters ? (
     <ActionBar>
       <Tooltip message="Clear all filters">

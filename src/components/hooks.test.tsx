@@ -33,11 +33,11 @@ describe("useEntityDetailsParams", () => {
       ),
     });
     expect(result.current).toStrictEqual({
-      appName: undefined,
+      appName: null,
       isNestedEntityPage: true,
       machineId: "0",
       modelName: "group-test",
-      unitId: undefined,
+      unitId: null,
       userName: "eggman@external",
     });
   });
@@ -99,7 +99,10 @@ describe("useModelIndexParams", () => {
         />
       ),
     });
-    expect(result.current).toStrictEqual({});
+    expect(result.current).toStrictEqual({
+      modelName: null,
+      userName: null,
+    });
   });
 });
 
@@ -132,7 +135,11 @@ describe("useModelAppParams", () => {
         />
       ),
     });
-    expect(result.current).toStrictEqual({});
+    expect(result.current).toStrictEqual({
+      appName: null,
+      modelName: null,
+      userName: null,
+    });
   });
 });
 

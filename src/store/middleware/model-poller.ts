@@ -70,8 +70,8 @@ export const modelPollerMiddleware: Middleware<
         const [wsControllerURL, credentials] = controllerData;
         let conn: ConnectionWithFacades | undefined;
         let juju: Client | undefined;
-        let error: unknown;
-        let intervalId: number | null | undefined;
+        let error: unknown = null;
+        let intervalId: number | null = null;
         reduxStore.dispatch(generalActions.updateLoginLoading(true));
         const continueConnection = await Auth.instance.beforeControllerConnect({
           wsControllerURL,
@@ -82,14 +82,16 @@ export const modelPollerMiddleware: Middleware<
           return;
         }
         try {
-          ({ conn, error, juju, intervalId } = await loginWithBakery(
-            wsControllerURL,
-            credentials,
-          ));
+          ({
+            conn,
+            error,
+            juju,
+            intervalId = null,
+          } = await loginWithBakery(wsControllerURL, credentials));
           if (conn) {
             controllers.set(wsControllerURL, conn);
           }
-          if (error) {
+          if (error !== null && error !== undefined) {
             reduxStore.dispatch(
               generalActions.storeLoginError({
                 wsControllerURL,
@@ -123,7 +125,7 @@ export const modelPollerMiddleware: Middleware<
 
         const isProduction = import.meta.env.PROD;
         const analyticsEnabled = getAnalyticsEnabled(reduxStore.getState());
-        const isJuju = !!getIsJuju(reduxStore.getState());
+        const isJuju = getIsJuju(reduxStore.getState());
         const dashboardVersion = getAppVersion(reduxStore.getState()) ?? "";
         const controllerVersion = conn.info.serverVersion ?? "";
 
@@ -167,7 +169,7 @@ export const modelPollerMiddleware: Middleware<
         if (juju) {
           jujus.set(wsControllerURL, juju);
         }
-        if (intervalId) {
+        if (intervalId !== null) {
           reduxStore.dispatch(
             generalActions.updatePingerIntervalId({
               wsControllerURL,
@@ -195,8 +197,8 @@ export const modelPollerMiddleware: Middleware<
 
         let pollCount = 0;
         do {
-          const identity = conn?.info?.user?.identity;
-          if (identity) {
+          const identity = conn?.info?.user?.identity ?? null;
+          if (identity !== null && identity) {
             try {
               const models = await conn.facades.modelManager?.listModels({
                 tag: identity,
@@ -217,7 +219,8 @@ export const modelPollerMiddleware: Middleware<
               );
               // If the code execution arrives here, then the model statuses
               // have been successfully updated. Models error should be removed.
-              if (reduxStore.getState().juju.modelsError) {
+              const modelsError = reduxStore.getState().juju.modelsError;
+              if (modelsError !== null && modelsError) {
                 reduxStore.dispatch(
                   jujuActions.updateModelsError({
                     modelsError: null,

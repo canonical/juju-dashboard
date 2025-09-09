@@ -33,17 +33,17 @@ type Props = {
 };
 
 const getEntityType = (params: Partial<EntityDetailsRoute>) => {
-  if (params.unitId) {
+  if (params.unitId !== undefined && params.unitId) {
     return "unit";
-  } else if (params.machineId) {
+  } else if (params.machineId !== undefined && params.machineId) {
     return "machine";
-  } else if (params.appName) {
+  } else if (params.appName !== undefined && params.appName) {
     return "app";
   }
   return "model";
 };
 
-const EntityDetails = ({ modelWatcherError }: Props) => {
+const EntityDetails = ({ modelWatcherError = null }: Props) => {
   const routeParams = useParams<EntityDetailsRoute>();
   const { userName, modelName } = routeParams;
   const modelsLoaded = useAppSelector(getModelListLoaded);
@@ -63,7 +63,11 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
 
   const entityType = getEntityType(routeParams);
 
-  useWindowTitle(modelInfo?.name ? `Model: ${modelInfo?.name}` : "...");
+  useWindowTitle(
+    modelInfo?.name !== undefined && modelInfo?.name
+      ? `Model: ${modelInfo?.name}`
+      : "...",
+  );
 
   useStatusView(StatusView.CLI);
 
@@ -115,7 +119,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
       })}
       titleComponent="div"
     >
-      {modelWatcherError ? (
+      {modelWatcherError !== null && modelWatcherError ? (
         <Strip className="u-no-padding--bottom" shallow>
           <ReactNotification
             className="u-no-margin--bottom"

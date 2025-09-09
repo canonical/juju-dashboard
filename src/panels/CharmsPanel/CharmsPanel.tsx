@@ -36,7 +36,7 @@ export default function CharmsPanel({
     <Panel
       drawer={
         <Button
-          disabled={!selectedCharm}
+          disabled={selectedCharm === null || !selectedCharm}
           onClick={() => onCharmURLChange(selectedCharm)}
         >
           Next

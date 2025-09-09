@@ -11,8 +11,8 @@ export enum Label {
 }
 
 export const useGetApplicationConfig = (
-  userName?: string,
-  modelName?: string,
+  userName: string | null = null,
+  modelName: string | null = null,
 ) => {
   const handler = useCallback(
     (connection: ConnectionWithFacades, appName: string) => {
@@ -30,8 +30,8 @@ export const useGetApplicationConfig = (
 };
 
 export const useSetApplicationConfig = (
-  userName?: string,
-  modelName?: string,
+  userName: string | null = null,
+  modelName: string | null = null,
 ) => {
   const handler = useCallback(
     (connection: ConnectionWithFacades, appName: string, config: Config) => {

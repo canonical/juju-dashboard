@@ -25,13 +25,13 @@ const CharmActionsPanelTitle = ({ charmURL }: Props): JSX.Element => {
   if (!selectedApplications.length || !selectedCharm)
     return <>{Label.NONE_SELECTED_TITLE}</>;
   const totalUnits = selectedApplications.reduce(
-    (total, app) => total + (app["unit-count"] || 0),
+    (total, app) => total + (app["unit-count"] ?? 0),
     0,
   );
 
   return (
     <>
-      {selectedCharm?.meta?.name && selectedCharm?.url ? (
+      {selectedCharm?.meta?.name !== undefined && selectedCharm?.url ? (
         <CharmIcon name={selectedCharm.meta.name} charmId={selectedCharm.url} />
       ) : null}{" "}
       {selectedApplications.length}{" "}

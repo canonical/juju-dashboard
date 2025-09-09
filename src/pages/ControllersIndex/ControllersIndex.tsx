@@ -44,10 +44,7 @@ type AnnotatedController = Controller & {
 const ControllersIndex = () => {
   const controllersCount = useAppSelector(getControllersCount);
   const modelData = useAppSelector(getModelData);
-  let modelCount = 0;
-  if (modelData) {
-    modelCount = Object.keys(modelData).length;
-  }
+  const modelCount = Object.keys(modelData).length;
 
   useWindowTitle("Controllers");
   const controllerConnections = useAppSelector(getControllerConnections);
@@ -70,25 +67,25 @@ const ControllersIndex = () => {
         };
       });
     });
-    if (modelData) {
-      for (const modelUUID in modelData) {
-        const model = modelData[modelUUID];
-        if (model.info) {
-          const controllerUUID = model?.info["controller-uuid"];
-          if (controllerMap[controllerUUID]) {
-            controllerMap[controllerUUID].models += 1;
-            controllerMap[controllerUUID].machines += Object.keys(
-              model?.machines,
-            ).length;
-            const applicationKeys = Object.keys(model.applications);
-            controllerMap[controllerUUID].applications +=
-              applicationKeys.length;
-            const unitCount = applicationKeys.reduce((acc, appName) => {
-              const units = model.applications[appName].units || {}; // Subordinates don't have units
-              return acc + Object.keys(units).length;
-            }, 0);
-            controllerMap[controllerUUID].units += unitCount;
-          }
+    for (const modelUUID in modelData) {
+      const model = modelData[modelUUID];
+      if (model.info) {
+        const controllerUUID = model?.info["controller-uuid"];
+        if (
+          controllerUUID in controllerMap &&
+          Boolean(controllerMap[controllerUUID])
+        ) {
+          controllerMap[controllerUUID].models += 1;
+          controllerMap[controllerUUID].machines += Object.keys(
+            model?.machines,
+          ).length;
+          const applicationKeys = Object.keys(model.applications);
+          controllerMap[controllerUUID].applications += applicationKeys.length;
+          const unitCount = applicationKeys.reduce((acc, appName) => {
+            const units = model.applications[appName].units ?? {}; // Subordinates don't have units
+            return acc + Object.keys(units).length;
+          }, 0);
+          controllerMap[controllerUUID].units += unitCount;
         }
       }
     }
@@ -122,7 +119,7 @@ const ControllersIndex = () => {
     const controllerAddress = annotatedController.wsControllerURL
       .replace(/^wss?:\/\//i, "")
       .replace(/\/api$/i, "");
-    if ("name" in annotatedController && annotatedController.name) {
+    if ("name" in annotatedController && Boolean(annotatedController.name)) {
       column.content = (
         <Tooltip
           message={controllerAddress}
@@ -157,23 +154,34 @@ const ControllersIndex = () => {
     controller: AnnotatedController,
     authenticated: boolean,
   ) => {
-    let cloud = "unknown";
-    if ("cloud-tag" in controller && controller["cloud-tag"]) {
-      cloud = controller["cloud-tag"];
-    } else if ("location" in controller && controller.location?.cloud) {
+    let cloud: string | null = "unknown";
+    if ("cloud-tag" in controller && Boolean(controller["cloud-tag"])) {
+      cloud = controller["cloud-tag"] ?? null;
+    } else if (
+      "location" in controller &&
+      controller.location &&
+      controller.location.cloud !== undefined
+    ) {
       cloud = controller.location.cloud;
     }
     let region = "unknown";
-    if ("cloud-region" in controller && controller["cloud-region"]) {
+    if (
+      "cloud-region" in controller &&
+      controller["cloud-region"] !== undefined
+    ) {
       region = controller["cloud-region"];
-    } else if ("location" in controller && controller.location?.region) {
+    } else if (
+      "location" in controller &&
+      controller.location &&
+      controller.location?.region
+    ) {
       region = controller.location.region;
     }
     const cloudRegion = `${cloud}/${region}`;
-    const loginError = loginErrors?.[controller.wsControllerURL];
+    const loginError = loginErrors?.[controller.wsControllerURL] ?? null;
     let status = "Connected";
     let label = null;
-    if (loginError) {
+    if (loginError !== null && loginError) {
       status = "Error";
       label = "Failed to connect";
     } else if (!authenticated) {
@@ -202,15 +210,20 @@ const ControllersIndex = () => {
       { content: controller.units },
       { content: "" },
     ];
-    const version =
-      ("agent-version" in controller && controller["agent-version"]) ||
-      ("version" in controller && controller.version);
-    if (version) {
+    let version: string | null = null;
+    if ("agent-version" in controller && controller["agent-version"]) {
+      version = controller["agent-version"];
+    }
+    if ("version" in controller && controller.version !== undefined) {
+      version = controller.version;
+    }
+    if (version !== null && version) {
       columns[columns.length - 1] = {
         content: (
           <>
             {version}{" "}
-            {controller.updateAvailable ? (
+            {controller.updateAvailable !== undefined &&
+            controller.updateAvailable ? (
               <Tooltip
                 message={
                   <>
@@ -239,15 +252,13 @@ const ControllersIndex = () => {
     };
   };
 
-  const rows =
-    controllerMap &&
-    Object.values(controllerMap).map((controller) =>
-      generateRow(
-        controller,
-        !!controllerConnections &&
-          controller.wsControllerURL in controllerConnections,
-      ),
-    );
+  const rows = Object.values(controllerMap).map((controller) =>
+    generateRow(
+      controller,
+      !!controllerConnections &&
+        controller.wsControllerURL in controllerConnections,
+    ),
+  );
 
   return (
     <MainContent

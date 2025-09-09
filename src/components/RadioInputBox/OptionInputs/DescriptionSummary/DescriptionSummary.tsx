@@ -1,9 +1,9 @@
 type Props = {
-  description: string | undefined;
+  description?: string | null;
 };
 
-export default function DescriptionSummary({ description }: Props) {
-  if (!description) {
+export default function DescriptionSummary({ description = null }: Props) {
+  if (description === null || !description) {
     return null;
   }
   // 30 is a magic number, the width of the available text area of the field
