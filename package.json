@@ -91,7 +91,7 @@
     "@eslint/compat": "1.2.7",
     "@eslint/eslintrc": "3.3.1",
     "@eslint/js": "9.34.0",
-    "@playwright/test": "1.52.0",
+    "@playwright/test": "1.55.0",
     "@stylistic/eslint-plugin": "5.1.0",
     "@testing-library/dom": "10.4.0",
     "@testing-library/jest-dom": "6.6.3",
