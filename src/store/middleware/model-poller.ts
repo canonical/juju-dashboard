@@ -439,6 +439,52 @@ export const modelPollerMiddleware: Middleware<
       // The action has already been passed to the next middleware
       // at the top of this handler.
       return;
+    } else if (
+      isSpecificAction<ReturnType<typeof jujuActions.destroyModels>>(
+        action,
+        jujuActions.destroyModels.type,
+      )
+    ) {
+      // Intercept migrateModel actions and fetch and store
+      // the modelUUID via the controller connection.
+      const { wsControllerURL, models } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+
+      try {
+        const result = await conn.facades.modelManager?.destroyModels({
+          models,
+        });
+        const errors: Error[] = [];
+        result?.results.forEach((errorResult) => {
+          if (errorResult.error)
+            errors.push(new Error(errorResult.error.message));
+        });
+        if (errors.length) {
+          throw errors;
+        }
+        reduxStore.dispatch(
+          jujuActions.removeModel({
+            models,
+            wsControllerURL,
+          }),
+        );
+      } catch (errors) {
+        console.log(errors);
+        const errorMessages = Array.isArray(errors)
+          ? errors.map((error) => error.message)
+          : ["Could not destroy model"];
+        console.log(errorMessages);
+        // reduxStore.dispatch(jujuActions.migrationTargetErrors(errorMessage));
+      }
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
     }
     return next(action);
   };

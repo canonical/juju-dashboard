@@ -65,6 +65,7 @@ const model = modelDataFactory.build({
   offers: status.offers,
   relations: status.relations,
   "remote-applications": status["remote-applications"],
+  storage: undefined,
 });
 
 describe("reducers", () => {
