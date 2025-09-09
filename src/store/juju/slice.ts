@@ -1,5 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type { InitiateMigrationResult } from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
 import type {
   ModelInfoResults,
   UserModelList,
@@ -12,7 +13,11 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import fastDeepEqual from "fast-deep-equal/es6";
 
-import type { AuditEvent, FindAuditEventsRequest } from "juju/jimm/JIMMV3";
+import type {
+  AuditEvent,
+  ControllerInfo,
+  FindAuditEventsRequest,
+} from "juju/jimm/JIMMV3";
 import type {
   CheckRelationResponse,
   CrossModelQueryRequest,
@@ -114,6 +119,13 @@ const slice = createSlice({
       loaded: false,
       loading: false,
       limit: DEFAULT_AUDIT_EVENTS_LIMIT,
+    },
+    migrateModel: {},
+    migrationTargets: {
+      results: null,
+      loading: false,
+      loaded: false,
+      errors: null,
     },
     crossModelQuery: {
       results: null,
@@ -226,6 +238,95 @@ const slice = createSlice({
     },
     clearControllerData: (state) => {
       state.controllers = {};
+    },
+    fetchMigrationTargets: (
+      state,
+      _action: PayloadAction<
+        {
+          modelTag: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.migrationTargets.loading = true;
+      state.migrationTargets.errors = null;
+      state.migrationTargets.loaded = false;
+      state.migrationTargets.results = null;
+    },
+    updateMigrationTargets: (
+      state,
+      action: PayloadAction<
+        { controllers: ControllerInfo[] | null } & WsControllerURLParam
+      >,
+    ) => {
+      state.migrationTargets.loading = false;
+      state.migrationTargets.errors = null;
+      state.migrationTargets.loaded = true;
+      state.migrationTargets.results = action.payload.controllers;
+    },
+    migrationTargetErrors: (state, { payload }: PayloadAction<string>) => {
+      state.migrationTargets.loading = false;
+      state.migrationTargets.errors = payload;
+      state.migrationTargets.loaded = true;
+      state.migrationTargets.results = null;
+    },
+    migrateModel: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          targetController: string;
+          poll?: number;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.migrateModel[action.payload.modelUUID] = {
+        loading: true,
+        errors: null,
+        loaded: false,
+        results: null,
+      };
+    },
+    updateMigrateModelResults: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          results: Omit<InitiateMigrationResult, "error">;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.migrateModel[action.payload.modelUUID] = {
+        loading: false,
+        errors: null,
+        loaded: true,
+        results: action.payload.results,
+      };
+    },
+    migrateModelErrors: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          error: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.migrateModel[action.payload.modelUUID] = {
+        loading: false,
+        errors: action.payload.error,
+        loaded: true,
+        results: null,
+      };
+    },
+    clearModelMigration: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      delete state.migrateModel[action.payload.modelUUID];
     },
     // This action can be dispatched to fetch audit events which is handled in
     // the model-poller middleware.

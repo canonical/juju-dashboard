@@ -67,7 +67,11 @@ describe("ModelActions", () => {
 
   it("displays the actions menu", () => {
     renderComponent(
-      <ModelActions activeUser="eggman@external" modelName="test-model" />,
+      <ModelActions
+        activeUser="eggman@external"
+        modelUUID="model123"
+        modelName="test-model"
+      />,
     );
     expect(
       screen.getByRole("button", { name: "Toggle menu" }),
@@ -76,7 +80,11 @@ describe("ModelActions", () => {
 
   it("shows option to manage access if user has permission", async () => {
     renderComponent(
-      <ModelActions activeUser="eggman@external" modelName="test1" />,
+      <ModelActions
+        activeUser="eggman@external"
+        modelUUID="model123"
+        modelName="test1"
+      />,
       { state },
     );
 
@@ -88,7 +96,11 @@ describe("ModelActions", () => {
 
   it("shows the panel to share model if user has permission", async () => {
     const { router } = renderComponent(
-      <ModelActions activeUser="eggman@external" modelName="test1" />,
+      <ModelActions
+        activeUser="eggman@external"
+        modelUUID="model123"
+        modelName="test1"
+      />,
       { state },
     );
 
@@ -101,7 +113,11 @@ describe("ModelActions", () => {
 
   it("disables the option to manage access if the user does not have permission", async () => {
     renderComponent(
-      <ModelActions activeUser="eggman@external" modelName="test-model" />,
+      <ModelActions
+        activeUser="eggman@external"
+        modelUUID="model123"
+        modelName="test-model"
+      />,
     );
 
     await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));

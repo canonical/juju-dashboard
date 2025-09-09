@@ -7,6 +7,7 @@ import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
   fetchControllerList,
+  fetchModelInfo,
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
@@ -15,6 +16,8 @@ import {
   checkRelations,
   crossModelQuery,
   findAuditEvents,
+  listMigrationTargets,
+  migrateModel,
 } from "juju/jimm/api";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
@@ -435,6 +438,114 @@ export const modelPollerMiddleware: Middleware<
             errors: errorMessage,
           }),
         );
+      }
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
+    } else if (
+      isSpecificAction<ReturnType<typeof jujuActions.migrateModel>>(
+        action,
+        jujuActions.migrateModel.type,
+      )
+    ) {
+      // Intercept migrateModel actions and fetch and store
+      // the modelUUID via the controller connection.
+      const { wsControllerURL, modelUUID, targetController } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+
+      try {
+        const { results } = await migrateModel(conn, [
+          { "model-tag": modelUUID, "target-controller": targetController },
+        ]);
+        if (results[0].error) {
+          throw new Error(results[0].error.message);
+        }
+        let pollCount = 0;
+        let modelInfo = await fetchModelInfo(conn, modelUUID);
+        let isMigrationComplete = false;
+        do {
+          modelInfo = await fetchModelInfo(conn, modelUUID);
+          const migrationStart = modelInfo?.results[0].result?.migration?.start;
+          const migrationEnd = modelInfo?.results[0].result?.migration?.end;
+          isMigrationComplete = !!migrationStart && !migrationEnd;
+          if (!!migrationStart && !!migrationEnd) {
+            throw new Error("Migration has failed");
+          }
+          // Allow the polling to run a certain number of times in tests.
+          if (process.env.NODE_ENV === "test") {
+            if (pollCount === action.payload.poll) {
+              break;
+            }
+          }
+          pollCount++;
+          // Wait 1s then start again.
+          await new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(true);
+            }, 1000);
+          });
+        } while (!isMigrationComplete);
+        reduxStore.dispatch(
+          jujuActions.updateMigrateModelResults({
+            modelUUID,
+            results: {
+              "migration-id": results[0]["migration-id"],
+              "model-tag": results[0]["model-tag"],
+            },
+            wsControllerURL,
+          }),
+        );
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Could not migrate model";
+        reduxStore.dispatch(
+          jujuActions.migrateModelErrors({
+            modelUUID,
+            error: errorMessage,
+            wsControllerURL,
+          }),
+        );
+      }
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
+    } else if (
+      isSpecificAction<ReturnType<typeof jujuActions.fetchMigrationTargets>>(
+        action,
+        jujuActions.fetchMigrationTargets.type,
+      )
+    ) {
+      // Intercept migrateModel actions and fetch and store
+      // the modelUUID via the controller connection.
+      const { wsControllerURL, modelTag } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+
+      try {
+        const result = await listMigrationTargets(conn, modelTag);
+        reduxStore.dispatch(
+          jujuActions.updateMigrationTargets({
+            controllers: result.controllers,
+            wsControllerURL,
+          }),
+        );
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Could not fetch migration targets";
+        reduxStore.dispatch(jujuActions.migrationTargetErrors(errorMessage));
       }
       // The action has already been passed to the next middleware
       // at the top of this handler.

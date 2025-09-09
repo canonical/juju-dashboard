@@ -1,4 +1,5 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
+import type { InitiateMigrationResult } from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type {
   ListSecretResult,
@@ -75,6 +76,18 @@ export type CrossModelQueryState = GenericState<
   results: CrossModelQueryResponse["results"] | null;
 };
 
+export type MigrateModelState = GenericState<
+  InitiateMigrationResult["error"] | string
+> & {
+  results: Omit<InitiateMigrationResult, "error"> | null;
+};
+
+export type MigrationState = Record<string, MigrateModelState>;
+
+export type MigrationTargetsState = GenericState<string | null> & {
+  results: ControllerInfo[] | null;
+};
+
 export type SecretsContent = GenericState<string> & {
   content?: SecretValueResult["data"] | null;
 };
@@ -115,9 +128,11 @@ export type CommandHistory = Record<string, HistoryItem[]>;
 
 export type JujuState = {
   auditEvents: AuditEventsState;
+  migrateModel: MigrationState;
   crossModelQuery: CrossModelQueryState;
   commandHistory: CommandHistory;
   controllers: Controllers | null;
+  migrationTargets: MigrationTargetsState;
   models: ModelsList;
   modelsError: string | null;
   modelsLoaded: boolean;
