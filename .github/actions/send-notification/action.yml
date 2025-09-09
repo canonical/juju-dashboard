@@ -30,7 +30,7 @@ runs:
       if: inputs.message != ''
       run: |
         # URI encode the mesage using JQ
-        message="$(echo -n "${{ inputs.message }}" | jq -sRr @uri)"
+        message="$(echo -n '${{ inputs.message }}' | jq -sRr @uri)"
 
         curl -X POST \
             "${{ inputs.webhook-url }}?room=${{ inputs.channel }}&custom_message=$message"
