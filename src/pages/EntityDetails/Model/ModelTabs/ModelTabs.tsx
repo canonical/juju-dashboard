@@ -1,6 +1,5 @@
 import type { TabsProps } from "@canonical/react-components";
 import { Tabs } from "@canonical/react-components";
-import type { MouseEvent } from "react";
 import type { LinkProps } from "react-router";
 import { useParams, Link } from "react-router";
 
@@ -36,7 +35,7 @@ const ModelTabs = () => {
   });
   const { activeView } = query;
 
-  const handleNavClick = (ev: MouseEvent) => {
+  const handleNavClick = (ev: React.MouseEvent) => {
     (ev.target as HTMLAnchorElement)?.scrollIntoView({
       behavior: "smooth",
       block: "end",
@@ -50,21 +49,21 @@ const ModelTabs = () => {
       {
         active: activeView === ModelTab.APPS,
         label: Label.APPLICATIONS,
-        onClick: (ev: MouseEvent) => handleNavClick(ev),
+        onClick: (ev: React.MouseEvent) => handleNavClick(ev),
         to: urls.model.tab({ userName, modelName, tab: ModelTab.APPS }),
         component: Link,
       },
       {
         active: activeView === ModelTab.INTEGRATIONS,
         label: Label.INTEGRATIONS,
-        onClick: (ev: MouseEvent) => handleNavClick(ev),
+        onClick: (ev: React.MouseEvent) => handleNavClick(ev),
         to: urls.model.tab({ userName, modelName, tab: ModelTab.INTEGRATIONS }),
         component: Link,
       },
       {
         active: activeView === "logs",
         label: auditLogsAllowed ? Label.LOGS : Label.ACTION_LOGS,
-        onClick: (ev: MouseEvent) => handleNavClick(ev),
+        onClick: (ev: React.MouseEvent) => handleNavClick(ev),
         to: urls.model.tab({ userName, modelName, tab: ModelTab.LOGS }),
         component: Link,
       },
@@ -74,7 +73,7 @@ const ModelTabs = () => {
       tabs.push({
         active: activeView === "secrets",
         label: Label.SECRETS,
-        onClick: (ev: MouseEvent) => handleNavClick(ev),
+        onClick: (ev: React.MouseEvent) => handleNavClick(ev),
         to: urls.model.tab({ userName, modelName, tab: ModelTab.SECRETS }),
         component: Link,
       });
@@ -84,7 +83,7 @@ const ModelTabs = () => {
       tabs.push({
         active: activeView === ModelTab.MACHINES,
         label: Label.MACHINES,
-        onClick: (ev: MouseEvent) => handleNavClick(ev),
+        onClick: (ev: React.MouseEvent) => handleNavClick(ev),
         to: urls.model.tab({ userName, modelName, tab: ModelTab.MACHINES }),
         component: Link,
       });

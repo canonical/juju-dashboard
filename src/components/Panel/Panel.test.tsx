@@ -14,7 +14,7 @@ describe("Panel", () => {
     checkCanClose,
   }: {
     checkCanClose?: (
-      e: KeyboardEvent | React.MouseEvent<Element, MouseEvent>,
+      e: React.KeyboardEvent | React.MouseEvent<Element, MouseEvent>,
     ) => boolean;
   }) => {
     const MockPanelHeader = (): JSX.Element => {

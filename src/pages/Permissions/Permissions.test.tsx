@@ -23,11 +23,11 @@ import {
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
-import Permissions from "./Permissions";
+import PermissionsPage from "./Permissions";
 
 const mock = new MockAdapter(axiosInstance);
 
-describe("Permissions", () => {
+describe("PermissionsPage", () => {
   let state: RootState;
 
   beforeEach(() => {
@@ -85,7 +85,7 @@ describe("Permissions", () => {
           rebac: false,
         }),
       });
-      renderComponent(<Permissions />, { state });
+      renderComponent(<PermissionsPage />, { state });
       expect(
         screen.queryByText("Canonical ReBAC Admin"),
       ).not.toBeInTheDocument();
@@ -105,7 +105,7 @@ describe("Permissions", () => {
           loaded: true,
         }),
       ];
-      renderComponent(<Permissions />, { state });
+      renderComponent(<PermissionsPage />, { state });
       expect(
         screen.queryByText("Canonical ReBAC Admin"),
       ).not.toBeInTheDocument();
@@ -114,13 +114,13 @@ describe("Permissions", () => {
   });
 
   it("displays ReBAC Admin", () => {
-    renderComponent(<Permissions />, { state });
+    renderComponent(<PermissionsPage />, { state });
     expect(screen.getByText("Canonical ReBAC Admin")).toBeInTheDocument();
   });
 
   it("does not display login for successful responses", async () => {
     mock.onGet("/test").reply(200, {});
-    renderComponent(<Permissions />, { state });
+    renderComponent(<PermissionsPage />, { state });
     await axiosInstance.get("/test");
     await waitFor(() => {
       expect(appThunks.logOut).not.toHaveBeenCalled();
@@ -129,7 +129,7 @@ describe("Permissions", () => {
 
   it("does not display login for non-authentication errors", async () => {
     mock.onGet("/test").reply(500, {});
-    renderComponent(<Permissions />, { state });
+    renderComponent(<PermissionsPage />, { state });
     axiosInstance.get("/test").catch(() => {
       // Don't do anything with this 500 error.
     });
@@ -140,7 +140,7 @@ describe("Permissions", () => {
 
   it("displays login for authentication errors", async () => {
     mock.onGet("/test").reply(401, {});
-    renderComponent(<Permissions />, { state });
+    renderComponent(<PermissionsPage />, { state });
     axiosInstance.get("/test").catch(() => {
       // Don't do anything with this 401 error.
     });
@@ -151,7 +151,7 @@ describe("Permissions", () => {
 
   it("does not display login on authentication errors from /auth/whoami", async () => {
     mock.onGet(endpoints().whoami).reply(401, {});
-    renderComponent(<Permissions />, { state });
+    renderComponent(<PermissionsPage />, { state });
     await axiosInstance.get(endpoints().whoami).catch(() => {
       // Don't do anything with this 401 error.
     });

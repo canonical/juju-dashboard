@@ -2,7 +2,7 @@ import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secre
 import { ActionButton, Button } from "@canonical/react-components";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
-import type { JSX, MouseEvent } from "react";
+import type { JSX } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import FadeIn from "animations/FadeIn";
@@ -187,7 +187,7 @@ export default function ConfigPanel(): JSX.Element {
     setEnableSave(fieldChanged);
   }
 
-  function checkCanClose(event: KeyboardEvent | MouseEvent) {
+  function checkCanClose(event: React.KeyboardEvent | React.MouseEvent) {
     if (!("code" in event)) {
       const target = event.target as HTMLElement;
       if (

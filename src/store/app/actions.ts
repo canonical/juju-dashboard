@@ -1,6 +1,6 @@
 import { createAction } from "@reduxjs/toolkit";
 
-import type { Credential } from "store/general/types";
+import type { AuthCredential } from "store/general/types";
 
 export const updatePermissions = createAction<{
   action: string;
@@ -15,7 +15,7 @@ export type ControllerArgs = [
   // wsControllerURL
   string,
   // credentials
-  Credential | undefined,
+  AuthCredential | undefined,
 ];
 
 export const connectAndPollControllers = createAction<{

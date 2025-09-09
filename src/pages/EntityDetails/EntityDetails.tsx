@@ -1,4 +1,8 @@
-import { Button, Notification, Strip } from "@canonical/react-components";
+import {
+  Button,
+  Notification as ReactNotification,
+  Strip,
+} from "@canonical/react-components";
 import classNames from "classnames";
 import type { ReactNode } from "react";
 import { useParams, Link, Outlet, useOutletContext } from "react-router";
@@ -113,7 +117,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
     >
       {modelWatcherError ? (
         <Strip className="u-no-padding--bottom" shallow>
-          <Notification
+          <ReactNotification
             className="u-no-margin--bottom"
             severity="negative"
             title="Error"
@@ -130,7 +134,7 @@ const EntityDetails = ({ modelWatcherError }: Props) => {
               Refresh
             </Button>
             {"."}
-          </Notification>
+          </ReactNotification>
         </Strip>
       ) : null}
       {content}

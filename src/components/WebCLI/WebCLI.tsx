@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useInlineErrors from "hooks/useInlineErrors";
 import useLocalStorage from "hooks/useLocalStorage";
 import bakery from "juju/bakery";
-import type { Credential } from "store/general/types";
+import type { AuthCredential } from "store/general/types";
 import type { HistoryItem, CommandHistory } from "store/juju/types";
 import { externalURLs } from "urls";
 import { getUserName } from "utils";
@@ -23,7 +23,7 @@ enum InlineErrors {
 
 type Props = {
   controllerWSHost: string;
-  credentials?: Credential | null;
+  credentials?: AuthCredential | null;
   history?: CommandHistory;
   modelUUID: string;
   onCommandSent: (command?: string) => void;

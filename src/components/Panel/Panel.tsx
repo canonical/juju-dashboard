@@ -2,7 +2,7 @@ import type { PropsWithSpread } from "@canonical/react-components";
 import { Button, Icon, useListener } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import classNames from "classnames";
-import type { ReactNode, MouseEvent } from "react";
+import type { ReactNode } from "react";
 import { forwardRef, useId } from "react";
 
 import Aside from "components/Aside";
@@ -10,7 +10,7 @@ import type { AsideProps } from "components/Aside";
 
 type Props = PropsWithSpread<
   {
-    checkCanClose?: (e: KeyboardEvent | MouseEvent) => boolean;
+    checkCanClose?: (e: React.KeyboardEvent | React.MouseEvent) => boolean;
     drawer?: ReactNode;
     panelClassName?: string;
     splitContent?: ReactNode;
@@ -23,7 +23,7 @@ type Props = PropsWithSpread<
 const close = {
   // Close panel if Escape key is pressed when panel active
   onEscape: (
-    ev: KeyboardEvent,
+    ev: React.KeyboardEvent,
     onRemovePanelQueryParams: () => void,
     checkCanClose?: Props["checkCanClose"],
   ) => {
@@ -35,7 +35,7 @@ const close = {
     }
   },
   onClickOutside: (
-    ev: MouseEvent,
+    ev: React.MouseEvent,
     onRemovePanelQueryParams: () => void,
     checkCanClose?: Props["checkCanClose"],
   ) => {
@@ -65,13 +65,13 @@ const Panel = forwardRef<HTMLDivElement, Props>(
   ) => {
     useListener(
       window,
-      (ev: KeyboardEvent) =>
+      (ev: React.KeyboardEvent) =>
         close.onEscape(ev, onRemovePanelQueryParams, checkCanClose),
       "keydown",
     );
     useListener(
       window,
-      (ev: MouseEvent) =>
+      (ev: React.MouseEvent) =>
         close.onClickOutside(ev, onRemovePanelQueryParams, checkCanClose),
       "click",
     );

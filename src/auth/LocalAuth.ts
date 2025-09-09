@@ -1,6 +1,6 @@
 import type { Credentials } from "@canonical/jujulib";
 
-import type { Credential } from "store/general/types";
+import type { AuthCredential } from "store/general/types";
 import type { AppDispatch } from "store/store";
 
 import { Auth } from "./Auth";
@@ -13,7 +13,7 @@ export class LocalAuth extends Auth {
   }
 
   determineCredentials(
-    credential?: Credential | null,
+    credential?: AuthCredential | null,
   ): Credentials | undefined {
     if (!credential) {
       return;

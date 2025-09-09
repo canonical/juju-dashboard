@@ -1,7 +1,7 @@
 import { Button, MainTable, Icon } from "@canonical/react-components";
 import classNames from "classnames";
 import { Field, Formik } from "formik";
-import type { JSX, MouseEvent } from "react";
+import type { JSX } from "react";
 import { useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router";
 
@@ -39,7 +39,7 @@ import { generateMachineCounts, generateUnitCounts } from "../counts";
 
 import { Label, TestId } from "./types";
 
-type FormData = {
+type AppFormData = {
   selectAll: boolean;
   selectedUnits: string[];
 };
@@ -55,7 +55,7 @@ export default function App(): JSX.Element {
     useState<boolean>(false);
 
   const tablesRef = useRef<HTMLDivElement>(null);
-  const setFieldsValues = useRef<SetFieldValue<FormData>>(null);
+  const setFieldsValues = useRef<SetFieldValue<AppFormData>>(null);
   const selectedUnits = useRef<string[]>([]);
   const selectAll = useRef<boolean>(false);
 
@@ -181,7 +181,7 @@ export default function App(): JSX.Element {
   });
 
   const application = entity ? applications?.[entity] : null;
-  const showConfig = (event: MouseEvent) => {
+  const showConfig = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (application && "charm-url" in application) {
       setQuery(
@@ -225,7 +225,7 @@ export default function App(): JSX.Element {
     );
   };
 
-  const onFormChange = (formData: FormData) => {
+  const onFormChange = (formData: AppFormData) => {
     if (!setFieldsValues.current) return;
     // If the app is a subordinate and has not been related to any other apps
     // then its unit list will be `null`.
@@ -277,7 +277,7 @@ export default function App(): JSX.Element {
     setEnableActionButtonRow(formData.selectedUnits.length > 0);
   };
 
-  const onSetup = (setFieldValue: SetFieldValue<FormData>) => {
+  const onSetup = (setFieldValue: SetFieldValue<AppFormData>) => {
     setFieldsValues.current = setFieldValue;
   };
 
@@ -330,7 +330,7 @@ export default function App(): JSX.Element {
                       appearance="base"
                       className="entity-details__action-button"
                       hasIcon={true}
-                      onClick={(event: MouseEvent) => {
+                      onClick={(event: React.MouseEvent) => {
                         event.stopPropagation();
                         showActions();
                       }}

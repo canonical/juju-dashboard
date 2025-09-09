@@ -8,7 +8,7 @@ import Logs from "pages/Logs";
 import ModelDetails from "pages/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex";
 import PageNotFound from "pages/PageNotFound";
-import Permissions from "pages/Permissions";
+import PermissionsPage from "pages/Permissions";
 import { getConfig, getIsJuju } from "store/general/selectors";
 import { useAppSelector } from "store/store";
 import urls from "urls";
@@ -46,7 +46,7 @@ export function Routes() {
       },
       {
         path: `${urls.permissions}/*`,
-        element: <Permissions />,
+        element: <PermissionsPage />,
       },
     );
   }

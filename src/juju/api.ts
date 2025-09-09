@@ -28,7 +28,7 @@ import {
   getWSControllerURL,
   isLoggedIn,
 } from "store/general/selectors";
-import type { Credential } from "store/general/types";
+import type { AuthCredential } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type {
@@ -129,7 +129,7 @@ function stopPingerLoop(intervalId: number) {
 */
 export async function loginWithBakery(
   wsControllerURL: string,
-  credentials?: Credential,
+  credentials?: AuthCredential,
 ) {
   const juju: JujuClient = await connect(
     wsControllerURL,
@@ -164,7 +164,7 @@ export type LoginResponse = Awaited<ReturnType<typeof connectAndLogin>> & {
 */
 export async function connectAndLoginWithTimeout(
   modelURL: string,
-  credentials: Credential | null | undefined,
+  credentials: AuthCredential | null | undefined,
   options: ConnectOptions,
 ): Promise<LoginResponse> {
   const timeout: Promise<never> = new Promise((_resolve, reject) => {
@@ -482,7 +482,7 @@ export function disableControllerUUIDMasking(conn: ConnectionWithFacades) {
 export async function connectToModel(
   modelUUID: string,
   wsControllerURL: string,
-  credentials?: Credential,
+  credentials?: AuthCredential,
 ) {
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   const response = await connectAndLoginWithTimeout(

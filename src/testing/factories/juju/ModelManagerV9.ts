@@ -1,5 +1,5 @@
 import type {
-  Error,
+  Error as ModelManagerError,
   MachineHardware,
   ModelInfo,
   ModelInfoResult,
@@ -19,7 +19,7 @@ export const numberFactory = Factory.define<ModelNumber>(() => ({
   Tag: "",
 }));
 
-export const errorFactory = Factory.define<Error>(() => ({
+export const errorFactory = Factory.define<ModelManagerError>(() => ({
   code: "1",
   message: "Uh oh",
 }));

@@ -1,4 +1,8 @@
-import { Button, Notification, Strip } from "@canonical/react-components";
+import {
+  Button,
+  Notification as ReactNotification,
+  Strip,
+} from "@canonical/react-components";
 import { useEffect, type PropsWithChildren } from "react";
 import reactHotToast from "react-hot-toast";
 
@@ -35,9 +39,9 @@ const ConnectionError = ({ children }: PropsWithChildren) => {
   if (error) {
     return (
       <Strip>
-        <Notification severity="negative" title="Error">
+        <ReactNotification severity="negative" title="Error">
           {generateErrorContent(error)}
-        </Notification>
+        </ReactNotification>
       </Strip>
     );
   }

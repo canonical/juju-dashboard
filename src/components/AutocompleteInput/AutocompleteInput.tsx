@@ -6,7 +6,7 @@ import {
 import type { HTMLProps, ReactNode } from "react";
 import { useId } from "react";
 
-type Option = PropsWithSpread<
+type AutocompleteOption = PropsWithSpread<
   {
     label: ReactNode;
     value: string;
@@ -16,7 +16,7 @@ type Option = PropsWithSpread<
 
 type Props = PropsWithSpread<
   {
-    options?: (string | Option)[] | null;
+    options?: (string | AutocompleteOption)[] | null;
   },
   InputProps
 >;

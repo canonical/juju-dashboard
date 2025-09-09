@@ -5,7 +5,7 @@ import {
   Modal,
   Tooltip,
   ActionButton,
-  Notification,
+  Notification as ReactNotification,
   usePortal,
 } from "@canonical/react-components";
 import { Form, Formik } from "formik";
@@ -126,9 +126,9 @@ const SecretContent = ({ secretURI }: Props) => {
               <>
                 <hr />
                 {contentError ? (
-                  <Notification severity="negative" title="Error:">
+                  <ReactNotification severity="negative" title="Error:">
                     {contentError}
-                  </Notification>
+                  </ReactNotification>
                 ) : null}
                 <CodeSnippet
                   blocks={Object.entries(content ?? {})?.map(

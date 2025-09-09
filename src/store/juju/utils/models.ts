@@ -14,7 +14,7 @@ export enum Status {
   RUNNING = "running",
 }
 
-type Response = {
+type StatusResponse = {
   status: Status;
   message: null;
 };
@@ -109,7 +109,7 @@ export const getApplicationStatusGroup = (
   // Possible "alert" states in application statuses.
   const alert = ["unknown"];
   const status = application.status.status;
-  const response: Response = {
+  const response: StatusResponse = {
     status: Status.RUNNING,
     message: null,
   };
@@ -134,7 +134,7 @@ export const getMachineStatusGroup = (machine: ModelData["machines"][0]) => {
   // Possible "alert" states in machine statuses.
   const alert = ["pending"];
   const status = machine["agent-status"].status;
-  const response: Response = {
+  const response: StatusResponse = {
     status: Status.RUNNING,
     message: null,
   };
@@ -161,7 +161,7 @@ export const getUnitStatusGroup = (
   // Possible "alert" states in the unit statuses.
   const alert = ["allocating"];
   const status = unit["agent-status"].status;
-  const response: Response = {
+  const response: StatusResponse = {
     status: Status.RUNNING,
     message: null,
   };

@@ -1,4 +1,4 @@
-import { Notification } from "@canonical/react-components";
+import { Notification as ReactNotification } from "@canonical/react-components";
 import type { JSX, ReactNode } from "react";
 
 import ScrollOnRender from "components/ScrollOnRender";
@@ -16,9 +16,9 @@ const PanelInlineErrors = ({
     <ScrollOnRender scrollArea={scrollArea}>
       {inlineErrors.map((error, index) =>
         error ? (
-          <Notification key={index} severity="negative">
+          <ReactNotification key={index} severity="negative">
             {error}
-          </Notification>
+          </ReactNotification>
         ) : null,
       )}
     </ScrollOnRender>
