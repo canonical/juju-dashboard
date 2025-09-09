@@ -142,18 +142,24 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ models: UserModelList } & WsControllerURLParam>,
     ) => {
-      const modelList = state.models;
+      const modelList: JujuState["models"] = {};
+      const modelDataList: JujuState["modelData"] = {};
       const userModels = action.payload.models["user-models"] ?? [];
       userModels.forEach((model) => {
-        modelList[model.model.uuid] = {
+        const uuid = model.model.uuid;
+        modelList[uuid] = {
           name: model.model.name,
           ownerTag: model.model["owner-tag"],
           type: model.model.type,
-          uuid: model.model.uuid,
+          uuid,
           wsControllerURL: action.payload.wsControllerURL,
         };
+        if (state.modelData[uuid] !== undefined) {
+          modelDataList[uuid] = state.modelData[uuid];
+        }
       });
       state.models = modelList;
+      state.modelData = modelDataList;
       state.modelsLoaded = true;
     },
     updateModelStatus: (
