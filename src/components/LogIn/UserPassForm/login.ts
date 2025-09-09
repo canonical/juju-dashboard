@@ -10,7 +10,7 @@ import { Label } from "../types";
 
 export function login(
   dispatch: AppDispatch,
-  wsControllerURL: string | undefined,
+  wsControllerURL: string | null,
   { user, password }: { user: string; password: string },
 ) {
   dispatch(actions.cleanupLoginErrors());
