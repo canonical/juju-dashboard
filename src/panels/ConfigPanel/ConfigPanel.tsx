@@ -187,7 +187,7 @@ export default function ConfigPanel(): JSX.Element {
     setEnableSave(fieldChanged);
   }
 
-  function checkCanClose(event: KeyboardEvent | React.MouseEvent) {
+  function checkCanClose(event: React.KeyboardEvent | React.MouseEvent) {
     if (!("code" in event)) {
       const target = event.target as HTMLElement;
       if (

@@ -10,7 +10,7 @@ import type { AsideProps } from "components/Aside";
 
 type Props = PropsWithSpread<
   {
-    checkCanClose?: (e: KeyboardEvent | React.MouseEvent) => boolean;
+    checkCanClose?: (e: React.KeyboardEvent | React.MouseEvent) => boolean;
     drawer?: ReactNode;
     panelClassName?: string;
     splitContent?: ReactNode;
@@ -23,7 +23,7 @@ type Props = PropsWithSpread<
 const close = {
   // Close panel if Escape key is pressed when panel active
   onEscape: (
-    ev: KeyboardEvent,
+    ev: React.KeyboardEvent,
     onRemovePanelQueryParams: () => void,
     checkCanClose?: Props["checkCanClose"],
   ) => {
@@ -65,7 +65,7 @@ const Panel = forwardRef<HTMLDivElement, Props>(
   ) => {
     useListener(
       window,
-      (ev: KeyboardEvent) =>
+      (ev: React.KeyboardEvent) =>
         close.onEscape(ev, onRemovePanelQueryParams, checkCanClose),
       "keydown",
     );
