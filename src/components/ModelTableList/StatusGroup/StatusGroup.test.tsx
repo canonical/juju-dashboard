@@ -89,8 +89,7 @@ describe("StatusGroup", () => {
   });
 
   it("by default, renders no tables when there is no data", () => {
-    const state = rootStateFactory.build();
-    renderComponent(<StatusGroup filters={{}} />, { state });
+    renderComponent(<StatusGroup filters={{}} />);
     expect(screen.queryByRole("grid")).not.toBeInTheDocument();
   });
 

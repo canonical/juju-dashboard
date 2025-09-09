@@ -9,7 +9,7 @@ import { useState } from "react";
 import { JSONTree } from "react-json-tree";
 import "prismjs/components/prism-json";
 
-import { type CrossModelQueryResponse } from "juju/jimm/JIMMV4";
+import type { CrossModelQueryResponse } from "juju/jimm/JIMMV4";
 
 import { CodeSnippetView } from "../types";
 
@@ -74,7 +74,7 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
                     return (
                       <span key={i} {...lineProps}>
                         {line.map((token, key) => {
-                          const { style: _style, ...tokenProps } =
+                          const { style: _tokenStyle, ...tokenProps } =
                             getTokenProps({
                               token,
                             });

@@ -12,9 +12,9 @@ const ConnectionError = ({ children }: PropsWithChildren) => {
   const error = useAppSelector(getConnectionError);
   const auditLogsErrors = useAppSelector(getAuditEventsErrors);
 
-  const generateErrorContent = (error: string) => (
+  const generateErrorContent = (errorMessage: string) => (
     <>
-      {error} Try{" "}
+      {errorMessage} Try{" "}
       <Button appearance="link" onClick={() => window.location.reload()}>
         refreshing
       </Button>{" "}

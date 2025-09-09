@@ -18,7 +18,6 @@ declare global {
   interface Window {
     happyDOM: DetachedWindowAPI;
   }
-  // eslint-disable-next-line no-var
   var jest: object;
 }
 

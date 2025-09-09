@@ -28,8 +28,8 @@ export default {
       [],
     );
 
-    function saveFlags({ enabledFlags }: { enabledFlags: string[] }) {
-      setEnabledFlags(enabledFlags);
+    function saveFlags({ enabledFlags: flags }: { enabledFlags: string[] }) {
+      setEnabledFlags(flags);
       sendToast("Feature flags saved to local storage.");
     }
 

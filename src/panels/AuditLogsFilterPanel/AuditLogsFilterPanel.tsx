@@ -3,7 +3,7 @@ import { Form, Formik } from "formik";
 import type { JSX } from "react";
 import { useId } from "react";
 
-import { type AuditLogFilters } from "components/AuditLogsTable/AuditLogsTableFilters/AuditLogsTableFilters";
+import type { AuditLogFilters } from "components/AuditLogsTable/AuditLogsTableFilters/AuditLogsTableFilters";
 import { DEFAULT_AUDIT_LOG_FILTERS } from "components/AuditLogsTable/AuditLogsTableFilters/consts";
 import Panel from "components/Panel";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -73,20 +73,20 @@ const AuditLogsFilterPanel = (): JSX.Element => {
             // removed from the URL rather than being set to empty values (the
             // useQueryParams hook will remove null or undefined values, but
             // keeps the queryParam if it is an empty string).
-            const filters = Object.entries(values).reduce<
+            const filtersWithNull = Object.entries(values).reduce<
               Record<keyof FormFields, string | null>
             >(
-              (filters, [filterName, filterValue]) => {
-                filters[filterName as keyof FormFields] = filterValue
+              (filterList, [filterName, filterValue]) => {
+                filterList[filterName as keyof FormFields] = filterValue
                   ? filterValue
                   : null;
-                return filters;
+                return filterList;
               },
               { ...values },
             );
             // Set the filters and close the panel.
             setQueryParams({
-              ...filters,
+              ...filtersWithNull,
               page: null,
               panel: undefined,
             });

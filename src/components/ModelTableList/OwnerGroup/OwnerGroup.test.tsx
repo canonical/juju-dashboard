@@ -71,8 +71,7 @@ describe("OwnerGroup", () => {
   });
 
   it("by default, renders no tables with no data", () => {
-    const state = rootStateFactory.build();
-    renderComponent(<OwnerGroup filters={{}} />, { state });
+    renderComponent(<OwnerGroup filters={{}} />);
     expect(screen.queryByRole("grid")).not.toBeInTheDocument();
   });
 

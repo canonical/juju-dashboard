@@ -168,7 +168,7 @@ describe("ActionsPanel", () => {
   });
 
   it("disables the submit button if a required boolean field is not ticked", async () => {
-    const mockResponse = applicationsCharmActionsResultsFactory.build({
+    const mockActionsResponse = applicationsCharmActionsResultsFactory.build({
       results: [
         applicationCharmActionsResultFactory.build({
           "application-tag": "application-ceph",
@@ -194,7 +194,7 @@ describe("ActionsPanel", () => {
     });
     const getActionsForApplicationSpy = vi
       .fn()
-      .mockImplementation(() => Promise.resolve(mockResponse));
+      .mockImplementation(() => Promise.resolve(mockActionsResponse));
     vi.spyOn(actionsHooks, "useGetActionsForApplication").mockImplementation(
       () => getActionsForApplicationSpy,
     );

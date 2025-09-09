@@ -48,7 +48,7 @@ const executeAction = (
     selectedActionOptionValue,
   )
     .then((payload) => {
-      const error = payload?.actions?.find(({ error }) => error);
+      const error = payload?.actions?.find((action) => action.error);
       if (error) {
         throw error;
       }

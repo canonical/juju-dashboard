@@ -116,28 +116,28 @@ const ControllersIndex = () => {
     { content: "version", sortKey: "version" },
   ];
 
-  const generatePathValue = (controllerData: AnnotatedController) => {
+  const generatePathValue = (annotatedController: AnnotatedController) => {
     const column: MainTableCell = { content: "" };
     // Remove protocol and trailing /api from websocket addresses.
-    const controllerAddress = controllerData.wsControllerURL
+    const controllerAddress = annotatedController.wsControllerURL
       .replace(/^wss?:\/\//i, "")
       .replace(/\/api$/i, "");
-    if ("name" in controllerData && controllerData.name) {
+    if ("name" in annotatedController && annotatedController.name) {
       column.content = (
         <Tooltip
           message={controllerAddress}
           positionElementClassName="truncated-tooltip__position-element"
         >
-          {controllerData.name}
+          {annotatedController.name}
         </Tooltip>
       );
-    } else if ("path" in controllerData && controllerData.path) {
+    } else if ("path" in annotatedController && annotatedController.path) {
       column.content = (
         <Tooltip
           message={controllerAddress}
           positionElementClassName="truncated-tooltip__position-element"
         >
-          {controllerData.path}
+          {annotatedController.path}
         </Tooltip>
       );
     } else {

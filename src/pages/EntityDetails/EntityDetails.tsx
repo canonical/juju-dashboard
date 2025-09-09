@@ -1,6 +1,6 @@
 import { Button, Notification, Strip } from "@canonical/react-components";
 import classNames from "classnames";
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useParams, Link, Outlet, useOutletContext } from "react-router";
 
 import Breadcrumb from "components/Breadcrumb";

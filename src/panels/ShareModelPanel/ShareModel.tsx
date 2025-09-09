@@ -105,8 +105,8 @@ export default function ShareModel() {
     return !!ownerTag && user === getUserName(ownerTag);
   };
 
-  const userAlreadyHasAccess = (username: string, users?: User[]) => {
-    return users?.some((userEntry: User) => userEntry.user === username);
+  const userAlreadyHasAccess = (username: string, modelUsers?: User[]) => {
+    return modelUsers?.some((userEntry: User) => userEntry.user === username);
   };
 
   const handleValidateNewUser = (values: UserAccess) => {

@@ -6,7 +6,7 @@ import type { EntityDetailsRoute } from "components/Routes";
 import SecretLabel from "components/secrets/SecretLabel";
 import useAnalytics from "hooks/useAnalytics";
 import useCanManageSecrets from "hooks/useCanManageSecrets";
-import { type SetError } from "hooks/useInlineErrors";
+import type { SetError } from "hooks/useInlineErrors";
 import { useGrantSecret, useSetApplicationConfig } from "juju/api-hooks";
 import type { usePanelQueryParams } from "panels/hooks";
 import { ConfirmType as DefaultConfirmType } from "panels/types";
@@ -51,9 +51,9 @@ const ConfirmationDialog = ({
   const sendAnalytics = useAnalytics();
   const secrets = useAppSelector((state) => getModelSecrets(state, modelUUID));
 
-  async function _submitToJuju(appName: string) {
+  async function _submitToJuju(submittedAppName: string) {
     setSavingConfig(true);
-    const response = await setApplicationConfig(appName, config);
+    const response = await setApplicationConfig(submittedAppName, config);
     const errors = response?.results?.reduce<string[]>((collection, result) => {
       if (result.error) {
         collection.push(result.error.message);
@@ -73,7 +73,7 @@ const ConfirmationDialog = ({
     });
     if (
       canManageSecrets &&
-      getRequiredGrants(appName, config, secrets)?.length
+      getRequiredGrants(submittedAppName, config, secrets)?.length
     ) {
       setConfirmType(ConfigConfirmType.GRANT);
     } else {

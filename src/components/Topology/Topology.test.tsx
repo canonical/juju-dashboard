@@ -98,7 +98,7 @@ describe("Topology", () => {
   });
 
   it("sets the size of subordinate applications", () => {
-    const applications = {
+    const applicationList = {
       landscape: charmApplicationFactory.build({
         subordinate: false,
       }),
@@ -109,7 +109,7 @@ describe("Topology", () => {
     render(
       <Topology
         annotations={annotations}
-        applications={applications}
+        applications={applicationList}
         height={100}
         relations={relations}
         width={200}

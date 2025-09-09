@@ -2,7 +2,7 @@ import { ConfirmationModal, usePortal } from "@canonical/react-components";
 import type { JSX } from "react";
 
 import { useModelAppParams } from "components/hooks";
-import { type SetError } from "hooks/useInlineErrors";
+import type { SetError } from "hooks/useInlineErrors";
 import { useExecuteActionOnUnits } from "juju/api-hooks";
 import type { ConfirmTypes } from "panels/types";
 import { ConfirmType } from "panels/types";
