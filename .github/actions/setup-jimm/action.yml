@@ -98,12 +98,6 @@ runs:
         juju deploy vault-k8s --channel=1.15/beta vault
         juju deploy nginx-ingress-integrator --channel=latest/stable --trust ingress
         juju trust postgresql --scope=cluster
-    - name: Wait for Postgres
-      uses: nick-fields/retry@v3
-      with:
-        timeout_minutes: 1
-        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
-        command: juju wait-for unit postgresql/0 --timeout=1m # Wait for postgres to prevent issues when relating to openfga: https://github.com/canonical/openfga-operator/issues/25.
     - name: Add JIMM relations
       shell: bash
       run: |
@@ -111,7 +105,15 @@ runs:
         juju relate jimm:openfga openfga
         juju relate jimm:database postgresql
         juju relate jimm:vault vault
-        juju relate openfga:database postgresql
+    - name: Wait for Postgres
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
+        command: juju wait-for unit postgresql/0 --timeout=1m # Wait for postgres to prevent issues when relating to openfga: https://github.com/canonical/openfga-operator/issues/25.
+    - name: Add openfga relation
+      shell: bash
+      run: juju relate openfga:database postgresql
     - name: Wait for openfga
       uses: nick-fields/retry@v3
       with:
