@@ -26,7 +26,9 @@ import {
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderWrappedHook, createStore } from "testing/utils";
 
-import useCanConfigureModel from "./useCanConfigureModel";
+import useCanConfigureModel, {
+  useCanConfigureModelWithUUID,
+} from "./useCanConfigureModel";
 
 const generateContainer =
   (state: RootState, path: string, url: string) =>
@@ -235,5 +237,27 @@ describe("useCanConfigureModel", () => {
       wrapper: generateContainer(state, path, url),
     });
     expect(result.current).toBe(false);
+  });
+
+  it("checks model with UUID", () => {
+    if (state.general.config) {
+      state.general.config.isJuju = true;
+    }
+    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+      uuid: "abc123",
+      name: "test1",
+      "controller-uuid": "controller123",
+      users: [
+        modelUserInfoFactory.build({
+          user: "eggman@external",
+          access: "admin",
+        }),
+      ],
+    });
+    const { result } = renderWrappedHook(
+      () => useCanConfigureModelWithUUID(false, "abc123"),
+      { state },
+    );
+    expect(result.current).toBe(true);
   });
 });

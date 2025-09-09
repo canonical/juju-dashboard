@@ -1,7 +1,7 @@
 import { ContextualMenu } from "@canonical/react-components";
 import { Link } from "react-router";
 
-import useCanConfigureModel from "hooks/useCanConfigureModel";
+import { useCanConfigureModelWithUUID } from "hooks/useCanConfigureModel";
 import { useQueryParams } from "hooks/useQueryParams";
 import { getIsJuju } from "store/general/selectors";
 import { useAppSelector } from "store/store";
@@ -9,7 +9,7 @@ import { rebacURLS } from "urls";
 
 import { Label, type Props } from "./types";
 
-const ModelActions = ({ modelName, activeUser }: Props) => {
+const ModelActions = ({ modelName, modelUUID }: Props) => {
   const [, setPanelQs] = useQueryParams<{
     model: string | null;
     panel: string | null;
@@ -17,7 +17,7 @@ const ModelActions = ({ modelName, activeUser }: Props) => {
     model: null,
     panel: null,
   });
-  const canConfigureModel = useCanConfigureModel(false, modelName, activeUser);
+  const canConfigureModel = useCanConfigureModelWithUUID(false, modelUUID);
   const isJuju = useAppSelector(getIsJuju);
 
   return (

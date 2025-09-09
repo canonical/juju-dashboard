@@ -10,7 +10,7 @@ import { canAdministerModel } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 
 const useCheckJujuPermissions = (
-  modelUUID: string,
+  modelUUID?: string | null,
   enabled: boolean = false,
 ) => {
   const activeUser = useAppSelector((state) => getActiveUser(state, modelUUID));
@@ -24,13 +24,13 @@ const useCheckJujuPermissions = (
 };
 
 const useCheckJIMMPermissions = (
-  modelUUID: string,
+  modelUUID?: string | null,
   enabled: boolean = false,
   cleanup: boolean = false,
 ) => {
   const controllerUser = useAppSelector(getControllerUserTag);
   const { permitted } = useCheckPermissions(
-    enabled && controllerUser !== null && controllerUser && modelUUID
+    enabled && controllerUser !== null && controllerUser && modelUUID !== null
       ? {
           object: controllerUser,
           relation: JIMMRelation.WRITER,
@@ -42,21 +42,28 @@ const useCheckJIMMPermissions = (
   return permitted;
 };
 
+export const useCanConfigureModelWithUUID = (
+  cleanup?: boolean,
+  modelUUID: string | null = null,
+) => {
+  const isJuju = useAppSelector(getIsJuju);
+  const jujuPermissions = useCheckJujuPermissions(modelUUID, isJuju);
+  const jimmPermissions = useCheckJIMMPermissions(modelUUID, !isJuju, cleanup);
+  return isJuju ? jujuPermissions : jimmPermissions;
+};
+
 const useCanConfigureModel = (
   cleanup?: boolean,
   modelName: string | null = null,
   userName: string | null = null,
 ) => {
-  const isJuju = useAppSelector(getIsJuju);
   const params = useParams<EntityDetailsRoute>();
   userName = userName ?? params.userName ?? null;
   modelName = modelName ?? params.modelName ?? null;
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );
-  const jujuPermissions = useCheckJujuPermissions(modelUUID, isJuju);
-  const jimmPermissions = useCheckJIMMPermissions(modelUUID, !isJuju, cleanup);
-  return isJuju ? jujuPermissions : jimmPermissions;
+  return useCanConfigureModelWithUUID(cleanup, modelUUID);
 };
 
 export default useCanConfigureModel;

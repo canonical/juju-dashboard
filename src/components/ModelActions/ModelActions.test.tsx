@@ -41,7 +41,7 @@ describe("ModelActions", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test1",
-            ownerTag: "user-eggman@external",
+            ownerTag: "user-admin@external",
             wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
         },
@@ -66,19 +66,16 @@ describe("ModelActions", () => {
   });
 
   it("displays the actions menu", () => {
-    renderComponent(
-      <ModelActions activeUser="eggman@external" modelName="test-model" />,
-    );
+    renderComponent(<ModelActions modelUUID="abc123" modelName="test-model" />);
     expect(
       screen.getByRole("button", { name: "Toggle menu" }),
     ).toBeInTheDocument();
   });
 
   it("shows option to manage access if user has permission", async () => {
-    renderComponent(
-      <ModelActions activeUser="eggman@external" modelName="test1" />,
-      { state },
-    );
+    renderComponent(<ModelActions modelUUID="abc123" modelName="test1" />, {
+      state,
+    });
 
     await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
     expect(
@@ -88,7 +85,7 @@ describe("ModelActions", () => {
 
   it("shows the panel to share model if user has permission", async () => {
     const { router } = renderComponent(
-      <ModelActions activeUser="eggman@external" modelName="test1" />,
+      <ModelActions modelUUID="abc123" modelName="test1" />,
       { state },
     );
 
@@ -100,9 +97,7 @@ describe("ModelActions", () => {
   });
 
   it("disables the option to manage access if the user does not have permission", async () => {
-    renderComponent(
-      <ModelActions activeUser="eggman@external" modelName="test-model" />,
-    );
+    renderComponent(<ModelActions modelUUID="abc123" modelName="test-model" />);
 
     await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
     expect(screen.getByRole("link", { name: Label.ACCESS })).toHaveAttribute(
