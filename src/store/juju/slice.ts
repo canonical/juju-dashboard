@@ -56,7 +56,8 @@ const DEFAULT_MODEL_SECRETS_CONTENT: SecretsContent = {
 };
 
 const getOrSetContentState = (state: JujuState, modelUUID: string) => {
-  let modelSecrets = state.secrets[modelUUID];
+  let modelSecrets =
+    modelUUID in state.secrets ? state.secrets[modelUUID] : null;
   if (!modelSecrets) {
     modelSecrets = state.secrets[modelUUID] = { ...DEFAULT_MODEL_SECRETS };
   }
@@ -142,10 +143,7 @@ const slice = createSlice({
       action: PayloadAction<{ models: UserModelList } & WsControllerURLParam>,
     ) => {
       const modelList = state.models;
-      let userModels = action.payload.models["user-models"];
-      if (!userModels) {
-        userModels = [];
-      }
+      const userModels = action.payload.models["user-models"] ?? [];
       userModels.forEach((model) => {
         modelList[model.model.uuid] = {
           name: model.model.name,
@@ -168,9 +166,6 @@ const slice = createSlice({
       >,
     ) => {
       const modelUUID = action.payload.modelUUID;
-      if (!state.modelData) {
-        state.modelData = {};
-      }
       // There is some data that we don't want to store because it changes
       // too often causing needless re-renders and is currently irrelevant
       // like controllerTimestamp.
@@ -202,7 +197,7 @@ const slice = createSlice({
       // If any of the status requests timeout then it's possible the data
       // won't be available. Just abandon saving any data in that case.
       // This will go away with the new API.
-      if (state.modelData && modelData) {
+      if (modelData) {
         state.modelData[modelInfo.uuid].info = modelInfo;
       }
     },
@@ -311,7 +306,11 @@ const slice = createSlice({
       if (!state.modelWatcherData) {
         state.modelWatcherData = {};
       }
-      if (!state.modelWatcherData[action.payload.uuid]) {
+      const model =
+        action.payload.uuid in state.modelWatcherData
+          ? state.modelWatcherData[action.payload.uuid]
+          : null;
+      if (!model) {
         return;
       }
       state.modelWatcherData[action.payload.uuid].model = {
@@ -353,7 +352,11 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
     ) => {
-      if (!state.secrets[action.payload.modelUUID]) {
+      const secrets =
+        action.payload.modelUUID in state.secrets
+          ? state.secrets[action.payload.modelUUID]
+          : null;
+      if (!secrets) {
         state.secrets[action.payload.modelUUID] = { ...DEFAULT_MODEL_SECRETS };
       }
       state.secrets[action.payload.modelUUID].loading = true;
@@ -367,7 +370,11 @@ const slice = createSlice({
         } & WsControllerURLParam
       >,
     ) => {
-      if (!state.secrets[action.payload.modelUUID]) {
+      const secrets =
+        action.payload.modelUUID in state.secrets
+          ? state.secrets[action.payload.modelUUID]
+          : null;
+      if (!secrets) {
         state.secrets[action.payload.modelUUID] = { ...DEFAULT_MODEL_SECRETS };
       }
       state.secrets[action.payload.modelUUID].items = action.payload.secrets;
@@ -380,7 +387,11 @@ const slice = createSlice({
         { modelUUID: string; errors: string } & WsControllerURLParam
       >,
     ) => {
-      if (!state.secrets[action.payload.modelUUID]) {
+      const secrets =
+        action.payload.modelUUID in state.secrets
+          ? state.secrets[action.payload.modelUUID]
+          : null;
+      if (!secrets) {
         state.secrets[action.payload.modelUUID] = { ...DEFAULT_MODEL_SECRETS };
       }
       state.secrets[action.payload.modelUUID].errors = action.payload.errors;
@@ -431,7 +442,10 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
     ) => {
-      const secrets = state.secrets[action.payload.modelUUID];
+      const secrets =
+        action.payload.modelUUID in state.secrets
+          ? state.secrets[action.payload.modelUUID]
+          : null;
       if (secrets) {
         delete secrets.content;
       }
@@ -520,7 +534,7 @@ const slice = createSlice({
     ) => {
       payload.tuples.forEach((tuple, i) => {
         updateCheckRelation(state, tuple, {
-          ...(payload.permissions[i] ? payload.permissions[i] : {}),
+          ...(payload.permissions[i] ?? {}),
           loading: false,
           loaded: true,
         });

@@ -34,7 +34,7 @@ const CloudCell = ({ model }: Props) => {
   }
   return (
     <>
-      {src && alt ? (
+      {src !== null && src && alt !== null && alt ? (
         <img
           src={src}
           alt={alt}

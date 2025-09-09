@@ -21,7 +21,10 @@ export enum Label {
   NO_SECRETS_FACADE_ERROR = "Secrets aren't supported for this model",
 }
 
-export const useListSecrets = (userName?: string, modelName?: string) => {
+export const useListSecrets = (
+  userName: string | null = null,
+  modelName: string | null = null,
+) => {
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
@@ -29,7 +32,7 @@ export const useListSecrets = (userName?: string, modelName?: string) => {
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const onError = useCallback(
     (error: string) => {
-      if (wsControllerURL) {
+      if (wsControllerURL !== null && wsControllerURL) {
         dispatch(
           jujuActions.setSecretsErrors({
             modelUUID,
@@ -43,7 +46,7 @@ export const useListSecrets = (userName?: string, modelName?: string) => {
   );
   const onSuccess = useCallback(
     (response: ListSecretResults) => {
-      if (wsControllerURL) {
+      if (wsControllerURL !== null && wsControllerURL) {
         dispatch(
           jujuActions.updateSecrets({
             modelUUID,
@@ -64,7 +67,7 @@ export const useListSecrets = (userName?: string, modelName?: string) => {
       if (!connection.facades.secrets) {
         throw new Error(Label.NO_SECRETS_FACADE_ERROR);
       }
-      if (wsControllerURL) {
+      if (wsControllerURL !== null && wsControllerURL) {
         dispatch(jujuActions.secretsLoading({ modelUUID, wsControllerURL }));
       }
       return connection.facades.secrets.listSecrets({
@@ -84,7 +87,10 @@ export const useListSecrets = (userName?: string, modelName?: string) => {
   );
 };
 
-export const useGetSecretContent = (userName?: string, modelName?: string) => {
+export const useGetSecretContent = (
+  userName: string | null = null,
+  modelName: string | null = null,
+) => {
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
@@ -93,7 +99,7 @@ export const useGetSecretContent = (userName?: string, modelName?: string) => {
 
   const onError = useCallback(
     (error: string) => {
-      if (wsControllerURL) {
+      if (wsControllerURL !== null && wsControllerURL) {
         dispatch(
           jujuActions.setSecretsContentErrors({
             modelUUID,
@@ -107,7 +113,7 @@ export const useGetSecretContent = (userName?: string, modelName?: string) => {
   );
   const onSuccess = useCallback(
     (response: ListSecretResults) => {
-      if (wsControllerURL) {
+      if (wsControllerURL !== null && wsControllerURL) {
         const content = response?.results[0]?.value;
         if (content?.error || !content?.data) {
           dispatch(
@@ -139,7 +145,7 @@ export const useGetSecretContent = (userName?: string, modelName?: string) => {
       if (!connection.facades.secrets) {
         throw new Error(Label.NO_SECRETS_FACADE_ERROR);
       }
-      if (wsControllerURL) {
+      if (wsControllerURL !== null && wsControllerURL) {
         dispatch(
           jujuActions.secretsContentLoading({ modelUUID, wsControllerURL }),
         );
@@ -163,7 +169,10 @@ export const useGetSecretContent = (userName?: string, modelName?: string) => {
   );
 };
 
-export const useCreateSecrets = (userName?: string, modelName?: string) => {
+export const useCreateSecrets = (
+  userName: string | null = null,
+  modelName: string | null = null,
+) => {
   const handleCreate = useCallback(
     (connection: ConnectionWithFacades, secrets: CreateSecretArgs["args"]) => {
       if (!connection.facades.secrets) {
@@ -178,7 +187,10 @@ export const useCreateSecrets = (userName?: string, modelName?: string) => {
   return useCallWithConnectionPromise(handleCreate, userName, modelName);
 };
 
-export const useUpdateSecrets = (userName?: string, modelName?: string) => {
+export const useUpdateSecrets = (
+  userName: string | null = null,
+  modelName: string | null = null,
+) => {
   const handler = useCallback(
     (
       connection: ConnectionWithFacades,
@@ -194,7 +206,10 @@ export const useUpdateSecrets = (userName?: string, modelName?: string) => {
   return useCallWithConnectionPromise(handler, userName, modelName);
 };
 
-export const useRemoveSecrets = (userName?: string, modelName?: string) => {
+export const useRemoveSecrets = (
+  userName: string | null = null,
+  modelName: string | null = null,
+) => {
   const handler = useCallback(
     (
       connection: ConnectionWithFacades,
@@ -215,7 +230,10 @@ export const useRemoveSecrets = (userName?: string, modelName?: string) => {
   return useCallWithConnectionPromise(handler, userName, modelName);
 };
 
-export const useGrantSecret = (userName?: string, modelName?: string) => {
+export const useGrantSecret = (
+  userName: string | null = null,
+  modelName: string | null = null,
+) => {
   const handler = useCallback(
     (
       connection: ConnectionWithFacades,
@@ -240,7 +258,10 @@ export const useGrantSecret = (userName?: string, modelName?: string) => {
   return useCallWithConnectionPromise(handler, userName, modelName);
 };
 
-export const useRevokeSecret = (userName?: string, modelName?: string) => {
+export const useRevokeSecret = (
+  userName: string | null = null,
+  modelName: string | null = null,
+) => {
   const handler = useCallback(
     (
       connection: ConnectionWithFacades,

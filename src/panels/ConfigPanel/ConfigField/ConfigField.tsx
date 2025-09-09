@@ -43,7 +43,9 @@ const ConfigField = <V extends ConfigValue>({
   );
   const [showDescription, setShowDescription] = useState(false);
   const descriptionRef = useRef<HTMLDivElement>(null);
-  const [maxDescriptionHeight, setMaxDescriptionHeight] = useState<string>();
+  const [maxDescriptionHeight, setMaxDescriptionHeight] = useState<
+    string | null
+  >(null);
   const previousValue = useRef<Props<V>["config"]["newValue"]>(null);
   const valueChanged = config.newValue !== previousValue.current;
 
@@ -57,14 +59,16 @@ const ConfigField = <V extends ConfigValue>({
   const updateDescriptionHeight = useCallback(() => {
     if (
       // Don't update if the height has already been retrieved.
-      !maxDescriptionHeight &&
-      descriptionRef.current?.firstChild &&
-      // Don't try and update if the element is not visible.
-      descriptionRef.current?.offsetParent !== null
+      maxDescriptionHeight === null ||
+      (!maxDescriptionHeight &&
+        descriptionRef.current?.firstChild &&
+        // Don't try and update if the element is not visible.
+        descriptionRef.current?.offsetParent !== null)
     ) {
       setMaxDescriptionHeight(
         `${
-          (descriptionRef.current.firstChild as HTMLPreElement).clientHeight
+          (descriptionRef.current?.firstChild as HTMLPreElement)
+            ?.clientHeight ?? 0
         }px`,
       );
     }
@@ -76,7 +80,7 @@ const ConfigField = <V extends ConfigValue>({
   );
 
   useEffect(() => {
-    if (maxDescriptionHeight) {
+    if (maxDescriptionHeight !== null && maxDescriptionHeight) {
       // There's no need to keep observing the element once the height has
       // been retrieved.
       resizeObserver.disconnect();
@@ -95,9 +99,7 @@ const ConfigField = <V extends ConfigValue>({
     // that the height can be retrieved.
     resizeObserver.observe(descriptionElement);
     return () => {
-      if (descriptionElement) {
-        resizeObserver.unobserve(descriptionElement);
-      }
+      resizeObserver.unobserve(descriptionElement);
     };
   }, [updateDescriptionHeight, resizeObserver]);
 
@@ -196,11 +198,11 @@ const ConfigField = <V extends ConfigValue>({
       </div>
       <div
         className={classNames("p-form-validation", {
-          "is-error": !!config.error,
+          "is-error": Boolean(config.error),
         })}
       >
         {input(inputValue as V)}
-        {config.error ? (
+        {config.error !== null && config.error !== undefined && config.error ? (
           <p className="p-form-validation__message">{config.error}</p>
         ) : null}
       </div>

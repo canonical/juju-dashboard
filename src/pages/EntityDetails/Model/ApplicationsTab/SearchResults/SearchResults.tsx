@@ -49,7 +49,7 @@ const SearchResults = () => {
     const searchedApps = fuse.search(filterQuery).map(({ item }) => item);
     const filtered: ApplicationData = {};
     searchedApps.forEach((application) => {
-      if ("name" in application && applications[application.name]) {
+      if ("name" in application && Boolean(applications[application.name])) {
         filtered[application.name] = application;
       }
     });

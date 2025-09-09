@@ -31,7 +31,7 @@ export default function ApplicationsTab() {
     activeView: "apps",
     filterQuery: null,
   });
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
   const modelStatusData = useModelStatus();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
@@ -52,7 +52,11 @@ export default function ApplicationsTab() {
     : 0;
 
   const remoteAppsTableLength =
-    modelName && userName && modelStatusData
+    modelName !== null &&
+    modelName &&
+    userName !== null &&
+    userName &&
+    modelStatusData
       ? Object.keys(modelStatusData["remote-applications"]).length
       : 0;
 
@@ -113,7 +117,7 @@ export default function ApplicationsTab() {
       </>
     );
   };
-  if (queryParams.filterQuery) {
+  if (queryParams.filterQuery !== null && queryParams.filterQuery) {
     return <SearchResults />;
   } else if (visibleTables === 0) {
     return (

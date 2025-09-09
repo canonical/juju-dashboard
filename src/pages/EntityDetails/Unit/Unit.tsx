@@ -30,11 +30,15 @@ import urls, { externalURLs } from "urls";
 import { Label } from "./types";
 
 export default function Unit() {
-  const { modelName, userName, unitId, appName } =
-    useParams<EntityDetailsRoute>();
+  const {
+    modelName = null,
+    userName = null,
+    unitId = null,
+    appName = null,
+  } = useParams<EntityDetailsRoute>();
   // The unit name might have a dash in it so we need to grab only the last one
   // ex) content-cache-0.
-  const unitIdentifier = unitId?.replace(/-(\d+)$/, "/$1");
+  const unitIdentifier = unitId?.replace(/-(\d+)$/, "/$1") ?? null;
 
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
@@ -48,7 +52,8 @@ export default function Unit() {
   );
   const isK8s = useAppSelector((state) => isKubernetesModel(state, modelUUID));
 
-  const unit = unitIdentifier && units?.[unitIdentifier];
+  const unit =
+    unitIdentifier !== null && unitIdentifier ? units?.[unitIdentifier] : null;
 
   const filteredMachineList = useMemo(() => {
     const filteredMachines: MachineData = {};
@@ -74,7 +79,7 @@ export default function Unit() {
 
   const machineRows = useMemo(
     () =>
-      modelName && userName
+      modelName !== null && modelName && userName !== null && userName
         ? generateMachineRows(filteredMachineList, units, {
             modelName,
             userName,
@@ -85,7 +90,7 @@ export default function Unit() {
 
   const applicationRows = useMemo(
     () =>
-      modelName && userName
+      modelName !== null && modelName && userName !== null && userName
         ? generateLocalApplicationRows(
             filteredApplicationList,
             applicationStatuses,
@@ -127,7 +132,7 @@ export default function Unit() {
   const unitEntityData = {
     charm,
     os: "-",
-    revision: extractRevisionNumber(charm) || "-",
+    revision: extractRevisionNumber(charm) ?? "-",
     version: unit?.["workload-status"].version || "-",
     message: unit?.["workload-status"].message || "-",
   };

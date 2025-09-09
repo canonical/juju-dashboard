@@ -36,13 +36,13 @@ export function onValuesChange(
 }
 
 export function enableSubmit(
-  selectedAction: string | undefined,
+  selectedAction: string | null,
   selectedUnits: string[],
   actionData: ActionData,
   optionsValues: MutableRefObject<ActionOptionValues>,
   setDisableSubmit: (disable: boolean) => void,
 ) {
-  if (selectedAction && selectedUnits.length > 0) {
+  if (selectedAction !== null && selectedAction && selectedUnits.length > 0) {
     if (hasNoOptions(selectedAction, optionsValues.current)) {
       setDisableSubmit(false);
       return;
@@ -60,7 +60,8 @@ export function enableSubmit(
 
 const hasNoOptions: ValidationFnProps = (selected, optionValues) => {
   // If there are no options stored then it doesn't have any.
-  if (!optionValues[selected]) {
+  const values = selected in optionValues ? optionValues[selected] : null;
+  if (!values) {
     return true;
   }
   return Object.keys(optionValues[selected]).length === 0;

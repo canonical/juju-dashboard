@@ -48,7 +48,7 @@ const hasChangedFields = (newConfig: Config): boolean => {
 };
 
 const hasErrors = (config: Config) =>
-  Object.values(config).some((field) => field.error);
+  Object.values(config).some((field) => Boolean(field.error));
 
 export default function ConfigPanel(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -96,18 +96,23 @@ export default function ConfigPanel(): JSX.Element {
   const [queryParams, , handleRemovePanelQueryParams] =
     usePanelQueryParams<ConfigQueryParams>(defaultQueryParams);
   const { entity: appName, charm, modelUUID } = queryParams;
-  const hasConfig = !isLoading && !!config && Object.keys(config).length > 0;
+  const hasConfig = !isLoading && Object.keys(config).length > 0;
   const secrets = useAppSelector((state) => getModelSecrets(state, modelUUID));
-  const wsControllerURL = useAppSelector((state) =>
-    getModelByUUID(state, modelUUID),
-  )?.wsControllerURL;
+  const wsControllerURL =
+    useAppSelector((state) => getModelByUUID(state, modelUUID))
+      ?.wsControllerURL ?? null;
   const listSecrets = useListSecrets(userName, modelName);
   const getApplicationConfig = useGetApplicationConfig(userName, modelName);
 
   useEffect(() => {
     listSecrets();
     return () => {
-      if (!modelUUID || !wsControllerURL) {
+      if (
+        modelUUID == null ||
+        !modelUUID ||
+        wsControllerURL === null ||
+        !wsControllerURL
+      ) {
         return;
       }
       dispatch(jujuActions.clearSecrets({ modelUUID, wsControllerURL }));
@@ -115,7 +120,7 @@ export default function ConfigPanel(): JSX.Element {
   }, [dispatch, listSecrets, modelUUID, wsControllerURL]);
 
   const getConfigCallback = useCallback(() => {
-    if (modelUUID && appName) {
+    if (modelUUID !== null && modelUUID && appName !== null && appName) {
       getConfig(
         appName,
         setIsLoading,
@@ -241,7 +246,7 @@ export default function ConfigPanel(): JSX.Element {
       ref={scrollArea}
       title={
         <>
-          {appName && charm ? (
+          {appName !== null && appName && charm !== null && charm ? (
             <CharmIcon name={appName} charmId={charm} />
           ) : null}{" "}
           {appName}
@@ -403,6 +408,7 @@ function generateConfigElementList(
           setSelectedConfig={setSelectedConfig}
           setNewValue={setNewValue}
           validate={(validateConfig) => {
+            const error = validateConfig.error ?? null;
             if (
               validateConfig.type !== "secret" &&
               validateConfig.type !== "string"
@@ -411,9 +417,12 @@ function generateConfigElementList(
               // need to narrow the config to only have the valid types.
               return;
             }
-            if (!validateConfig.newValue) {
+            if (
+              validateConfig.newValue === undefined ||
+              !validateConfig.newValue
+            ) {
               // Clear previous errors
-              if (validateConfig.error) {
+              if (error !== null && error) {
                 setError(validateConfig.name, null);
               }
               // Don't validate unchanged fields.
@@ -447,7 +456,7 @@ function generateConfigElementList(
               }
             }
             // Clear previous errors.
-            if (validateConfig.error) {
+            if (error !== null && error) {
               setError(validateConfig.name, null);
             }
           }}

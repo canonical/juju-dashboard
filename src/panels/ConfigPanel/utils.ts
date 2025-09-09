@@ -10,9 +10,9 @@ export const getRequiredGrants = (
   secrets?: ListSecretResult[] | null,
 ) => {
   const secretURIs = Object.values(config).reduce<string[]>((uris, entry) => {
-    const value = entry.newValue;
+    const value = entry.newValue ?? null;
     if (
-      value &&
+      value !== null &&
       typeof value === "string" &&
       (entry.type === "secret" ||
         (entry.type === "string" && value.startsWith("secret:"))) &&

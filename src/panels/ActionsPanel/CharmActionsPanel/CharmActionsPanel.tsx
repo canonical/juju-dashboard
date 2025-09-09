@@ -23,7 +23,7 @@ import { useAppSelector } from "store/store";
 
 import ConfirmationDialog from "./ConfirmationDialog";
 
-const filterExist = <I,>(item: I | null): item is I => !!item;
+const filterExist = <I,>(item: I | null): item is I => Boolean(item);
 
 export type Props = {
   charmURL: string;
@@ -36,7 +36,7 @@ export default function CharmActionsPanel({
 }: Props): JSX.Element {
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
-  const [selectedAction, setSelectedAction] = useState<string>();
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const actionOptionsValues = useRef<ActionOptionValues>({});
 
   const selectedApplications = useAppSelector((state) =>
@@ -50,7 +50,7 @@ export default function CharmActionsPanel({
     [selectedCharm],
   );
   const unitCount = selectedApplications.reduce(
-    (total, app) => total + (app["unit-count"] || 0),
+    (total, app) => total + (app["unit-count"] ?? 0),
     0,
   );
 
@@ -131,7 +131,7 @@ export default function CharmActionsPanel({
             />
           </RadioInputBox>
         ))}
-        {selectedAction ? (
+        {selectedAction !== null && selectedAction ? (
           <ConfirmationDialog
             confirmType={confirmType}
             selectedAction={selectedAction}

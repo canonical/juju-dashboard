@@ -33,11 +33,11 @@ describe("useEntityDetailsParams", () => {
       ),
     });
     expect(result.current).toStrictEqual({
-      appName: undefined,
+      appName: null,
       isNestedEntityPage: true,
       machineId: "0",
       modelName: "group-test",
-      unitId: undefined,
+      unitId: null,
       userName: "eggman@external",
     });
   });

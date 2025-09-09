@@ -44,8 +44,8 @@ export type Query = {
   activeView?: string | null;
 };
 
-const generateAddress = (address?: string | null) =>
-  address ? (
+const generateAddress = (address: string | null = null) =>
+  address !== null ? (
     <div className="u-flex u-flex--gap-small">
       <TruncatedTooltip
         wrapperClassName="u-flex-shrink u-truncate"
@@ -93,7 +93,7 @@ export function generateLocalApplicationRows(
   return Object.keys(applications).map((key) => {
     const app = applications[key];
     const rev =
-      ("charm-url" in app && extractRevisionNumber(app["charm-url"])) || "-";
+      "charm-url" in app ? extractRevisionNumber(app["charm-url"]) : "-";
     const store = "charm-url" in app && getStore(app["charm-url"]);
     const version =
       ("workload-version" in app && app["workload-version"]) || "-";
@@ -104,7 +104,7 @@ export function generateLocalApplicationRows(
         "-"
       );
     const message =
-      "status" in app && app.status?.message ? (
+      "status" in app && app.status && app.status?.message ? (
         <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
           {app.status.message}
         </Anchorme>
@@ -157,7 +157,7 @@ export function generateLocalApplicationRows(
         {
           "data-test-column": "message",
           content:
-            "status" in app && app.status?.message ? (
+            "status" in app && app.status && app.status.message ? (
               <TruncatedTooltip message={message}>{message}</TruncatedTooltip>
             ) : null,
         },
@@ -185,62 +185,59 @@ export function generateRemoteApplicationRows(
     return [];
   }
   const applications = cloneDeep(modelStatusData["remote-applications"]);
-  return (
-    applications &&
-    Object.keys(applications).map((key) => {
-      const app = applications[key];
-      const status = app.status.status;
-      const offerUrl = app["offer-url"];
+  return Object.keys(applications ?? {}).map((key) => {
+    const app = applications[key];
+    const status = app.status.status;
+    const offerUrl = app["offer-url"];
 
-      const interfaces = Object.keys(app?.["relations"]).map(
-        (endpointInterface) => endpointInterface,
-      );
+    const interfaces = Object.keys(app?.["relations"]).map(
+      (endpointInterface) => endpointInterface,
+    );
 
-      return {
-        columns: [
-          {
-            "data-test-column": "app",
-            // we cannot access charm name
-            content: (
-              <TruncatedTooltip message={app["offer-name"]}>
-                {app["offer-name"]}
-              </TruncatedTooltip>
-            ),
-          },
-          {
-            "data-test-column": "status",
-            content: (
-              <TruncatedTooltip message={status}>{status}</TruncatedTooltip>
-            ),
-            className: "u-capitalise",
-          },
-          {
-            "data-test-column": "interface",
-            content: interfaces.join(","),
-          },
-          {
-            "data-test-column": "offer_url",
-            content: (
-              <TruncatedTooltip message={offerUrl}>{offerUrl}</TruncatedTooltip>
-            ),
-          },
-          {
-            "data-test-column": "store",
-            content: "-", // store info not yet available from API
-          },
-        ],
-        sortData: {
-          app: key,
-          status: "status",
-          interface: "interface",
-          offer_url: "offer_url",
-          store: "store",
+    return {
+      columns: [
+        {
+          "data-test-column": "app",
+          // we cannot access charm name
+          content: (
+            <TruncatedTooltip message={app["offer-name"]}>
+              {app["offer-name"]}
+            </TruncatedTooltip>
+          ),
         },
-        "data-app": key,
-        className: "",
-      };
-    })
-  );
+        {
+          "data-test-column": "status",
+          content: (
+            <TruncatedTooltip message={status}>{status}</TruncatedTooltip>
+          ),
+          className: "u-capitalise",
+        },
+        {
+          "data-test-column": "interface",
+          content: interfaces.join(","),
+        },
+        {
+          "data-test-column": "offer_url",
+          content: (
+            <TruncatedTooltip message={offerUrl}>{offerUrl}</TruncatedTooltip>
+          ),
+        },
+        {
+          "data-test-column": "store",
+          content: "-", // store info not yet available from API
+        },
+      ],
+      sortData: {
+        app: key,
+        status: "status",
+        interface: "interface",
+        offer_url: "offer_url",
+        store: "store",
+      },
+      "data-app": key,
+      className: "",
+    };
+  });
 }
 
 const generateUnitURL = (modelParams: ModelParams, unitId: string) => {
@@ -257,8 +254,8 @@ const generateUnitURL = (modelParams: ModelParams, unitId: string) => {
 export function generateUnitRows(
   units: UnitData | null,
   modelParams: ModelParams,
-  showCheckbox?: boolean,
-  hideMachines?: boolean,
+  showCheckbox = false,
+  hideMachines = false,
 ) {
   if (!units) {
     return [];
@@ -283,7 +280,7 @@ export function generateUnitRows(
     // The unit list may not have the principal in it because this code is
     // used to generate the table for the application unit list as well
     // in which case it'll be the only units in the list.
-    if (unitData.subordinate && clonedUnits[unitData.principal]) {
+    if (unitData.subordinate && unitData.principal in clonedUnits) {
       if (!clonedUnits[unitData.principal].subordinates) {
         clonedUnits[unitData.principal].subordinates = {};
       }
@@ -498,7 +495,7 @@ export function generateMachineRows(
     .map((machineId) => {
       const machine = machines[machineId];
       const az =
-        machine?.["hardware-characteristics"]?.["availability-zone"] || "";
+        machine?.["hardware-characteristics"]?.["availability-zone"] ?? "";
       const agentStatus = machine["agent-status"].message;
       const message = (
         <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
@@ -719,7 +716,7 @@ export function generateConsumedRows(modelStatusData?: ModelData | null) {
     return [];
   }
 
-  const remoteApplications = modelStatusData["remote-applications"] || {};
+  const remoteApplications = modelStatusData["remote-applications"] ?? {};
   return Object.keys(remoteApplications).map((appName) => {
     const application: RemoteApplicationStatus = remoteApplications[appName];
     const endpoints = Object.entries<RemoteEndpoint>(application.endpoints)

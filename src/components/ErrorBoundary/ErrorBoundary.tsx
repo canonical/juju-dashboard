@@ -33,7 +33,10 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: unknown) {
-    if (import.meta.env.PROD && window.jujuDashboardConfig?.analyticsEnabled) {
+    if (
+      import.meta.env.PROD &&
+      Boolean(window.jujuDashboardConfig?.analyticsEnabled)
+    ) {
       Sentry.withScope((scope) => {
         scope.setExtras(info as Extras);
         const eventId = Sentry.captureException(error);
@@ -43,7 +46,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   render() {
-    const { error, hasError } = this.state;
+    const { error = null, hasError } = this.state;
     const { children } = this.props;
     const body = encodeURIComponent(
       `\`\`\`\n${error?.stack ?? "No stack track"}\n\`\`\``,
@@ -64,7 +67,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           </ReactNotification>
           <CodeSnippet
             blocks={[
-              ...(error?.message
+              ...(error !== null && Boolean(error?.message)
                 ? [
                     {
                       title: "Error",
@@ -74,7 +77,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                     },
                   ]
                 : []),
-              ...(error?.stack
+              ...(error !== null && Boolean(error?.stack)
                 ? [
                     {
                       title: "Stack trace",

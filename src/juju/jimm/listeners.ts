@@ -52,7 +52,7 @@ export const addWhoamiListener = (
             return;
           }
           const wsControllerURL = getWSControllerURL(listenerApi.getState());
-          if (wsControllerURL) {
+          if (wsControllerURL !== null && wsControllerURL) {
             listenerApi.dispatch(
               generalActions.storeLoginError({
                 error: toErrorString(error),

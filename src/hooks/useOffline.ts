@@ -25,5 +25,5 @@ export default function useOffline() {
     };
   }, [setOffline, setOnline]);
 
-  return isOffline;
+  return isOffline ?? false;
 }

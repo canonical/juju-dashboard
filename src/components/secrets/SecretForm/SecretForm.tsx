@@ -37,7 +37,7 @@ import { TestId, type FormFields } from "./types";
 
 type Props = {
   formId: string;
-  onSuccess: (secret?: string | null) => void;
+  onSuccess: (secret: string | null) => void;
   secretURI?: string | null;
   setSaving: (saving: boolean) => void;
   update?: boolean;
@@ -64,8 +64,8 @@ const schema = Yup.object().shape({
 const SecretForm = ({
   formId,
   onSuccess,
-  update,
-  secretURI,
+  update = false,
+  secretURI = null,
   setSaving,
 }: Props) => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
@@ -80,9 +80,9 @@ const SecretForm = ({
   const latestRevision = useAppSelector((state) =>
     getSecretLatestRevision(state, modelUUID, secretURI),
   );
-  const wsControllerURL = useAppSelector((state) =>
-    getModelByUUID(state, modelUUID),
-  )?.wsControllerURL;
+  const wsControllerURL =
+    useAppSelector((state) => getModelByUUID(state, modelUUID))
+      ?.wsControllerURL ?? null;
   const [inlineError, setInlineError] = useState<string | null>(null);
   const existingContent = useAppSelector((state) =>
     getSecretsContent(state, modelUUID),
@@ -110,14 +110,14 @@ const SecretForm = ({
   const defaultPairs = [{ key: "", value: "", isBase64: false }];
 
   useEffect(() => {
-    if (secretURI && latestRevision) {
+    if (secretURI !== null && secretURI && latestRevision !== null) {
       getSecretContent(secretURI, latestRevision);
     }
   }, [getSecretContent, secretURI, latestRevision]);
 
   useEffect(
     () => () => {
-      if (wsControllerURL) {
+      if (wsControllerURL !== null && wsControllerURL) {
         dispatch(
           jujuActions.clearSecretsContent({
             modelUUID,

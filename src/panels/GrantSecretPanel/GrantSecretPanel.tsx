@@ -33,8 +33,8 @@ export type FormFields = {
 };
 
 const handleErrors = (response: ErrorResults) => {
-  const errors = response.results.reduce((errorString, { error }) => {
-    if (error?.message) {
+  const errors = response.results.reduce((errorString, { error = null }) => {
+    if (error !== null && error.message) {
       errorString = [errorString, error.message].filter(Boolean).join(". ");
     }
     return errorString;
@@ -107,7 +107,7 @@ const GrantSecretPanel = () => {
             inlineErrors={[inlineError]}
             scrollArea={scrollArea.current}
           />
-          {secretURI && secret ? (
+          {secretURI !== null && secretURI && secret ? (
             <Formik<FormFields>
               initialValues={{
                 applications: currentApplications,

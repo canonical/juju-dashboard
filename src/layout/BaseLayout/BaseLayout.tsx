@@ -42,7 +42,7 @@ const BaseLayout = () => {
         Skip to main content
       </a>
       <Banner
-        isActive={isOffline !== null}
+        isActive={isOffline}
         variant={isOffline === false ? "positive" : "caution"}
       >
         {isOffline ? (

@@ -32,9 +32,9 @@ export const useReBAC = <A, C>(
   loading: boolean,
   loaded: boolean,
   hasError: boolean,
-  payload?: A | null,
-  payloadCleanup?: C | null,
-  cleanup?: boolean,
+  payload: A | null = null,
+  payloadCleanup: C | null = null,
+  cleanup: boolean = false,
 ) => {
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
@@ -54,7 +54,9 @@ export const useReBAC = <A, C>(
       // Only fetch it if it doesn't already exist in the store or if the
       // payload changes
       ((!loading && !loaded) || payloadChanged) &&
+      wsControllerURL !== null &&
       wsControllerURL &&
+      payload !== null &&
       payload &&
       // Only check the relation if the controller supports rebac.
       rebacEnabled
@@ -75,7 +77,12 @@ export const useReBAC = <A, C>(
 
   // Clean up the store if the payload changes.
   useEffect(() => {
-    if (cleanup && payloadChanged && previousCleanup) {
+    if (
+      cleanup &&
+      payloadChanged &&
+      previousCleanup !== null &&
+      previousCleanup
+    ) {
       dispatch(cleanupAction(previousCleanup));
     }
   }, [cleanup, cleanupAction, dispatch, payloadChanged, previousCleanup]);
@@ -100,7 +107,7 @@ export const useCheckPermissions = (
     jujuActions.removeCheckRelation,
     loading,
     loaded,
-    !!errors?.length,
+    Boolean(errors?.length),
     tuple ? { tuple } : null,
     tuple ? { tuple } : null,
     cleanup,
@@ -116,7 +123,7 @@ export const useCheckPermissions = (
 export const useIsJIMMAdmin = (cleanup?: boolean) => {
   const activeUser = useAppSelector(getControllerUserTag);
   return useCheckPermissions(
-    activeUser
+    activeUser !== null && activeUser
       ? {
           object: activeUser,
           relation: JIMMRelation.ADMINISTRATOR,
@@ -132,7 +139,7 @@ export const useAuditLogsPermitted = (cleanup?: boolean) => {
   const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
   const jimmAdminPermissions = useIsJIMMAdmin(cleanup);
   const auditLogPermissions = useCheckPermissions(
-    activeUser && auditLogsEnabled
+    activeUser !== null && activeUser && auditLogsEnabled
       ? {
           object: activeUser,
           relation: JIMMRelation.AUDIT_LOG_VIEWER,

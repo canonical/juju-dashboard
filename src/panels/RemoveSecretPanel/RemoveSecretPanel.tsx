@@ -49,7 +49,7 @@ const RemoveSecretPanel = () => {
 
   const handleRemoveSecret = useCallback(
     (values: FormFields) => {
-      if (!secretURI) {
+      if (secretURI === null || !secretURI) {
         // An error is displayed instead of the form if the secretURI doesn't
         // exist so it's not possible to get to this point.
         return;
@@ -64,8 +64,8 @@ const RemoveSecretPanel = () => {
         },
       ])
         .then((response: ErrorResults) => {
-          const error = response.results[0]?.error?.message;
-          if (error) {
+          const error = response.results[0]?.error?.message ?? null;
+          if (error !== null && error) {
             setSaving(false);
             setInlineError(error);
             return;

@@ -38,7 +38,11 @@ type ActionsQueryParams = {
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
   const appState = appStore.getState();
-  const { appName, modelName, userName } = useModelAppParams();
+  const {
+    appName = null,
+    modelName = null,
+    userName = null,
+  } = useModelAppParams();
   const modelUUID = useAppSelector((state: RootState) =>
     getModelUUID(state, modelName),
   );
@@ -51,9 +55,9 @@ export default function ActionsPanel(): JSX.Element {
     modelName,
   );
   const [selectedAction, setSelectedAction]: [
-    string | undefined,
+    string | null,
     SetSelectedAction,
-  ] = useState<string>();
+  ] = useState<string | null>(null);
   const [inlineErrors, setInlineErrors, hasInlineError] = useInlineErrors({
     [InlineErrors.GET_ACTION]: (error) => (
       // If get actions for application fails, we add a button for
@@ -85,7 +89,7 @@ export default function ActionsPanel(): JSX.Element {
 
   const getActionsForApplicationCallback = useCallback(() => {
     setFetchingActionData(true);
-    if (appName && modelUUID) {
+    if (appName !== null && appName && modelUUID !== null && modelUUID) {
       getActionsForApplication(appName)
         .then((actions) => {
           if (actions?.results?.[0]?.actions) {
@@ -109,8 +113,9 @@ export default function ActionsPanel(): JSX.Element {
   }, [getActionsForApplicationCallback]);
 
   const namespace =
-    appName && modelUUID
-      ? appState.juju?.modelData?.[modelUUID]?.applications?.[appName]?.charm
+    appName !== null && appName && modelUUID !== null && modelUUID
+      ? (appState.juju?.modelData?.[modelUUID]?.applications?.[appName]
+          ?.charm ?? null)
       : null;
 
   const generateSelectedUnitList = useCallback(() => {
@@ -126,7 +131,7 @@ export default function ActionsPanel(): JSX.Element {
     const unitLength = selectedUnits.length;
     return (
       <>
-        {appName && namespace ? (
+        {appName !== null && appName && namespace !== null && namespace ? (
           <CharmIcon name={appName} charmId={namespace} />
         ) : null}{" "}
         {unitLength} {pluralize(unitLength, "unit")} selected
@@ -218,7 +223,7 @@ export default function ActionsPanel(): JSX.Element {
           </RadioInputBox>
         ))}
       </LoadingHandler>
-      {selectedAction && confirmType ? (
+      {selectedAction !== null && selectedAction && confirmType !== null ? (
         <ConfirmationDialog
           confirmType={confirmType}
           selectedAction={selectedAction}

@@ -27,7 +27,8 @@ const OutputCommand = ({
     if (!response && processOutput) {
       response = processCommandOutput(command, messages, processOutput);
     }
-    if (!response) {
+    const hasResponse = Boolean(response);
+    if (!hasResponse) {
       response = defaultProcessOutput(command, messages);
     }
   } catch (err) {

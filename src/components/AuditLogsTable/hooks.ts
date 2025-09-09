@@ -44,7 +44,11 @@ export const useFetchAuditEvents = () => {
   const page = Number(queryParams.page);
   const model = fullModelName ?? queryParams.model;
   return useCallback(() => {
-    if (!wsControllerURL || !hasControllerConnection) {
+    if (
+      wsControllerURL === null ||
+      !wsControllerURL ||
+      !hasControllerConnection
+    ) {
       return;
     }
     dispatch(
@@ -54,14 +58,19 @@ export const useFetchAuditEvents = () => {
         limit: limit + 1,
         offset: (page - 1) * limit,
         // Pass undefined to the API if the filters haven't been set.
-        after: queryParams.after
-          ? new Date(queryParams.after).toISOString()
-          : undefined,
-        before: queryParams.before
-          ? new Date(queryParams.before).toISOString()
-          : undefined,
+        after:
+          queryParams.after !== null && queryParams.after
+            ? new Date(queryParams.after).toISOString()
+            : undefined,
+        before:
+          queryParams.before !== null && queryParams.before
+            ? new Date(queryParams.before).toISOString()
+            : undefined,
         // Convert the username to a user tag:
-        "user-tag": queryParams.user ? `user-${queryParams.user}` : undefined,
+        "user-tag":
+          queryParams.user !== null && queryParams.user
+            ? `user-${queryParams.user}`
+            : undefined,
         model: model ?? undefined,
         method: queryParams.method ?? undefined,
         // Sort by most recent first.

@@ -18,7 +18,7 @@ import { ModelTab } from "urls";
 import { Label } from "./types";
 
 const ModelTabs = () => {
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );
@@ -44,7 +44,7 @@ const ModelTabs = () => {
   };
 
   const tabs: TabsProps<LinkProps>["links"] = [];
-  if (userName && modelName) {
+  if (userName !== null && userName && modelName !== null && modelName) {
     tabs.push(
       {
         active: activeView === ModelTab.APPS,

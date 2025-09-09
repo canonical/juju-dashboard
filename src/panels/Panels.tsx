@@ -42,5 +42,9 @@ export default function Panels() {
         return null;
     }
   };
-  return <AnimatePresence>{panelQs.panel && generatePanel()}</AnimatePresence>;
+  return (
+    <AnimatePresence>
+      {panelQs.panel !== null && panelQs.panel ? generatePanel() : null}
+    </AnimatePresence>
+  );
 }

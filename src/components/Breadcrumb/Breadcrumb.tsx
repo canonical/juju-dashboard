@@ -7,17 +7,17 @@ import { ModelTab } from "urls";
 
 export default function Breadcrumb(): JSX.Element {
   const {
-    userName,
-    modelName,
-    appName,
-    unitId,
-    machineId,
-    isNestedEntityPage,
+    userName = null,
+    modelName = null,
+    appName = null,
+    unitId = null,
+    machineId = null,
+    isNestedEntityPage = false,
   } = useEntityDetailsParams();
 
   const generateBreadcrumbs = function (): ReactNode {
-    const view = machineId ? ModelTab.MACHINES : ModelTab.APPS;
-    if (!userName || !modelName) {
+    const view = machineId !== null ? ModelTab.MACHINES : ModelTab.APPS;
+    if (userName === null || !userName || modelName === null || !modelName) {
       return null;
     }
 
@@ -32,7 +32,7 @@ export default function Breadcrumb(): JSX.Element {
               {modelName}
             </Link>
           </li>
-          {!unitId && (
+          {unitId === null || !unitId ? (
             <li
               className="p-breadcrumbs__item u-no-padding--top"
               data-testid="breadcrumb-section"
@@ -41,8 +41,8 @@ export default function Breadcrumb(): JSX.Element {
                 {entityType.title}
               </Link>
             </li>
-          )}
-          {unitId && (
+          ) : null}
+          {unitId !== null && unitId ? (
             <>
               <li
                 className="p-breadcrumbs__item u-no-padding--top"
@@ -62,7 +62,7 @@ export default function Breadcrumb(): JSX.Element {
                 className="p-breadcrumbs__item u-no-padding--top"
                 data-testid="breadcrumb-app"
               >
-                {appName ? (
+                {appName !== null && appName ? (
                   <Link
                     to={urls.model.app.index({ userName, modelName, appName })}
                   >
@@ -71,7 +71,7 @@ export default function Breadcrumb(): JSX.Element {
                 ) : null}
               </li>
             </>
-          )}
+          ) : null}
           <li
             className="p-breadcrumbs__item u-no-padding--top"
             data-testid={`breadcrumb-${entityType.title?.toLowerCase()}`}
@@ -107,17 +107,17 @@ export default function Breadcrumb(): JSX.Element {
     title: undefined,
   };
 
-  if (appName) {
+  if (appName !== null && appName) {
     entityType.id = appName;
     entityType.title = "Applications";
   }
 
-  if (unitId) {
+  if (unitId !== null && unitId) {
     entityType.id = unitId;
     entityType.title = "Units";
   }
 
-  if (machineId) {
+  if (machineId !== null && machineId) {
     entityType.id = machineId;
     entityType.title = "Machines";
   }

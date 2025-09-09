@@ -21,7 +21,8 @@ export function login(
     }),
   );
   dispatch(actions.updateLoginLoading(true));
-  if (bakery) {
+  const hasBakery = Boolean(bakery);
+  if (hasBakery) {
     dispatch(thunks.connectAndStartPolling())
       .then(unwrapResult)
       .catch((error) => logger.error(Label.POLLING_ERROR, error));

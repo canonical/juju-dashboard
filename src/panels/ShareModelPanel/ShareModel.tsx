@@ -68,8 +68,8 @@ export default function ShareModel() {
 
   const controllerUUID = modelStatusData?.info?.["controller-uuid"];
 
-  const modelUUID = modelStatusData?.info?.uuid;
-  const modelName = modelStatusData?.info?.name;
+  const modelUUID = modelStatusData?.info?.uuid ?? null;
+  const modelName = modelStatusData?.info?.name ?? null;
 
   const modelControllerData = useAppSelector((state) =>
     getModelControllerDataByUUID(state, controllerUUID),
@@ -84,7 +84,7 @@ export default function ShareModel() {
   // Display the domains used in this model first.
   const userDomains = [...modelUserDomains, ...allDomains].slice(0, 5);
 
-  const modelControllerURL = modelControllerData?.url;
+  const modelControllerURL = modelControllerData?.url ?? null;
   const users = modelStatusData?.info?.users;
 
   useEffect(() => {
@@ -93,20 +93,20 @@ export default function ShareModel() {
     users?.forEach((user: User) => {
       const displayName = user["user"];
 
-      if (clonedUserAccess) {
-        clonedUserAccess[displayName] = user?.["access"];
-        setUsersAccess(clonedUserAccess);
-      }
+      clonedUserAccess[displayName] = user?.["access"];
+      setUsersAccess(clonedUserAccess);
     });
   }, [users]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isOwner = (user: string) => {
-    const ownerTag = modelStatusData?.info?.["owner-tag"];
-    return !!ownerTag && user === getUserName(ownerTag);
+    const ownerTag = modelStatusData?.info?.["owner-tag"] ?? null;
+    return ownerTag !== null && !!ownerTag && user === getUserName(ownerTag);
   };
 
   const userAlreadyHasAccess = (username: string, modelUsers?: User[]) => {
-    return modelUsers?.some((userEntry: User) => userEntry.user === username);
+    return modelUsers
+      ? !!modelUsers.some((userEntry: User) => userEntry.user === username)
+      : false;
   };
 
   const handleValidateNewUser = (values: UserAccess) => {
@@ -122,7 +122,12 @@ export default function ShareModel() {
     permissionFrom: string | undefined,
   ) => {
     let response: ErrorResults | null;
-    if (!modelControllerURL || !modelUUID) {
+    if (
+      modelControllerURL === null ||
+      !modelControllerURL ||
+      modelUUID === null ||
+      !modelUUID
+    ) {
       return;
     }
     try {
@@ -154,9 +159,7 @@ export default function ShareModel() {
     username: string,
   ) => {
     const clonedUserAccess = cloneDeep(usersAccess);
-    if (clonedUserAccess) {
-      clonedUserAccess[username] = permissionTo;
-    }
+    clonedUserAccess[username] = permissionTo;
     setUsersAccess(clonedUserAccess);
     const permissionFrom = usersAccess?.[username];
 
@@ -168,13 +171,20 @@ export default function ShareModel() {
     );
     let error: string | null = response?.results?.[0]?.error?.message ?? null;
     // ignore this error as it means that it's a success
-    if (error && error.match(/user already has .+ access or greater/i)) {
+    if (
+      error !== null &&
+      error &&
+      error.match(/user already has .+ access or greater/i)
+    ) {
       delete response?.results[0];
       error = null;
     }
 
     reactHotToast.custom((toast: ToastInstance) => (
-      <ToastCard toastInstance={toast} type={error ? "negative" : "positive"}>
+      <ToastCard
+        toastInstance={toast}
+        type={error !== null && error ? "negative" : "positive"}
+      >
         {error ?? (
           <>
             Permissions for <strong>{username}</strong> have been changed to{" "}
@@ -232,7 +242,7 @@ export default function ShareModel() {
       const newUserName = values.username;
       const newUserPermission = values.access;
       let response = null;
-      if (newUserName && newUserPermission) {
+      if (newUserName && newUserPermission !== null && newUserPermission) {
         response = await updateModelPermissions(
           "grant",
           newUserName,
@@ -241,8 +251,8 @@ export default function ShareModel() {
         );
       }
 
-      const error = response?.results?.[0]?.error?.message;
-      if (error) {
+      const error = response?.results?.[0]?.error?.message ?? null;
+      if (error !== null && error) {
         reactHotToast.custom((toast: ToastInstance) => (
           <ToastCard toastInstance={toast} type="negative">
             {error}
@@ -263,7 +273,8 @@ export default function ShareModel() {
   const sortedUsers = cloneDeep(users || null);
   sortedUsers?.some(
     (item: User, i: number) =>
-      isOwner(item.user) && sortedUsers.unshift(sortedUsers.splice(i, 1)[0]),
+      isOwner(item.user) &&
+      sortedUsers.unshift(sortedUsers.splice(i, 1)[0]) > 0,
   );
 
   return (

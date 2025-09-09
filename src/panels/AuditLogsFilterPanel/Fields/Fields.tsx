@@ -20,8 +20,8 @@ import type { FormFields } from "../types";
 import { Label } from "./types";
 
 const Fields = (): JSX.Element => {
-  const { modelName } = useModelIndexParams();
-  const showModel = !modelName;
+  const { modelName = null } = useModelIndexParams();
+  const showModel = modelName === null || !modelName;
   const auditEventUsers = useAppSelector(getAuditEventsUsers);
   const jujuUsers = useAppSelector(getUsers);
   // Get the unique users from the logs and models returned from Juju.

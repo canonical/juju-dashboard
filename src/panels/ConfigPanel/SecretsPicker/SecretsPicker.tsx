@@ -68,28 +68,27 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
         <Spinner aria-label={Label.LOADING} />
       </div>
     );
-  } else if (secretsErrors) {
+  } else if (secretsErrors !== null && secretsErrors) {
     dropdownContent = secretsErrors;
-  } else if (!canManageSecrets && !secrets?.length) {
+  } else if (!canManageSecrets && (secrets == null || !secrets?.length)) {
     dropdownContent = Label.NONE;
   } else {
-    const secretLinks: MenuLink<ButtonProps> | undefined = secrets?.reduce<
-      ButtonProps[]
-    >((linkList, secret) => {
-      if (!secretIsAppOwned(secret)) {
-        linkList.push({
-          children: <SecretLabel secret={secret} />,
-          onClick: () => setValue(secret.uri),
-        });
-      }
-      return linkList;
-    }, []);
+    const secretLinks: MenuLink<ButtonProps> | null =
+      secrets?.reduce<ButtonProps[]>((linkList, secret) => {
+        if (!secretIsAppOwned(secret)) {
+          linkList.push({
+            children: <SecretLabel secret={secret} />,
+            onClick: () => setValue(secret.uri),
+          });
+        }
+        return linkList;
+      }, []) ?? null;
     if (canManageSecrets) {
       const addButton: MenuLink<ButtonProps> = {
         children: Label.BUTTON_ADD,
         onClick: openPortal,
       };
-      if (secretLinks?.length) {
+      if (secretLinks !== null && secretLinks.length) {
         links = [[addButton], secretLinks];
       } else {
         links = [addButton];
@@ -132,7 +131,7 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
               formId={formId}
               onSuccess={(secretURI) => {
                 setSaving(false);
-                secretURI && setValue(secretURI);
+                secretURI !== null && secretURI && setValue(secretURI);
                 closePortal();
               }}
               setSaving={setSaving}

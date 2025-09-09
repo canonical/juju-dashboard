@@ -1,6 +1,6 @@
 import type React from "react";
 
 export type Widget = {
-  Title: React.FC;
+  Title: React.FC | null;
   Widget: React.FC;
 };

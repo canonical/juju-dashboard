@@ -13,7 +13,10 @@ import { logger } from "utils/logger";
 import { listenerMiddleware } from "./listenerMiddleware";
 
 let preloadedState: Record<string, unknown> | undefined;
-if (!import.meta.env.PROD && import.meta.env.VITE_APP_MOCK_STORE) {
+if (
+  !import.meta.env.PROD &&
+  typeof import.meta.env.VITE_APP_MOCK_STORE === "string"
+) {
   try {
     preloadedState = JSON.parse(import.meta.env.VITE_APP_MOCK_STORE);
   } catch (error) {

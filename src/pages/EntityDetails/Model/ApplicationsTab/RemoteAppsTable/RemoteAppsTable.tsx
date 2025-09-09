@@ -10,10 +10,10 @@ import { generateRemoteApplicationRows } from "tables/tableRows";
 import { Label } from "./types";
 
 const RemoteAppsTable = () => {
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
   const modelStatusData = useModelStatus();
   const remoteApplicationTableRows = useMemo(() => {
-    return modelName && userName
+    return modelName !== null && modelName && userName !== null && userName
       ? generateRemoteApplicationRows(modelStatusData)
       : [];
   }, [modelStatusData, modelName, userName]);

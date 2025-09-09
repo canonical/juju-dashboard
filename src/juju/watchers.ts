@@ -64,7 +64,7 @@ function _processDelta<M extends WatcherModelData, E extends keyof M>(
     };
     mergeWith(modelData[entityType], formatted);
   } else if (actionType === DeltaChangeTypes.REMOVE && entityType !== "model") {
-    const data = modelData[entityType];
+    const data = entityType in modelData ? modelData[entityType] : null;
     if (data && typeof data === "object" && entityId in data) {
       delete modelData[entityType][entityId as keyof M[E]];
     }
@@ -81,7 +81,9 @@ export function processDeltas(
   deltas.forEach(([deltaEntityType, deltaActionType, deltaData]) => {
     // Delta is in the format of [entityType, actionType, data].
     const modelUUID = deltaData["model-uuid"];
-    if (!modelWatcherData[modelUUID]) {
+    const model =
+      modelUUID in modelWatcherData ? modelWatcherData[modelUUID] : null;
+    if (!model) {
       modelWatcherData[modelUUID] = generateModelWatcherBase();
     }
     const modelData = modelWatcherData[modelUUID];
@@ -134,7 +136,11 @@ export function processDeltas(
       });
       Object.entries(applicationUnitCounts).forEach(
         ([applicationName, count]) => {
-          if (!modelData.applications[applicationName]) {
+          const app =
+            applicationName in modelData.applications
+              ? modelData.applications[applicationName]
+              : null;
+          if (!app) {
             // Sometimes the unit delta is parsed
             // before the application delta arrives so it needs to
             // store this information before it gets merged with the rest of the

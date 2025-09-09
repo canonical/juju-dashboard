@@ -9,11 +9,15 @@ import { getActiveUser, getModelUUIDFromList } from "store/juju/selectors";
 import { canAdministerModel } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 
-const useCheckJujuPermissions = (modelUUID: string, enabled?: boolean) => {
+const useCheckJujuPermissions = (
+  modelUUID: string,
+  enabled: boolean = false,
+) => {
   const activeUser = useAppSelector((state) => getActiveUser(state, modelUUID));
   const modelStatusData = useModelStatus(modelUUID);
   return (
     enabled &&
+    activeUser !== null &&
     !!activeUser &&
     canAdministerModel(activeUser, modelStatusData?.info?.users)
   );
@@ -21,12 +25,12 @@ const useCheckJujuPermissions = (modelUUID: string, enabled?: boolean) => {
 
 const useCheckJIMMPermissions = (
   modelUUID: string,
-  enabled?: boolean,
-  cleanup?: boolean,
+  enabled: boolean = false,
+  cleanup: boolean = false,
 ) => {
   const controllerUser = useAppSelector(getControllerUserTag);
   const { permitted } = useCheckPermissions(
-    enabled && controllerUser && modelUUID
+    enabled && controllerUser !== null && controllerUser && modelUUID
       ? {
           object: controllerUser,
           relation: JIMMRelation.WRITER,
@@ -40,13 +44,13 @@ const useCheckJIMMPermissions = (
 
 const useCanConfigureModel = (
   cleanup?: boolean,
-  modelName?: string | null,
-  userName?: string | null,
+  modelName: string | null = null,
+  userName: string | null = null,
 ) => {
   const isJuju = useAppSelector(getIsJuju);
   const params = useParams<EntityDetailsRoute>();
-  userName = userName || params.userName;
-  modelName = modelName || params.modelName;
+  userName = userName ?? params.userName ?? null;
+  modelName = modelName ?? params.modelName ?? null;
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );

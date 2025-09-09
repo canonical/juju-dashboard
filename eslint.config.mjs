@@ -83,6 +83,7 @@ export default [
       "@typescript-eslint/no-shadow": "error",
       "no-redeclare": "off",
       "@typescript-eslint/no-redeclare": "error",
+      "@typescript-eslint/strict-boolean-expressions": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
       "import/first": ["error"],

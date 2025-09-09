@@ -65,7 +65,7 @@ export default function ModelDetails() {
       void loadFullData();
     }
     return () => {
-      if (watcherHandle && pingerIntervalId && conn) {
+      if (watcherHandle && pingerIntervalId !== null && conn) {
         stopModelWatcher(
           conn,
           watcherHandle["watcher-id"],

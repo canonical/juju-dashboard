@@ -10,7 +10,7 @@ type Props = {
 
 const ChipGroup = ({ chips, className, descriptor }: Props) => {
   const getLabelType = (labelDescriptor?: string | null) => {
-    let label;
+    let label: string | null = null;
     switch (labelDescriptor) {
       case "localApps":
         label = "Local applications";
@@ -43,11 +43,11 @@ const ChipGroup = ({ chips, className, descriptor }: Props) => {
     <>
       {numberOfChips > 0 && (
         <div className={classNames("chip-group", className)}>
-          {labelType && (
+          {labelType !== null && labelType ? (
             <strong className="chip-group__descriptor">
               {`${numberOfChips} ${labelType}`}
             </strong>
-          )}
+          ) : null}
           {Object.entries(chips ?? {}).map(([label, count]) => {
             return (
               count > 0 && (

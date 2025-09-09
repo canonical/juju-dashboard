@@ -36,7 +36,7 @@ vi.mock("store", () => {
 const appVersion = packageJSON.version;
 
 describe("renderApp", () => {
-  let rootNode: HTMLElement;
+  let rootNode: HTMLElement | undefined;
   const windowLocation = window.location;
 
   beforeEach(() => {

@@ -28,9 +28,9 @@ const Secrets = () => {
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );
-  const wsControllerURL = useAppSelector((state) =>
-    getModelByUUID(state, modelUUID),
-  )?.wsControllerURL;
+  const wsControllerURL =
+    useAppSelector((state) => getModelByUUID(state, modelUUID))
+      ?.wsControllerURL ?? null;
   const secretsErrors = useAppSelector((state) =>
     getSecretsErrors(state, modelUUID),
   );
@@ -47,7 +47,7 @@ const Secrets = () => {
   useEffect(() => {
     listSecrets();
     return () => {
-      if (!modelUUID || !wsControllerURL) {
+      if (!modelUUID || wsControllerURL === null || !wsControllerURL) {
         return;
       }
       dispatch(jujuActions.clearSecrets({ modelUUID, wsControllerURL }));
@@ -55,7 +55,7 @@ const Secrets = () => {
   }, [dispatch, listSecrets, modelUUID, wsControllerURL]);
 
   let content: ReactNode;
-  if (secretsErrors) {
+  if (secretsErrors !== null && secretsErrors) {
     content = (
       <ReactNotification severity="negative" title="Error">
         {secretsErrors}

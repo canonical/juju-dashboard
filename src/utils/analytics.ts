@@ -16,7 +16,7 @@ export type AnalyticsMessage = {
 const analytics = (
   analyticsEnabled: boolean,
   eventParams: EventParams,
-  { path, category = "", action = "" }: AnalyticsMessage,
+  { path = "", category = "", action = "" }: AnalyticsMessage,
 ) => {
   if (!analyticsEnabled) {
     return;
