@@ -38,11 +38,7 @@ type ActionsQueryParams = {
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
   const appState = appStore.getState();
-  const {
-    appName = null,
-    modelName = null,
-    userName = null,
-  } = useModelAppParams();
+  const { appName, modelName, userName } = useModelAppParams();
   const modelUUID = useAppSelector((state: RootState) =>
     getModelUUID(state, modelName),
   );

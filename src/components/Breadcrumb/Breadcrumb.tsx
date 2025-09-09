@@ -7,12 +7,12 @@ import { ModelTab } from "urls";
 
 export default function Breadcrumb(): JSX.Element {
   const {
-    userName = null,
-    modelName = null,
-    appName = null,
-    unitId = null,
-    machineId = null,
-    isNestedEntityPage = false,
+    userName,
+    modelName,
+    appName,
+    unitId,
+    machineId,
+    isNestedEntityPage,
   } = useEntityDetailsParams();
 
   const generateBreadcrumbs = function (): ReactNode {

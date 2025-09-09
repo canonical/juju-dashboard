@@ -20,7 +20,7 @@ import type { FormFields } from "../types";
 import { Label } from "./types";
 
 const Fields = (): JSX.Element => {
-  const { modelName = null } = useModelIndexParams();
+  const { modelName } = useModelIndexParams();
   const showModel = modelName === null || !modelName;
   const auditEventUsers = useAppSelector(getAuditEventsUsers);
   const jujuUsers = useAppSelector(getUsers);

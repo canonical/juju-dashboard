@@ -14,6 +14,7 @@ import type { BaseLayoutContext } from "layout/BaseLayout";
 import type { StatusView } from "layout/Status";
 import { getModelByUUID } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import type { Nullable } from "types";
 import urls from "urls";
 import getUserName from "utils/getUserName";
 
@@ -50,12 +51,23 @@ export const useEntityDetailsParams = () => {
   };
 };
 
-export const useModelIndexParams = (): Partial<ModelIndexRoute> => {
-  return useMatch(urls.model.index(null))?.params ?? {};
+export const useModelIndexParams = (): Nullable<ModelIndexRoute> => {
+  const { userName, modelName } =
+    useMatch(urls.model.index(null))?.params ?? {};
+  return {
+    modelName: modelName ?? null,
+    userName: userName ?? null,
+  };
 };
 
-export const useModelAppParams = (): Partial<ModelAppRoute> => {
-  return useMatch(urls.model.app.index(null))?.params ?? {};
+export const useModelAppParams = (): Nullable<ModelAppRoute> => {
+  const { appName, userName, modelName } =
+    useMatch(urls.model.app.index(null))?.params ?? {};
+  return {
+    appName: appName ?? null,
+    modelName: modelName ?? null,
+    userName: userName ?? null,
+  };
 };
 
 export const useModelByUUIDDetails = ({
@@ -67,7 +79,7 @@ export const useModelByUUIDDetails = ({
   const owner = uuid !== undefined && uuid ? modelDetails?.ownerTag : ownerTag;
   const model = uuid !== undefined && uuid ? modelDetails?.name : modelName;
   const userName = typeof owner === "string" ? getUserName(owner) : null;
-  return { modelName: model, userName };
+  return { modelName: model ?? null, userName: userName ?? null };
 };
 
 export const useStatusView = (statusView: StatusView) => {

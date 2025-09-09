@@ -12,7 +12,7 @@ type Props = {
 } & PropsWithChildren;
 
 const UnitLink = ({ uuid, appName, unitId, children }: Props): JSX.Element => {
-  const { userName = null, modelName = null } = useModelByUUIDDetails({ uuid });
+  const { userName, modelName } = useModelByUUIDDetails({ uuid });
 
   // If at least one of the bellow values is falsy, we can't form a valid Link.
   if (

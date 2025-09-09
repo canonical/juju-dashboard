@@ -37,3 +37,7 @@ export const isSpecificAction = <A extends Action>(
 export enum FeatureFlags {
   REBAC = "rebac",
 }
+
+export type Nullable<T> = {
+  [P in keyof T]: T[P] | null;
+};

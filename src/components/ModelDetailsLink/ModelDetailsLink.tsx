@@ -42,15 +42,14 @@ const ModelDetailsLink = ({
 }: Props) => {
   // This component's props require either uuid or modelName to exist,
   // but this characteristic gets lost when the props are destructured.
-  const { modelName: model = null, userName: owner = null } =
-    useModelByUUIDDetails(
-      uuid !== undefined && uuid
-        ? ({ uuid } as UUIDProps)
-        : ({
-            ownerTag,
-            modelName,
-          } as NameProps),
-    );
+  const { modelName: model, userName: owner } = useModelByUUIDDetails(
+    uuid !== undefined && uuid
+      ? ({ uuid } as UUIDProps)
+      : ({
+          ownerTag,
+          modelName,
+        } as NameProps),
+  );
   // Because we get some data at different times based on the multiple API calls
   // we need to check for their existence and supply reasonable fallbacks if it
   // isn't available. Once we have a single API call for all the data this check
