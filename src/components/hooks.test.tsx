@@ -99,7 +99,10 @@ describe("useModelIndexParams", () => {
         />
       ),
     });
-    expect(result.current).toStrictEqual({});
+    expect(result.current).toStrictEqual({
+      modelName: null,
+      userName: null,
+    });
   });
 });
 
@@ -132,7 +135,11 @@ describe("useModelAppParams", () => {
         />
       ),
     });
-    expect(result.current).toStrictEqual({});
+    expect(result.current).toStrictEqual({
+      appName: null,
+      modelName: null,
+      userName: null,
+    });
   });
 });
 
