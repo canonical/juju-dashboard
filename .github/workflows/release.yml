@@ -14,23 +14,16 @@ defaults:
     shell: bash
 
 jobs:
-  pre-release:
-    name: "Determine release parameters"
+  run-check:
+    name: "Determine if workflow should run"
     runs-on: ubuntu-22.04
 
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
 
     outputs:
       should-run: ${{ steps.check.outputs.should-run }}
-      version: ${{ steps.params.outputs.version }}
-      channel: ${{ steps.params.outputs.channel }}
-      promote-channel: ${{ steps.params.outputs.promote-channel }}
-      track: ${{ steps.params.outputs.track }}
-      is-pre-release: ${{ steps.params.outputs.is-pre-release }}
-      changelog: ${{ steps.changelog.outputs.changelog }}
 
     steps:
-      - uses: actions/checkout@v4
       - name: Only run on `release/x.y.z[-suffix]` branches
         if: github.event_name == 'pull_request'
         id: check
@@ -46,9 +39,26 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  pre-release:
+    name: "Determine release parameters"
+    runs-on: ubuntu-22.04
+
+    needs: [run-check]
+    if: needs.run-check.outputs.should-run
+
+    outputs:
+      version: ${{ steps.params.outputs.version }}
+      channel: ${{ steps.params.outputs.channel }}
+      promote-channel: ${{ steps.params.outputs.promote-channel }}
+      track: ${{ steps.params.outputs.track }}
+      is-pre-release: ${{ steps.params.outputs.is-pre-release }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+
+    steps:
+      - uses: actions/checkout@v4
       - name: Determine release Charmhub parameters
         id: params
-        if: steps.check.outputs.should-run
         run: |
           version=$(jq -r .version package.json)
           track=$(echo "$version" | grep -Po '^\d+\.\d+')
@@ -80,8 +90,6 @@ jobs:
     runs-on: ubuntu-22.04
 
     needs: [pre-release]
-
-    if: needs.pre-pelease.outputs.should-run
 
     strategy:
       fail-fast: false
