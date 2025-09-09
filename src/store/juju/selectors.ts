@@ -539,7 +539,7 @@ export const getModelUUIDFromList = createSelector(
       ownerName,
   ],
   (modelList: ModelsList, modelName, ownerName) => {
-    let modelUUID: string | null = null;
+    let modelUUID: string = "";
     if (
       modelList === null ||
       modelName === null ||
