@@ -9,7 +9,8 @@
         "./lib/*"
       ]
     },
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "strictNullChecks": true,
   },
   "include": [
     "src",

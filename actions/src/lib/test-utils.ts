@@ -36,7 +36,7 @@ export function mockCutPr({
   severity = "minor",
   version = "1.0",
   patchVersion,
-  headSuffix,
+  headSuffix = null,
   number = 123,
   additionalLabels = [],
   changelog = [],
@@ -48,7 +48,7 @@ export function mockCutPr({
   /** Optional beta version to append to head branch. */
   patchVersion?: number;
   /** Optional suffix for the `head` branch. */
-  headSuffix?: string;
+  headSuffix?: string | null;
   /** Pull request number. */
   number?: number;
   /** If `true`, default release labels will be included. */
@@ -67,7 +67,7 @@ export function mockCutPr({
   if (patchVersion !== undefined) {
     headBranchSuffix += `.${patchVersion}`;
   }
-  if (headSuffix) {
+  if (headSuffix !== null && headSuffix) {
     headBranchSuffix += `-${headSuffix}`;
   }
 

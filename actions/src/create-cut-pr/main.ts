@@ -73,7 +73,7 @@ export async function run(ctx: Ctx) {
   // Determine the severity (major/minor) of the merged PR (default to minor if pushed commit)
   let requiredSeverity: Severity = "minor";
 
-  let cutPr: PullRequest;
+  let cutPr: PullRequest | null = null;
   const changelogItems: string[] = [];
 
   if (ctx.pr) {
@@ -108,21 +108,21 @@ export async function run(ctx: Ctx) {
     );
   } else if (matchingPrs.length === 1) {
     // Single cut PR found.
-    const { pr, severity } = matchingPrs[0];
+    const [{ pr, severity }] = matchingPrs;
 
     if (severityFits(severity, requiredSeverity)) {
       // Can re-use the existing PR.
       cutPr = pr;
     } else {
       // Copy the changelog from the PR, so it can be re-used.
-      changelogItems.unshift(...changelog.parse(pr.body).items);
+      changelogItems.unshift(...changelog.parse(pr.body ?? "").items);
 
       // Must close the existing PR to create a new one.
       await pr.close();
     }
   }
 
-  if (cutPr === undefined) {
+  if (cutPr === null) {
     // Create a new cut PR
     const { major, minor } = await getNextCutVersion(ctx, requiredSeverity);
 
@@ -167,7 +167,7 @@ export async function run(ctx: Ctx) {
     await cutPr.update({
       body: changelogItems.reduce(
         (body, item) => changelog.appendItem(body, item),
-        cutPr.body,
+        cutPr.body ?? "",
       ),
     });
   }

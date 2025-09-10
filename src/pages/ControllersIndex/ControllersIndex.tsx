@@ -162,7 +162,7 @@ const ControllersIndex = () => {
       controller.location &&
       controller.location.cloud !== undefined
     ) {
-      cloud = controller.location.cloud;
+      ({ cloud } = controller.location);
     }
     let region = "unknown";
     if (
@@ -175,7 +175,7 @@ const ControllersIndex = () => {
       controller.location &&
       controller.location?.region
     ) {
-      region = controller.location.region;
+      ({ region } = controller.location);
     }
     const cloudRegion = `${cloud}/${region}`;
     const loginError = loginErrors?.[controller.wsControllerURL] ?? null;
@@ -215,7 +215,7 @@ const ControllersIndex = () => {
       version = controller["agent-version"];
     }
     if ("version" in controller && controller.version !== undefined) {
-      version = controller.version;
+      ({ version } = controller);
     }
     if (version !== null && version) {
       columns[columns.length - 1] = {

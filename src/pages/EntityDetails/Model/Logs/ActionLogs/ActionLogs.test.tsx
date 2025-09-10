@@ -379,7 +379,7 @@ describe("Action Logs", () => {
     );
     expect(fetchErrorNotification).toBeInTheDocument();
     expect(fetchErrorNotification.childElementCount).toBe(1);
-    const refetchButton = fetchErrorNotification.children[0];
+    const [refetchButton] = fetchErrorNotification.children;
     expect(refetchButton).toHaveTextContent("refetch");
     await userEvent.click(refetchButton);
     expect(queryOperationsListSpy).toHaveBeenCalledTimes(2);

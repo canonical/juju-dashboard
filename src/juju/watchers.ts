@@ -128,7 +128,7 @@ export function processDeltas(
       // of writing this does not appear to be a performance issue but something
       // to keep an eye on for those with many hundreds of units.
       Object.keys(modelData.units).forEach((key) => {
-        const applicationName = key.split("/")[0];
+        const [applicationName] = key.split("/");
         if (applicationUnitCounts[applicationName] === undefined) {
           applicationUnitCounts[applicationName] = 0;
         }

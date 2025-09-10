@@ -73,7 +73,7 @@ describe("Widget", () => {
     it.for([
       ["no credentials", { user: "", password: "" }],
       ["saved credentials", { user: "someone", password: "something" }],
-    ] as const)("renders %s", ([_, creds], { expect }) => {
+    ] as const)("renders %s", ([, creds], { expect }) => {
       vi.spyOn(LocalStorage, "default").mockReturnValue([creds, vi.fn()]);
 
       const { result } = renderComponent(<Widget />, {
@@ -87,7 +87,7 @@ describe("Widget", () => {
     it.for([
       ["no credentials", { user: "", password: "" }],
       ["saved credentials", { user: "someone", password: "something" }],
-    ] as const)("edit from %s", async ([_, creds], { expect }) => {
+    ] as const)("edit from %s", async ([, creds], { expect }) => {
       const saveCreds = vi.fn();
       vi.spyOn(LocalStorage, "default").mockReturnValue([creds, saveCreds]);
 

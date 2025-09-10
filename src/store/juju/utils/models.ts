@@ -58,7 +58,7 @@ const checkHighestStatus = (highestStatus: Status) => {
 };
 
 export const getModelStatusGroupData = (model: ModelData) => {
-  let highestStatus = statusOrder[0]; // Set the highest status to the lowest.
+  let [highestStatus] = statusOrder; // Set the highest status to the lowest.
   const messages: { message: string; appName: string; unitId?: string }[] = [];
   const applications = model.applications ?? {};
   Object.keys(applications).forEach((appName) => {
@@ -108,7 +108,7 @@ export const getApplicationStatusGroup = (
   const blocked = ["blocked"];
   // Possible "alert" states in application statuses.
   const alert = ["unknown"];
-  const status = application.status.status;
+  const { status } = application.status;
   const response: StatusResponse = {
     status: Status.RUNNING,
     message: null,
@@ -133,7 +133,7 @@ export const getMachineStatusGroup = (machine: ModelData["machines"][0]) => {
   const blocked = ["down"];
   // Possible "alert" states in machine statuses.
   const alert = ["pending"];
-  const status = machine["agent-status"].status;
+  const { status } = machine["agent-status"];
   const response: StatusResponse = {
     status: Status.RUNNING,
     message: null,
@@ -160,7 +160,7 @@ export const getUnitStatusGroup = (
   const blocked = ["lost"];
   // Possible "alert" states in the unit statuses.
   const alert = ["allocating"];
-  const status = unit["agent-status"].status;
+  const { status } = unit["agent-status"];
   const response: StatusResponse = {
     status: Status.RUNNING,
     message: null,
@@ -229,7 +229,7 @@ export const extractCredentialName = (tag: string | null = null) => {
   if (tag === null || !tag) {
     return "-";
   }
-  const cred = tag.split("cloudcred-")[1];
+  const [, cred] = tag.split("cloudcred-");
   if (cred.indexOf("@") > -1) {
     return cred.split("@")[0].split("_")[1];
   }
@@ -300,7 +300,7 @@ export const extractRelationEndpoints = (relation: {
 }) => {
   const endpoints: Record<string, string> = {};
   relation.endpoints.forEach((endpoint) => {
-    const role = endpoint.relation.role;
+    const { role } = endpoint.relation;
     endpoints[role] =
       endpoint["application-name"] + ":" + endpoint.relation.name;
     endpoints[`${role}ApplicationName`] = endpoint["application-name"];

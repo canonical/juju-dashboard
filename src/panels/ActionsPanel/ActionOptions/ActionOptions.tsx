@@ -21,7 +21,7 @@ export default function ActionOptions({ name, data, onValuesChange }: Props) {
     const collectOptions: ActionOptionsType = [];
     Object.keys(action.params.properties).forEach((propertyName) => {
       const property = action.params.properties[propertyName];
-      const required = action.params.required;
+      const { required } = action.params;
       collectOptions.push({
         name: propertyName,
         description: property.description,
@@ -32,7 +32,7 @@ export default function ActionOptions({ name, data, onValuesChange }: Props) {
       });
     });
     return collectOptions;
-  }, [action.params.properties, action.params.required]);
+  }, [action.params]);
 
   const initialValues = useMemo(() => {
     const intial: { [key: string]: string } = {};

@@ -32093,7 +32093,7 @@ const branch = {
          * @param branchName - Branch name to test.
          * @returns `true` if the branch name is a valid release branch.
          */
-        test: (branchName, { preRelease } = {}) => {
+        test: (branchName, { preRelease } = { preRelease: false }) => {
             const version = branch.release.parse(branchName);
             if (version === null) {
                 return false;
@@ -32214,7 +32214,7 @@ async function createCtx(fallback) {
     return {
         octokit,
         core: core,
-        context: Object.assign({ refName: process.env["GITHUB_REF_NAME"] }, github.context),
+        context: Object.assign({ refName: process.env["GITHUB_REF_NAME"] ?? "" }, github.context),
         exec: exec.exec,
         execOutput: exec.getExecOutput,
         repo,
@@ -32229,7 +32229,7 @@ async function run(ctx) {
     if (!ctx.pr) {
         throw new Error("can only extract changelog from a running PR");
     }
-    const { items } = parse(ctx.pr.body);
+    const { items } = parse(ctx.pr.body ?? "");
     return { changelog: items.map((item) => `- ${item}`).join("\n") };
 }
 

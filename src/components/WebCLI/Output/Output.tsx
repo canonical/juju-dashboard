@@ -43,7 +43,7 @@ const WebCLIOutput = ({
       const newResponseHeight =
         document.querySelector(".webcli__output-content-response:last-child")
           ?.clientHeight ?? 0;
-      const scrollHeight = outputRef.current.scrollHeight;
+      const { scrollHeight } = outputRef.current;
       // Get the distance the scroll area is from the bottom.
       const distance =
         scrollHeight -

@@ -125,7 +125,7 @@ function bootstrap() {
   // application assets.
   // If we were provided with a relative path for the endpoint then we need
   // to build the full correct path for the websocket to connect to.
-  const controllerAPIEndpoint = config.controllerAPIEndpoint;
+  const { controllerAPIEndpoint } = config;
   if (controllerAPIEndpoint) {
     if (!controllerAPIEndpoint.includes("://")) {
       const protocol = window.location.protocol.includes("https")

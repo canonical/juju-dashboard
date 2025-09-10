@@ -386,7 +386,7 @@ describe("ConfigPanel", () => {
     );
     expect(configErrorNotification).toBeInTheDocument();
     expect(configErrorNotification.childElementCount).toBe(1);
-    const refetchButton = configErrorNotification.children[0];
+    const [refetchButton] = configErrorNotification.children;
     expect(refetchButton).toHaveTextContent("refetch");
     await userEvent.click(refetchButton);
     expect(getApplicationConfig).toHaveBeenCalledTimes(2);

@@ -32093,7 +32093,7 @@ const branch = {
          * @param branchName - Branch name to test.
          * @returns `true` if the branch name is a valid release branch.
          */
-        test: (branchName, { preRelease } = {}) => {
+        test: (branchName, { preRelease } = { preRelease: false }) => {
             const version = branch.release.parse(branchName);
             if (version === null) {
                 return false;
@@ -32214,7 +32214,7 @@ async function createCtx(fallback) {
     return {
         octokit,
         core: core,
-        context: Object.assign({ refName: process.env["GITHUB_REF_NAME"] }, github.context),
+        context: Object.assign({ refName: process.env["GITHUB_REF_NAME"] ?? "" }, github.context),
         exec: exec.exec,
         execOutput: exec.getExecOutput,
         repo,
@@ -32325,7 +32325,7 @@ async function run(ctx) {
     }
     // Determine the severity (major/minor) of the merged PR (default to minor if pushed commit)
     let requiredSeverity = "minor";
-    let cutPr;
+    let cutPr = null;
     const changelogItems = [];
     if (ctx.pr) {
         // Action triggered from merged PR, update severity to match.
@@ -32354,19 +32354,19 @@ async function run(ctx) {
     }
     else if (matchingPrs.length === 1) {
         // Single cut PR found.
-        const { pr, severity } = matchingPrs[0];
+        const [{ pr, severity }] = matchingPrs;
         if (severityFits(severity, requiredSeverity)) {
             // Can re-use the existing PR.
             cutPr = pr;
         }
         else {
             // Copy the changelog from the PR, so it can be re-used.
-            changelogItems.unshift(...parse(pr.body).items);
+            changelogItems.unshift(...parse(pr.body ?? "").items);
             // Must close the existing PR to create a new one.
             await pr.close();
         }
     }
-    if (cutPr === undefined) {
+    if (cutPr === null) {
         // Create a new cut PR
         const { major, minor } = await getNextCutVersion(ctx, requiredSeverity);
         const cutBranch = lib_branch.cut.serialise(major, minor);
@@ -32403,7 +32403,7 @@ async function run(ctx) {
     if (changelogItems.length > 0) {
         // Update the changelog of the cut PR.
         await cutPr.update({
-            body: changelogItems.reduce((body, item) => appendItem(body, item), cutPr.body),
+            body: changelogItems.reduce((body, item) => appendItem(body, item), cutPr.body ?? ""),
         });
     }
     return { cutPrNumber: cutPr.number, cutBranch: cutPr.base };

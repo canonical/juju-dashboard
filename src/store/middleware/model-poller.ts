@@ -219,7 +219,7 @@ export const modelPollerMiddleware: Middleware<
               );
               // If the code execution arrives here, then the model statuses
               // have been successfully updated. Models error should be removed.
-              const modelsError = reduxStore.getState().juju.modelsError;
+              const { modelsError } = reduxStore.getState().juju;
               if (modelsError !== null && modelsError) {
                 reduxStore.dispatch(
                   jujuActions.updateModelsError({

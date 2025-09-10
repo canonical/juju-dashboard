@@ -61,7 +61,7 @@ describe("WarningMessage", () => {
       await userEventWithTimers.hover(error);
       vi.runAllTimers();
     });
-    const tooltip = screen.getAllByRole("tooltip")[0];
+    const [tooltip] = screen.getAllByRole("tooltip");
     expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
     const appError = within(tooltip).getByRole("link", {
       name: "app blocked",
@@ -101,7 +101,7 @@ describe("WarningMessage", () => {
       await userEventWithTimers.hover(error);
       vi.runAllTimers();
     });
-    const tooltip = screen.getAllByRole("tooltip")[0];
+    const [tooltip] = screen.getAllByRole("tooltip");
     expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
     [1, 2, 3, 4, 5].forEach((index) => {
       const appError = within(tooltip).getByRole("link", {

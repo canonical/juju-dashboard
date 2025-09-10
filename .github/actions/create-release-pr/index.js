@@ -32093,7 +32093,7 @@ const branch = {
          * @param branchName - Branch name to test.
          * @returns `true` if the branch name is a valid release branch.
          */
-        test: (branchName, { preRelease } = {}) => {
+        test: (branchName, { preRelease } = { preRelease: false }) => {
             const version = branch.release.parse(branchName);
             if (version === null) {
                 return false;
@@ -32214,7 +32214,7 @@ async function createCtx(fallback) {
     return {
         octokit,
         core: core,
-        context: Object.assign({ refName: process.env["GITHUB_REF_NAME"] }, github.context),
+        context: Object.assign({ refName: process.env["GITHUB_REF_NAME"] ?? "" }, github.context),
         exec: exec.exec,
         execOutput: exec.getExecOutput,
         repo,
@@ -32269,7 +32269,7 @@ function bumpPackageVersion(version, bumpKind, options = {}) {
         }
     }
     else if (bumpKind === "candidate") {
-        if (version.preRelease.identifier !== "beta") {
+        if (version.preRelease?.identifier !== "beta") {
             throw new Error(`Candidate versions can only be created from beta versions, but found: ${serialiseVersion(version)}`);
         }
         // Clear the beta pre-release for the candidate version.
@@ -32293,8 +32293,10 @@ async function run(ctx) {
     // Try seed the changelog if running against a PR.
     const changelogItems = [];
     if (ctx.pr) {
-        if (lib_branch.cut.test(ctx.pr.head) ||
-            lib_branch.release.test(ctx.pr.head, { preRelease: true })) {
+        if ((lib_branch.cut.test(ctx.pr.head) ||
+            lib_branch.release.test(ctx.pr.head, { preRelease: true })) &&
+            ctx.pr.body !== null &&
+            ctx.pr.body) {
             // Triggered from a merged cut branch, so re-use the changelog.
             try {
                 changelogItems.push(...parse(ctx.pr.body).items);
@@ -32327,19 +32329,19 @@ async function run(ctx) {
         }
     }
     // Create or select the release PR.
-    let releasePr;
-    let releaseVersion;
+    let releasePr = null;
+    let releaseVersion = null;
     if (matchingPrs.length > 1) {
         // Multiple release PRs for this branch, which is invalid.
         throw new Error(`Multiple release PRs were found, when only one can exist: ${matchingPrs.map(({ pr: { number } }) => `#${number}`).join(", ")}`);
     }
     else if (matchingPrs.length === 1) {
         // Single release PR found.
-        const { pr, version } = matchingPrs[0];
+        const [{ pr, version }] = matchingPrs;
         if (!version.preRelease) {
             // Save the existing changelog.
             // WARN: This means that the beta PR will contain the changelog for ALL previous beta PRs.
-            changelogItems.unshift(...parse(pr.body).items);
+            changelogItems.unshift(...parse(pr.body ?? "").items);
             // This was a candidate release PR, however new changes have been pushed so it's now outdated.
             await pr.close();
         }
@@ -32398,7 +32400,7 @@ async function run(ctx) {
     if (changelogItems.length > 0) {
         // Update the changelog with this merged PR.
         await releasePr.update({
-            body: changelogItems.reduce((body, item) => appendItem(body, item), releasePr.body),
+            body: changelogItems.reduce((body, item) => appendItem(body, item), releasePr.body ?? ""),
         });
     }
     return {

@@ -50,7 +50,7 @@ const Value = ({
   keyPath,
   code,
 }: Props): ReturnType<ValueRenderer> => {
-  const currentKey = keyPath[0];
+  const [currentKey] = keyPath;
   const parentKey = keyPath.length >= 2 ? keyPath[1] : null;
   const grandparentKey = keyPath.length >= 3 ? keyPath[2] : null;
   const modelUUID = keyPath[keyPath.length - 1];

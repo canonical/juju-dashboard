@@ -120,7 +120,7 @@ describe("OwnerGroup", () => {
       cloud: ["aws"],
     };
     renderComponent(<OwnerGroup filters={filters} />, { state });
-    const firstContentRow = screen.getAllByRole("row")[1];
+    const [, firstContentRow] = screen.getAllByRole("row");
     expect(
       within(firstContentRow).getByRole("button", { name: "Toggle menu" }),
     ).toBeInTheDocument();

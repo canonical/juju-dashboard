@@ -201,7 +201,7 @@ describe("Models Index page", () => {
   });
 
   it("should refresh the window when pressing the button in error notification", async () => {
-    const location = window.location;
+    const { location } = window;
     Object.defineProperty(window, "location", {
       value: { ...location, reload: vi.fn() },
     });

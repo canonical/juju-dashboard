@@ -6,12 +6,12 @@ import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import vitest from "@vitest/eslint-plugin";
 import _import from "eslint-plugin-import";
 import prettier from "eslint-plugin-prettier";
 import promise from "eslint-plugin-promise";
 import react from "eslint-plugin-react";
 import reactRefresh from "eslint-plugin-react-refresh";
-import vitest from "@vitest/eslint-plugin";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -84,6 +84,8 @@ export default [
       "no-redeclare": "off",
       "@typescript-eslint/no-redeclare": "error",
       "@typescript-eslint/strict-boolean-expressions": "error",
+      "prefer-destructuring": "off",
+      "@typescript-eslint/prefer-destructuring": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
       "import/first": ["error"],
@@ -109,7 +111,6 @@ export default [
       "no-param-reassign": 0,
       "no-case-declarations": 0,
       "no-constant-condition": ["error", { checkLoops: false }],
-      "prefer-destructuring": 0,
       "one-var": ["error", "never"],
       "id-length": [
         "error",

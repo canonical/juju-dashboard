@@ -110,7 +110,7 @@ export default class Git {
       maybeOptions = {};
     }
 
-    const flags = [];
+    const flags: string[] = [];
     if (maybeOptions.force === true) {
       flags.push("--force");
     }

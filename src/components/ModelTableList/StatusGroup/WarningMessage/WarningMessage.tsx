@@ -35,7 +35,7 @@ const WarningMessage = ({ model }: Props) => {
   const list: ListItem[] = messages.slice(0, 5).map((message) => {
     const unitId =
       message.unitId !== undefined ? message.unitId.replace("/", "-") : null;
-    const appName = message.appName;
+    const { appName } = message;
     return {
       className: "u-truncate",
       content: (

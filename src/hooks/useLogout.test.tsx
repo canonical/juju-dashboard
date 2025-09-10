@@ -29,7 +29,7 @@ describe("useLogout", () => {
   });
 
   it("should show error when trying to logout and refresh page", async () => {
-    const location = window.location;
+    const { location } = window;
     Object.defineProperty(window, "location", {
       value: { ...location, reload: vi.fn() },
     });
@@ -59,7 +59,7 @@ describe("useLogout", () => {
     );
     expect(logoutErrorNotification).toBeInTheDocument();
     expect(logoutErrorNotification.childElementCount).toBe(1);
-    const refreshButton = logoutErrorNotification.children[0];
+    const [refreshButton] = logoutErrorNotification.children;
     expect(refreshButton).toHaveTextContent("refreshing");
     await userEvent.click(refreshButton, { pointerEventsCheck: 0 });
     expect(window.location.reload).toHaveBeenCalledTimes(1);

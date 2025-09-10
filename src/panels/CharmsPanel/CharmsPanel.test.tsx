@@ -140,7 +140,7 @@ describe("CharmsPanel", () => {
       />,
       { path, url, state },
     );
-    const disabledRadioButton = screen.getAllByRole("radio")[1];
+    const [, disabledRadioButton] = screen.getAllByRole("radio");
     expect(disabledRadioButton).toBeDisabled();
     await act(async () => {
       await userEventWithTimers.hover(disabledRadioButton);

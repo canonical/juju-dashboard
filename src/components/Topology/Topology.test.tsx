@@ -46,7 +46,7 @@ describe("Topology", () => {
   });
 
   it("resizes the canvas when new applications are added", () => {
-    const getBoundingClientRect = Element.prototype.getBoundingClientRect;
+    const { getBoundingClientRect } = Element.prototype;
     Element.prototype.getBoundingClientRect = () =>
       ({
         height: 100,

@@ -62,7 +62,7 @@ const getOrSetContentState = (state: JujuState, modelUUID: string) => {
     modelSecrets = state.secrets[modelUUID] = { ...DEFAULT_MODEL_SECRETS };
   }
 
-  let content = modelSecrets.content;
+  let { content } = modelSecrets;
   if (!content) {
     content = modelSecrets.content = { ...DEFAULT_MODEL_SECRETS_CONTENT };
   }
@@ -172,7 +172,7 @@ const slice = createSlice({
         } & WsControllerURLParam
       >,
     ) => {
-      const modelUUID = action.payload.modelUUID;
+      const { modelUUID } = action.payload;
       // There is some data that we don't want to store because it changes
       // too often causing needless re-renders and is currently irrelevant
       // like controllerTimestamp.
