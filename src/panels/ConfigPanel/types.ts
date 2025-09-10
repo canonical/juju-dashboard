@@ -1,11 +1,11 @@
 import type { ConfirmTypes as DefaultConfirmTypes } from "panels/types";
 
-export type ConfigValue = string | number | boolean | undefined;
+export type ConfigValue = boolean | number | string | undefined;
 
 export type ConfigOption<V, T> = {
   default?: V;
   description: string;
-  error?: string | null;
+  error?: null | string;
   name: string;
   newValue?: V;
   source: "default" | "user";
@@ -14,9 +14,9 @@ export type ConfigOption<V, T> = {
 };
 
 export type ConfigData =
-  | ConfigOption<string, "string" | "secret">
-  | ConfigOption<number, "int" | "float">
-  | ConfigOption<boolean, "boolean">;
+  | ConfigOption<boolean, "boolean">
+  | ConfigOption<number, "float" | "int">
+  | ConfigOption<string, "secret" | "string">;
 
 export type Config = {
   [key: string]: ConfigData;
@@ -44,11 +44,11 @@ export enum ConfigConfirmType {
   GRANT = "grant",
 }
 
-export type ConfirmTypes = DefaultConfirmTypes | ConfigConfirmType;
+export type ConfirmTypes = ConfigConfirmType | DefaultConfirmTypes;
 
 export type ConfigQueryParams = {
-  panel: string | null;
-  charm: string | null;
-  entity: string | null;
-  modelUUID: string | null;
+  panel: null | string;
+  charm: null | string;
+  entity: null | string;
+  modelUUID: null | string;
 };

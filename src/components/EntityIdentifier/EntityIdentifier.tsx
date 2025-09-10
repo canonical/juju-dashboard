@@ -2,7 +2,7 @@ import CharmIcon from "components/CharmIcon/CharmIcon";
 import TruncatedTooltip from "components/TruncatedTooltip";
 
 type Props = {
-  charmId?: string | null;
+  charmId?: null | string;
   name: string;
   subordinate?: boolean;
 };

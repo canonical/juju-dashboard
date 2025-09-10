@@ -61,7 +61,7 @@ const shouldShow = (segment: string, activeView: string) => {
 
 const generateCloudAndRegion = (
   cloudTag: string,
-  region: string | null = null,
+  region: null | string = null,
 ) => {
   if (cloudTag && region !== null && region) {
     return `${extractCloudName(cloudTag)} / ${region}`;
@@ -75,8 +75,8 @@ const Model = () => {
   const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
 
   const [query] = useQueryParams<{
-    entity: string | null;
-    panel: string | null;
+    entity: null | string;
+    panel: null | string;
     activeView: string;
   }>({
     panel: null,

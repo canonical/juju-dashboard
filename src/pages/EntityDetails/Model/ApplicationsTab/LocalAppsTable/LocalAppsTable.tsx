@@ -42,10 +42,10 @@ const LocalAppsTable = ({ applications = null }: Props) => {
   const selectedApplications = useAppSelector(getSelectedApplications);
   const canConfigureModel = useCanConfigureModel();
   const [queryParams, setQueryParams] = useQueryParams<{
-    entity: string | null;
-    panel: string | null;
+    entity: null | string;
+    panel: null | string;
     activeView: string;
-    filterQuery: string | null;
+    filterQuery: null | string;
   }>({
     panel: null,
     entity: null,

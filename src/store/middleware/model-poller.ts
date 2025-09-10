@@ -71,7 +71,7 @@ export const modelPollerMiddleware: Middleware<
         let conn: ConnectionWithFacades | undefined;
         let juju: Client | undefined;
         let error: unknown = null;
-        let intervalId: number | null = null;
+        let intervalId: null | number = null;
         reduxStore.dispatch(generalActions.updateLoginLoading(true));
         const continueConnection = await Auth.instance.beforeControllerConnect({
           wsControllerURL,

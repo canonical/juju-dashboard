@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export type Header = HeaderRow[];
 
 type HeaderRow = {
-  content: string | ReactNode;
+  content: ReactNode | string;
   sortKey?: string;
   className?: string;
 };

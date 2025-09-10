@@ -44,7 +44,7 @@ type Options = {
   path?: string;
   routeChildren?: RouteObject[];
   initialProps?: Record<string, unknown>;
-} & (OptionsWithStore | OptionsWithState);
+} & (OptionsWithState | OptionsWithStore);
 
 export type ComponentProps = {
   path: string;
@@ -75,7 +75,7 @@ export const changeURL = (url: string) => window.happyDOM.setURL(url);
 
 export const wrapComponent = (
   component: ReactNode,
-  options?: Options | null,
+  options?: null | Options,
 ) => {
   const store =
     options && "store" in options
@@ -125,7 +125,7 @@ export const wrapComponent = (
 
 export const renderComponent = (
   component: ReactNode,
-  options?: Options | null,
+  options?: null | Options,
 ) => {
   const { router, Component, store, Wrapper } = wrapComponent(
     component,
@@ -140,13 +140,13 @@ export const renderComponent = (
 
 export const renderWrappedHook = <Result, Props>(
   hook: (initialProps: Props) => Result,
-  options?: Options | null,
+  options?: null | Options,
 ): {
-  router: Router | null;
-  store: OptionsWithStore["store"] | null;
+  router: null | Router;
+  store: null | OptionsWithStore["store"];
 } & RenderHookResult<Result, Props> => {
-  let router: Router | null = null;
-  let store: OptionsWithStore["store"] | null = null;
+  let router: null | Router = null;
+  let store: null | OptionsWithStore["store"] = null;
   const result = renderHook(hook, {
     queries,
     wrapper: ({ children }: PropsWithChildren) => {

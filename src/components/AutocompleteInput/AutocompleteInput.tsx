@@ -16,7 +16,7 @@ type AutocompleteOption = PropsWithSpread<
 
 type Props = PropsWithSpread<
   {
-    options?: (string | AutocompleteOption)[] | null;
+    options?: (AutocompleteOption | string)[] | null;
   },
   InputProps
 >;

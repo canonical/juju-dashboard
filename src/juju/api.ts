@@ -149,9 +149,9 @@ export async function loginWithBakery(
   return { conn, juju, intervalId };
 }
 
-export type LoginResponse = Awaited<ReturnType<typeof connectAndLogin>> & {
+export type LoginResponse = {
   conn?: ConnectionWithFacades;
-};
+} & Awaited<ReturnType<typeof connectAndLogin>>;
 
 /**
   Connects and logs in to the supplied modelURL. If the connection takes longer

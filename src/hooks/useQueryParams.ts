@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router";
 import { logger } from "utils/logger";
 
 export type SetParams<P> = (
-  params?: Partial<P> | null,
+  params?: null | Partial<P>,
   options?: NavigateOptions,
 ) => void;
 
@@ -21,7 +21,7 @@ export const useQueryParams = <P extends QueryParams>(
   const [searchParams, setSearchParams] = useSearchParams();
 
   const setParam = useCallback(
-    (newParams?: Partial<P> | null, options?: NavigateOptions) => {
+    (newParams?: null | Partial<P>, options?: NavigateOptions) => {
       if (!newParams) {
         // If this is call with no params then clear all.
         Array.from(searchParams.keys()).forEach((key) =>

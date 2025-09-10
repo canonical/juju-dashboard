@@ -33,7 +33,7 @@ export default {
       getControllerConnection(state, wsControllerURL),
     );
 
-    const [hint, setHint] = useState<string | null>(null);
+    const [hint, setHint] = useState<null | string>(null);
     const [items, setItems] = useState<Record<string, React.ReactNode>>({});
 
     useEffect(() => {

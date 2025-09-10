@@ -3,7 +3,7 @@
  * that is inserted into a <pre> block.
  */
 const breakLines = (
-  text?: string | null,
+  text?: null | string,
   breakAtSpaces = true,
   lineLength = 52,
 ): string => {

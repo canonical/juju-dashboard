@@ -39,12 +39,12 @@ export type ModelParams = {
 };
 
 export type Query = {
-  panel?: string | null;
-  entity?: string | null;
-  activeView?: string | null;
+  panel?: null | string;
+  entity?: null | string;
+  activeView?: null | string;
 };
 
-const generateAddress = (address: string | null = null) =>
+const generateAddress = (address: null | string = null) =>
   address !== null ? (
     <div className="u-flex u-flex--gap-small">
       <TruncatedTooltip
@@ -75,7 +75,7 @@ const generateAddress = (address: string | null = null) =>
 
 export function generateLocalApplicationRows(
   applications: ApplicationData | null,
-  applicationStatuses: StatusData | null,
+  applicationStatuses: null | StatusData,
   modelParams: ModelParams,
   query?: Query,
 ) {
@@ -252,7 +252,7 @@ const generateUnitURL = (modelParams: ModelParams, unitId: string) => {
 };
 
 export function generateUnitRows(
-  units: UnitData | null,
+  units: null | UnitData,
   modelParams: ModelParams,
   showCheckbox = false,
   hideMachines = false,
@@ -269,9 +269,9 @@ export function generateUnitRows(
   }
 
   const clonedUnits: {
-    [unitName: string]: UnitData[0] & {
+    [unitName: string]: {
       subordinates?: { [unitId: string]: UnitData[0] };
-    };
+    } & UnitData[0];
   } = cloneDeep(units);
 
   // Restructure the unit list data to allow for the proper subordinate
@@ -292,7 +292,7 @@ export function generateUnitRows(
     }
   });
 
-  const unitRows: (MainTableRow & { "data-unit": string })[] = [];
+  const unitRows: ({ "data-unit": string } & MainTableRow)[] = [];
   Object.keys(clonedUnits).forEach((unitId) => {
     const unit = clonedUnits[unitId];
     const workload = unit["workload-status"].current || "-";
@@ -459,9 +459,9 @@ export function generateUnitRows(
 
 export function generateMachineRows(
   machines: MachineData | null,
-  units: UnitData | null,
+  units: null | UnitData,
   modelParams: ModelParams,
-  selectedEntity?: string | null,
+  selectedEntity?: null | string,
 ) {
   if (!machines) {
     return [];
@@ -469,7 +469,7 @@ export function generateMachineRows(
 
   const generateMachineApps = (
     machineId: string,
-    machineUnits: UnitData | null,
+    machineUnits: null | UnitData,
   ) => {
     const appsOnMachine: [string, string][] = [];
     machineUnits &&
@@ -566,7 +566,7 @@ export function generateMachineRows(
 }
 
 export function generateRelationRows(
-  relationData: RelationData | null,
+  relationData: null | RelationData,
   applications: ApplicationData | null,
 ) {
   if (!relationData) {

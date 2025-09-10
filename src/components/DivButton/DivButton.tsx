@@ -3,13 +3,13 @@ import classnames from "classnames";
 import type { HTMLProps, PropsWithChildren } from "react";
 import { useRef } from "react";
 
-type Props = PropsWithSpread<
-  {
-    onClick: (event: React.MouseEvent | React.KeyboardEvent) => void;
-  },
-  HTMLProps<HTMLDivElement>
-> &
-  PropsWithChildren;
+type Props = PropsWithChildren &
+  PropsWithSpread<
+    {
+      onClick: (event: React.KeyboardEvent | React.MouseEvent) => void;
+    },
+    HTMLProps<HTMLDivElement>
+  >;
 
 /**
  This component can be used where a button can't be, e.g. when an interactive

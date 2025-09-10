@@ -13,10 +13,10 @@ type Props = {
   tooltipClassName?: TooltipProps["tooltipClassName"];
   positionElementClassName?: TooltipProps["positionElementClassName"];
   wrapperClassName?: string;
-  element?: ElementType | ComponentType;
+  element?: ComponentType | ElementType;
   elementProps?: HTMLProps<HTMLElement>;
-} & TooltipProps &
-  PropsWithChildren;
+} & PropsWithChildren &
+  TooltipProps;
 
 /**
    This tooltip has a special power, it only appears if the content is truncated.

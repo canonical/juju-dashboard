@@ -66,10 +66,10 @@ export type AllWatcherDelta =
     ]
   | [DeltaEntityTypes.APPLICATION, DeltaChangeTypes, ApplicationChangeDelta]
   | [DeltaEntityTypes.CHARM, DeltaChangeTypes, CharmChangeDelta]
-  | [DeltaEntityTypes.UNIT, DeltaChangeTypes, UnitChangeDelta]
   | [DeltaEntityTypes.MACHINE, DeltaChangeTypes, MachineChangeDelta]
   | [DeltaEntityTypes.MODEL, DeltaChangeTypes.CHANGE, ModelChangeDelta]
-  | [DeltaEntityTypes.RELATION, DeltaChangeTypes, RelationChangeDelta];
+  | [DeltaEntityTypes.RELATION, DeltaChangeTypes, RelationChangeDelta]
+  | [DeltaEntityTypes.UNIT, DeltaChangeTypes, UnitChangeDelta];
 
 export enum DeltaEntityTypes {
   ACTION = "action",
@@ -132,19 +132,19 @@ interface AnnotatedApplicationInfo extends ApplicationChangeDelta {
 }
 
 export type ApplicationInfo =
-  | AnnotatedApplicationInfo
-  // It's possible the unit count is returned before the application info in
-  // which case only the unit count will exist in the store.
   | {
       "unit-count": number;
-    };
+    }
+  // It's possible the unit count is returned before the application info in
+  // which case only the unit count will exist in the store.
+  | AnnotatedApplicationInfo;
 
 // Shared Types
 
 type IPAddress = string;
 type UnitId = string;
 type NumberAsString = string;
-type Life = "alive" | "dead" | "dying" | "";
+type Life = "" | "alive" | "dead" | "dying";
 type ISO8601Date = string;
 type DeprecatedString = string;
 export interface Status {
@@ -158,7 +158,7 @@ export interface Status {
   data?: { [key: string]: unknown };
   err?: string;
 }
-type Config = { [key: string]: string | boolean };
+type Config = { [key: string]: boolean | string };
 type LXDProfile = {
   config?: Config;
   description?: string;
@@ -228,7 +228,7 @@ export interface MachineChangeDelta {
   life: Life;
   "model-uuid": string;
   series: string;
-  "supported-containers": ["none" | "lxd" | "kvm"] | null;
+  "supported-containers": ["kvm" | "lxd" | "none"] | null;
   "supported-containers-known": boolean;
   "wants-vote": boolean;
 }
@@ -240,7 +240,7 @@ export interface MachineAgentStatus extends Status {
 export interface AddressData {
   value: IPAddress;
   type: "ipv4" | "ipv6";
-  scope: "public" | "local-cloud" | "local-fan" | "local-machine";
+  scope: "local-cloud" | "local-fan" | "local-machine" | "public";
 }
 
 export interface HardwareCharacteristics {
@@ -265,17 +265,17 @@ type Pre32ModelChangeDelta = {
   sla: ModelSLAInfo;
 };
 
-type Post32ModelChangeDelta = Pre32ModelChangeDelta & {
+type Post32ModelChangeDelta = {
   cloud: string;
   "cloud-region": string;
   type: string;
   version: string;
-};
+} & Pre32ModelChangeDelta;
 
-export type ModelChangeDelta = Pre32ModelChangeDelta | Post32ModelChangeDelta;
+export type ModelChangeDelta = Post32ModelChangeDelta | Pre32ModelChangeDelta;
 
 export interface ModelAgentStatus extends Status {
-  current: "available" | "busy" | "";
+  current: "" | "available" | "busy";
 }
 
 export interface RelationChangeDelta {
@@ -287,11 +287,11 @@ export interface RelationChangeDelta {
 
 export interface EndpointRelation {
   name: string;
-  role: "peer" | "requirer" | "provider";
+  role: "peer" | "provider" | "requirer";
   interface: string;
   optional: boolean;
   limit: number;
-  scope: "global" | "container";
+  scope: "container" | "global";
 }
 
 export interface Endpoint {
@@ -354,9 +354,9 @@ export type FullStatusAnnotations = Record<
   AnnotationsGetResult["annotations"]
 >;
 
-export type FullStatusWithAnnotations = FullStatus & {
+export type FullStatusWithAnnotations = {
   annotations?: FullStatusAnnotations;
-};
+} & FullStatus;
 
 export type Facades = {
   action?: ActionV7;
@@ -373,6 +373,6 @@ export type Facades = {
   jimM?: InstanceType<typeof JIMMV4>;
 };
 
-export type ConnectionWithFacades = Connection & {
+export type ConnectionWithFacades = {
   facades: Facades;
-};
+} & Connection;

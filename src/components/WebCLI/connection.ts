@@ -21,7 +21,7 @@ class Connection {
   #wsOnOpen: () => void;
   #wsOnClose: () => void;
   #wsOnError: (error: Event | string) => void;
-  #ws: WebSocket | null = null;
+  #ws: null | WebSocket = null;
 
   constructor(options: Options) {
     this.#messageCallback = options.messageCallback;

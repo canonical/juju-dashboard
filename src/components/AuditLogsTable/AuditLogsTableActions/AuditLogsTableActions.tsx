@@ -10,8 +10,8 @@ import { Label } from "./types";
 
 const AuditLogsTableActions = () => {
   const [, setQueryParams] = useQueryParams<{
-    panel: string | null;
-    page: string | null;
+    panel: null | string;
+    page: null | string;
   }>({
     panel: null,
     page: DEFAULT_PAGE,

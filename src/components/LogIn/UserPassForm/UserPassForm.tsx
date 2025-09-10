@@ -17,7 +17,7 @@ const UserPassForm = () => {
   const wsControllerURL = useAppSelector(getWSControllerURL);
 
   function handleSubmit(
-    ev: FormEvent<HTMLFormElement & { elements: LoginElements }>,
+    ev: FormEvent<{ elements: LoginElements } & HTMLFormElement>,
   ) {
     ev.preventDefault();
     const elements = ev.currentTarget.elements;

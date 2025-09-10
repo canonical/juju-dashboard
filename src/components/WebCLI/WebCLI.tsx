@@ -27,7 +27,7 @@ type Props = {
   history?: CommandHistory;
   modelUUID: string;
   onCommandSent: (command?: string) => void;
-  activeUser?: string | null;
+  activeUser?: null | string;
   onHistoryChange?: (modelUUID: string, historyItem: HistoryItem) => void;
   /**
    * When overriding this function then ANSI codes need to be manually handled.
@@ -62,7 +62,7 @@ const WebCLI = ({
   const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
   const inputRef = useRef<HTMLInputElement>(null);
   const [output, setOutput] = useState<CommandHistory>(history || {});
-  const lastCommand = useRef<string | null>(null);
+  const lastCommand = useRef<null | string>(null);
   const [cliHistory, setCLIHistory] = useLocalStorage<string[]>(
     "cliHistory",
     [],
@@ -242,7 +242,7 @@ const WebCLI = ({
     }
   };
 
-  const showHelp = (event: React.MouseEvent | React.KeyboardEvent) => {
+  const showHelp = (event: React.KeyboardEvent | React.MouseEvent) => {
     // Only trigger the help from the space or enter keys (or mouse clicks).
     if ("key" in event && !["Enter", " "].includes(event.key)) {
       return;

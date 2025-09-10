@@ -9,7 +9,7 @@ const AppSearchBox = () => {
   const dispatch = useDispatch();
   const [query, setQuery] = useQueryParams<{
     filterQuery: string;
-    filterType: string | null;
+    filterType: null | string;
   }>({
     filterQuery: "",
     filterType: null,

@@ -36,7 +36,7 @@ export default function CharmActionsPanel({
 }: Props): JSX.Element {
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
-  const [selectedAction, setSelectedAction] = useState<string | null>(null);
+  const [selectedAction, setSelectedAction] = useState<null | string>(null);
   const actionOptionsValues = useRef<ActionOptionValues>({});
 
   const selectedApplications = useAppSelector((state) =>

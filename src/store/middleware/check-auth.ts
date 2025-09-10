@@ -16,7 +16,7 @@ import type { RootState, Store } from "store/store";
 import { isPayloadAction } from "types";
 import { logger } from "utils/logger";
 
-function error(name: string, wsControllerURL?: string | null) {
+function error(name: string, wsControllerURL?: null | string) {
   // Not shown in UI. Logged for debugging purposes.
   logger.error(
     "Unable to perform action: ",

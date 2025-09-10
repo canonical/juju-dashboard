@@ -29,7 +29,7 @@ import ModelTabs from "./Model/ModelTabs";
 import { Label, TestId } from "./types";
 
 type Props = {
-  modelWatcherError?: string | null;
+  modelWatcherError?: null | string;
 };
 
 const getEntityType = (params: Partial<EntityDetailsRoute>) => {

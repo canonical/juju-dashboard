@@ -212,7 +212,7 @@ const slice = createSlice({
     updateModelsError: (
       state,
       action: PayloadAction<
-        { modelsError: string | null } & WsControllerURLParam
+        { modelsError: null | string } & WsControllerURLParam
       >,
     ) => {
       state.modelsError = action.payload.modelsError;
@@ -252,7 +252,7 @@ const slice = createSlice({
     },
     updateAuditEventsErrors: (
       state,
-      { payload }: PayloadAction<string | null>,
+      { payload }: PayloadAction<null | string>,
     ) => {
       state.auditEvents.errors = payload;
     },

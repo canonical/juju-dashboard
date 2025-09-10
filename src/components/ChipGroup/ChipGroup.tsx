@@ -4,13 +4,13 @@ import type { Chip } from "./types";
 
 type Props = {
   chips?: Chip | null;
-  className?: string | null;
-  descriptor?: string | null;
+  className?: null | string;
+  descriptor?: null | string;
 };
 
 const ChipGroup = ({ chips, className, descriptor }: Props) => {
-  const getLabelType = (labelDescriptor?: string | null) => {
-    let label: string | null = null;
+  const getLabelType = (labelDescriptor?: null | string) => {
+    let label: null | string = null;
     switch (labelDescriptor) {
       case "localApps":
         label = "Local applications";

@@ -4,5 +4,5 @@ import type { PropsWithChildren } from "react";
 export type Props = {
   displayIcon?: boolean;
   modelName?: string;
-} & PropsWithChildren &
-  Partial<ButtonProps>;
+} & Partial<ButtonProps> &
+  PropsWithChildren;

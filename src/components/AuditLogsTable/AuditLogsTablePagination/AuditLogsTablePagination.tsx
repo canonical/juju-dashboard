@@ -44,8 +44,8 @@ const AuditLogsTablePagination = ({
   const auditLogsLoaded = useAppSelector(getAuditEventsLoaded);
   const auditLogsLoading = useAppSelector(getAuditEventsLoading);
   const [queryParams, setQueryParams] = useQueryParams<{
-    panel: string | null;
-    page: string | null;
+    panel: null | string;
+    page: null | string;
   }>({
     panel: null,
     page: DEFAULT_PAGE,

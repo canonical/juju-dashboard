@@ -10,7 +10,7 @@ import { canAdministerModel } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 
 const useCheckJujuPermissions = (
-  modelUUID?: string | null,
+  modelUUID?: null | string,
   enabled: boolean = false,
 ) => {
   const activeUser = useAppSelector((state) => getActiveUser(state, modelUUID));
@@ -24,7 +24,7 @@ const useCheckJujuPermissions = (
 };
 
 const useCheckJIMMPermissions = (
-  modelUUID?: string | null,
+  modelUUID?: null | string,
   enabled: boolean = false,
   cleanup: boolean = false,
 ) => {
@@ -44,7 +44,7 @@ const useCheckJIMMPermissions = (
 
 export const useCanConfigureModelWithUUID = (
   cleanup?: boolean,
-  modelUUID: string | null = null,
+  modelUUID: null | string = null,
 ) => {
   const isJuju = useAppSelector(getIsJuju);
   const jujuPermissions = useCheckJujuPermissions(modelUUID, isJuju);
@@ -54,8 +54,8 @@ export const useCanConfigureModelWithUUID = (
 
 const useCanConfigureModel = (
   cleanup?: boolean,
-  modelName: string | null = null,
-  userName: string | null = null,
+  modelName: null | string = null,
+  userName: null | string = null,
 ) => {
   const params = useParams<EntityDetailsRoute>();
   userName = userName ?? params.userName ?? null;

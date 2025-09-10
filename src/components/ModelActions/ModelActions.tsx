@@ -11,8 +11,8 @@ import { Label, type Props } from "./types";
 
 const ModelActions = ({ modelName, modelUUID }: Props) => {
   const [, setPanelQs] = useQueryParams<{
-    model: string | null;
-    panel: string | null;
+    model: null | string;
+    panel: null | string;
   }>({
     model: null,
     panel: null,

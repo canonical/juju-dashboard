@@ -26,10 +26,10 @@ export type Column = {
 
 export type TableLinksLink =
   | {
-      link: string;
+      externalLink: string;
     }
   | {
-      externalLink: string;
+      link: string;
     };
 
 type TableLinksGenerateLink = (column: Column, row: Column[]) => TableLinksLink;
@@ -60,8 +60,8 @@ export type Props = {
   content: HistoryItem[];
   helpMessage: ReactNode;
   loading?: boolean;
-  processOutput?: ProcessOutput | null;
-  tableLinks?: TableLinks | null;
+  processOutput?: null | ProcessOutput;
+  tableLinks?: null | TableLinks;
   showHelp: boolean;
   setShouldShowHelp: (showHelp: boolean) => void;
 };

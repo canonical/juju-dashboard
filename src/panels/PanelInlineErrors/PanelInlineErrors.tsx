@@ -4,7 +4,7 @@ import type { JSX, ReactNode } from "react";
 import ScrollOnRender from "components/ScrollOnRender";
 
 type Props = {
-  inlineErrors: ReactNode[] | null;
+  inlineErrors: null | ReactNode[];
   scrollArea?: HTMLElement | null;
 };
 

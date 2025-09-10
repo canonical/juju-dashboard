@@ -13,7 +13,7 @@ import GrantSecretPanel from "./GrantSecretPanel";
 import RemoveSecretPanel from "./RemoveSecretPanel";
 
 export default function Panels() {
-  const [panelQs] = useQueryParams<{ panel: string | null }>({
+  const [panelQs] = useQueryParams<{ panel: null | string }>({
     panel: null,
   });
   const canManageSecrets = useCanManageSecrets();

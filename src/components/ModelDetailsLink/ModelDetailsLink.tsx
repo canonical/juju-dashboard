@@ -12,19 +12,19 @@ type BaseProps = {
   view?: ModelTab;
 } & React.PropsWithChildren;
 
-type NameProps = BaseProps & {
+type NameProps = {
   modelName: string;
-  ownerTag?: string | null;
+  ownerTag?: null | string;
   replaceLabel?: never;
   uuid?: never;
-};
+} & BaseProps;
 
-export type UUIDProps = BaseProps & {
+export type UUIDProps = {
   modelName?: never;
   ownerTag?: never;
   replaceLabel?: boolean;
   uuid: string;
-};
+} & BaseProps;
 
 export type Props = PropsWithSpread<
   NameProps | UUIDProps,

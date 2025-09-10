@@ -11,7 +11,7 @@ describe("useQueryParams", () => {
 
   it("can return default string params", () => {
     const { result } = renderWrappedHook(() =>
-      useQueryParams<{ panel: string | null }>({ panel: "config" }),
+      useQueryParams<{ panel: null | string }>({ panel: "config" }),
     );
     const [searchParams] = result.current;
     expect(searchParams.panel).toBe("config");
@@ -27,7 +27,7 @@ describe("useQueryParams", () => {
 
   it("can return string params from the URL", () => {
     const { result } = renderWrappedHook(
-      () => useQueryParams<{ panel: string | null }>({ panel: null }),
+      () => useQueryParams<{ panel: null | string }>({ panel: null }),
       { url: "?panel=config" },
     );
     const [searchParams] = result.current;
@@ -56,7 +56,7 @@ describe("useQueryParams", () => {
 
   it("can set string params", () => {
     const { result, router } = renderWrappedHook(() =>
-      useQueryParams<{ panel: string | null }>({ panel: null }),
+      useQueryParams<{ panel: null | string }>({ panel: null }),
     );
     let [searchParams] = result.current;
     const [, setSearchParams] = result.current;
@@ -85,7 +85,7 @@ describe("useQueryParams", () => {
   it("can clear a param", () => {
     const { result, router } = renderWrappedHook(
       () =>
-        useQueryParams<{ panel: string | null; other: string | null }>({
+        useQueryParams<{ panel: null | string; other: null | string }>({
           panel: null,
           other: null,
         }),
@@ -102,7 +102,7 @@ describe("useQueryParams", () => {
 
   it("can clear all params", () => {
     const { result, router } = renderWrappedHook(
-      () => useQueryParams<{ panel: string | null }>({ panel: null }),
+      () => useQueryParams<{ panel: null | string }>({ panel: null }),
       { url: "?panel=config" },
     );
     let [searchParams] = result.current;
@@ -116,7 +116,7 @@ describe("useQueryParams", () => {
 
   it("should sanitize existing query params value", () => {
     const { result } = renderWrappedHook(
-      () => useQueryParams<{ xss: string | null }>({ xss: null }),
+      () => useQueryParams<{ xss: null | string }>({ xss: null }),
       { url: "?xss=<img src=x onerror=alert(1)//>" },
     );
     const [searchParams] = result.current;
@@ -127,7 +127,7 @@ describe("useQueryParams", () => {
     const { result, router } = renderWrappedHook(
       () =>
         useQueryParams<{
-          panel: string | null;
+          panel: null | string;
         }>({
           panel: null,
         }),
@@ -148,7 +148,7 @@ describe("useQueryParams", () => {
 
   it("should sanitize query params value after changing it", () => {
     const { result } = renderWrappedHook(() =>
-      useQueryParams<{ xss: string | null }>({ xss: null }),
+      useQueryParams<{ xss: null | string }>({ xss: null }),
     );
     let [searchParams] = result.current;
     expect(searchParams.xss).toStrictEqual(null);

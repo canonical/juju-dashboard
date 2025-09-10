@@ -12,8 +12,8 @@ type Props = {
 
 const CloudCell = ({ model }: Props) => {
   const provider = model?.info?.["provider-type"];
-  let src: string | null = null;
-  let alt: string | null = null;
+  let src: null | string = null;
+  let alt: null | string = null;
   switch (provider) {
     case "ec2":
       src = awsLogo;

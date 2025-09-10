@@ -4,8 +4,8 @@ import type { PropsWithChildren } from "react";
 export type Props = {
   modelName: string;
   modelUUID: string;
-} & PropsWithChildren &
-  Partial<ButtonProps>;
+} & Partial<ButtonProps> &
+  PropsWithChildren;
 
 export enum Label {
   ACCESS = "Manage access",

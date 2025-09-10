@@ -7,7 +7,7 @@ import { Label } from "./types";
 type Props = {
   isActive: boolean;
   children: ReactNode;
-  variant: "positive" | "caution" | "negative";
+  variant: "caution" | "negative" | "positive";
 };
 
 export default function Banner({

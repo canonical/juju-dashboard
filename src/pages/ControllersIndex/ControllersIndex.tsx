@@ -33,13 +33,13 @@ import { breakLines } from "utils";
 import ControllersOverview from "./ControllerOverview";
 import { Label, TestId } from "./types";
 
-type AnnotatedController = Controller & {
+type AnnotatedController = {
   models: number;
   machines: number;
   applications: number;
   units: number;
   wsControllerURL: string;
-};
+} & Controller;
 
 const ControllersIndex = () => {
   const controllersCount = useAppSelector(getControllersCount);
@@ -154,7 +154,7 @@ const ControllersIndex = () => {
     controller: AnnotatedController,
     authenticated: boolean,
   ) => {
-    let cloud: string | null = "unknown";
+    let cloud: null | string = "unknown";
     if ("cloud-tag" in controller && Boolean(controller["cloud-tag"])) {
       cloud = controller["cloud-tag"] ?? null;
     } else if (
@@ -210,7 +210,7 @@ const ControllersIndex = () => {
       { content: controller.units },
       { content: "" },
     ];
-    let version: string | null = null;
+    let version: null | string = null;
     if ("agent-version" in controller && controller["agent-version"]) {
       version = controller["agent-version"];
     }

@@ -11,7 +11,7 @@ export enum ModelTab {
 }
 
 export type AppTab = "machines" | "units";
-export type ModelsGroupedBy = "status" | "cloud" | "owner";
+export type ModelsGroupedBy = "cloud" | "owner" | "status";
 
 const urls = {
   index: "/",

@@ -24,7 +24,7 @@ const BaseLayout = () => {
   const location = useLocation();
   const isOffline = useOffline();
   const isJuju = useAppSelector(getIsJuju);
-  const [status, setStatus] = useState<StatusView | null>(null);
+  const [status, setStatus] = useState<null | StatusView>(null);
   const sendAnalytics = useAnalytics();
 
   useFeatureFlags();

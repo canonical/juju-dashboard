@@ -22,7 +22,7 @@ import { Label } from "./types";
 type Props = {
   hideConfirm: () => void;
   handleRemoveSecret: (values: FormFields) => void;
-  secretURI?: string | null;
+  secretURI?: null | string;
   showConfirm: boolean;
 };
 

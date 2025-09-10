@@ -4,11 +4,11 @@ import type { PropsWithChildren } from "react";
 
 type Props = {
   status?: string;
-  count?: number | null;
+  count?: null | number;
   inline?: boolean;
   useIcon?: boolean;
   actionsLogs?: boolean;
-  className?: string | null;
+  className?: null | string;
 } & PropsWithChildren;
 
 const Status = ({
