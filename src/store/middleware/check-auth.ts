@@ -149,6 +149,7 @@ export const checkAuthMiddleware: Middleware<
         error(action.type, wsControllerURL);
       }
     }
+    return;
   };
 
 export default checkAuthMiddleware;

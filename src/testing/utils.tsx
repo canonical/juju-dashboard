@@ -62,7 +62,7 @@ type WrappedResult = {
 
 export type RenderComponentResult = {
   router: Router;
-  result: RenderResult;
+  result: RenderResult<typeof queries>;
   store: EnhancedStore<RootState>;
 };
 
