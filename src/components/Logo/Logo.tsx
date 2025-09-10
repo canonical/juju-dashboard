@@ -11,7 +11,7 @@ type Props<C> = PropsWithSpread<
     className?: string;
     dark?: boolean;
     isJuju?: boolean;
-    component?: ElementType | ComponentType<C>;
+    component?: ComponentType<C> | ElementType;
   },
   C
 >;

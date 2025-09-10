@@ -39,5 +39,5 @@ export enum FeatureFlags {
 }
 
 export type Nullable<T> = {
-  [P in keyof T]: T[P] | null;
+  [P in keyof T]: null | T[P];
 };

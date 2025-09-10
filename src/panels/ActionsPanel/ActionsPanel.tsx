@@ -31,7 +31,7 @@ import { enableSubmit, onValuesChange } from "./utils";
 type SetSelectedAction = (actionName: string) => void;
 
 type ActionsQueryParams = {
-  panel?: string | null;
+  panel?: null | string;
   units?: string[];
 };
 
@@ -51,9 +51,9 @@ export default function ActionsPanel(): JSX.Element {
     modelName,
   );
   const [selectedAction, setSelectedAction]: [
-    string | null,
+    null | string,
     SetSelectedAction,
-  ] = useState<string | null>(null);
+  ] = useState<null | string>(null);
   const [inlineErrors, setInlineErrors, hasInlineError] = useInlineErrors({
     [InlineErrors.GET_ACTION]: (error) => (
       // If get actions for application fails, we add a button for

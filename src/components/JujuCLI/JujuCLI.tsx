@@ -137,7 +137,7 @@ const JujuCLI = () => {
     });
   }
 
-  const tableLinks = useMemo<TableLinks | null>(
+  const tableLinks = useMemo<null | TableLinks>(
     () =>
       modelInfo
         ? {

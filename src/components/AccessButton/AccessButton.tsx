@@ -16,8 +16,8 @@ const AccessButton = ({
 }: Props) => {
   const isJuju = useAppSelector(getIsJuju);
   const [, setPanelQs] = useQueryParams<{
-    model: string | null;
-    panel: string | null;
+    model: null | string;
+    panel: null | string;
   }>({
     model: null,
     panel: null,

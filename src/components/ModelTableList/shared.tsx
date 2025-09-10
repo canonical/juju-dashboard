@@ -23,7 +23,7 @@ export const getControllerName = (
   controllers?: Controllers | null,
 ) => {
   const controllerUUID = getControllerUUID(model);
-  let controllerName: string | null = null;
+  let controllerName: null | string = null;
   Object.entries(controllers ?? {}).some(
     (controller) =>
       !!controller[1].some((controllerData) => {
@@ -73,7 +73,7 @@ export type TableHeaderOptions = {
 export const generateTableHeaders = (
   label: string,
   count: number,
-  options: TableHeaderOptions | null = null,
+  options: null | TableHeaderOptions = null,
 ) => {
   const rows = [
     {

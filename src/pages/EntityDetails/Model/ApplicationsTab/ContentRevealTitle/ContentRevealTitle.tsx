@@ -4,7 +4,7 @@ import { pluralize } from "store/juju/utils/models";
 
 type Props = {
   count: number;
-  subject: "Offer" | "Local application" | "Remote application";
+  subject: "Local application" | "Offer" | "Remote application";
   chips: Chip | null;
 };
 

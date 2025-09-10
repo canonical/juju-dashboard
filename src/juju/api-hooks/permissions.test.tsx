@@ -900,7 +900,7 @@ describe("useCheckRelations", () => {
     const [store, actions] = createStore(state, { trackActions: true });
     const { rerender } = renderHook<
       {
-        permissions?: ReBACAllowed[] | null;
+        permissions?: null | ReBACAllowed[];
         loading: boolean;
         loaded: boolean;
       },

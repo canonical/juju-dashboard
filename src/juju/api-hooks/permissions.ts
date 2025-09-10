@@ -27,7 +27,7 @@ import {
 import { useAppSelector } from "store/store";
 
 export const useReBAC = <A, C>(
-  fetchAction: ActionCreatorWithPayload<A & { wsControllerURL: string }>,
+  fetchAction: ActionCreatorWithPayload<{ wsControllerURL: string } & A>,
   cleanupAction: ActionCreatorWithPayload<C>,
   loading: boolean,
   loaded: boolean,
@@ -89,7 +89,7 @@ export const useReBAC = <A, C>(
 };
 
 export const useCheckPermissions = (
-  tuple?: RelationshipTuple | null,
+  tuple?: null | RelationshipTuple,
   cleanup?: boolean,
 ) => {
   const permitted = useAppSelector((state) => hasReBACPermission(state, tuple));
@@ -160,7 +160,7 @@ export const useAuditLogsPermitted = (cleanup?: boolean) => {
 
 export const useCheckRelations = (
   requestId: string,
-  tuples?: RelationshipTuple[] | null,
+  tuples?: null | RelationshipTuple[],
   cleanup?: boolean,
 ) => {
   const loaded = useAppSelector((state) =>

@@ -13,7 +13,7 @@ type Props = {
   valueAsString: unknown;
   value: unknown;
   keyPath: KeyPath;
-  code: CrossModelQueryResponse["results"] | CrossModelQueryResponse["errors"];
+  code: CrossModelQueryResponse["errors"] | CrossModelQueryResponse["results"];
 };
 
 // Use a key path to get the parent object that contains the current item from the results data.
@@ -30,7 +30,7 @@ const getCurrentObject = (
     .reverse()
     // This reduce follows the keypath by returning the next child until it
     // finally reaches the end.
-    .reduce<object | null>((current, key) => {
+    .reduce<null | object>((current, key) => {
       // Check that the current item in the path is a valid object.
       if (current && typeof current === "object" && key in current) {
         const inner = current[key as keyof typeof current];

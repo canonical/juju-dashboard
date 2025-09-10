@@ -25,7 +25,7 @@ import { Label, TestId } from "./types";
 type User = {
   user: string;
   "display-name": string;
-  "last-connection": string | null;
+  "last-connection": null | string;
   access: string;
 };
 
@@ -35,11 +35,11 @@ type UsersAccess = {
 
 type UserAccess = {
   username: string;
-  access: string | null;
+  access: null | string;
 };
 
 type ShareModelQueryParams = {
-  panel: string | null;
+  panel: null | string;
 };
 
 export default function ShareModel() {
@@ -88,7 +88,7 @@ export default function ShareModel() {
   const users = modelStatusData?.info?.users;
 
   useEffect(() => {
-    const clonedUserAccess: UsersAccess | null = cloneDeep(usersAccess);
+    const clonedUserAccess: null | UsersAccess = cloneDeep(usersAccess);
 
     users?.forEach((user: User) => {
       const displayName = user["user"];
@@ -169,7 +169,7 @@ export default function ShareModel() {
       permissionTo,
       permissionFrom,
     );
-    let error: string | null = response?.results?.[0]?.error?.message ?? null;
+    let error: null | string = response?.results?.[0]?.error?.message ?? null;
     // ignore this error as it means that it's a success
     if (
       error !== null &&

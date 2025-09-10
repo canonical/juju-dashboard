@@ -56,8 +56,8 @@ const GrantSecretPanel = () => {
   const formId = useId();
   const groupId = useId();
   const [queryParams, , handleRemovePanelQueryParams] = usePanelQueryParams<{
-    panel: string | null;
-    secret: string | null;
+    panel: null | string;
+    secret: null | string;
   }>({
     panel: null,
     secret: null,
@@ -66,7 +66,7 @@ const GrantSecretPanel = () => {
   const secret = useAppSelector((state) =>
     getSecretByURI(state, modelUUID, secretURI),
   );
-  const [inlineError, setInlineError] = useState<string | null>(null);
+  const [inlineError, setInlineError] = useState<null | string>(null);
   const [saving, setSaving] = useState(false);
   const grantSecret = useGrantSecret(userName, modelName);
   const revokeSecret = useRevokeSecret(userName, modelName);

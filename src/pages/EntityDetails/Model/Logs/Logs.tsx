@@ -19,8 +19,8 @@ const Logs = () => {
   const isJuju = useAppSelector(getIsJuju);
   const { permitted: auditLogsAllowed } = useAuditLogsPermitted();
   const [{ tableView }, setQueryParams] = useQueryParams<{
-    activeView: string | null;
-    panel: string | null;
+    activeView: null | string;
+    panel: null | string;
     tableView: string;
   }>({
     activeView: null,

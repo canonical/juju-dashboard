@@ -94,7 +94,7 @@ const getUniqueAuditEventValues = <K extends keyof AuditEvent>(
   modifier?: (value: AuditEvent[K]) => string,
 ) => {
   // Use a set to get unique values.
-  const values = new Set<string | AuditEvent[K]>();
+  const values = new Set<AuditEvent[K] | string>();
   auditEvents
     ?.filter(({ [key]: value }) => typeof value !== "undefined")
     .forEach(({ [key]: value }) =>
@@ -182,7 +182,7 @@ export const getSecretsState = createSelector(
 );
 
 export const getModelSecretsState = createSelector(
-  [getSecretsState, (_state: RootState, modelUUID: string | null) => modelUUID],
+  [getSecretsState, (_state: RootState, modelUUID: null | string) => modelUUID],
   (secrets, modelUUID) =>
     modelUUID !== null && modelUUID ? secrets[modelUUID] : null,
 );
@@ -210,7 +210,7 @@ export const getSecretsLoading = createSelector(
 export const getSecretByURI = createSelector(
   [
     getModelSecrets,
-    (_state: RootState, _modelUUID: string, secretURI?: string | null) =>
+    (_state: RootState, _modelUUID: string, secretURI?: null | string) =>
       secretURI,
   ],
   (secrets, secretURI) =>
@@ -336,13 +336,13 @@ export const getFullModelNames = createSelector(
   Get a model by UUID.
 */
 export const getModelByUUID = createSelector(
-  [getModelList, (_, uuid: string | null = null) => uuid],
+  [getModelList, (_, uuid: null | string = null) => uuid],
   (modelList, uuid) =>
     uuid !== null && uuid in modelList ? modelList[uuid] : null,
 );
 
 export const getModelDataByUUID = createSelector(
-  [getModelData, (_, modelUUID: string | null = null) => modelUUID],
+  [getModelData, (_, modelUUID: null | string = null) => modelUUID],
   (modelData, modelUUID) =>
     modelUUID != null && modelUUID in modelData ? modelData[modelUUID] : null,
 );
@@ -522,7 +522,7 @@ export const getModelWatcherDataByUUID = createSelector(
 
 export const getModelInfo = createSelector(
   getModelWatcherDataByUUID,
-  (modelWatcherData): WatcherModelInfo | null => {
+  (modelWatcherData): null | WatcherModelInfo => {
     if (modelWatcherData) {
       return modelWatcherData.model;
     }
@@ -534,8 +534,8 @@ export const getModelInfo = createSelector(
 export const getModelUUIDFromList = createSelector(
   [
     getModelList,
-    (_state: RootState, modelName: string | null = null) => modelName,
-    (_state: RootState, _modelName, ownerName: string | null = null) =>
+    (_state: RootState, modelName: null | string = null) => modelName,
+    (_state: RootState, _modelName, ownerName: null | string = null) =>
       ownerName,
   ],
   (modelList: ModelsList, modelName, ownerName) => {
@@ -582,7 +582,7 @@ export const getModelApplications = createSelector(
 
 export const getModelUnits = createSelector(
   getModelWatcherDataByUUID,
-  (modelWatcherData): UnitData | null => {
+  (modelWatcherData): null | UnitData => {
     if (modelWatcherData) {
       return modelWatcherData.units;
     }
@@ -592,7 +592,7 @@ export const getModelUnits = createSelector(
 
 export const getModelRelations = createSelector(
   getModelWatcherDataByUUID,
-  (modelWatcherData): RelationData | null => {
+  (modelWatcherData): null | RelationData => {
     if (modelWatcherData) {
       return modelWatcherData.relations;
     }
@@ -630,7 +630,7 @@ export interface StatusData {
 */
 export const getAllModelApplicationStatus = createSelector(
   getModelUnits,
-  (units): StatusData | null => {
+  (units): null | StatusData => {
     if (!units) {
       return null;
     }
@@ -772,7 +772,7 @@ export const getFilteredModelData = createSelector(
   @returns The memoized selector to return a modelUUID.
 */
 export const getModelUUID = createSelector(
-  [getModelData, (_state: RootState, name?: string | null) => name ?? null],
+  [getModelData, (_state: RootState, name?: null | string) => name ?? null],
   (modelData, name) => {
     let owner = null;
     let modelName = null;
@@ -810,7 +810,7 @@ export const getModelUUIDs = createSelector([getModelData], (modelData) =>
 export const getModelStatus = createSelector(
   [
     getModelData,
-    (_state: RootState, modelUUID: string | null = null) => modelUUID,
+    (_state: RootState, modelUUID: null | string = null) => modelUUID,
   ],
   (modelData, modelUUID) =>
     modelUUID !== null && modelUUID ? (modelData?.[modelUUID] ?? null) : null,
@@ -1006,13 +1006,13 @@ export const getControllerDataByUUID = createSelector(
 export const getModelControllerDataByUUID = createSelector(
   [
     getControllerData,
-    (_state: RootState, controllerUUID: string | null = null) => controllerUUID,
+    (_state: RootState, controllerUUID: null | string = null) => controllerUUID,
   ],
   (controllerData, controllerUUID) => {
     if (!controllerData || controllerUUID === null || !controllerUUID) {
       return null;
     }
-    let modelController: (Controllers[0][0] & { url?: string }) | null = null;
+    let modelController: ({ url?: string } & Controllers[0][0]) | null = null;
     let controllerURL;
     for (const controller of Object.entries(controllerData)) {
       // Loop through the sub controllers for each primary controller.
@@ -1054,7 +1054,7 @@ export const getCharms = createSelector(slice, (sliceState) => {
  * @returns A list of applications that are selected.
  */
 export const getSelectedApplications = createSelector(
-  [slice, (_state: RootState, charmURL: string | null = null) => charmURL],
+  [slice, (_state: RootState, charmURL: null | string = null) => charmURL],
   (sliceState, charmURL) => {
     if (charmURL === null || !charmURL) {
       return sliceState.selectedApplications;
@@ -1080,7 +1080,7 @@ export const getSelectedCharm = createSelector(
 export const isKubernetesModel = createSelector(
   [
     getModelDataByUUID,
-    (state, uuid: string | null = null) =>
+    (state, uuid: null | string = null) =>
       uuid !== null && uuid ? getModelInfo(state, uuid) : null,
   ],
   (modelData, modelInfo) =>
@@ -1096,7 +1096,7 @@ export const getReBACAllowedState = createSelector(
 export const getReBACPermission = createSelector(
   [
     getReBACAllowedState,
-    (_state: RootState, tuple?: RelationshipTuple | null) => tuple,
+    (_state: RootState, tuple?: null | RelationshipTuple) => tuple,
   ],
   (allowed, tuple) =>
     allowed.find((relation) => fastDeepEqual(relation.tuple, tuple)),
@@ -1105,7 +1105,7 @@ export const getReBACPermission = createSelector(
 export const getReBACPermissions = createSelector(
   [
     getReBACAllowedState,
-    (_state: RootState, tuples?: RelationshipTuple[] | null) => tuples,
+    (_state: RootState, tuples?: null | RelationshipTuple[]) => tuples,
   ],
   (allowed, tuples) =>
     tuples
@@ -1119,7 +1119,7 @@ export const getReBACPermissions = createSelector(
 
 export const getReBACPermissionLoading = createSelector(
   [
-    (state, tuple?: RelationshipTuple | null) =>
+    (state, tuple?: null | RelationshipTuple) =>
       getReBACPermission(state, tuple),
   ],
   (permission) => {
@@ -1129,7 +1129,7 @@ export const getReBACPermissionLoading = createSelector(
 
 export const getReBACPermissionLoaded = createSelector(
   [
-    (state, tuple?: RelationshipTuple | null) =>
+    (state, tuple?: null | RelationshipTuple) =>
       getReBACPermission(state, tuple),
   ],
   (permission) => {
@@ -1139,7 +1139,7 @@ export const getReBACPermissionLoaded = createSelector(
 
 export const getReBACPermissionErrors = createSelector(
   [
-    (state, tuple?: RelationshipTuple | null) =>
+    (state, tuple?: null | RelationshipTuple) =>
       getReBACPermission(state, tuple),
   ],
   (permission) => {
@@ -1149,7 +1149,7 @@ export const getReBACPermissionErrors = createSelector(
 
 export const hasReBACPermission = createSelector(
   [
-    (state, tuple?: RelationshipTuple | null) =>
+    (state, tuple?: null | RelationshipTuple) =>
       getReBACPermission(state, tuple),
   ],
   (permission) => {

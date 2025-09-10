@@ -22,8 +22,8 @@ export enum Label {
 }
 
 export const useListSecrets = (
-  userName: string | null = null,
-  modelName: string | null = null,
+  userName: null | string = null,
+  modelName: null | string = null,
 ) => {
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
@@ -88,8 +88,8 @@ export const useListSecrets = (
 };
 
 export const useGetSecretContent = (
-  userName: string | null = null,
-  modelName: string | null = null,
+  userName: null | string = null,
+  modelName: null | string = null,
 ) => {
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
@@ -170,8 +170,8 @@ export const useGetSecretContent = (
 };
 
 export const useCreateSecrets = (
-  userName: string | null = null,
-  modelName: string | null = null,
+  userName: null | string = null,
+  modelName: null | string = null,
 ) => {
   const handleCreate = useCallback(
     (connection: ConnectionWithFacades, secrets: CreateSecretArgs["args"]) => {
@@ -188,8 +188,8 @@ export const useCreateSecrets = (
 };
 
 export const useUpdateSecrets = (
-  userName: string | null = null,
-  modelName: string | null = null,
+  userName: null | string = null,
+  modelName: null | string = null,
 ) => {
   const handler = useCallback(
     (
@@ -207,8 +207,8 @@ export const useUpdateSecrets = (
 };
 
 export const useRemoveSecrets = (
-  userName: string | null = null,
-  modelName: string | null = null,
+  userName: null | string = null,
+  modelName: null | string = null,
 ) => {
   const handler = useCallback(
     (
@@ -231,8 +231,8 @@ export const useRemoveSecrets = (
 };
 
 export const useGrantSecret = (
-  userName: string | null = null,
-  modelName: string | null = null,
+  userName: null | string = null,
+  modelName: null | string = null,
 ) => {
   const handler = useCallback(
     (
@@ -259,8 +259,8 @@ export const useGrantSecret = (
 };
 
 export const useRevokeSecret = (
-  userName: string | null = null,
-  modelName: string | null = null,
+  userName: null | string = null,
+  modelName: null | string = null,
 ) => {
   const handler = useCallback(
     (

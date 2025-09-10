@@ -6,8 +6,8 @@ import type { ComponentType, ElementType, HTMLProps, JSX } from "react";
 type Props<P = ButtonProps> = PropsWithSpread<
   {
     buttons: ({ key: string } & P)[];
-    buttonComponent?: ElementType | ComponentType<P>;
-    activeButton?: string | null;
+    buttonComponent?: ComponentType<P> | ElementType;
+    activeButton?: null | string;
   },
   HTMLProps<HTMLDivElement>
 >;

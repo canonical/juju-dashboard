@@ -8,11 +8,11 @@ import type { SetParams } from "hooks/useQueryParams";
 import { DEFAULT_AUDIT_LOG_FILTERS } from "./consts";
 
 export type AuditLogFilters = {
-  after: string | null;
-  before: string | null;
-  user: string | null;
-  model: string | null;
-  method: string | null;
+  after: null | string;
+  before: null | string;
+  user: null | string;
+  model: null | string;
+  method: null | string;
 };
 
 const generateFilters = (
@@ -37,7 +37,7 @@ const generateFilters = (
 
 const AuditLogsTableFilters = () => {
   const [queryParams, setQueryParams] = useQueryParams<
-    AuditLogFilters & { page: string | null }
+    { page: null | string } & AuditLogFilters
   >({ ...DEFAULT_AUDIT_LOG_FILTERS, page: null });
   // Extract just the filters so that they can be looped over.
   const { page: _page, ...filters } = queryParams;

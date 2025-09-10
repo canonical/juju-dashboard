@@ -14,15 +14,15 @@ import { generateIconPath } from "store/juju/utils/models";
 type Props = {
   annotations: AnnotationData | null;
   applications: ApplicationData | null;
-  relations: RelationData | null;
+  relations: null | RelationData;
   width: number;
   height: number;
 };
 
-type Application = ApplicationInfo & {
+type Application = {
   name: string;
   annotations: AnnotationData[0];
-};
+} & ApplicationInfo;
 
 /**
   Returns whether the application is a subordinate.
@@ -40,8 +40,8 @@ const isSubordinate = (app: Application) =>
   @returns The deltas for x and y in the keys { deltaX, deltaY }.
 */
 const computePositionDelta = (annotations: AnnotationData | null) => {
-  let deltaX: number | null = null;
-  let deltaY: number | null = null;
+  let deltaX: null | number = null;
+  let deltaY: null | number = null;
 
   if (!annotations) {
     return { deltaX, deltaY };
@@ -97,8 +97,8 @@ const computeMaxXY = (annotations: AnnotationData | null) => {
   @returns The position value with the delta applied.
 */
 const applyDelta = (
-  position: number | string | null = null,
-  delta: number | string | null = null,
+  position: null | number | string = null,
+  delta: null | number | string = null,
 ) =>
   (typeof position === "number"
     ? position

@@ -12,7 +12,7 @@ import CharmApplicationsDetails from "./CharmApplicationsDetails";
 import { Label } from "./types";
 
 type Props = {
-  onCharmURLChange: (charmURL: string | null) => void;
+  onCharmURLChange: (charmURL: null | string) => void;
   onRemovePanelQueryParams: () => void;
   isLoading: boolean;
   inlineErrors: ReactNode[];
@@ -24,7 +24,7 @@ export default function CharmsPanel({
   onRemovePanelQueryParams,
   inlineErrors,
 }: Props): JSX.Element {
-  const [selectedCharm, setSelectedCharm] = useState<string | null>(null);
+  const [selectedCharm, setSelectedCharm] = useState<null | string>(null);
   const charms = useAppSelector(getCharms);
 
   const handleSubmit: FormEventHandler = (ev) => {

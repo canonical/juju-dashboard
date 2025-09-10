@@ -120,7 +120,7 @@ export default function LogIn() {
   @param loginError The error message from the store.
   @returns A component for the error message.
 */
-function generateErrorMessage(loginError: string | null = null) {
+function generateErrorMessage(loginError: null | string = null) {
   if (loginError === null || !loginError) {
     return null;
   }

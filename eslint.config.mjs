@@ -8,6 +8,7 @@ import stylistic from "@stylistic/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import vitest from "@vitest/eslint-plugin";
 import _import from "eslint-plugin-import";
+import perfectionist from "eslint-plugin-perfectionist";
 import prettier from "eslint-plugin-prettier";
 import promise from "eslint-plugin-promise";
 import react from "eslint-plugin-react";
@@ -43,6 +44,7 @@ export default [
       react: fixupPluginRules(react),
       import: fixupPluginRules(_import),
       "@stylistic": stylistic,
+      perfectionist,
     },
     languageOptions: {
       globals: {
@@ -137,6 +139,8 @@ export default [
         "error",
         { allowShortCircuit: true },
       ],
+      "perfectionist/sort-intersection-types": "error",
+      "perfectionist/sort-union-types": "error",
     },
   },
 ];

@@ -35,21 +35,18 @@ export type LocalController = {
   version?: string;
 };
 
-export type Controller = (ControllerInfo | LocalController) &
-  ControllerAnnotations;
+export type Controller = ControllerAnnotations &
+  (ControllerInfo | LocalController);
 
 export type Controllers = Record<string, Controller[]>;
 
 // There is some model data that we don't want to store from the full status because it changes
 // too often causing needless re-renders and is currently irrelevant
 // like controllerTimestamp.
-export type ModelData = Omit<
-  FullStatusWithAnnotations,
-  "branches" | "controller-timestamp"
-> & {
+export type ModelData = {
   info?: ModelInfo;
   uuid: string;
-};
+} & Omit<FullStatusWithAnnotations, "branches" | "controller-timestamp">;
 
 export type ModelDataList = Record<string, ModelData>;
 
@@ -65,23 +62,21 @@ export type ModelsList = {
   [uuid: string]: ModelListInfo;
 };
 
-export type AuditEventsState = GenericItemsState<AuditEvent, string | null> & {
+export type AuditEventsState = {
   limit: number;
-};
+} & GenericItemsState<AuditEvent, null | string>;
 
-export type CrossModelQueryState = GenericState<
-  CrossModelQueryResponse["errors"] | string
-> & {
+export type CrossModelQueryState = {
   results: CrossModelQueryResponse["results"] | null;
-};
+} & GenericState<CrossModelQueryResponse["errors"] | string>;
 
-export type SecretsContent = GenericState<string> & {
-  content?: SecretValueResult["data"] | null;
-};
+export type SecretsContent = {
+  content?: null | SecretValueResult["data"];
+} & GenericState<string>;
 
-export type ModelSecrets = GenericItemsState<ListSecretResult, string> & {
+export type ModelSecrets = {
   content?: SecretsContent;
-};
+} & GenericItemsState<ListSecretResult, string>;
 
 export type SecretsState = Record<string, ModelSecrets>;
 
@@ -92,14 +87,14 @@ export type ModelFeatures = {
 
 export type ModelFeaturesState = Record<string, ModelFeatures>;
 
-export type ReBACAllowed = GenericState<string> & {
+export type ReBACAllowed = {
   tuple: RelationshipTuple;
   allowed?: boolean | null;
-};
+} & GenericState<string>;
 
-export type ReBACRelationship = GenericState<string[]> & {
+export type ReBACRelationship = {
   requestId: string;
-};
+} & GenericState<string[]>;
 
 export type ReBACState = {
   allowed: ReBACAllowed[];
@@ -119,7 +114,7 @@ export type JujuState = {
   commandHistory: CommandHistory;
   controllers: Controllers | null;
   models: ModelsList;
-  modelsError: string | null;
+  modelsError: null | string;
   modelsLoaded: boolean;
   modelData: ModelDataList;
   modelFeatures: ModelFeaturesState;

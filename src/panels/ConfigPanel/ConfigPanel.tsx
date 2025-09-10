@@ -151,7 +151,7 @@ export default function ConfigPanel(): JSX.Element {
     updateConfig(newConfig);
   }
 
-  function setError(name: string, error?: string | null) {
+  function setError(name: string, error?: null | string) {
     const newConfig = cloneDeep(config);
     newConfig[name].error = error;
     setConfig(newConfig);
@@ -374,7 +374,7 @@ function generateConfigElementList(
   selectedConfig: ConfigData | undefined,
   setSelectedConfig: SetSelectedConfig,
   setNewValue: SetNewValue,
-  setError: (name: string, error?: string | null) => void,
+  setError: (name: string, error?: null | string) => void,
   secrets?: ListSecretResult[] | null,
 ) {
   const elements = Object.keys(configs).map((key) => {

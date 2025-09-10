@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 type Props = {
   name: string;
   description: string;
-  selectedInput?: string | null;
+  selectedInput?: null | string;
   onSelect: (inputName: string) => void;
   children: ReactNode;
 };

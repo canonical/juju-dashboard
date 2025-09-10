@@ -3,5 +3,5 @@ export enum StatusView {
 }
 
 export type Props = {
-  status?: StatusView | null;
+  status?: null | StatusView;
 };

@@ -8,7 +8,7 @@ import type {
 } from "components/ModelDetailsLink/ModelDetailsLink";
 
 type Props = PropsWithSpread<
-  UUIDProps & PropsWithChildren,
+  PropsWithChildren & UUIDProps,
   ModelDetailsLinkProps
 >;
 

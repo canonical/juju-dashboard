@@ -15,14 +15,14 @@ import { Label, TestId, type FormFields } from "./types";
 const AuditLogsFilterPanel = (): JSX.Element => {
   const formId = useId();
   const [, , handleRemovePanelQueryParams] = usePanelQueryParams<{
-    panel: string | null;
+    panel: null | string;
   }>({
     panel: null,
   });
   // These params are handled separately from the values in usePanelQueryParams
   // as they shouldn't be cleared when the panel closes.
   const [queryParams, setQueryParams] = useQueryParams<
-    AuditLogFilters & { page: string | null; panel: string | null }
+    { page: null | string; panel: null | string } & AuditLogFilters
   >({
     ...DEFAULT_AUDIT_LOG_FILTERS,
     page: null,
@@ -74,7 +74,7 @@ const AuditLogsFilterPanel = (): JSX.Element => {
             // useQueryParams hook will remove null or undefined values, but
             // keeps the queryParam if it is an empty string).
             const filtersWithNull = Object.entries(values).reduce<
-              Record<keyof FormFields, string | null>
+              Record<keyof FormFields, null | string>
             >(
               (filterList, [filterName, filterValue]) => {
                 filterList[filterName as keyof FormFields] = filterValue

@@ -23,11 +23,11 @@ enum InlineErrors {
 }
 
 type CharmsAndActionsQueryParams = {
-  panel: string | null;
+  panel: null | string;
 };
 
 const CharmsAndActionsPanel = () => {
-  const [charmURL, setCharmURL] = useState<string | null>();
+  const [charmURL, setCharmURL] = useState<null | string>();
   const defaultQueryParams: CharmsAndActionsQueryParams = {
     panel: null,
   };

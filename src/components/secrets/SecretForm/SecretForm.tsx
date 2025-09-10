@@ -37,8 +37,8 @@ import { TestId, type FormFields } from "./types";
 
 type Props = {
   formId: string;
-  onSuccess: (secret: string | null) => void;
-  secretURI?: string | null;
+  onSuccess: (secret: null | string) => void;
+  secretURI?: null | string;
   setSaving: (saving: boolean) => void;
   update?: boolean;
 };
@@ -83,7 +83,7 @@ const SecretForm = ({
   const wsControllerURL =
     useAppSelector((state) => getModelByUUID(state, modelUUID))
       ?.wsControllerURL ?? null;
-  const [inlineError, setInlineError] = useState<string | null>(null);
+  const [inlineError, setInlineError] = useState<null | string>(null);
   const existingContent = useAppSelector((state) =>
     getSecretsContent(state, modelUUID),
   );
@@ -185,7 +185,7 @@ const SecretForm = ({
                   } as CreateSecretArg,
                 ])
             )
-              .then((response: StringResults | ErrorResults) => {
+              .then((response: ErrorResults | StringResults) => {
                 const result = response.results?.[0];
                 if (result?.error) {
                   throw new Error(result.error.message);

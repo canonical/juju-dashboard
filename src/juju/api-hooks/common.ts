@@ -25,7 +25,7 @@ type CallHandler<R, A extends unknown[]> =
   | ((connection: ConnectionWithFacades, ...args: A) => Promise<R>)
   | ((connection: ConnectionWithFacades) => Promise<R>);
 
-export const useModelConnectionCallback = (modelUUID: string | null = null) => {
+export const useModelConnectionCallback = (modelUUID: null | string = null) => {
   const wsControllerURL =
     useAppSelector((state) => getModelByUUID(state, modelUUID))
       ?.wsControllerURL ?? null;
@@ -64,8 +64,8 @@ export const useModelConnectionCallback = (modelUUID: string | null = null) => {
 
 export const useCallWithConnectionPromise = <R, A extends unknown[]>(
   handler: CallHandler<R, A>,
-  userName: string | null,
-  modelName: string | null,
+  userName: null | string,
+  modelName: null | string,
 ) => {
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
@@ -93,8 +93,8 @@ export const useCallWithConnection = <R, A extends unknown[]>(
   handler: CallHandler<R, A>,
   onSuccess: (response: R) => void,
   onError: (error: string) => void,
-  userName: string | null = null,
-  modelName: string | null = null,
+  userName: null | string = null,
+  modelName: null | string = null,
 ) => {
   const callbackHandler = useCallback(
     (connection: ConnectionWithFacades, ...args: A) => {

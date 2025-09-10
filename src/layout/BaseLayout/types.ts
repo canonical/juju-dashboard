@@ -5,5 +5,5 @@ export enum Label {
 }
 
 export type BaseLayoutContext = {
-  setStatus: (status: StatusView | null) => void;
+  setStatus: (status: null | StatusView) => void;
 };

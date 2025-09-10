@@ -4,7 +4,7 @@ export type Config = {
   analyticsEnabled: boolean;
   baseAppURL: string;
   // Support for 2.9 configuration.
-  baseControllerURL?: string | null;
+  baseControllerURL?: null | string;
   controllerAPIEndpoint: string;
   identityProviderURL: string;
   isJuju: boolean;
@@ -37,13 +37,13 @@ export type Login = {
 };
 
 export type GeneralState = {
-  appVersion: string | null;
+  appVersion: null | string;
   config: Config | null;
-  connectionError?: string | null;
+  connectionError?: null | string;
   controllerConnections: ControllerConnections | null;
   controllerFeatures: ControllerFeaturesState | null;
   credentials: Credentials | null;
   login: Login | null;
-  pingerIntervalIds: PingerIntervalIds | null;
-  visitURLs: string[] | null;
+  pingerIntervalIds: null | PingerIntervalIds;
+  visitURLs: null | string[];
 };

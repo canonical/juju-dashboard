@@ -165,10 +165,10 @@ export default function App(): JSX.Element {
   const [query, setQuery] = useQueryParams<{
     tableView: string;
     activeView: string;
-    charm: string | null;
-    entity: string | null;
-    modelUUID: string | null;
-    panel: string | null;
+    charm: null | string;
+    entity: null | string;
+    modelUUID: null | string;
+    panel: null | string;
     units: string[];
   }>({
     tableView: "units",

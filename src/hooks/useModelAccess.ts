@@ -34,7 +34,7 @@ const getHighestAccess = (relations: ReBACAllowed[]) => {
 };
 
 const useModelAccess = (
-  modelUUID: string | null = null,
+  modelUUID: null | string = null,
   cleanup: boolean = false,
 ) => {
   const isJuju = useAppSelector(getIsJuju);

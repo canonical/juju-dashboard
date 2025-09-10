@@ -11,7 +11,7 @@ import { Label } from "./types";
 
 type Props = {
   userName: string;
-  lastConnected: string | null;
+  lastConnected: null | string;
   access: string;
   isOwner: boolean;
   removeUser: (userName: string) => void;
@@ -44,7 +44,7 @@ export default function ShareCard({
     };
   }, [showStatus]);
 
-  const getStatusIconClassNames = (status: string | null) => {
+  const getStatusIconClassNames = (status: null | string) => {
     let classNames = "";
     switch (status) {
       case "Updating":

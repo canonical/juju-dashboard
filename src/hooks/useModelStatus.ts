@@ -5,8 +5,8 @@ import { getModelUUID, getModelStatus } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
 // Return model status data based on model name in URL
-export default function useModelStatus(modelUUID: string | null = null) {
-  let modelName: string | null;
+export default function useModelStatus(modelUUID: null | string = null) {
+  let modelName: null | string;
   ({ modelName = null } = useParams());
 
   // if model name cannot be derived from URL params, fallback and check for

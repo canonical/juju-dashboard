@@ -223,7 +223,7 @@ export const extractCloudName = (tag = "") => {
   @param cloudTag The cloudTag identifier returns from the API
   @returns The simplified cloud string
 */
-export const extractCredentialName = (tag: string | null = null) => {
+export const extractCredentialName = (tag: null | string = null) => {
   // @ is not there in local boostraps
   // cloudcred-localhost_admin_localhost
   if (tag === null || !tag) {

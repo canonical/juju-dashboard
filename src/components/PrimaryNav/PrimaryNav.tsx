@@ -164,7 +164,7 @@ const PrimaryNav = () => {
 
   return (
     <>
-      <SideNavigation<NavLinkProps | HTMLProps<HTMLAnchorElement>>
+      <SideNavigation<HTMLProps<HTMLAnchorElement> | NavLinkProps>
         dark={DARK_THEME}
         items={[{ items: navigation }, { items: extraNav }]}
         className="p-primary-nav"

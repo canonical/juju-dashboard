@@ -1,5 +1,5 @@
 type Props = {
-  description?: string | null;
+  description?: null | string;
 };
 
 export default function DescriptionSummary({ description = null }: Props) {

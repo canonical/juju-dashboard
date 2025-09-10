@@ -15,8 +15,8 @@ const SecretFormPanel = ({ update = false }: Props) => {
   const scrollArea = useRef<HTMLDivElement>(null);
   const formId = useId();
   const [queryParams, , handleRemovePanelQueryParams] = usePanelQueryParams<{
-    panel: string | null;
-    secret: string | null;
+    panel: null | string;
+    secret: null | string;
   }>({
     panel: null,
     secret: null,

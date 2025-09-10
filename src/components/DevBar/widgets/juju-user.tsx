@@ -97,7 +97,7 @@ export default {
 
 function useAutoLogin(
   enabled: boolean,
-  wsControllerURL: string | null,
+  wsControllerURL: null | string,
   credential: { user: string; password: string },
 ) {
   const dispatch = useAppDispatch();

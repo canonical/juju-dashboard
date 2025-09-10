@@ -27,13 +27,13 @@ export default function ModelDetails() {
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );
-  const [modelWatcherError, setModelWatcherError] = useState<string | null>(
+  const [modelWatcherError, setModelWatcherError] = useState<null | string>(
     null,
   );
 
   useEffect(() => {
     let conn: ConnectionWithFacades | null = null;
-    let pingerIntervalId: number | null = null;
+    let pingerIntervalId: null | number = null;
     let watcherHandle: AllWatcherId | null = null;
 
     async function loadFullData() {

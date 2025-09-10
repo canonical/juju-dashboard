@@ -28,8 +28,8 @@ const RemoveSecretPanel = () => {
   const scrollArea = useRef<HTMLDivElement>(null);
   const formId = useId();
   const [queryParams, , handleRemovePanelQueryParams] = usePanelQueryParams<{
-    panel: string | null;
-    secret: string | null;
+    panel: null | string;
+    secret: null | string;
   }>({
     panel: null,
     secret: null,
@@ -41,7 +41,7 @@ const RemoveSecretPanel = () => {
   const latestRevision = useAppSelector((state) =>
     getSecretLatestRevision(state, modelUUID, secretURI),
   );
-  const [inlineError, setInlineError] = useState<string | null>(null);
+  const [inlineError, setInlineError] = useState<null | string>(null);
   const [saving, setSaving] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const removeSecrets = useRemoveSecrets(userName, modelName);

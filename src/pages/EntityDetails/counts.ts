@@ -40,8 +40,8 @@ const generateSecondaryCounts = <M extends ModelData>(
 };
 
 export function generateUnitCounts(
-  units: UnitData | null,
-  applicationName: string | null = null,
+  units: null | UnitData,
+  applicationName: null | string = null,
 ) {
   const counts = {};
   if (units && applicationName !== null && applicationName) {
@@ -59,8 +59,8 @@ export function generateUnitCounts(
 
 export function generateMachineCounts(
   machines: MachineData | null,
-  units: UnitData | null,
-  applicationName: string | null = null,
+  units: null | UnitData,
+  applicationName: null | string = null,
 ) {
   const counts = {};
   if (machines && units && applicationName !== null && applicationName) {
@@ -86,7 +86,7 @@ export function generateMachineCounts(
   @param modelStatusData The modelStatusData from the redux store.
 */
 export const renderCounts = (
-  countType: "localApps" | "relations" | "offers" | "remoteApps",
+  countType: "localApps" | "offers" | "relations" | "remoteApps",
   modelStatusData?: ModelData | null,
 ) => {
   if (!modelStatusData) return null;

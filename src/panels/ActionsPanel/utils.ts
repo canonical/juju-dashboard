@@ -36,7 +36,7 @@ export function onValuesChange(
 }
 
 export function enableSubmit(
-  selectedAction: string | null,
+  selectedAction: null | string,
   selectedUnits: string[],
   actionData: ActionData,
   optionsValues: MutableRefObject<ActionOptionValues>,

@@ -17,6 +17,6 @@ export type ModelIndexRoute = {
 /**
  * Parameters available at `/models/:userName/:modelName/app/:appName` (`urls.model.app.index`).
  */
-export type ModelAppRoute = ModelIndexRoute & {
+export type ModelAppRoute = {
   appName: string;
-};
+} & ModelIndexRoute;

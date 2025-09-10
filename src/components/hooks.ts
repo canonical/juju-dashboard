@@ -20,7 +20,7 @@ import getUserName from "utils/getUserName";
 
 type NameProps = {
   modelName: string;
-  ownerTag?: string | null;
+  ownerTag?: null | string;
   uuid?: never;
 };
 
@@ -98,7 +98,7 @@ export const useStatusView = (statusView: StatusView) => {
 export const useCleanupOnUnmount = <P>(
   cleanupAction: ActionCreatorWithPayload<P>,
   cleanupEnabled: boolean = false,
-  payload: P | null = null,
+  payload: null | P = null,
 ) => {
   const dispatch = useDispatch();
   const cleanupPayload = useRef<(() => void) | null>(null);

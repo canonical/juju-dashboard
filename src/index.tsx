@@ -38,7 +38,7 @@ if (
 
 const addressRegex = new RegExp(/^ws[s]?:\/\/(\S+)\//);
 export const getControllerAPIEndpointErrors = (
-  controllerAPIEndpoint: string | null = null,
+  controllerAPIEndpoint: null | string = null,
 ) => {
   if (controllerAPIEndpoint === null || !controllerAPIEndpoint) {
     return "controllerAPIEndpoint is not set.";
@@ -95,7 +95,7 @@ function bootstrap() {
 
   logger.setDefaultLevel(logLevel);
 
-  let error: string | null = null;
+  let error: null | string = null;
   if (!config) {
     error = Label.NO_CONFIG;
   }

@@ -6,8 +6,8 @@ import type { WatcherModelData } from "juju/types";
 type Props = {
   applicationName: string;
   applications:
-    | WatcherModelData["applications"]
-    | Record<string, ApplicationStatus>;
+    | Record<string, ApplicationStatus>
+    | WatcherModelData["applications"];
 };
 
 const RelationIcon = ({ applicationName, applications }: Props) => {

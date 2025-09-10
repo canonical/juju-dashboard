@@ -21,7 +21,7 @@ export type ControllerInfo = {
 // https://github.com/canonical/jimm/blob/1da76ed2d8dba741f5880f32c073f85f7d518904/api/params/params.go#L92
 export type AuditEvent<P = unknown, E = unknown> = {
   "conversation-id": string;
-  errors?: Record<string, E> | null;
+  errors?: null | Record<string, E>;
   "facade-method"?: string;
   "facade-name"?: string;
   "facade-version"?: number;
@@ -29,7 +29,7 @@ export type AuditEvent<P = unknown, E = unknown> = {
   "message-id": number;
   model?: string;
   "object-id"?: string;
-  params?: Record<string, P> | null;
+  params?: null | Record<string, P>;
   time: string;
   "user-tag": string;
 };

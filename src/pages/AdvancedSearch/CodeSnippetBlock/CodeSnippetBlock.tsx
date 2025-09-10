@@ -19,7 +19,7 @@ import Value from "./Value";
 type Props = {
   className: string;
   title: string;
-  code: CrossModelQueryResponse["results"] | CrossModelQueryResponse["errors"];
+  code: CrossModelQueryResponse["errors"] | CrossModelQueryResponse["results"];
 };
 
 const DEFAULT_THEME_COLOUR = "#00000099";

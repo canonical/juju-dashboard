@@ -51,9 +51,9 @@ type RowCells = {
   status: ReactNode;
 };
 
-type TableRow = RowCells & {
+type TableRow = {
   subRows: RowCells[];
-};
+} & RowCells;
 
 type ApplicationData = {
   charm: string;
@@ -66,8 +66,8 @@ enum InlineErrors {
 function generateAppIcon(
   application: ApplicationData | undefined,
   appName: string,
-  userName: string | null = null,
-  modelName: string | null = null,
+  userName: null | string = null,
+  modelName: null | string = null,
 ) {
   // If the user has executed actions with an application and then removed
   // that application it'll no longer be in the model data so in this
@@ -91,7 +91,7 @@ function generateAppIcon(
   return <>{appName}</>;
 }
 
-const compare = (numA: string | number, numB: string | number) =>
+const compare = (numA: number | string, numB: number | string) =>
   numA === numB ? 0 : numA > numB ? 1 : -1;
 
 const tableSort = (column: string, rowA: Row<RowCells>, rowB: Row<RowCells>) =>
@@ -105,7 +105,7 @@ const generateApplicationRow = (
   modelStatusData: ModelData | null,
   userName: string,
   modelName: string,
-): TableRow | null => {
+): null | TableRow => {
   // The action name is being defined like this because the action name is
   // only contained in the actions array and not on the operation level.
   // Even though at the current time an operation is the same action

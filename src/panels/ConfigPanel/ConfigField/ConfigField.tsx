@@ -24,9 +24,9 @@ export type ConfigProps = {
   validate?: (config: ConfigData) => void;
 };
 
-type Props<V extends ConfigValue> = ConfigProps & {
+type Props<V extends ConfigValue> = {
   input: (value: V) => ReactNode;
-};
+} & ConfigProps;
 
 const ConfigField = <V extends ConfigValue>({
   config,
@@ -44,7 +44,7 @@ const ConfigField = <V extends ConfigValue>({
   const [showDescription, setShowDescription] = useState(false);
   const descriptionRef = useRef<HTMLDivElement>(null);
   const [maxDescriptionHeight, setMaxDescriptionHeight] = useState<
-    string | null
+    null | string
   >(null);
   const previousValue = useRef<Props<V>["config"]["newValue"]>(null);
   const valueChanged = config.newValue !== previousValue.current;

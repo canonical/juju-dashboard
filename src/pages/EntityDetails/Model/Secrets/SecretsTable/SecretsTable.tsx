@@ -43,8 +43,8 @@ const SecretsTable = () => {
     getSecretsLoading(state, modelUUID),
   );
   const [, setQuery] = useQueryParams<{
-    panel: string | null;
-    secret: string | null;
+    panel: null | string;
+    secret: null | string;
   }>({
     panel: null,
     secret: null,

@@ -2,7 +2,7 @@ import type { JSX, ReactNode } from "react";
 import { useState } from "react";
 
 type Props = {
-  title: string | ReactNode;
+  title: ReactNode | string;
   children: JSX.Element;
   openByDefault?: boolean;
 };
