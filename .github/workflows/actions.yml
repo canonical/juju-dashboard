@@ -82,7 +82,7 @@ jobs:
           cache: "yarn"
       - name: Install
         run: yarn install --immutable
-      - run: yarn tsc --noEmit -p ${{ matrix.project }}
+      - run: yarn typescript-build -p ${{ matrix.project }}
   build:
     name: Build
     runs-on: ubuntu-latest
