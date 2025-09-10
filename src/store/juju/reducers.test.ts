@@ -74,7 +74,7 @@ describe("reducers", () => {
     );
   });
 
-  it("updateModelList", () => {
+  it("updateModelList adds list of models to empty state", () => {
     const state = jujuStateFactory.build({ modelsLoaded: false });
     expect(
       reducer(
@@ -106,6 +106,68 @@ describe("reducers", () => {
           type: "model",
           wsControllerURL: "wss://example.com",
         }),
+      },
+      modelsLoaded: true,
+    });
+  });
+
+  it("updateModelList removes a model and its associated model data", () => {
+    const state = jujuStateFactory.build({
+      models: {
+        abc123: modelListInfoFactory.build({
+          uuid: "abc123",
+          name: "a model",
+          ownerTag: "user-eggman@external",
+          type: "model",
+          wsControllerURL: "wss://example.com",
+        }),
+        xyz345: modelListInfoFactory.build({
+          uuid: "xyz345",
+          name: "another model",
+          ownerTag: "user-eggman@external",
+          type: "model",
+          wsControllerURL: "wss://example.com",
+        }),
+      },
+      modelData: {
+        abc123: model,
+        xyz345: { ...model, uuid: "xyz345" },
+      },
+      modelsLoaded: true,
+    });
+    expect(
+      reducer(
+        state,
+        actions.updateModelList({
+          models: {
+            "user-models": [
+              {
+                model: {
+                  uuid: "abc123",
+                  name: "a model",
+                  "owner-tag": "user-eggman@external",
+                  type: "model",
+                },
+                "last-connection": "today",
+              },
+            ],
+          },
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      models: {
+        abc123: modelListInfoFactory.build({
+          uuid: "abc123",
+          name: "a model",
+          ownerTag: "user-eggman@external",
+          type: "model",
+          wsControllerURL: "wss://example.com",
+        }),
+      },
+      modelData: {
+        abc123: model,
       },
       modelsLoaded: true,
     });
