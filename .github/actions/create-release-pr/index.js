@@ -32093,7 +32093,7 @@ const branch = {
          * @param branchName - Branch name to test.
          * @returns `true` if the branch name is a valid release branch.
          */
-        test: (branchName, { preRelease } = { preRelease: false }) => {
+        test: (branchName, { preRelease = false }) => {
             const version = branch.release.parse(branchName);
             if (version === null) {
                 return false;
