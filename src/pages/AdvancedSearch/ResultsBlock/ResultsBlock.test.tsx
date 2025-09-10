@@ -19,7 +19,7 @@ import ResultsBlock from "./ResultsBlock";
 import { Label, TestId } from "./types";
 
 // Handle clicking the toggle for a key that has an anchor wrapping the label.
-const clickToggleForLink = async (name: string) => {
+const clickToggleForLink = async (name: string): Promise<void> => {
   // Get the parent element to click on instead of the anchor.
   const toggle = screen.getByRole("link", {
     name,

@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import type { FC } from "react";
 
 import type { Chip } from "./types";
 
@@ -8,8 +9,8 @@ type Props = {
   descriptor?: null | string;
 };
 
-const ChipGroup = ({ chips, className, descriptor }: Props) => {
-  const getLabelType = (labelDescriptor?: null | string) => {
+const ChipGroup: FC<Props> = ({ chips, className, descriptor }: Props) => {
+  const getLabelType = (labelDescriptor?: null | string): null | string => {
     let label: null | string = null;
     switch (labelDescriptor) {
       case "localApps":
@@ -27,7 +28,7 @@ const ChipGroup = ({ chips, className, descriptor }: Props) => {
     return label;
   };
 
-  const getSumTotal = (chipGroup?: Chip | null) => {
+  const getSumTotal = (chipGroup?: Chip | null): number => {
     let total = 0;
     chipGroup &&
       Object.values(chipGroup).forEach((chipValue) => {

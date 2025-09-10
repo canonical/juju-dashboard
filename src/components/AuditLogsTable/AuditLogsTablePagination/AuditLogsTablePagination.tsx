@@ -1,6 +1,7 @@
 import type { PropsWithSpread } from "@canonical/react-components";
 import { Button, Icon, Pagination, Select } from "@canonical/react-components";
 import classNames from "classnames";
+import type { FC } from "react";
 import { useCallback, type HTMLProps, type OptionHTMLAttributes } from "react";
 
 import { useQueryParams } from "hooks/useQueryParams";
@@ -30,11 +31,11 @@ const LIMIT_OPTIONS: OptionHTMLAttributes<HTMLOptionElement>[] = [
   { label: "200/page", value: 200 },
 ];
 
-const scrollToTop = () => {
+const scrollToTop = (): void => {
   document?.querySelector<HTMLDivElement>(".l-application")?.scrollTo(0, 0);
 };
 
-const AuditLogsTablePagination = ({
+const AuditLogsTablePagination: FC<Props> = ({
   className,
   showLimit = false,
   ...props

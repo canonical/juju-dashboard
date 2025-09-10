@@ -4,6 +4,7 @@ import {
   SideNavigationText,
 } from "@canonical/react-components";
 import classNames from "classnames";
+import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
@@ -15,7 +16,7 @@ import { extractOwnerName } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 import urls from "urls";
 
-const UserMenu = () => {
+const UserMenu: FC = () => {
   const sendAnalytics = useAnalytics();
   const logout = useLogout();
   const wsControllerURL = useAppSelector(getWSControllerURL);
@@ -33,7 +34,7 @@ const UserMenu = () => {
     }
   }, [isActive, sendAnalytics]);
 
-  const toggleUserMenuActive = () => setIsActive(!isActive);
+  const toggleUserMenuActive = (): void => setIsActive(!isActive);
 
   return (
     <>

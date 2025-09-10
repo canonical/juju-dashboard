@@ -11,10 +11,10 @@ export default function ContentReveal({
   title,
   openByDefault = false,
   children,
-}: Props) {
+}: Props): JSX.Element {
   const [isOpen, setIsOpen] = useState(openByDefault);
 
-  function handleToggle() {
+  function handleToggle(): void {
     setIsOpen(!isOpen);
   }
 

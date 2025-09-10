@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from "react";
  *
  * @returns Whether the browser is offline.
  */
-export default function useOffline() {
+export default function useOffline(): boolean {
   const [isOffline, setIsOffline] = useState<boolean | null>(null);
 
   const setOffline = useCallback(() => {
@@ -19,7 +19,7 @@ export default function useOffline() {
   useEffect(() => {
     window.addEventListener("offline", setOffline, false);
     window.addEventListener("online", setOnline, false);
-    return () => {
+    return (): void => {
       window.removeEventListener("offline", setOffline);
       window.removeEventListener("online", setOnline);
     };

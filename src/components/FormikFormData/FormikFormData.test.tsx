@@ -1,12 +1,16 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik, Field } from "formik";
+import type { Mock } from "vitest";
 import { vi } from "vitest";
 
 import FormikFormData from "./FormikFormData";
 
 describe("FormikFormData", () => {
-  function generateComponent() {
+  function generateComponent(): {
+    changeHandler: Mock;
+    setupHandler: Mock;
+  } {
     const children = <Field type="checkbox" name="test" data-testid="field" />;
     const changeHandler = vi.fn();
     const setupHandler = vi.fn();

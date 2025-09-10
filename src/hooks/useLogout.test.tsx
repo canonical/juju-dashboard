@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { JSX } from "react";
 import { vi } from "vitest";
 
 import { Label } from "hooks/useLogout";
@@ -47,7 +48,7 @@ describe("useLogout", () => {
             : null,
         ),
     );
-    const TestComponent = () => {
+    const TestComponent = (): JSX.Element => {
       const logout = useLogout();
       return <button onClick={logout}>Log out</button>;
     };

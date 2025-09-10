@@ -4,7 +4,7 @@ import {
   SearchAndFilter,
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
-import type { ReactNode } from "react";
+import type { JSX, ReactNode } from "react";
 import { useId } from "react";
 import { Link } from "react-router";
 
@@ -34,7 +34,7 @@ import urls, { externalURLs } from "urls";
 
 import { Label, TestId } from "./types";
 
-export default function Models() {
+export default function Models(): JSX.Element {
   useWindowTitle("Models");
 
   const [queryParams, setQueryParams] = useQueryParams<{
@@ -83,7 +83,10 @@ export default function Models() {
   useCheckRelations(requestId, relations, true);
 
   // Generate chips from available model data
-  const generateChips = (lead: string, values: string[]) => {
+  const generateChips = (
+    lead: string,
+    values: string[],
+  ): SearchAndFilterChip[] => {
     const chipValues: SearchAndFilterChip[] = [];
     values.forEach((value) => {
       chipValues.push({ lead, value });
@@ -100,7 +103,7 @@ export default function Models() {
   const isObjectsEqual = (
     obj1: Record<string, unknown>,
     obj2: Record<string, unknown>,
-  ) => JSON.stringify(obj1) === JSON.stringify(obj2);
+  ): boolean => JSON.stringify(obj1) === JSON.stringify(obj2);
 
   const existingSearchData: SearchAndFilterChip[] = [];
   for (const [lead, values] of Object.entries(filters)) {

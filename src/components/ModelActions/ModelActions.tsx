@@ -1,4 +1,5 @@
 import { ContextualMenu } from "@canonical/react-components";
+import type { FC } from "react";
 import { Link } from "react-router";
 
 import { useCanConfigureModelWithUUID } from "hooks/useCanConfigureModel";
@@ -9,7 +10,7 @@ import { rebacURLS } from "urls";
 
 import { Label, type Props } from "./types";
 
-const ModelActions = ({ modelName, modelUUID }: Props) => {
+const ModelActions: FC<Props> = ({ modelName, modelUUID }: Props) => {
   const [, setPanelQs] = useQueryParams<{
     model: null | string;
     panel: null | string;
@@ -31,7 +32,7 @@ const ModelActions = ({ modelName, modelUUID }: Props) => {
           disabled: !canConfigureModel,
           ...(isJuju
             ? {
-                onClick: (event) => {
+                onClick: (event): void => {
                   event.stopPropagation();
                   setPanelQs(
                     {

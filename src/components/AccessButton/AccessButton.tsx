@@ -1,4 +1,5 @@
 import { Button, Icon } from "@canonical/react-components";
+import type { FC } from "react";
 import { Link } from "react-router";
 
 import { useQueryParams } from "hooks/useQueryParams";
@@ -8,7 +9,7 @@ import { rebacURLS } from "urls";
 
 import type { Props } from "./types";
 
-const AccessButton = ({
+const AccessButton: FC<Props> = ({
   children,
   displayIcon = false,
   modelName,
@@ -27,7 +28,7 @@ const AccessButton = ({
       {...props}
       {...(isJuju
         ? {
-            onClick: (event) => {
+            onClick: (event): void => {
               event.stopPropagation();
               setPanelQs(
                 {

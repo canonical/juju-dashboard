@@ -1,5 +1,6 @@
 import { Panel } from "@canonical/react-components";
 import classNames from "classnames";
+import type { FC } from "react";
 
 import FadeIn from "animations/FadeIn";
 import LoadingSpinner from "components/LoadingSpinner";
@@ -8,7 +9,7 @@ import SecondaryNavigation from "components/SecondaryNavigation";
 import type { Props } from "./types";
 import { TestId } from "./types";
 
-const MainContent = ({
+const MainContent: FC<Props> = ({
   children,
   loading = false,
   secondaryNav = null,

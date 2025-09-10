@@ -1,13 +1,29 @@
+import type { InitiateMigrationResults } from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
+
 import type { ConnectionWithFacades, Facades } from "juju/types";
 
-import type { FindAuditEventsRequest } from "./JIMMV3";
-import type { MigrateModelInfo, RelationshipTuple } from "./JIMMV4";
+import type { AuditEvents, FindAuditEventsRequest } from "./JIMMV3";
+import type {
+  CheckRelationResponse,
+  CheckRelationsResponse,
+  CrossModelQueryResponse,
+  ListControllersResponse,
+  MigrateModelInfo,
+  RelationshipTuple,
+} from "./JIMMV4";
 
 export enum Label {
   NO_JIMM = "Not connected to JIMM.",
 }
 
-export const endpoints = () => {
+type Endpoints = {
+  login: string;
+  logout: string;
+  rebac: string;
+  whoami: string;
+};
+
+export const endpoints = (): Endpoints => {
   const jimmEndpoint =
     window.jujuDashboardConfig?.controllerAPIEndpoint
       .replace("wss://", "https://")
@@ -41,7 +57,7 @@ const withJimmCheck = <T>(
 export const findAuditEvents = async (
   conn: ConnectionWithFacades,
   params?: FindAuditEventsRequest,
-) => {
+): Promise<AuditEvents> => {
   return withJimmCheck(conn, (jimm) => jimm.findAuditEvents(params));
 };
 
@@ -51,7 +67,7 @@ export const findAuditEvents = async (
 export const crossModelQuery = async (
   conn: ConnectionWithFacades,
   query: string,
-) => {
+): Promise<CrossModelQueryResponse> => {
   return withJimmCheck(conn, (jimm) => jimm.crossModelQuery(query));
 };
 
@@ -61,7 +77,7 @@ export const crossModelQuery = async (
 export const checkRelation = async (
   conn: ConnectionWithFacades,
   tuple: RelationshipTuple,
-) => {
+): Promise<CheckRelationResponse> => {
   return withJimmCheck(conn, (jimm) => jimm.checkRelation(tuple));
 };
 
@@ -71,7 +87,7 @@ export const checkRelation = async (
 export const checkRelations = async (
   conn: ConnectionWithFacades,
   tuples: RelationshipTuple[],
-) => {
+): Promise<CheckRelationsResponse> => {
   return withJimmCheck(conn, (jimm) => jimm.checkRelations(tuples));
 };
 
@@ -81,7 +97,7 @@ export const checkRelations = async (
 export const migrateModel = async (
   conn: ConnectionWithFacades,
   migrationSpecs: MigrateModelInfo[],
-) => {
+): Promise<InitiateMigrationResults> => {
   return withJimmCheck(conn, (jimm) => jimm.migrateModel(migrationSpecs));
 };
 
@@ -91,6 +107,6 @@ export const migrateModel = async (
 export const listMigrationTargets = async (
   conn: ConnectionWithFacades,
   modelTag: string,
-) => {
+): Promise<ListControllersResponse> => {
   return withJimmCheck(conn, (jimm) => jimm.listMigrationTargets(modelTag));
 };

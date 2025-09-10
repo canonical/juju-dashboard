@@ -1,7 +1,12 @@
 import type {
   Action as ActionType,
+  ApplicationsCharmActionsResults,
   Entities,
   OperationQueryArgs,
+  AdditionalProperties,
+  EnqueuedActions,
+  ActionResults,
+  OperationResults,
 } from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 import { useCallback } from "react";
 
@@ -16,7 +21,7 @@ export enum Label {
 export const useGetActionsForApplication = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((appName: string) => Promise<ApplicationsCharmActionsResults>) => {
   const handler = useCallback(
     (connection: ConnectionWithFacades, appName: string) => {
       if (!connection.facades.action) {
@@ -34,7 +39,11 @@ export const useGetActionsForApplication = (
 export const useExecuteActionOnUnits = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((
+  unitList: string[] | undefined,
+  actionName: string,
+  actionOptions: AdditionalProperties,
+) => Promise<EnqueuedActions>) => {
   const handler = useCallback(
     (
       connection: ConnectionWithFacades,
@@ -65,7 +74,7 @@ export const useExecuteActionOnUnits = (
 export const useQueryOperationsList = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((queryArgs: Partial<OperationQueryArgs>) => Promise<OperationResults>) => {
   const handler = useCallback(
     (
       connection: ConnectionWithFacades,
@@ -93,7 +102,7 @@ export const useQueryOperationsList = (
 export const useQueryActionsList = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((queryArgs: Entities) => Promise<ActionResults>) => {
   const handler = useCallback(
     (connection: ConnectionWithFacades, queryArgs: Entities) => {
       if (!connection.facades.action) {

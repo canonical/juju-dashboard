@@ -1,5 +1,6 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ReactNode } from "react";
 import { vi } from "vitest";
 
 import type { RootState } from "store/store";
@@ -16,7 +17,7 @@ import InfoPanel from "./InfoPanel";
 import { Label } from "./types";
 
 vi.mock("components/Topology", () => {
-  const Topology = () => <div data-testid="topology"></div>;
+  const Topology = (): ReactNode => <div data-testid="topology"></div>;
   return { default: Topology };
 });
 

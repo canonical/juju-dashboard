@@ -4,7 +4,7 @@ import { actions as generalActions } from "store/general";
 import reduxStore from "store/store";
 
 const bakery = new Bakery({
-  visitPage: (resp) => {
+  visitPage: (resp): void => {
     reduxStore.dispatch(generalActions.storeVisitURL(resp.Info.VisitURL));
     reduxStore.dispatch(generalActions.updateLoginLoading(false));
   },

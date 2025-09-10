@@ -29,7 +29,7 @@ const SearchHistoryMenu = ({
         ...queryHistory.map((query) => ({
           children: query,
           disabled: loading,
-          onClick: async () => {
+          onClick: async (): Promise<void> => {
             search(query);
             await setFieldValue("query", query);
           },

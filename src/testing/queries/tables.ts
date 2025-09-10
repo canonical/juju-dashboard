@@ -1,6 +1,9 @@
 import { getAllByRole, queryHelpers } from "@testing-library/dom";
 
-export const getCellByHeader = (container: HTMLElement, header: string) => {
+export const getCellByHeader = (
+  container: HTMLElement,
+  header: string,
+): HTMLElement => {
   const table = container.closest("table");
   if (!table) {
     throw queryHelpers.getElementError(

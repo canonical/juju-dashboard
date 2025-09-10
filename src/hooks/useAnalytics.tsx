@@ -22,6 +22,6 @@ export default function useAnalytics() {
     isJuju: (!!isJuju).toString(),
   };
 
-  return (props: AnalyticsMessage) =>
+  return (props: AnalyticsMessage): void =>
     analytics(!!analyticsEnabled, eventParams, props);
 }

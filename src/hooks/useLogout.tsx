@@ -14,7 +14,7 @@ export enum Label {
 
 const useLogout = () => {
   const dispatch = useAppDispatch();
-  return () => {
+  return (): void => {
     dispatch(appThunks.logOut())
       .then(unwrapResult)
       .catch((error) => {

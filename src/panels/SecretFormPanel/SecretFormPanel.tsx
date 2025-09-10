@@ -1,4 +1,5 @@
 import { ActionButton, Button } from "@canonical/react-components";
+import type { FC } from "react";
 import { useId, useState, useRef } from "react";
 
 import Panel from "components/Panel";
@@ -11,7 +12,7 @@ type Props = {
   update?: boolean;
 };
 
-const SecretFormPanel = ({ update = false }: Props) => {
+const SecretFormPanel: FC<Props> = ({ update = false }: Props) => {
   const scrollArea = useRef<HTMLDivElement>(null);
   const formId = useId();
   const [queryParams, , handleRemovePanelQueryParams] = usePanelQueryParams<{

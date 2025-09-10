@@ -7,21 +7,22 @@ import {
   extractCredentialName,
 } from "store/juju/utils/models";
 
-export const getCloudName = (model: ModelData) =>
+export const getCloudName = (model: ModelData): string =>
   extractCloudName(model.model["cloud-tag"]);
 
-export const getRegion = (model: ModelData) => model.model.region;
+export const getRegion = (model: ModelData): string | undefined =>
+  model.model.region;
 
-export const getCredential = (model: ModelData) =>
+export const getCredential = (model: ModelData): string =>
   extractCredentialName(model.info?.["cloud-credential-tag"]);
 
-export const getControllerUUID = (model: ModelData) =>
+export const getControllerUUID = (model: ModelData): string | undefined =>
   model.info?.["controller-uuid"];
 
 export const getControllerName = (
   model: ModelData,
   controllers?: Controllers | null,
-) => {
+): string | undefined => {
   const controllerUUID = getControllerUUID(model);
   let controllerName: null | string = null;
   Object.entries(controllers ?? {}).some(
@@ -42,7 +43,7 @@ export const getControllerName = (
   return controllerName ?? controllerUUID;
 };
 
-export const getLastUpdated = (model: ModelData) => {
+export const getLastUpdated = (model: ModelData): string | undefined => {
   // .slice(2) here will make the year 2 characters instead of 4
   // e.g. 2021-01-01 becomes 21-01-01
   return model.info?.status?.since?.split("T")[0].slice(2);
@@ -53,7 +54,7 @@ export const getLastUpdated = (model: ModelData) => {
   @param model The model data
   @returns The formatted cloud and region data.
 */
-export function generateCloudAndRegion(model: ModelData) {
+export function generateCloudAndRegion(model: ModelData): string {
   return `${getCloudName(model)}/${getRegion(model)}`;
 }
 
@@ -74,7 +75,7 @@ export const generateTableHeaders = (
   label: string,
   count: number,
   options: null | TableHeaderOptions = null,
-) => {
+): MainTableHeader[] => {
   const rows = [
     {
       content:

@@ -10,7 +10,7 @@ type FlagQueryParams = {
   "disable-flag": string[];
 };
 
-export default function useFeatureFlags() {
+export default function useFeatureFlags(): void {
   const [queryParams] = useQueryParams<FlagQueryParams>({
     "enable-flag": [],
     "disable-flag": [],

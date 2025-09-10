@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import type { FC } from "react";
 import { useRef, useEffect } from "react";
 
 type Props = {
@@ -9,7 +10,11 @@ type Props = {
 
 type KeyValTuple = [string, number];
 
-const DonutChart = ({ alert = 0, blocked = 0, running = 0 }: Props) => {
+const DonutChart: FC<Props> = ({
+  alert = 0,
+  blocked = 0,
+  running = 0,
+}: Props) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const width = 100;
   const height = 100;
@@ -61,7 +66,7 @@ const DonutChart = ({ alert = 0, blocked = 0, running = 0 }: Props) => {
       )
       .attr("class", (datum) => color(datum.data[0]));
 
-    return () => {
+    return (): void => {
       svg.remove();
     };
   }, [alert, blocked, running, isDisabled]);

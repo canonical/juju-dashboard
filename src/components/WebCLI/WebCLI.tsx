@@ -1,5 +1,5 @@
 import type { Macaroon } from "@canonical/macaroon-bakery/dist/macaroon";
-import type { FormEvent } from "react";
+import type { FC, FormEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import useInlineErrors from "hooks/useInlineErrors";
@@ -43,7 +43,7 @@ type Authentication = {
   macaroons?: Macaroon[];
 };
 
-const WebCLI = ({
+const WebCLI: FC<Props> = ({
   activeUser = null,
   controllerWSHost,
   credentials,
@@ -107,7 +107,7 @@ const WebCLI = ({
     const input = inputRef.current;
     input?.addEventListener("keydown", keydownListener);
     input?.addEventListener("keyup", keyupListener);
-    return () => {
+    return (): void => {
       input?.removeEventListener("keydown", keydownListener);
       input?.removeEventListener("keyup", keyupListener);
     };
@@ -132,13 +132,13 @@ const WebCLI = ({
     }
     const conn = new Connection({
       address: wsAddress,
-      onopen: () => {
+      onopen: (): void => {
         // Unused handler.
       },
-      onclose: () => {
+      onclose: (): void => {
         // Unused handler.
       },
-      onerror: (error) => {
+      onerror: (error): void => {
         // Only display errors if they're related to the current WebSocket
         // connection.
         if (connection.current && connection.current.isWebSocketEqual(conn)) {
@@ -148,7 +148,7 @@ const WebCLI = ({
           );
         }
       },
-      messageCallback: (messages: string[]) => {
+      messageCallback: (messages: string[]): void => {
         const command = lastCommand.current;
         if (command !== null && command) {
           setOutput((previousOutput) => ({
@@ -167,13 +167,15 @@ const WebCLI = ({
   }, [modelUUID, onHistoryChange, setInlineError, wsAddress]);
 
   useEffect(
-    () => () => {
+    () => (): void => {
       connection.current?.disconnect();
     },
     [],
   );
 
-  const handleCommandSubmit = async (ev: FormEvent<HTMLFormElement>) => {
+  const handleCommandSubmit = async (
+    ev: FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
     ev.preventDefault();
     setShouldShowHelp(false);
     // We need to get the most up to date connection information in the event
@@ -242,7 +244,7 @@ const WebCLI = ({
     }
   };
 
-  const showHelp = (event: React.KeyboardEvent | React.MouseEvent) => {
+  const showHelp = (event: React.KeyboardEvent | React.MouseEvent): void => {
     // Only trigger the help from the space or enter keys (or mouse clicks).
     if ("key" in event && !["Enter", " "].includes(event.key)) {
       return;

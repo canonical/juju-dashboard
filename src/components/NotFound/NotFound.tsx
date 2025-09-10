@@ -5,7 +5,7 @@ type Props = {
   children: JSX.Element;
 };
 
-export default function NotFound({ message, children }: Props) {
+export default function NotFound({ message, children }: Props): JSX.Element {
   return (
     <>
       <h1>

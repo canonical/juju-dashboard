@@ -1,10 +1,11 @@
 import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
+import type { FC } from "react";
 
 type Props = {
   secret: ListSecretResult;
 };
 
-const SecretLabel = ({ secret }: Props) => {
+const SecretLabel: FC<Props> = ({ secret }: Props) => {
   const id = secret.uri.replace(/^secret:/, "");
   return (
     <>

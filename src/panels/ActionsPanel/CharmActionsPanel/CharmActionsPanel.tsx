@@ -54,7 +54,7 @@ export default function CharmActionsPanel({
     0,
   );
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     setConfirmType(ConfirmType.SUBMIT);
   };
 

@@ -1,5 +1,6 @@
 import type { TabsProps } from "@canonical/react-components";
 import { Tabs } from "@canonical/react-components";
+import type { FC } from "react";
 import type { LinkProps } from "react-router";
 import { useParams, Link } from "react-router";
 
@@ -17,7 +18,7 @@ import { ModelTab } from "urls";
 
 import { Label } from "./types";
 
-const ModelTabs = () => {
+const ModelTabs: FC = () => {
   const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
@@ -35,7 +36,7 @@ const ModelTabs = () => {
   });
   const { activeView } = query;
 
-  const handleNavClick = (ev: React.MouseEvent) => {
+  const handleNavClick = (ev: React.MouseEvent): void => {
     (ev.target as HTMLAnchorElement)?.scrollIntoView({
       behavior: "smooth",
       block: "end",

@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import type { JSX } from "react";
 import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
@@ -8,7 +9,7 @@ import { StatusView } from "./types";
 
 vi.mock("components/JujuCLI", () => ({
   __esModule: true,
-  default: () => {
+  default: (): JSX.Element => {
     return <div className="webcli" data-testid="webcli"></div>;
   },
 }));

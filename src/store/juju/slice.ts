@@ -55,7 +55,10 @@ const DEFAULT_MODEL_SECRETS_CONTENT: SecretsContent = {
   loaded: false,
 };
 
-const getOrSetContentState = (state: JujuState, modelUUID: string) => {
+const getOrSetContentState = (
+  state: JujuState,
+  modelUUID: string,
+): SecretsContent => {
   let modelSecrets =
     modelUUID in state.secrets ? state.secrets[modelUUID] : null;
   if (!modelSecrets) {
@@ -79,7 +82,7 @@ const updateCheckRelation = (
   state: JujuState,
   tuple: RelationshipTuple,
   changes: Omit<Partial<ReBACAllowed>, "tuple">,
-) => {
+): void => {
   const existingIndex = state.rebac.allowed.findIndex((relation) =>
     fastDeepEqual(relation.tuple, tuple),
   );
@@ -97,7 +100,10 @@ const updateCheckRelation = (
   }
 };
 
-const startCheckRelation = (state: JujuState, tuple: RelationshipTuple) => {
+const startCheckRelation = (
+  state: JujuState,
+  tuple: RelationshipTuple,
+): void => {
   updateCheckRelation(state, tuple, {
     errors: null,
     loaded: false,

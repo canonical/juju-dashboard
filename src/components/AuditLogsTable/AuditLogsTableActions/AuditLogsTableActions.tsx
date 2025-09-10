@@ -1,4 +1,5 @@
 import { Button, Icon, Tooltip } from "@canonical/react-components";
+import type { FC } from "react";
 
 import { useQueryParams } from "hooks/useQueryParams";
 
@@ -8,7 +9,7 @@ import { useFetchAuditEvents } from "../hooks";
 
 import { Label } from "./types";
 
-const AuditLogsTableActions = () => {
+const AuditLogsTableActions: FC = () => {
   const [, setQueryParams] = useQueryParams<{
     panel: null | string;
     page: null | string;

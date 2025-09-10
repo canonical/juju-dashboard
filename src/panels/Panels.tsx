@@ -1,4 +1,5 @@
 import { AnimatePresence } from "framer-motion";
+import type { JSX, ReactNode } from "react";
 
 import useCanManageSecrets from "hooks/useCanManageSecrets";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -12,13 +13,13 @@ import ConfigPanel from "./ConfigPanel/ConfigPanel";
 import GrantSecretPanel from "./GrantSecretPanel";
 import RemoveSecretPanel from "./RemoveSecretPanel";
 
-export default function Panels() {
+export default function Panels(): JSX.Element {
   const [panelQs] = useQueryParams<{ panel: null | string }>({
     panel: null,
   });
   const canManageSecrets = useCanManageSecrets();
 
-  const generatePanel = () => {
+  const generatePanel = (): ReactNode => {
     switch (panelQs.panel) {
       case "execute-action":
         return <ActionsPanel />;

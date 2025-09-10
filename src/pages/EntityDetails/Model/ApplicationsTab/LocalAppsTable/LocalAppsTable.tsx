@@ -1,6 +1,10 @@
 import { MainTable, Button, Icon } from "@canonical/react-components";
-import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import type {
+  MainTableCell,
+  MainTableRow,
+} from "@canonical/react-components/dist/components/MainTable/MainTable";
 import classnames from "classnames";
+import type { FC } from "react";
 import { useMemo } from "react";
 import { useParams } from "react-router";
 
@@ -15,6 +19,7 @@ import {
   getSelectedApplications,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import type { Header } from "tables/tableHeaders";
 import { generateLocalApplicationTableHeaders } from "tables/tableHeaders";
 import { generateLocalApplicationRows } from "tables/tableRows";
 
@@ -30,7 +35,7 @@ type Props = {
   applications?: ApplicationData | null;
 };
 
-const LocalAppsTable = ({ applications = null }: Props) => {
+const LocalAppsTable: FC<Props> = ({ applications = null }: Props) => {
   const sendAnalytics = useAnalytics();
   const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
@@ -61,7 +66,8 @@ const LocalAppsTable = ({ applications = null }: Props) => {
     applications !== null &&
     canConfigureModel;
 
-  let headers = generateLocalApplicationTableHeaders();
+  let headers: Header | MainTableCell[] =
+    generateLocalApplicationTableHeaders();
   let rows: MainTableRow[] = useMemo(() => {
     return modelName !== null &&
       modelName &&
@@ -81,7 +87,7 @@ const LocalAppsTable = ({ applications = null }: Props) => {
     headers = addSelectAllColumn(headers, selectAll, handleSelectAll);
     rows = addSelectColumn(rows, applications, handleSelect);
   }
-  const handleRunAction = async (event: React.MouseEvent) => {
+  const handleRunAction = async (event: React.MouseEvent): Promise<void> => {
     event.stopPropagation();
     sendAnalytics({
       category: "ApplicationSearch",

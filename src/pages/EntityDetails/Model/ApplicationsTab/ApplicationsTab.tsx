@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import { useParams } from "react-router";
 
 import ContentReveal from "components/ContentReveal";
@@ -19,7 +20,7 @@ import LocalAppsTable from "./LocalAppsTable";
 import RemoteAppsTable from "./RemoteAppsTable";
 import SearchResults from "./SearchResults/SearchResults";
 
-export default function ApplicationsTab() {
+export default function ApplicationsTab(): JSX.Element {
   const [queryParams] = useQueryParams<{
     entity: null | string;
     panel: null | string;
@@ -60,7 +61,7 @@ export default function ApplicationsTab() {
       ? Object.keys(modelStatusData["remote-applications"]).length
       : 0;
 
-  const countVisibleTables = (tablesLengths: number[]) =>
+  const countVisibleTables = (tablesLengths: number[]): number =>
     tablesLengths.filter((rowLength) => rowLength > 0).length;
 
   const visibleTables = countVisibleTables([
@@ -69,7 +70,7 @@ export default function ApplicationsTab() {
     appOffersTableLength,
   ]);
 
-  const getContentReveals = () => {
+  const getContentReveals = (): JSX.Element => {
     return (
       <>
         {!!localAppTableLength && (

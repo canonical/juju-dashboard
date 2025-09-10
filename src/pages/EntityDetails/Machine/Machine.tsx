@@ -1,4 +1,5 @@
 import { MainTable } from "@canonical/react-components";
+import type { JSX } from "react";
 import { useMemo } from "react";
 import { useParams } from "react-router";
 
@@ -23,7 +24,7 @@ import {
   generateUnitRows,
 } from "tables/tableRows";
 
-export default function Machine() {
+export default function Machine(): JSX.Element {
   const {
     machineId = null,
     modelName = null,

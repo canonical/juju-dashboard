@@ -2,7 +2,7 @@ import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secre
 import { ActionButton, Button } from "@canonical/react-components";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
-import type { JSX } from "react";
+import type { JSX, ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import FadeIn from "animations/FadeIn";
@@ -47,7 +47,7 @@ const hasChangedFields = (newConfig: Config): boolean => {
   );
 };
 
-const hasErrors = (config: Config) =>
+const hasErrors = (config: Config): boolean =>
   Object.values(config).some((field) => Boolean(field.error));
 
 export default function ConfigPanel(): JSX.Element {
@@ -106,7 +106,7 @@ export default function ConfigPanel(): JSX.Element {
 
   useEffect(() => {
     listSecrets();
-    return () => {
+    return (): void => {
       if (
         modelUUID == null ||
         !modelUUID ||
@@ -142,7 +142,7 @@ export default function ConfigPanel(): JSX.Element {
     });
   }, [sendAnalytics]);
 
-  function setNewValue(name: string, value: ConfigValue) {
+  function setNewValue(name: string, value: ConfigValue): void {
     const newConfig = cloneDeep(config);
     newConfig[name].newValue = value;
     if (newConfig[name].newValue === newConfig[name].value) {
@@ -151,13 +151,13 @@ export default function ConfigPanel(): JSX.Element {
     updateConfig(newConfig);
   }
 
-  function setError(name: string, error?: null | string) {
+  function setError(name: string, error?: null | string): void {
     const newConfig = cloneDeep(config);
     newConfig[name].error = error;
     setConfig(newConfig);
   }
 
-  function checkAllDefaults(configOptions: Config) {
+  function checkAllDefaults(configOptions: Config): void {
     const shouldShow = Object.keys(configOptions).some((key) => {
       const cfg = configOptions[key];
       if (isSet(cfg.newValue)) {
@@ -174,7 +174,7 @@ export default function ConfigPanel(): JSX.Element {
     setShowResetAll(shouldShow);
   }
 
-  function allFieldsToDefault() {
+  function allFieldsToDefault(): void {
     const newConfig = cloneDeep(config);
     Object.keys(newConfig).forEach((key) => {
       const cfg = newConfig[key];
@@ -187,12 +187,14 @@ export default function ConfigPanel(): JSX.Element {
     updateConfig(newConfig);
   }
 
-  function checkEnableSave(newConfig: Config) {
+  function checkEnableSave(newConfig: Config): void {
     const fieldChanged = hasChangedFields(newConfig);
     setEnableSave(fieldChanged);
   }
 
-  function checkCanClose(event: React.KeyboardEvent | React.MouseEvent) {
+  function checkCanClose(
+    event: React.KeyboardEvent | React.MouseEvent,
+  ): boolean {
     if (!("code" in event)) {
       const target = event.target as HTMLElement;
       if (
@@ -347,7 +349,7 @@ function getConfig(
   updateConfig: (value: Config) => void,
   setInlineError: SetError,
   getApplicationConfig: ReturnType<typeof useGetApplicationConfig>,
-) {
+): void {
   setIsLoading(true);
   getApplicationConfig(appName)
     .then((result) => {
@@ -376,7 +378,7 @@ function generateConfigElementList(
   setNewValue: SetNewValue,
   setError: (name: string, error?: null | string) => void,
   secrets?: ListSecretResult[] | null,
-) {
+): ReactNode[] {
   const elements = Object.keys(configs).map((key) => {
     const config = configs[key];
     if (config.type === "boolean") {

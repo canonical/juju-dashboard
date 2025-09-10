@@ -7,7 +7,9 @@ import {
 import type {
   MainTableCell,
   MainTableHeader,
+  MainTableRow,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import type { FC } from "react";
 import { Link } from "react-router";
 
 import AuthenticationButton from "components/AuthenticationButton";
@@ -41,7 +43,7 @@ type AnnotatedController = {
   wsControllerURL: string;
 } & Controller;
 
-const ControllersIndex = () => {
+const ControllersIndex: FC = () => {
   const controllersCount = useAppSelector(getControllersCount);
   const modelData = useAppSelector(getModelData);
   const modelCount = Object.keys(modelData).length;
@@ -113,7 +115,9 @@ const ControllersIndex = () => {
     { content: "version", sortKey: "version" },
   ];
 
-  const generatePathValue = (annotatedController: AnnotatedController) => {
+  const generatePathValue = (
+    annotatedController: AnnotatedController,
+  ): MainTableCell => {
     const column: MainTableCell = { content: "" };
     // Remove protocol and trailing /api from websocket addresses.
     const controllerAddress = annotatedController.wsControllerURL
@@ -153,7 +157,7 @@ const ControllersIndex = () => {
   const generateRow = (
     controller: AnnotatedController,
     authenticated: boolean,
-  ) => {
+  ): MainTableRow => {
     let cloud: null | string = "unknown";
     if ("cloud-tag" in controller && Boolean(controller["cloud-tag"])) {
       cloud = controller["cloud-tag"] ?? null;

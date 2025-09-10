@@ -115,7 +115,7 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
                     },
                   ],
                   value: codeSnippetView,
-                  onChange: (event) => {
+                  onChange: (event): void => {
                     setCodeSnippetView(
                       (event.target as HTMLSelectElement)
                         .value as CodeSnippetView,

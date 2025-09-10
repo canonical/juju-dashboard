@@ -1,4 +1,5 @@
 import { MainTable } from "@canonical/react-components";
+import type { FC } from "react";
 import { useMemo } from "react";
 import { useParams } from "react-router";
 
@@ -9,7 +10,7 @@ import { generateRemoteApplicationRows } from "tables/tableRows";
 
 import { Label } from "./types";
 
-const RemoteAppsTable = () => {
+const RemoteAppsTable: FC = () => {
   const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
   const modelStatusData = useModelStatus();
   const remoteApplicationTableRows = useMemo(() => {

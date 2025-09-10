@@ -2,7 +2,7 @@ export enum Label {
   UNKNOWN_ERROR = "Unknown error",
 }
 
-const toErrorString = (error: unknown) => {
+const toErrorString = (error: unknown): string => {
   if (error instanceof Error) {
     return error.message;
   }

@@ -7,7 +7,7 @@ import {
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
-const useCanManageSecrets = () => {
+const useCanManageSecrets = (): boolean => {
   const routeParams = useParams();
   const { userName, modelName } = routeParams;
   const modelUUID = useAppSelector((state) =>

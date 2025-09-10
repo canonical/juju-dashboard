@@ -10,7 +10,7 @@ type Props = {
   charmURL: string;
 };
 
-const formatApplicationsDetails = (applications: ApplicationInfo[]) =>
+const formatApplicationsDetails = (applications: ApplicationInfo[]): string =>
   applications
     .map((application) => ("name" in application ? application.name : null))
     .filter((application) => Boolean(application))

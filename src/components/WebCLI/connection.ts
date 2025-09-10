@@ -32,19 +32,19 @@ class Connection {
     this.#wsOnError = options.onerror;
   }
 
-  get address() {
+  get address(): string {
     return this.#address;
   }
 
-  connect(onOpen?: () => void, onError?: (event: Event) => void) {
+  connect(onOpen?: () => void, onError?: (event: Event) => void): this {
     const ws = new WebSocket(this.#address);
-    ws.onopen = () => {
+    ws.onopen = (): void => {
       this.#wsOnOpen();
       onOpen?.();
     };
     ws.onclose = this.#wsOnClose;
     ws.onmessage = this.#handleMessage.bind(this);
-    ws.onerror = (event) => {
+    ws.onerror = (event): void => {
       this.#wsOnError(event);
       onError?.(event);
     };
@@ -52,12 +52,12 @@ class Connection {
     return this;
   }
 
-  send(message: string) {
+  send(message: string): void {
     this.#setLoading(true);
     this.#ws?.send(message);
   }
 
-  disconnect() {
+  disconnect(): void {
     if (this.isActive()) {
       this.#ws?.close();
       this.#setLoading(false);
@@ -65,25 +65,25 @@ class Connection {
     this.#messageBuffer = [];
   }
 
-  reconnect() {
+  reconnect(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.connect(resolve, reject);
     });
   }
 
-  isOpen() {
+  isOpen(): boolean {
     return this.#ws?.readyState === WebSocket.OPEN;
   }
 
-  isActive() {
+  isActive(): boolean {
     return this.#ws?.readyState === WebSocket.CONNECTING || this.isOpen();
   }
 
-  isWebSocketEqual(newConnection: Connection) {
+  isWebSocketEqual(newConnection: Connection): boolean {
     return this.#ws === newConnection.#ws;
   }
 
-  #handleMessage(messageEvent: MessageEvent) {
+  #handleMessage(messageEvent: MessageEvent): void {
     this.#setLoading(false);
     try {
       let data: unknown;

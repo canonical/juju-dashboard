@@ -13,7 +13,7 @@ export default function BooleanConfig({
 }: ConfigProps): JSX.Element {
   function handleOptionChange(
     ev: FormEvent<HTMLInputElement> | React.MouseEvent<HTMLInputElement>,
-  ) {
+  ): void {
     const target = ev.target as HTMLInputElement;
     const bool = target.value === "true" ? true : false;
     setNewValue(target.name, bool);

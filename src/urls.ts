@@ -64,7 +64,7 @@ export const externalURLs = {
     "https://documentation.ubuntu.com/juju/latest/howto/manage-models/#heading--add-a-model",
   cliHelp:
     "https://documentation.ubuntu.com/juju/latest/reference/juju-web-cli/",
-  cliHelpCommand: (command: string) =>
+  cliHelpCommand: (command: string): string =>
     `https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/${command.replace(/^\//, "")}`,
   deployingApplication:
     "https://documentation.ubuntu.com/juju/latest/howto/manage-applications/#deploy-an-application",

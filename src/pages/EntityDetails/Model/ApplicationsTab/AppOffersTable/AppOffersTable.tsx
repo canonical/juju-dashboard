@@ -1,4 +1,5 @@
 import { MainTable } from "@canonical/react-components";
+import type { FC } from "react";
 import { useMemo } from "react";
 
 import useModelStatus from "hooks/useModelStatus";
@@ -7,7 +8,7 @@ import { generateAppOffersRows } from "tables/tableRows";
 
 import { Label } from "./types";
 
-const AppOffersTable = () => {
+const AppOffersTable: FC = () => {
   const modelStatusData = useModelStatus();
   const appOffersRows = useMemo(
     () => generateAppOffersRows(modelStatusData),

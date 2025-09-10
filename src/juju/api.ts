@@ -10,7 +10,12 @@ import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5"
 import Client from "@canonical/jujulib/dist/api/facades/client";
 import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
+import type { AllWatcherId } from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
+import type {
+  ModelInfoResults,
+  ErrorResults,
+} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 import Secrets from "@canonical/jujulib/dist/api/facades/secrets";
 import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
@@ -70,7 +75,7 @@ export const CLIENT_VERSION = "3.0.0";
 export function generateConnectionOptions(
   usePinger = false,
   onClose: ConnectOptions["closeCallback"] = () => null,
-) {
+): ConnectOptions {
   // The options used when connecting to a Juju controller or model.
   const facades: ValueOf<Facades>[] = [
     Action,
@@ -98,7 +103,7 @@ export function generateConnectionOptions(
   };
 }
 
-function startPingerLoop(conn: ConnectionWithFacades) {
+function startPingerLoop(conn: ConnectionWithFacades): number {
   // Ping to keep the connection alive.
   const intervalId = window.setInterval(() => {
     conn.facades.pinger?.ping(null).catch((err) => {
@@ -111,7 +116,7 @@ function startPingerLoop(conn: ConnectionWithFacades) {
   return intervalId;
 }
 
-function stopPingerLoop(intervalId: number) {
+function stopPingerLoop(intervalId: number): void {
   if (intervalId) {
     clearInterval(intervalId);
   }
@@ -130,7 +135,12 @@ function stopPingerLoop(intervalId: number) {
 export async function loginWithBakery(
   wsControllerURL: string,
   credentials?: AuthCredential,
-) {
+): Promise<{
+  error?: Label;
+  conn?: ConnectionWithFacades;
+  juju?: JujuClient;
+  intervalId?: null | number;
+}> {
   const juju: JujuClient = await connect(
     wsControllerURL,
     generateConnectionOptions(true, (err) =>
@@ -192,7 +202,10 @@ export async function fetchModelStatus(
   modelUUID: string,
   wsControllerURL: string,
   getState: () => RootState,
-) {
+): Promise<{
+  status: FullStatusWithAnnotations | null;
+  features: ModelFeatures | null;
+}> {
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   let status: FullStatusWithAnnotations | null = null;
   let features: ModelFeatures | null = null;
@@ -263,7 +276,7 @@ export async function fetchAndStoreModelStatus(
   wsControllerURL: string,
   dispatch: Dispatch,
   getState: () => RootState,
-) {
+): Promise<void> {
   const { status, features } = await fetchModelStatus(
     modelUUID,
     wsControllerURL,
@@ -297,7 +310,7 @@ export async function fetchAndStoreModelStatus(
 export async function fetchModelInfo(
   conn: ConnectionWithFacades,
   modelUUID: string,
-) {
+): Promise<ModelInfoResults | undefined> {
   const modelInfo = await conn.facades.modelManager?.modelInfo({
     entities: [{ tag: `model-${modelUUID}` }],
   });
@@ -319,7 +332,7 @@ export async function fetchAllModelStatuses(
   conn: ConnectionWithFacades,
   dispatch: Store["dispatch"],
   getState: () => RootState,
-) {
+): Promise<void> {
   let modelErrorCount = 0;
   // Use for/of so that the awaits are blocking so only one model gets polled at a time.
   for (const modelUUID of modelUUIDList) {
@@ -399,7 +412,7 @@ export async function fetchControllerList(
   conn: ConnectionWithFacades,
   dispatch: Store["dispatch"],
   getState: () => RootState,
-) {
+): Promise<void> {
   let controllers: JujuController[] | null = null;
   try {
     if (conn.facades.jimM) {
@@ -458,7 +471,9 @@ export async function fetchControllerList(
   if the user is not an administrator on the controller.
   @param conn The controller connection instance.
 */
-export function disableControllerUUIDMasking(conn: ConnectionWithFacades) {
+export function disableControllerUUIDMasking(
+  conn: ConnectionWithFacades,
+): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     if (conn?.facades?.jimM) {
       conn.facades.jimM
@@ -485,7 +500,7 @@ export async function connectToModel(
   modelUUID: string,
   wsControllerURL: string,
   credentials?: AuthCredential,
-) {
+): Promise<ConnectionWithFacades | undefined> {
   const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
   const response = await connectAndLoginWithTimeout(
     modelURL,
@@ -504,7 +519,7 @@ export async function connectToModel(
 export async function connectAndLoginToModel(
   modelUUID: string,
   appState: RootState,
-) {
+): Promise<ConnectionWithFacades | null | undefined> {
   const wsControllerURL =
     getModelByUUID(appState, modelUUID)?.wsControllerURL ?? null;
   if (wsControllerURL === null || !wsControllerURL) {
@@ -530,7 +545,11 @@ export async function startModelWatcher(
   modelUUID: string,
   appState: RootState,
   dispatch: Dispatch,
-) {
+): Promise<{
+  conn: ConnectionWithFacades;
+  watcherHandle: AllWatcherId | undefined;
+  pingerIntervalId: number;
+}> {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   if (!conn) {
     throw new Error(Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR);
@@ -552,7 +571,7 @@ export async function stopModelWatcher(
   conn: ConnectionWithFacades,
   watcherHandleId: string,
   pingerIntervalId: number,
-) {
+): Promise<void> {
   await conn.facades.allWatcher?.stop({ id: watcherHandleId });
   stopPingerLoop(pingerIntervalId);
   conn.transport.close();
@@ -579,8 +598,11 @@ export async function setModelSharingPermissions(
   permissionFrom: string | undefined,
   action: string,
   dispatch: Dispatch,
-) {
-  const modifyAccess = async (access: string, actionName: string) => {
+): Promise<ErrorResults> {
+  const modifyAccess = async (
+    access: string,
+    actionName: string,
+  ): Promise<ErrorResults | undefined> => {
     return await conn?.facades.modelManager?.modifyModelAccess({
       changes: [
         {
@@ -625,7 +647,7 @@ export async function getCharmInfo(
   charmURL: string,
   modelUUID: string,
   appState: RootState,
-) {
+): Promise<Charm | undefined> {
   const conn = await connectAndLoginToModel(modelUUID, appState);
   const charmDetails = await conn?.facades.charms?.charmInfo({
     url: charmURL,
@@ -638,7 +660,7 @@ export async function getCharmsURLFromApplications(
   modelUUID: string,
   appState: RootState,
   dispatch: Dispatch,
-) {
+): Promise<string[]> {
   const uniqueCharmURLs = new Set<string>();
   applications.forEach(
     (app) => "charm-url" in app && uniqueCharmURLs.add(app["charm-url"]),

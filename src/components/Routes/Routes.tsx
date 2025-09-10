@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import { Navigate, createBrowserRouter, RouterProvider } from "react-router";
 
 import Login from "components/LogIn";
@@ -13,7 +14,7 @@ import { getConfig, getIsJuju } from "store/general/selectors";
 import { useAppSelector } from "store/store";
 import urls from "urls";
 
-export function Routes() {
+export function Routes(): JSX.Element {
   const config = useAppSelector(getConfig);
   const isJuju = useAppSelector(getIsJuju);
 

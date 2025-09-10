@@ -22,7 +22,7 @@ export function onValuesChange(
   actionName: string,
   values: ActionOptionValue,
   optionValues: MutableRefObject<ActionOptionValues>,
-) {
+): void {
   const updatedValues: ActionOptionValue = {};
   Object.keys(values).forEach((key) => {
     // Use toString to convert booleans to strings as this is what the API requires.
@@ -41,7 +41,7 @@ export function enableSubmit(
   actionData: ActionData,
   optionsValues: MutableRefObject<ActionOptionValues>,
   setDisableSubmit: (disable: boolean) => void,
-) {
+): void {
   if (selectedAction !== null && selectedAction && selectedUnits.length > 0) {
     if (hasNoOptions(selectedAction, optionsValues.current)) {
       setDisableSubmit(false);

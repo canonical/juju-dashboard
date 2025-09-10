@@ -41,7 +41,7 @@ const COLUMN_DIVIDER_REGEX = /\s{2,}/;
  * @param messages The array of messages returned by the API.
  * @returns The processed blocks.
  */
-export const getBlocks = (messages: string[]) => {
+export const getBlocks = (messages: string[]): Block[] => {
   const blocks: Block[] = [];
   let split = 0;
   while (split <= messages.length - 1) {
@@ -72,7 +72,7 @@ export const getBlocks = (messages: string[]) => {
  * @param text The text to process
  * @returns The fixed text.
  */
-const fixANSI = (text: string) =>
+const fixANSI = (text: string): string =>
   hasAnsi(text) ? text.replace(/(?<=\[\d+;) /g, "") : text;
 
 /**
@@ -85,7 +85,7 @@ const fixANSI = (text: string) =>
  * @param row The string of row headers.
  * @returns The processed rows.
  */
-export const getHeaders = (row: string) => {
+export const getHeaders = (row: string): Header[] => {
   const columns: Header[] = [];
   let remainder = fixANSI(row);
   let end = 0;
@@ -175,7 +175,7 @@ export const getColumns = (rows: string[], headers: Header[]): Column[][] => {
  * @param ansiValue The ANSI contents for the link.
  * @returns The generated link nodes.
  */
-const generateLink = (link: TableLinksLink, ansiValue: string) =>
+const generateLink = (link: TableLinksLink, ansiValue: string): ReactNode =>
   "link" in link ? (
     <Link to={link.link}>
       <Ansi>{ansiValue}</Ansi>
@@ -192,7 +192,10 @@ const generateLink = (link: TableLinksLink, ansiValue: string) =>
  * @param messages The row messages returned by the API.
  * @returns The constructed nodes.
  */
-const insertLinks = (command: TableLinksCommand, messages: string[]) => {
+const insertLinks = (
+  command: TableLinksCommand,
+  messages: string[],
+): ReactNode => {
   const blocks = getBlocks(messages);
   const blockNodes: ReactNode[] = [...blocks].map((block) => {
     let rowNodes: ReactNode[] = [];
@@ -257,7 +260,7 @@ const insertLinks = (command: TableLinksCommand, messages: string[]) => {
 const getHandler = <Handlers extends Record<string, CommandHandler>>(
   command: string,
   handlers: Handlers,
-) => {
+): Handlers[Extract<keyof Handlers, string>] | void => {
   for (const handlerCommand in handlers) {
     const handler = handlers[handlerCommand];
     if (
@@ -285,11 +288,12 @@ export const processTableLinks = (
   command: string,
   messages: string[],
   tableLinks: TableLinks,
-) => {
+): ReactNode | undefined => {
   const handler = getHandler(command, tableLinks);
   if (handler) {
     return insertLinks(handler, messages);
   }
+  return;
 };
 
 /**
@@ -304,9 +308,10 @@ export const processCommandOutput = (
   command: string,
   messages: string[],
   processOutput: ProcessOutput,
-) => {
+): ReactNode | undefined => {
   const handler = getHandler(command, processOutput);
   if (handler) {
     return handler.process(messages);
   }
+  return;
 };

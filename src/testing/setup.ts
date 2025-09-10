@@ -30,7 +30,7 @@ globalThis.jest = {
 };
 
 // XXX happy-dom does not support the web animations api
-const animateMock = () => {
+const animateMock = (): Animation => {
   return { onfinish: vi.fn() } as unknown as Animation;
 };
 

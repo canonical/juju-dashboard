@@ -1,6 +1,6 @@
 import type { PropsWithSpread } from "@canonical/react-components";
 import classNames from "classnames";
-import type { ComponentType, ElementType } from "react";
+import type { ComponentType, ElementType, JSX } from "react";
 
 import logoMark from "static/images/logo/logo-mark.svg";
 
@@ -22,7 +22,7 @@ const Logo = <C,>({
   dark = false,
   isJuju = false,
   ...props
-}: Props<C>) => {
+}: Props<C>): JSX.Element => {
   return (
     <Component
       className={classNames("p-panel__logo tag-logo", className)}

@@ -1,4 +1,4 @@
-import type { FormEvent } from "react";
+import type { FC, FormEvent } from "react";
 
 import { getWSControllerURL } from "store/general/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
@@ -12,13 +12,13 @@ interface LoginElements extends HTMLFormControlsCollection {
   password: HTMLInputElement;
 }
 
-const UserPassForm = () => {
+const UserPassForm: FC = () => {
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
 
   function handleSubmit(
     ev: FormEvent<{ elements: LoginElements } & HTMLFormElement>,
-  ) {
+  ): void {
     ev.preventDefault();
     const { elements } = ev.currentTarget;
     const user = elements.username.value;

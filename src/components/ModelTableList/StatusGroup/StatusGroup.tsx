@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { getGroupedByStatusAndFilteredModelData } from "store/juju/selectors";
 import type { Filters } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
@@ -5,7 +7,11 @@ import { useAppSelector } from "store/store";
 import ModelTable from "../ModelTable";
 import { GroupBy, TestId } from "../types";
 
-export default function StatusGroup({ filters }: { filters: Filters }) {
+export default function StatusGroup({
+  filters,
+}: {
+  filters: Filters;
+}): JSX.Element {
   const { alert, blocked, running } = useAppSelector((state) =>
     getGroupedByStatusAndFilteredModelData(state, filters),
   );

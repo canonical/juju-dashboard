@@ -98,7 +98,7 @@ const ConfigField = <V extends ConfigValue>({
     // observed for when the screen is resized down and it becomes visible so
     // that the height can be retrieved.
     resizeObserver.observe(descriptionElement);
-    return () => {
+    return (): void => {
       resizeObserver.unobserve(descriptionElement);
     };
   }, [updateDescriptionHeight, resizeObserver]);
@@ -142,11 +142,11 @@ const ConfigField = <V extends ConfigValue>({
     previousValue.current = config.newValue;
   }, [config, validate, valueChanged]);
 
-  function resetToDefault() {
+  function resetToDefault(): void {
     setNewValue(config.name, config.default);
   }
 
-  function handleShowDescription() {
+  function handleShowDescription(): void {
     setShowDescription(!showDescription);
   }
 

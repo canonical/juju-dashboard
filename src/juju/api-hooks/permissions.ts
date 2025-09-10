@@ -24,7 +24,14 @@ import {
   getReBACRelationshipsErrors,
   getReBACPermissionErrors,
 } from "store/juju/selectors";
+import type { ReBACAllowed } from "store/juju/types";
 import { useAppSelector } from "store/store";
+
+type PermittedResult = {
+  permitted: boolean;
+  loading: boolean;
+  loaded: boolean;
+};
 
 export const useReBAC = <A, C>(
   fetchAction: ActionCreatorWithPayload<{ wsControllerURL: string } & A>,
@@ -35,7 +42,7 @@ export const useReBAC = <A, C>(
   payload: A | null = null,
   payloadCleanup: C | null = null,
   cleanup: boolean = false,
-) => {
+): void => {
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const rebacEnabled = useAppSelector(isReBACEnabled);
@@ -91,7 +98,7 @@ export const useReBAC = <A, C>(
 export const useCheckPermissions = (
   tuple?: null | RelationshipTuple,
   cleanup?: boolean,
-) => {
+): PermittedResult => {
   const permitted = useAppSelector((state) => hasReBACPermission(state, tuple));
   const loaded = useAppSelector((state) =>
     getReBACPermissionLoaded(state, tuple),
@@ -120,7 +127,7 @@ export const useCheckPermissions = (
   };
 };
 
-export const useIsJIMMAdmin = (cleanup?: boolean) => {
+export const useIsJIMMAdmin = (cleanup?: boolean): PermittedResult => {
   const activeUser = useAppSelector(getControllerUserTag);
   return useCheckPermissions(
     activeUser !== null && activeUser
@@ -134,7 +141,7 @@ export const useIsJIMMAdmin = (cleanup?: boolean) => {
   );
 };
 
-export const useAuditLogsPermitted = (cleanup?: boolean) => {
+export const useAuditLogsPermitted = (cleanup?: boolean): PermittedResult => {
   const activeUser = useAppSelector(getControllerUserTag);
   const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
   const jimmAdminPermissions = useIsJIMMAdmin(cleanup);
@@ -162,7 +169,11 @@ export const useCheckRelations = (
   requestId: string,
   tuples?: null | RelationshipTuple[],
   cleanup?: boolean,
-) => {
+): {
+  loading: boolean;
+  loaded: boolean;
+  permissions: null | ReBACAllowed[];
+} => {
   const loaded = useAppSelector((state) =>
     getReBACRelationshipsLoaded(state, requestId),
   );

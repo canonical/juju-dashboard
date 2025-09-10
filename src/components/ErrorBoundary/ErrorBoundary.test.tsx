@@ -1,10 +1,11 @@
 import { render } from "@testing-library/react";
+import type { ReactNode } from "react";
 import type { MockInstance } from "vitest";
 import { vi } from "vitest";
 
 import ErrorBoundary from "./ErrorBoundary";
 
-function ChildComponent() {
+function ChildComponent(): ReactNode {
   const error = new Error("Oh noes!");
   error.stack = "Stack trace output";
   throw error;

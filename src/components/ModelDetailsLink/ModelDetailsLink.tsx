@@ -31,7 +31,7 @@ export type Props = PropsWithSpread<
   Partial<LinkProps & React.RefAttributes<HTMLAnchorElement>>
 >;
 
-const ModelDetailsLink = ({
+const ModelDetailsLink: React.FC<Props> = ({
   modelName,
   ownerTag,
   children,

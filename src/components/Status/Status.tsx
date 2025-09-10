@@ -1,6 +1,6 @@
 import { Spinner } from "@canonical/react-components";
 import classNames from "classnames";
-import type { PropsWithChildren } from "react";
+import type { FC, PropsWithChildren } from "react";
 
 type Props = {
   status?: string;
@@ -11,7 +11,7 @@ type Props = {
   className?: null | string;
 } & PropsWithChildren;
 
-const Status = ({
+const Status: FC<Props> = ({
   status = "unknown",
   children,
   count = null,

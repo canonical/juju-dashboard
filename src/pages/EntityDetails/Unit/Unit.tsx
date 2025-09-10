@@ -1,4 +1,5 @@
 import { MainTable } from "@canonical/react-components";
+import type { JSX } from "react";
 import { useMemo } from "react";
 import { Link, useParams } from "react-router";
 
@@ -29,7 +30,7 @@ import urls, { externalURLs } from "urls";
 
 import { Label } from "./types";
 
-export default function Unit() {
+export default function Unit(): JSX.Element {
   const {
     modelName = null,
     userName = null,

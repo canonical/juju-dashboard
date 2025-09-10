@@ -1,3 +1,5 @@
+import type { FC } from "react";
+
 import awsLogo from "static/images/logo/cloud/aws.svg";
 import azureLogo from "static/images/logo/cloud/azure.svg";
 import gceLogo from "static/images/logo/cloud/gce.svg";
@@ -10,7 +12,7 @@ type Props = {
   model: ModelData;
 };
 
-const CloudCell = ({ model }: Props) => {
+const CloudCell: FC<Props> = ({ model }: Props) => {
   const provider = model?.info?.["provider-type"];
   let src: null | string = null;
   let alt: null | string = null;

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { JSX, ReactNode } from "react";
 
 import { getGroupedByOwnerAndFilteredModelData } from "store/juju/selectors";
 import type { Filters } from "store/juju/utils/models";
@@ -11,7 +11,7 @@ type Props = {
   filters: Filters;
 };
 
-export default function OwnerGroup({ filters }: Props) {
+export default function OwnerGroup({ filters }: Props): JSX.Element {
   const groupedAndFilteredData = useAppSelector((state) =>
     getGroupedByOwnerAndFilteredModelData(state, filters),
   );

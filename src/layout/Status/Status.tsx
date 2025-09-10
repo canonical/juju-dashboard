@@ -1,9 +1,11 @@
+import type { FC } from "react";
+
 import JujuCLI from "components/JujuCLI";
 
 import type { Props } from "./types";
 import { StatusView } from "./types";
 
-const Status = ({ status = null }: Props) => {
+const Status: FC<Props> = ({ status = null }: Props) => {
   switch (status) {
     case StatusView.CLI:
       return <JujuCLI />;

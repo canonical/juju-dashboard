@@ -88,6 +88,8 @@ export default [
       "@typescript-eslint/strict-boolean-expressions": "error",
       "prefer-destructuring": "off",
       "@typescript-eslint/prefer-destructuring": "error",
+      "@typescript-eslint/explicit-module-boundary-types": "error",
+      "@typescript-eslint/explicit-function-return-type": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
       "import/first": ["error"],

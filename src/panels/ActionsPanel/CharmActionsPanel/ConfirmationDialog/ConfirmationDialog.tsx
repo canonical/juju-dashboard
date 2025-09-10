@@ -28,7 +28,7 @@ const executeAction = (
   selectedActionOptionValue: ActionOptionValue,
   executeActionOnUnits: ReturnType<typeof useExecuteActionOnUnits>,
   selectedApplications: ApplicationInfo[],
-) => {
+): void => {
   sendAnalytics({
     category: "ApplicationSearch",
     action: "Run action (final step)",

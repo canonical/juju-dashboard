@@ -20,7 +20,7 @@ type Props = {
 const getCurrentObject = (
   keyPath: KeyPath,
   results: CrossModelQueryState["results"],
-) =>
+): null | object =>
   keyPath
     // Ignore the first item, as we want to get the parent object.
     .slice(1, keyPath.length)

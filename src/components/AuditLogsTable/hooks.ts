@@ -19,7 +19,7 @@ import type { AuditLogFilters } from "./AuditLogsTableFilters/AuditLogsTableFilt
 import { DEFAULT_AUDIT_LOG_FILTERS } from "./AuditLogsTableFilters/consts";
 import { DEFAULT_PAGE } from "./consts";
 
-export const useFetchAuditEvents = () => {
+export const useFetchAuditEvents = (): (() => void) => {
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const hasControllerConnection = useAppSelector((state) =>

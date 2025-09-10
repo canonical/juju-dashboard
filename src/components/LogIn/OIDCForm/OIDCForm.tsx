@@ -1,4 +1,5 @@
 import { Button } from "@canonical/react-components";
+import type { FC } from "react";
 
 import { endpoints } from "juju/jimm/api";
 import { actions as generalActions } from "store/general";
@@ -8,7 +9,7 @@ import { Label } from "../types";
 
 import { TestId } from "./types";
 
-const OIDCForm = () => {
+const OIDCForm: FC = () => {
   const dispatch = useAppDispatch();
 
   return (

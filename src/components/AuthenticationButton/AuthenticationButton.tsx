@@ -1,6 +1,6 @@
 import type { ButtonProps, PropsWithSpread } from "@canonical/react-components";
 import { Button } from "@canonical/react-components";
-import type { HTMLProps } from "react";
+import type { FC, HTMLProps } from "react";
 
 import { actions as generalActions } from "store/general";
 import { useAppDispatch } from "store/store";
@@ -13,7 +13,11 @@ type Props = PropsWithSpread<
   ButtonProps
 >;
 
-const AuthenticationButton = ({ onClick, visitURL, ...props }: Props) => {
+const AuthenticationButton: FC<Props> = ({
+  onClick,
+  visitURL,
+  ...props
+}: Props) => {
   const dispatch = useAppDispatch();
   return (
     <Button<HTMLProps<HTMLAnchorElement>>

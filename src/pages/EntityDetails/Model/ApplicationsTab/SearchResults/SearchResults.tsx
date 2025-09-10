@@ -1,4 +1,5 @@
 import Fuse from "fuse.js";
+import type { FC } from "react";
 import { useState, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
@@ -15,7 +16,7 @@ import { useAppSelector } from "store/store";
 
 import LocalAppsTable from "../LocalAppsTable";
 
-const SearchResults = () => {
+const SearchResults: FC = () => {
   const dispatch = useDispatch();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
@@ -63,7 +64,7 @@ const SearchResults = () => {
   }, [fuse, filterQuery, applications, dispatch]);
 
   useEffect(
-    () => () => {
+    () => (): void => {
       // Clean up any selected applications that have been stored in Redux.
       dispatch(
         jujuActions.updateSelectedApplications({

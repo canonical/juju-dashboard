@@ -1,6 +1,6 @@
 import type { PropsWithSpread } from "@canonical/react-components";
 import classnames from "classnames";
-import type { HTMLProps, PropsWithChildren } from "react";
+import type { FC, HTMLProps, PropsWithChildren } from "react";
 import { useRef } from "react";
 
 type Props = PropsWithChildren &
@@ -15,7 +15,12 @@ type Props = PropsWithChildren &
  This component can be used where a button can't be, e.g. when an interactive
  element wraps another interactive element.
  */
-const DivButton = ({ children, onClick, className, ...props }: Props) => {
+const DivButton: FC<Props> = ({
+  children,
+  onClick,
+  className,
+  ...props
+}: Props) => {
   const ref = useRef(null);
   return (
     <div

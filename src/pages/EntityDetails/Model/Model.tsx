@@ -1,4 +1,5 @@
 import { MainTable } from "@canonical/react-components";
+import type { FC } from "react";
 import { useMemo } from "react";
 import { useParams } from "react-router";
 
@@ -40,7 +41,7 @@ import Logs from "./Logs";
 import Secrets from "./Secrets";
 import { Label, TestId } from "./types";
 
-const shouldShow = (segment: string, activeView: string) => {
+const shouldShow = (segment: string, activeView: string): boolean => {
   switch (activeView) {
     case "apps":
       if (segment === "apps") {
@@ -62,14 +63,14 @@ const shouldShow = (segment: string, activeView: string) => {
 const generateCloudAndRegion = (
   cloudTag: string,
   region: null | string = null,
-) => {
+): string => {
   if (cloudTag && region !== null && region) {
     return `${extractCloudName(cloudTag)} / ${region}`;
   }
   return "";
 };
 
-const Model = () => {
+const Model: FC = () => {
   const modelStatusData = useModelStatus();
 
   const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();

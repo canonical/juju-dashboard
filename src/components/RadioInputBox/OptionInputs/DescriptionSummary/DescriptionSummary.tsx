@@ -1,8 +1,12 @@
+import type { JSX } from "react";
+
 type Props = {
   description?: null | string;
 };
 
-export default function DescriptionSummary({ description = null }: Props) {
+export default function DescriptionSummary({
+  description = null,
+}: Props): JSX.Element | null {
   if (description === null || !description) {
     return null;
   }

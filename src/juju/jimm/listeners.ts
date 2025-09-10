@@ -24,7 +24,7 @@ export const addWhoamiListener = (
     AppDispatch,
     unknown
   >["startListening"],
-) => {
+): void => {
   startListening({
     actionCreator: pollWhoamiStart,
     effect: async (_action, listenerApi) => {

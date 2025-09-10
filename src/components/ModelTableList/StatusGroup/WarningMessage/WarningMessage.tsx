@@ -1,5 +1,6 @@
 import { List, Tooltip } from "@canonical/react-components";
 import type { ListItem } from "@canonical/react-components/dist/components/List/List";
+import type { FC } from "react";
 import { Link } from "react-router";
 
 import ModelDetailsLink from "components/ModelDetailsLink";
@@ -19,7 +20,7 @@ type Props = {
   Warning message for the model name cell.
   @return The react component for the warning message.
 */
-const WarningMessage = ({ model }: Props) => {
+const WarningMessage: FC<Props> = ({ model }: Props) => {
   const { messages } = getModelStatusGroupData(model);
   if (!messages.length) {
     return null;

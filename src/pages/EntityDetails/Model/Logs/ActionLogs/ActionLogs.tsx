@@ -9,7 +9,7 @@ import {
   ModularTable,
   usePortal,
 } from "@canonical/react-components";
-import type { ReactNode } from "react";
+import type { JSX, ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router";
 import type { Row } from "react-table";
@@ -68,7 +68,7 @@ function generateAppIcon(
   appName: string,
   userName: null | string = null,
   modelName: null | string = null,
-) {
+): ReactNode {
   // If the user has executed actions with an application and then removed
   // that application it'll no longer be in the model data so in this
   // case we need to fail gracefully.
@@ -91,10 +91,14 @@ function generateAppIcon(
   return <>{appName}</>;
 }
 
-const compare = (numA: number | string, numB: number | string) =>
+const compare = (numA: number | string, numB: number | string): number =>
   numA === numB ? 0 : numA > numB ? 1 : -1;
 
-const tableSort = (column: string, rowA: Row<RowCells>, rowB: Row<RowCells>) =>
+const tableSort = (
+  column: string,
+  rowA: Row<RowCells>,
+  rowB: Row<RowCells>,
+): number =>
   column in rowA.original.sortData && column in rowB.original.sortData
     ? compare(rowA.original.sortData.status, rowB.original.sortData.status)
     : 0;
@@ -143,7 +147,7 @@ const generateApplicationRow = (
   };
 };
 
-export default function ActionLogs() {
+export default function ActionLogs(): JSX.Element {
   const [operations, setOperations] = useState<Operations>([]);
   const [actions, setActions] = useState<Actions>([]);
   const [fetchedOperations, setFetchedOperations] = useState(false);
@@ -220,7 +224,7 @@ export default function ActionLogs() {
   }, [modelUUID]);
 
   const tableData = useMemo<Record<string, unknown>[]>(() => {
-    const handleOutputSelect = (actionTag: string, output: Output) => {
+    const handleOutputSelect = (actionTag: string, output: Output): void => {
       setSelectedOutput((previousSelected) => ({
         ...previousSelected,
         [actionTag]: output,
@@ -329,13 +333,13 @@ export default function ActionLogs() {
                     links={[
                       {
                         children: Output.ALL,
-                        onClick: () =>
+                        onClick: (): void =>
                           actionData.action &&
                           handleOutputSelect(actionData.action.tag, Output.ALL),
                       },
                       {
                         children: Output.STDOUT,
-                        onClick: () =>
+                        onClick: (): void =>
                           actionData.action &&
                           handleOutputSelect(
                             actionData.action.tag,
@@ -345,7 +349,7 @@ export default function ActionLogs() {
                       },
                       {
                         children: Output.STDERR,
-                        onClick: () =>
+                        onClick: (): void =>
                           actionData.action &&
                           handleOutputSelect(
                             actionData.action.tag,

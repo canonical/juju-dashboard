@@ -51,7 +51,7 @@ const ConfirmationDialog = ({
   const sendAnalytics = useAnalytics();
   const secrets = useAppSelector((state) => getModelSecrets(state, modelUUID));
 
-  async function _submitToJuju(submittedAppName: string) {
+  async function _submitToJuju(submittedAppName: string): Promise<void> {
     setSavingConfig(true);
     const response = await setApplicationConfig(submittedAppName, config);
     const errors = response?.results?.reduce<string[]>((collection, result) => {
@@ -139,7 +139,7 @@ const ConfirmationDialog = ({
               // variables aren't set.
               return;
             }
-            void (async () => {
+            void (async (): Promise<void> => {
               try {
                 for (const secretURI of requiredGrants) {
                   await grantSecret(secretURI, [appName]);

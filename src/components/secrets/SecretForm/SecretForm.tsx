@@ -6,6 +6,7 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import { Spinner } from "@canonical/react-components";
 import { Form, Formik } from "formik";
+import type { FC } from "react";
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router";
 import * as Yup from "yup";
@@ -61,7 +62,7 @@ const schema = Yup.object().shape({
     .min(1, "Minimum of 1 pair."),
 });
 
-const SecretForm = ({
+const SecretForm: FC<Props> = ({
   formId,
   onSuccess,
   update = false,
@@ -116,7 +117,7 @@ const SecretForm = ({
   }, [getSecretContent, secretURI, latestRevision]);
 
   useEffect(
-    () => () => {
+    () => (): void => {
       if (wsControllerURL !== null && wsControllerURL) {
         dispatch(
           jujuActions.clearSecretsContent({

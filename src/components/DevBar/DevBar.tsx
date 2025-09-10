@@ -1,5 +1,6 @@
 import { Accordion, Button, Card, Icon } from "@canonical/react-components";
 import classNames from "classnames";
+import type { JSX } from "react";
 
 import useLocalStorage from "hooks/useLocalStorage";
 
@@ -7,7 +8,7 @@ import { useWidgets } from "./widgets";
 
 const MINIMISED_KEY = "DEV_minimised";
 
-export default function DevBar() {
+export default function DevBar(): JSX.Element | null {
   const [minimised, setMinimised] = useLocalStorage(MINIMISED_KEY, false);
   const sections = useWidgets();
 

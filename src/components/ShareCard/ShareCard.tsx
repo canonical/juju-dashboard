@@ -1,5 +1,6 @@
 import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { Button, Select } from "@canonical/react-components";
+import type { JSX } from "react";
 import { useEffect, useState } from "react";
 
 import SlideDownFadeOut from "animations/SlideDownFadeOut";
@@ -28,7 +29,7 @@ export default function ShareCard({
   isOwner,
   removeUser,
   accessSelectChange,
-}: Props) {
+}: Props): JSX.Element {
   const [inFocus, setInFocus] = useState(false);
   const [hasBeenRemoved, setHasBeenRemoved] = useState(false);
   const [showStatus, setShowStatus] = useState(true);
@@ -39,12 +40,12 @@ export default function ShareCard({
       setShowStatus(false);
     }, 3000);
 
-    return () => {
+    return (): void => {
       clearTimeout(timeOut);
     };
   }, [showStatus]);
 
-  const getStatusIconClassNames = (status: null | string) => {
+  const getStatusIconClassNames = (status: null | string): string => {
     let classNames = "";
     switch (status) {
       case "Updating":

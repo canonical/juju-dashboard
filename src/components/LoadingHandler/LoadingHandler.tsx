@@ -16,7 +16,7 @@ export default function LoadingHandler({
   loading,
   children,
 }: LoadingHandlerProps): JSX.Element {
-  const generateContent = () => {
+  const generateContent = (): ReactNode => {
     if (!hasData) {
       if (loading) {
         return (

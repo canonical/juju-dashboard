@@ -1,4 +1,5 @@
 import { Button } from "@canonical/react-components";
+import type { FC } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -26,7 +27,7 @@ type CharmsAndActionsQueryParams = {
   panel: null | string;
 };
 
-const CharmsAndActionsPanel = () => {
+const CharmsAndActionsPanel: FC = () => {
   const [charmURL, setCharmURL] = useState<null | string>();
   const defaultQueryParams: CharmsAndActionsQueryParams = {
     panel: null,

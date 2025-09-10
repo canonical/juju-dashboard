@@ -3,6 +3,7 @@ import {
   Notification as ReactNotification,
   Strip,
 } from "@canonical/react-components";
+import type { FC, ReactNode } from "react";
 import { useEffect, type PropsWithChildren } from "react";
 import reactHotToast from "react-hot-toast";
 
@@ -12,11 +13,13 @@ import { getConnectionError } from "store/general/selectors";
 import { getAuditEventsErrors } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
-const ConnectionError = ({ children }: PropsWithChildren) => {
+const ConnectionError: FC<PropsWithChildren> = ({
+  children,
+}: PropsWithChildren) => {
   const error = useAppSelector(getConnectionError);
   const auditLogsErrors = useAppSelector(getAuditEventsErrors);
 
-  const generateErrorContent = (errorMessage: string) => (
+  const generateErrorContent = (errorMessage: string): ReactNode => (
     <>
       {errorMessage} Try{" "}
       <Button appearance="link" onClick={() => window.location.reload()}>

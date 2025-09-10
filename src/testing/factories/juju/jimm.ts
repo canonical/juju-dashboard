@@ -24,7 +24,7 @@ export const auditEventFactory = Factory.define<AuditEvent>(() => ({
 }));
 
 class CrossModelQueryFactory extends Factory<CrossModelQuery> {
-  withApplications(count: number = 1) {
+  withApplications(count: number = 1): this {
     return this.params({
       applications: crossModelQueryApplicationFactory
         .buildList(count)
@@ -32,7 +32,7 @@ class CrossModelQueryFactory extends Factory<CrossModelQuery> {
         .reduce((applications, app) => Object.assign(applications, app), {}),
     });
   }
-  withApplicationEndpoints(count: number = 1) {
+  withApplicationEndpoints(count: number = 1): this {
     return this.params({
       "application-endpoints": crossModelQueryApplicationEndpointFactory
         .buildList(count)
@@ -46,12 +46,12 @@ class CrossModelQueryFactory extends Factory<CrossModelQuery> {
         ),
     });
   }
-  withController() {
+  withController(): this {
     return this.params({
       controller: crossModelQueryControllerFactory.build(),
     });
   }
-  withMachines(count: number = 1) {
+  withMachines(count: number = 1): this {
     return this.params({
       machines: crossModelQueryMachineFactory
         .buildList(count)
@@ -59,12 +59,12 @@ class CrossModelQueryFactory extends Factory<CrossModelQuery> {
         .reduce((machines, machine) => Object.assign(machines, machine), {}),
     });
   }
-  withModel() {
+  withModel(): this {
     return this.params({
       model: crossModelQueryModelFactory.build(),
     });
   }
-  withOffers(count: number = 1) {
+  withOffers(count: number = 1): this {
     return this.params({
       offers: crossModelQueryOfferFactory
         .buildList(count)

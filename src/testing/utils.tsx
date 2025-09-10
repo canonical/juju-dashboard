@@ -5,8 +5,9 @@ import type {
   UnknownAction,
 } from "@reduxjs/toolkit";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import type { RenderHookResult } from "@testing-library/react";
+import type { RenderHookResult, RenderResult } from "@testing-library/react";
 import { render, renderHook } from "@testing-library/react";
+import type { FC, JSX } from "react";
 import { useEffect, type PropsWithChildren, type ReactNode } from "react";
 import reactHotToast, { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
@@ -52,12 +53,30 @@ export type ComponentProps = {
   store: EnhancedStore<RootState>;
 } & PropsWithChildren;
 
+type WrappedResult = {
+  router: Router;
+  Component: () => JSX.Element;
+  store: EnhancedStore<RootState>;
+  Wrapper: FC<PropsWithChildren>;
+};
+
+export type RenderComponentResult = {
+  router: Router;
+  result: RenderResult;
+  store: EnhancedStore<RootState>;
+};
+
+export type WrappedHookResult<Result, Props> = {
+  router: null | Router;
+  store: null | OptionsWithStore["store"];
+} & RenderHookResult<Result, Props>;
+
 export const ComponentProviders = ({
   children,
   routeChildren,
   path,
   store,
-}: ComponentProps) => (
+}: ComponentProps): JSX.Element => (
   <Provider store={store}>
     <BrowserRouter>
       <Routes>
@@ -71,12 +90,12 @@ export const ComponentProviders = ({
   </Provider>
 );
 
-export const changeURL = (url: string) => window.happyDOM.setURL(url);
+export const changeURL = (url: string): void => window.happyDOM.setURL(url);
 
 export const wrapComponent = (
   component: ReactNode,
   options?: null | Options,
-) => {
+): WrappedResult => {
   const store =
     options && "store" in options
       ? options.store
@@ -105,9 +124,9 @@ export const wrapComponent = (
     router,
     Component: () => <RouterProvider router={router} />,
     store,
-    Wrapper: ({ children }: PropsWithChildren) => {
+    Wrapper: ({ children }: PropsWithChildren): JSX.Element => {
       useEffect(
-        () => () => {
+        () => (): void => {
           // Clean up all toast messages to prevent bleed between tests.
           reactHotToast.remove();
         },
@@ -126,7 +145,7 @@ export const wrapComponent = (
 export const renderComponent = (
   component: ReactNode,
   options?: null | Options,
-) => {
+): RenderComponentResult => {
   const { router, Component, store, Wrapper } = wrapComponent(
     component,
     options,
@@ -141,10 +160,7 @@ export const renderComponent = (
 export const renderWrappedHook = <Result, Props>(
   hook: (initialProps: Props) => Result,
   options?: null | Options,
-): {
-  router: null | Router;
-  store: null | OptionsWithStore["store"];
-} & RenderHookResult<Result, Props> => {
+): WrappedHookResult<Result, Props> => {
   let router: null | Router = null;
   let store: null | OptionsWithStore["store"] = null;
   const result = renderHook(hook, {
@@ -179,16 +195,18 @@ export function createStore(
 export function createStore(
   state: RootState,
   options: { trackActions: boolean } = { trackActions: false },
-) {
+): [EnhancedStore<RootState>, UnknownAction[]] | EnhancedStore<RootState> {
   const actions: UnknownAction[] = [];
   const store = configureStore({
     middleware: (getDefaultMiddleware) => {
       const middleware = getDefaultMiddleware();
       if (options.trackActions) {
-        middleware.push(((_store) => (next) => (action) => {
-          actions.push(action as UnknownAction);
-          return next(action);
-        }) as Middleware<unknown, RootState>);
+        middleware.push(((_store) =>
+          (next) =>
+          (action): unknown => {
+            actions.push(action as UnknownAction);
+            return next(action);
+          }) as Middleware<unknown, RootState>);
       }
       return middleware;
     },

@@ -10,6 +10,7 @@ import type {
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import cloneDeep from "clone-deep";
 import { Field } from "formik";
+import type { ReactNode } from "react";
 import { Anchorme } from "react-anchorme";
 import { Link } from "react-router";
 
@@ -44,7 +45,11 @@ export type Query = {
   activeView?: null | string;
 };
 
-const generateAddress = (address: null | string = null) =>
+type UnitRow = {
+  "data-unit": string;
+} & MainTableRow;
+
+const generateAddress = (address: null | string = null): ReactNode =>
   address !== null ? (
     <div className="u-flex u-flex--gap-small">
       <TruncatedTooltip
@@ -78,12 +83,12 @@ export function generateLocalApplicationRows(
   applicationStatuses: null | StatusData,
   modelParams: ModelParams,
   query?: Query,
-) {
+): MainTableRow[] {
   if (!applications || !applicationStatuses) {
     return [];
   }
 
-  function getStore(charmURL: string) {
+  function getStore(charmURL: string): string {
     if (charmURL) {
       return charmURL.indexOf("local:") === 0 ? "Local" : "Charmhub";
     }
@@ -180,7 +185,7 @@ export function generateLocalApplicationRows(
 
 export function generateRemoteApplicationRows(
   modelStatusData: ModelData | null,
-) {
+): MainTableRow[] {
   if (!modelStatusData) {
     return [];
   }
@@ -240,7 +245,7 @@ export function generateRemoteApplicationRows(
   });
 }
 
-const generateUnitURL = (modelParams: ModelParams, unitId: string) => {
+const generateUnitURL = (modelParams: ModelParams, unitId: string): string => {
   const id = unitId.replace("/", "-");
   const appName = id?.split("-").slice(0, -1).join("-");
   return urls.model.unit({
@@ -256,12 +261,12 @@ export function generateUnitRows(
   modelParams: ModelParams,
   showCheckbox = false,
   hideMachines = false,
-) {
+): UnitRow[] {
   if (!units) {
     return [];
   }
 
-  function generatePortsList(ports: UnitData[0]["ports"]) {
+  function generatePortsList(ports: UnitData[0]["ports"]): string {
     if (!ports || ports.length === 0) {
       return "-";
     }
@@ -292,7 +297,7 @@ export function generateUnitRows(
     }
   });
 
-  const unitRows: ({ "data-unit": string } & MainTableRow)[] = [];
+  const unitRows: UnitRow[] = [];
   Object.keys(clonedUnits).forEach((unitId) => {
     const unit = clonedUnits[unitId];
     const workload = unit["workload-status"].current || "-";
@@ -462,7 +467,7 @@ export function generateMachineRows(
   units: null | UnitData,
   modelParams: ModelParams,
   selectedEntity?: null | string,
-) {
+): MainTableRow[] {
   if (!machines) {
     return [];
   }
@@ -470,7 +475,7 @@ export function generateMachineRows(
   const generateMachineApps = (
     machineId: string,
     machineUnits: null | UnitData,
-  ) => {
+  ): ReactNode => {
     const appsOnMachine: [string, string][] = [];
     machineUnits &&
       Object.values(machineUnits).forEach((unitInfo) => {
@@ -568,7 +573,7 @@ export function generateMachineRows(
 export function generateRelationRows(
   relationData: null | RelationData,
   applications: ApplicationData | null,
-) {
+): MainTableRow[] {
   if (!relationData) {
     return [];
   }
@@ -627,7 +632,9 @@ export function generateRelationRows(
   });
 }
 
-export function generateOffersRows(modelStatusData: ModelData | null) {
+export function generateOffersRows(
+  modelStatusData: ModelData | null,
+): MainTableRow[] {
   if (!modelStatusData) {
     return [];
   }
@@ -664,7 +671,9 @@ export function generateOffersRows(modelStatusData: ModelData | null) {
   });
 }
 
-export function generateAppOffersRows(modelStatusData: ModelData | null) {
+export function generateAppOffersRows(
+  modelStatusData: ModelData | null,
+): MainTableRow[] {
   if (!modelStatusData) {
     return [];
   }
@@ -711,7 +720,9 @@ export function generateAppOffersRows(modelStatusData: ModelData | null) {
   });
 }
 
-export function generateConsumedRows(modelStatusData?: ModelData | null) {
+export function generateConsumedRows(
+  modelStatusData?: ModelData | null,
+): MainTableRow[] {
   if (!modelStatusData) {
     return [];
   }

@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import { useEffect, useState } from "react";
 
 import EntityInfo from "components/EntityInfo";
@@ -11,7 +12,7 @@ import { StatusTitle } from "./StatusTitle";
 import type { Widget } from "./types";
 
 export default {
-  Title: () => {
+  Title: (): JSX.Element => {
     const wsControllerURL = useAppSelector(getWSControllerURL);
     const connection = useAppSelector((state) =>
       getControllerConnection(state, wsControllerURL),
@@ -27,7 +28,7 @@ export default {
       />
     );
   },
-  Widget: () => {
+  Widget: (): JSX.Element => {
     const wsControllerURL = useAppSelector(getWSControllerURL);
     const connection = useAppSelector((state) =>
       getControllerConnection(state, wsControllerURL),
@@ -65,7 +66,7 @@ export default {
         ),
       }));
 
-      return () => {
+      return (): void => {
         setItems((currentItems) => {
           delete currentItems["Controller URL"];
 
@@ -94,7 +95,7 @@ export default {
         Identity: connection.user?.identity,
       }));
 
-      return () => {
+      return (): void => {
         setItems((currentItems) => {
           for (const key of [
             "Server version",

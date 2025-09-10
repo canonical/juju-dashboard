@@ -2,10 +2,13 @@ import { useParams } from "react-router";
 
 import { useQueryParams } from "hooks/useQueryParams";
 import { getModelUUID, getModelStatus } from "store/juju/selectors";
+import type { ModelData } from "store/juju/types";
 import { useAppSelector } from "store/store";
 
 // Return model status data based on model name in URL
-export default function useModelStatus(modelUUID: null | string = null) {
+export default function useModelStatus(
+  modelUUID: null | string = null,
+): ModelData | null {
   let modelName: null | string;
   ({ modelName = null } = useParams());
 

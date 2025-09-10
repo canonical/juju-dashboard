@@ -1,4 +1,5 @@
 import { Icon, Tooltip } from "@canonical/react-components";
+import type { FC } from "react";
 
 import ModelDetailsLink from "components/ModelDetailsLink";
 import type { ModelData } from "store/juju/types";
@@ -11,7 +12,7 @@ type Props = {
   ownerTag?: string;
 };
 
-const ModelSummary = ({ modelData, ownerTag }: Props) => {
+const ModelSummary: FC<Props> = ({ modelData, ownerTag }: Props) => {
   const applicationKeys = Object.keys(modelData.applications);
   const applicationCount = applicationKeys.length;
   const machineCount = Object.keys(modelData.machines).length;

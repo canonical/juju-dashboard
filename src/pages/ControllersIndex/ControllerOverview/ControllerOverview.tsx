@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import {
   getGroupedMachinesDataByStatus,
   getGroupedApplicationsDataByStatus,
@@ -7,7 +9,7 @@ import { useAppSelector } from "store/store";
 
 import ControllerChart from "../ControllerChart";
 
-export default function ControllersOverview() {
+export default function ControllersOverview(): JSX.Element {
   const groupedMachinesDataByStatus = useAppSelector(
     getGroupedMachinesDataByStatus,
   );

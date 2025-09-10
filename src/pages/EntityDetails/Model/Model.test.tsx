@@ -1,5 +1,6 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { JSX } from "react";
 import { vi } from "vitest";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/types";
@@ -52,28 +53,30 @@ const mockOperationResults = operationResultsFactory.build();
 const mockActionResults = actionResultsFactory.build();
 
 vi.mock("components/Topology", () => {
-  const Topology = () => <div className="topology"></div>;
+  const Topology = (): JSX.Element => <div className="topology"></div>;
   return { default: Topology };
 });
 
 vi.mock("components/WebCLI", () => {
-  const WebCLI = () => <div className="webcli" data-testid="webcli"></div>;
+  const WebCLI = (): JSX.Element => (
+    <div className="webcli" data-testid="webcli"></div>
+  );
   return { default: WebCLI };
 });
 
 vi.mock("juju/api", () => {
   return {
-    queryOperationsList: () => {
+    queryOperationsList: (): Promise<unknown> => {
       return new Promise((resolve) => {
         resolve(mockOperationResults);
       });
     },
-    queryActionsList: () => {
+    queryActionsList: (): Promise<unknown> => {
       return new Promise((resolve) => {
         resolve(mockActionResults);
       });
     },
-    connectToModel: () => {
+    connectToModel: (): Promise<unknown> => {
       return new Promise((resolve) => {
         resolve({});
       });

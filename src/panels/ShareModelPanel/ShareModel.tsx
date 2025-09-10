@@ -2,6 +2,7 @@ import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-man
 import { Button, Icon, Input, RadioInput } from "@canonical/react-components";
 import cloneDeep from "clone-deep";
 import { useFormik } from "formik";
+import type { JSX } from "react";
 import { useEffect, useState } from "react";
 import reactHotToast from "react-hot-toast";
 
@@ -42,7 +43,7 @@ type ShareModelQueryParams = {
   panel: null | string;
 };
 
-export default function ShareModel() {
+export default function ShareModel(): JSX.Element {
   const promiseDispatch = usePromiseDispatch();
   const [usersAccess, setUsersAccess] = useState<UsersAccess>({});
   const [newUserFormSubmitActive, setNewUserFormSubmitActive] = useState(false);
@@ -98,18 +99,21 @@ export default function ShareModel() {
     });
   }, [users]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isOwner = (user: string) => {
+  const isOwner = (user: string): boolean => {
     const ownerTag = modelStatusData?.info?.["owner-tag"] ?? null;
     return ownerTag !== null && !!ownerTag && user === getUserName(ownerTag);
   };
 
-  const userAlreadyHasAccess = (username: string, modelUsers?: User[]) => {
+  const userAlreadyHasAccess = (
+    username: string,
+    modelUsers?: User[],
+  ): boolean => {
     return modelUsers
       ? !!modelUsers.some((userEntry: User) => userEntry.user === username)
       : false;
   };
 
-  const handleValidateNewUser = (values: UserAccess) => {
+  const handleValidateNewUser = (values: UserAccess): void => {
     setNewUserFormSubmitActive(
       Boolean(values.username) && Boolean(values.access),
     );
@@ -120,7 +124,7 @@ export default function ShareModel() {
     user: string,
     permissionTo: string | undefined,
     permissionFrom: string | undefined,
-  ) => {
+  ): Promise<ErrorResults | null> => {
     let response: ErrorResults | null;
     if (
       modelControllerURL === null ||
@@ -128,7 +132,7 @@ export default function ShareModel() {
       modelUUID === null ||
       !modelUUID
     ) {
-      return;
+      return null;
     }
     try {
       response = await promiseDispatch<ErrorResults>(
@@ -157,7 +161,7 @@ export default function ShareModel() {
   const handleAccessSelectChange = async (
     permissionTo: string,
     username: string,
-  ) => {
+  ): Promise<ErrorResults | null> => {
     const clonedUserAccess = cloneDeep(usersAccess);
     clonedUserAccess[username] = permissionTo;
     setUsersAccess(clonedUserAccess);
@@ -196,7 +200,7 @@ export default function ShareModel() {
     return response ?? null;
   };
 
-  const handleRemoveUser = (username: string) => {
+  const handleRemoveUser = (username: string): void => {
     void updateModelPermissions(
       "revoke",
       username,
@@ -231,7 +235,7 @@ export default function ShareModel() {
   const handleNewUserFormSubmit = async (
     values: UserAccess,
     resetForm: () => void,
-  ) => {
+  ): Promise<void> => {
     if (userAlreadyHasAccess(values.username, users)) {
       reactHotToast.custom((toast: ToastInstance) => (
         <ToastCard toastInstance={toast} type="negative">

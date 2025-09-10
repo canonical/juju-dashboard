@@ -40,7 +40,7 @@ export const authUserInfoFactory = Factory.define<AuthUserInfo>(() => ({
 }));
 
 class GeneralStateFactory extends Factory<GeneralState> {
-  withConfig() {
+  withConfig(): this {
     return this.params({
       config: configFactory.build(),
     });

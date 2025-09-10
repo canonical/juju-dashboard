@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import ReactGA from "react-ga4";
 
 import ConnectionError from "components/ConnectionError";
@@ -8,7 +9,7 @@ import { useAppSelector } from "store/store";
 
 import "../../scss/index.scss";
 
-function App() {
+function App(): JSX.Element {
   const isProduction = import.meta.env.PROD;
   const analyticsEnabled = useAppSelector(getAnalyticsEnabled);
   if (analyticsEnabled) {

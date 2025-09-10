@@ -23,7 +23,7 @@ const ResultsBlock = (): JSX.Element | null => {
   const crossModelQueryErrors = useAppSelector(getCrossModelQueryErrors);
 
   useEffect(
-    () => () => {
+    () => (): void => {
       // Clear cross-model query results when component is unmounted.
       dispatch(jujuActions.clearCrossModelQuery());
     },

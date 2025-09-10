@@ -1,4 +1,5 @@
 import { Spinner } from "@canonical/react-components";
+import type { FC } from "react";
 
 import AuthenticationButton from "components/AuthenticationButton";
 import { actions as generalActions } from "store/general";
@@ -12,7 +13,7 @@ type Props = {
   userIsLoggedIn: boolean;
 };
 
-const IdentityProviderForm = ({ userIsLoggedIn }: Props) => {
+const IdentityProviderForm: FC<Props> = ({ userIsLoggedIn }: Props) => {
   const visitURL = useAppSelector((state) => {
     if (!userIsLoggedIn) {
       // This form only gets displayed on the main login page, at which point

@@ -3,7 +3,7 @@ import {
   Button,
   Icon,
 } from "@canonical/react-components";
-import type { ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router";
 
@@ -22,7 +22,7 @@ import { useAppDispatch, useAppSelector } from "store/store";
 import SecretsTable from "./SecretsTable";
 import { Label, TestId } from "./types";
 
-const Secrets = () => {
+const Secrets: FC = () => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
@@ -46,7 +46,7 @@ const Secrets = () => {
 
   useEffect(() => {
     listSecrets();
-    return () => {
+    return (): void => {
       if (!modelUUID || wsControllerURL === null || !wsControllerURL) {
         return;
       }

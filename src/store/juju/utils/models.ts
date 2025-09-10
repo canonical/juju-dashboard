@@ -19,12 +19,25 @@ type StatusResponse = {
   message: null;
 };
 
+type HighestStatusMessage = {
+  message: string;
+  appName: string;
+  unitId?: string;
+};
+
+type HighestStatusResponse = {
+  highestStatus: Status;
+  messages: HighestStatusMessage[];
+};
+
 /**
   Returns a grouped collection of model statuses.
   @param modelData
   @returns The grouped model statuses.
 */
-export const groupModelsByStatus = (modelData?: ModelDataList | null) => {
+export const groupModelsByStatus = (
+  modelData?: ModelDataList | null,
+): Record<Status, ModelData[]> => {
   const grouped: Record<Status, ModelData[]> = {
     blocked: [],
     alert: [],
@@ -44,7 +57,10 @@ export const groupModelsByStatus = (modelData?: ModelDataList | null) => {
 // Highest status to the right
 const statusOrder = [Status.RUNNING, Status.ALERT, Status.BLOCKED];
 
-const setHighestStatus = (entityStatus: Status, highestStatus: Status) => {
+const setHighestStatus = (
+  entityStatus: Status,
+  highestStatus: Status,
+): Status => {
   if (statusOrder.indexOf(entityStatus) > statusOrder.indexOf(highestStatus)) {
     return entityStatus;
   }
@@ -53,13 +69,15 @@ const setHighestStatus = (entityStatus: Status, highestStatus: Status) => {
 
 // If it's the highest status then we don't need to continue looping
 // applications or units.
-const checkHighestStatus = (highestStatus: Status) => {
+const checkHighestStatus = (highestStatus: Status): boolean => {
   return highestStatus === statusOrder[statusOrder.length - 1];
 };
 
-export const getModelStatusGroupData = (model: ModelData) => {
+export const getModelStatusGroupData = (
+  model: ModelData,
+): HighestStatusResponse => {
   let [highestStatus] = statusOrder; // Set the highest status to the lowest.
-  const messages: { message: string; appName: string; unitId?: string }[] = [];
+  const messages: HighestStatusMessage[] = [];
   const applications = model.applications ?? {};
   Object.keys(applications).forEach((appName) => {
     const app = applications[appName];
@@ -103,7 +121,7 @@ export const getModelStatusGroupData = (model: ModelData) => {
 */
 export const getApplicationStatusGroup = (
   application: ModelData["applications"][0],
-) => {
+): StatusResponse => {
   // Possible "blocked" or error states in application statuses.
   const blocked = ["blocked"];
   // Possible "alert" states in application statuses.
@@ -128,7 +146,9 @@ export const getApplicationStatusGroup = (
     format stored in the redux store.
   @returns The status of the machine and any relevent messaging.
 */
-export const getMachineStatusGroup = (machine: ModelData["machines"][0]) => {
+export const getMachineStatusGroup = (
+  machine: ModelData["machines"][0],
+): StatusResponse => {
   // Possible "blocked" or error states in machine statuses.
   const blocked = ["down"];
   // Possible "alert" states in machine statuses.
@@ -155,7 +175,7 @@ export const getMachineStatusGroup = (machine: ModelData["machines"][0]) => {
 */
 export const getUnitStatusGroup = (
   unit: ModelData["applications"][0]["units"][0],
-) => {
+): StatusResponse => {
   // Possible "blocked" or error states in the unit statuses.
   const blocked = ["lost"];
   // Possible "alert" states in the unit statuses.
@@ -179,7 +199,7 @@ export const getUnitStatusGroup = (
   @param ownerTag The ownerTag identifier returns from the API
   @returns The simplified owner string
 */
-export const extractOwnerName = (tag: string) => {
+export const extractOwnerName = (tag: string): string => {
   return getUserName(tag.split("@")[0]);
 };
 
@@ -189,7 +209,7 @@ export const extractOwnerName = (tag: string) => {
   @param string The item name to be pluralized
   @returns The item pluralized if required
 */
-export const pluralize = (value: number, string: string) => {
+export const pluralize = (value: number, string: string): string => {
   const special = {
     active: "active",
     allocating: "allocating",
@@ -214,7 +234,7 @@ export const pluralize = (value: number, string: string) => {
   @param cloudTag The cloudTag identifier returns from the API
   @returns The simplified cloud string
 */
-export const extractCloudName = (tag = "") => {
+export const extractCloudName = (tag = ""): string => {
   return tag.replace("cloud-", "");
 };
 
@@ -223,7 +243,7 @@ export const extractCloudName = (tag = "") => {
   @param cloudTag The cloudTag identifier returns from the API
   @returns The simplified cloud string
 */
-export const extractCredentialName = (tag: null | string = null) => {
+export const extractCredentialName = (tag: null | string = null): string => {
   // @ is not there in local boostraps
   // cloudcred-localhost_admin_localhost
   if (tag === null || !tag) {
@@ -240,7 +260,7 @@ export const extractCredentialName = (tag: null | string = null) => {
   Returns the version of the supplied charm string.
   @param charmName The full path of the charm e.g. cs:foo/bar-123
 */
-export const extractRevisionNumber = (charmName = "") =>
+export const extractRevisionNumber = (charmName = ""): string | undefined =>
   charmName.split("-").pop();
 
 /**
@@ -248,7 +268,7 @@ export const extractRevisionNumber = (charmName = "") =>
   @param charmId The fully qualified charm name.
   @returns The link to the charm icon.
 */
-export const generateIconPath = (charmId: string) => {
+export const generateIconPath = (charmId: string): string => {
   if (charmId.indexOf("local:") === 0) {
     return defaultCharmIcon;
   }
@@ -297,7 +317,7 @@ export const generateIconPath = (charmId: string) => {
 
 export const extractRelationEndpoints = (relation: {
   endpoints: Endpoint[];
-}) => {
+}): Record<string, string> => {
   const endpoints: Record<string, string> = {};
   relation.endpoints.forEach((endpoint) => {
     const { role } = endpoint.relation;
@@ -311,7 +331,7 @@ export const extractRelationEndpoints = (relation: {
 export const canAdministerModel = (
   userName: string,
   modelUsers?: ModelUserInfo[],
-) => {
+): boolean => {
   let hasPermission = false;
   const sharingAccess = ["admin", "write", "owner"];
   modelUsers &&

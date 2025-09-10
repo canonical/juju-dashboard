@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import type { JSX } from "react";
 import { vi } from "vitest";
 
 import { InfoPanelTestId } from "components/InfoPanel";
@@ -19,12 +20,14 @@ import Unit from "./Unit";
 import { Label } from "./types";
 
 vi.mock("components/Topology", () => {
-  const Topology = () => <div className="topology"></div>;
+  const Topology = (): JSX.Element => <div className="topology"></div>;
   return { default: Topology };
 });
 
 vi.mock("components/WebCLI", () => {
-  const WebCLI = () => <div className="webcli" data-testid="webcli"></div>;
+  const WebCLI = (): JSX.Element => (
+    <div className="webcli" data-testid="webcli"></div>
+  );
   return { default: WebCLI };
 });
 
