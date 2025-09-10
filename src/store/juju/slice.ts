@@ -142,6 +142,7 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ models: UserModelList } & WsControllerURLParam>,
     ) => {
+      // Rebuild the models and modelData lists to keep the state synchronized between additions and removals.
       const modelList: JujuState["models"] = {};
       const modelDataList: JujuState["modelData"] = {};
       const userModels = action.payload.models["user-models"] ?? [];
