@@ -58,7 +58,7 @@ export async function createCtx(fallback?: {
     octokit,
     core,
     context: Object.assign(
-      { refName: process.env["GITHUB_REF_NAME"] },
+      { refName: process.env["GITHUB_REF_NAME"] ?? "" },
       github.context,
     ),
     exec: exec.exec,

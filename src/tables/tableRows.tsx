@@ -187,7 +187,7 @@ export function generateRemoteApplicationRows(
   const applications = cloneDeep(modelStatusData["remote-applications"]);
   return Object.keys(applications ?? {}).map((key) => {
     const app = applications[key];
-    const status = app.status.status;
+    const { status } = app.status;
     const offerUrl = app["offer-url"];
 
     const interfaces = Object.keys(app?.["relations"]).map(
@@ -284,7 +284,7 @@ export function generateUnitRows(
       if (!clonedUnits[unitData.principal].subordinates) {
         clonedUnits[unitData.principal].subordinates = {};
       }
-      const subordinates = clonedUnits[unitData.principal].subordinates;
+      const { subordinates } = clonedUnits[unitData.principal];
       if (subordinates) {
         subordinates[unitId] = unitData;
       }
@@ -385,7 +385,7 @@ export function generateUnitRows(
       "data-unit": unitId,
     });
 
-    const subordinates = unit.subordinates;
+    const { subordinates } = unit;
 
     if (subordinates) {
       for (const [key] of Object.entries(subordinates)) {
@@ -632,7 +632,7 @@ export function generateOffersRows(modelStatusData: ModelData | null) {
     return [];
   }
 
-  const offers = modelStatusData.offers;
+  const { offers } = modelStatusData;
   return Object.keys(offers).map((offerId) => {
     const offer: ApplicationOfferStatus = offers[offerId];
     const endpoints = Object.entries<RemoteEndpoint>(offer.endpoints)
@@ -669,7 +669,7 @@ export function generateAppOffersRows(modelStatusData: ModelData | null) {
     return [];
   }
 
-  const offers = modelStatusData.offers;
+  const { offers } = modelStatusData;
 
   return Object.keys(offers).map((offerId) => {
     const offer = offers[offerId];

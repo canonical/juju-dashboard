@@ -11,7 +11,7 @@ describe("ConnectionError", () => {
   let location: Location;
 
   beforeEach(() => {
-    location = window.location;
+    ({ location } = window);
     Object.defineProperty(window, "location", {
       value: { ...location, reload: vi.fn() },
     });
@@ -47,7 +47,7 @@ describe("ConnectionError", () => {
     renderComponent(<ConnectionError />, { state });
     const auditLogsErrorNotification = screen.getByText(/Oops!/);
     expect(auditLogsErrorNotification.childElementCount).toBe(1);
-    const refreshButton = auditLogsErrorNotification.children[0];
+    const [refreshButton] = auditLogsErrorNotification.children;
     expect(refreshButton).toHaveTextContent("refresh");
     await userEvent.click(refreshButton, { pointerEventsCheck: 0 });
     expect(window.location.reload).toHaveBeenCalled();

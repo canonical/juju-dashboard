@@ -1,4 +1,4 @@
-import { type Ctx } from "@/lib";
+import type { Ctx } from "@/lib";
 
 /**
  * Read and parse the version from `package.json`.

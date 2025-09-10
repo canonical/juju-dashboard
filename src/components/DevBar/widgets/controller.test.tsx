@@ -70,7 +70,7 @@ describe("Widget", () => {
     const { result } = renderComponent(<Widget />, { state: connectedState() });
 
     expect(result.container.children).toHaveLength(2);
-    const grid = result.container.children[1];
+    const [_toaster, grid] = result.container.children;
     expect(grid.children).toHaveLength(4);
 
     const expectedItems = [
@@ -93,8 +93,7 @@ describe("Widget", () => {
     });
 
     expect(result.container.children).toHaveLength(3);
-    const hint = result.container.children[1];
-    const grid = result.container.children[2];
+    const [_toaster, hint, grid] = result.container.children;
 
     expect(hint).toHaveTextContent("Unable to connect to controller");
 
@@ -119,8 +118,7 @@ describe("Widget", () => {
     });
 
     expect(result.container.children).toHaveLength(3);
-    const hint = result.container.children[1];
-    const grid = result.container.children[2];
+    const [_toaster, hint, grid] = result.container.children;
 
     expect(hint).toHaveTextContent("No controller URL is detected.");
 

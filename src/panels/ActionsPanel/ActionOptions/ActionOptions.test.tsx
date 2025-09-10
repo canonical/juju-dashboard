@@ -51,7 +51,8 @@ describe("ActionOptions", () => {
       />,
     );
 
-    const props = OptionsInputSpy.mock.calls[0][0];
+    const [call] = OptionsInputSpy.mock.calls;
+    const [props] = call;
     expect(props.name).toBe("add-disk");
     expect(props.options).toStrictEqual([
       {

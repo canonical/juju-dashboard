@@ -20,7 +20,7 @@ const UserPassForm = () => {
     ev: FormEvent<HTMLFormElement & { elements: LoginElements }>,
   ) {
     ev.preventDefault();
-    const elements = ev.currentTarget.elements;
+    const { elements } = ev.currentTarget;
     const user = elements.username.value;
     const password = elements.password.value;
     login(dispatch, wsControllerURL, { user, password });

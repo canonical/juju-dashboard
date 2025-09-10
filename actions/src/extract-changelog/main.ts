@@ -5,7 +5,7 @@ export async function run(ctx: Ctx) {
     throw new Error("can only extract changelog from a running PR");
   }
 
-  const { items } = changelog.parse(ctx.pr.body);
+  const { items } = changelog.parse(ctx.pr.body ?? "");
 
   return { changelog: items.map((item) => `- ${item}`).join("\n") };
 }

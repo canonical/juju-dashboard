@@ -13,7 +13,7 @@ describe("DevBar", () => {
       state: rootStateFactory.build(),
     });
 
-    const bar = result.container.getElementsByClassName("dev-bar")[0];
+    const [bar] = result.container.getElementsByClassName("dev-bar");
     expect(bar.children).toHaveLength(1);
   });
 
@@ -24,7 +24,7 @@ describe("DevBar", () => {
       state: rootStateFactory.build(),
     });
 
-    const bar = result.container.getElementsByClassName("dev-bar")[0];
+    const [bar] = result.container.getElementsByClassName("dev-bar");
     expect(bar.children).toHaveLength(2);
 
     expect(bar.children[0].tagName).toEqual("BUTTON");

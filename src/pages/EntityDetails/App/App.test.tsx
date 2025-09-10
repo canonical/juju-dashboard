@@ -198,7 +198,7 @@ describe("Entity Details App", () => {
     expect(selectAll).toBeChecked();
 
     // De-selecting one unit de-selects the selectAll checkbox
-    const firstInput = selectedUnits[0];
+    const [firstInput] = selectedUnits;
     await userEvent.click(firstInput);
     expect(selectAll).not.toBeChecked();
 
@@ -253,7 +253,7 @@ describe("Entity Details App", () => {
   });
 
   it("does not fail if a subordinate is not related to another application", async () => {
-    const modelWatcherData = state.juju.modelWatcherData;
+    const { modelWatcherData } = state.juju;
     if (modelWatcherData && "test123" in modelWatcherData) {
       modelWatcherData["test123"].units = {};
     }

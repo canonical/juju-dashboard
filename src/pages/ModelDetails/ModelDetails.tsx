@@ -39,9 +39,7 @@ export default function ModelDetails() {
     async function loadFullData() {
       try {
         const response = await startModelWatcher(modelUUID, appState, dispatch);
-        conn = response.conn;
-        watcherHandle = response.watcherHandle ?? null;
-        pingerIntervalId = response.pingerIntervalId;
+        ({ conn, pingerIntervalId, watcherHandle = null } = response);
         // Fetch additional model data for pre Juju 3.2.
         if (getMajorMinorVersion(conn?.info.serverVersion) < 3.2) {
           const status = await conn?.facades.client?.fullStatus({

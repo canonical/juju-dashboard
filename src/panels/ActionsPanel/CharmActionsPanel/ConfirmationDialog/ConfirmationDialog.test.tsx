@@ -133,7 +133,7 @@ describe("ConfirmationDialog", () => {
       screen.getByRole("button", { name: Label.CONFIRM_BUTTON }),
     );
     expect(mockSetConfirmType).toHaveBeenCalledWith(null);
-    const call = executeActionOnUnitsSpy.mock.calls[0];
+    const [call] = executeActionOnUnitsSpy.mock.calls;
     expect(call[1]).toBe("add-disk");
     expect(call[0]).toEqual(["ceph-0", "ceph-1"]);
     expect(call[2]).toEqual({

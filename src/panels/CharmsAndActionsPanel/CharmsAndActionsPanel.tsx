@@ -35,7 +35,7 @@ const CharmsAndActionsPanel = () => {
     usePanelQueryParams<CharmsAndActionsQueryParams>(defaultQueryParams);
 
   const selectedApplications = useAppSelector(getSelectedApplications);
-  const getState = useAppStore().getState;
+  const { getState } = useAppStore();
   const dispatch = useDispatch();
   const { modelName, userName } = useModelIndexParams();
   const modelUUID = useAppSelector((state) =>

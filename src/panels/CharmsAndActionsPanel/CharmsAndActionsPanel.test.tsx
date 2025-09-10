@@ -165,7 +165,7 @@ describe("CharmsAndActionsPanel", () => {
     );
     expect(getCharmsURLErrorNotification).toBeInTheDocument();
     expect(getCharmsURLErrorNotification.childElementCount).toBe(1);
-    const refetchButton = getCharmsURLErrorNotification.children[0];
+    const [refetchButton] = getCharmsURLErrorNotification.children;
     expect(refetchButton).toHaveTextContent("refetch");
     await userEvent.click(refetchButton);
     expect(juju.getCharmsURLFromApplications).toHaveBeenCalledTimes(2);

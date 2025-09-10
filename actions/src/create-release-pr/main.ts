@@ -33,7 +33,7 @@ export function bumpPackageVersion(
       };
     }
   } else if (bumpKind === "candidate") {
-    if (version.preRelease.identifier !== "beta") {
+    if (version.preRelease?.identifier !== "beta") {
       throw new Error(
         `Candidate versions can only be created from beta versions, but found: ${serialiseVersion(version)}`,
       );
@@ -64,8 +64,10 @@ export async function run(ctx: Ctx) {
   const changelogItems: string[] = [];
   if (ctx.pr) {
     if (
-      branch.cut.test(ctx.pr.head) ||
-      branch.release.test(ctx.pr.head, { preRelease: true })
+      (branch.cut.test(ctx.pr.head) ||
+        branch.release.test(ctx.pr.head, { preRelease: true })) &&
+      ctx.pr.body !== null &&
+      ctx.pr.body
     ) {
       // Triggered from a merged cut branch, so re-use the changelog.
       try {
@@ -100,8 +102,8 @@ export async function run(ctx: Ctx) {
   }
 
   // Create or select the release PR.
-  let releasePr: PullRequest;
-  let releaseVersion: string;
+  let releasePr: PullRequest | null = null;
+  let releaseVersion: string | null = null;
 
   if (matchingPrs.length > 1) {
     // Multiple release PRs for this branch, which is invalid.
@@ -110,12 +112,12 @@ export async function run(ctx: Ctx) {
     );
   } else if (matchingPrs.length === 1) {
     // Single release PR found.
-    const { pr, version } = matchingPrs[0];
+    const [{ pr, version }] = matchingPrs;
 
     if (!version.preRelease) {
       // Save the existing changelog.
       // WARN: This means that the beta PR will contain the changelog for ALL previous beta PRs.
-      changelogItems.unshift(...changelog.parse(pr.body).items);
+      changelogItems.unshift(...changelog.parse(pr.body ?? "").items);
 
       // This was a candidate release PR, however new changes have been pushed so it's now outdated.
       await pr.close();
@@ -186,7 +188,7 @@ export async function run(ctx: Ctx) {
     await releasePr.update({
       body: changelogItems.reduce(
         (body, item) => changelog.appendItem(body, item),
-        releasePr.body,
+        releasePr.body ?? "",
       ),
     });
   }

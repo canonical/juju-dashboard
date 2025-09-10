@@ -19,7 +19,7 @@ describe("isSet", () => {
 });
 
 describe("getViewportWidth", () => {
-  const clientWidth = document.documentElement.clientWidth;
+  const { clientWidth } = document.documentElement;
 
   beforeEach(() => {
     Object.defineProperty(document.documentElement, "clientWidth", {
@@ -57,7 +57,7 @@ describe("formatFriendlyDateToNow", () => {
 });
 
 describe("copyToClipboard", () => {
-  const execCommand = document.execCommand;
+  const { execCommand } = document;
 
   beforeEach(() => {
     document.execCommand = vi.fn();

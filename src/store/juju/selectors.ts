@@ -1023,7 +1023,7 @@ export const getModelControllerDataByUUID = createSelector(
           "uuid" in subController && controllerUUID === subController.uuid,
       );
       if (modelControllerData) {
-        controllerURL = controller[0];
+        [controllerURL] = controller;
         modelController = modelControllerData;
         break;
       }
