@@ -147,7 +147,7 @@ const slice = createSlice({
       const modelDataList: JujuState["modelData"] = {};
       const userModels = action.payload.models["user-models"] ?? [];
       userModels.forEach((model) => {
-        const uuid = model.model.uuid;
+        const { uuid } = model.model;
         modelList[uuid] = {
           name: model.model.name,
           ownerTag: model.model["owner-tag"],
