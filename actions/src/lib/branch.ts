@@ -86,7 +86,7 @@ const branch = {
      */
     test: (
       branchName: string,
-      { preRelease }: { preRelease: boolean } = { preRelease: false },
+      { preRelease = false }: { preRelease?: boolean },
     ) => {
       const version = branch.release.parse(branchName);
 

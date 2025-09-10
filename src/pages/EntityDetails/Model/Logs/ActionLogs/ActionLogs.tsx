@@ -113,7 +113,7 @@ const generateApplicationRow = (
   // that the CLI may gain this functionality in the future and we'll have
   // to update this code to display the correct action name.
   const actionName = actionData.action?.name;
-  const [, operationId] = operationData.operation.split("-");
+  const [_name, operationId] = operationData.operation.split("-");
   // The receiver is in the format "unit-ceph-mon-0" to "ceph-mon"
   const parts = actionData.action?.receiver.match(/unit-(.+)-\d+/);
   const appName = (parts && parts[1]) ?? null;

@@ -142,7 +142,7 @@ describe("StatusGroup", () => {
     });
     const filters = { cloud: ["aws"] };
     renderComponent(<StatusGroup filters={filters} />, { state });
-    const [, firstContentRow] = screen.getAllByRole("row");
+    const [_header, firstContentRow] = screen.getAllByRole("row");
     expect(
       within(firstContentRow).getByRole("button", { name: "Toggle menu" }),
     ).toBeInTheDocument();
@@ -162,7 +162,7 @@ describe("StatusGroup", () => {
     };
     renderComponent(<StatusGroup filters={{}} />, { state });
     const tables = screen.getAllByRole("grid");
-    const [, row] = within(tables[0]).getAllByRole("row");
+    const [_header, row] = within(tables[0]).getAllByRole("row");
     const error = within(row).getByRole("link", { name: "app blocked" });
     expect(error).toHaveAttribute("href", "/models/eggman@external/test1");
   });
