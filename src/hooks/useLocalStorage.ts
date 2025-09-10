@@ -22,7 +22,7 @@ function useLocalStorage<V>(
 
   // Return a wrapped version of useState's setter function that persists the
   // new value to localStorage.
-  const setValue = (value: V) => {
+  const setValue = (value: V): void => {
     try {
       if (!fastDeepEqual(storedValue, value)) {
         const stringified = JSON.stringify(value);

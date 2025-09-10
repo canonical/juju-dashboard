@@ -2,7 +2,7 @@ import { ModelTab } from "urls";
 
 export const getTab = (
   key: "applications" | "machines" | "offers" | "relations",
-) => {
+): ModelTab => {
   switch (key) {
     case "applications":
     case "offers":

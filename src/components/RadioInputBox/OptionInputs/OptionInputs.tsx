@@ -1,5 +1,6 @@
 import classnames from "classnames";
 import { useFormikContext, Field } from "formik";
+import type { JSX } from "react";
 import { useEffect } from "react";
 
 import DescriptionSummary from "./DescriptionSummary";
@@ -23,7 +24,11 @@ type Props = {
   onValuesChange: (name: string, values: OptionValue) => void;
 };
 
-export default function OptionInputs({ name, options, onValuesChange }: Props) {
+export default function OptionInputs({
+  name,
+  options,
+  onValuesChange,
+}: Props): JSX.Element {
   const { values } = useFormikContext<OptionValue>();
 
   useEffect(() => {

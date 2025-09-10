@@ -4,7 +4,7 @@ import {
   Strip,
 } from "@canonical/react-components";
 import classNames from "classnames";
-import type { ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 import { useParams, Link, Outlet, useOutletContext } from "react-router";
 
 import Breadcrumb from "components/Breadcrumb";
@@ -32,7 +32,7 @@ type Props = {
   modelWatcherError?: null | string;
 };
 
-const getEntityType = (params: Partial<EntityDetailsRoute>) => {
+const getEntityType = (params: Partial<EntityDetailsRoute>): string => {
   if (params.unitId !== undefined && params.unitId) {
     return "unit";
   } else if (params.machineId !== undefined && params.machineId) {
@@ -43,7 +43,7 @@ const getEntityType = (params: Partial<EntityDetailsRoute>) => {
   return "model";
 };
 
-const EntityDetails = ({ modelWatcherError = null }: Props) => {
+const EntityDetails: FC<Props> = ({ modelWatcherError = null }: Props) => {
   const routeParams = useParams<EntityDetailsRoute>();
   const { userName, modelName } = routeParams;
   const modelsLoaded = useAppSelector(getModelListLoaded);

@@ -3,6 +3,7 @@ import { vi } from "vitest";
 
 import * as UserPassForm from "components/LogIn/UserPassForm";
 import * as LocalStorage from "hooks/useLocalStorage";
+import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { renderComponent } from "testing/utils";
@@ -11,7 +12,7 @@ import jujuUser from "./juju-user";
 
 const { Title, Widget } = jujuUser;
 
-function loggedInState() {
+function loggedInState(): RootState {
   return rootStateFactory.build({
     general: generalStateFactory.build({
       config: configFactory.build({
@@ -34,7 +35,7 @@ function loggedInState() {
   });
 }
 
-function loggedOutState() {
+function loggedOutState(): RootState {
   return rootStateFactory.build({
     general: generalStateFactory.build({
       config: configFactory.build({

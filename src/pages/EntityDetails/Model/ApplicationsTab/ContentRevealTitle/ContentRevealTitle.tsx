@@ -1,3 +1,5 @@
+import type { FC } from "react";
+
 import type { Chip } from "components/ChipGroup";
 import ChipGroup from "components/ChipGroup";
 import { pluralize } from "store/juju/utils/models";
@@ -8,7 +10,7 @@ type Props = {
   chips: Chip | null;
 };
 
-const ContentRevealTitle = ({ count, subject, chips }: Props) => (
+const ContentRevealTitle: FC<Props> = ({ count, subject, chips }: Props) => (
   <>
     <span>
       {count} {pluralize(count, subject)}

@@ -26,7 +26,7 @@ const close = {
     ev: React.KeyboardEvent,
     onRemovePanelQueryParams: () => void,
     checkCanClose?: Props["checkCanClose"],
-  ) => {
+  ): void => {
     if (ev.code === "Escape") {
       if (checkCanClose && !checkCanClose?.(ev)) {
         return;
@@ -38,7 +38,7 @@ const close = {
     ev: React.MouseEvent,
     onRemovePanelQueryParams: () => void,
     checkCanClose?: Props["checkCanClose"],
-  ) => {
+  ): void => {
     if (checkCanClose && !checkCanClose?.(ev)) {
       return;
     }

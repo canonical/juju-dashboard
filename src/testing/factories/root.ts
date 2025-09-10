@@ -6,7 +6,7 @@ import { generalStateFactory } from "./general";
 import { jujuStateFactory } from "./juju/juju";
 
 class RootStateFactory extends Factory<RootState> {
-  withGeneralConfig() {
+  withGeneralConfig(): this {
     return this.params({
       general: generalStateFactory.withConfig().build(),
     });

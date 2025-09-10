@@ -989,7 +989,7 @@ describe("selectors", () => {
         }),
         "12345",
       ),
-    ).toBeUndefined();
+    ).toBeNull();
   });
 
   it("getReBACRelationshipsLoading exists", () => {

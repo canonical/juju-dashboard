@@ -1,12 +1,12 @@
 import { Spinner } from "@canonical/react-components";
 import classNames from "classnames";
-import type { HTMLProps } from "react";
+import type { FC, HTMLProps } from "react";
 
 import { TestId } from "./types";
 
 type Props = HTMLProps<HTMLDivElement>;
 
-const LoadingSpinner = ({ className, ...props }: Props) => {
+const LoadingSpinner: FC<Props> = ({ className, ...props }: Props) => {
   return (
     <div
       {...props}

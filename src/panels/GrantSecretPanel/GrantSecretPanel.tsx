@@ -6,6 +6,7 @@ import {
   Spinner,
 } from "@canonical/react-components";
 import { Form, Formik } from "formik";
+import type { FC } from "react";
 import { useId, useState, useRef } from "react";
 
 import Panel from "components/Panel";
@@ -32,7 +33,7 @@ export type FormFields = {
   applications: string[];
 };
 
-const handleErrors = (response: ErrorResults) => {
+const handleErrors = (response: ErrorResults): void => {
   const errors = response.results.reduce((errorString, { error = null }) => {
     if (error !== null && error.message) {
       errorString = [errorString, error.message].filter(Boolean).join(". ");
@@ -44,7 +45,7 @@ const handleErrors = (response: ErrorResults) => {
   }
 };
 
-const GrantSecretPanel = () => {
+const GrantSecretPanel: FC = () => {
   const { modelName, userName } = useModelIndexParams();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),

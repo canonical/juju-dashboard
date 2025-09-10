@@ -39,7 +39,7 @@ import type { SecretsContent } from "store/juju/types";
 import { modelStatusInfoFactory, detailedStatusFactory } from "./ClientV6";
 import { modelSLAInfoFactory } from "./ModelManagerV9";
 
-function generateUUID() {
+function generateUUID(): string {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
     const num = (Math.random() * 16) | 0;
     const value = char === "x" ? num : (num & 0x3) | 0x8;

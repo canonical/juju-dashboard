@@ -8,7 +8,7 @@ export const getRequiredGrants = (
   appName: string,
   config: Config,
   secrets?: ListSecretResult[] | null,
-) => {
+): null | string[] => {
   const secretURIs = Object.values(config).reduce<string[]>((uris, entry) => {
     const value = entry.newValue ?? null;
     if (

@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type { Filters } from "store/juju/utils/models";
 
 import CloudGroup from "./CloudGroup";
@@ -10,7 +12,10 @@ type Props = {
   filters: Filters;
 };
 
-export default function ModelTableList({ filters, groupedBy }: Props) {
+export default function ModelTableList({
+  filters,
+  groupedBy,
+}: Props): JSX.Element {
   switch (groupedBy) {
     case GroupBy.STATUS:
     default:

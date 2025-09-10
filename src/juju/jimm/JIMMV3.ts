@@ -69,7 +69,7 @@ class JIMMV3 {
     autoBind(this);
   }
 
-  disableControllerUUIDMasking() {
+  disableControllerUUIDMasking(): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",

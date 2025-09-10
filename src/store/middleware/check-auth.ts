@@ -16,7 +16,7 @@ import type { RootState, Store } from "store/store";
 import { isPayloadAction } from "types";
 import { logger } from "utils/logger";
 
-function error(name: string, wsControllerURL?: null | string) {
+function error(name: string, wsControllerURL?: null | string): void {
   // Not shown in UI. Logged for debugging purposes.
   logger.error(
     "Unable to perform action: ",
@@ -30,7 +30,10 @@ function error(name: string, wsControllerURL?: null | string) {
   );
 }
 
-export const checkLoggedIn = (state: RootState, wsControllerURL: string) => {
+export const checkLoggedIn = (
+  state: RootState,
+  wsControllerURL: string,
+): boolean => {
   if (!wsControllerURL) {
     // Not shown in UI. Logged for debugging purposes.
     logger.error(

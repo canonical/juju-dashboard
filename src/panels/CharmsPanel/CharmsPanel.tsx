@@ -67,7 +67,7 @@ export default function CharmsPanel({
                   checked={selectedCharm === charm.url}
                   onChange={
                     hasActionData
-                      ? () => setSelectedCharm(charm.url)
+                      ? (): void => setSelectedCharm(charm.url)
                       : undefined
                   }
                   disabled={!hasActionData}

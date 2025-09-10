@@ -1,13 +1,18 @@
 import { act } from "@testing-library/react";
 
+import type { WrappedHookResult } from "testing/utils";
 import { renderWrappedHook } from "testing/utils";
 
 import { usePanelQueryParams } from "./hooks";
 
-const mockRenderHook = (url = "?") =>
+type Params = { panel: null | string; mockParam: string };
+
+const mockRenderHook = (
+  url = "?",
+): WrappedHookResult<ReturnType<typeof usePanelQueryParams<Params>>, unknown> =>
   renderWrappedHook(
     () =>
-      usePanelQueryParams<{ panel: null | string; mockParam: string }>({
+      usePanelQueryParams<Params>({
         panel: null,
         mockParam: "mockValue",
       }),

@@ -3,6 +3,7 @@ import type {
   MainTableCell,
   MainTableRow,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import type { JSX } from "react";
 
 import ModelActions from "components/ModelActions";
 import ModelDetailsLink from "components/ModelDetailsLink";
@@ -50,7 +51,7 @@ function generateModelTableList(
   controllers: Controllers | null,
   groupBy: GroupBy,
   groupLabel?: string,
-) {
+): MainTableRow[] {
   const modelsList: MainTableRow[] = [];
   models.forEach((model) => {
     const { highestStatus } = getModelStatusGroupData(model);
@@ -183,7 +184,7 @@ export default function ModelTable({
   groupBy,
   groupLabel,
   emptyStateMessage = "",
-}: Props) {
+}: Props): JSX.Element {
   const controllers = useAppSelector(getControllerData);
   const headerOptions = {
     showCloud: [GroupBy.STATUS, GroupBy.OWNER].includes(groupBy),

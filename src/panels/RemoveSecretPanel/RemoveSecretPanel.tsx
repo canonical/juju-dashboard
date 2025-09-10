@@ -1,6 +1,7 @@
 import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import { ActionButton, Button, Spinner } from "@canonical/react-components";
 import { Form, Formik } from "formik";
+import type { FC } from "react";
 import { useId, useState, useRef, useCallback } from "react";
 
 import Panel from "components/Panel";
@@ -20,7 +21,7 @@ import { toErrorString } from "utils";
 import Fields from "./Fields";
 import { Label, TestId, type FormFields } from "./types";
 
-const RemoveSecretPanel = () => {
+const RemoveSecretPanel: FC = () => {
   const { modelName, userName } = useModelIndexParams();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),

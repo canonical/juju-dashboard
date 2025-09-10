@@ -1,5 +1,6 @@
 import { useListener, usePrevious } from "@canonical/react-components";
 import fastDeepEqual from "fast-deep-equal/es6";
+import type { FC } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import OutputCommand from "./OutputCommand";
@@ -14,7 +15,7 @@ import { TestId } from "./types";
 
 const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
 
-const WebCLIOutput = ({
+const WebCLIOutput: FC<Props> = ({
   content,
   helpMessage,
   loading = false,
@@ -65,7 +66,7 @@ const WebCLIOutput = ({
   }, [onResize]);
 
   useEffect(() => {
-    const resize = (clientY: number) => {
+    const resize = (clientY: number): void => {
       const viewPortHeight = window.innerHeight;
       const mousePosition = clientY + 40; // magic number
       const newHeight = viewPortHeight - mousePosition + resizeDeltaY.current;
@@ -75,17 +76,17 @@ const WebCLIOutput = ({
       }
     };
 
-    const resizeMouse = (ev: MouseEvent) => {
+    const resizeMouse = (ev: MouseEvent): void => {
       ev.preventDefault();
       resize(ev.clientY);
     };
 
-    const resizeTouch = (ev: TouchEvent) => {
+    const resizeTouch = (ev: TouchEvent): void => {
       ev.preventDefault();
       resize(ev.touches[0].clientY);
     };
 
-    const addMouseResizeListener = (ev: MouseEvent) => {
+    const addMouseResizeListener = (ev: MouseEvent): void => {
       const target = ev.target as HTMLElement;
       if (!dragHandles.includes(target?.classList.value)) {
         return;
@@ -94,7 +95,7 @@ const WebCLIOutput = ({
       document.addEventListener("mousemove", resizeMouse);
     };
 
-    const addTouchResizeListener = (ev: TouchEvent) => {
+    const addTouchResizeListener = (ev: TouchEvent): void => {
       const target = ev.target as HTMLElement;
       if (!dragHandles.includes(target?.classList.value)) {
         return;
@@ -110,7 +111,7 @@ const WebCLIOutput = ({
       document.addEventListener("touchmove", resizeTouch, { passive: false });
     };
 
-    const removeListener = () => {
+    const removeListener = (): void => {
       document.removeEventListener("mousemove", resizeMouse);
       document.removeEventListener("touchmove", resizeTouch);
     };
@@ -121,7 +122,7 @@ const WebCLIOutput = ({
       passive: false,
     });
     window.addEventListener("touchend", removeListener, { passive: false });
-    return () => {
+    return (): void => {
       window.removeEventListener("mousedown", addMouseResizeListener);
       window.removeEventListener("mouseup", removeListener);
       window.removeEventListener("touchstart", addTouchResizeListener);

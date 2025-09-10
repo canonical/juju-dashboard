@@ -6,7 +6,7 @@ import {
 } from "@canonical/react-components";
 import * as Sentry from "@sentry/browser";
 import type { Extras } from "@sentry/core";
-import type { PropsWithChildren } from "react";
+import type { JSX, PropsWithChildren } from "react";
 import { Component } from "react";
 
 import { externalURLs } from "urls";
@@ -25,14 +25,14 @@ export default class ErrorBoundary extends Component<Props, State> {
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error) {
+  static getDerivedStateFromError(error: Error): State {
     return {
       hasError: true,
       error,
     };
   }
 
-  componentDidCatch(error: Error, info: unknown) {
+  componentDidCatch(error: Error, info: unknown): void {
     if (
       import.meta.env.PROD &&
       Boolean(window.jujuDashboardConfig?.analyticsEnabled)
@@ -45,7 +45,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     }
   }
 
-  render() {
+  render(): JSX.Element {
     const { error = null, hasError } = this.state;
     const { children } = this.props;
     const body = encodeURIComponent(

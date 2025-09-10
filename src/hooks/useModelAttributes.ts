@@ -5,7 +5,12 @@ import {
   extractCredentialName,
 } from "store/juju/utils/models";
 
-export default function useModelAttributes(modelData: ModelDataList | null) {
+export default function useModelAttributes(modelData: ModelDataList | null): {
+  clouds: string[];
+  regions: string[];
+  owners: string[];
+  credentials: string[];
+} {
   const clouds: string[] = [];
   const regions: string[] = [];
   const owners: string[] = [];

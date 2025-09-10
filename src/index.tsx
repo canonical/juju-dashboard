@@ -39,7 +39,7 @@ if (
 const addressRegex = new RegExp(/^ws[s]?:\/\/(\S+)\//);
 export const getControllerAPIEndpointErrors = (
   controllerAPIEndpoint: null | string = null,
-) => {
+): null | string => {
   if (controllerAPIEndpoint === null || !controllerAPIEndpoint) {
     return "controllerAPIEndpoint is not set.";
   } else if (!controllerAPIEndpoint.endsWith("/api")) {
@@ -58,7 +58,7 @@ export const getControllerAPIEndpointErrors = (
   return null;
 };
 
-const getRoot = (): Root | undefined => {
+const getRoot = (): Root | void => {
   const rootElement = document.getElementById(ROOT_ID);
   if (rootElement) {
     const root = createRoot(rootElement);
@@ -70,7 +70,7 @@ const getRoot = (): Root | undefined => {
 // executed. This is a simple debounce so that in the event it's not it'll wait
 // a few cycles before trying again.
 let checkCounter = 0;
-export const renderApp = () => {
+export const renderApp = (): void => {
   if (!window.jujuDashboardConfig) {
     if (checkCounter < 5) {
       checkCounter++;
@@ -86,7 +86,7 @@ export const renderApp = () => {
 };
 renderApp();
 
-function bootstrap() {
+function bootstrap(): void {
   const config = window.jujuDashboardConfig;
   const isProduction = import.meta.env.PROD;
   const logLevel: LogLevelDesc = isProduction

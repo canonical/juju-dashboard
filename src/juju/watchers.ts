@@ -74,7 +74,7 @@ function _processDelta<M extends WatcherModelData, E extends keyof M>(
 export function processDeltas(
   modelWatcherData?: ModelWatcherData,
   deltas?: AllWatcherDelta[],
-) {
+): ModelWatcherData | undefined {
   if (!modelWatcherData || !deltas) {
     return;
   }

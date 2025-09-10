@@ -3,7 +3,7 @@ import { buildQueries, within } from "@testing-library/dom";
 export const queryAllSpinnersByLabel = (
   container: HTMLElement,
   label: string,
-) => {
+): HTMLElement[] => {
   const labels = within(container).queryAllByText(label);
   const spinners: HTMLElement[] = [];
   labels.forEach((text) => {

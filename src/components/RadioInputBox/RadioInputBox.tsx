@@ -79,7 +79,7 @@ export default function RadioInputBox({
     );
   }, [opened]);
 
-  const handleSelect = () => {
+  const handleSelect = (): void => {
     onSelect(name);
     setOpened(true);
   };

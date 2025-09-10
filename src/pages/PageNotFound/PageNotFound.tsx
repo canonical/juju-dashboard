@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import { Link } from "react-router";
 
 import NotFound from "components/NotFound";
@@ -8,7 +9,9 @@ import urls from "urls";
 
 import { Label } from "./types";
 
-export default function PageNotFound(props: Partial<MainContentProps>) {
+export default function PageNotFound(
+  props: Partial<MainContentProps>,
+): JSX.Element {
   useWindowTitle("404 - Page not found");
   return (
     <MainContent {...props}>

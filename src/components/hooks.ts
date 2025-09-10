@@ -1,5 +1,5 @@
 import { usePrevious } from "@canonical/react-components";
-import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import type { ActionCreatorWithPayload, PayloadAction } from "@reduxjs/toolkit";
 import fastDeepEqual from "fast-deep-equal/es6";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
@@ -32,7 +32,9 @@ type UUIDProps = {
 
 type ModelByUUIDDetailsProps = NameProps | UUIDProps;
 
-export const useEntityDetailsParams = () => {
+export const useEntityDetailsParams = (): {
+  isNestedEntityPage: boolean;
+} & Nullable<EntityDetailsRoute> => {
   const {
     userName = null,
     modelName = null,
@@ -74,7 +76,10 @@ export const useModelByUUIDDetails = ({
   uuid,
   ownerTag,
   modelName,
-}: ModelByUUIDDetailsProps) => {
+}: ModelByUUIDDetailsProps): {
+  modelName: null | string;
+  userName: null | string;
+} => {
   const modelDetails = useAppSelector((state) => getModelByUUID(state, uuid));
   const owner = uuid !== undefined && uuid ? modelDetails?.ownerTag : ownerTag;
   const model = uuid !== undefined && uuid ? modelDetails?.name : modelName;
@@ -82,12 +87,12 @@ export const useModelByUUIDDetails = ({
   return { modelName: model ?? null, userName: userName ?? null };
 };
 
-export const useStatusView = (statusView: StatusView) => {
+export const useStatusView = (statusView: StatusView): void => {
   const { setStatus } = useOutletContext<BaseLayoutContext>();
 
   useEffect(() => {
     setStatus(statusView);
-    return () => {
+    return (): void => {
       // Hide the view when navigating away from this component.
       setStatus(null);
     };
@@ -99,7 +104,7 @@ export const useCleanupOnUnmount = <P>(
   cleanupAction: ActionCreatorWithPayload<P>,
   cleanupEnabled: boolean = false,
   payload: null | P = null,
-) => {
+): void => {
   const dispatch = useDispatch();
   const cleanupPayload = useRef<(() => void) | null>(null);
   const previousCleanup = usePrevious(cleanupAction, true);
@@ -118,7 +123,8 @@ export const useCleanupOnUnmount = <P>(
       payload !== null &&
       (cleanupChanged || payloadChanged)
     ) {
-      cleanupPayload.current = () => dispatch(cleanupAction(payload));
+      cleanupPayload.current = (): PayloadAction<P> =>
+        dispatch(cleanupAction(payload));
     }
   }, [
     cleanupEnabled,
@@ -131,7 +137,7 @@ export const useCleanupOnUnmount = <P>(
 
   // Clean up the store when the component that is using the hook gets unmounted.
   useEffect(
-    () => () => {
+    () => (): void => {
       cleanupPayload.current?.();
     },
     [],

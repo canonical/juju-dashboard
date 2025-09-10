@@ -1,4 +1,5 @@
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type { FC } from "react";
 
 import CharmIcon from "components/CharmIcon/CharmIcon";
 import type { WatcherModelData } from "juju/types";
@@ -10,7 +11,7 @@ type Props = {
     | WatcherModelData["applications"];
 };
 
-const RelationIcon = ({ applicationName, applications }: Props) => {
+const RelationIcon: FC<Props> = ({ applicationName, applications }: Props) => {
   if (!(applicationName in applications)) {
     return null;
   }

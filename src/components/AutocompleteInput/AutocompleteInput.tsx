@@ -3,7 +3,7 @@ import {
   type InputProps,
   type PropsWithSpread,
 } from "@canonical/react-components";
-import type { HTMLProps, ReactNode } from "react";
+import type { FC, HTMLProps, ReactNode } from "react";
 import { useId } from "react";
 
 type AutocompleteOption = PropsWithSpread<
@@ -21,7 +21,7 @@ type Props = PropsWithSpread<
   InputProps
 >;
 
-const generateOptions = (options: Props["options"]) =>
+const generateOptions = (options: Props["options"]): ReactNode =>
   options?.map((option) => {
     if (typeof option === "string") {
       return <option value={option} key={option} />;
@@ -34,7 +34,7 @@ const generateOptions = (options: Props["options"]) =>
     );
   });
 
-const AutocompleteInput = ({ options, ...props }: Props) => {
+const AutocompleteInput: FC<Props> = ({ options, ...props }: Props) => {
   const id = useId();
   return (
     <>

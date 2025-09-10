@@ -1,5 +1,5 @@
 import { ActionButton, Button } from "@canonical/react-components";
-import type { JSX } from "react";
+import type { JSX, ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import CharmIcon from "components/CharmIcon";
@@ -123,7 +123,7 @@ export default function ActionsPanel(): JSX.Element {
     });
   }, [selectedUnits]);
 
-  const generateTitle = () => {
+  const generateTitle = (): ReactNode => {
     const unitLength = selectedUnits.length;
     return (
       <>
@@ -135,7 +135,7 @@ export default function ActionsPanel(): JSX.Element {
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     setConfirmType(ConfirmType.SUBMIT);
   };
 

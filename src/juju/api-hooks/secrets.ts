@@ -6,6 +6,10 @@ import type {
   UpdateUserSecretArgs,
   GrantRevokeUserSecretArg,
   ListSecretResults,
+  StringResults,
+  CreateSecretArg,
+  UpdateUserSecretArg,
+  ErrorResults,
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import { useCallback } from "react";
 
@@ -24,7 +28,7 @@ export enum Label {
 export const useListSecrets = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((filter?: SecretsFilter, showSecrets?: boolean) => void) => {
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
@@ -90,7 +94,7 @@ export const useListSecrets = (
 export const useGetSecretContent = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((secretURI: string, revision?: number) => void) => {
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
@@ -172,7 +176,7 @@ export const useGetSecretContent = (
 export const useCreateSecrets = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((secrets: CreateSecretArg[]) => Promise<StringResults>) => {
   const handleCreate = useCallback(
     (connection: ConnectionWithFacades, secrets: CreateSecretArgs["args"]) => {
       if (!connection.facades.secrets) {
@@ -190,7 +194,7 @@ export const useCreateSecrets = (
 export const useUpdateSecrets = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((secrets: UpdateUserSecretArg[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
     (
       connection: ConnectionWithFacades,
@@ -209,7 +213,7 @@ export const useUpdateSecrets = (
 export const useRemoveSecrets = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((secrets: Partial<DeleteSecretArg>[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
     (
       connection: ConnectionWithFacades,
@@ -233,7 +237,7 @@ export const useRemoveSecrets = (
 export const useGrantSecret = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((secretURI: string, applications: string[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
     (
       connection: ConnectionWithFacades,
@@ -261,7 +265,7 @@ export const useGrantSecret = (
 export const useRevokeSecret = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((secretURI: string, applications: string[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
     (
       connection: ConnectionWithFacades,

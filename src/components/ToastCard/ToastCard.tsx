@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from "react";
+import type { JSX, PropsWithChildren } from "react";
 import type { Renderable, Toast, ValueOrFunction } from "react-hot-toast";
 import reactHotToast from "react-hot-toast";
 
@@ -23,7 +23,7 @@ export default function ToastCard({
   toastInstance,
   type,
   undo,
-}: Props) {
+}: Props): JSX.Element {
   let iconName: null | string = null;
   switch (type) {
     case "positive":
@@ -39,7 +39,7 @@ export default function ToastCard({
       break;
   }
 
-  const handleClose = (id: string) => {
+  const handleClose = (id: string): void => {
     reactHotToast.remove(id);
   };
 

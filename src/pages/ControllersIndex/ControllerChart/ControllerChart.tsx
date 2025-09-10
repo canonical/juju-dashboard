@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import DonutChart from "components/DonutChart";
 import { pluralize } from "store/juju/utils/models";
 
@@ -8,7 +10,7 @@ type Props = {
   totalLabel: string;
 };
 
-function getPercentage(denominator: number, numerator: number) {
+function getPercentage(denominator: number, numerator: number): number {
   if (denominator === 0 || numerator === 0) {
     return 0;
   }
@@ -24,7 +26,7 @@ export default function ControllerChart({
   blocked = 0,
   running = 0,
   totalLabel,
-}: Props) {
+}: Props): JSX.Element {
   const totalCount = blocked + alert + running;
 
   return (

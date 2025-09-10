@@ -1,4 +1,5 @@
 import { ApplicationLayout } from "@canonical/react-components";
+import type { FC } from "react";
 import { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Link, Outlet, useLocation } from "react-router";
@@ -20,7 +21,7 @@ import urls from "urls";
 
 import { Label } from "./types";
 
-const BaseLayout = () => {
+const BaseLayout: FC = () => {
   const location = useLocation();
   const isOffline = useOffline();
   const isJuju = useAppSelector(getIsJuju);

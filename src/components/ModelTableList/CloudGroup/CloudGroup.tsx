@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { JSX, ReactNode } from "react";
 
 import { getGroupedByCloudAndFilteredModelData } from "store/juju/selectors";
 import type { Filters } from "store/juju/utils/models";
@@ -11,7 +11,7 @@ type Props = {
   filters: Filters;
 };
 
-export default function CloudGroup({ filters }: Props) {
+export default function CloudGroup({ filters }: Props): JSX.Element {
   const groupedAndFilteredData = useAppSelector((state) =>
     getGroupedByCloudAndFilteredModelData(state, filters),
   );

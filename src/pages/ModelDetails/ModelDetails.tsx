@@ -1,4 +1,5 @@
 import type { AllWatcherId } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type { JSX } from "react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Routes, useParams } from "react-router";
@@ -20,7 +21,7 @@ import { logger } from "utils/logger";
 
 import { Label } from "./types";
 
-export default function ModelDetails() {
+export default function ModelDetails(): JSX.Element {
   const appState = useAppStore().getState();
   const dispatch = useDispatch();
   const { userName, modelName } = useParams<EntityDetailsRoute>();
@@ -36,7 +37,7 @@ export default function ModelDetails() {
     let pingerIntervalId: null | number = null;
     let watcherHandle: AllWatcherId | null = null;
 
-    async function loadFullData() {
+    async function loadFullData(): Promise<void> {
       try {
         const response = await startModelWatcher(modelUUID, appState, dispatch);
         ({ conn, pingerIntervalId, watcherHandle = null } = response);
@@ -62,7 +63,7 @@ export default function ModelDetails() {
     if (modelUUID) {
       void loadFullData();
     }
-    return () => {
+    return (): void => {
       if (watcherHandle && pingerIntervalId !== null && conn) {
         stopModelWatcher(
           conn,

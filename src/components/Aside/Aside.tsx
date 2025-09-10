@@ -36,7 +36,7 @@ export default function Aside({
 
   useEffect(() => {
     if (isPresent) {
-      const enterAnimation = async () => {
+      const enterAnimation = async (): Promise<void> => {
         await animate([[scope.current, { x: 0 }, { type: "tween" }]]);
       };
       try {
@@ -45,7 +45,7 @@ export default function Aside({
         // Don't need to alert the user if the animation fails.
       }
     } else {
-      const exitAnimation = async () => {
+      const exitAnimation = async (): Promise<void> => {
         await animate(scope.current, { x: "100%" });
         safeToRemove();
       };

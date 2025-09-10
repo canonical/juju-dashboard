@@ -1,4 +1,5 @@
 import { screen, waitFor } from "@testing-library/dom";
+import type { JSX } from "react";
 import { vi } from "vitest";
 
 import { Auth, LocalAuth } from "auth";
@@ -19,7 +20,7 @@ import {
 } from "./index";
 
 vi.mock("components/App", () => {
-  const App = () => <div data-testid="app"></div>;
+  const App = (): JSX.Element => <div data-testid="app"></div>;
   return { default: App };
 });
 

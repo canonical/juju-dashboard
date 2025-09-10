@@ -9,7 +9,7 @@ type Props = {
   config: Config;
 };
 
-const generateValue = (config: ConfigData) => {
+const generateValue = (config: ConfigData): number | string | undefined => {
   if (config.type === "boolean") {
     return config.newValue !== undefined && config.newValue ? "true" : "false";
   }

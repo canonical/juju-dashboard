@@ -1,6 +1,7 @@
 import type { Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
 import { screen, waitFor } from "@testing-library/react";
+import type { JSX } from "react";
 import { vi } from "vitest";
 
 import * as juju from "juju/api";
@@ -17,19 +18,19 @@ import urls from "urls";
 import ModelDetails from "./ModelDetails";
 
 vi.mock("pages/EntityDetails/App", () => {
-  return { default: () => <div data-testid="app"></div> };
+  return { default: (): JSX.Element => <div data-testid="app"></div> };
 });
 
 vi.mock("pages/EntityDetails/Model", () => {
-  return { default: () => <div data-testid="model"></div> };
+  return { default: (): JSX.Element => <div data-testid="model"></div> };
 });
 
 vi.mock("pages/EntityDetails/Unit", () => {
-  return { default: () => <div data-testid="unit"></div> };
+  return { default: (): JSX.Element => <div data-testid="unit"></div> };
 });
 
 vi.mock("pages/EntityDetails/Machine", () => {
-  return { default: () => <div data-testid="machine"></div> };
+  return { default: (): JSX.Element => <div data-testid="machine"></div> };
 });
 
 vi.mock("@canonical/jujulib", () => ({

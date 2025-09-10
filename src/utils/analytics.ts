@@ -17,7 +17,7 @@ const analytics = (
   analyticsEnabled: boolean,
   eventParams: EventParams,
   { path = "", category = "", action = "" }: AnalyticsMessage,
-) => {
+): void => {
   if (!analyticsEnabled) {
     return;
   }

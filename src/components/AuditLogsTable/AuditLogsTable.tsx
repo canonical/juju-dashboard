@@ -1,5 +1,5 @@
 import { ModularTable } from "@canonical/react-components";
-import type { ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 import { useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 
@@ -51,7 +51,7 @@ const COLUMN_DATA = [
   },
 ];
 
-const AuditLogsTable = () => {
+const AuditLogsTable: FC = () => {
   const { modelName = null } = useParams<EntityDetailsRoute>();
   const showModel = modelName === null || !modelName;
   const dispatch = useAppDispatch();
@@ -83,7 +83,7 @@ const AuditLogsTable = () => {
   }, [fetchAuditEvents]);
 
   useEffect(
-    () => () => {
+    () => (): void => {
       // Clear audit events when the component is unmounted.
       dispatch(jujuActions.clearAuditEvents());
     },

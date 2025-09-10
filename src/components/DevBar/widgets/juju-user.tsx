@@ -1,5 +1,6 @@
 import { Button, FormikField, Input } from "@canonical/react-components";
 import { Formik, Form } from "formik";
+import type { JSX } from "react";
 import { useEffect, useState } from "react";
 
 import { login } from "components/LogIn/UserPassForm";
@@ -19,7 +20,7 @@ const USER_CREDENTIALS_KEY = "DEV__user-credentials";
 const AUTO_LOGIN_KEY = "DEV__auto-login";
 
 export default {
-  Title: () => {
+  Title: (): JSX.Element => {
     const wsControllerURL = useAppSelector(getWSControllerURL);
     const userIsLoggedIn = useAppSelector((state) =>
       isLoggedIn(state, wsControllerURL),
@@ -33,7 +34,7 @@ export default {
       />
     );
   },
-  Widget: () => {
+  Widget: (): JSX.Element | null => {
     const isJuju = useAppSelector(getIsJuju);
     const wsControllerURL = useAppSelector(getWSControllerURL);
 
@@ -48,7 +49,7 @@ export default {
     function saveUserCredentials(userCredential: {
       user: string;
       password: string;
-    }) {
+    }): void {
       setCredential(userCredential);
       sendToast("Saved user credentials");
     }
@@ -99,7 +100,7 @@ function useAutoLogin(
   enabled: boolean,
   wsControllerURL: null | string,
   credential: { user: string; password: string },
-) {
+): void {
   const dispatch = useAppDispatch();
   const userIsLoggedIn = useAppSelector((state) =>
     isLoggedIn(state, wsControllerURL),

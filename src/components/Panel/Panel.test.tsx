@@ -4,19 +4,20 @@ import type { JSX } from "react";
 import { vi } from "vitest";
 
 import { usePanelQueryParams } from "panels/hooks";
+import type { RenderComponentResult } from "testing/utils";
 import { renderComponent } from "testing/utils";
 
 import Panel from "./Panel";
 
 describe("Panel", () => {
-  const mockCheckCanClose = () => false;
+  const mockCheckCanClose = (): boolean => false;
   const mockRenderComponent = ({
     checkCanClose,
   }: {
     checkCanClose?: (
       e: React.KeyboardEvent | React.MouseEvent<Element, MouseEvent>,
     ) => boolean;
-  }) => {
+  }): RenderComponentResult => {
     const MockPanelHeader = (): JSX.Element => {
       const [, , handleRemovePanelQueryParams] = usePanelQueryParams<{
         panel: null | string;

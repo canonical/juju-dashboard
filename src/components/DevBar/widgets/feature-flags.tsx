@@ -1,5 +1,6 @@
 import { Button, FormikField, Icon } from "@canonical/react-components";
 import { FieldArray, Form, Formik } from "formik";
+import type { JSX } from "react";
 
 import { ENABLED_FLAGS } from "consts";
 import useLocalStorage from "hooks/useLocalStorage";
@@ -9,7 +10,7 @@ import type { Widget } from "./types";
 import { sendToast } from "./utils";
 
 export default {
-  Title: () => {
+  Title: (): JSX.Element => {
     const [enabledFlags] = useLocalStorage<string[]>(ENABLED_FLAGS, []);
 
     return (
@@ -22,13 +23,17 @@ export default {
       />
     );
   },
-  Widget: () => {
+  Widget: (): JSX.Element => {
     const [enabledFlags, setEnabledFlags] = useLocalStorage<string[]>(
       ENABLED_FLAGS,
       [],
     );
 
-    function saveFlags({ enabledFlags: flags }: { enabledFlags: string[] }) {
+    function saveFlags({
+      enabledFlags: flags,
+    }: {
+      enabledFlags: string[];
+    }): void {
       setEnabledFlags(flags);
       sendToast("Feature flags saved to local storage.");
     }

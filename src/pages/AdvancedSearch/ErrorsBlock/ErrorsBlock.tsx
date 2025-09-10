@@ -14,7 +14,9 @@ const ErrorsBlock = (): JSX.Element | null => {
   const isCrossModelQueryLoading = useAppSelector(getCrossModelQueryLoading);
   const crossModelQueryErrors = useAppSelector(getCrossModelQueryErrors);
 
-  const hasEqualErrors = (errors: CrossModelQueryResponse["errors"]) => {
+  const hasEqualErrors = (
+    errors: CrossModelQueryResponse["errors"],
+  ): boolean => {
     const firstError = Object.values(errors)[0].slice().sort();
     return Object.values(errors).reduce(
       (result, error) =>

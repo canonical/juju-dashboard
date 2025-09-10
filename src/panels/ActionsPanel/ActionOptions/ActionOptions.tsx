@@ -1,4 +1,5 @@
 import { Formik } from "formik";
+import type { JSX } from "react";
 import { useMemo } from "react";
 
 import OptionInputs from "components/RadioInputBox/OptionInputs";
@@ -14,7 +15,11 @@ type Props = {
   onValuesChange: OnValuesChange;
 };
 
-export default function ActionOptions({ name, data, onValuesChange }: Props) {
+export default function ActionOptions({
+  name,
+  data,
+  onValuesChange,
+}: Props): JSX.Element {
   const action = data[name];
   const { properties, required } = action.params;
 

@@ -14,6 +14,7 @@ import {
 } from "testing/factories/juju/juju";
 
 import { checkAuthMiddleware } from "./check-auth";
+import type { MockMiddlewareResult } from "./types";
 
 describe("model poller", () => {
   let fakeStore: MiddlewareAPI;
@@ -50,7 +51,7 @@ describe("model poller", () => {
     }));
   });
 
-  const runMiddleware = async (action: UnknownAction) => {
+  const runMiddleware = async (action: UnknownAction): MockMiddlewareResult => {
     const middleware = checkAuthMiddleware(fakeStore);
     await middleware(next)(action);
     return middleware;

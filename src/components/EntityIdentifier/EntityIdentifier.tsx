@@ -1,3 +1,5 @@
+import type { FC } from "react";
+
 import CharmIcon from "components/CharmIcon/CharmIcon";
 import TruncatedTooltip from "components/TruncatedTooltip";
 
@@ -7,7 +9,7 @@ type Props = {
   subordinate?: boolean;
 };
 
-const EntityIdentifier = ({
+const EntityIdentifier: FC<Props> = ({
   charmId = null,
   name,
   subordinate = false,

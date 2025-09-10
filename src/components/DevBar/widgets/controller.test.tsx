@@ -1,4 +1,5 @@
 import type { Config } from "store/general/types";
+import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { renderComponent } from "testing/utils";
@@ -7,7 +8,7 @@ import controller from "./controller";
 
 const { Title, Widget } = controller;
 
-function connectedState() {
+function connectedState(): RootState {
   return rootStateFactory.build({
     general: generalStateFactory.build({
       config: configFactory.build({
@@ -30,7 +31,7 @@ function connectedState() {
   });
 }
 
-function disconnectedState() {
+function disconnectedState(): RootState {
   return rootStateFactory.build({
     general: generalStateFactory.build({
       config: configFactory.build({

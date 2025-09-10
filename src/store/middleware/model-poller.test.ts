@@ -22,6 +22,7 @@ import {
 } from "testing/factories/juju/juju";
 
 import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
+import type { MockMiddlewareResult } from "./types";
 
 vi.mock("juju/api", () => ({
   disableControllerUUIDMasking: vi
@@ -116,7 +117,9 @@ describe("model poller", () => {
     new LocalAuth(fakeStore.dispatch);
   });
 
-  const runMiddleware = async (actionOverrides?: Partial<UnknownAction>) => {
+  const runMiddleware = async (
+    actionOverrides?: Partial<UnknownAction>,
+  ): MockMiddlewareResult => {
     const action = {
       ...appActions.connectAndPollControllers({
         controllers,

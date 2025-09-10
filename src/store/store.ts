@@ -54,7 +54,9 @@ export const useAppStore = useStore<RootState>;
 // https://redux-toolkit.js.org/usage/usage-with-typescript#correct-typings-for-the-dispatch-type
 export const useAppDispatch: () => AppDispatch = useDispatch;
 // This hook can be used in place of useDispatch to get correctly typed dispatches that return promises.
-export const usePromiseDispatch = () => {
+export const usePromiseDispatch = (): (<Result>(
+  action: UnknownAction,
+) => Promise<Result>) => {
   const dispatch = useAppDispatch();
   return useCallback(
     <Result>(action: UnknownAction) =>

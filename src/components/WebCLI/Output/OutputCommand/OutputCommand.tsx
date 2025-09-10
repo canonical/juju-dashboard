@@ -1,17 +1,20 @@
 import Ansi from "@curvenote/ansi-to-react";
 import fastDeepEqual from "fast-deep-equal/es6";
 import React from "react";
-import type { ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 
 import { processTableLinks, processCommandOutput } from "../../utils";
 
 import type { Props } from "./types";
 
-const defaultProcessOutput = (_command: string, messages: string[]) => (
+const defaultProcessOutput = (
+  _command: string,
+  messages: string[],
+): ReactNode => (
   <Ansi>{messages.map((message) => `${message}\n`).join("")}</Ansi>
 );
 
-const OutputCommand = ({
+const OutputCommand: FC<Props> = ({
   command,
   messages,
   tableLinks,
@@ -24,10 +27,11 @@ const OutputCommand = ({
     if (tableLinks) {
       response = processTableLinks(command, messages, tableLinks);
     }
-    if (!response && processOutput) {
+    let hasResponse = Boolean(response);
+    if (!hasResponse && processOutput) {
       response = processCommandOutput(command, messages, processOutput);
     }
-    const hasResponse = Boolean(response);
+    hasResponse = Boolean(response);
     if (!hasResponse) {
       response = defaultProcessOutput(command, messages);
     }

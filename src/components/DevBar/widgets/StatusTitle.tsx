@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import type { JSX } from "react";
 
 export function StatusTitle({
   title,
@@ -8,7 +9,7 @@ export function StatusTitle({
   title: string;
   status?: boolean;
   label: string;
-}) {
+}): JSX.Element {
   return (
     <>
       {title}

@@ -1,3 +1,7 @@
+import type {
+  ApplicationGetResults,
+  ErrorResults,
+} from "@canonical/jujulib/dist/api/facades/application/ApplicationV18";
 import { useCallback } from "react";
 
 import { isSet } from "components/utils";
@@ -13,7 +17,7 @@ export enum Label {
 export const useGetApplicationConfig = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((appName: string) => Promise<ApplicationGetResults>) => {
   const handler = useCallback(
     (connection: ConnectionWithFacades, appName: string) => {
       if (!connection.facades.application) {
@@ -32,7 +36,7 @@ export const useGetApplicationConfig = (
 export const useSetApplicationConfig = (
   userName: null | string = null,
   modelName: null | string = null,
-) => {
+): ((appName: string, config: Config) => Promise<ErrorResults>) => {
   const handler = useCallback(
     (connection: ConnectionWithFacades, appName: string, config: Config) => {
       if (!connection.facades.application) {

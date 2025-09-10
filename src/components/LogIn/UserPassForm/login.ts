@@ -12,7 +12,7 @@ export function login(
   dispatch: AppDispatch,
   wsControllerURL: null | string,
   { user, password }: { user: string; password: string },
-) {
+): void {
   dispatch(actions.cleanupLoginErrors());
   dispatch(
     actions.storeUserPass({

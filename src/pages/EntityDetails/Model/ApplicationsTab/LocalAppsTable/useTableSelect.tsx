@@ -1,4 +1,8 @@
-import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import type {
+  MainTableCell,
+  MainTableRow,
+} from "@canonical/react-components/dist/components/MainTable/MainTable";
+import type { FC } from "react";
 import { useDispatch } from "react-redux";
 
 import useAnalytics from "hooks/useAnalytics";
@@ -8,14 +12,27 @@ import { getSelectedApplications } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import type { Header } from "tables/tableHeaders";
 
-export const useTableSelect = (applications: ApplicationInfo[]) => {
+type SelectHandlers = {
+  selectAll: boolean;
+  handleSelectAll: (selectAll?: boolean) => void;
+  handleSelect: (application: ApplicationInfo) => void;
+};
+
+type Props = {
+  onSelect: (app: ApplicationInfo) => void;
+  app: ApplicationInfo;
+};
+
+export const useTableSelect = (
+  applications: ApplicationInfo[],
+): SelectHandlers => {
   let selectedApplications = useAppSelector(getSelectedApplications);
 
   const sendAnalytics = useAnalytics();
 
   const dispatch = useDispatch();
 
-  const handleSelectAll = (selectAll = true) => {
+  const handleSelectAll = (selectAll = true): void => {
     sendAnalytics({
       category: "ApplicationSearch",
       action: "Select all applications",
@@ -32,7 +49,7 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
     );
   };
 
-  const handleSelect = (application: ApplicationInfo) => {
+  const handleSelect = (application: ApplicationInfo): void => {
     sendAnalytics({
       category: "ApplicationSearch",
       action: "Select application",
@@ -57,10 +74,10 @@ export const useTableSelect = (applications: ApplicationInfo[]) => {
   };
 };
 export const addSelectAllColumn = (
-  header: Header,
+  header: Header | MainTableCell[],
   selectAll: boolean,
   handleSelectAll: (selectAll?: boolean) => void,
-) => {
+): MainTableCell[] => {
   return [
     {
       content: (
@@ -83,19 +100,13 @@ export const addSelectAllColumn = (
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-const Checkbox = ({
-  onSelect,
-  app,
-}: {
-  onSelect: (app: ApplicationInfo) => void;
-  app: ApplicationInfo;
-}) => {
+const Checkbox: FC<Props> = ({ onSelect, app }) => {
   const selectedApplications = useAppSelector(getSelectedApplications);
   if (!("name" in app)) {
     return null;
   }
   const fieldID = `select-app-${app.name}`;
-  const handleSelect = () => {
+  const handleSelect = (): void => {
     onSelect(app);
   };
   return (
@@ -118,7 +129,7 @@ export const addSelectColumn = (
   rows: MainTableRow[],
   applications: ApplicationData,
   handleSelect: (application: ApplicationInfo) => void,
-) => {
+): MainTableRow[] => {
   const apps = Object.values(applications);
   return rows.map((row, i) => {
     const app = apps[i];

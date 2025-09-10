@@ -10,7 +10,7 @@ import { CandidAuth, LocalAuth, OIDCAuth } from ".";
 export function initialiseAuthFromConfig(
   config: Config,
   dispatch: AppDispatch,
-) {
+): void {
   if (!config.isJuju) {
     new OIDCAuth(dispatch);
     return;

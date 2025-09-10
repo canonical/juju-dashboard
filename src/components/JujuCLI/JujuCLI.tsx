@@ -1,10 +1,14 @@
 import Ansi from "@curvenote/ansi-to-react";
+import type { FC, ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
 import WebCLI from "components/WebCLI";
-import type { TableLinks } from "components/WebCLI/Output/types";
+import type {
+  TableLinks,
+  TableLinksLink,
+} from "components/WebCLI/Output/types";
 import useAnalytics from "hooks/useAnalytics";
 import {
   getUserPass,
@@ -42,7 +46,7 @@ const HELP_COMMAND_REGEX = /^(?<before>\s{2,})(?<command>\S+)(?<after>.+)/;
  * @param messages The messages returned by the API.
  * @returns The help nodes.
  */
-const processHelp = (messages: string[]) => {
+const processHelp = (messages: string[]): ReactNode => {
   let inCommandsBlock = false;
   return (
     <>
@@ -95,7 +99,7 @@ const processOutput = {
   },
 };
 
-const JujuCLI = () => {
+const JujuCLI: FC = () => {
   const routeParams = useParams<EntityDetailsRoute>();
   const sendAnalytics = useAnalytics();
   const dispatch = useAppDispatch();
@@ -130,7 +134,7 @@ const JujuCLI = () => {
   );
   const commandHistory = useAppSelector(getCommandHistory);
 
-  function onCommandSent(_command?: string) {
+  function onCommandSent(_command?: string): void {
     sendAnalytics({
       category: "User",
       action: "WebCLI command sent",
@@ -145,7 +149,7 @@ const JujuCLI = () => {
               exact: false,
               blocks: {
                 App: {
-                  App: (column) => ({
+                  App: (column): TableLinksLink => ({
                     link: urls.model.app.index({
                       userName: modelInfo.owner,
                       modelName: modelInfo.name,
@@ -154,22 +158,22 @@ const JujuCLI = () => {
                   }),
                 },
                 Machine: {
-                  Machine: (column) => ({
+                  Machine: (column): TableLinksLink => ({
                     link: urls.model.machine({
                       userName: modelInfo.owner,
                       modelName: modelInfo.name,
                       machineId: column.value,
                     }),
                   }),
-                  Address: (column) => ({
+                  Address: (column): TableLinksLink => ({
                     externalLink: `http://${column.value}`,
                   }),
                 },
                 Model: {
-                  Controller: () => ({
+                  Controller: (): TableLinksLink => ({
                     link: urls.controllers,
                   }),
-                  Model: () => ({
+                  Model: (): TableLinksLink => ({
                     link: urls.model.index({
                       userName: modelInfo.owner,
                       modelName: modelInfo.name,
@@ -177,7 +181,7 @@ const JujuCLI = () => {
                   }),
                 },
                 Unit: {
-                  Unit: (column) => {
+                  Unit: (column): TableLinksLink => {
                     const [appName] = column.value.split("/");
                     return {
                       link: urls.model.unit({
@@ -190,14 +194,14 @@ const JujuCLI = () => {
                       }),
                     };
                   },
-                  Machine: (column) => ({
+                  Machine: (column): TableLinksLink => ({
                     link: urls.model.machine({
                       userName: modelInfo.owner,
                       modelName: modelInfo.name,
                       machineId: column.value,
                     }),
                   }),
-                  "Public address": (column) => ({
+                  "Public address": (column): TableLinksLink => ({
                     externalLink: `http://${column.value}`,
                   }),
                 },

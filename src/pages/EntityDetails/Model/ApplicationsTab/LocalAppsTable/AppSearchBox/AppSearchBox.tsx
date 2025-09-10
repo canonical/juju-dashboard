@@ -1,11 +1,12 @@
 import { SearchBox } from "@canonical/react-components";
+import type { FC } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { useQueryParams } from "hooks/useQueryParams";
 import { actions as jujuActions } from "store/juju";
 
-const AppSearchBox = () => {
+const AppSearchBox: FC = () => {
   const dispatch = useDispatch();
   const [query, setQuery] = useQueryParams<{
     filterQuery: string;
@@ -16,7 +17,7 @@ const AppSearchBox = () => {
   });
   const [filterQuery, setFilterQuery] = useState(query.filterQuery);
 
-  const updateQuery = (queryString: string) => {
+  const updateQuery = (queryString: string): void => {
     // Clear any previously selected apps as they might not exist in the new
     // search results.
     dispatch(

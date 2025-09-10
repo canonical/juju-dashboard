@@ -1,5 +1,5 @@
 import { Button, Chip, Icon, Tooltip } from "@canonical/react-components";
-import type { ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 
 import ActionBar from "components/ActionBar/ActionBar";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -18,7 +18,7 @@ export type AuditLogFilters = {
 const generateFilters = (
   filters: AuditLogFilters,
   setFilters: SetParams<AuditLogFilters>,
-) =>
+): ReactNode[] =>
   // Reduce to remove filters that are not set.
   Object.entries(filters).reduce<ReactNode[]>((chips, [filter, value]) => {
     if (value !== null && value) {
@@ -35,7 +35,7 @@ const generateFilters = (
     return chips;
   }, []);
 
-const AuditLogsTableFilters = () => {
+const AuditLogsTableFilters: FC = () => {
   const [queryParams, setQueryParams] = useQueryParams<
     { page: null | string } & AuditLogFilters
   >({ ...DEFAULT_AUDIT_LOG_FILTERS, page: null });

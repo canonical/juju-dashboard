@@ -1,5 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { JSX } from "react";
 import { vi } from "vitest";
 
 import { TestId as InfoPanelTestId } from "components/InfoPanel/types";
@@ -28,12 +29,14 @@ import App from "./App";
 import { Label, TestId } from "./types";
 
 vi.mock("components/Topology", () => {
-  const Topology = () => <div className="topology"></div>;
+  const Topology = (): JSX.Element => <div className="topology"></div>;
   return { default: Topology };
 });
 
 vi.mock("components/WebCLI", () => {
-  const WebCLI = () => <div className="webcli" data-testid="webcli"></div>;
+  const WebCLI = (): JSX.Element => (
+    <div className="webcli" data-testid="webcli"></div>
+  );
   return { default: WebCLI };
 });
 
@@ -168,7 +171,7 @@ describe("Entity Details App", () => {
       screen.getByTestId("table-checkbox-1"),
     ];
     await userEvent.click(selectAll);
-    const unitsListChecked = (value: boolean) => {
+    const unitsListChecked = (value: boolean): void => {
       selectedUnits.forEach((input) => {
         if (value) {
           expect(input).toBeChecked();

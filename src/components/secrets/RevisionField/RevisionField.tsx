@@ -4,6 +4,7 @@ import type {
   SelectProps,
 } from "@canonical/react-components";
 import { FormikField, Select } from "@canonical/react-components";
+import type { FC } from "react";
 
 import { getSecretByURI, getSecretLatestRevision } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
@@ -18,7 +19,11 @@ type Props = PropsWithSpread<
   Partial<FormikFieldProps> & Partial<SelectProps>
 >;
 
-const RevisionField = ({ modelUUID, secretURI, ...props }: Props) => {
+const RevisionField: FC<Props> = ({
+  modelUUID,
+  secretURI,
+  ...props
+}: Props) => {
   const secret = useAppSelector((state) =>
     getSecretByURI(state, modelUUID, secretURI),
   );

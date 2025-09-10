@@ -9,6 +9,7 @@ import {
   usePortal,
 } from "@canonical/react-components";
 import { Form, Formik } from "formik";
+import type { FC } from "react";
 import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
@@ -34,7 +35,7 @@ type Props = {
   secretURI: string;
 };
 
-const SecretContent = ({ secretURI }: Props) => {
+const SecretContent: FC<Props> = ({ secretURI }: Props) => {
   const { userName, modelName } = useParams<EntityDetailsRoute>();
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>

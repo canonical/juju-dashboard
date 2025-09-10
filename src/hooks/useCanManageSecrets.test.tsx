@@ -1,5 +1,5 @@
 import { renderHook } from "@testing-library/react";
-import type { PropsWithChildren } from "react";
+import type { JSX, PropsWithChildren } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router";
 
@@ -26,7 +26,7 @@ import useCanManageSecrets from "./useCanManageSecrets";
 
 const generateContainer =
   (state: RootState, path: string, url: string) =>
-  ({ children }: PropsWithChildren) => {
+  ({ children }: PropsWithChildren): JSX.Element => {
     window.happyDOM.setURL(url);
     const store = createStore(state);
     return (

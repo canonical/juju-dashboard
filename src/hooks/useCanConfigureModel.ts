@@ -12,7 +12,7 @@ import { useAppSelector } from "store/store";
 const useCheckJujuPermissions = (
   modelUUID?: null | string,
   enabled: boolean = false,
-) => {
+): boolean => {
   const activeUser = useAppSelector((state) => getActiveUser(state, modelUUID));
   const modelStatusData = useModelStatus(modelUUID);
   return (
@@ -27,7 +27,7 @@ const useCheckJIMMPermissions = (
   modelUUID?: null | string,
   enabled: boolean = false,
   cleanup: boolean = false,
-) => {
+): boolean => {
   const controllerUser = useAppSelector(getControllerUserTag);
   const { permitted } = useCheckPermissions(
     enabled && controllerUser !== null && controllerUser && modelUUID !== null
@@ -45,7 +45,7 @@ const useCheckJIMMPermissions = (
 export const useCanConfigureModelWithUUID = (
   cleanup?: boolean,
   modelUUID: null | string = null,
-) => {
+): boolean => {
   const isJuju = useAppSelector(getIsJuju);
   const jujuPermissions = useCheckJujuPermissions(modelUUID, isJuju);
   const jimmPermissions = useCheckJIMMPermissions(modelUUID, !isJuju, cleanup);
@@ -56,7 +56,7 @@ const useCanConfigureModel = (
   cleanup?: boolean,
   modelName: null | string = null,
   userName: null | string = null,
-) => {
+): boolean => {
   const params = useParams<EntityDetailsRoute>();
   userName = userName ?? params.userName ?? null;
   modelName = modelName ?? params.modelName ?? null;

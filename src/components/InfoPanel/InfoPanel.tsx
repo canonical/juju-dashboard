@@ -1,4 +1,5 @@
 import { usePortal, Modal } from "@canonical/react-components";
+import type { FC } from "react";
 import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
@@ -15,7 +16,7 @@ import { useAppSelector } from "store/store";
 
 import { Label, TestId } from "./types";
 
-const expandedTopologyDimensions = () => {
+const expandedTopologyDimensions = (): { width: number; height: number } => {
   const de = document.documentElement;
   const vw = Math.max(de.clientWidth, window.innerWidth || 0);
   const vh = Math.max(de.clientHeight, window.innerHeight || 0);
@@ -26,7 +27,7 @@ const expandedTopologyDimensions = () => {
   };
 };
 
-const infoPanelDimensions = () => {
+const infoPanelDimensions = (): number => {
   const vw = getViewportWidth();
   // If changes are made to the 1580px breakpoint below then be sure to update
   // the same breakpoint in _info-panel.scss.
@@ -34,7 +35,7 @@ const infoPanelDimensions = () => {
   return size;
 };
 
-const InfoPanel = () => {
+const InfoPanel: FC = () => {
   const { modelName = null, userName = null } = useParams<EntityDetailsRoute>();
 
   const {
@@ -64,7 +65,9 @@ const InfoPanel = () => {
 
   const sendAnalytics = useAnalytics();
 
-  const handleExpandTopology = (ev: React.MouseEvent<HTMLButtonElement>) => {
+  const handleExpandTopology = (
+    ev: React.MouseEvent<HTMLButtonElement>,
+  ): void => {
     openPortal(ev);
     sendAnalytics({
       path: undefined,

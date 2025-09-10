@@ -1,3 +1,5 @@
+import type { FC } from "react";
+
 import ActionBar from "components/ActionBar";
 import AuditLogsTableActions from "components/AuditLogsTable/AuditLogsTableActions";
 import SegmentedControl from "components/SegmentedControl";
@@ -15,7 +17,7 @@ const BUTTON_DETAILS = [
   { title: Label.AUDIT_LOGS, url: "audit-logs" },
 ];
 
-const Logs = () => {
+const Logs: FC = () => {
   const isJuju = useAppSelector(getIsJuju);
   const { permitted: auditLogsAllowed } = useAuditLogsPermitted();
   const [{ tableView }, setQueryParams] = useQueryParams<{
@@ -35,7 +37,7 @@ const Logs = () => {
             buttons={BUTTON_DETAILS.map(({ title, url }) => ({
               children: title,
               key: url,
-              onClick: () => {
+              onClick: (): void => {
                 setQueryParams({ tableView: url });
               },
             }))}

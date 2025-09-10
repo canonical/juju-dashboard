@@ -1,4 +1,4 @@
-import type { ImgHTMLAttributes } from "react";
+import type { FC, ImgHTMLAttributes } from "react";
 import { useState } from "react";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
@@ -9,12 +9,12 @@ type Props = {
   charmId: string;
 } & Partial<ImgHTMLAttributes<HTMLImageElement>>;
 
-const CharmIcon = ({ charmId, name, ...props }: Props) => {
+const CharmIcon: FC<Props> = ({ charmId, name, ...props }: Props) => {
   const src = charmId.startsWith("local:")
     ? defaultCharmIcon
     : generateIconPath(charmId);
   const [imgSrc, setImgSrc] = useState(src);
-  const onError = () => setImgSrc(defaultCharmIcon);
+  const onError = (): void => setImgSrc(defaultCharmIcon);
 
   return (
     <img

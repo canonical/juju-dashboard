@@ -181,7 +181,7 @@ export default function App(): JSX.Element {
   });
 
   const application = entity !== null && entity ? applications?.[entity] : null;
-  const showConfig = (event: React.MouseEvent) => {
+  const showConfig = (event: React.MouseEvent): void => {
     event.stopPropagation();
     if (application && "charm-url" in application) {
       setQuery(
@@ -218,14 +218,14 @@ export default function App(): JSX.Element {
     [machines, units, entity],
   );
 
-  const showActions = () => {
+  const showActions = (): void => {
     setQuery(
       { panel: "execute-action", units: selectedUnits.current },
       { replace: true },
     );
   };
 
-  const onFormChange = (formData: AppFormData) => {
+  const onFormChange = (formData: AppFormData): void => {
     if (!setFieldsValues.current) return;
     // If the app is a subordinate and has not been related to any other apps
     // then its unit list will be `null`.
@@ -277,7 +277,7 @@ export default function App(): JSX.Element {
     setEnableActionButtonRow(formData.selectedUnits.length > 0);
   };
 
-  const onSetup = (setFieldValue: SetFieldValue<AppFormData>) => {
+  const onSetup = (setFieldValue: SetFieldValue<AppFormData>): void => {
     setFieldsValues.current = setFieldValue;
   };
 

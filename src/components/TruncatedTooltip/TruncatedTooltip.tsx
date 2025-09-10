@@ -4,6 +4,7 @@ import classNames from "classnames";
 import type {
   ComponentType,
   ElementType,
+  FC,
   HTMLProps,
   PropsWithChildren,
 } from "react";
@@ -21,7 +22,7 @@ type Props = {
 /**
    This tooltip has a special power, it only appears if the content is truncated.
 */
-const TruncatedTooltip = ({
+const TruncatedTooltip: FC<Props> = ({
   children,
   positionElementClassName,
   tooltipClassName,
@@ -58,7 +59,7 @@ const TruncatedTooltip = ({
     checkTruncated();
     // Watch the content for resizes to check if the truncation changes.
     resizeObserver.observe(element);
-    return () => {
+    return (): void => {
       if (truncatedNode !== null) {
         resizeObserver.unobserve(element);
       }

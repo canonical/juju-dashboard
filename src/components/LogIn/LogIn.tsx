@@ -1,5 +1,5 @@
 import { Spinner } from "@canonical/react-components";
-import type { ReactNode } from "react";
+import type { JSX, ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import reactHotToast from "react-hot-toast";
 import { Outlet, useOutletContext } from "react-router";
@@ -26,7 +26,7 @@ import OIDCForm from "./OIDCForm";
 import UserPassForm from "./UserPassForm";
 import { ErrorResponse, Label, TestId } from "./types";
 
-export default function LogIn() {
+export default function LogIn(): JSX.Element {
   const viewedAuthRequests = useRef<string[]>([]);
   const isJuju = useAppSelector(getIsJuju);
   const wsControllerURL = useAppSelector(getWSControllerURL);
@@ -120,7 +120,7 @@ export default function LogIn() {
   @param loginError The error message from the store.
   @returns A component for the error message.
 */
-function generateErrorMessage(loginError: null | string = null) {
+function generateErrorMessage(loginError: null | string = null): ReactNode {
   if (loginError === null || !loginError) {
     return null;
   }

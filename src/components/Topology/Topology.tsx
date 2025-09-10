@@ -29,7 +29,7 @@ type Application = {
   @param app The application status object.
   @returns If the application is a subordinate.
 */
-const isSubordinate = (app: Application) =>
+const isSubordinate = (app: Application): boolean =>
   "subordinate" in app && app.subordinate;
 
 /**
@@ -39,7 +39,9 @@ const isSubordinate = (app: Application) =>
   @param annotations The annotations object from the model status.
   @returns The deltas for x and y in the keys { deltaX, deltaY }.
 */
-const computePositionDelta = (annotations: AnnotationData | null) => {
+const computePositionDelta = (
+  annotations: AnnotationData | null,
+): { deltaX: null | number; deltaY: null | number } => {
   let deltaX: null | number = null;
   let deltaY: null | number = null;
 
@@ -67,7 +69,9 @@ const computePositionDelta = (annotations: AnnotationData | null) => {
   @param annotations The annotations object from the model status.
   @returns The value of the annotation with the highest X and Y value.
 */
-const computeMaxXY = (annotations: AnnotationData | null) => {
+const computeMaxXY = (
+  annotations: AnnotationData | null,
+): { maxX: number; maxY: number } => {
   let maxY = 0;
   let maxX = 0;
   if (!annotations) {
@@ -99,7 +103,7 @@ const computeMaxXY = (annotations: AnnotationData | null) => {
 const applyDelta = (
   position: null | number | string = null,
   delta: null | number | string = null,
-) =>
+): number =>
   (typeof position === "number"
     ? position
     : parseFloat((position !== null && position) || "0")) +
@@ -113,15 +117,24 @@ const applyDelta = (
   @param data The relation data.
   @returns x and y coordinates for the two relation endpoints.
 */
-const getRelationPosition = (data: string[]) => {
+const getRelationPosition = (
+  data: string[],
+): {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+} => {
   // Gets the values from the elements translate attribute.
   // translate(123.456, 789.012)
   const translateValues = /(\d*\.?\d*),\s(\d*\.?\d*)/;
-  const getElement = (index: number) =>
+  const getElement = (
+    index: number,
+  ): d3.Selection<d3.BaseType, Application, HTMLElement, unknown> =>
     d3.select<d3.BaseType, Application>(`[data-name="${data[index]}"]`);
   const getRect = (
     element: d3.Selection<d3.BaseType, Application, HTMLElement, void>,
-  ) => {
+  ): null | RegExpExecArray | void => {
     const node = element?.node();
     if (node && "getAttribute" in node) {
       const transform = node.getAttribute("transform");
@@ -132,7 +145,7 @@ const getRelationPosition = (data: string[]) => {
   };
   const getData = (
     element: d3.Selection<d3.BaseType, Application, HTMLElement, void>,
-  ) => element.data()[0];
+  ): Application => element.data()[0];
 
   const element1 = getElement(0);
   const element2 = getElement(1);
@@ -364,7 +377,7 @@ const Topology = memo(
       appIcons.exit().remove();
       relationLines.exit().remove();
 
-      return () => {
+      return (): void => {
         topo.remove();
       };
     }, [applications, deltaX, deltaY, height, width, maxX, maxY, relations]);
