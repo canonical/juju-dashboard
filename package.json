@@ -35,7 +35,8 @@
     "stylelint-check": "stylelint 'src/**/*.scss'",
     "stylelint-fix": "stylelint --fix 'src/**/*.scss'",
     "test": "vitest",
-    "typescript-build": "tsc -b"
+    "typescript-build": "tsc -b",
+    "typescript-check": "tsc --noEmit"
   },
   "browserslist": {
     "production": [
