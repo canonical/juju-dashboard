@@ -47,9 +47,10 @@ describe("actions", () => {
   });
 
   it("storeConfig", () => {
-    expect(actions.storeConfig(configFactory.build())).toStrictEqual({
+    const config = configFactory.build();
+    expect(actions.storeConfig(config)).toStrictEqual({
       type: "general/storeConfig",
-      payload: "config",
+      payload: config,
     });
   });
 
