@@ -7,6 +7,16 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import { Factory } from "fishery";
 
+export const detailedStatusFactory = Factory.define<DetailedStatus>(() => ({
+  data: {},
+  info: "ready",
+  kind: "",
+  life: "",
+  since: "2023-02-26T23:40:27.575528717Z",
+  status: "active",
+  version: "",
+}));
+
 export const modelStatusInfoFactory = Factory.define<ModelStatusInfo>(() => ({
   name: "sub-test",
   type: "iaas",
@@ -46,16 +56,6 @@ export const applicationOfferStatusFactory =
     "offer-name": "db",
     "total-connected-count": 2,
   }));
-
-export const detailedStatusFactory = Factory.define<DetailedStatus>(() => ({
-  data: {},
-  info: "ready",
-  kind: "",
-  life: "",
-  since: "2023-02-26T23:40:27.575528717Z",
-  status: "active",
-  version: "",
-}));
 
 export const remoteApplicationStatusFactory =
   Factory.define<RemoteApplicationStatus>(() => ({

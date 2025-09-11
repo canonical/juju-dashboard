@@ -26,6 +26,34 @@ import OIDCForm from "./OIDCForm";
 import UserPassForm from "./UserPassForm";
 import { ErrorResponse, Label, TestId } from "./types";
 
+/**
+  Generates the necessary elements to render the error message.
+  @param loginError The error message from the store.
+  @returns A component for the error message.
+*/
+function generateErrorMessage(loginError: null | string = null): ReactNode {
+  if (loginError === null || !loginError) {
+    return null;
+  }
+  let loginErrorMessage = null;
+  switch (loginError) {
+    case ErrorResponse.INVALID_TAG:
+      loginErrorMessage = Label.INVALID_NAME;
+      break;
+    case ErrorResponse.INVALID_FIELD:
+      loginErrorMessage = Label.INVALID_FIELD;
+      break;
+    default:
+      loginErrorMessage = loginError;
+  }
+  return (
+    <p className="error-message">
+      <i className="p-icon--error" />
+      {loginErrorMessage}
+    </p>
+  );
+}
+
 export default function LogIn(): JSX.Element {
   const viewedAuthRequests = useRef<string[]>([]);
   const isJuju = useAppSelector(getIsJuju);
@@ -112,33 +140,5 @@ export default function LogIn(): JSX.Element {
         <Outlet context={context} />
       </div>
     </>
-  );
-}
-
-/**
-  Generates the necessary elements to render the error message.
-  @param loginError The error message from the store.
-  @returns A component for the error message.
-*/
-function generateErrorMessage(loginError: null | string = null): ReactNode {
-  if (loginError === null || !loginError) {
-    return null;
-  }
-  let loginErrorMessage = null;
-  switch (loginError) {
-    case ErrorResponse.INVALID_TAG:
-      loginErrorMessage = Label.INVALID_NAME;
-      break;
-    case ErrorResponse.INVALID_FIELD:
-      loginErrorMessage = Label.INVALID_FIELD;
-      break;
-    default:
-      loginErrorMessage = loginError;
-  }
-  return (
-    <p className="error-message">
-      <i className="p-icon--error" />
-      {loginErrorMessage}
-    </p>
   );
 }

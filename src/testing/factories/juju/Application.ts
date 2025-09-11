@@ -6,17 +6,6 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/application/ApplicationV18";
 import { Factory } from "fishery";
 
-export const applicationConfigFactory = Factory.define<
-  NonNullable<ApplicationGetResults["application-config"]>
->(() => ({
-  trust: configFactory.build({
-    default: false,
-    description: "Does this application have access to trusted credentials",
-    type: "bool",
-    value: false,
-  }),
-}));
-
 export const configFactory = Factory.define<ApplicationGetResults["config"]>(
   () => ({
     default: "",
@@ -27,6 +16,16 @@ export const configFactory = Factory.define<ApplicationGetResults["config"]>(
     value: "",
   }),
 );
+export const applicationConfigFactory = Factory.define<
+  NonNullable<ApplicationGetResults["application-config"]>
+>(() => ({
+  trust: configFactory.build({
+    default: false,
+    description: "Does this application have access to trusted credentials",
+    type: "bool",
+    value: false,
+  }),
+}));
 
 export const constraintsFactory = Factory.define<Value>(() => ({
   "allocate-public-ip": false,

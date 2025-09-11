@@ -24,6 +24,11 @@ export const errorFactory = Factory.define<ModelManagerError>(() => ({
   message: "Uh oh",
 }));
 
+export const modelSLAInfoFactory = Factory.define<ModelSLAInfo>(() => ({
+  level: "unsupported",
+  owner: "",
+}));
+
 export const modelInfoFactory = Factory.define<ModelInfo>(() => ({
   "agent-version": "1.2.3",
   "cloud-tag": "cloud-aws",
@@ -73,9 +78,4 @@ export const modelMachineInfoFactory = Factory.define<ModelMachineInfo>(() => ({
   hardware: machineHardwareFactory.build(),
   "instance-id": "juju-9cb18d-0",
   status: "started",
-}));
-
-export const modelSLAInfoFactory = Factory.define<ModelSLAInfo>(() => ({
-  level: "unsupported",
-  owner: "",
 }));

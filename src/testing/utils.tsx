@@ -90,6 +90,44 @@ export const ComponentProviders = ({
   </Provider>
 );
 
+export function createStore(
+  state: RootState,
+  options: { trackActions: true },
+): [EnhancedStore<RootState>, UnknownAction[]];
+export function createStore(
+  state: RootState,
+  options?: { trackActions: false },
+): EnhancedStore<RootState>;
+export function createStore(
+  state: RootState,
+  options: { trackActions: boolean } = { trackActions: false },
+): [EnhancedStore<RootState>, UnknownAction[]] | EnhancedStore<RootState> {
+  const actions: UnknownAction[] = [];
+  const store = configureStore({
+    middleware: (getDefaultMiddleware) => {
+      const middleware = getDefaultMiddleware();
+      if (options.trackActions) {
+        middleware.push(((_store) =>
+          (next) =>
+          (action): unknown => {
+            actions.push(action as UnknownAction);
+            return next(action);
+          }) as Middleware<unknown, RootState>);
+      }
+      return middleware;
+    },
+    preloadedState: state,
+    reducer: combineReducers({
+      general: generalReducer,
+      juju: jujuReducer,
+    }),
+  });
+  if (options.trackActions) {
+    return [store, actions] as const;
+  }
+  return store;
+}
+
 export const changeURL = (url: string): void => window.happyDOM.setURL(url);
 
 export const wrapComponent = (
@@ -183,41 +221,3 @@ export const renderWrappedHook = <Result, Props>(
   });
   return { ...result, router, store };
 };
-
-export function createStore(
-  state: RootState,
-  options: { trackActions: true },
-): [EnhancedStore<RootState>, UnknownAction[]];
-export function createStore(
-  state: RootState,
-  options?: { trackActions: false },
-): EnhancedStore<RootState>;
-export function createStore(
-  state: RootState,
-  options: { trackActions: boolean } = { trackActions: false },
-): [EnhancedStore<RootState>, UnknownAction[]] | EnhancedStore<RootState> {
-  const actions: UnknownAction[] = [];
-  const store = configureStore({
-    middleware: (getDefaultMiddleware) => {
-      const middleware = getDefaultMiddleware();
-      if (options.trackActions) {
-        middleware.push(((_store) =>
-          (next) =>
-          (action): unknown => {
-            actions.push(action as UnknownAction);
-            return next(action);
-          }) as Middleware<unknown, RootState>);
-      }
-      return middleware;
-    },
-    preloadedState: state,
-    reducer: combineReducers({
-      general: generalReducer,
-      juju: jujuReducer,
-    }),
-  });
-  if (options.trackActions) {
-    return [store, actions] as const;
-  }
-  return store;
-}

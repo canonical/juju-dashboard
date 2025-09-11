@@ -55,18 +55,6 @@ export default function ShareModel(): JSX.Element {
     usePanelQueryParams<ShareModelQueryParams>(defaultQueryParams);
 
   const modelStatusData = useModelStatus() || null;
-  const newUserFormik = useFormik({
-    initialValues: {
-      username: "",
-      access: "read",
-    },
-    validate: (values) => handleValidateNewUser(values),
-    onSubmit: (values, { resetForm }) => {
-      void handleNewUserFormSubmit(values, resetForm);
-      setShowAddNewUser(false);
-    },
-  });
-
   const controllerUUID = modelStatusData?.info?.["controller-uuid"];
 
   const modelUUID = modelStatusData?.info?.uuid ?? null;
@@ -87,22 +75,6 @@ export default function ShareModel(): JSX.Element {
 
   const modelControllerURL = modelControllerData?.url ?? null;
   const users = modelStatusData?.info?.users;
-
-  useEffect(() => {
-    const clonedUserAccess: null | UsersAccess = cloneDeep(usersAccess);
-
-    users?.forEach((user: User) => {
-      const displayName = user["user"];
-
-      clonedUserAccess[displayName] = user?.["access"];
-      setUsersAccess(clonedUserAccess);
-    });
-  }, [users]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const isOwner = (user: string): boolean => {
-    const ownerTag = modelStatusData?.info?.["owner-tag"] ?? null;
-    return ownerTag !== null && !!ownerTag && user === getUserName(ownerTag);
-  };
 
   const userAlreadyHasAccess = (
     username: string,
@@ -156,6 +128,75 @@ export default function ShareModel(): JSX.Element {
       response = null;
     }
     return response;
+  };
+
+  const handleNewUserFormSubmit = async (
+    values: UserAccess,
+    resetForm: () => void,
+  ): Promise<void> => {
+    if (userAlreadyHasAccess(values.username, users)) {
+      reactHotToast.custom((toast: ToastInstance) => (
+        <ToastCard toastInstance={toast} type="negative">
+          <strong>{values.username}</strong> already has access to this model.
+        </ToastCard>
+      ));
+    } else {
+      const newUserName = values.username;
+      const newUserPermission = values.access;
+      let response = null;
+      if (newUserName && newUserPermission !== null && newUserPermission) {
+        response = await updateModelPermissions(
+          "grant",
+          newUserName,
+          newUserPermission,
+          undefined,
+        );
+      }
+
+      const error = response?.results?.[0]?.error?.message ?? null;
+      if (error !== null && error) {
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard toastInstance={toast} type="negative">
+            {error}
+          </ToastCard>
+        ));
+      } else if (response) {
+        resetForm();
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard toastInstance={toast} type="positive">
+            <strong>{values.username}</strong> now has access to this model.
+          </ToastCard>
+        ));
+      }
+    }
+  };
+
+  const newUserFormik = useFormik({
+    initialValues: {
+      username: "",
+      access: "read",
+    },
+    validate: (values) => handleValidateNewUser(values),
+    onSubmit: (values, { resetForm }) => {
+      void handleNewUserFormSubmit(values, resetForm);
+      setShowAddNewUser(false);
+    },
+  });
+
+  useEffect(() => {
+    const clonedUserAccess: null | UsersAccess = cloneDeep(usersAccess);
+
+    users?.forEach((user: User) => {
+      const displayName = user["user"];
+
+      clonedUserAccess[displayName] = user?.["access"];
+      setUsersAccess(clonedUserAccess);
+    });
+  }, [users]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const isOwner = (user: string): boolean => {
+    const ownerTag = modelStatusData?.info?.["owner-tag"] ?? null;
+    return ownerTag !== null && !!ownerTag && user === getUserName(ownerTag);
   };
 
   const handleAccessSelectChange = async (
@@ -230,47 +271,6 @@ export default function ShareModel(): JSX.Element {
         <strong>{username}</strong> has been successfully removed.
       </ToastCard>
     ));
-  };
-
-  const handleNewUserFormSubmit = async (
-    values: UserAccess,
-    resetForm: () => void,
-  ): Promise<void> => {
-    if (userAlreadyHasAccess(values.username, users)) {
-      reactHotToast.custom((toast: ToastInstance) => (
-        <ToastCard toastInstance={toast} type="negative">
-          <strong>{values.username}</strong> already has access to this model.
-        </ToastCard>
-      ));
-    } else {
-      const newUserName = values.username;
-      const newUserPermission = values.access;
-      let response = null;
-      if (newUserName && newUserPermission !== null && newUserPermission) {
-        response = await updateModelPermissions(
-          "grant",
-          newUserName,
-          newUserPermission,
-          undefined,
-        );
-      }
-
-      const error = response?.results?.[0]?.error?.message ?? null;
-      if (error !== null && error) {
-        reactHotToast.custom((toast: ToastInstance) => (
-          <ToastCard toastInstance={toast} type="negative">
-            {error}
-          </ToastCard>
-        ));
-      } else if (response) {
-        resetForm();
-        reactHotToast.custom((toast: ToastInstance) => (
-          <ToastCard toastInstance={toast} type="positive">
-            <strong>{values.username}</strong> now has access to this model.
-          </ToastCard>
-        ));
-      }
-    }
   };
 
   // Ensure user with 'owner' status is always the first card
