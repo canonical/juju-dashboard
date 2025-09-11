@@ -169,6 +169,7 @@ async function setCandidConfig(config: CandidConfig): Promise<void> {
       ${JSON.stringify(config)}
       EOF`;
   await exec(writeCommand);
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
   await restartCandid();
 }

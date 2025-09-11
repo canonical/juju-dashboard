@@ -25,7 +25,7 @@ test.describe("cross model queries", () => {
     actions = new ActionStack(jujuCLI);
     await actions.prepare((add) => {
       user = add(jujuCLI.createUser());
-      const model = add(new AddModel(user));
+      const model = add(new AddModel(jujuCLI, user));
       add(
         new GiveControllerAccess(
           jujuCLI.controllerInstance,
@@ -42,6 +42,7 @@ test.describe("cross model queries", () => {
   });
 
   test("results are displayed ", async ({ page }) => {
+    await page.waitForTimeout(10000);
     await user.dashboardLogin(page, "/search");
     await expect(
       page.getByRole("heading", { name: AdvancedSearchLabel.TITLE }),
