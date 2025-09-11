@@ -221,11 +221,15 @@ describe("WebCLI", () => {
     renderComponent(<WebCLI {...props} />);
     await server.connected;
     const input = screen.getByRole("textbox");
-    let history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
+    let history = JSON.parse(
+      localStorage.getItem("cliHistory") ?? "{}",
+    ) as string[];
     expect(history).toHaveLength(MAX_HISTORY);
     expect(history[0]).toBe("command-0");
     await userEvent.type(input, "status{enter}");
-    history = JSON.parse(localStorage.getItem("cliHistory") ?? "");
+    history = JSON.parse(
+      localStorage.getItem("cliHistory") ?? "{}",
+    ) as string[];
     expect(history).toHaveLength(MAX_HISTORY);
     // The first item should be now be the old second item.
     expect(history[0]).toBe("command-1");

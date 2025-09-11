@@ -90,6 +90,7 @@ export default [
       "@typescript-eslint/prefer-destructuring": "error",
       "@typescript-eslint/explicit-module-boundary-types": "error",
       "@typescript-eslint/explicit-function-return-type": "error",
+      "@typescript-eslint/no-unsafe-assignment": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
       "import/first": ["error"],

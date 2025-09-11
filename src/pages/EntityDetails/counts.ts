@@ -39,7 +39,7 @@ const generateSecondaryCounts = <M extends ModelData>(
   const data = segment in modelStatusData ? modelStatusData[segment] : null;
   if (data && typeof data === "object") {
     return Object.entries(data).reduce<Counts>((counts, section) => {
-      const { status } = section[1][selector];
+      const { status } = section[1][selector] as { status: string };
       return incrementCounts(status, counts);
     }, {});
   }

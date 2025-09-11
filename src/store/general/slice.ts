@@ -1,7 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import type { GeneralState, ControllerFeatures } from "./types";
+import type { ConnectionWithFacades } from "juju/types";
+
+import type {
+  GeneralState,
+  ControllerFeatures,
+  Config,
+  AuthCredential,
+} from "./types";
 
 const slice = createSlice({
   name: "general",
@@ -23,7 +30,13 @@ const slice = createSlice({
         errors: {},
       };
     },
-    updateControllerConnection: (state, action) => {
+    updateControllerConnection: (
+      state,
+      action: PayloadAction<{
+        wsControllerURL: string;
+        info: ConnectionWithFacades["info"];
+      }>,
+    ) => {
       const connections = state.controllerConnections ?? {};
       connections[action.payload.wsControllerURL] = action.payload.info;
       state.controllerConnections = connections;
@@ -39,7 +52,7 @@ const slice = createSlice({
       features[action.payload.wsControllerURL] = action.payload.features;
       state.controllerFeatures = features;
     },
-    storeConfig: (state, action) => {
+    storeConfig: (state, action: PayloadAction<Config>) => {
       state.config = action.payload;
     },
     storeConnectionError: (state, action: PayloadAction<string>) => {
@@ -57,12 +70,18 @@ const slice = createSlice({
         errors: { [action.payload.wsControllerURL]: action.payload.error },
       };
     },
-    storeUserPass: (state, action) => {
+    storeUserPass: (
+      state,
+      action: PayloadAction<{
+        wsControllerURL: string;
+        credential: AuthCredential;
+      }>,
+    ) => {
       const credentials = state.credentials ?? {};
       credentials[action.payload.wsControllerURL] = action.payload.credential;
       state.credentials = credentials;
     },
-    storeVersion: (state, action) => {
+    storeVersion: (state, action: PayloadAction<null | string>) => {
       state.appVersion = action.payload;
     },
     storeVisitURL: (state, action: PayloadAction<string>) => {
@@ -87,7 +106,10 @@ const slice = createSlice({
       state.pingerIntervalIds = null;
       state.visitURLs = null;
     },
-    updatePingerIntervalId: (state, action) => {
+    updatePingerIntervalId: (
+      state,
+      action: PayloadAction<{ wsControllerURL: string; intervalId: number }>,
+    ) => {
       const intervals = state.pingerIntervalIds ?? {};
       intervals[action.payload.wsControllerURL] = action.payload.intervalId;
       state.pingerIntervalIds = intervals;

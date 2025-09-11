@@ -1,6 +1,8 @@
 import type { Client, Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
+import type { ModelInfoResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import * as jujuLibVersions from "@canonical/jujulib/dist/api/versions";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
@@ -100,6 +102,7 @@ describe("Juju API", () => {
         conn,
         juju,
         // This would be a number, but we're using mocked timers.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         intervalId: expect.any(Object),
       });
       expect(connectSpy).toHaveBeenCalled();
@@ -148,6 +151,7 @@ describe("Juju API", () => {
           conn,
           juju,
           // This would be a number, but we're using mocked timers.
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           intervalId: expect.any(Object),
         });
         expect(connectSpy).toHaveBeenCalledWith(
@@ -805,12 +809,16 @@ describe("Juju API", () => {
         dispatch,
         () => state,
       );
+      type Payload = {
+        wsControllerURL: string;
+        modelInfo: ModelInfoResults;
+      };
       // Call the dispatched thunk so that we can check it was called with the
       // right args.
-      const thunkResult = await dispatch.mock.calls[1][0](
+      const thunkResult = (await dispatch.mock.calls[1][0](
         vi.fn(),
         vi.fn().mockReturnValue(state),
-      );
+      )) as PayloadAction<Payload, string, { arg: Payload }>;
       expect(thunkResult.meta.arg).toMatchObject({
         modelInfo: abc123,
         wsControllerURL: "wss://example.com/api",
@@ -1436,6 +1444,7 @@ describe("Juju API", () => {
         conn,
         watcherHandle,
         // This will be a number, but we're using mocked timers in these tests.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         pingerIntervalId: expect.any(Object),
       });
     });

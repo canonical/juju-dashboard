@@ -1,3 +1,4 @@
+import type { UnknownAction } from "redux";
 import { vi } from "vitest";
 
 import { Auth, CandidAuth, OIDCAuth } from "auth";
@@ -73,11 +74,11 @@ describe("thunks", () => {
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearModelData());
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearControllerData());
     expect(dispatch).toHaveBeenCalledWith(generalActions.logOut());
-    const dispatchedThunk = await dispatch.mock.calls[4][0](
+    const dispatchedThunk = (await dispatch.mock.calls[4][0](
       dispatch,
       getState,
       null,
-    );
+    )) as UnknownAction;
     expect(dispatchedThunk.type).toBe("app/connectAndStartPolling/fulfilled");
     expect(logoutSpy).toHaveBeenCalledOnce();
   });
@@ -94,11 +95,11 @@ describe("thunks", () => {
     expect(dispatch).toHaveBeenCalledWith(jujuActions.clearControllerData());
     expect(dispatch).toHaveBeenCalledWith(generalActions.logOut());
     expect(dispatch).toHaveBeenCalledWith(pollWhoamiStop());
-    const dispatchedThunk = await dispatch.mock.calls[5][0](
+    const dispatchedThunk = (await dispatch.mock.calls[5][0](
       dispatch,
       getState,
       null,
-    );
+    )) as UnknownAction;
     expect(dispatchedThunk.type).toBe("jimm/logout/fulfilled");
     expect(logoutSpy).toHaveBeenCalledOnce();
   });
