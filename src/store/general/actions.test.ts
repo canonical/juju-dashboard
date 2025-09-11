@@ -1,3 +1,6 @@
+import { configFactory, credentialFactory } from "testing/factories/general";
+import { connectionInfoFactory } from "testing/factories/juju/jujulib";
+
 import { actions } from "./slice";
 
 describe("actions", () => {
@@ -9,16 +12,17 @@ describe("actions", () => {
   });
 
   it("updateControllerConnection", () => {
+    const info = connectionInfoFactory.build();
     expect(
       actions.updateControllerConnection({
         wsControllerURL: "wss://example.com",
-        info: "info",
+        info,
       }),
     ).toStrictEqual({
       type: "general/updateControllerConnection",
       payload: {
         wsControllerURL: "wss://example.com",
-        info: "info",
+        info,
       },
     });
   });
@@ -43,7 +47,7 @@ describe("actions", () => {
   });
 
   it("storeConfig", () => {
-    expect(actions.storeConfig("config")).toStrictEqual({
+    expect(actions.storeConfig(configFactory.build())).toStrictEqual({
       type: "general/storeConfig",
       payload: "config",
     });
@@ -75,13 +79,13 @@ describe("actions", () => {
     expect(
       actions.storeUserPass({
         wsControllerURL: "wss://example.com",
-        credentials: "credentials",
+        credential: credentialFactory.build(),
       }),
     ).toStrictEqual({
       type: "general/storeUserPass",
       payload: {
         wsControllerURL: "wss://example.com",
-        credentials: "credentials",
+        credential: credentialFactory.build(),
       },
     });
   });
@@ -104,13 +108,13 @@ describe("actions", () => {
     expect(
       actions.updatePingerIntervalId({
         wsControllerURL: "wss://example.com",
-        intervalId: "1",
+        intervalId: 1,
       }),
     ).toStrictEqual({
       type: "general/updatePingerIntervalId",
       payload: {
         wsControllerURL: "wss://example.com",
-        intervalId: "1",
+        intervalId: 1,
       },
     });
   });

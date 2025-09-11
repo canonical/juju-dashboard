@@ -14,12 +14,14 @@ export function login(
   { user, password }: { user: string; password: string },
 ): void {
   dispatch(actions.cleanupLoginErrors());
-  dispatch(
-    actions.storeUserPass({
-      wsControllerURL,
-      credential: { user, password },
-    }),
-  );
+  if (wsControllerURL !== null && wsControllerURL) {
+    dispatch(
+      actions.storeUserPass({
+        wsControllerURL,
+        credential: { user, password },
+      }),
+    );
+  }
   dispatch(actions.updateLoginLoading(true));
   const hasBakery = Boolean(bakery);
   if (hasBakery) {
