@@ -12,13 +12,17 @@ import { logger } from "utils/logger";
 
 import { listenerMiddleware } from "./listenerMiddleware";
 
-let preloadedState: Record<string, unknown> | undefined;
+type PreloadedState = Record<string, unknown>;
+
+let preloadedState: PreloadedState | undefined;
 if (
   !import.meta.env.PROD &&
   typeof import.meta.env.VITE_APP_MOCK_STORE === "string"
 ) {
   try {
-    preloadedState = JSON.parse(import.meta.env.VITE_APP_MOCK_STORE);
+    preloadedState = JSON.parse(
+      import.meta.env.VITE_APP_MOCK_STORE,
+    ) as PreloadedState;
   } catch (error) {
     logger.error("VITE_APP_MOCK_STORE could not be parsed");
   }

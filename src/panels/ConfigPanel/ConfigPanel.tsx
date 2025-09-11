@@ -1,4 +1,5 @@
 import type { ListSecretResult } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
+import type { ValueOf } from "@canonical/react-components";
 import { ActionButton, Button } from "@canonical/react-components";
 import classnames from "classnames";
 import cloneDeep from "clone-deep";
@@ -357,8 +358,11 @@ function getConfig(
       const config: Config = {};
       // The config param can be null.
       Object.keys(result?.config ?? {}).forEach((key) => {
-        config[key] = result?.config[key];
-        config[key].name = key;
+        const resultConfig = result?.config[key] as undefined | ValueOf<Config>;
+        if (resultConfig) {
+          config[key] = resultConfig;
+          config[key].name = key;
+        }
       });
       updateConfig(config);
       setInlineError(InlineErrors.GET_CONFIG, null);

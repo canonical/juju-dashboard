@@ -197,7 +197,7 @@ const WebCLI: FC<Props> = ({
       const macaroons =
         origin !== null && origin ? bakery.storage.get(`${origin}/api`) : null;
       if (macaroons !== null && macaroons) {
-        const deserialized = JSON.parse(atob(macaroons));
+        const deserialized = JSON.parse(atob(macaroons)) as Macaroon;
         authentication.user =
           activeUser !== null && activeUser
             ? getUserName(activeUser)

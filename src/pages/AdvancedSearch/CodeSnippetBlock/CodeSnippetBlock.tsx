@@ -53,7 +53,7 @@ const CodeSnippetBlock = ({ className, title, code }: Props): JSX.Element => {
     <PrismHighlight
       code={JSON.stringify(code, null, 2)}
       language="json"
-      prism={Prism}
+      prism={Prism as unknown}
     >
       {({ tokens, getLineProps, getTokenProps }) => (
         <CodeSnippet

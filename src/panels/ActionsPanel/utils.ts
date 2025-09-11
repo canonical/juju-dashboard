@@ -72,8 +72,8 @@ const requiredPopulated: RequiredPopulated = (
   actionData,
   optionsValues,
 ) => {
-  const required: ActionParams["required"] =
-    actionData[selected].params.required;
+  const required = actionData[selected].params
+    .required as ActionParams["required"];
   if (!required) {
     return true;
   }
@@ -81,7 +81,8 @@ const requiredPopulated: RequiredPopulated = (
     return true;
   }
   return !required.some((option) => {
-    const optionType = actionData[selected].params.properties[option].type;
+    const optionType = actionData[selected].params.properties[option]
+      .type as string;
     const value = optionsValues[selected][option];
     return optionType === "boolean" ? value !== "true" : value === "";
   });

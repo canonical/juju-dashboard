@@ -6,6 +6,7 @@ import OptionInputs from "components/RadioInputBox/OptionInputs";
 import type {
   ActionData,
   ActionOptionsType,
+  ActionParams,
   OnValuesChange,
 } from "panels/ActionsPanel/types";
 
@@ -21,7 +22,7 @@ export default function ActionOptions({
   onValuesChange,
 }: Props): JSX.Element {
   const action = data[name];
-  const { properties, required } = action.params;
+  const { properties, required } = action.params as ActionParams;
 
   const collectedOptions = useMemo(() => {
     const collectOptions: ActionOptionsType = [];

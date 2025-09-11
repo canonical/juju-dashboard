@@ -19,7 +19,6 @@ import type {
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 import Secrets from "@canonical/jujulib/dist/api/facades/secrets";
 import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
-import type { ValueOf } from "@canonical/react-components";
 import { unwrapResult } from "@reduxjs/toolkit";
 import type { Dispatch } from "redux";
 
@@ -52,7 +51,6 @@ import {
   type AllWatcherDelta,
   type ApplicationInfo,
   type ConnectionWithFacades,
-  type Facades,
   type FullStatusAnnotations,
   type FullStatusWithAnnotations,
 } from "./types";
@@ -76,28 +74,24 @@ export function generateConnectionOptions(
   usePinger = false,
   onClose: ConnectOptions["closeCallback"] = () => null,
 ): ConnectOptions {
-  // The options used when connecting to a Juju controller or model.
-  const facades: ValueOf<Facades>[] = [
-    Action,
-    AllWatcher,
-    Annotations,
-    Application,
-    Charms,
-    Client,
-    Cloud,
-    Controller,
-    ModelManager,
-    JIMM,
-    Secrets,
-  ];
-  if (usePinger) {
-    facades.push(Pinger);
-  }
   return {
     bakery,
     closeCallback: onClose,
     debug: false,
-    facades,
+    // The options used when connecting to a Juju controller or model.
+    facades: [
+      Action,
+      AllWatcher,
+      Annotations,
+      Application,
+      Charms,
+      Client,
+      Cloud,
+      Controller,
+      ModelManager,
+      JIMM,
+      Secrets,
+    ].concat(usePinger ? Pinger : []),
     wsclass: WebSocket,
     ...Auth.instance.jujulibConnectOptions(),
   };
@@ -426,8 +420,8 @@ export async function fetchControllerList(
       if (controllerConfig?.config) {
         controllers = [
           {
-            path: controllerConfig.config["controller-name"],
-            uuid: controllerConfig.config["controller-uuid"],
+            path: (controllerConfig.config["controller-name"] as string) ?? "",
+            uuid: (controllerConfig.config["controller-uuid"] as string) ?? "",
             version: getControllerConnection(getState(), wsControllerURL)
               ?.serverVersion,
           },
