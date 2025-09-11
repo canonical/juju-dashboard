@@ -66,26 +66,6 @@ const getRoot = (): Root | void => {
   }
 };
 
-// Sometimes the config.js file hasn't been parsed by the time this code is
-// executed. This is a simple debounce so that in the event it's not it'll wait
-// a few cycles before trying again.
-let checkCounter = 0;
-export const renderApp = (): void => {
-  if (!window.jujuDashboardConfig) {
-    if (checkCounter < 5) {
-      checkCounter++;
-      setTimeout(renderApp, RECHECK_TIME);
-      return;
-    } else {
-      // Display the config error.
-      bootstrap();
-    }
-  } else {
-    bootstrap();
-  }
-};
-renderApp();
-
 function bootstrap(): void {
   const config = window.jujuDashboardConfig;
   const isProduction = import.meta.env.PROD;
@@ -153,3 +133,23 @@ function bootstrap(): void {
     </Provider>,
   );
 }
+
+// Sometimes the config.js file hasn't been parsed by the time this code is
+// executed. This is a simple debounce so that in the event it's not it'll wait
+// a few cycles before trying again.
+let checkCounter = 0;
+export const renderApp = (): void => {
+  if (!window.jujuDashboardConfig) {
+    if (checkCounter < 5) {
+      checkCounter++;
+      setTimeout(renderApp, RECHECK_TIME);
+      return;
+    } else {
+      // Display the config error.
+      bootstrap();
+    }
+  } else {
+    bootstrap();
+  }
+};
+renderApp();

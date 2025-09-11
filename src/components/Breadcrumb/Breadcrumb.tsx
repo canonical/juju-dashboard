@@ -21,6 +21,31 @@ export default function Breadcrumb(): JSX.Element {
       return null;
     }
 
+    type EntityType = {
+      id: string | undefined;
+      title: string | undefined;
+    };
+
+    const entityType: EntityType = {
+      id: undefined,
+      title: undefined,
+    };
+
+    if (appName !== null && appName) {
+      entityType.id = appName;
+      entityType.title = "Applications";
+    }
+
+    if (unitId !== null && unitId) {
+      entityType.id = unitId;
+      entityType.title = "Units";
+    }
+
+    if (machineId !== null && machineId) {
+      entityType.id = machineId;
+      entityType.title = "Machines";
+    }
+
     if (isNestedEntityPage) {
       return (
         <>
@@ -96,31 +121,6 @@ export default function Breadcrumb(): JSX.Element {
       </li>
     );
   };
-
-  type EntityType = {
-    id: string | undefined;
-    title: string | undefined;
-  };
-
-  const entityType: EntityType = {
-    id: undefined,
-    title: undefined,
-  };
-
-  if (appName !== null && appName) {
-    entityType.id = appName;
-    entityType.title = "Applications";
-  }
-
-  if (unitId !== null && unitId) {
-    entityType.id = unitId;
-    entityType.title = "Units";
-  }
-
-  if (machineId !== null && machineId) {
-    entityType.id = machineId;
-    entityType.title = "Machines";
-  }
 
   return (
     <nav className="p-breadcrumbs" aria-label="Breadcrumb navigation">

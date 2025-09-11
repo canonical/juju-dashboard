@@ -19,6 +19,39 @@ import { sendToast } from "./utils";
 const USER_CREDENTIALS_KEY = "DEV__user-credentials";
 const AUTO_LOGIN_KEY = "DEV__auto-login";
 
+function useAutoLogin(
+  enabled: boolean,
+  wsControllerURL: null | string,
+  credential: { user: string; password: string },
+): void {
+  const dispatch = useAppDispatch();
+  const userIsLoggedIn = useAppSelector((state) =>
+    isLoggedIn(state, wsControllerURL),
+  );
+  const [attempted, setAttempted] = useState(false);
+
+  useEffect(() => {
+    if (enabled) {
+      setAttempted(false);
+    }
+  }, [enabled]);
+
+  useEffect(() => {
+    if (enabled && !attempted && !userIsLoggedIn) {
+      setAttempted(true);
+      login(dispatch, wsControllerURL, credential);
+      sendToast("Automatically logged in.");
+    }
+  }, [
+    enabled,
+    attempted,
+    userIsLoggedIn,
+    dispatch,
+    wsControllerURL,
+    credential,
+  ]);
+}
+
 export default {
   Title: (): JSX.Element => {
     const wsControllerURL = useAppSelector(getWSControllerURL);
@@ -95,36 +128,3 @@ export default {
     );
   },
 } satisfies Widget;
-
-function useAutoLogin(
-  enabled: boolean,
-  wsControllerURL: null | string,
-  credential: { user: string; password: string },
-): void {
-  const dispatch = useAppDispatch();
-  const userIsLoggedIn = useAppSelector((state) =>
-    isLoggedIn(state, wsControllerURL),
-  );
-  const [attempted, setAttempted] = useState(false);
-
-  useEffect(() => {
-    if (enabled) {
-      setAttempted(false);
-    }
-  }, [enabled]);
-
-  useEffect(() => {
-    if (enabled && !attempted && !userIsLoggedIn) {
-      setAttempted(true);
-      login(dispatch, wsControllerURL, credential);
-      sendToast("Automatically logged in.");
-    }
-  }, [
-    enabled,
-    attempted,
-    userIsLoggedIn,
-    dispatch,
-    wsControllerURL,
-    credential,
-  ]);
-}

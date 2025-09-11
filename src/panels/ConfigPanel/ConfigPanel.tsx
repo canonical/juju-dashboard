@@ -51,6 +51,136 @@ const hasChangedFields = (newConfig: Config): boolean => {
 const hasErrors = (config: Config): boolean =>
   Object.values(config).some((field) => Boolean(field.error));
 
+function getConfig(
+  appName: string,
+  setIsLoading: (value: boolean) => void,
+  updateConfig: (value: Config) => void,
+  setInlineError: SetError,
+  getApplicationConfig: ReturnType<typeof useGetApplicationConfig>,
+): void {
+  setIsLoading(true);
+  getApplicationConfig(appName)
+    .then((result) => {
+      // Add the key to the config object to make for easier use later.
+      const config: Config = {};
+      // The config param can be null.
+      Object.keys(result?.config ?? {}).forEach((key) => {
+        const resultConfig = result?.config[key] as undefined | ValueOf<Config>;
+        if (resultConfig) {
+          config[key] = resultConfig;
+          config[key].name = key;
+        }
+      });
+      updateConfig(config);
+      setInlineError(InlineErrors.GET_CONFIG, null);
+      return;
+    })
+    .catch((error) => {
+      setInlineError(InlineErrors.GET_CONFIG, Label.GET_CONFIG_ERROR);
+      logger.error(Label.GET_CONFIG_ERROR, error);
+    })
+    .finally(() => setIsLoading(false));
+}
+
+function generateConfigElementList(
+  configs: Config,
+  selectedConfig: ConfigData | undefined,
+  setSelectedConfig: SetSelectedConfig,
+  setNewValue: SetNewValue,
+  setError: (name: string, error?: null | string) => void,
+  secrets?: ListSecretResult[] | null,
+): ReactNode[] {
+  const elements = Object.keys(configs).map((key) => {
+    const config = configs[key];
+    if (config.type === "boolean") {
+      return (
+        <BooleanConfig
+          key={config.name}
+          config={config}
+          selectedConfig={selectedConfig}
+          setSelectedConfig={setSelectedConfig}
+          setNewValue={setNewValue}
+        />
+      );
+    } else if (config.type === "int") {
+      return (
+        <NumberConfig
+          key={config.name}
+          config={config}
+          selectedConfig={selectedConfig}
+          setSelectedConfig={setSelectedConfig}
+          setNewValue={setNewValue}
+        />
+      );
+    } else {
+      return (
+        <TextAreaConfig
+          key={config.name}
+          config={config}
+          selectedConfig={selectedConfig}
+          setSelectedConfig={setSelectedConfig}
+          setNewValue={setNewValue}
+          validate={(validateConfig) => {
+            const error = validateConfig.error ?? null;
+            if (
+              validateConfig.type !== "secret" &&
+              validateConfig.type !== "string"
+            ) {
+              // This field is only displayed for string and secret fields so we
+              // need to narrow the config to only have the valid types.
+              return;
+            }
+            if (
+              validateConfig.newValue === undefined ||
+              !validateConfig.newValue
+            ) {
+              // Clear previous errors
+              if (error !== null && error) {
+                setError(validateConfig.name, null);
+              }
+              // Don't validate unchanged fields.
+              return;
+            }
+            if (
+              validateConfig.type === "secret" &&
+              !validateConfig.newValue.startsWith("secret:")
+            ) {
+              setError(validateConfig.name, Label.SECRET_PREFIX_ERROR);
+              return;
+            }
+            if (
+              ((validateConfig.type === "string" &&
+                validateConfig.newValue.startsWith("secret:")) ||
+                validateConfig.type === "secret") &&
+              secrets
+            ) {
+              const validSecrets = secrets.reduce<string[]>(
+                (validURIs, secret) => {
+                  if (!secretIsAppOwned(secret)) {
+                    validURIs.push(secret.uri);
+                  }
+                  return validURIs;
+                },
+                [],
+              );
+              if (!validSecrets.includes(validateConfig.newValue)) {
+                setError(validateConfig.name, Label.INVALID_SECRET_ERROR);
+                return;
+              }
+            }
+            // Clear previous errors.
+            if (error !== null && error) {
+              setError(validateConfig.name, null);
+            }
+          }}
+        />
+      );
+    }
+  });
+
+  return elements;
+}
+
 export default function ConfigPanel(): JSX.Element {
   const dispatch = useAppDispatch();
   const [config, setConfig] = useState<Config>({});
@@ -70,6 +200,9 @@ export default function ConfigPanel(): JSX.Element {
           appearance="link"
           onClick={(event) => {
             event.stopPropagation();
+            // There's a circular dependency here that gets resolved at runtime that
+            // requires this function call to occur before the getConfigCallback callback is defined.
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             getConfigCallback();
           }}
         >
@@ -81,6 +214,29 @@ export default function ConfigPanel(): JSX.Element {
   });
   const scrollArea = useRef<HTMLDivElement>(null);
   const sendAnalytics = useAnalytics();
+
+  function checkAllDefaults(configOptions: Config): void {
+    const shouldShow = Object.keys(configOptions).some((key) => {
+      const cfg = configOptions[key];
+      if (isSet(cfg.newValue)) {
+        if (cfg.newValue === cfg.default) {
+          return false;
+        } else if (cfg.newValue !== cfg.default) {
+          return true;
+        }
+      } else if (cfg.value !== cfg.default) {
+        return true;
+      }
+      return false;
+    });
+    setShowResetAll(shouldShow);
+  }
+
+  function checkEnableSave(newConfig: Config): void {
+    const fieldChanged = hasChangedFields(newConfig);
+    setEnableSave(fieldChanged);
+  }
+
   const updateConfig = useCallback((newConfig: Config) => {
     setConfig(newConfig);
     checkAllDefaults(newConfig);
@@ -158,23 +314,6 @@ export default function ConfigPanel(): JSX.Element {
     setConfig(newConfig);
   }
 
-  function checkAllDefaults(configOptions: Config): void {
-    const shouldShow = Object.keys(configOptions).some((key) => {
-      const cfg = configOptions[key];
-      if (isSet(cfg.newValue)) {
-        if (cfg.newValue === cfg.default) {
-          return false;
-        } else if (cfg.newValue !== cfg.default) {
-          return true;
-        }
-      } else if (cfg.value !== cfg.default) {
-        return true;
-      }
-      return false;
-    });
-    setShowResetAll(shouldShow);
-  }
-
   function allFieldsToDefault(): void {
     const newConfig = cloneDeep(config);
     Object.keys(newConfig).forEach((key) => {
@@ -186,11 +325,6 @@ export default function ConfigPanel(): JSX.Element {
       }
     });
     updateConfig(newConfig);
-  }
-
-  function checkEnableSave(newConfig: Config): void {
-    const fieldChanged = hasChangedFields(newConfig);
-    setEnableSave(fieldChanged);
   }
 
   function checkCanClose(
@@ -342,134 +476,4 @@ export default function ConfigPanel(): JSX.Element {
       </>
     </Panel>
   );
-}
-
-function getConfig(
-  appName: string,
-  setIsLoading: (value: boolean) => void,
-  updateConfig: (value: Config) => void,
-  setInlineError: SetError,
-  getApplicationConfig: ReturnType<typeof useGetApplicationConfig>,
-): void {
-  setIsLoading(true);
-  getApplicationConfig(appName)
-    .then((result) => {
-      // Add the key to the config object to make for easier use later.
-      const config: Config = {};
-      // The config param can be null.
-      Object.keys(result?.config ?? {}).forEach((key) => {
-        const resultConfig = result?.config[key] as undefined | ValueOf<Config>;
-        if (resultConfig) {
-          config[key] = resultConfig;
-          config[key].name = key;
-        }
-      });
-      updateConfig(config);
-      setInlineError(InlineErrors.GET_CONFIG, null);
-      return;
-    })
-    .catch((error) => {
-      setInlineError(InlineErrors.GET_CONFIG, Label.GET_CONFIG_ERROR);
-      logger.error(Label.GET_CONFIG_ERROR, error);
-    })
-    .finally(() => setIsLoading(false));
-}
-
-function generateConfigElementList(
-  configs: Config,
-  selectedConfig: ConfigData | undefined,
-  setSelectedConfig: SetSelectedConfig,
-  setNewValue: SetNewValue,
-  setError: (name: string, error?: null | string) => void,
-  secrets?: ListSecretResult[] | null,
-): ReactNode[] {
-  const elements = Object.keys(configs).map((key) => {
-    const config = configs[key];
-    if (config.type === "boolean") {
-      return (
-        <BooleanConfig
-          key={config.name}
-          config={config}
-          selectedConfig={selectedConfig}
-          setSelectedConfig={setSelectedConfig}
-          setNewValue={setNewValue}
-        />
-      );
-    } else if (config.type === "int") {
-      return (
-        <NumberConfig
-          key={config.name}
-          config={config}
-          selectedConfig={selectedConfig}
-          setSelectedConfig={setSelectedConfig}
-          setNewValue={setNewValue}
-        />
-      );
-    } else {
-      return (
-        <TextAreaConfig
-          key={config.name}
-          config={config}
-          selectedConfig={selectedConfig}
-          setSelectedConfig={setSelectedConfig}
-          setNewValue={setNewValue}
-          validate={(validateConfig) => {
-            const error = validateConfig.error ?? null;
-            if (
-              validateConfig.type !== "secret" &&
-              validateConfig.type !== "string"
-            ) {
-              // This field is only displayed for string and secret fields so we
-              // need to narrow the config to only have the valid types.
-              return;
-            }
-            if (
-              validateConfig.newValue === undefined ||
-              !validateConfig.newValue
-            ) {
-              // Clear previous errors
-              if (error !== null && error) {
-                setError(validateConfig.name, null);
-              }
-              // Don't validate unchanged fields.
-              return;
-            }
-            if (
-              validateConfig.type === "secret" &&
-              !validateConfig.newValue.startsWith("secret:")
-            ) {
-              setError(validateConfig.name, Label.SECRET_PREFIX_ERROR);
-              return;
-            }
-            if (
-              ((validateConfig.type === "string" &&
-                validateConfig.newValue.startsWith("secret:")) ||
-                validateConfig.type === "secret") &&
-              secrets
-            ) {
-              const validSecrets = secrets.reduce<string[]>(
-                (validURIs, secret) => {
-                  if (!secretIsAppOwned(secret)) {
-                    validURIs.push(secret.uri);
-                  }
-                  return validURIs;
-                },
-                [],
-              );
-              if (!validSecrets.includes(validateConfig.newValue)) {
-                setError(validateConfig.name, Label.INVALID_SECRET_ERROR);
-                return;
-              }
-            }
-            // Clear previous errors.
-            if (error !== null && error) {
-              setError(validateConfig.name, null);
-            }
-          }}
-        />
-      );
-    }
-  });
-
-  return elements;
 }

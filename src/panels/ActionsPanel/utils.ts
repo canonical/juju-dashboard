@@ -35,29 +35,6 @@ export function onValuesChange(
   };
 }
 
-export function enableSubmit(
-  selectedAction: null | string,
-  selectedUnits: string[],
-  actionData: ActionData,
-  optionsValues: MutableRefObject<ActionOptionValues>,
-  setDisableSubmit: (disable: boolean) => void,
-): void {
-  if (selectedAction !== null && selectedAction && selectedUnits.length > 0) {
-    if (hasNoOptions(selectedAction, optionsValues.current)) {
-      setDisableSubmit(false);
-      return;
-    }
-    if (
-      requiredPopulated(selectedAction, actionData, optionsValues.current) &&
-      optionsValidate(selectedAction, optionsValues.current)
-    ) {
-      setDisableSubmit(false);
-      return;
-    }
-  }
-  setDisableSubmit(true);
-}
-
 const hasNoOptions: ValidationFnProps = (selected, optionValues) => {
   // If there are no options stored then it doesn't have any.
   const values = selected in optionValues ? optionValues[selected] : null;
@@ -92,3 +69,26 @@ const optionsValidate: ValidationFnProps = (_selected, _optionsValues) => {
   // XXX TODO
   return true;
 };
+
+export function enableSubmit(
+  selectedAction: null | string,
+  selectedUnits: string[],
+  actionData: ActionData,
+  optionsValues: MutableRefObject<ActionOptionValues>,
+  setDisableSubmit: (disable: boolean) => void,
+): void {
+  if (selectedAction !== null && selectedAction && selectedUnits.length > 0) {
+    if (hasNoOptions(selectedAction, optionsValues.current)) {
+      setDisableSubmit(false);
+      return;
+    }
+    if (
+      requiredPopulated(selectedAction, actionData, optionsValues.current) &&
+      optionsValidate(selectedAction, optionsValues.current)
+    ) {
+      setDisableSubmit(false);
+      return;
+    }
+  }
+  setDisableSubmit(true);
+}

@@ -97,6 +97,12 @@ export function generateConnectionOptions(
   };
 }
 
+function stopPingerLoop(intervalId: number): void {
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+}
+
 function startPingerLoop(conn: ConnectionWithFacades): number {
   // Ping to keep the connection alive.
   const intervalId = window.setInterval(() => {
@@ -108,12 +114,6 @@ function startPingerLoop(conn: ConnectionWithFacades): number {
     });
   }, PING_TIME);
   return intervalId;
-}
-
-function stopPingerLoop(intervalId: number): void {
-  if (intervalId) {
-    clearInterval(intervalId);
-  }
 }
 
 /**

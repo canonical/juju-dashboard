@@ -158,7 +158,15 @@ export default function ActionLogs(): JSX.Element {
     [InlineErrors.FETCH]: (error) => (
       <>
         {error} Try{" "}
-        <Button appearance="link" onClick={() => fetchData()}>
+        <Button
+          appearance="link"
+          onClick={() => {
+            // There's a circular dependency here that gets resolved at runtime that
+            // requires this function call to occur before the getCharmsURL callback is defined.
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            void fetchData();
+          }}
+        >
           refetching
         </Button>{" "}
         the action logs data.

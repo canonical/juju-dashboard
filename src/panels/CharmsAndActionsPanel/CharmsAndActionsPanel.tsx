@@ -49,6 +49,9 @@ const CharmsAndActionsPanel: FC = () => {
         <Button
           appearance="link"
           onClick={() => {
+            // There's a circular dependency here that gets resolved at runtime that
+            // requires this function call to occur before the getCharmsURL callback is defined.
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             getCharmsURL();
           }}
         >

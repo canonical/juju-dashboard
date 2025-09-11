@@ -30,30 +30,6 @@ type HighestStatusResponse = {
   messages: HighestStatusMessage[];
 };
 
-/**
-  Returns a grouped collection of model statuses.
-  @param modelData
-  @returns The grouped model statuses.
-*/
-export const groupModelsByStatus = (
-  modelData?: ModelDataList | null,
-): Record<Status, ModelData[]> => {
-  const grouped: Record<Status, ModelData[]> = {
-    blocked: [],
-    alert: [],
-    running: [],
-  };
-  if (!modelData) {
-    return grouped;
-  }
-  for (const modelUUID in modelData) {
-    const model = modelData[modelUUID as keyof ModelDataList];
-    const { highestStatus } = getModelStatusGroupData(model);
-    grouped[highestStatus].push(model);
-  }
-  return grouped;
-};
-
 // Highest status to the right
 const statusOrder = [Status.RUNNING, Status.ALERT, Status.BLOCKED];
 
@@ -71,6 +47,60 @@ const setHighestStatus = (
 // applications or units.
 const checkHighestStatus = (highestStatus: Status): boolean => {
   return highestStatus === statusOrder[statusOrder.length - 1];
+};
+
+/**
+  Returns the status for the application.
+  @param application The application to check the status of in the
+    format stored in the redux store.
+  @returns The status of the application and any relevent messaging.
+*/
+export const getApplicationStatusGroup = (
+  application: ModelData["applications"][0],
+): StatusResponse => {
+  // Possible "blocked" or error states in application statuses.
+  const blocked = ["blocked"];
+  // Possible "alert" states in application statuses.
+  const alert = ["unknown"];
+  const { status } = application.status;
+  const response: StatusResponse = {
+    status: Status.RUNNING,
+    message: null,
+  };
+  if (blocked.includes(status)) {
+    response.status = Status.BLOCKED;
+  }
+  if (alert.includes(status)) {
+    response.status = Status.ALERT;
+  }
+  return response;
+};
+
+/**
+  Returns the status level for the unit.
+  @param unit The unit to check the status of in the
+    format stored in the redux store.
+  @returns The status of the unit and any relevent messaging.
+*/
+export const getUnitStatusGroup = (
+  unit: ModelData["applications"][0]["units"][0],
+): StatusResponse => {
+  // Possible "blocked" or error states in the unit statuses.
+  const blocked = ["lost"];
+  // Possible "alert" states in the unit statuses.
+  const alert = ["allocating"];
+  const { status } = unit["agent-status"];
+  const response: StatusResponse = {
+    status: Status.RUNNING,
+    message: null,
+  };
+  if (blocked.includes(status)) {
+    response.status = Status.BLOCKED;
+  }
+  if (alert.includes(status)) {
+    response.status = Status.ALERT;
+  }
+  return response;
 };
 
 export const getModelStatusGroupData = (
@@ -114,30 +144,27 @@ export const getModelStatusGroupData = (
 };
 
 /**
-  Returns the status for the application.
-  @param application The application to check the status of in the
-    format stored in the redux store.
-  @returns The status of the application and any relevent messaging.
+  Returns a grouped collection of model statuses.
+  @param modelData
+  @returns The grouped model statuses.
 */
-export const getApplicationStatusGroup = (
-  application: ModelData["applications"][0],
-): StatusResponse => {
-  // Possible "blocked" or error states in application statuses.
-  const blocked = ["blocked"];
-  // Possible "alert" states in application statuses.
-  const alert = ["unknown"];
-  const { status } = application.status;
-  const response: StatusResponse = {
-    status: Status.RUNNING,
-    message: null,
+export const groupModelsByStatus = (
+  modelData?: ModelDataList | null,
+): Record<Status, ModelData[]> => {
+  const grouped: Record<Status, ModelData[]> = {
+    blocked: [],
+    alert: [],
+    running: [],
   };
-  if (blocked.includes(status)) {
-    response.status = Status.BLOCKED;
+  if (!modelData) {
+    return grouped;
   }
-  if (alert.includes(status)) {
-    response.status = Status.ALERT;
+  for (const modelUUID in modelData) {
+    const model = modelData[modelUUID as keyof ModelDataList];
+    const { highestStatus } = getModelStatusGroupData(model);
+    grouped[highestStatus].push(model);
   }
-  return response;
+  return grouped;
 };
 
 /**
@@ -154,33 +181,6 @@ export const getMachineStatusGroup = (
   // Possible "alert" states in machine statuses.
   const alert = ["pending"];
   const { status } = machine["agent-status"];
-  const response: StatusResponse = {
-    status: Status.RUNNING,
-    message: null,
-  };
-  if (blocked.includes(status)) {
-    response.status = Status.BLOCKED;
-  }
-  if (alert.includes(status)) {
-    response.status = Status.ALERT;
-  }
-  return response;
-};
-
-/**
-  Returns the status level for the unit.
-  @param unit The unit to check the status of in the
-    format stored in the redux store.
-  @returns The status of the unit and any relevent messaging.
-*/
-export const getUnitStatusGroup = (
-  unit: ModelData["applications"][0]["units"][0],
-): StatusResponse => {
-  // Possible "blocked" or error states in the unit statuses.
-  const blocked = ["lost"];
-  // Possible "alert" states in the unit statuses.
-  const alert = ["allocating"];
-  const { status } = unit["agent-status"];
   const response: StatusResponse = {
     status: Status.RUNNING,
     message: null,
