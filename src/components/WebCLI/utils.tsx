@@ -288,12 +288,12 @@ export const processTableLinks = (
   command: string,
   messages: string[],
   tableLinks: TableLinks,
-): ReactNode | undefined => {
+): ReactNode => {
   const handler = getHandler(command, tableLinks);
   if (handler) {
     return insertLinks(handler, messages);
   }
-  return;
+  return null;
 };
 
 /**
@@ -308,10 +308,10 @@ export const processCommandOutput = (
   command: string,
   messages: string[],
   processOutput: ProcessOutput,
-): ReactNode | undefined => {
+): ReactNode => {
   const handler = getHandler(command, processOutput);
   if (handler) {
     return handler.process(messages);
   }
-  return;
+  return null;
 };
