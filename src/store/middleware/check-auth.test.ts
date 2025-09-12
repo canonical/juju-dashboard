@@ -1,4 +1,4 @@
-import type { UnknownAction, MiddlewareAPI } from "redux";
+import type { UnknownAction, MiddlewareAPI, Dispatch } from "redux";
 import type { Mock } from "vitest";
 import { vi } from "vitest";
 
@@ -17,7 +17,7 @@ import { checkAuthMiddleware } from "./check-auth";
 import type { MockMiddlewareResult } from "./types";
 
 describe("model poller", () => {
-  let fakeStore: MiddlewareAPI;
+  let fakeStore: MiddlewareAPI<Dispatch<UnknownAction>, RootState>;
   let next: Mock;
   const wsControllerURL = "wss://example.com";
   let state: RootState;
