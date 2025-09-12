@@ -61,7 +61,7 @@ const WebCLI: FC<Props> = ({
   const [historyPosition, setHistoryPosition] = useState(0);
   const [inlineErrors, setInlineError, hasInlineError] = useInlineErrors();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [output, setOutput] = useState<CommandHistory>(history || {});
+  const [output, setOutput] = useState<CommandHistory>(history ?? {});
   const lastCommand = useRef<null | string>(null);
   const [cliHistory, setCLIHistory] = useLocalStorage<string[]>(
     "cliHistory",

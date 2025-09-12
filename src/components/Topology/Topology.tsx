@@ -215,7 +215,7 @@ const Topology = memo(
     // Dedupe the relations as we only draw a single line between two
     // applications regardless of how many relations are between them.
     const extractor = /(.+):(.+)\s(.+):(.+)/;
-    const endpoints = Object.entries(relationData || {}).reduce<string[]>(
+    const endpoints = Object.entries(relationData ?? {}).reduce<string[]>(
       (acc, [key, relation]) => {
         // We don't draw peer relations so we can ignore them.
         if (relation.endpoints.length > 1) {
@@ -268,9 +268,7 @@ const Topology = memo(
         .attr("transform", (application) => {
           const adjustment = isSubordinate(application) ? 30 : 0;
           const x =
-            application.annotations["gui-x"] !== undefined
-              ? application.annotations["gui-x"]
-              : gridCount.x + adjustment;
+            application.annotations["gui-x"] ?? gridCount.x + adjustment;
           const y =
             application.annotations["gui-y"] !== undefined
               ? Number(application.annotations["gui-y"])
