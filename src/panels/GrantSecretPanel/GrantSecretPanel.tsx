@@ -35,7 +35,7 @@ export type FormFields = {
 
 const handleErrors = (response: ErrorResults): void => {
   const errors = response.results.reduce((errorString, { error = null }) => {
-    if (error !== null && error.message) {
+    if (error?.message) {
       errorString = [errorString, error.message].filter(Boolean).join(". ");
     }
     return errorString;

@@ -127,7 +127,10 @@ const WebCLI: FC<Props> = ({
     }
     setInlineError(InlineErrors.CONNECTION, null);
     // If we have an active WebSocket connection then don't create a new one.
-    if (connection.current && connection.current.isActive()) {
+    if (
+      connection.current?.isActive() !== undefined &&
+      connection.current.isActive()
+    ) {
       return;
     }
     const conn = new Connection({
@@ -141,7 +144,10 @@ const WebCLI: FC<Props> = ({
       onerror: (error): void => {
         // Only display errors if they're related to the current WebSocket
         // connection.
-        if (connection.current && connection.current.isWebSocketEqual(conn)) {
+        if (
+          connection.current?.isWebSocketEqual(conn) !== undefined &&
+          connection.current.isWebSocketEqual(conn)
+        ) {
           setInlineError(
             InlineErrors.CONNECTION,
             typeof error === "string" ? error : Label.UNKNOWN_ERROR,
@@ -182,7 +188,11 @@ const WebCLI: FC<Props> = ({
     // that the original connection was redirected. This typically happens in
     // a JAAS style environment.
     const authentication: Authentication = {};
-    if (credentials && credentials.user && credentials.password) {
+    if (
+      credentials?.user !== undefined &&
+      credentials.user &&
+      credentials.password
+    ) {
       authentication.user = credentials.user;
       authentication.credentials = credentials.password;
       setInlineError(InlineErrors.AUTHENTICATION, null);
@@ -191,7 +201,7 @@ const WebCLI: FC<Props> = ({
       // The macaroon should be already stored as we've already connected to
       // the model for the model status.
       const origin =
-        connection.current && connection.current.address
+        connection.current?.address !== undefined && connection.current.address
           ? new URL(connection.current?.address)?.origin
           : null;
       const macaroons =
@@ -223,7 +233,10 @@ const WebCLI: FC<Props> = ({
     // Reset the position in case the user was navigating through the history.
     setHistoryPosition(0);
 
-    if (!connection.current || !connection.current.isOpen()) {
+    if (
+      connection.current?.isOpen() == undefined ||
+      !connection.current.isOpen()
+    ) {
       try {
         await connection.current?.reconnect();
       } catch (error) {
