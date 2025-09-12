@@ -83,7 +83,7 @@ describe("application", () => {
         },
       );
       await expect(result.current("etcd")).rejects.toStrictEqual(
-        Label.NO_APP_FACADE_ERROR,
+        new Error(Label.NO_APP_FACADE_ERROR),
       );
     });
 
@@ -153,7 +153,7 @@ describe("application", () => {
         },
       );
       await expect(result.current("etcd", config)).rejects.toStrictEqual(
-        Label.NO_APP_FACADE_ERROR,
+        new Error(Label.NO_APP_FACADE_ERROR),
       );
     });
 

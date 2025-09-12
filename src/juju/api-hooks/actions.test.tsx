@@ -81,7 +81,7 @@ describe("actions", () => {
         },
       );
       await expect(result.current("etcd")).rejects.toStrictEqual(
-        Label.NO_ACTION_FACADE_ERROR,
+        new Error(Label.NO_ACTION_FACADE_ERROR),
       );
     });
 
@@ -148,7 +148,7 @@ describe("actions", () => {
       );
       await expect(
         result.current(["etcd/0", "mysql/2"], "reboot", { extra: "options" }),
-      ).rejects.toStrictEqual(Label.NO_ACTION_FACADE_ERROR);
+      ).rejects.toStrictEqual(new Error(Label.NO_ACTION_FACADE_ERROR));
     });
 
     it("can execute actions on units", async () => {
@@ -231,7 +231,7 @@ describe("actions", () => {
         result.current({
           limit: 99,
         }),
-      ).rejects.toStrictEqual(Label.NO_ACTION_FACADE_ERROR);
+      ).rejects.toStrictEqual(new Error(Label.NO_ACTION_FACADE_ERROR));
     });
 
     it("get the operations list", async () => {
@@ -309,7 +309,7 @@ describe("actions", () => {
         result.current({
           entities: [{ tag: "one" }],
         }),
-      ).rejects.toStrictEqual(Label.NO_ACTION_FACADE_ERROR);
+      ).rejects.toStrictEqual(new Error(Label.NO_ACTION_FACADE_ERROR));
     });
 
     it("can get the actions list", async () => {

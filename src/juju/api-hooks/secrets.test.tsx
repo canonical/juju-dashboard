@@ -575,7 +575,7 @@ describe("useCreateSecrets", () => {
       },
     );
     await expect(result.current(secrets)).rejects.toStrictEqual(
-      Label.NO_SECRETS_FACADE_ERROR,
+      new Error(Label.NO_SECRETS_FACADE_ERROR),
     );
   });
 });
@@ -689,7 +689,7 @@ describe("useUpdateSecrets", () => {
       },
     );
     await expect(result.current(secrets)).rejects.toStrictEqual(
-      Label.NO_SECRETS_FACADE_ERROR,
+      new Error(Label.NO_SECRETS_FACADE_ERROR),
     );
   });
 });
@@ -795,7 +795,7 @@ describe("useRemoveSecrets", () => {
       },
     );
     await expect(result.current(secrets)).rejects.toStrictEqual(
-      Label.NO_SECRETS_FACADE_ERROR,
+      new Error(Label.NO_SECRETS_FACADE_ERROR),
     );
   });
 });
@@ -897,7 +897,7 @@ describe("useGrantSecret", () => {
     );
     await expect(
       result.current("secret:aabbccdd", ["lxd", "etcd"]),
-    ).rejects.toStrictEqual(Label.NO_SECRETS_FACADE_ERROR);
+    ).rejects.toStrictEqual(new Error(Label.NO_SECRETS_FACADE_ERROR));
   });
 });
 
@@ -998,6 +998,6 @@ describe("useRevokeSecret", () => {
     );
     await expect(
       result.current("secret:aabbccdd", ["lxd", "etcd"]),
-    ).rejects.toStrictEqual(Label.NO_SECRETS_FACADE_ERROR);
+    ).rejects.toStrictEqual(new Error(Label.NO_SECRETS_FACADE_ERROR));
   });
 });
