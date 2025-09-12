@@ -97,6 +97,8 @@ export default [
       "@typescript-eslint/require-await": "error",
       "@typescript-eslint/no-unsafe-argument": "error",
       "@typescript-eslint/prefer-nullish-coalescing": "error",
+      "init-declarations": "off",
+      "@typescript-eslint/init-declarations": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
       "import/first": ["error"],
@@ -154,6 +156,8 @@ export default [
     files: ["**/*.test.ts", "**/*.tsx"],
     rules: {
       "@typescript-eslint/require-await": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/init-declarations": "off",
     },
   },
 ];

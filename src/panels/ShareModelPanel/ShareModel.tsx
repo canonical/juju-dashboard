@@ -97,7 +97,7 @@ export default function ShareModel(): JSX.Element {
     permissionTo: string | undefined,
     permissionFrom: string | undefined,
   ): Promise<ErrorResults | null> => {
-    let response: ErrorResults | null;
+    let response: ErrorResults | null = null;
     if (
       modelControllerURL === null ||
       !modelControllerURL ||

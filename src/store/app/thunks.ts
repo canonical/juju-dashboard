@@ -74,7 +74,7 @@ export const connectAndStartPolling = createAsyncThunk<
       "Error while triggering the connection and polling of models.",
       error,
     );
-    let errorMessage;
+    let errorMessage: null | string = null;
     if (error instanceof Error) {
       errorMessage = error.message;
     } else if (typeof error === "string") {

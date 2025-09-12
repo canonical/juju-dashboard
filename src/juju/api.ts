@@ -609,7 +609,7 @@ export async function setModelSharingPermissions(
     });
   };
 
-  let response;
+  let response: ErrorResults | null | Promise<never> | undefined = null;
 
   if (conn) {
     if (permissionFrom !== undefined && permissionFrom) {
