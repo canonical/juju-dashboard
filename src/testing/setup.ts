@@ -52,7 +52,7 @@ const connectResponse = {
   conn: {
     facades: {
       secrets: {
-        listSecrets: vi.fn().mockImplementation(async () => ({
+        listSecrets: vi.fn().mockImplementation(() => ({
           results: [listSecretResultFactory.build()],
         })),
       },
