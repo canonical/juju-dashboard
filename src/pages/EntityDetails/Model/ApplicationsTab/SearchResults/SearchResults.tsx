@@ -35,12 +35,13 @@ const SearchResults: FC = () => {
   });
 
   useMemo(() => {
-    if (applications)
+    if (applications) {
       setFuse(
         new Fuse(Object.values(applications), {
           keys: ["name", "charm-url", "owner-tag", "constraints.arch"],
         }),
       );
+    }
   }, [applications]);
 
   useEffect(() => {

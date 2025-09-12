@@ -199,7 +199,7 @@ export default function Models(): JSX.Element {
               };
 
               // Loop search data and pull out each filter
-              searchData.length &&
+              if (searchData.length) {
                 searchData.forEach(({ lead = null, value }) => {
                   const chipLead =
                     lead !== null && lead ? lead.toLowerCase() : "custom";
@@ -208,7 +208,7 @@ export default function Models(): JSX.Element {
                   }
                   activeFilters[chipLead].push(value);
                 });
-
+              }
               if (!isObjectsEqual(activeFilters, filters)) {
                 setQueryParams(activeFilters);
               }

@@ -272,7 +272,9 @@ export default function ActionLogs(): JSX.Element {
             action.action?.tag === actionData.action?.tag,
         );
         delete actionFullDetails?.output?.["return-code"];
-        if (!actionFullDetails) return;
+        if (!actionFullDetails) {
+          return;
+        }
         const { log } = actionFullDetails;
         const hasStdout = (log && log.length > 0) ?? false;
         const hasSterr =

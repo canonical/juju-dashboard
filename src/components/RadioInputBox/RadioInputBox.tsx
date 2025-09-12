@@ -41,7 +41,9 @@ export default function RadioInputBox({
     const wrapper = inputBoxRef.current;
     const container = containerRef.current;
 
-    if (wrapper === null || container === null) return;
+    if (wrapper === null || container === null) {
+      return;
+    }
 
     if (!hasBeenOpened.current) {
       // If this radio box hasn't been opened, and isn't about to be opened, then don't bother

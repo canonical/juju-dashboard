@@ -1014,7 +1014,9 @@ export const getControllerDataByUUID = createSelector(
       controllerUUID,
   ],
   (controllerData, controllerUUID) => {
-    if (!controllerData) return null;
+    if (!controllerData) {
+      return null;
+    }
     const found = Object.entries(controllerData).find((controller) => {
       // Loop through the sub controllers for each primary controller.
       // This is typically only seen in JAAS. Outside of JAAS there is only ever
@@ -1151,7 +1153,9 @@ export const getReBACPermissions = createSelector(
     tuples
       ? allowed.filter((relation) => {
           for (const tuple of tuples) {
-            if (fastDeepEqual(relation.tuple, tuple)) return relation.tuple;
+            if (fastDeepEqual(relation.tuple, tuple)) {
+              return relation.tuple;
+            }
           }
           return null;
         })
