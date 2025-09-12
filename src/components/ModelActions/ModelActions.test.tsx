@@ -105,4 +105,91 @@ describe("ModelActions", () => {
       "true",
     );
   });
+
+  it("shows option to destroy a model if user has permission", async () => {
+    renderComponent(<ModelActions modelUUID="abc123" modelName="test1" />, {
+      state,
+    });
+
+    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    expect(
+      screen.queryByRole("button", { name: Label.DESTROY }),
+    ).toBeInTheDocument();
+  });
+
+  it("shows the modal to destroy model if user has permission", async () => {
+    renderComponent(<ModelActions modelUUID="abc123" modelName="test1" />, {
+      state,
+    });
+
+    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.DESTROY }));
+    expect(
+      screen.getByRole("dialog", { name: "Destroy model test1" }),
+    ).toBeInTheDocument();
+  });
+
+  it("disables the option to destroy a model if the user does not have permission", async () => {
+    renderComponent(<ModelActions modelUUID="abc123" modelName="test-model" />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    expect(screen.getByRole("button", { name: Label.DESTROY })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+  });
+
+  it("disables the option to destroy a model if the model is a controller model", async () => {
+    const controllerModelState = rootStateFactory.build({
+      general: generalStateFactory.withConfig().build({
+        config: configFactory.build({
+          isJuju: true,
+        }),
+        controllerConnections: {
+          "wss://jimm.jujucharms.com/api": {
+            user: authUserInfoFactory.build({
+              identity: "user-eggman@external",
+            }),
+          },
+        },
+      }),
+      juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            name: "test1",
+            ownerTag: "user-eggman@external",
+            wsControllerURL: "wss://jimm.jujucharms.com/api",
+          }),
+        },
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              "is-controller": true,
+              uuid: "abc123",
+              name: "test1",
+              "controller-uuid": "controller123",
+              users: [
+                modelUserInfoFactory.build({
+                  user: "eggman@external",
+                  access: "admin",
+                }),
+              ],
+            }),
+            uuid: "abc123",
+          }),
+        },
+      }),
+    });
+    renderComponent(
+      <ModelActions modelUUID="abc123" modelName="test-model" />,
+      { state: controllerModelState },
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    expect(screen.getByRole("button", { name: Label.DESTROY })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+  });
 });
