@@ -70,7 +70,7 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
     );
   } else if (secretsErrors !== null && secretsErrors) {
     dropdownContent = secretsErrors;
-  } else if (!canManageSecrets && (secrets == null || !secrets?.length)) {
+  } else if (!canManageSecrets && !secrets?.length) {
     dropdownContent = Label.NONE;
   } else {
     const secretLinks: MenuLink<ButtonProps> | null =
@@ -90,7 +90,7 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
         children: Label.BUTTON_ADD,
         onClick: openPortal,
       };
-      if (secretLinks !== null && secretLinks.length) {
+      if (secretLinks?.length) {
         links = [[addButton], secretLinks];
       } else {
         links = [addButton];

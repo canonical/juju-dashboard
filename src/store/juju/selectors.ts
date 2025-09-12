@@ -370,7 +370,7 @@ export const getFullModelName = createSelector(
   (model, controllers) => {
     const controller =
       controllers &&
-      model &&
+      model?.wsControllerURL !== undefined &&
       model.wsControllerURL &&
       model.wsControllerURL in controllers
         ? controllers[model.wsControllerURL][0]
@@ -501,7 +501,7 @@ export const getModelAccess = createSelector(
       (modelData?.info?.users ?? []).find(({ user }) => user === activeUser) ??
       null;
     return (
-      (modelUser !== null && modelUser.access) ||
+      (modelUser?.access !== undefined && modelUser.access) ||
       (controllerAccess !== null && controllerAccess) ||
       null
     );
@@ -803,7 +803,7 @@ export const getModelUUID = createSelector(
   (modelData, name) => {
     let owner = null;
     let modelName = null;
-    if (name !== null && name?.includes("/")) {
+    if (name?.includes("/") !== undefined && name?.includes("/")) {
       [owner, modelName] = name.split("/");
     } else {
       modelName = name;

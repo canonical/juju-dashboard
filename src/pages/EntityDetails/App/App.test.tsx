@@ -145,10 +145,7 @@ describe("Entity Details App", () => {
 
   it("does not display the machine column for k8s", async () => {
     expect(state.juju.modelWatcherData?.test123.model.type).toBeTruthy();
-    if (
-      state.juju.modelWatcherData &&
-      state.juju.modelWatcherData.test123.model.type
-    ) {
+    if (state.juju.modelWatcherData?.test123.model.type) {
       state.juju.modelWatcherData.test123.model.type = "kubernetes";
     }
     renderComponent(<App />, { path, url, state });

@@ -12,7 +12,7 @@ const PanelInlineErrors = ({
   inlineErrors,
   scrollArea,
 }: Props): JSX.Element | null =>
-  inlineErrors && inlineErrors.some((error = null) => error !== null) ? (
+  inlineErrors?.some((error = null) => error !== null) ? (
     <ScrollOnRender scrollArea={scrollArea}>
       {inlineErrors.map((error, index) =>
         error !== null ? (

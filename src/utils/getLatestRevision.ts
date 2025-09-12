@@ -4,7 +4,7 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 
 const getLatestRevision = (secret?: ListSecretResult | null): null | number => {
-  if (!secret || !secret.revisions.length) {
+  if (secret?.revisions.length === undefined || secret.revisions.length === 0) {
     return null;
   }
   return secret.revisions.reduce(

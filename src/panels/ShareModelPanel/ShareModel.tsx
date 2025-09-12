@@ -219,8 +219,7 @@ export default function ShareModel(): JSX.Element {
     let error: null | string = response?.results?.[0]?.error?.message ?? null;
     // ignore this error as it means that it's a success
     if (
-      error !== null &&
-      error &&
+      error?.match(/user already has .+ access or greater/i) !== undefined &&
       error.match(/user already has .+ access or greater/i)
     ) {
       delete response?.results[0];

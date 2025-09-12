@@ -362,9 +362,8 @@ export async function fetchAllModelStatuses(
           return;
         }
         if (
-          modelInfo &&
-          modelInfo.results[0].result &&
-          modelInfo.results[0].result?.["is-controller"]
+          modelInfo?.results[0].result?.["is-controller"] !== undefined &&
+          modelInfo.results[0].result["is-controller"]
         ) {
           // If this is a controller model then update the
           // controller data with this model data.
