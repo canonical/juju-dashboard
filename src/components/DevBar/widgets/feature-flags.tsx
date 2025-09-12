@@ -67,7 +67,9 @@ export default {
                     <div className="dev-bar__form-controls">
                       <Button
                         hasIcon
-                        onClick={() => arrayHelpers.push("")}
+                        onClick={() => {
+                          arrayHelpers.push("");
+                        }}
                         type="button"
                       >
                         <Icon name="plus" />

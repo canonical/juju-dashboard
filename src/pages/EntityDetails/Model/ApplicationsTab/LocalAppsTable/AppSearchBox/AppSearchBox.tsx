@@ -39,8 +39,12 @@ const AppSearchBox: FC = () => {
       <SearchBox
         className="u-no-margin"
         placeholder="Filter applications"
-        onSearch={() => updateQuery(filterQuery)}
-        onClear={() => updateQuery("")}
+        onSearch={() => {
+          updateQuery(filterQuery);
+        }}
+        onClear={() => {
+          updateQuery("");
+        }}
         onChange={setFilterQuery}
         externallyControlled
         data-testid="filter-applications"

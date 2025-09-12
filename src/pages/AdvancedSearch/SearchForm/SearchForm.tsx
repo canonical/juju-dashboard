@@ -119,7 +119,9 @@ const SearchForm = (): JSX.Element => {
             <Button
               type="button"
               className="copy-json"
-              onClick={() => copyToClipboard(crossModelQueryResultsJSON)}
+              onClick={() => {
+                copyToClipboard(crossModelQueryResultsJSON);
+              }}
               disabled={
                 !isCrossModelQueryLoaded ||
                 isCrossModelQueryLoading ||

@@ -58,8 +58,12 @@ export default function ToastCard({
         <div className="toast-card__message">{children}</div>
         <i
           className="p-icon--close"
-          onClick={() => handleClose(toastInstance.id)}
-          onKeyUp={() => handleClose(toastInstance.id)}
+          onClick={() => {
+            handleClose(toastInstance.id);
+          }}
+          onKeyUp={() => {
+            handleClose(toastInstance.id);
+          }}
           role="button"
           tabIndex={0}
         >

@@ -128,7 +128,9 @@ export function createStore(
   return store;
 }
 
-export const changeURL = (url: string): void => window.happyDOM.setURL(url);
+export const changeURL = (url: string): void => {
+  window.happyDOM.setURL(url);
+};
 
 export const wrapComponent = (
   component: ReactNode,

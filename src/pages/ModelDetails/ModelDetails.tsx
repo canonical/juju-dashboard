@@ -72,7 +72,9 @@ export default function ModelDetails(): JSX.Element {
         ).catch((error) =>
           // Error doesn’t interfere with the user’s interaction with the
           // dashboard. Not shown in UI. Logged for debugging purposes.
-          logger.error(Label.MODEL_WATCHER_ERROR, error),
+          {
+            logger.error(Label.MODEL_WATCHER_ERROR, error);
+          },
         );
       }
     };

@@ -40,7 +40,9 @@ const SearchHistoryMenu = ({
               <Icon name="delete" /> {Label.CLEAR}
             </>
           ),
-          onClick: () => setQueryHistory([]),
+          onClick: (): void => {
+            setQueryHistory([]);
+          },
         },
       ]}
       position="left"

@@ -227,10 +227,12 @@ describe("ModelDetails", () => {
     const {
       result: { unmount },
     } = renderComponent(<ModelDetails />, { path, url, state });
-    await waitFor(() =>
-      expect(juju.startModelWatcher).toHaveBeenCalledTimes(1),
-    );
+    await waitFor(() => {
+      expect(juju.startModelWatcher).toHaveBeenCalledTimes(1);
+    });
     unmount();
-    await waitFor(() => expect(juju.stopModelWatcher).toHaveBeenCalledTimes(1));
+    await waitFor(() => {
+      expect(juju.stopModelWatcher).toHaveBeenCalledTimes(1);
+    });
   });
 });

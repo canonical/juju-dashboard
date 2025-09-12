@@ -949,9 +949,9 @@ describe("Juju API", () => {
     });
 
     it("handles logout while fetching model status", async () => {
-      const dispatch = vi
-        .fn()
-        .mockImplementation((...args) => console.log("called with", ...args));
+      const dispatch = vi.fn().mockImplementation((...args) => {
+        console.log("called with", ...args);
+      });
       const getState = vi
         .fn()
         .mockReturnValueOnce(state)

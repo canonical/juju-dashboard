@@ -284,9 +284,9 @@ const WebCLI: FC<Props> = ({
         <div className="webcli__input-prompt">$ juju</div>
         <form
           onSubmit={(event) => {
-            handleCommandSubmit(event).catch(() =>
-              setInlineError(InlineErrors.CONNECTION, Label.UNKNOWN_ERROR),
-            );
+            handleCommandSubmit(event).catch(() => {
+              setInlineError(InlineErrors.CONNECTION, Label.UNKNOWN_ERROR);
+            });
           }}
         >
           <input

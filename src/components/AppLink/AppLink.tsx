@@ -28,7 +28,9 @@ const AppLink = ({ uuid, appName, view, children }: Props): JSX.Element => {
   return (
     <Link
       // Prevent toggling the object when the link is clicked.
-      onClick={(event) => event.stopPropagation()}
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
       to={
         view
           ? urls.model.app.tab({ userName, modelName, appName, tab: view })

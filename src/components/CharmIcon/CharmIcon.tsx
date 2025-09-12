@@ -14,7 +14,9 @@ const CharmIcon: FC<Props> = ({ charmId, name, ...props }: Props) => {
     ? defaultCharmIcon
     : generateIconPath(charmId);
   const [imgSrc, setImgSrc] = useState(src);
-  const onError = (): void => setImgSrc(defaultCharmIcon);
+  const onError = (): void => {
+    setImgSrc(defaultCharmIcon);
+  };
 
   return (
     <img

@@ -67,7 +67,9 @@ const Secrets: FC = () => {
         {canManageSecrets ? (
           <Button
             hasIcon
-            onClick={() => setQuery({ panel: "add-secret" }, { replace: true })}
+            onClick={() => {
+              setQuery({ panel: "add-secret" }, { replace: true });
+            }}
           >
             <Icon name="plus" />
             <span>{Label.ADD}</span>

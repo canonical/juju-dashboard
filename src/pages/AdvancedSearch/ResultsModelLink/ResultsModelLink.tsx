@@ -20,7 +20,9 @@ const ResultsModelLink = ({
   return (
     <ModelDetailsLink
       // Prevent toggling the object when the link is clicked.
-      onClick={(event) => event.stopPropagation()}
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
       uuid={uuid}
       {...props}
     >

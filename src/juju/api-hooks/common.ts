@@ -113,7 +113,9 @@ export const useCallWithConnection = <R, A extends unknown[]>(
     (...args: A) => {
       makeCall(...(args ?? []))
         .then(onSuccess)
-        .catch((error) => onError(toErrorString(error)));
+        .catch((error) => {
+          onError(toErrorString(error));
+        });
     },
     [makeCall, onError, onSuccess],
   );

@@ -24,7 +24,9 @@ const useLogout = () => {
               {Label.LOGOUT_ERROR} Try{" "}
               <Button
                 appearance="link"
-                onClick={() => window.location.reload()}
+                onClick={() => {
+                  window.location.reload();
+                }}
               >
                 refreshing
               </Button>{" "}

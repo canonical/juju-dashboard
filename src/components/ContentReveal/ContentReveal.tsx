@@ -24,8 +24,12 @@ export default function ContentReveal({
     <div className="content-reveal" data-open={isOpen}>
       <div
         className="content-reveal__header"
-        onClick={() => handleToggle()}
-        onKeyDown={() => handleToggle()}
+        onClick={() => {
+          handleToggle();
+        }}
+        onKeyDown={() => {
+          handleToggle();
+        }}
         role="button"
         tabIndex={0}
       >

@@ -100,8 +100,12 @@ export default function ShareCard({
                 <>
                   <Select
                     name="access"
-                    onFocus={() => setInFocus(true)}
-                    onBlur={() => setInFocus(false)}
+                    onFocus={() => {
+                      setInFocus(true);
+                    }}
+                    onBlur={() => {
+                      setInFocus(false);
+                    }}
                     onChange={(ev) => {
                       setShowStatus(true);
                       setUpdateStatus("Updating");
@@ -119,9 +123,9 @@ export default function ShareCard({
                           }
                           return;
                         })
-                        .catch((error) =>
-                          logger.error(Label.ACCESS_CHANGE_ERROR, error),
-                        );
+                        .catch((error) => {
+                          logger.error(Label.ACCESS_CHANGE_ERROR, error);
+                        });
                     }}
                     value={access}
                     className="share__card-access"

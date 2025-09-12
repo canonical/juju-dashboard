@@ -79,7 +79,9 @@ function getConfig(
       setInlineError(InlineErrors.GET_CONFIG, Label.GET_CONFIG_ERROR);
       logger.error(Label.GET_CONFIG_ERROR, error);
     })
-    .finally(() => setIsLoading(false));
+    .finally(() => {
+      setIsLoading(false);
+    });
 }
 
 function generateConfigElementList(
@@ -358,17 +360,21 @@ export default function ConfigPanel(): JSX.Element {
         hasConfig ? (
           <>
             <Button
-              onClick={() =>
-                hasChangedFields(config)
-                  ? setConfirmType(DefaultConfirmType.CANCEL)
-                  : handleRemovePanelQueryParams()
-              }
+              onClick={() => {
+                if (hasChangedFields(config)) {
+                  setConfirmType(DefaultConfirmType.CANCEL);
+                } else {
+                  handleRemovePanelQueryParams();
+                }
+              }}
             >
               {Label.CANCEL_BUTTON}
             </Button>
             <ActionButton
               appearance="positive"
-              onClick={() => setConfirmType(DefaultConfirmType.SUBMIT)}
+              onClick={() => {
+                setConfirmType(DefaultConfirmType.SUBMIT);
+              }}
               disabled={!enableSave || savingConfig || hasErrors(config)}
               loading={savingConfig}
             >
