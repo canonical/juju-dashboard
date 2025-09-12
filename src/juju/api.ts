@@ -473,7 +473,7 @@ export function disableControllerUUIDMasking(
       conn.facades.jimM
         .disableControllerUUIDMasking()
         .then(() => resolve())
-        .catch((error) =>
+        .catch((error: Error) =>
           reject(
             new Error("Unable to disabled controller UUID masking.", error),
           ),

@@ -1,5 +1,5 @@
 import type { Client, Connection, Transport } from "@canonical/jujulib";
-import type { UnknownAction, MiddlewareAPI } from "redux";
+import type { UnknownAction, MiddlewareAPI, Dispatch } from "redux";
 import type { Mock, MockInstance } from "vitest";
 import { vi } from "vitest";
 
@@ -12,6 +12,7 @@ import { actions as appActions, thunks as appThunks } from "store/app";
 import type { ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
+import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { auditEventFactory } from "testing/factories/juju/jimm";
@@ -44,7 +45,7 @@ vi.mock("juju/jimm/api", () => ({
 }));
 
 describe("model poller", () => {
-  let fakeStore: MiddlewareAPI;
+  let fakeStore: MiddlewareAPI<Dispatch<UnknownAction>, RootState>;
   let next: Mock;
   const wsControllerURL = "wss://example.com";
   const controllers: ControllerArgs[] = [
@@ -89,9 +90,11 @@ describe("model poller", () => {
     vi.useFakeTimers();
     next = vi.fn();
     fakeStore = {
-      getState: vi.fn(() => ({
-        juju: jujuStateFactory.build(),
-      })),
+      getState: vi.fn(() =>
+        rootStateFactory.build({
+          juju: jujuStateFactory.build(),
+        }),
+      ),
       dispatch: vi.fn(),
     };
     conn = {

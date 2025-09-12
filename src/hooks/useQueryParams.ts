@@ -1,3 +1,4 @@
+import type { ValueOf } from "@canonical/react-components";
 import cloneDeep from "clone-deep";
 import DOMPurify from "dompurify";
 import { useCallback } from "react";
@@ -28,17 +29,19 @@ export const useQueryParams = <P extends QueryParams>(
           searchParams.delete(key),
         );
       } else {
-        Object.entries(newParams).forEach(([param, value]) => {
-          if (value === undefined || value === null) {
-            // Clear a param if it has been provided with a null or undefined value.
-            searchParams.delete(param);
-          } else {
-            searchParams.set(
-              param,
-              Array.isArray(value) ? value.join(",") : value,
-            );
-          }
-        });
+        Object.entries(newParams).forEach(
+          ([param, value]: [string, ValueOf<P>]) => {
+            if (value === undefined || value === null) {
+              // Clear a param if it has been provided with a null or undefined value.
+              searchParams.delete(param);
+            } else {
+              searchParams.set(
+                param,
+                Array.isArray(value) ? value.join(",") : value,
+              );
+            }
+          },
+        );
         // Sanitize all query params keys and values to prevent XSS attacks.
         searchParams.forEach((value, key) => {
           const sanitizedKey = DOMPurify.sanitize(key);
