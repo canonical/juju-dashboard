@@ -88,7 +88,10 @@ class Connection {
     try {
       let data: unknown;
       try {
-        data = JSON.parse(messageEvent.data);
+        data =
+          typeof messageEvent.data === "string"
+            ? JSON.parse(messageEvent.data)
+            : null;
       } catch (error) {
         throw new Error(Label.INCORRECT_DATA_ERROR);
       }
@@ -107,7 +110,7 @@ class Connection {
         // This is the first message, an empty object and a newline.
         return;
       }
-      if (!Array.isArray(dataOutput)) {
+      if (!Array.isArray(dataOutput) || typeof dataOutput[0] !== "string") {
         throw new Error(Label.INCORRECT_DATA_ERROR);
       }
       // Build up messages until it gets the 'done' message:

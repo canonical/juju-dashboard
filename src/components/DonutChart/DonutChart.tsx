@@ -38,7 +38,9 @@ const DonutChart: FC<Props> = ({
         `translate(${width / 2},${height / 2}) scale(${scale},${scale})`,
       );
 
-    const data = !isDisabled ? { alert, blocked, running } : { disabled: 1 };
+    const data: Record<string, number> = !isDisabled
+      ? { alert, blocked, running }
+      : { disabled: 1 };
 
     const color = d3
       .scaleOrdinal<KeyValTuple[0]>()
