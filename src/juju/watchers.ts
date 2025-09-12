@@ -105,9 +105,7 @@ export function processDeltas(
       const formatted: ApplicationData = {
         [deltaData.name]: deltaData,
       };
-      if (formatted[deltaData.name]["unit-count"] === undefined) {
-        formatted[deltaData.name]["unit-count"] = 0;
-      }
+      formatted[deltaData.name]["unit-count"] ??= 0;
       mergeWith(modelData.applications, formatted);
     } else if (deltaEntityType === DeltaEntityTypes.CHARM) {
       _process(ReduxDeltaEntityTypes.CHARMS, deltaData["charm-url"]);
@@ -129,9 +127,7 @@ export function processDeltas(
       // to keep an eye on for those with many hundreds of units.
       Object.keys(modelData.units).forEach((key) => {
         const [applicationName] = key.split("/");
-        if (applicationUnitCounts[applicationName] === undefined) {
-          applicationUnitCounts[applicationName] = 0;
-        }
+        applicationUnitCounts[applicationName] ??= 0;
         applicationUnitCounts[applicationName] += 1;
       });
       Object.entries(applicationUnitCounts).forEach(

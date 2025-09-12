@@ -155,7 +155,7 @@ export const getColumns = (rows: string[], headers: Header[]): Column[][] => {
       // This matches the whitespace after ANTSI codes have been removed other
       // the codes would interrupt the whitespace positions.
       const { before, after } =
-        stripAnsi(content).match(COLUMN_WHITESPACE_REGEX)?.groups || {};
+        stripAnsi(content).match(COLUMN_WHITESPACE_REGEX)?.groups ?? {};
       if (before) {
         column.whitespaceBefore = before;
       }

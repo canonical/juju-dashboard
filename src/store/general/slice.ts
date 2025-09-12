@@ -62,9 +62,7 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ wsControllerURL: string; error: string }>,
     ) => {
-      if (!state.login) {
-        state.login = {};
-      }
+      state.login ??= {};
       state.login = {
         loading: false,
         errors: { [action.payload.wsControllerURL]: action.payload.error },
@@ -85,9 +83,7 @@ const slice = createSlice({
       state.appVersion = action.payload;
     },
     storeVisitURL: (state, action: PayloadAction<string>) => {
-      if (!state.visitURLs) {
-        state.visitURLs = [];
-      }
+      state.visitURLs ??= [];
       state.visitURLs.push(action.payload);
     },
     removeVisitURL: (state, action: PayloadAction<string>) => {
@@ -115,9 +111,7 @@ const slice = createSlice({
       state.pingerIntervalIds = intervals;
     },
     updateLoginLoading: (state, action: PayloadAction<boolean>) => {
-      if (!state.login) {
-        state.login = {};
-      }
+      state.login ??= {};
       state.login.loading = action.payload;
     },
   },

@@ -46,7 +46,7 @@ export default function CharmActionsPanel({
     getSelectedCharm(state, charmURL),
   );
   const actionData = useMemo(
-    () => selectedCharm?.actions?.specs || {},
+    () => selectedCharm?.actions?.specs ?? {},
     [selectedCharm],
   );
   const unitCount = selectedApplications.reduce(

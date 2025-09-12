@@ -40,7 +40,7 @@ const breakLines = (
     }
   } else {
     // Split the text into chunks of the provided size.
-    chunks = text.match(new RegExp(`.{1,${lineLength}}`, "g")) || [];
+    chunks = text.match(new RegExp(`.{1,${lineLength}}`, "g")) ?? [];
   }
   // Trim any wrapping whitespace from the chunks and add the newlines.
   return chunks.map((chunk) => chunk.trim()).join(" \n");

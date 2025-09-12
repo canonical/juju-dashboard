@@ -96,6 +96,7 @@ export default [
       "require-await": "off",
       "@typescript-eslint/require-await": "error",
       "@typescript-eslint/no-unsafe-argument": "error",
+      "@typescript-eslint/prefer-nullish-coalescing": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
       "import/first": ["error"],

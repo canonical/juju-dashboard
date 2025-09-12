@@ -139,7 +139,7 @@ export const addSelectColumn = (
         {
           content: <Checkbox app={app} onSelect={handleSelect} />,
         },
-        ...(row.columns || []),
+        ...(row.columns ?? []),
       ],
     };
   });

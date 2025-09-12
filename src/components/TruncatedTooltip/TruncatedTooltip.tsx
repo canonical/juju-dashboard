@@ -40,7 +40,7 @@ const TruncatedTooltip: FC<Props> = ({
     setTruncated(
       (truncatedNode.current &&
         truncatedNode.current.offsetWidth <
-          truncatedNode.current.scrollWidth) ||
+          truncatedNode.current.scrollWidth) ??
         false,
     );
   }, [truncatedNode]);
