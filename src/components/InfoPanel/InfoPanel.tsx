@@ -58,7 +58,7 @@ const InfoPanel: FC = () => {
     getModelRelations(state, modelUUID),
   );
 
-  const applicationsCount = Object.keys(applications || {}).length;
+  const applicationsCount = Object.keys(applications ?? {}).length;
 
   const { width, height } = expandedTopologyDimensions();
   const topologySize = infoPanelDimensions();

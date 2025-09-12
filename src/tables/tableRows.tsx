@@ -286,9 +286,7 @@ export function generateUnitRows(
     // used to generate the table for the application unit list as well
     // in which case it'll be the only units in the list.
     if (unitData.subordinate && unitData.principal in clonedUnits) {
-      if (!clonedUnits[unitData.principal].subordinates) {
-        clonedUnits[unitData.principal].subordinates = {};
-      }
+      clonedUnits[unitData.principal].subordinates ??= {};
       const { subordinates } = clonedUnits[unitData.principal];
       if (subordinates) {
         subordinates[unitId] = unitData;

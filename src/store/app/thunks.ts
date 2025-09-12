@@ -51,7 +51,7 @@ export const connectAndStartPolling = createAsyncThunk<
     const config = getConfig(storeState);
     const wsControllerURL = getWSControllerURL(storeState);
     const credentials = getUserPass(storeState, wsControllerURL);
-    const controllerConnections = getControllerConnections(storeState) || {};
+    const controllerConnections = getControllerConnections(storeState) ?? {};
     let controllerList: ControllerArgs[] = [];
     if (wsControllerURL !== null && wsControllerURL) {
       controllerList.push([wsControllerURL, credentials]);

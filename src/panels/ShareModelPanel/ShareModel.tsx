@@ -54,7 +54,7 @@ export default function ShareModel(): JSX.Element {
   const [, , handleRemovePanelQueryParams] =
     usePanelQueryParams<ShareModelQueryParams>(defaultQueryParams);
 
-  const modelStatusData = useModelStatus() || null;
+  const modelStatusData = useModelStatus() ?? null;
   const controllerUUID = modelStatusData?.info?.["controller-uuid"];
 
   const modelUUID = modelStatusData?.info?.uuid ?? null;
@@ -274,7 +274,7 @@ export default function ShareModel(): JSX.Element {
   };
 
   // Ensure user with 'owner' status is always the first card
-  const sortedUsers = cloneDeep(users || null);
+  const sortedUsers = cloneDeep(users ?? null);
   sortedUsers?.some(
     (item: User, i: number) =>
       isOwner(item.user) &&

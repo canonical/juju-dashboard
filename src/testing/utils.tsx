@@ -138,7 +138,7 @@ export const wrapComponent = (
     options && "store" in options
       ? options.store
       : createStore(options?.state ?? rootStateFactory.build());
-  const config = store.getState().general.config || configFactory.build();
+  const config = store.getState().general.config ?? configFactory.build();
   initialiseAuthFromConfig(config, store.dispatch);
   const router = createMemoryRouter(
     [
