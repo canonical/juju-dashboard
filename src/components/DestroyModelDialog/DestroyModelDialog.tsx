@@ -1,11 +1,11 @@
 import {
   Button,
   Icon,
-  Input,
   MainTable,
   Modal,
   RadioInput,
 } from "@canonical/react-components";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import useModelStatus from "hooks/useModelStatus";
@@ -27,6 +27,7 @@ export default function DestroyModelDialog({
   const modelStatusData = useModelStatus(modelUUID);
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
+  const [destroyStorage, setDestroyStorage] = useState<boolean | undefined>();
 
   const applications = Object.keys(modelStatusData?.applications ?? {});
   const offers = Object.keys(modelStatusData?.offers ?? {});
@@ -52,7 +53,13 @@ export default function DestroyModelDialog({
             onClick={() => {
               dispatch(
                 jujuActions.destroyModels({
-                  models: [{ "model-tag": `model-${modelUUID}` }],
+                  modelParams: [
+                    {
+                      "model-tag": `model-${modelUUID}`,
+                      "destroy-storage": destroyStorage,
+                    },
+                  ],
+                  models: [modelName],
                   wsControllerURL,
                 }),
               );
@@ -141,21 +148,26 @@ export default function DestroyModelDialog({
             ]}
             className="p-main-table destroy-model-table"
           />
-          <hr />
+          {modelStatusData?.storage !== undefined ? (
+            <>
+              <hr />
+              <div>Model has attached storage</div>
+              <RadioInput
+                label="Destroy storage"
+                onChange={() => setDestroyStorage(true)}
+              />
+              <RadioInput
+                label="Detach storage"
+                onChange={() => setDestroyStorage(false)}
+              />
+            </>
+          ) : null}
         </>
-      ) : null}
-      {modelStatusData?.storage ? (
-        <>
-          <div>Model has attached storage</div>
-          <RadioInput label="Destroy storage" />
-          <RadioInput label="Detach storage" />
-          <hr />
-        </>
-      ) : null}
-      <div className="destroy-model-timeout">
-        <Input type="checkbox" label="Timeout" />
-        <Input type="number" placeholder="0" />
-      </div>
+      ) : (
+        <div>
+          Do you want to destroy the empty model <b>{modelName}</b>?
+        </div>
+      )}
     </Modal>
   );
 }

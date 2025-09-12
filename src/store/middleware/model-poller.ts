@@ -7,6 +7,7 @@ import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
   fetchControllerList,
+  fetchModelInfo,
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
@@ -446,9 +447,9 @@ export const modelPollerMiddleware: Middleware<
         jujuActions.destroyModels.type,
       )
     ) {
-      // Intercept migrateModel actions and fetch and store
-      // the modelUUID via the controller connection.
-      const { wsControllerURL, models } = action.payload;
+      // Intercept destroyModel actions and fetch and store
+      // the modelParams via the controller connection.
+      const { wsControllerURL, modelParams } = action.payload;
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
@@ -459,9 +460,32 @@ export const modelPollerMiddleware: Middleware<
 
       try {
         const result = await conn.facades.modelManager?.destroyModels({
-          models,
+          models: modelParams,
         });
         const errors: Error[] = [];
+        let isDestructionComplete = false;
+        do {
+          const modelInfo = await fetchModelInfo(
+            conn,
+            modelParams[0]["model-tag"].split("model-")[1],
+          );
+          if (modelInfo?.results[0].result?.life === undefined) {
+            isDestructionComplete = true;
+            break;
+          }
+          reduxStore.dispatch(
+            jujuActions.updateModelsDestroyed({
+              models: [modelParams[0]["model-tag"]],
+              wsControllerURL,
+            }),
+          );
+          // Wait 1s then start again.
+          await new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(true);
+            }, 1000);
+          });
+        } while (!isDestructionComplete);
         result?.results.forEach((errorResult) => {
           if (errorResult.error)
             errors.push(new Error(errorResult.error.message));
@@ -469,12 +493,6 @@ export const modelPollerMiddleware: Middleware<
         if (errors.length) {
           throw errors;
         }
-        reduxStore.dispatch(
-          jujuActions.removeModel({
-            models,
-            wsControllerURL,
-          }),
-        );
       } catch (errors) {
         console.log(errors);
         const errorMessages = Array.isArray(errors)
