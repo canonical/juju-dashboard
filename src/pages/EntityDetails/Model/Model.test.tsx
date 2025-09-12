@@ -66,17 +66,17 @@ vi.mock("components/WebCLI", () => {
 
 vi.mock("juju/api", () => {
   return {
-    queryOperationsList: (): Promise<unknown> => {
+    queryOperationsList: async (): Promise<unknown> => {
       return new Promise((resolve) => {
         resolve(mockOperationResults);
       });
     },
-    queryActionsList: (): Promise<unknown> => {
+    queryActionsList: async (): Promise<unknown> => {
       return new Promise((resolve) => {
         resolve(mockActionResults);
       });
     },
-    connectToModel: (): Promise<unknown> => {
+    connectToModel: async (): Promise<unknown> => {
       return new Promise((resolve) => {
         resolve({});
       });

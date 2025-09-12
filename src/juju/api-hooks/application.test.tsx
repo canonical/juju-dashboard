@@ -71,7 +71,7 @@ describe("application", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
@@ -83,7 +83,7 @@ describe("application", () => {
         },
       );
       await expect(result.current("etcd")).rejects.toStrictEqual(
-        Label.NO_APP_FACADE_ERROR,
+        new Error(Label.NO_APP_FACADE_ERROR),
       );
     });
 
@@ -95,13 +95,15 @@ describe("application", () => {
         conn: {
           facades: {
             application: {
-              get: vi.fn().mockImplementation(() => Promise.resolve(config)),
+              get: vi
+                .fn()
+                .mockImplementation(async () => Promise.resolve(config)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
@@ -139,7 +141,7 @@ describe("application", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
@@ -151,7 +153,7 @@ describe("application", () => {
         },
       );
       await expect(result.current("etcd", config)).rejects.toStrictEqual(
-        Label.NO_APP_FACADE_ERROR,
+        new Error(Label.NO_APP_FACADE_ERROR),
       );
     });
 
@@ -180,13 +182,15 @@ describe("application", () => {
             application: {
               setConfigs: vi
                 .fn()
-                .mockImplementation(() => Promise.resolve(configResponse)),
+                .mockImplementation(async () =>
+                  Promise.resolve(configResponse),
+                ),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
@@ -249,13 +253,15 @@ describe("application", () => {
             application: {
               setConfigs: vi
                 .fn()
-                .mockImplementation(() => Promise.resolve(configResponse)),
+                .mockImplementation(async () =>
+                  Promise.resolve(configResponse),
+                ),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
