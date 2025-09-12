@@ -69,7 +69,7 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
@@ -95,13 +95,13 @@ describe("actions", () => {
             action: {
               applicationsCharmsActions: vi
                 .fn()
-                .mockImplementation(() => Promise.resolve(actionList)),
+                .mockImplementation(async () => Promise.resolve(actionList)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
@@ -135,7 +135,7 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
@@ -161,13 +161,13 @@ describe("actions", () => {
             action: {
               enqueueOperation: vi
                 .fn()
-                .mockImplementation(() => Promise.resolve(returnResult)),
+                .mockImplementation(async () => Promise.resolve(returnResult)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
@@ -216,7 +216,7 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
@@ -244,13 +244,13 @@ describe("actions", () => {
             action: {
               listOperations: vi
                 .fn()
-                .mockImplementation(() => Promise.resolve(returnResult)),
+                .mockImplementation(async () => Promise.resolve(returnResult)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
@@ -294,7 +294,7 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(
@@ -322,13 +322,13 @@ describe("actions", () => {
             action: {
               actions: vi
                 .fn()
-                .mockImplementation(() => Promise.resolve(returnResult)),
+                .mockImplementation(async () => Promise.resolve(returnResult)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
         Promise.resolve(loginResponse),
       );
       const { result } = renderHook(

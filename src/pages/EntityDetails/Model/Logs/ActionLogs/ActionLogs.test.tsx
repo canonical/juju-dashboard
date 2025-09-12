@@ -111,10 +111,14 @@ describe("Action Logs", () => {
   beforeEach(() => {
     vi.spyOn(logger, "error").mockImplementation(() => vi.fn());
     vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(() =>
-      vi.fn().mockImplementation(() => Promise.resolve(mockOperationResults)),
+      vi
+        .fn()
+        .mockImplementation(async () => Promise.resolve(mockOperationResults)),
     );
     vi.spyOn(actionsHooks, "useQueryActionsList").mockImplementation(() =>
-      vi.fn().mockImplementation(() => Promise.resolve(mockActionResults)),
+      vi
+        .fn()
+        .mockImplementation(async () => Promise.resolve(mockActionResults)),
     );
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
@@ -207,7 +211,7 @@ describe("Action Logs", () => {
       ],
     });
     vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(() =>
-      vi.fn().mockImplementation(() => Promise.resolve(mockResults)),
+      vi.fn().mockImplementation(async () => Promise.resolve(mockResults)),
     );
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
@@ -246,7 +250,7 @@ describe("Action Logs", () => {
       ],
     });
     vi.spyOn(actionsHooks, "useQueryActionsList").mockImplementation(() =>
-      vi.fn().mockImplementation(() => Promise.resolve(mockResults)),
+      vi.fn().mockImplementation(async () => Promise.resolve(mockResults)),
     );
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
@@ -276,7 +280,7 @@ describe("Action Logs", () => {
       ],
     });
     vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(() =>
-      vi.fn().mockImplementation(() => Promise.resolve(mockResults)),
+      vi.fn().mockImplementation(async () => Promise.resolve(mockResults)),
     );
     renderComponent(<ActionLogs />, { path, url, state });
     const expected = [
@@ -324,7 +328,7 @@ describe("Action Logs", () => {
       ],
     });
     vi.spyOn(actionsHooks, "useQueryActionsList").mockImplementation(() =>
-      vi.fn().mockImplementation(() => Promise.resolve(mockResults)),
+      vi.fn().mockImplementation(async () => Promise.resolve(mockResults)),
     );
     renderComponent(<ActionLogs />, { path, url, state });
     const rows = await screen.findAllByRole("row");
@@ -360,7 +364,7 @@ describe("Action Logs", () => {
   it("should show error when fetching action logs and refetch action logs", async () => {
     const queryOperationsListSpy = vi
       .fn()
-      .mockImplementation(() =>
+      .mockImplementation(async () =>
         Promise.reject(new Error("Error while querying operations list.")),
       );
     vi.spyOn(actionsHooks, "useQueryOperationsList").mockImplementation(

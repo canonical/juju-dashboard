@@ -77,7 +77,7 @@ describe("ConfirmationDialog", () => {
     };
     const executeActionOnUnitsSpy = vi
       .fn()
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(async () => Promise.resolve());
     vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
       () => executeActionOnUnitsSpy,
     );
@@ -109,7 +109,7 @@ describe("ConfirmationDialog", () => {
     const mockSetInlineErrors = vi.fn();
     const executeActionOnUnitsSpy = vi
       .fn()
-      .mockImplementation(() => Promise.reject(new Error("mock error")));
+      .mockImplementation(async () => Promise.reject(new Error("mock error")));
     vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
       () => executeActionOnUnitsSpy,
     );

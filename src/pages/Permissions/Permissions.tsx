@@ -47,7 +47,7 @@ const PermissionsPage = (): JSX.Element => {
   useRef(
     axiosInstance.interceptors.response.use(
       (response) => response,
-      (error: AxiosError) => {
+      async (error: AxiosError) => {
         if (
           error.response?.status === 401 &&
           // The 'whoami' endpoint is used to check whether the user is

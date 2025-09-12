@@ -48,7 +48,7 @@ describe("SecretFormPanel", () => {
   it("closes the panel if successful", async () => {
     const createSecrets = vi
       .fn()
-      .mockImplementation(() =>
+      .mockImplementation(async () =>
         Promise.resolve({ results: [{ result: "secret:aabbccdd" }] }),
       );
     vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(

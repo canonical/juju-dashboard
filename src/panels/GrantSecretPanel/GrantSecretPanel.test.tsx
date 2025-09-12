@@ -144,13 +144,13 @@ describe("GrantSecretPanel", () => {
     ];
     const grantSecret = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
       () => grantSecret,
     );
     const revokeSecret = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useRevokeSecret").mockImplementation(
       () => revokeSecret,
     );
@@ -174,13 +174,13 @@ describe("GrantSecretPanel", () => {
     ];
     const grantSecret = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
       () => grantSecret,
     );
     const revokeSecret = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useRevokeSecret").mockImplementation(
       () => revokeSecret,
     );
@@ -195,7 +195,9 @@ describe("GrantSecretPanel", () => {
   it("displays caught errors", async () => {
     const grantSecret = vi
       .fn()
-      .mockImplementation(() => Promise.reject(new Error("Caught error")));
+      .mockImplementation(async () =>
+        Promise.reject(new Error("Caught error")),
+      );
     vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
       () => grantSecret,
     );
@@ -212,7 +214,9 @@ describe("GrantSecretPanel", () => {
   it("displays error string results", async () => {
     const grantSecret = vi
       .fn()
-      .mockImplementation(() => Promise.reject(new Error("String error")));
+      .mockImplementation(async () =>
+        Promise.reject(new Error("String error")),
+      );
     vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
       () => grantSecret,
     );
@@ -225,7 +229,7 @@ describe("GrantSecretPanel", () => {
   });
 
   it("displays error object results", async () => {
-    const grantSecret = vi.fn().mockImplementation(() =>
+    const grantSecret = vi.fn().mockImplementation(async () =>
       Promise.resolve({
         results: [
           { error: { message: "Error result 1" } },
@@ -247,7 +251,7 @@ describe("GrantSecretPanel", () => {
   it("closes the panel if successful", async () => {
     const grantSecret = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
       () => grantSecret,
     );
@@ -267,7 +271,7 @@ describe("GrantSecretPanel", () => {
   it("refetches the secrets if successful", async () => {
     const grantSecret = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
       () => grantSecret,
     );

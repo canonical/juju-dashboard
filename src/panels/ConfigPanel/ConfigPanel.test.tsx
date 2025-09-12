@@ -103,7 +103,7 @@ describe("ConfigPanel", () => {
         }),
       }),
     });
-    getApplicationConfig = vi.fn().mockImplementation(() =>
+    getApplicationConfig = vi.fn().mockImplementation(async () =>
       Promise.resolve(
         applicationGetFactory.build({
           config: {
@@ -118,7 +118,7 @@ describe("ConfigPanel", () => {
     );
     const setApplicationConfig = vi
       .fn()
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(async () => Promise.resolve());
     vi.spyOn(applicationHooks, "useSetApplicationConfig").mockImplementation(
       () => setApplicationConfig,
     );
@@ -131,7 +131,7 @@ describe("ConfigPanel", () => {
   it("displays a message if the app has no config", async () => {
     getApplicationConfig = vi
       .fn()
-      .mockImplementation(() =>
+      .mockImplementation(async () =>
         Promise.resolve(applicationGetFactory.build({ config: {} })),
       );
     vi.spyOn(applicationHooks, "useGetApplicationConfig").mockImplementation(
@@ -144,7 +144,7 @@ describe("ConfigPanel", () => {
   });
 
   it("can display boolean, number and text fields", async () => {
-    getApplicationConfig = vi.fn().mockImplementation(() =>
+    getApplicationConfig = vi.fn().mockImplementation(async () =>
       Promise.resolve(
         applicationGetFactory.build({
           config: {
@@ -303,7 +303,7 @@ describe("ConfigPanel", () => {
   it("can save changes", async () => {
     const setApplicationConfig = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(applicationHooks, "useSetApplicationConfig").mockImplementation(
       () => setApplicationConfig,
     );
@@ -341,7 +341,7 @@ describe("ConfigPanel", () => {
   });
 
   it("displays save errors", async () => {
-    const setApplicationConfig = vi.fn().mockImplementation(() =>
+    const setApplicationConfig = vi.fn().mockImplementation(async () =>
       Promise.resolve({
         results: [{ error: { code: "1", message: "That's not a name" } }],
       }),
@@ -370,7 +370,7 @@ describe("ConfigPanel", () => {
   it("should display error when trying to get config and refetch config data", async () => {
     getApplicationConfig = vi
       .fn()
-      .mockImplementation(() =>
+      .mockImplementation(async () =>
         Promise.reject(new Error("Error while calling getApplicationConfig")),
       );
     vi.spyOn(applicationHooks, "useGetApplicationConfig").mockImplementation(
@@ -393,7 +393,7 @@ describe("ConfigPanel", () => {
   });
 
   it("should display error when trying to save", async () => {
-    getApplicationConfig = vi.fn().mockImplementationOnce(() =>
+    getApplicationConfig = vi.fn().mockImplementationOnce(async () =>
       Promise.resolve(
         applicationGetFactory.build({
           config: {
@@ -408,7 +408,7 @@ describe("ConfigPanel", () => {
     );
     const setApplicationConfig = vi
       .fn()
-      .mockImplementation(() =>
+      .mockImplementation(async () =>
         Promise.reject(new Error("Error while trying to save")),
       );
     vi.spyOn(applicationHooks, "useSetApplicationConfig").mockImplementation(
@@ -465,7 +465,7 @@ describe("ConfigPanel", () => {
   });
 
   it("displays a confirmation if there are ungranted secrets in secret fields", async () => {
-    getApplicationConfig = vi.fn().mockImplementation(() =>
+    getApplicationConfig = vi.fn().mockImplementation(async () =>
       Promise.resolve(
         applicationGetFactory.build({
           config: {
@@ -600,7 +600,7 @@ describe("ConfigPanel", () => {
   it("can grant secrets", async () => {
     const grantSecret = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
       () => grantSecret,
     );
@@ -644,7 +644,7 @@ describe("ConfigPanel", () => {
   it("does not grant the same secret more than once", async () => {
     const grantSecret = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
       () => grantSecret,
     );
@@ -693,7 +693,9 @@ describe("ConfigPanel", () => {
   it("can handle errors when granting secrets", async () => {
     const grantSecret = vi
       .fn()
-      .mockImplementation(() => Promise.reject(new Error("Caught error")));
+      .mockImplementation(async () =>
+        Promise.reject(new Error("Caught error")),
+      );
     vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
       () => grantSecret,
     );
@@ -743,7 +745,7 @@ describe("ConfigPanel", () => {
         loaded: true,
       }),
     });
-    getApplicationConfig = vi.fn().mockImplementation(() =>
+    getApplicationConfig = vi.fn().mockImplementation(async () =>
       Promise.resolve(
         applicationGetFactory.build({
           config: {

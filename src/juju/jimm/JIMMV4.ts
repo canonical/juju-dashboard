@@ -86,7 +86,9 @@ class JIMMV4 extends JIMMV3 {
     autoBind(this);
   }
 
-  checkRelation(tuple: RelationshipTuple): Promise<CheckRelationResponse> {
+  async checkRelation(
+    tuple: RelationshipTuple,
+  ): Promise<CheckRelationResponse> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
@@ -98,7 +100,9 @@ class JIMMV4 extends JIMMV3 {
     });
   }
 
-  checkRelations(tuples: RelationshipTuple[]): Promise<CheckRelationsResponse> {
+  async checkRelations(
+    tuples: RelationshipTuple[],
+  ): Promise<CheckRelationsResponse> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
@@ -110,7 +114,7 @@ class JIMMV4 extends JIMMV3 {
     });
   }
 
-  crossModelQuery(query: string): Promise<CrossModelQueryResponse> {
+  async crossModelQuery(query: string): Promise<CrossModelQueryResponse> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
@@ -122,7 +126,9 @@ class JIMMV4 extends JIMMV3 {
     });
   }
 
-  migrateModel(specs: MigrateModelInfo[]): Promise<InitiateMigrationResults> {
+  async migrateModel(
+    specs: MigrateModelInfo[],
+  ): Promise<InitiateMigrationResults> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
@@ -134,7 +140,9 @@ class JIMMV4 extends JIMMV3 {
     });
   }
 
-  listMigrationTargets(modelTag: string): Promise<ListControllersResponse> {
+  async listMigrationTargets(
+    modelTag: string,
+  ): Promise<ListControllersResponse> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
