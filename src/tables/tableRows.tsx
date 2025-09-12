@@ -109,7 +109,9 @@ export function generateLocalApplicationRows(
         "-"
       );
     const message =
-      "status" in app && app.status && app.status?.message ? (
+      "status" in app &&
+      app.status?.message !== undefined &&
+      app.status.message ? (
         <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
           {app.status.message}
         </Anchorme>
@@ -162,7 +164,9 @@ export function generateLocalApplicationRows(
         {
           "data-test-column": "message",
           content:
-            "status" in app && app.status && app.status.message ? (
+            "status" in app &&
+            app.status?.message !== undefined &&
+            app.status.message ? (
               <TruncatedTooltip message={message}>{message}</TruncatedTooltip>
             ) : null,
         },

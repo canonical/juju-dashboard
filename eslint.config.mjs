@@ -91,6 +91,7 @@ export default [
       "@typescript-eslint/explicit-module-boundary-types": "error",
       "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/no-unsafe-assignment": "error",
+      "@typescript-eslint/prefer-optional-chain": "error",
       "no-use-before-define": "off",
       "@typescript-eslint/no-use-before-define": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
@@ -146,6 +147,12 @@ export default [
       ],
       "perfectionist/sort-intersection-types": "error",
       "perfectionist/sort-union-types": "error",
+    },
+  },
+  {
+    files: ["**/*.test.ts", "**/*.tsx"],
+    rules: {
+      "@typescript-eslint/strict-boolean-expressions": "off",
     },
   },
 ];

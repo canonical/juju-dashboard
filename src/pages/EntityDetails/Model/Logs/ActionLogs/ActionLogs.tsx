@@ -120,7 +120,7 @@ const generateApplicationRow = (
   const [_name, operationId] = operationData.operation.split("-");
   // The receiver is in the format "unit-ceph-mon-0" to "ceph-mon"
   const parts = actionData.action?.receiver.match(/unit-(.+)-\d+/);
-  const appName = (parts && parts[1]) ?? null;
+  const appName = parts?.[1] ?? null;
   if (appName === null || !appName) {
     // Not shown in UI. Logged for debugging purposes.
     logger.error(

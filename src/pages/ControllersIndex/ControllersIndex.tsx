@@ -163,8 +163,8 @@ const ControllersIndex: FC = () => {
       cloud = controller["cloud-tag"] ?? null;
     } else if (
       "location" in controller &&
-      controller.location &&
-      controller.location.cloud !== undefined
+      controller.location?.cloud !== undefined &&
+      controller.location.cloud
     ) {
       ({ cloud } = controller.location);
     }
@@ -176,8 +176,8 @@ const ControllersIndex: FC = () => {
       region = controller["cloud-region"];
     } else if (
       "location" in controller &&
-      controller.location &&
-      controller.location?.region
+      controller.location?.region !== undefined &&
+      controller.location.region
     ) {
       ({ region } = controller.location);
     }
