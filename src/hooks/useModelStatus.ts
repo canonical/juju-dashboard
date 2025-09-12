@@ -9,7 +9,7 @@ import { useAppSelector } from "store/store";
 export default function useModelStatus(
   modelUUID: null | string = null,
 ): ModelData | null {
-  let modelName: null | string;
+  let modelName: null | string = null;
   ({ modelName = null } = useParams());
 
   // if model name cannot be derived from URL params, fallback and check for

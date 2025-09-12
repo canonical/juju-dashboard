@@ -54,7 +54,7 @@ const Secrets: FC = () => {
     };
   }, [dispatch, listSecrets, modelUUID, wsControllerURL]);
 
-  let content: ReactNode;
+  let content: ReactNode = null;
   if (secretsErrors !== null && secretsErrors) {
     content = (
       <ReactNotification severity="negative" title="Error">

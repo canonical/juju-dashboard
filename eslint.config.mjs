@@ -93,6 +93,8 @@ export default [
       "@typescript-eslint/no-unsafe-assignment": "error",
       "no-use-before-define": "off",
       "@typescript-eslint/no-use-before-define": "error",
+      "init-declarations": "off",
+      "@typescript-eslint/init-declarations": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
       "import/first": ["error"],
@@ -146,6 +148,13 @@ export default [
       ],
       "perfectionist/sort-intersection-types": "error",
       "perfectionist/sort-union-types": "error",
+    },
+  },
+  {
+    files: ["**/*.test.ts", "**/*.test.tsx"],
+    rules: {
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/init-declarations": "off",
     },
   },
 ];

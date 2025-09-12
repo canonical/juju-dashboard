@@ -68,8 +68,8 @@ export const modelPollerMiddleware: Middleware<
       reduxStore.dispatch(generalActions.clearVisitURLs());
       for (const controllerData of action.payload.controllers) {
         const [wsControllerURL, credentials] = controllerData;
-        let conn: ConnectionWithFacades | undefined;
-        let juju: Client | undefined;
+        let conn: ConnectionWithFacades | null | undefined = null;
+        let juju: Client | null | undefined = null;
         let error: unknown = null;
         let intervalId: null | number = null;
         reduxStore.dispatch(generalActions.updateLoginLoading(true));
@@ -229,7 +229,7 @@ export const modelPollerMiddleware: Middleware<
                 );
               }
             } catch (listError) {
-              let errorMessage;
+              let errorMessage: null | string = null;
               if (
                 listError instanceof Error &&
                 (listError.message === ModelsError.LOAD_ALL_MODELS ||
