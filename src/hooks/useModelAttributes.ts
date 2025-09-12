@@ -25,7 +25,9 @@ export default function useModelAttributes(modelData: ModelDataList | null): {
       }
       // Extract cloud filters
       const cloudFilter = extractCloudName(model.info["cloud-tag"]);
-      if (!clouds.includes(cloudFilter)) clouds.push(cloudFilter);
+      if (!clouds.includes(cloudFilter)) {
+        clouds.push(cloudFilter);
+      }
 
       // Extract region filters
       const regionFilter = model.info["cloud-region"] ?? null;
@@ -39,14 +41,17 @@ export default function useModelAttributes(modelData: ModelDataList | null): {
 
       // Extract owner filters
       const ownerFilter = extractOwnerName(model.info["owner-tag"]);
-      if (!owners.includes(ownerFilter)) owners.push(ownerFilter);
+      if (!owners.includes(ownerFilter)) {
+        owners.push(ownerFilter);
+      }
 
       // Extract credential filters
       const credentialFilter = extractCredentialName(
         model.info["cloud-credential-tag"],
       );
-      if (!credentials.includes(credentialFilter))
+      if (!credentials.includes(credentialFilter)) {
         credentials.push(credentialFilter);
+      }
     });
   }
 

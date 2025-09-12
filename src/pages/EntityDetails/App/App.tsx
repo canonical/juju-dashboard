@@ -226,7 +226,9 @@ export default function App(): JSX.Element {
   };
 
   const onFormChange = (formData: AppFormData): void => {
-    if (!setFieldsValues.current) return;
+    if (!setFieldsValues.current) {
+      return;
+    }
     // If the app is a subordinate and has not been related to any other apps
     // then its unit list will be `null`.
 

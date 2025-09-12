@@ -621,13 +621,14 @@ export async function setModelSharingPermissions(
     }
 
     const modelInfo = await fetchModelInfo(conn, modelUUID);
-    modelInfo &&
+    if (modelInfo) {
       dispatch(
         jujuActions.updateModelInfo({
           modelInfo,
           wsControllerURL: controllerURL,
         }),
       );
+    }
   } else {
     response = Promise.reject(
       new Error(`Unable to connect to controller: ${controllerURL}`),

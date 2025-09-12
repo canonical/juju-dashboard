@@ -95,7 +95,9 @@ export const renderCounts = (
   countType: "localApps" | "offers" | "relations" | "remoteApps",
   modelStatusData?: ModelData | null,
 ): Chip | null => {
-  if (!modelStatusData) return null;
+  if (!modelStatusData) {
+    return null;
+  }
   let chips = null;
   switch (countType) {
     case "localApps":

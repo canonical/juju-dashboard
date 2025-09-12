@@ -36,8 +36,9 @@ const getConditionalCell = (
   column: MainTableCell,
   columnForExcludedGroup?: MainTableCell,
 ): MainTableCell[] => {
-  if (currentGroup === excludedGroup)
+  if (currentGroup === excludedGroup) {
     return columnForExcludedGroup ? [columnForExcludedGroup] : [];
+  }
   return [column];
 };
 
