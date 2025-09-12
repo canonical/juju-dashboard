@@ -76,7 +76,9 @@ export type CrossModelQueryState = GenericState<
   results: CrossModelQueryResponse["results"] | null;
 };
 
-export type DestroyModelState = GenericState<ErrorResult["error"] | string>;
+export type DestroyModelState = GenericState<ErrorResult["error"] | string> & {
+  modelName: string;
+};
 
 export type DestroyState = Record<string, DestroyModelState>;
 

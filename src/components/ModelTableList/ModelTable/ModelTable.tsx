@@ -3,13 +3,25 @@ import type {
   MainTableCell,
   MainTableRow,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import { useEffect } from "react";
+import reactHotToast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router";
 
 import ModelActions from "components/ModelActions";
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
+import ToastCard from "components/ToastCard";
+import type { ToastInstance } from "components/ToastCard";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import { getControllerData } from "store/juju/selectors";
-import type { Controllers, ModelData } from "store/juju/types";
+import { getWSControllerURL } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
+import {
+  getControllerData,
+  getDestructionState,
+  getModelList,
+} from "store/juju/selectors";
+import type { Controllers, DestroyState, ModelData } from "store/juju/types";
 import {
   extractOwnerName,
   getModelStatusGroupData,
@@ -49,6 +61,7 @@ function generateModelTableList(
   models: ModelData[],
   controllers: Controllers | null,
   groupBy: GroupBy,
+  destructionState: DestroyState,
   groupLabel?: string,
 ) {
   const modelsList: MainTableRow[] = [];
@@ -60,6 +73,9 @@ function generateModelTableList(
     const credential = getCredential(model);
     const controller = getControllerName(model, controllers);
     const lastUpdated = getLastUpdated(model);
+    const isDying = Object.keys(destructionState).includes(
+      `model-${model.uuid}`,
+    );
 
     const columns = [
       {
@@ -67,6 +83,7 @@ function generateModelTableList(
         content: (
           <>
             <TruncatedTooltip message={model.model.name}>
+              {isDying ? "Destroying " : ""}
               <ModelDetailsLink
                 modelName={model.model.name}
                 ownerTag={model.info?.["owner-tag"]}
@@ -163,6 +180,7 @@ function generateModelTableList(
       "data-testid": `model-uuid-${model?.uuid}`,
       columns,
       sortData,
+      className: isDying ? "dying-model" : "",
     };
 
     modelsList.push(row);
@@ -185,6 +203,11 @@ export default function ModelTable({
   emptyStateMessage = "",
 }: Props) {
   const controllers = useAppSelector(getControllerData);
+  const modelsList = useAppSelector(getModelList);
+  const destructionState = useAppSelector(getDestructionState);
+  const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
+  const dispatch = useDispatch();
+
   const headerOptions = {
     showCloud: [GroupBy.STATUS, GroupBy.OWNER].includes(groupBy),
     showOwner: [GroupBy.STATUS, GroupBy.CLOUD].includes(groupBy),
@@ -194,13 +217,82 @@ export default function ModelTable({
       : {}),
   };
 
+  useEffect(() => {
+    Object.entries(destructionState).forEach(([modelTag, status]) => {
+      // Check if the destruction is in a loading state.
+      if (status.loading) {
+        // Handle an initiated destruction
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard type="info" toastInstance={toast}>
+            <b>Destroying model "{status.modelName}"...</b>
+          </ToastCard>
+        ));
+      } else if (
+        status.loaded &&
+        !Object.keys(modelsList).includes(modelTag.split("model-")[1])
+      ) {
+        // Handle a successful destruction
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard type="positive" toastInstance={toast}>
+            <b>Model "{status.modelName}" destroyed successfully</b>
+          </ToastCard>
+        ));
+
+        // Dispatch the clear action to remove this entry from the state.
+        // This prevents the useEffect from re-running for this item.
+        dispatch(
+          jujuActions.clearDeletedModel({
+            modelTag,
+            wsControllerURL,
+          }),
+        );
+      }
+
+      if (status.errors !== null && status.errors !== undefined) {
+        // Handle a failed destruction
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard type="negative" toastInstance={toast}>
+            <b>Destroying model "{status.modelName}" failed</b>
+            <div>
+              Retry or consult{" "}
+              <Link
+                to="https://documentation.ubuntu.com/juju/3.6/reference/juju-cli/list-of-juju-cli-commands/destroy-model/"
+                target="_blank"
+              >
+                documentation
+              </Link>
+            </div>
+          </ToastCard>
+        ));
+
+        // Dispatch the clear action to remove this entry from the state.
+        // This prevents the useEffect from re-running for this item.
+        dispatch(
+          jujuActions.clearDeletedModel({
+            modelTag,
+            wsControllerURL,
+          }),
+        );
+      }
+    });
+
+    // The dependencies are just the state and dispatch
+    // since `Object.entries` creates a new array on each render
+  }, [destructionState, wsControllerURL, modelsList, dispatch]);
+
   return (
     <MainTable
       headers={generateTableHeaders(groupLabel, models.length, headerOptions)}
       className="p-main-table"
       sortable
       emptyStateMsg={emptyStateMessage}
-      rows={generateModelTableList(models, controllers, groupBy, groupLabel)}
+      rows={generateModelTableList(
+        models,
+        controllers,
+        groupBy,
+        destructionState,
+        groupLabel,
+      )}
     />
   );
 }

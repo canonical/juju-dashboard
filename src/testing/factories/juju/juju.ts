@@ -289,6 +289,7 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   commandHistory: commandHistoryState.build(),
   controllers: null,
   models: {},
+  destroyModel: {},
   modelsLoaded: false,
   modelsError: null,
   modelData: {},

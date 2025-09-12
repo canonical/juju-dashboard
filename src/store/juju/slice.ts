@@ -241,30 +241,48 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         {
-          models: DestroyModelParams[];
+          modelParams: DestroyModelParams[];
+          models: string[];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      action.payload.modelParams.forEach(
+        (model, index) =>
+          (state.destroyModel[model["model-tag"]] = {
+            loading: true,
+            errors: null,
+            loaded: false,
+            modelName: action.payload.models[index],
+          }),
+      );
+    },
+    updateModelsDestroyed: (
+      state,
+      action: PayloadAction<
+        {
+          models: string[];
         } & WsControllerURLParam
       >,
     ) => {
       action.payload.models.forEach(
         (model) =>
-          (state.destroyModel[model["model-tag"]] = {
-            loading: true,
+          (state.destroyModel[model] = {
+            ...state.destroyModel[model],
+            loading: false,
             errors: null,
-            loaded: false,
+            loaded: true,
           }),
       );
     },
-    removeModel: (
+    clearDeletedModel: (
       state,
       action: PayloadAction<
-        { models: DestroyModelParams[] } & WsControllerURLParam
+        {
+          modelTag: string;
+        } & WsControllerURLParam
       >,
     ) => {
-      action.payload.models.forEach((model) => {
-        delete state.models[model["model-tag"].split("model-")[1]];
-        delete state.destroyModel[model["model-tag"]];
-      });
-      state.modelsLoaded = true;
+      delete state.destroyModel[action.payload.modelTag];
     },
     // This action can be dispatched to fetch audit events which is handled in
     // the model-poller middleware.

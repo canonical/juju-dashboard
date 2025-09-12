@@ -14,7 +14,7 @@ export type ToastInstance = {
 
 type Props = {
   toastInstance: ToastInstance;
-  type: "positive" | "caution" | "negative";
+  type: "positive" | "caution" | "negative" | "info";
   undo?: () => void;
 } & PropsWithChildren;
 
@@ -34,6 +34,9 @@ export default function ToastCard({
       break;
     case "negative":
       iconName = "error";
+      break;
+    case "info":
+      iconName = "information";
       break;
     default:
       break;
