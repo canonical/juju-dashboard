@@ -477,12 +477,13 @@ export function generateMachineRows(
     machineUnits: null | UnitData,
   ): ReactNode => {
     const appsOnMachine: [string, string][] = [];
-    machineUnits &&
+    if (machineUnits) {
       Object.values(machineUnits).forEach((unitInfo) => {
         if (machineId === unitInfo["machine-id"]) {
           appsOnMachine.push([unitInfo.application, unitInfo["charm-url"]]);
         }
       });
+    }
     const apps = appsOnMachine.length
       ? appsOnMachine.map((app) => (
           <CharmIcon

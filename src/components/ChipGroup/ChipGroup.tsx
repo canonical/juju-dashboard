@@ -30,10 +30,11 @@ const ChipGroup: FC<Props> = ({ chips, className, descriptor }: Props) => {
 
   const getSumTotal = (chipGroup?: Chip | null): number => {
     let total = 0;
-    chipGroup &&
+    if (chipGroup) {
       Object.values(chipGroup).forEach((chipValue) => {
         total += chipValue;
       });
+    }
     return total;
   };
 

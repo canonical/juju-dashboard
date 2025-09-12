@@ -104,7 +104,9 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
         dropdownClassName="p-contextual-menu__dropdown--over-panel prevent-panel-close"
         links={links ?? []}
         onToggleMenu={(open) => {
-          open && listSecrets();
+          if (open) {
+            listSecrets();
+          }
         }}
         position="right"
         scrollOverflow
@@ -131,7 +133,9 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
               formId={formId}
               onSuccess={(secretURI) => {
                 setSaving(false);
-                secretURI !== null && secretURI && setValue(secretURI);
+                if (secretURI !== null && secretURI) {
+                  setValue(secretURI);
+                }
                 closePortal();
               }}
               setSaving={setSaving}
