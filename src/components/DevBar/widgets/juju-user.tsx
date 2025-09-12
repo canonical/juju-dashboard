@@ -117,7 +117,9 @@ export default {
                 type="checkbox"
                 label="Auto Login"
                 checked={autoLogin}
-                onChange={(ev) => setAutoLogin(ev.target.checked)}
+                onChange={(ev) => {
+                  setAutoLogin(ev.target.checked);
+                }}
               />
 
               <Button type="submit">Save</Button>

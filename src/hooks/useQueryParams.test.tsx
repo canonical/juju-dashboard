@@ -62,7 +62,9 @@ describe("useQueryParams", () => {
     const [, setSearchParams] = result.current;
     expect(searchParams.panel).toBeNull();
     expect(router?.state.location.search).toBe("");
-    act(() => setSearchParams({ panel: "config" }));
+    act(() => {
+      setSearchParams({ panel: "config" });
+    });
     [searchParams] = result.current;
     expect(searchParams.panel).toBe("config");
     expect(router?.state.location.search).toBe("?panel=config");
@@ -76,7 +78,9 @@ describe("useQueryParams", () => {
     const [, setSearchParams] = result.current;
     expect(searchParams.panels).toStrictEqual([]);
     expect(router?.state.location.search).toBe("");
-    act(() => setSearchParams({ panels: ["config", "actions"] }));
+    act(() => {
+      setSearchParams({ panels: ["config", "actions"] });
+    });
     [searchParams] = result.current;
     expect(searchParams.panels).toStrictEqual(["config", "actions"]);
     expect(router?.state.location.search).toBe("?panels=config%2Cactions");
@@ -94,7 +98,9 @@ describe("useQueryParams", () => {
     let [searchParams] = result.current;
     const [, setSearchParams] = result.current;
     expect(searchParams.panel).toBe("config");
-    act(() => setSearchParams({ panel: null }));
+    act(() => {
+      setSearchParams({ panel: null });
+    });
     [searchParams] = result.current;
     expect(searchParams.panel).toBeNull();
     expect(router?.state.location.search).toBe("?other=something");
@@ -108,7 +114,9 @@ describe("useQueryParams", () => {
     let [searchParams] = result.current;
     const [, setSearchParams] = result.current;
     expect(searchParams.panel).toBe("config");
-    act(() => setSearchParams(null));
+    act(() => {
+      setSearchParams(null);
+    });
     [searchParams] = result.current;
     expect(searchParams.panel).toBeNull();
     expect(router?.state.location.search).toBe("");
@@ -139,7 +147,9 @@ describe("useQueryParams", () => {
       "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something",
     );
     const [, setSearchParams] = result.current;
-    act(() => setSearchParams({ panel: "config" }));
+    act(() => {
+      setSearchParams({ panel: "config" });
+    });
     expect(router?.state.location.search).toStrictEqual(
       // Decoded: ?panel=config&$<svg><g></g></svg>=something
       "?panel=config&%3Csvg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E=something",
@@ -153,7 +163,9 @@ describe("useQueryParams", () => {
     let [searchParams] = result.current;
     expect(searchParams.xss).toStrictEqual(null);
     const [, setSearchParams] = result.current;
-    act(() => setSearchParams({ xss: "<img src=x onerror=alert(1)//>" }));
+    act(() => {
+      setSearchParams({ xss: "<img src=x onerror=alert(1)//>" });
+    });
     [searchParams] = result.current;
     expect(searchParams.xss).toStrictEqual('<img src="x">');
   });

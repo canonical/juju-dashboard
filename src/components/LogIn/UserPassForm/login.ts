@@ -27,6 +27,8 @@ export function login(
   if (hasBakery) {
     dispatch(thunks.connectAndStartPolling())
       .then(unwrapResult)
-      .catch((error) => logger.error(Label.POLLING_ERROR, error));
+      .catch((error) => {
+        logger.error(Label.POLLING_ERROR, error);
+      });
   }
 }

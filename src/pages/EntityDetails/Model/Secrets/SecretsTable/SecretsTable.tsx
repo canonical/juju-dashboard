@@ -88,18 +88,21 @@ const SecretsTable: FC = () => {
             links={[
               {
                 children: Label.UPDATE_BUTTON,
-                onClick: (): void =>
-                  setQuery({ panel: "update-secret", secret: secret.uri }),
+                onClick: (): void => {
+                  setQuery({ panel: "update-secret", secret: secret.uri });
+                },
               },
               {
                 children: Label.GRANT_BUTTON,
-                onClick: (): void =>
-                  setQuery({ panel: "grant-secret", secret: secret.uri }),
+                onClick: (): void => {
+                  setQuery({ panel: "grant-secret", secret: secret.uri });
+                },
               },
               {
                 children: Label.REMOVE_BUTTON,
-                onClick: (): void =>
-                  setQuery({ panel: "remove-secret", secret: secret.uri }),
+                onClick: (): void => {
+                  setQuery({ panel: "remove-secret", secret: secret.uri });
+                },
               },
             ]}
             position="right"

@@ -146,33 +146,43 @@ describe("useModelAppParams", () => {
 describe("useStatusView", () => {
   it("updates status", () => {
     const setStatus = vi.fn();
-    renderHook(() => useStatusView(StatusView.CLI), {
-      wrapper: (props) => (
-        <MemoryRouter>
-          <Routes>
-            <Route path="*" element={<Outlet context={{ setStatus }} />}>
-              <Route path="*" element={<div {...props}></div>} />
-            </Route>
-          </Routes>
-        </MemoryRouter>
-      ),
-    });
+    renderHook(
+      () => {
+        useStatusView(StatusView.CLI);
+      },
+      {
+        wrapper: (props) => (
+          <MemoryRouter>
+            <Routes>
+              <Route path="*" element={<Outlet context={{ setStatus }} />}>
+                <Route path="*" element={<div {...props}></div>} />
+              </Route>
+            </Routes>
+          </MemoryRouter>
+        ),
+      },
+    );
     expect(setStatus).toHaveBeenCalledWith(StatusView.CLI);
   });
 
   it("clears the status when component is unmounted", () => {
     const setStatus = vi.fn();
-    const result = renderHook(() => useStatusView(StatusView.CLI), {
-      wrapper: (props) => (
-        <MemoryRouter>
-          <Routes>
-            <Route path="*" element={<Outlet context={{ setStatus }} />}>
-              <Route path="*" element={<div {...props}></div>} />
-            </Route>
-          </Routes>
-        </MemoryRouter>
-      ),
-    });
+    const result = renderHook(
+      () => {
+        useStatusView(StatusView.CLI);
+      },
+      {
+        wrapper: (props) => (
+          <MemoryRouter>
+            <Routes>
+              <Route path="*" element={<Outlet context={{ setStatus }} />}>
+                <Route path="*" element={<div {...props}></div>} />
+              </Route>
+            </Routes>
+          </MemoryRouter>
+        ),
+      },
+    );
     result.unmount();
     expect(setStatus).toHaveBeenCalledWith(null);
   });
@@ -182,13 +192,13 @@ describe("useCleanupOnUnmount", () => {
   it("dispatches on unmount", () => {
     const action = vi.fn().mockImplementation(createAction("action"));
     const payload = { pay: "load" };
-    const { unmount } = renderWrappedHook(() =>
+    const { unmount } = renderWrappedHook(() => {
       useCleanupOnUnmount(
         action as unknown as ActionCreatorWithPayload<Record<string, string>>,
         true,
         payload,
-      ),
-    );
+      );
+    });
     unmount();
     expect(action).toHaveBeenCalledWith(payload);
   });
@@ -196,13 +206,13 @@ describe("useCleanupOnUnmount", () => {
   it("does not dispatch on unmount if cleanup is not enabled", () => {
     const action = vi.fn().mockImplementation(createAction("action"));
     const payload = { pay: "load" };
-    const { unmount } = renderWrappedHook(() =>
+    const { unmount } = renderWrappedHook(() => {
       useCleanupOnUnmount(
         action as unknown as ActionCreatorWithPayload<Record<string, string>>,
         false,
         payload,
-      ),
-    );
+      );
+    });
     unmount();
     expect(action).not.toHaveBeenCalled();
   });
@@ -218,12 +228,13 @@ describe("useCleanupOnUnmount", () => {
       payload?: Record<string, string>;
     };
     const { rerender, unmount } = renderWrappedHook(
-      ({ action, enabled, payload }: Args = {}) =>
+      ({ action, enabled, payload }: Args = {}) => {
         useCleanupOnUnmount(
           action as unknown as ActionCreatorWithPayload<Record<string, string>>,
           enabled,
           payload,
-        ),
+        );
+      },
       {
         initialProps: {
           action: firstAction,
@@ -254,12 +265,13 @@ describe("useCleanupOnUnmount", () => {
       payload?: Record<string, string>;
     };
     const { rerender, unmount } = renderWrappedHook(
-      ({ action, enabled, payload }: Args = {}) =>
+      ({ action, enabled, payload }: Args = {}) => {
         useCleanupOnUnmount(
           action as unknown as ActionCreatorWithPayload<Record<string, string>>,
           enabled,
           payload,
-        ),
+        );
+      },
       {
         initialProps: {
           action: cleanup,

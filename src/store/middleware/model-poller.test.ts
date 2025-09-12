@@ -562,13 +562,16 @@ describe("model poller", () => {
     }));
     vi.spyOn(jujuModule, "fetchAllModelStatuses")
       .mockImplementationOnce(
-        async () => new Promise<void>((resolve) => resolve()),
+        async () =>
+          new Promise<void>((resolve) => {
+            resolve();
+          }),
       )
       .mockImplementationOnce(
         async () =>
-          new Promise<void>((resolve, reject) =>
-            reject(new Error(ModelsError.LOAD_SOME_MODELS)),
-          ),
+          new Promise<void>((resolve, reject) => {
+            reject(new Error(ModelsError.LOAD_SOME_MODELS));
+          }),
       );
     runMiddleware({
       payload: { controllers, isJuju: true, poll: 1 },

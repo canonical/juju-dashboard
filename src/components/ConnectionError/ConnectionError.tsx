@@ -22,7 +22,12 @@ const ConnectionError: FC<PropsWithChildren> = ({
   const generateErrorContent = (errorMessage: string): ReactNode => (
     <>
       {errorMessage} Try{" "}
-      <Button appearance="link" onClick={() => window.location.reload()}>
+      <Button
+        appearance="link"
+        onClick={() => {
+          window.location.reload();
+        }}
+      >
         refreshing
       </Button>{" "}
       the page.

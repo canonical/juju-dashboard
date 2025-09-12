@@ -25,7 +25,9 @@ const DivButton: FC<Props> = ({
   return (
     <div
       className={classnames("p-div-button", className)}
-      onClick={(event) => onClick(event)}
+      onClick={(event) => {
+        onClick(event);
+      }}
       onKeyDown={(event) => {
         if (
           // Check that this element has focus so that this doesn't fire when

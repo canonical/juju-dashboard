@@ -137,9 +137,9 @@ export async function loginWithBakery(
 }> {
   const juju: JujuClient = await connect(
     wsControllerURL,
-    generateConnectionOptions(true, (err) =>
-      logger.log("controller closed", err),
-    ),
+    generateConnectionOptions(true, (err) => {
+      logger.log("controller closed", err);
+    }),
   );
   const loginParams = Auth.instance.determineCredentials(credentials);
   let conn: ConnectionWithFacades | null | undefined = null;
@@ -372,10 +372,12 @@ export async function fetchAllModelStatuses(
             .then(unwrapResult)
             .catch((error) =>
               // Not shown in UI. Logged for debugging purposes.
-              logger.error(
-                "Error when trying to add controller cloud and region data.",
-                error,
-              ),
+              {
+                logger.error(
+                  "Error when trying to add controller cloud and region data.",
+                  error,
+                );
+              },
             );
         }
       } catch (error) {
@@ -472,12 +474,15 @@ export async function disableControllerUUIDMasking(
     if (conn?.facades?.jimM) {
       conn.facades.jimM
         .disableControllerUUIDMasking()
-        .then(() => resolve())
-        .catch((error: Error) =>
+        .then(() => {
+          resolve();
+          return;
+        })
+        .catch((error: Error) => {
           reject(
             new Error("Unable to disabled controller UUID masking.", error),
-          ),
-        );
+          );
+        });
     } else {
       resolve();
     }

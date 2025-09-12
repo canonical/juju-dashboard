@@ -34,9 +34,9 @@ const AuditLogsTableActions: FC = () => {
       </Tooltip>
       <Button
         className="u-no-margin--right"
-        onClick={() =>
-          setQueryParams({ panel: "audit-log-filters" }, { replace: true })
-        }
+        onClick={() => {
+          setQueryParams({ panel: "audit-log-filters" }, { replace: true });
+        }}
       >
         <Icon name="filter" /> {Label.FILTER}
       </Button>

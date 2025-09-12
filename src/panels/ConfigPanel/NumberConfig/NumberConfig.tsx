@@ -21,7 +21,9 @@ const NumberConfig = ({
         <input
           type="number"
           value={value}
-          onFocus={() => setSelectedConfig(config)}
+          onFocus={() => {
+            setSelectedConfig(config);
+          }}
           onChange={(ev) => {
             setNewValue(config.name, ev.target.value);
           }}
