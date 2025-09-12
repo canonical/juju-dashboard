@@ -86,7 +86,7 @@ class Connection {
   #handleMessage(messageEvent: MessageEvent): void {
     this.#setLoading(false);
     try {
-      let data: unknown;
+      let data: null | unknown = null;
       try {
         data =
           typeof messageEvent.data === "string"

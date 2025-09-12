@@ -1045,7 +1045,7 @@ export const getModelControllerDataByUUID = createSelector(
       return null;
     }
     let modelController: ({ url?: string } & Controllers[0][0]) | null = null;
-    let controllerURL;
+    let controllerURL: null | string = null;
     for (const controller of Object.entries(controllerData)) {
       // Loop through the sub controllers for each primary controller.
       // This is typically only seen in JAAS. Outside of JAAS there is only ever
@@ -1064,7 +1064,7 @@ export const getModelControllerDataByUUID = createSelector(
     // write facades on the api
     const clonedModelController = cloneDeep(modelController);
     if (clonedModelController) {
-      clonedModelController.url = controllerURL;
+      clonedModelController.url = controllerURL ?? undefined;
     }
     return clonedModelController;
   },

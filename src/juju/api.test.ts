@@ -102,7 +102,6 @@ describe("Juju API", () => {
         conn,
         juju,
         // This would be a number, but we're using mocked timers.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         intervalId: expect.any(Object),
       });
       expect(connectSpy).toHaveBeenCalled();
@@ -151,7 +150,6 @@ describe("Juju API", () => {
           conn,
           juju,
           // This would be a number, but we're using mocked timers.
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           intervalId: expect.any(Object),
         });
         expect(connectSpy).toHaveBeenCalledWith(
@@ -1446,7 +1444,6 @@ describe("Juju API", () => {
         conn,
         watcherHandle,
         // This will be a number, but we're using mocked timers in these tests.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         pingerIntervalId: expect.any(Object),
       });
     });
