@@ -45,7 +45,7 @@ export const connectAndStartPolling = createAsyncThunk<
   {
     state: RootState;
   }
->("app/connectAndStartPolling", async (_, thunkAPI) => {
+>("app/connectAndStartPolling", (_, thunkAPI) => {
   try {
     const storeState = thunkAPI.getState();
     const config = getConfig(storeState);

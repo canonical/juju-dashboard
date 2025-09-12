@@ -22,7 +22,7 @@ export const addControllerCloudRegion = createAsyncThunk<
   }
 >(
   "juju/addControllerCloudRegion",
-  async ({ wsControllerURL, modelInfo }, thunkAPI) => {
+  ({ wsControllerURL, modelInfo }, thunkAPI) => {
     // Get a copy of the store data so it can be manipulated before dispatching
     // the update. Without this the modifications were silently failing,
     // possibly because the data was being made immutable by Immer.
