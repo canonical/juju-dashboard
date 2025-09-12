@@ -28,7 +28,9 @@ const generateFilters = (
           key={filter}
           lead={filter}
           value={value}
-          onDismiss={() => setFilters({ [filter]: null })}
+          onDismiss={() => {
+            setFilters({ [filter]: null });
+          }}
         />,
       );
     }
@@ -48,9 +50,9 @@ const AuditLogsTableFilters: FC = () => {
         <Button
           appearance="base"
           hasIcon
-          onClick={() =>
-            setQueryParams({ ...DEFAULT_AUDIT_LOG_FILTERS, page: null })
-          }
+          onClick={() => {
+            setQueryParams({ ...DEFAULT_AUDIT_LOG_FILTERS, page: null });
+          }}
           className="u-no-margin"
         >
           <Icon name="close">Clear</Icon>

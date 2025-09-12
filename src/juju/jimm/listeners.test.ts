@@ -85,11 +85,11 @@ describe("listeners", () => {
     fetchMock.mockResponseOnce(JSON.stringify({}), { status: 200 });
     expect(global.fetch).not.toHaveBeenCalled();
     store.dispatch(pollWhoamiStart());
-    await waitFor(() =>
+    await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(endpoints().whoami, {
         credentials: "include",
-      }),
-    );
+      });
+    });
   });
 
   it("handles user logged out", async () => {
@@ -100,13 +100,15 @@ describe("listeners", () => {
     });
     fetchMock.mockResponseOnce(JSON.stringify({}), { status: 401 });
     store.dispatch(pollWhoamiStart());
-    await waitFor(() =>
+    await waitFor(() => {
       expect(generalActions.storeLoginError).toHaveBeenCalledWith({
         error: Label.ERROR_LOGGED_OUT,
         wsControllerURL: "wss://controller.example.com",
-      }),
-    );
-    await waitFor(() => expect(appThunks.logOut).toHaveBeenCalled());
+      });
+    });
+    await waitFor(() => {
+      expect(appThunks.logOut).toHaveBeenCalled();
+    });
   });
 
   it("handles errors", async () => {
@@ -117,13 +119,15 @@ describe("listeners", () => {
     });
     fetchMock.mockResponseOnce(JSON.stringify({}), { status: 500 });
     store.dispatch(pollWhoamiStart());
-    await waitFor(() =>
+    await waitFor(() => {
       expect(generalActions.storeLoginError).toHaveBeenCalledWith({
         error: Label.ERROR_AUTHENTICATION,
         wsControllerURL: "wss://controller.example.com",
-      }),
-    );
-    await waitFor(() => expect(appThunks.logOut).toHaveBeenCalled());
+      });
+    });
+    await waitFor(() => {
+      expect(appThunks.logOut).toHaveBeenCalled();
+    });
   });
 
   it("does not display an error when stopping the listener", async () => {
@@ -135,8 +139,8 @@ describe("listeners", () => {
     fetchMock.mockResponseOnce(JSON.stringify({}), { status: 500 });
     store.dispatch(pollWhoamiStart());
     store.dispatch(pollWhoamiStop());
-    await waitFor(() =>
-      expect(generalActions.storeLoginError).not.toHaveBeenCalled(),
-    );
+    await waitFor(() => {
+      expect(generalActions.storeLoginError).not.toHaveBeenCalled();
+    });
   });
 });

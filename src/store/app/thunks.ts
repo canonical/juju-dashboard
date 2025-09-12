@@ -27,9 +27,9 @@ export const logOut = createAsyncThunk<
   const state = thunkAPI.getState();
   const pingerIntervalIds = getPingerIntervalIds(state);
   bakery.storage.clear();
-  Object.entries(pingerIntervalIds ?? {}).forEach((pingerIntervalId) =>
-    clearInterval(pingerIntervalId[1]),
-  );
+  Object.entries(pingerIntervalIds ?? {}).forEach((pingerIntervalId) => {
+    clearInterval(pingerIntervalId[1]);
+  });
   thunkAPI.dispatch(jujuActions.clearModelData());
   thunkAPI.dispatch(jujuActions.clearControllerData());
   thunkAPI.dispatch(generalActions.logOut());

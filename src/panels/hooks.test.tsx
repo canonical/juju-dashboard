@@ -60,7 +60,9 @@ describe("usePanelQueryParams", () => {
     );
     const [, , handleRemovePanelQueryParams] = result.current;
 
-    act(() => handleRemovePanelQueryParams());
+    act(() => {
+      handleRemovePanelQueryParams();
+    });
 
     expect(router?.state.location.search).toBe("?externalParam=externalValue");
   });

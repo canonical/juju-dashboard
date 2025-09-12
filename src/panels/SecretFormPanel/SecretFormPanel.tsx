@@ -48,7 +48,9 @@ const SecretFormPanel: FC<Props> = ({ update = false }: Props) => {
     >
       <SecretForm
         formId={formId}
-        onSuccess={() => handleRemovePanelQueryParams()}
+        onSuccess={() => {
+          handleRemovePanelQueryParams();
+        }}
         secretURI={queryParams.secret}
         setSaving={setSaving}
         update={update}

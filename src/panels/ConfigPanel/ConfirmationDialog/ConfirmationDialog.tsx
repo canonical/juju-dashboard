@@ -111,7 +111,9 @@ const ConfirmationDialog = ({
               logger.error(Label.SUBMIT_TO_JUJU_ERROR, error);
             });
           }}
-          close={() => setConfirmType(null)}
+          close={() => {
+            setConfirmType(null);
+          }}
         >
           <ChangedKeyValues appName={appName} config={config} />
         </ConfirmationModal>
@@ -187,7 +189,9 @@ const ConfirmationDialog = ({
             setConfirmType(null);
             handleRemovePanelQueryParams();
           }}
-          close={() => setConfirmType(null)}
+          close={() => {
+            setConfirmType(null);
+          }}
         >
           <ChangedKeyValues appName={appName} config={config} />
         </ConfirmationModal>

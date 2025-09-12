@@ -27,7 +27,9 @@ const MachineLink = ({ uuid, machineId, children }: Props): JSX.Element => {
   return (
     <Link
       // Prevent toggling the object when the link is clicked.
-      onClick={(event) => event.stopPropagation()}
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
       to={urls.model.machine({ userName, modelName, machineId })}
     >
       {children}

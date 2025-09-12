@@ -222,7 +222,12 @@ export default function Models(): JSX.Element {
       {modelsError !== null && modelsError ? (
         <ReactNotification severity="negative" title="Error">
           {modelsError} Try{" "}
-          <Button appearance="link" onClick={() => window.location.reload()}>
+          <Button
+            appearance="link"
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
             refreshing
           </Button>{" "}
           the page.

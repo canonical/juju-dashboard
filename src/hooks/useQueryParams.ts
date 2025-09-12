@@ -24,9 +24,9 @@ export const useQueryParams = <P extends QueryParams>(
     (newParams?: null | Partial<P>, options?: NavigateOptions) => {
       if (!newParams) {
         // If this is call with no params then clear all.
-        Array.from(searchParams.keys()).forEach((key) =>
-          searchParams.delete(key),
-        );
+        Array.from(searchParams.keys()).forEach((key) => {
+          searchParams.delete(key);
+        });
       } else {
         Object.entries(newParams).forEach(([param, value]) => {
           if (value === undefined || value === null) {

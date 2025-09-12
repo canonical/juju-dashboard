@@ -20,13 +20,23 @@ export default function DevBar(): JSX.Element | null {
   return (
     <div className="dev-bar">
       {minimised ? (
-        <Button hasIcon onClick={() => setMinimised(false)}>
+        <Button
+          hasIcon
+          onClick={() => {
+            setMinimised(false);
+          }}
+        >
           <Icon name="code" />
         </Button>
       ) : null}
 
       <Card highlighted className={classNames({ minimised })}>
-        <Button hasIcon onClick={() => setMinimised(true)}>
+        <Button
+          hasIcon
+          onClick={() => {
+            setMinimised(true);
+          }}
+        >
           <Icon name="chevron-left" />
           <span>Minimise</span>
         </Button>

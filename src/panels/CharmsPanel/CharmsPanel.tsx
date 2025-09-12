@@ -37,7 +37,9 @@ export default function CharmsPanel({
       drawer={
         <Button
           disabled={selectedCharm === null || !selectedCharm}
-          onClick={() => onCharmURLChange(selectedCharm)}
+          onClick={() => {
+            onCharmURLChange(selectedCharm);
+          }}
         >
           Next
         </Button>
@@ -67,7 +69,9 @@ export default function CharmsPanel({
                   checked={selectedCharm === charm.url}
                   onChange={
                     hasActionData
-                      ? (): void => setSelectedCharm(charm.url)
+                      ? (): void => {
+                          setSelectedCharm(charm.url);
+                        }
                       : undefined
                   }
                   disabled={!hasActionData}

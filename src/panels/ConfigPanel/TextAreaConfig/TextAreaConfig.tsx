@@ -26,13 +26,17 @@ export default function TextAreaConfig({
           <textarea
             ref={inputRef}
             value={value ?? ""}
-            onFocus={() => setSelectedConfig(config)}
+            onFocus={() => {
+              setSelectedConfig(config);
+            }}
             onChange={(ev) => {
               setNewValue(config.name, ev.target.value);
             }}
           ></textarea>
           <SecretsPicker
-            setValue={(secret) => setNewValue(config.name, secret)}
+            setValue={(secret) => {
+              setNewValue(config.name, secret);
+            }}
           />
         </div>
       )}

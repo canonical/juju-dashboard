@@ -34,7 +34,9 @@ const UserMenu: FC = () => {
     }
   }, [isActive, sendAnalytics]);
 
-  const toggleUserMenuActive = (): void => setIsActive(!isActive);
+  const toggleUserMenuActive = (): void => {
+    setIsActive(!isActive);
+  };
 
   return (
     <>

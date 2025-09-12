@@ -29,7 +29,12 @@ const ActionPayloadModal = ({
       close={onClose}
       title={Label.TITLE}
       buttonRow={
-        <Button appearance="neutral" onClick={() => copyToClipboard(json)}>
+        <Button
+          appearance="neutral"
+          onClick={() => {
+            copyToClipboard(json);
+          }}
+        >
           {Label.COPY}
         </Button>
       }

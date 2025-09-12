@@ -134,7 +134,12 @@ const EntityDetails: FC<Props> = ({ modelWatcherError = null }: Props) => {
             {modelWatcherError && modelWatcherError !== "timeout" ? (
               <span>{` ${modelWatcherError}`}</span>
             ) : null}{" "}
-            <Button appearance="link" onClick={() => window.location.reload()}>
+            <Button
+              appearance="link"
+              onClick={() => {
+                window.location.reload();
+              }}
+            >
               Refresh
             </Button>
             {"."}

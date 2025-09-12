@@ -108,7 +108,8 @@ export const modelPollerMiddleware: Middleware<
                 "Unable to log into the controller, check that the controller address is correct and that it is online.",
             }),
           );
-          return logger.log(LoginError.LOG, err, controllerData);
+          logger.log(LoginError.LOG, err, controllerData);
+          return;
         } finally {
           reduxStore.dispatch(generalActions.updateLoginLoading(false));
         }

@@ -70,7 +70,9 @@ const ConfirmationDialog = ({
                 logger.error(Label.EXECUTE_ACTION_ERROR, error);
               });
           }}
-          close={() => setConfirmType(null)}
+          close={() => {
+            setConfirmType(null);
+          }}
         >
           <h4 className="p-muted-heading u-no-margin--bottom">UNIT COUNT</h4>
           <p data-testid="confirmation-modal-unit-count">
