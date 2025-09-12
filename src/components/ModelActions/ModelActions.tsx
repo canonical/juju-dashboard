@@ -1,8 +1,10 @@
 import { ContextualMenu, usePortal } from "@canonical/react-components";
+import type { FC } from "react";
 import { Link } from "react-router";
 
 import DestroyModelDialog from "components/DestroyModelDialog";
 import { useCanConfigureModelWithUUID } from "hooks/useCanConfigureModel";
+import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
 import { getIsJuju } from "store/general/selectors";
 import { useAppSelector } from "store/store";
@@ -19,6 +21,8 @@ const ModelActions: FC<Props> = ({ modelName, modelUUID }: Props) => {
     panel: null,
   });
   const canConfigureModel = useCanConfigureModelWithUUID(false, modelUUID);
+  const modelStatusData = useModelStatus(modelUUID);
+  const isController = modelStatusData?.info?.["is-controller"];
   const isJuju = useAppSelector(getIsJuju);
   const {
     openPortal,
@@ -48,7 +52,7 @@ const ModelActions: FC<Props> = ({ modelName, modelUUID }: Props) => {
             disabled: !canConfigureModel,
             ...(isJuju
               ? {
-                  onClick: (event) => {
+                  onClick: (event): void => {
                     event.stopPropagation();
                     setPanelQs(
                       {
@@ -66,8 +70,8 @@ const ModelActions: FC<Props> = ({ modelName, modelUUID }: Props) => {
           },
           {
             children: Label.DESTROY,
-            disabled: !canConfigureModel,
-            onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+            disabled: isController ?? !canConfigureModel,
+            onClick: (event: React.MouseEvent<HTMLButtonElement>): void => {
               event.stopPropagation();
               openPortal(event);
             },

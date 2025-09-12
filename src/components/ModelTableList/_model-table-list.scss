@@ -1,5 +1,18 @@
-.models .p-main-table caption {
-  margin-top: 0.5rem;
+.models .p-main-table {
+  .dying-model {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .model-name {
+    display: flex;
+    white-space: pre;
+  }
+
+  caption {
+    margin-top: 0.5rem;
+  }
 }
 
 .model-table-list_error-message {

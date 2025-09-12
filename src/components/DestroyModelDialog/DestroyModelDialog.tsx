@@ -1,14 +1,15 @@
+import type { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/application/ApplicationV19";
 import {
-  Button,
+  ConfirmationModal,
   Icon,
-  Input,
   MainTable,
-  Modal,
   RadioInput,
 } from "@canonical/react-components";
+import { useState } from "react";
+import type { JSX } from "react";
 import { useDispatch } from "react-redux";
 
-import useModelStatus from "hooks/useModelStatus";
+import useModelDestructionData from "hooks/useModelDestructionData";
 import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { useAppSelector } from "store/store";
@@ -23,46 +24,50 @@ export default function DestroyModelDialog({
   modelName,
   modelUUID,
   closePortal,
-}: Props) {
-  const modelStatusData = useModelStatus(modelUUID);
+}: Props): JSX.Element {
+  const {
+    hasStorage,
+    applications,
+    machines,
+    crossModelRelations,
+    connectedOffers,
+    showInfoTable,
+    storageIDs,
+  } = useModelDestructionData(modelUUID);
+
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
-
-  const applications = Object.keys(modelStatusData?.applications ?? {});
-  const offers = Object.keys(modelStatusData?.offers ?? {});
-  const machines = Object.keys(modelStatusData?.machines ?? {});
-  const showInfoTable = applications.length || offers.length || machines.length;
+  const [destroyStorage, setDestroyStorage] = useState<boolean | undefined>();
 
   return (
-    <Modal
-      className="p-modal--min-width"
-      close={closePortal}
+    <ConfirmationModal
       title={
         <>
           Destroy model <b>{modelName}</b>
         </>
       }
-      buttonRow={
-        <>
-          <Button appearance="neutral" onClick={closePortal}>
-            Cancel
-          </Button>
-          <Button
-            appearance="negative"
-            onClick={() => {
-              dispatch(
-                jujuActions.destroyModels({
-                  models: [{ "model-tag": `model-${modelUUID}` }],
-                  wsControllerURL,
-                }),
-              );
-              closePortal();
-            }}
-          >
-            Destroy Model
-          </Button>
-        </>
+      className="p-modal--min-width"
+      confirmButtonLabel="Destroy model"
+      confirmButtonDisabled={
+        (destroyStorage === undefined && hasStorage) ||
+        connectedOffers.length > 0
       }
+      onConfirm={() => {
+        dispatch(
+          jujuActions.destroyModels({
+            modelParams: [
+              {
+                "model-tag": `model-${modelUUID}`,
+                "destroy-storage": destroyStorage,
+              },
+            ],
+            models: [modelName],
+            wsControllerURL,
+          }),
+        );
+        closePortal();
+      }}
+      close={closePortal}
     >
       {showInfoTable ? (
         <>
@@ -92,7 +97,7 @@ export default function DestroyModelDialog({
                     },
                   ]
                 : []),
-              ...(offers.length
+              ...(crossModelRelations.length
                 ? [
                     {
                       columns: [
@@ -100,14 +105,33 @@ export default function DestroyModelDialog({
                           content: (
                             <>
                               <Icon name="get-link" className="icon" />
-                              Cross-model relations ({offers.length})
+                              Cross-model relations (
+                              {crossModelRelations.length})
                             </>
                           ),
                         },
                         {
-                          content: offers.map((offer) => (
-                            <div key={offer}>{offer}</div>
-                          )),
+                          content: (
+                            <>
+                              {crossModelRelations.map(
+                                ({ name, endpoints }) => (
+                                  <div key={name}>
+                                    {name}{" "}
+                                    {endpoints.map(
+                                      (
+                                        endpoint: RemoteEndpoint,
+                                        index: number,
+                                      ) => (
+                                        <span key={index}>
+                                          {endpoint.name}:{endpoint.interface}
+                                        </span>
+                                      ),
+                                    )}
+                                  </div>
+                                ),
+                              )}
+                            </>
+                          ),
                         },
                       ],
                     },
@@ -141,21 +165,75 @@ export default function DestroyModelDialog({
             ]}
             className="p-main-table destroy-model-table"
           />
-          <hr />
+          {hasStorage ? (
+            <>
+              <hr />
+              <div>
+                Model has attached storage <b>{storageIDs.join(", ")}</b>
+              </div>
+              <RadioInput
+                label="Destroy storage"
+                checked={destroyStorage}
+                onChange={() => {
+                  setDestroyStorage(true);
+                }}
+              />
+              <RadioInput
+                label="Detach storage"
+                checked={destroyStorage === false}
+                onChange={() => {
+                  setDestroyStorage(false);
+                }}
+              />
+            </>
+          ) : null}
+          {connectedOffers.length ? (
+            <>
+              <hr />
+              <div>Model has offers that need to be removed manually:</div>
+              <MainTable
+                className="p-main-table destroy-model-table"
+                headers={[{ content: "application" }, { content: "offer" }]}
+                rows={[
+                  {
+                    columns: [
+                      {
+                        content: (
+                          <>
+                            <Icon name="applications" className="icon" />
+                            {connectedOffers.map(
+                              (connectedOffer) =>
+                                connectedOffer.applicationName,
+                            )}
+                          </>
+                        ),
+                      },
+                      {
+                        content: (
+                          <>
+                            <Icon name="get-link" className="icon" />
+                            {connectedOffers.map(
+                              (connectedOffer) => connectedOffer.offerName,
+                            )}{" "}
+                            {connectedOffers.map(
+                              (connectedOffer) =>
+                                `${connectedOffer.endpoint.name}:${connectedOffer.endpoint.interface}`,
+                            )}
+                          </>
+                        ),
+                      },
+                    ],
+                  },
+                ]}
+              />
+            </>
+          ) : null}
         </>
-      ) : null}
-      {modelStatusData?.storage ? (
-        <>
-          <div>Model has attached storage</div>
-          <RadioInput label="Destroy storage" />
-          <RadioInput label="Detach storage" />
-          <hr />
-        </>
-      ) : null}
-      <div className="destroy-model-timeout">
-        <Input type="checkbox" label="Timeout" />
-        <Input type="number" placeholder="0" />
-      </div>
-    </Modal>
+      ) : (
+        <div>
+          Do you want to destroy the empty model <b>{modelName}</b>?
+        </div>
+      )}
+    </ConfirmationModal>
   );
 }

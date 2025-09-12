@@ -3,14 +3,26 @@ import type {
   MainTableCell,
   MainTableRow,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import { useEffect } from "react";
 import type { JSX } from "react";
+import reactHotToast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router";
 
 import ModelActions from "components/ModelActions";
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
+import ToastCard from "components/ToastCard";
+import type { ToastInstance } from "components/ToastCard";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import { getControllerData } from "store/juju/selectors";
-import type { Controllers, ModelData } from "store/juju/types";
+import { getWSControllerURL } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
+import {
+  getControllerData,
+  getDestructionState,
+  getModelList,
+} from "store/juju/selectors";
+import type { Controllers, DestroyState, ModelData } from "store/juju/types";
 import {
   extractOwnerName,
   getModelStatusGroupData,
@@ -51,6 +63,7 @@ function generateModelTableList(
   models: ModelData[],
   controllers: Controllers | null,
   groupBy: GroupBy,
+  destructionState: DestroyState,
   groupLabel?: string,
 ): MainTableRow[] {
   const modelsList: MainTableRow[] = [];
@@ -62,13 +75,20 @@ function generateModelTableList(
     const credential = getCredential(model);
     const controller = getControllerName(model, controllers);
     const lastUpdated = getLastUpdated(model);
+    const isDying = Object.keys(destructionState).includes(
+      `model-${model.uuid}`,
+    );
 
     const columns = [
       {
         "data-testid": TestId.COLUMN_NAME,
         content: (
-          <>
-            <TruncatedTooltip message={model.model.name}>
+          <div className="model-name">
+            {isDying ? "Destroying... " : ""}
+            <TruncatedTooltip
+              message={model.model.name}
+              className={isDying ? "dying-model" : ""}
+            >
               <ModelDetailsLink
                 modelName={model.model.name}
                 ownerTag={model.info?.["owner-tag"]}
@@ -79,7 +99,7 @@ function generateModelTableList(
             {groupBy === GroupBy.STATUS && groupLabel === "Blocked" ? (
               <WarningMessage model={model} />
             ) : null}
-          </>
+          </div>
         ),
       },
       {
@@ -90,17 +110,18 @@ function generateModelTableList(
             ownerTag={model.info?.["owner-tag"]}
           />
         ),
-        className: "u-overflow--visible",
+        className: `u-overflow--visible ${isDying ? "dying-model" : ""}`,
       },
       // Conditionally include cells based on the group type
       ...getConditionalCell(GroupBy.OWNER, groupBy, {
         "data-testid": TestId.COLUMN_OWNER,
         content: <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>,
+        className: isDying ? "dying-model" : "",
       }),
       ...getConditionalCell(GroupBy.STATUS, groupBy, {
         "data-testid": TestId.COLUMN_STATUS,
         content: <Status status={highestStatus} />,
-        className: "u-capitalise",
+        className: `u-capitalise ${isDying ? "dying-model" : ""}`,
       }),
       ...getConditionalCell(
         GroupBy.CLOUD,
@@ -112,12 +133,14 @@ function generateModelTableList(
               {cloud}
             </TruncatedTooltip>
           ),
+          className: isDying ? "dying-model" : "",
         },
         {
           "data-testid": TestId.COLUMN_REGION,
           content: (
             <TruncatedTooltip message={region}>{region}</TruncatedTooltip>
           ),
+          className: isDying ? "dying-model" : "",
         },
       ),
       {
@@ -125,12 +148,14 @@ function generateModelTableList(
         content: (
           <TruncatedTooltip message={credential}>{credential}</TruncatedTooltip>
         ),
+        className: isDying ? "dying-model" : "",
       },
       {
         "data-testid": TestId.COLUMN_CONTROLLER,
         content: (
           <TruncatedTooltip message={controller}>{controller}</TruncatedTooltip>
         ),
+        className: isDying ? "dying-model" : "",
       },
       // We're not currently able to get a last-accessed or updated from JAAS.
       {
@@ -140,14 +165,14 @@ function generateModelTableList(
             {lastUpdated}
           </TruncatedTooltip>
         ),
-        className: "u-align--right lrg-screen-access-cell",
+        className: `u-align--right lrg-screen-access-cell ${isDying ? "dying-model" : ""}`,
       },
       {
         "data-testid": TestId.COLUMN_ACTIONS,
         content: (
           <ModelActions modelUUID={model.uuid} modelName={model.model.name} />
         ),
-        className: "u-align--right",
+        className: `u-align--right ${isDying ? "dying-model" : ""}`,
       },
     ];
 
@@ -187,6 +212,11 @@ export default function ModelTable({
   emptyStateMessage = "",
 }: Props): JSX.Element {
   const controllers = useAppSelector(getControllerData);
+  const modelsList = useAppSelector(getModelList);
+  const destructionState = useAppSelector(getDestructionState);
+  const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
+  const dispatch = useDispatch();
+
   const headerOptions = {
     showCloud: [GroupBy.STATUS, GroupBy.OWNER].includes(groupBy),
     showOwner: [GroupBy.STATUS, GroupBy.CLOUD].includes(groupBy),
@@ -196,13 +226,80 @@ export default function ModelTable({
       : {}),
   };
 
+  useEffect(() => {
+    Object.entries(destructionState).forEach(([modelTag, status]) => {
+      // Check if the destruction is in a loading state.
+      if (status.loading) {
+        // Handle an initiated destruction
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard type="info" toastInstance={toast}>
+            <b>Destroying model "{status.modelName}"...</b>
+          </ToastCard>
+        ));
+      } else if (
+        status.loaded &&
+        status.errors === null &&
+        !Object.keys(modelsList).includes(modelTag.split("model-")[1])
+      ) {
+        // Handle a successful destruction
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard type="positive" toastInstance={toast}>
+            <b>Model "{status.modelName}" destroyed successfully</b>
+          </ToastCard>
+        ));
+
+        // Dispatch the clear action to remove this entry from the state.
+        // This prevents the useEffect from re-running for this item.
+        dispatch(
+          jujuActions.clearDestroyedModel({
+            modelTag,
+            wsControllerURL,
+          }),
+        );
+      }
+
+      if (status.errors) {
+        // Handle a failed destruction
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard type="negative" toastInstance={toast}>
+            <b>Destroying model "{status.modelName}" failed</b>
+            <div>
+              Retry or consult{" "}
+              <Link
+                to="https://documentation.ubuntu.com/juju/3.6/reference/juju-cli/list-of-juju-cli-commands/destroy-model/"
+                target="_blank"
+              >
+                documentation
+              </Link>
+            </div>
+          </ToastCard>
+        ));
+
+        // Dispatch the clear action to remove this entry from the state.
+        // This prevents the useEffect from re-running for this item.
+        dispatch(
+          jujuActions.clearDestroyedModel({
+            modelTag,
+            wsControllerURL,
+          }),
+        );
+      }
+    });
+  }, [destructionState, wsControllerURL, modelsList, dispatch]);
+
   return (
     <MainTable
       headers={generateTableHeaders(groupLabel, models.length, headerOptions)}
       className="p-main-table"
       sortable
       emptyStateMsg={emptyStateMessage}
-      rows={generateModelTableList(models, controllers, groupBy, groupLabel)}
+      rows={generateModelTableList(
+        models,
+        controllers,
+        groupBy,
+        destructionState,
+        groupLabel,
+      )}
     />
   );
 }
