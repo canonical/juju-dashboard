@@ -61,14 +61,10 @@ const getOrSetContentState = (
 ): SecretsContent => {
   let modelSecrets =
     modelUUID in state.secrets ? state.secrets[modelUUID] : null;
-  if (!modelSecrets) {
-    modelSecrets = state.secrets[modelUUID] = { ...DEFAULT_MODEL_SECRETS };
-  }
+  modelSecrets ??= state.secrets[modelUUID] = { ...DEFAULT_MODEL_SECRETS };
 
   let { content } = modelSecrets;
-  if (!content) {
-    content = modelSecrets.content = { ...DEFAULT_MODEL_SECRETS_CONTENT };
-  }
+  content ??= modelSecrets.content = { ...DEFAULT_MODEL_SECRETS_CONTENT };
   return content;
 };
 
@@ -316,9 +312,7 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ uuid: string; status: FullStatus }>,
     ) => {
-      if (!state.modelWatcherData) {
-        state.modelWatcherData = {};
-      }
+      state.modelWatcherData ??= {};
       const model =
         action.payload.uuid in state.modelWatcherData
           ? state.modelWatcherData[action.payload.uuid]
