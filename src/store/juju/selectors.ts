@@ -1114,7 +1114,7 @@ export const getSelectedCharm = createSelector(
 export const isKubernetesModel = createSelector(
   [
     getModelDataByUUID,
-    (state, uuid: null | string = null): null | WatcherModelInfo =>
+    (state: RootState, uuid: null | string = null): null | WatcherModelInfo =>
       uuid !== null && uuid ? getModelInfo(state, uuid) : null,
   ],
   (modelData, modelInfo) =>
@@ -1160,8 +1160,10 @@ export const getReBACPermissions = createSelector(
 
 export const getReBACPermissionLoading = createSelector(
   [
-    (state, tuple: null | RelationshipTuple = null): null | ReBACAllowed =>
-      getReBACPermission(state, tuple),
+    (
+      state: RootState,
+      tuple: null | RelationshipTuple = null,
+    ): null | ReBACAllowed => getReBACPermission(state, tuple),
   ],
   (permission) => {
     return permission?.loading ?? false;
@@ -1170,7 +1172,7 @@ export const getReBACPermissionLoading = createSelector(
 
 export const getReBACPermissionLoaded = createSelector(
   [
-    (state, tuple?: null | RelationshipTuple): null | ReBACAllowed =>
+    (state: RootState, tuple?: null | RelationshipTuple): null | ReBACAllowed =>
       getReBACPermission(state, tuple),
   ],
   (permission) => {
@@ -1180,7 +1182,7 @@ export const getReBACPermissionLoaded = createSelector(
 
 export const getReBACPermissionErrors = createSelector(
   [
-    (state, tuple?: null | RelationshipTuple): null | ReBACAllowed =>
+    (state: RootState, tuple?: null | RelationshipTuple): null | ReBACAllowed =>
       getReBACPermission(state, tuple),
   ],
   (permission) => {
@@ -1190,7 +1192,7 @@ export const getReBACPermissionErrors = createSelector(
 
 export const hasReBACPermission = createSelector(
   [
-    (state, tuple?: null | RelationshipTuple): null | ReBACAllowed =>
+    (state: RootState, tuple?: null | RelationshipTuple): null | ReBACAllowed =>
       getReBACPermission(state, tuple),
   ],
   (permission) => {
@@ -1214,7 +1216,7 @@ export const getReBACRelationships = createSelector(
 
 export const getReBACRelationshipsLoading = createSelector(
   [
-    (state, requestId: string): null | ReBACRelationship =>
+    (state: RootState, requestId: string): null | ReBACRelationship =>
       getReBACRelationships(state, requestId),
   ],
   (permission) => permission?.loading ?? false,
@@ -1222,7 +1224,7 @@ export const getReBACRelationshipsLoading = createSelector(
 
 export const getReBACRelationshipsLoaded = createSelector(
   [
-    (state, requestId: string): null | ReBACRelationship =>
+    (state: RootState, requestId: string): null | ReBACRelationship =>
       getReBACRelationships(state, requestId),
   ],
   (permission) => permission?.loaded ?? false,
@@ -1230,7 +1232,7 @@ export const getReBACRelationshipsLoaded = createSelector(
 
 export const getReBACRelationshipsErrors = createSelector(
   [
-    (state, requestId: string): null | ReBACRelationship =>
+    (state: RootState, requestId: string): null | ReBACRelationship =>
       getReBACRelationships(state, requestId),
   ],
   (permission) => permission?.errors,
