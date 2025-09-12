@@ -73,13 +73,15 @@ describe("useListSecrets", () => {
           secrets: {
             listSecrets: vi
               .fn()
-              .mockImplementation(() => Promise.resolve({ results: secrets })),
+              .mockImplementation(async () =>
+                Promise.resolve({ results: secrets }),
+              ),
           },
         },
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -123,7 +125,7 @@ describe("useListSecrets", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -160,13 +162,15 @@ describe("useListSecrets", () => {
           secrets: {
             listSecrets: vi
               .fn()
-              .mockImplementation(() => Promise.reject(new Error("Uh oh!"))),
+              .mockImplementation(async () =>
+                Promise.reject(new Error("Uh oh!")),
+              ),
           },
         },
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -240,13 +244,15 @@ describe("useGetSecretContent", () => {
           secrets: {
             listSecrets: vi
               .fn()
-              .mockImplementation(() => Promise.resolve({ results: secrets })),
+              .mockImplementation(async () =>
+                Promise.resolve({ results: secrets }),
+              ),
           },
         },
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -295,13 +301,15 @@ describe("useGetSecretContent", () => {
           secrets: {
             listSecrets: vi
               .fn()
-              .mockImplementation(() => Promise.resolve({ results: secrets })),
+              .mockImplementation(async () =>
+                Promise.resolve({ results: secrets }),
+              ),
           },
         },
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -343,13 +351,15 @@ describe("useGetSecretContent", () => {
           secrets: {
             listSecrets: vi
               .fn()
-              .mockImplementation(() => Promise.resolve({ results: secrets })),
+              .mockImplementation(async () =>
+                Promise.resolve({ results: secrets }),
+              ),
           },
         },
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -386,7 +396,7 @@ describe("useGetSecretContent", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -423,13 +433,15 @@ describe("useGetSecretContent", () => {
           secrets: {
             listSecrets: vi
               .fn()
-              .mockImplementation(() => Promise.reject(new Error("Uh oh!"))),
+              .mockImplementation(async () =>
+                Promise.reject(new Error("Uh oh!")),
+              ),
           },
         },
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -501,7 +513,7 @@ describe("useCreateSecrets", () => {
     const results = { results: [{ result: "secret:def456" }] };
     const createSecrets = vi
       .fn()
-      .mockImplementation(() => Promise.resolve(results));
+      .mockImplementation(async () => Promise.resolve(results));
     const loginResponse = {
       conn: {
         facades: {
@@ -512,7 +524,7 @@ describe("useCreateSecrets", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -547,7 +559,7 @@ describe("useCreateSecrets", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -613,7 +625,7 @@ describe("useUpdateSecrets", () => {
     const results = { results: [{ result: "secret:def456" }] };
     const updateSecrets = vi
       .fn()
-      .mockImplementation(() => Promise.resolve(results));
+      .mockImplementation(async () => Promise.resolve(results));
     const loginResponse = {
       conn: {
         facades: {
@@ -624,7 +636,7 @@ describe("useUpdateSecrets", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -661,7 +673,7 @@ describe("useUpdateSecrets", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -723,7 +735,7 @@ describe("useRemoveSecrets", () => {
     const results = { results: [{ result: "secret:def456" }] };
     const removeSecrets = vi
       .fn()
-      .mockImplementation(() => Promise.resolve(results));
+      .mockImplementation(async () => Promise.resolve(results));
     const loginResponse = {
       conn: {
         facades: {
@@ -734,7 +746,7 @@ describe("useRemoveSecrets", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -767,7 +779,7 @@ describe("useRemoveSecrets", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -824,7 +836,7 @@ describe("useGrantSecret", () => {
     const results = { results: [{ result: "secret:def456" }] };
     const grantSecret = vi
       .fn()
-      .mockImplementation(() => Promise.resolve(results));
+      .mockImplementation(async () => Promise.resolve(results));
     const loginResponse = {
       conn: {
         facades: {
@@ -835,7 +847,7 @@ describe("useGrantSecret", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -868,7 +880,7 @@ describe("useGrantSecret", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -925,7 +937,7 @@ describe("useRevokeSecret", () => {
     const results = { results: [{ result: "secret:def456" }] };
     const revokeSecret = vi
       .fn()
-      .mockImplementation(() => Promise.resolve(results));
+      .mockImplementation(async () => Promise.resolve(results));
     const loginResponse = {
       conn: {
         facades: {
@@ -936,7 +948,7 @@ describe("useRevokeSecret", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(
@@ -969,7 +981,7 @@ describe("useRevokeSecret", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
       Promise.resolve(loginResponse),
     );
     const { result } = renderHook(

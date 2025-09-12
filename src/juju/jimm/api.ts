@@ -41,7 +41,7 @@ export const endpoints = (): Endpoints => {
  * A wrapper function that performs the JIMM facade check before executing
  * the provided async function.
  */
-const withJimmCheck = <T>(
+const withJimmCheck = async <T>(
   conn: ConnectionWithFacades,
   facadeMethod: (jimm: NonNullable<Facades["jimM"]>) => Promise<T>,
 ): Promise<T> => {
@@ -58,7 +58,7 @@ export const findAuditEvents = async (
   conn: ConnectionWithFacades,
   params?: FindAuditEventsRequest,
 ): Promise<AuditEvents> => {
-  return withJimmCheck(conn, (jimm) => jimm.findAuditEvents(params));
+  return withJimmCheck(conn, async (jimm) => jimm.findAuditEvents(params));
 };
 
 /**
@@ -68,7 +68,7 @@ export const crossModelQuery = async (
   conn: ConnectionWithFacades,
   query: string,
 ): Promise<CrossModelQueryResponse> => {
-  return withJimmCheck(conn, (jimm) => jimm.crossModelQuery(query));
+  return withJimmCheck(conn, async (jimm) => jimm.crossModelQuery(query));
 };
 
 /**
@@ -78,7 +78,7 @@ export const checkRelation = async (
   conn: ConnectionWithFacades,
   tuple: RelationshipTuple,
 ): Promise<CheckRelationResponse> => {
-  return withJimmCheck(conn, (jimm) => jimm.checkRelation(tuple));
+  return withJimmCheck(conn, async (jimm) => jimm.checkRelation(tuple));
 };
 
 /**
@@ -88,7 +88,7 @@ export const checkRelations = async (
   conn: ConnectionWithFacades,
   tuples: RelationshipTuple[],
 ): Promise<CheckRelationsResponse> => {
-  return withJimmCheck(conn, (jimm) => jimm.checkRelations(tuples));
+  return withJimmCheck(conn, async (jimm) => jimm.checkRelations(tuples));
 };
 
 /**
@@ -98,7 +98,7 @@ export const migrateModel = async (
   conn: ConnectionWithFacades,
   migrationSpecs: MigrateModelInfo[],
 ): Promise<InitiateMigrationResults> => {
-  return withJimmCheck(conn, (jimm) => jimm.migrateModel(migrationSpecs));
+  return withJimmCheck(conn, async (jimm) => jimm.migrateModel(migrationSpecs));
 };
 
 /**
@@ -108,5 +108,7 @@ export const listMigrationTargets = async (
   conn: ConnectionWithFacades,
   modelTag: string,
 ): Promise<ListControllersResponse> => {
-  return withJimmCheck(conn, (jimm) => jimm.listMigrationTargets(modelTag));
+  return withJimmCheck(conn, async (jimm) =>
+    jimm.listMigrationTargets(modelTag),
+  );
 };

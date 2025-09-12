@@ -59,8 +59,8 @@ describe("CharmsAndActionsPanel", () => {
   });
 
   it("should display the spinner before loading the panel", async () => {
-    vi.spyOn(juju, "getCharmsURLFromApplications").mockImplementation(() =>
-      Promise.resolve([]),
+    vi.spyOn(juju, "getCharmsURLFromApplications").mockImplementation(
+      async () => Promise.resolve([]),
     );
     const {
       result: { getSpinnerByLabel },
@@ -72,8 +72,8 @@ describe("CharmsAndActionsPanel", () => {
   });
 
   it("should render CharmActionsPanel when there is a unique charm", async () => {
-    vi.spyOn(juju, "getCharmsURLFromApplications").mockImplementation(() =>
-      Promise.resolve(["ch:ceph"]),
+    vi.spyOn(juju, "getCharmsURLFromApplications").mockImplementation(
+      async () => Promise.resolve(["ch:ceph"]),
     );
     state.juju.charms = [
       charmInfoFactory.build({
@@ -108,8 +108,8 @@ describe("CharmsAndActionsPanel", () => {
   });
 
   it("should render CharmsPanel when there is no unique charm", async () => {
-    vi.spyOn(juju, "getCharmsURLFromApplications").mockImplementation(() =>
-      Promise.resolve(["ch:ceph", "ch:ceph2"]),
+    vi.spyOn(juju, "getCharmsURLFromApplications").mockImplementation(
+      async () => Promise.resolve(["ch:ceph", "ch:ceph2"]),
     );
     state.juju.selectedApplications = [
       ...state.juju.selectedApplications,

@@ -449,7 +449,7 @@ describe("model poller", () => {
 
   it("fails silently if the user is not authorised to disable masking", async () => {
     vi.spyOn(jujuModule, "disableControllerUUIDMasking").mockImplementation(
-      () => Promise.reject(new Error()),
+      async () => Promise.reject(new Error()),
     );
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
@@ -667,8 +667,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "setModelSharingPermissions").mockImplementation(() =>
-      Promise.resolve({ results: [] }),
+    vi.spyOn(jujuModule, "setModelSharingPermissions").mockImplementation(
+      async () => Promise.resolve({ results: [] }),
     );
     const middleware = await runMiddleware();
     const action = appActions.updatePermissions({
@@ -692,7 +692,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(() =>
+    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(async () =>
       Promise.resolve(events),
     );
     const middleware = await runMiddleware();
@@ -718,7 +718,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(() =>
+    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(async () =>
       Promise.resolve(events),
     );
     const middleware = await runMiddleware();
@@ -736,7 +736,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(() =>
+    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(async () =>
       Promise.reject(new Error("Uh oh!")),
     );
     const middleware = await runMiddleware();
@@ -757,7 +757,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(() =>
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(async () =>
       Promise.resolve(crossModelQueryResponse),
     );
     const middleware = await runMiddleware();
@@ -783,7 +783,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(() =>
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(async () =>
       Promise.resolve(crossModelQueryResponse),
     );
     const middleware = await runMiddleware();
@@ -805,7 +805,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(() =>
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(async () =>
       Promise.resolve(crossModelQueryResponse),
     );
     const middleware = await runMiddleware();
@@ -825,7 +825,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(() =>
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(async () =>
       Promise.reject(new Error("Uh oh!")),
     );
     const middleware = await runMiddleware();
@@ -847,7 +847,7 @@ describe("model poller", () => {
     }));
     vi.spyOn(jimmModule, "crossModelQuery")
       // eslint-disable-next-line prefer-promise-reject-errors
-      .mockImplementation(() => Promise.reject("Uh oh!"));
+      .mockImplementation(async () => Promise.reject("Uh oh!"));
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
       wsControllerURL: "wss://example.com",
@@ -869,7 +869,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelation").mockImplementation(() =>
+    vi.spyOn(jimmModule, "checkRelation").mockImplementation(async () =>
       Promise.resolve(checkRelationResponse),
     );
     const middleware = await runMiddleware();
@@ -896,7 +896,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelation").mockImplementation(() =>
+    vi.spyOn(jimmModule, "checkRelation").mockImplementation(async () =>
       Promise.resolve(checkRelationResponse),
     );
     const middleware = await runMiddleware();
@@ -918,7 +918,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelation").mockImplementation(() =>
+    vi.spyOn(jimmModule, "checkRelation").mockImplementation(async () =>
       Promise.resolve(checkRelationResponse),
     );
     const middleware = await runMiddleware();
@@ -944,7 +944,7 @@ describe("model poller", () => {
     }));
     vi.spyOn(jimmModule, "checkRelation")
       // eslint-disable-next-line prefer-promise-reject-errors
-      .mockImplementation(() => Promise.reject("Uh oh!"));
+      .mockImplementation(async () => Promise.reject("Uh oh!"));
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelation({
       wsControllerURL: "wss://example.com",
@@ -970,7 +970,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelations").mockImplementation(() =>
+    vi.spyOn(jimmModule, "checkRelations").mockImplementation(async () =>
       Promise.resolve(checkRelationsResponse),
     );
     const middleware = await runMiddleware();
@@ -1005,7 +1005,7 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelations").mockImplementation(() =>
+    vi.spyOn(jimmModule, "checkRelations").mockImplementation(async () =>
       Promise.resolve(checkRelationsResponse),
     );
     const middleware = await runMiddleware();
@@ -1028,7 +1028,7 @@ describe("model poller", () => {
     }));
     vi.spyOn(jimmModule, "checkRelations")
       // eslint-disable-next-line prefer-promise-reject-errors
-      .mockImplementation(() => Promise.reject("Uh oh!"));
+      .mockImplementation(async () => Promise.reject("Uh oh!"));
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelations({
       requestId,

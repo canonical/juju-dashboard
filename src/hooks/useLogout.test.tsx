@@ -40,7 +40,7 @@ describe("useLogout", () => {
     vi.spyOn(dashboardStore, "useAppDispatch").mockImplementation(
       vi
         .fn()
-        .mockReturnValue((action: unknown) =>
+        .mockReturnValue(async (action: unknown) =>
           action instanceof Object &&
           "type" in action &&
           action.type === "logOut"

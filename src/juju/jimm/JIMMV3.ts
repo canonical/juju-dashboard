@@ -69,7 +69,7 @@ class JIMMV3 {
     autoBind(this);
   }
 
-  disableControllerUUIDMasking(): Promise<unknown> {
+  async disableControllerUUIDMasking(): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
@@ -81,7 +81,9 @@ class JIMMV3 {
     });
   }
 
-  findAuditEvents(params: FindAuditEventsRequest = {}): Promise<AuditEvents> {
+  async findAuditEvents(
+    params: FindAuditEventsRequest = {},
+  ): Promise<AuditEvents> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
@@ -93,7 +95,7 @@ class JIMMV3 {
     });
   }
 
-  listControllers(): Promise<{ controllers: ControllerInfo[] | null }> {
+  async listControllers(): Promise<{ controllers: ControllerInfo[] | null }> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",

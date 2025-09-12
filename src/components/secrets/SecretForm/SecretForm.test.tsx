@@ -87,7 +87,7 @@ describe("SecretForm", () => {
   it("can create a secret", async () => {
     const createSecrets = vi
       .fn()
-      .mockImplementation(() =>
+      .mockImplementation(async () =>
         Promise.resolve({ results: [{ result: "secret:aabbccdd" }] }),
       );
     vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
@@ -168,7 +168,7 @@ describe("SecretForm", () => {
   it("can update a secret", async () => {
     const updateSecrets = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useUpdateSecrets").mockImplementation(
       () => updateSecrets,
     );
@@ -227,7 +227,7 @@ describe("SecretForm", () => {
   it("encodes unencoded values", async () => {
     const createSecrets = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
       () => createSecrets,
     );
@@ -262,7 +262,7 @@ describe("SecretForm", () => {
     const encoded = "YSB2YWx1ZQ==";
     const createSecrets = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
       () => createSecrets,
     );
@@ -299,7 +299,9 @@ describe("SecretForm", () => {
   it("displays caught errors", async () => {
     const createSecrets = vi
       .fn()
-      .mockImplementation(() => Promise.reject(new Error("Caught error")));
+      .mockImplementation(async () =>
+        Promise.reject(new Error("Caught error")),
+      );
     vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
       () => createSecrets,
     );
@@ -327,7 +329,7 @@ describe("SecretForm", () => {
   it("displays error object results", async () => {
     const createSecrets = vi
       .fn()
-      .mockImplementation(() =>
+      .mockImplementation(async () =>
         Promise.resolve({ results: [{ error: { message: "Error result" } }] }),
       );
     vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
@@ -357,7 +359,7 @@ describe("SecretForm", () => {
   it("refetches the secrets if successful", async () => {
     const createSecrets = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(async () => Promise.resolve({ results: [] }));
     vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
       () => createSecrets,
     );

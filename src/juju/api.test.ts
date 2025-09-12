@@ -1213,7 +1213,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: vi.fn(() => Promise.resolve()),
+            disableControllerUUIDMasking: vi.fn(async () => Promise.resolve()),
           },
         },
       } as unknown as Connection;
@@ -1225,7 +1225,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: vi.fn(() => Promise.resolve()),
+            disableControllerUUIDMasking: vi.fn(async () => Promise.resolve()),
           },
         },
       } as unknown as Connection;
@@ -1236,7 +1236,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: vi.fn(() =>
+            disableControllerUUIDMasking: vi.fn(async () =>
               Promise.reject(new Error()),
             ),
           },

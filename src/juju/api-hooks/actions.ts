@@ -23,7 +23,7 @@ export const useGetActionsForApplication = (
   modelName: null | string = null,
 ): ((appName: string) => Promise<ApplicationsCharmActionsResults>) => {
   const handler = useCallback(
-    (connection: ConnectionWithFacades, appName: string) => {
+    async (connection: ConnectionWithFacades, appName: string) => {
       if (!connection.facades.action) {
         throw new Error(Label.NO_ACTION_FACADE_ERROR);
       }
@@ -45,7 +45,7 @@ export const useExecuteActionOnUnits = (
   actionOptions: AdditionalProperties,
 ) => Promise<EnqueuedActions>) => {
   const handler = useCallback(
-    (
+    async (
       connection: ConnectionWithFacades,
       unitList: string[] = [],
       actionName: string,
@@ -76,7 +76,7 @@ export const useQueryOperationsList = (
   modelName: null | string = null,
 ): ((queryArgs: Partial<OperationQueryArgs>) => Promise<OperationResults>) => {
   const handler = useCallback(
-    (
+    async (
       connection: ConnectionWithFacades,
       queryArgs: Partial<OperationQueryArgs>,
     ) => {
@@ -104,7 +104,7 @@ export const useQueryActionsList = (
   modelName: null | string = null,
 ): ((queryArgs: Entities) => Promise<ActionResults>) => {
   const handler = useCallback(
-    (connection: ConnectionWithFacades, queryArgs: Entities) => {
+    async (connection: ConnectionWithFacades, queryArgs: Entities) => {
       if (!connection.facades.action) {
         throw new Error(Label.NO_ACTION_FACADE_ERROR);
       }

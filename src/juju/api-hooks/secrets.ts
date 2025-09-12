@@ -63,7 +63,7 @@ export const useListSecrets = (
     [dispatch, modelUUID, wsControllerURL],
   );
   const handler = useCallback(
-    (
+    async (
       connection: ConnectionWithFacades,
       filter?: SecretsFilter,
       showSecrets = false,
@@ -141,7 +141,7 @@ export const useGetSecretContent = (
     [dispatch, modelUUID, wsControllerURL],
   );
   const handler = useCallback(
-    (
+    async (
       connection: ConnectionWithFacades,
       secretURI: string,
       revision?: number,
@@ -178,7 +178,10 @@ export const useCreateSecrets = (
   modelName: null | string = null,
 ): ((secrets: CreateSecretArg[]) => Promise<StringResults>) => {
   const handleCreate = useCallback(
-    (connection: ConnectionWithFacades, secrets: CreateSecretArgs["args"]) => {
+    async (
+      connection: ConnectionWithFacades,
+      secrets: CreateSecretArgs["args"],
+    ) => {
       if (!connection.facades.secrets) {
         throw new Error(Label.NO_SECRETS_FACADE_ERROR);
       }
@@ -196,7 +199,7 @@ export const useUpdateSecrets = (
   modelName: null | string = null,
 ): ((secrets: UpdateUserSecretArg[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
-    (
+    async (
       connection: ConnectionWithFacades,
       secrets: UpdateUserSecretArgs["args"],
     ) => {
@@ -215,7 +218,7 @@ export const useRemoveSecrets = (
   modelName: null | string = null,
 ): ((secrets: Partial<DeleteSecretArg>[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
-    (
+    async (
       connection: ConnectionWithFacades,
       secrets: Partial<DeleteSecretArg>[],
     ) => {
@@ -239,7 +242,7 @@ export const useGrantSecret = (
   modelName: null | string = null,
 ): ((secretURI: string, applications: string[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
-    (
+    async (
       connection: ConnectionWithFacades,
       secretURI: string,
       applications: string[],
@@ -267,7 +270,7 @@ export const useRevokeSecret = (
   modelName: null | string = null,
 ): ((secretURI: string, applications: string[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
-    (
+    async (
       connection: ConnectionWithFacades,
       secretURI: string,
       applications: string[],
