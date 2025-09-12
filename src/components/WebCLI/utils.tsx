@@ -209,7 +209,7 @@ const insertLinks = (
         return (
           <div key={columns.map(({ value }) => value).join("-")}>
             {columns.map((column) => {
-              let content: ReactNode;
+              let content: ReactNode = null;
               // Handle links for this column.
               if (column.key in blockLinks) {
                 content = generateLink(

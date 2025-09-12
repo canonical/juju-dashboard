@@ -14,7 +14,7 @@ import { listenerMiddleware } from "./listenerMiddleware";
 
 type PreloadedState = Record<string, unknown>;
 
-let preloadedState: PreloadedState | undefined;
+let preloadedState: null | PreloadedState = null;
 if (
   !import.meta.env.PROD &&
   typeof import.meta.env.VITE_APP_MOCK_STORE === "string"
@@ -41,7 +41,7 @@ const store = configureStore({
     middleware.push(modelPollerMiddleware);
     return middleware;
   },
-  preloadedState,
+  preloadedState: preloadedState ?? undefined,
   reducer: combineReducers({
     general: generalReducer,
     juju: jujuReducer,

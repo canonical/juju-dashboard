@@ -71,7 +71,7 @@ const EntityDetails: FC<Props> = ({ modelWatcherError = null }: Props) => {
 
   useStatusView(StatusView.CLI);
 
-  let content: ReactNode;
+  let content: ReactNode = null;
   if (modelInfo) {
     content = (
       <div className={`entity-details entity-details__${entityType}`}>

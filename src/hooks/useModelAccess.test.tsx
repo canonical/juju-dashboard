@@ -105,7 +105,6 @@ describe("useModelAccess", () => {
       url,
     });
     const action = jujuActions.checkRelations({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       requestId: expect.any(String),
       tuples: [
         relationshipTupleFactory.build({
