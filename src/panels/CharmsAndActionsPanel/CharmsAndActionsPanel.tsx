@@ -91,7 +91,7 @@ const CharmsAndActionsPanel: FC = () => {
     // selectedApplications and modelUUID are initialized. Once it is
     // resolved, the Panel is loaded and we will get an early return
     // at each subsequent call of useEffect.
-    if (!modelUUID || !isPanelLoading) {
+    if (!selectedApplications || !modelUUID || !isPanelLoading) {
       setInlineErrors(InlineErrors.GET_URL, null);
       return;
     }
@@ -106,7 +106,7 @@ const CharmsAndActionsPanel: FC = () => {
 
   return (
     <>
-      {charmURL !== null && charmURL !== undefined && charmURL ? (
+      {charmURL ? (
         <CharmActionsPanel
           charmURL={charmURL}
           onRemovePanelQueryParams={handleRemovePanelQueryParams}

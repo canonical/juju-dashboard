@@ -45,7 +45,7 @@ const ModelTabs: FC = () => {
   };
 
   const tabs: TabsProps<LinkProps>["links"] = [];
-  if (userName !== null && userName && modelName !== null && modelName) {
+  if (userName && modelName) {
     tabs.push(
       {
         active: activeView === ModelTab.APPS,

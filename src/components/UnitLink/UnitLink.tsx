@@ -15,14 +15,7 @@ const UnitLink = ({ uuid, appName, unitId, children }: Props): JSX.Element => {
   const { userName, modelName } = useModelByUUIDDetails({ uuid });
 
   // If at least one of the bellow values is falsy, we can't form a valid Link.
-  if (
-    userName === null ||
-    !userName ||
-    modelName === null ||
-    !modelName ||
-    !appName ||
-    !unitId
-  ) {
+  if (!userName || !modelName || !appName || !unitId) {
     return <>{children}</>;
   }
 

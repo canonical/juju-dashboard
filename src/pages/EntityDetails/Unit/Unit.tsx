@@ -39,7 +39,7 @@ export default function Unit(): JSX.Element {
   } = useParams<EntityDetailsRoute>();
   // The unit name might have a dash in it so we need to grab only the last one
   // ex) content-cache-0.
-  const unitIdentifier = unitId?.replace(/-(\d+)$/, "/$1") ?? null;
+  const unitIdentifier = unitId?.replace(/-(\d+)$/, "/$1");
 
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
@@ -53,8 +53,7 @@ export default function Unit(): JSX.Element {
   );
   const isK8s = useAppSelector((state) => isKubernetesModel(state, modelUUID));
 
-  const unit =
-    unitIdentifier !== null && unitIdentifier ? units?.[unitIdentifier] : null;
+  const unit = unitIdentifier && units?.[unitIdentifier];
 
   const filteredMachineList = useMemo(() => {
     const filteredMachines: MachineData = {};
@@ -80,7 +79,7 @@ export default function Unit(): JSX.Element {
 
   const machineRows = useMemo(
     () =>
-      modelName !== null && modelName && userName !== null && userName
+      modelName && userName
         ? generateMachineRows(filteredMachineList, units, {
             modelName,
             userName,
@@ -91,7 +90,7 @@ export default function Unit(): JSX.Element {
 
   const applicationRows = useMemo(
     () =>
-      modelName !== null && modelName && userName !== null && userName
+      modelName && userName
         ? generateLocalApplicationRows(
             filteredApplicationList,
             applicationStatuses,
@@ -133,7 +132,7 @@ export default function Unit(): JSX.Element {
   const unitEntityData = {
     charm,
     os: "-",
-    revision: extractRevisionNumber(charm) ?? "-",
+    revision: extractRevisionNumber(charm) || "-",
     version: unit?.["workload-status"].version || "-",
     message: unit?.["workload-status"].message || "-",
   };

@@ -27,7 +27,7 @@ type Props = {
   history?: CommandHistory;
   modelUUID: string;
   onCommandSent: (command?: string) => void;
-  activeUser?: null | string;
+  activeUser?: string;
   onHistoryChange?: (modelUUID: string, historyItem: HistoryItem) => void;
   /**
    * When overriding this function then ANSI codes need to be manually handled.
@@ -44,7 +44,7 @@ type Authentication = {
 };
 
 const WebCLI: FC<Props> = ({
-  activeUser = null,
+  activeUser,
   controllerWSHost,
   credentials,
   history,
@@ -121,16 +121,13 @@ const WebCLI: FC<Props> = ({
   }, [controllerWSHost, modelUUID, protocol]);
 
   useEffect(() => {
-    if (wsAddress === null || !wsAddress) {
+    if (!wsAddress) {
       setInlineError(InlineErrors.CONNECTION, Label.CONNECTION_ERROR);
       return;
     }
     setInlineError(InlineErrors.CONNECTION, null);
     // If we have an active WebSocket connection then don't create a new one.
-    if (
-      connection.current?.isActive() !== undefined &&
-      connection.current.isActive()
-    ) {
+    if (connection.current?.isActive()) {
       return;
     }
     const conn = new Connection({
@@ -144,10 +141,7 @@ const WebCLI: FC<Props> = ({
       onerror: (error): void => {
         // Only display errors if they're related to the current WebSocket
         // connection.
-        if (
-          connection.current?.isWebSocketEqual(conn) !== undefined &&
-          connection.current.isWebSocketEqual(conn)
-        ) {
+        if (connection.current?.isWebSocketEqual(conn)) {
           setInlineError(
             InlineErrors.CONNECTION,
             typeof error === "string" ? error : Label.UNKNOWN_ERROR,
@@ -156,7 +150,7 @@ const WebCLI: FC<Props> = ({
       },
       messageCallback: (messages: string[]): void => {
         const command = lastCommand.current;
-        if (command !== null && command) {
+        if (command) {
           setOutput((previousOutput) => ({
             ...previousOutput,
             [modelUUID]: [
@@ -204,19 +198,15 @@ const WebCLI: FC<Props> = ({
         connection.current?.address !== undefined && connection.current.address
           ? new URL(connection.current?.address)?.origin
           : null;
-      const macaroons =
-        origin !== null && origin ? bakery.storage.get(`${origin}/api`) : null;
-      if (macaroons !== null && macaroons) {
+      const macaroons = origin ? bakery.storage.get(`${origin}/api`) : null;
+      if (macaroons) {
         const deserialized = JSON.parse(atob(macaroons)) as Macaroon;
-        authentication.user =
-          activeUser !== null && activeUser
-            ? getUserName(activeUser)
-            : undefined;
+        authentication.user = activeUser ? getUserName(activeUser) : undefined;
         authentication.macaroons = [deserialized];
       }
       setInlineError(
         InlineErrors.AUTHENTICATION,
-        macaroons !== null && macaroons ? null : Label.AUTHENTICATION_ERROR,
+        macaroons ? null : Label.AUTHENTICATION_ERROR,
       );
     }
 
@@ -233,10 +223,7 @@ const WebCLI: FC<Props> = ({
     // Reset the position in case the user was navigating through the history.
     setHistoryPosition(0);
 
-    if (
-      connection.current?.isOpen() == undefined ||
-      !connection.current.isOpen()
-    ) {
+    if (!connection.current?.isOpen()) {
       try {
         await connection.current?.reconnect();
       } catch (error) {
@@ -268,7 +255,7 @@ const WebCLI: FC<Props> = ({
   return (
     <div className="webcli is-dark" data-testid={TestId.COMPONENT}>
       <WebCLIOutput
-        content={modelUUID in output ? output[modelUUID] : []}
+        content={output && modelUUID in output ? output[modelUUID] : []}
         showHelp={shouldShowHelp || hasInlineError()}
         setShouldShowHelp={setShouldShowHelp}
         tableLinks={tableLinks}

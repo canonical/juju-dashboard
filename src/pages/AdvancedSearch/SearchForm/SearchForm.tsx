@@ -63,12 +63,7 @@ const SearchForm = (): JSX.Element => {
   );
 
   useEffect(() => {
-    if (
-      jqParam &&
-      hasControllerConnection &&
-      wsControllerURL !== null &&
-      wsControllerURL
-    ) {
+    if (jqParam && hasControllerConnection && wsControllerURL) {
       dispatch(
         jujuActions.fetchCrossModelQuery({
           query: jqParam,

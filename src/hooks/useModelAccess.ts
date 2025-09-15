@@ -34,7 +34,7 @@ const getHighestAccess = (relations: ReBACAllowed[]): JIMMRelation | null => {
 };
 
 const useModelAccess = (
-  modelUUID: null | string = null,
+  modelUUID?: null | string,
   cleanup: boolean = false,
 ): null | string => {
   const isJuju = useAppSelector(getIsJuju);
@@ -44,11 +44,7 @@ const useModelAccess = (
     getModelAccess(state, modelUUID),
   );
   const relations =
-    isJIMM &&
-    controllerUser !== null &&
-    controllerUser &&
-    modelUUID !== null &&
-    modelUUID
+    isJIMM && controllerUser && modelUUID
       ? [
           {
             object: controllerUser,

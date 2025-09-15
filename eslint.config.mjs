@@ -85,7 +85,6 @@ export default [
       "@typescript-eslint/no-shadow": "error",
       "no-redeclare": "off",
       "@typescript-eslint/no-redeclare": "error",
-      "@typescript-eslint/strict-boolean-expressions": "error",
       "prefer-destructuring": "off",
       "@typescript-eslint/prefer-destructuring": "error",
       "@typescript-eslint/explicit-module-boundary-types": "error",

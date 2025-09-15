@@ -68,23 +68,22 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
         <Spinner aria-label={Label.LOADING} />
       </div>
     );
-  } else if (secretsErrors !== null && secretsErrors) {
+  } else if (secretsErrors) {
     dropdownContent = secretsErrors;
   } else if (!canManageSecrets && !secrets?.length) {
     dropdownContent = Label.NONE;
   } else {
-    const secretLinks: MenuLink<ButtonProps> | null =
-      secrets?.reduce<ButtonProps[]>((linkList, secret) => {
-        if (!secretIsAppOwned(secret)) {
-          linkList.push({
-            children: <SecretLabel secret={secret} />,
-            onClick: () => {
-              setValue(secret.uri);
-            },
-          });
-        }
-        return linkList;
-      }, []) ?? null;
+    const secretLinks: MenuLink<ButtonProps> | undefined = secrets?.reduce<
+      ButtonProps[]
+    >((linkList, secret) => {
+      if (!secretIsAppOwned(secret)) {
+        linkList.push({
+          children: <SecretLabel secret={secret} />,
+          onClick: () => setValue(secret.uri),
+        });
+      }
+      return linkList;
+    }, []);
     if (canManageSecrets) {
       const addButton: MenuLink<ButtonProps> = {
         children: Label.BUTTON_ADD,
@@ -135,7 +134,7 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
               formId={formId}
               onSuccess={(secretURI) => {
                 setSaving(false);
-                if (secretURI !== null && secretURI) {
+                if (secretURI) {
                   setValue(secretURI);
                 }
                 closePortal();

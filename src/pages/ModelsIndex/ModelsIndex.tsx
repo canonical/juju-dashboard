@@ -73,7 +73,7 @@ export default function Models(): JSX.Element {
   // be replaced with a more robust implementation if there are conflicts.
   const requestId = useId();
   const relations =
-    controllerUser !== null && controllerUser && modelUUIDs.length
+    controllerUser && modelUUIDs.length
       ? modelUUIDs.map((modelUUID) => ({
           object: controllerUser,
           relation: JIMMRelation.ADMINISTRATOR,
@@ -117,7 +117,7 @@ export default function Models(): JSX.Element {
   const modelCount = blocked + alert + running;
 
   let content: ReactNode = null;
-  if (modelsError === null || !modelsError) {
+  if (!modelsError) {
     if (!modelsLoaded) {
       return <LoadingSpinner />;
     } else if (!hasSomeModels) {
@@ -200,9 +200,8 @@ export default function Models(): JSX.Element {
 
               // Loop search data and pull out each filter
               if (searchData.length) {
-                searchData.forEach(({ lead = null, value }) => {
-                  const chipLead =
-                    lead !== null && lead ? lead.toLowerCase() : "custom";
+                searchData.forEach(({ lead, value }) => {
+                  const chipLead = lead ? lead.toLowerCase() : "custom";
                   if (!(chipLead in activeFilters)) {
                     activeFilters[chipLead] = [];
                   }
@@ -219,7 +218,7 @@ export default function Models(): JSX.Element {
       titleComponent="div"
       titleClassName="u-no-max-width u-full-width"
     >
-      {modelsError !== null && modelsError ? (
+      {modelsError ? (
         <ReactNotification severity="negative" title="Error">
           {modelsError} Try{" "}
           <Button

@@ -39,8 +39,8 @@ export const useReBAC = <A, C>(
   loading: boolean,
   loaded: boolean,
   hasError: boolean,
-  payload: A | null = null,
-  payloadCleanup: C | null = null,
+  payload?: A | null,
+  payloadCleanup?: C | null,
   cleanup: boolean = false,
 ): void => {
   const dispatch = useDispatch();
@@ -61,9 +61,7 @@ export const useReBAC = <A, C>(
       // Only fetch it if it doesn't already exist in the store or if the
       // payload changes
       ((!loading && !loaded) || payloadChanged) &&
-      wsControllerURL !== null &&
       wsControllerURL &&
-      payload !== null &&
       payload &&
       // Only check the relation if the controller supports rebac.
       rebacEnabled
@@ -84,12 +82,7 @@ export const useReBAC = <A, C>(
 
   // Clean up the store if the payload changes.
   useEffect(() => {
-    if (
-      cleanup &&
-      payloadChanged &&
-      previousCleanup !== null &&
-      previousCleanup
-    ) {
+    if (cleanup && payloadChanged && previousCleanup) {
       dispatch(cleanupAction(previousCleanup));
     }
   }, [cleanup, cleanupAction, dispatch, payloadChanged, previousCleanup]);
@@ -114,7 +107,7 @@ export const useCheckPermissions = (
     jujuActions.removeCheckRelation,
     loading,
     loaded,
-    Boolean(errors?.length),
+    !!errors?.length,
     tuple ? { tuple } : null,
     tuple ? { tuple } : null,
     cleanup,
@@ -130,7 +123,7 @@ export const useCheckPermissions = (
 export const useIsJIMMAdmin = (cleanup?: boolean): PermittedResult => {
   const activeUser = useAppSelector(getControllerUserTag);
   return useCheckPermissions(
-    activeUser !== null && activeUser
+    activeUser
       ? {
           object: activeUser,
           relation: JIMMRelation.ADMINISTRATOR,
@@ -146,7 +139,7 @@ export const useAuditLogsPermitted = (cleanup?: boolean): PermittedResult => {
   const auditLogsEnabled = useAppSelector(isAuditLogsEnabled);
   const jimmAdminPermissions = useIsJIMMAdmin(cleanup);
   const auditLogPermissions = useCheckPermissions(
-    activeUser !== null && activeUser && auditLogsEnabled
+    activeUser && auditLogsEnabled
       ? {
           object: activeUser,
           relation: JIMMRelation.AUDIT_LOG_VIEWER,

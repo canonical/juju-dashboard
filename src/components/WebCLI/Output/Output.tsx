@@ -18,7 +18,7 @@ const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
 const WebCLIOutput: FC<Props> = ({
   content,
   helpMessage,
-  loading = false,
+  loading,
   processOutput,
   showHelp,
   setShouldShowHelp,
@@ -51,7 +51,7 @@ const WebCLIOutput: FC<Props> = ({
         (outputRef.current.clientHeight +
           outputRef.current.scrollTop +
           // Need to get the position from the bottom before the new content in.
-          newResponseHeight);
+          (newResponseHeight || 0));
       if (distance <= AUTO_SCROLL_DISTANCE) {
         outputRef.current.scrollTo({ top: scrollHeight });
       }

@@ -66,19 +66,13 @@ enum InlineErrors {
 function generateAppIcon(
   application: ApplicationData | undefined,
   appName: string,
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ReactNode {
   // If the user has executed actions with an application and then removed
   // that application it'll no longer be in the model data so in this
   // case we need to fail gracefully.
-  if (
-    application &&
-    userName !== null &&
-    userName &&
-    modelName !== null &&
-    modelName
-  ) {
+  if (application && userName && modelName) {
     return (
       <>
         <CharmIcon name={appName} charmId={application.charm} />
@@ -121,7 +115,7 @@ const generateApplicationRow = (
   // The receiver is in the format "unit-ceph-mon-0" to "ceph-mon"
   const parts = actionData.action?.receiver.match(/unit-(.+)-\d+/);
   const appName = parts?.[1] ?? null;
-  if (appName === null || !appName) {
+  if (!appName) {
     // Not shown in UI. Logged for debugging purposes.
     logger.error(
       "Unable to parse action receiver",
@@ -173,7 +167,7 @@ export default function ActionLogs(): JSX.Element {
       </>
     ),
   });
-  const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
+  const { userName, modelName } = useParams<EntityDetailsRoute>();
   const [selectedOutput, setSelectedOutput] = useState<{
     [key: string]: Output;
   }>({});
@@ -188,7 +182,7 @@ export default function ActionLogs(): JSX.Element {
 
   const fetchData = useCallback(async () => {
     try {
-      if (modelUUID !== null && modelUUID) {
+      if (modelUUID) {
         const operationList = await queryOperationsList({
           applications: applicationList,
         });
@@ -198,9 +192,7 @@ export default function ActionLogs(): JSX.Element {
             .flatMap((operation: OperationResult) =>
               operation.actions?.map((action) => action.action?.tag),
             )
-            .filter((actionTag?: string): actionTag is string =>
-              Boolean(actionTag),
-            )
+            .filter((actionTag?: string): actionTag is string => !!actionTag)
             .map((actionTag: string) => ({ tag: actionTag }));
           const actionsList = await queryActionsList({ entities: actionsTags });
           if (actionsList?.results) {
@@ -241,19 +233,12 @@ export default function ActionLogs(): JSX.Element {
 
     const rows: TableRows = [];
     operations?.forEach((operationData) => {
-      const operationActions = operationData.actions ?? [];
-      if (
-        !operationActions?.length ||
-        userName === null ||
-        !userName ||
-        modelName === null ||
-        !modelName
-      ) {
+      if (!operationData.actions?.length || !userName || !modelName) {
         return;
       }
       // Retrieve the application details from the first action:
       const applicationRow = generateApplicationRow(
-        operationActions[0],
+        operationData.actions[0],
         operationData,
         modelStatusData,
         userName,
@@ -262,36 +247,33 @@ export default function ActionLogs(): JSX.Element {
       if (!applicationRow) {
         return;
       }
-      operationActions?.forEach((actionData) => {
-        const outputType = actionData.action
-          ? selectedOutput[actionData.action.tag]
-          : Output.ALL;
+      operationData.actions?.forEach((actionData) => {
+        const outputType =
+          (actionData.action && selectedOutput[actionData.action.tag]) ??
+          Output.ALL;
         const actionFullDetails = actions.find(
           (action) =>
-            Boolean(action.action) &&
-            action.action?.tag === actionData.action?.tag,
+            action.action && action.action.tag === actionData.action?.tag,
         );
         delete actionFullDetails?.output?.["return-code"];
         if (!actionFullDetails) {
           return;
         }
-        const { log } = actionFullDetails;
-        const hasStdout = (log && log.length > 0) ?? false;
+        const { log = [] } = actionFullDetails;
+        const hasStdout = log.length > 0;
         const hasSterr =
-          actionFullDetails.status === "failed" &&
-          Boolean(actionFullDetails.message);
+          actionFullDetails.status === "failed" && !!actionFullDetails.message;
         const stdout = hasStdout
-          ? log?.map(({ message }, i) => (
+          ? log.map(({ message }, i) => (
               <span className="action-logs__stdout" key={i}>
                 {message}
               </span>
             ))
           : [];
-        const stderr = hasSterr ? (actionFullDetails.message ?? null) : null;
-        const completedDate =
-          actionData.completed !== undefined && actionData.completed
-            ? new Date(actionData.completed)
-            : null;
+        const stderr = hasSterr ? actionFullDetails.message : "";
+        const completedDate = actionData.completed
+          ? new Date(actionData.completed)
+          : null;
         const name = actionData.action?.receiver.replace(
           /unit-(.+)-(\d+)/,
           "$1/$2",
@@ -364,7 +346,7 @@ export default function ActionLogs(): JSX.Element {
                             );
                           }
                         },
-                        disabled: stdout ? !stdout.length : true,
+                        disabled: !stdout.length,
                       },
                       {
                         children: Output.STDERR,
@@ -376,8 +358,7 @@ export default function ActionLogs(): JSX.Element {
                             );
                           }
                         },
-                        disabled:
-                          stderr !== null && stderr ? !stderr.length : true,
+                        disabled: !stderr?.length,
                       },
                     ]}
                   />
@@ -386,9 +367,7 @@ export default function ActionLogs(): JSX.Element {
             ) : null,
           // Sometimes the log gets returned with a date of "0001-01-01T00:00:00Z".
           completed:
-            completedDate?.getFullYear() === 1 ||
-            actionData.completed === undefined ||
-            !actionData.completed ? (
+            completedDate?.getFullYear() === 1 || !actionData.completed ? (
               "Unknown"
             ) : (
               <RelativeDate datetime={actionData.completed} />
@@ -396,7 +375,7 @@ export default function ActionLogs(): JSX.Element {
           sortData: {
             application: name ?? "",
             completed: completedDate?.getTime(),
-            message: stdout && stderr !== null && stderr ? stdout + stderr : "",
+            message: stdout && stderr ? stdout + stderr : "",
             status: actionData.status ?? "",
           },
         });

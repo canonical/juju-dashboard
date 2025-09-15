@@ -43,9 +43,5 @@ export default function Panels(): JSX.Element {
         return null;
     }
   };
-  return (
-    <AnimatePresence>
-      {panelQs.panel !== null && panelQs.panel ? generatePanel() : null}
-    </AnimatePresence>
-  );
+  return <AnimatePresence>{panelQs.panel && generatePanel()}</AnimatePresence>;
 }

@@ -32,9 +32,7 @@ export default function ActionOptions({
         name: propertyName,
         description: property.description,
         type: property.type,
-        required: Array.isArray(required)
-          ? required.includes(propertyName)
-          : false,
+        required: required ? required.includes(propertyName) : false,
       });
     });
     return collectOptions;

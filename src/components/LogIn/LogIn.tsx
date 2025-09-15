@@ -32,7 +32,7 @@ import { ErrorResponse, Label, TestId } from "./types";
   @returns A component for the error message.
 */
 function generateErrorMessage(loginError: null | string = null): ReactNode {
-  if (loginError === null || !loginError) {
+  if (!loginError) {
     return null;
   }
   let loginErrorMessage = null;

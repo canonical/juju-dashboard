@@ -34,16 +34,11 @@ const animateMock = (): Animation => {
   return { onfinish: vi.fn() } as unknown as Animation;
 };
 
-if (
-  // No one told TypeScript that the animate function doesn't exist for happy-dom so it needs a type annotation.
-  !(window.HTMLDivElement.prototype.animate as
-    | Animatable["animate"]
-    | undefined)
-) {
+if (!window.HTMLDivElement.prototype.animate) {
   window.HTMLDivElement.prototype.animate = animateMock;
 } else {
   console.error(
-    "happy-dom appears to support the web animations api",
+    "JSDOM appears to support the web animations api",
     "you may now remove the mock",
   );
 }

@@ -26,10 +26,7 @@ export enum Label {
   POLLING_ERROR = "Error while trying to connect and start polling.",
 }
 
-if (
-  import.meta.env.PROD &&
-  Boolean(window.jujuDashboardConfig?.analyticsEnabled)
-) {
+if (import.meta.env.PROD && window.jujuDashboardConfig?.analyticsEnabled) {
   Sentry.init({
     dsn: "https://5f679e274f34464194e9592a91ed65d4@sentry.is.canonical.com//29",
   });
@@ -40,7 +37,7 @@ const addressRegex = new RegExp(/^ws[s]?:\/\/(\S+)\//);
 export const getControllerAPIEndpointErrors = (
   controllerAPIEndpoint: null | string = null,
 ): null | string => {
-  if (controllerAPIEndpoint === null || !controllerAPIEndpoint) {
+  if (!controllerAPIEndpoint) {
     return "controllerAPIEndpoint is not set.";
   } else if (!controllerAPIEndpoint.endsWith("/api")) {
     return `controllerAPIEndpoint (${controllerAPIEndpoint}) must end with /api.`;
@@ -89,7 +86,7 @@ function bootstrap(): void {
     config?.controllerAPIEndpoint,
   );
   error = error ?? controllerEndpointError;
-  if ((error !== null && error) || !config) {
+  if (error || !config) {
     getRoot()?.render(
       <Strip>
         <ReactNotification severity="negative" title="Error">

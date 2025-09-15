@@ -35,9 +35,9 @@ type Props = {
   applications?: ApplicationData | null;
 };
 
-const LocalAppsTable: FC<Props> = ({ applications = null }: Props) => {
+const LocalAppsTable: FC<Props> = ({ applications }: Props) => {
   const sendAnalytics = useAnalytics();
-  const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
+  const { userName, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );
@@ -61,19 +61,12 @@ const LocalAppsTable: FC<Props> = ({ applications = null }: Props) => {
     applications ? Object.values(applications) : [],
   );
   const selectable =
-    queryParams.filterQuery !== null &&
-    !!queryParams.filterQuery &&
-    applications !== null &&
-    canConfigureModel;
+    queryParams.filterQuery && applications && canConfigureModel;
 
   let headers: Header | MainTableCell[] =
     generateLocalApplicationTableHeaders();
   let rows: MainTableRow[] = useMemo(() => {
-    return modelName !== null &&
-      modelName &&
-      userName !== null &&
-      userName &&
-      applications
+    return modelName && userName && applications
       ? generateLocalApplicationRows(
           applications,
           applicationStatuses,
@@ -120,11 +113,7 @@ const LocalAppsTable: FC<Props> = ({ applications = null }: Props) => {
           selectable,
         })}
         sortable
-        emptyStateMsg={
-          queryParams.filterQuery !== null && queryParams.filterQuery
-            ? Label.NONE_SEARCH
-            : Label.NONE
-        }
+        emptyStateMsg={queryParams.filterQuery ? Label.NONE_SEARCH : Label.NONE}
       />
     </>
   );

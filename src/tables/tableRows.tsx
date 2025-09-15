@@ -50,7 +50,7 @@ type UnitRow = {
 } & MainTableRow;
 
 const generateAddress = (address: null | string = null): ReactNode =>
-  address !== null ? (
+  address ? (
     <div className="u-flex u-flex--gap-small">
       <TruncatedTooltip
         wrapperClassName="u-flex-shrink u-truncate"
@@ -98,7 +98,7 @@ export function generateLocalApplicationRows(
   return Object.keys(applications).map((key) => {
     const app = applications[key];
     const rev =
-      "charm-url" in app ? extractRevisionNumber(app["charm-url"]) : "-";
+      ("charm-url" in app && extractRevisionNumber(app["charm-url"])) ?? "-";
     const store = "charm-url" in app && getStore(app["charm-url"]);
     const version =
       ("workload-version" in app && app["workload-version"]) || "-";
@@ -109,9 +109,7 @@ export function generateLocalApplicationRows(
         "-"
       );
     const message =
-      "status" in app &&
-      app.status?.message !== undefined &&
-      app.status.message ? (
+      "status" in app && app.status?.message ? (
         <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
           {app.status.message}
         </Anchorme>
@@ -164,9 +162,7 @@ export function generateLocalApplicationRows(
         {
           "data-test-column": "message",
           content:
-            "status" in app &&
-            app.status?.message !== undefined &&
-            app.status.message ? (
+            "status" in app && app.status?.message ? (
               <TruncatedTooltip message={message}>{message}</TruncatedTooltip>
             ) : null,
         },
@@ -289,7 +285,7 @@ export function generateUnitRows(
     // The unit list may not have the principal in it because this code is
     // used to generate the table for the application unit list as well
     // in which case it'll be the only units in the list.
-    if (unitData.subordinate && unitData.principal in clonedUnits) {
+    if (unitData.subordinate && clonedUnits[unitData.principal]) {
       clonedUnits[unitData.principal].subordinates ??= {};
       const { subordinates } = clonedUnits[unitData.principal];
       if (subordinates) {
@@ -730,7 +726,7 @@ export function generateConsumedRows(
     return [];
   }
 
-  const remoteApplications = modelStatusData["remote-applications"] ?? {};
+  const remoteApplications = modelStatusData["remote-applications"] || {};
   return Object.keys(remoteApplications).map((appName) => {
     const application: RemoteApplicationStatus = remoteApplications[appName];
     const endpoints = Object.entries<RemoteEndpoint>(application.endpoints)

@@ -71,14 +71,16 @@ const ConfirmationDialog = ({
       category: "User",
       action: "Config values updated",
     });
-    const required = getRequiredGrants(submittedAppName, config, secrets);
-    if (canManageSecrets && required !== null && required.length > 0) {
+    if (
+      canManageSecrets &&
+      getRequiredGrants(submittedAppName, config, secrets)?.length
+    ) {
       setConfirmType(ConfigConfirmType.GRANT);
     } else {
       handleRemovePanelQueryParams();
     }
   }
-  if (appName === null || !appName) {
+  if (!appName) {
     return null;
   } else if (confirmType === DefaultConfirmType.SUBMIT) {
     // Render the submit confirmation modal.

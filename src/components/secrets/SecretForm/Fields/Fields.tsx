@@ -15,7 +15,7 @@ type Props = {
   update?: boolean;
 };
 
-const Fields = ({ update = false }: Props): JSX.Element => {
+const Fields = ({ update }: Props): JSX.Element => {
   const { values } = useFormikContext<FormFields>();
 
   return (

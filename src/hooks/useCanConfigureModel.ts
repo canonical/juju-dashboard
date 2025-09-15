@@ -17,7 +17,6 @@ const useCheckJujuPermissions = (
   const modelStatusData = useModelStatus(modelUUID);
   return (
     enabled &&
-    activeUser !== null &&
     !!activeUser &&
     canAdministerModel(activeUser, modelStatusData?.info?.users)
   );
@@ -30,7 +29,7 @@ const useCheckJIMMPermissions = (
 ): boolean => {
   const controllerUser = useAppSelector(getControllerUserTag);
   const { permitted } = useCheckPermissions(
-    enabled && controllerUser !== null && controllerUser && modelUUID !== null
+    enabled && controllerUser && modelUUID
       ? {
           object: controllerUser,
           relation: JIMMRelation.WRITER,
@@ -54,12 +53,12 @@ export const useCanConfigureModelWithUUID = (
 
 const useCanConfigureModel = (
   cleanup?: boolean,
-  modelName: null | string = null,
-  userName: null | string = null,
+  modelName?: null | string,
+  userName?: null | string,
 ): boolean => {
   const params = useParams<EntityDetailsRoute>();
-  userName = userName ?? params.userName ?? null;
-  modelName = modelName ?? params.modelName ?? null;
+  userName = userName || params.userName;
+  modelName = modelName || params.modelName;
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );

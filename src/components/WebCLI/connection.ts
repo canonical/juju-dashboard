@@ -95,26 +95,24 @@ class Connection {
       } catch (error) {
         throw new Error(Label.INCORRECT_DATA_ERROR);
       }
-      if (data === null || typeof data !== "object") {
+      if (!data || typeof data !== "object") {
         throw new Error(Label.INCORRECT_DATA_ERROR);
       }
-      if ("done" in data && Boolean(data.done)) {
+      if ("done" in data && data.done) {
         // This is the last message so send the entire message.
         this.#messageCallback(this.#messageBuffer);
         this.#messageBuffer = [];
         return;
       }
-      const dataOutput =
-        "output" in data && Boolean(data.output) ? data.output : null;
-      if (dataOutput === null || !dataOutput) {
+      if (!("output" in data) || !data.output) {
         // This is the first message, an empty object and a newline.
         return;
       }
-      if (!Array.isArray(dataOutput) || typeof dataOutput[0] !== "string") {
+      if (!Array.isArray(data.output) || typeof data.output[0] !== "string") {
         throw new Error(Label.INCORRECT_DATA_ERROR);
       }
       // Build up messages until it gets the 'done' message:
-      this.#messageBuffer.push(dataOutput[0]);
+      this.#messageBuffer.push(data.output[0]);
     } catch (error) {
       this.#wsOnError(toErrorString(error));
     }

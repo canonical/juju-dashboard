@@ -104,12 +104,8 @@ const applyDelta = (
   position: null | number | string = null,
   delta: null | number | string = null,
 ): number =>
-  (typeof position === "number"
-    ? position
-    : parseFloat((position !== null && position) || "0")) +
-  -(typeof delta === "number"
-    ? delta
-    : parseFloat((delta !== null && delta) || "0"));
+  (typeof position === "number" ? position : parseFloat(position || "0")) +
+  -(typeof delta === "number" ? delta : parseFloat(delta || "0"));
 
 /**
   Generates the relation positions for the two endpoints based on the
@@ -138,9 +134,7 @@ const getRelationPosition = (
     const node = element?.node();
     if (node && "getAttribute" in node) {
       const transform = node.getAttribute("transform");
-      return transform !== null && transform
-        ? translateValues.exec(transform)
-        : null;
+      return transform ? translateValues.exec(transform) : null;
     }
   };
   const getData = (

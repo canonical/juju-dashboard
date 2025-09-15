@@ -267,8 +267,7 @@ const getHandler = <Handlers extends Record<string, CommandHandler>>(
       handlerCommand === command ||
       // If the command allows non-exact matches then check if the base command
       // matches e.g. match `status` or also match `status postgres` and `status --color`
-      ((handler.exact === undefined || !handler.exact) &&
-        command.startsWith(`${handlerCommand} `))
+      (!handler.exact && command.startsWith(`${handlerCommand} `))
     ) {
       return handler;
     }

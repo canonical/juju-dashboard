@@ -33,10 +33,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: unknown): void {
-    if (
-      import.meta.env.PROD &&
-      Boolean(window.jujuDashboardConfig?.analyticsEnabled)
-    ) {
+    if (import.meta.env.PROD && window.jujuDashboardConfig?.analyticsEnabled) {
       Sentry.withScope((scope) => {
         scope.setExtras(info as Extras);
         const eventId = Sentry.captureException(error);
@@ -67,7 +64,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           </ReactNotification>
           <CodeSnippet
             blocks={[
-              ...(error !== null && Boolean(error?.message)
+              ...(error?.message
                 ? [
                     {
                       title: "Error",
@@ -77,7 +74,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                     },
                   ]
                 : []),
-              ...(error !== null && Boolean(error?.stack)
+              ...(error?.stack
                 ? [
                     {
                       title: "Stack trace",

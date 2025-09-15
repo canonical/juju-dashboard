@@ -9,7 +9,7 @@ const SecretLabel: FC<Props> = ({ secret }: Props) => {
   const id = secret.uri.replace(/^secret:/, "");
   return (
     <>
-      {secret.label !== undefined ? (
+      {secret.label ? (
         <>
           {secret.label} <span className="u-text--muted">({id})</span>
         </>

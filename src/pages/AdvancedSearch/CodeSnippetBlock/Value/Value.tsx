@@ -89,15 +89,12 @@ const Value = ({
     if (
       currentObject &&
       "charm-name" in currentObject &&
-      Boolean(currentObject["charm-name"]) &&
+      currentObject["charm-name"] &&
       "charm-origin" in currentObject &&
       currentObject["charm-origin"] === "charmhub"
     ) {
       let charmURL = `https://charmhub.io/${currentObject["charm-name"]}`;
-      if (
-        "charm-channel" in currentObject &&
-        Boolean(currentObject["charm-channel"])
-      ) {
+      if ("charm-channel" in currentObject && currentObject["charm-channel"]) {
         charmURL += `?channel=${currentObject["charm-channel"]}`;
       }
       return (

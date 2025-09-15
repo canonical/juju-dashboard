@@ -21,7 +21,7 @@ function error(name: string, wsControllerURL?: null | string): void {
   logger.error(
     "Unable to perform action: ",
     name,
-    wsControllerURL !== null
+    wsControllerURL
       ? `. User not authenticated for the controller: ${wsControllerURL}. ` +
           "Did the user log out before this was dispatched?"
       : ". Either 'wsControllerURL' needs to be added to the dispatched " +
@@ -140,9 +140,7 @@ export const checkAuthMiddleware: Middleware<
       if (
         actionAllowlist.includes(action.type) ||
         thunkAllowlist.includes(action.type) ||
-        (wsControllerURL !== null &&
-          wsControllerURL &&
-          checkLoggedIn(state, wsControllerURL))
+        (wsControllerURL && checkLoggedIn(state, wsControllerURL))
       ) {
         return next(action);
       } else {

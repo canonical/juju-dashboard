@@ -27,9 +27,9 @@ export const argPath =
         )
       : path;
     // Remove the trailing "/"" if there is one.
-    const relativePath = relativeTo?.replace(/\/$/, "") ?? null;
-    if (relativePath !== null && relativePath && url.startsWith(relativePath)) {
-      const relative = url.replace(relativePath, "");
+    relativeTo = relativeTo?.replace(/\/$/, "");
+    if (relativeTo && url.startsWith(relativeTo)) {
+      const relative = url.replace(relativeTo, "");
       // Remove the "/" at the start of the relative URL, if there is one.
       return relative.startsWith("/") ? relative.replace(/^\//, "") : relative;
     }

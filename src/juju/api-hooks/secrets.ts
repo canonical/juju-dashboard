@@ -26,8 +26,8 @@ export enum Label {
 }
 
 export const useListSecrets = (
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ((filter?: SecretsFilter, showSecrets?: boolean) => void) => {
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
@@ -36,7 +36,7 @@ export const useListSecrets = (
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const onError = useCallback(
     (error: string) => {
-      if (wsControllerURL !== null && wsControllerURL) {
+      if (wsControllerURL) {
         dispatch(
           jujuActions.setSecretsErrors({
             modelUUID,
@@ -50,7 +50,7 @@ export const useListSecrets = (
   );
   const onSuccess = useCallback(
     (response: ListSecretResults) => {
-      if (wsControllerURL !== null && wsControllerURL) {
+      if (wsControllerURL) {
         dispatch(
           jujuActions.updateSecrets({
             modelUUID,
@@ -71,7 +71,7 @@ export const useListSecrets = (
       if (!connection.facades.secrets) {
         throw new Error(Label.NO_SECRETS_FACADE_ERROR);
       }
-      if (wsControllerURL !== null && wsControllerURL) {
+      if (wsControllerURL) {
         dispatch(jujuActions.secretsLoading({ modelUUID, wsControllerURL }));
       }
       return connection.facades.secrets.listSecrets({
@@ -92,8 +92,8 @@ export const useListSecrets = (
 };
 
 export const useGetSecretContent = (
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ((secretURI: string, revision?: number) => void) => {
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
@@ -103,7 +103,7 @@ export const useGetSecretContent = (
 
   const onError = useCallback(
     (error: string) => {
-      if (wsControllerURL !== null && wsControllerURL) {
+      if (wsControllerURL) {
         dispatch(
           jujuActions.setSecretsContentErrors({
             modelUUID,
@@ -117,7 +117,7 @@ export const useGetSecretContent = (
   );
   const onSuccess = useCallback(
     (response: ListSecretResults) => {
-      if (wsControllerURL !== null && wsControllerURL) {
+      if (wsControllerURL) {
         const content = response?.results[0]?.value;
         if (content?.error || !content?.data) {
           dispatch(
@@ -149,7 +149,7 @@ export const useGetSecretContent = (
       if (!connection.facades.secrets) {
         throw new Error(Label.NO_SECRETS_FACADE_ERROR);
       }
-      if (wsControllerURL !== null && wsControllerURL) {
+      if (wsControllerURL) {
         dispatch(
           jujuActions.secretsContentLoading({ modelUUID, wsControllerURL }),
         );
@@ -174,8 +174,8 @@ export const useGetSecretContent = (
 };
 
 export const useCreateSecrets = (
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ((secrets: CreateSecretArg[]) => Promise<StringResults>) => {
   const handleCreate = useCallback(
     async (
@@ -195,8 +195,8 @@ export const useCreateSecrets = (
 };
 
 export const useUpdateSecrets = (
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ((secrets: UpdateUserSecretArg[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
     async (
@@ -214,8 +214,8 @@ export const useUpdateSecrets = (
 };
 
 export const useRemoveSecrets = (
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ((secrets: Partial<DeleteSecretArg>[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
     async (
@@ -238,8 +238,8 @@ export const useRemoveSecrets = (
 };
 
 export const useGrantSecret = (
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ((secretURI: string, applications: string[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
     async (
@@ -266,8 +266,8 @@ export const useGrantSecret = (
 };
 
 export const useRevokeSecret = (
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ((secretURI: string, applications: string[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
     async (

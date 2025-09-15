@@ -60,7 +60,7 @@ const TruncatedTooltip: FC<Props> = ({
     // Watch the content for resizes to check if the truncation changes.
     resizeObserver.observe(element);
     return (): void => {
-      if (truncatedNode !== null) {
+      if (truncatedNode) {
         resizeObserver.unobserve(element);
       }
     };

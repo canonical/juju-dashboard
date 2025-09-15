@@ -44,8 +44,7 @@ export const useEntityDetailsParams = (): {
   } = useParams<EntityDetailsRoute>();
   return {
     appName,
-    isNestedEntityPage:
-      Boolean(appName) || Boolean(unitId) || Boolean(machineId),
+    isNestedEntityPage: !!appName || !!unitId || !!machineId,
     machineId,
     modelName,
     unitId,
@@ -53,23 +52,12 @@ export const useEntityDetailsParams = (): {
   };
 };
 
-export const useModelIndexParams = (): Nullable<ModelIndexRoute> => {
-  const { userName, modelName } =
-    useMatch(urls.model.index(null))?.params ?? {};
-  return {
-    modelName: modelName ?? null,
-    userName: userName ?? null,
-  };
+export const useModelIndexParams = (): Partial<ModelIndexRoute> => {
+  return useMatch(urls.model.index(null))?.params ?? {};
 };
 
-export const useModelAppParams = (): Nullable<ModelAppRoute> => {
-  const { appName, userName, modelName } =
-    useMatch(urls.model.app.index(null))?.params ?? {};
-  return {
-    appName: appName ?? null,
-    modelName: modelName ?? null,
-    userName: userName ?? null,
-  };
+export const useModelAppParams = (): Partial<ModelAppRoute> => {
+  return useMatch(urls.model.app.index(null))?.params ?? {};
 };
 
 export const useModelByUUIDDetails = ({
@@ -77,14 +65,14 @@ export const useModelByUUIDDetails = ({
   ownerTag,
   modelName,
 }: ModelByUUIDDetailsProps): {
-  modelName: null | string;
+  modelName?: null | string;
   userName: null | string;
 } => {
   const modelDetails = useAppSelector((state) => getModelByUUID(state, uuid));
-  const owner = uuid !== undefined && uuid ? modelDetails?.ownerTag : ownerTag;
-  const model = uuid !== undefined && uuid ? modelDetails?.name : modelName;
+  const owner = uuid ? modelDetails?.ownerTag : ownerTag;
+  const model = uuid ? modelDetails?.name : modelName;
   const userName = typeof owner === "string" ? getUserName(owner) : null;
-  return { modelName: model ?? null, userName: userName ?? null };
+  return { modelName: model, userName };
 };
 
 export const useStatusView = (statusView: StatusView): void => {
@@ -118,11 +106,7 @@ export const useCleanupOnUnmount = <P>(
   // action will get called whenever any of the args change instead of when the
   // component is unmounted.
   useEffect(() => {
-    if (
-      cleanupEnabled &&
-      payload !== null &&
-      (cleanupChanged || payloadChanged)
-    ) {
+    if (cleanupEnabled && payload && (cleanupChanged || payloadChanged)) {
       cleanupPayload.current = (): PayloadAction<P> =>
         dispatch(cleanupAction(payload));
     }

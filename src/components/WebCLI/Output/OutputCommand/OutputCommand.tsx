@@ -27,12 +27,10 @@ const OutputCommand: FC<Props> = ({
     if (tableLinks) {
       response = processTableLinks(command, messages, tableLinks);
     }
-    let hasResponse = Boolean(response);
-    if (!hasResponse && processOutput) {
+    if (!response && processOutput) {
       response = processCommandOutput(command, messages, processOutput);
     }
-    hasResponse = Boolean(response);
-    if (!hasResponse) {
+    if (!response) {
       response = defaultProcessOutput(command, messages);
     }
   } catch (err) {

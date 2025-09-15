@@ -59,8 +59,7 @@ const getOrSetContentState = (
   state: JujuState,
   modelUUID: string,
 ): SecretsContent => {
-  let modelSecrets =
-    modelUUID in state.secrets ? state.secrets[modelUUID] : null;
+  let modelSecrets = state.secrets[modelUUID];
   modelSecrets ??= state.secrets[modelUUID] = { ...DEFAULT_MODEL_SECRETS };
 
   let { content } = modelSecrets;
@@ -206,7 +205,7 @@ const slice = createSlice({
       // If any of the status requests timeout then it's possible the data
       // won't be available. Just abandon saving any data in that case.
       // This will go away with the new API.
-      if (modelData) {
+      if (state.modelData && modelData) {
         state.modelData[modelInfo.uuid].info = modelInfo;
       }
     },
@@ -313,10 +312,7 @@ const slice = createSlice({
       action: PayloadAction<{ uuid: string; status: FullStatus }>,
     ) => {
       state.modelWatcherData ??= {};
-      const model =
-        action.payload.uuid in state.modelWatcherData
-          ? state.modelWatcherData[action.payload.uuid]
-          : null;
+      const model = state.modelWatcherData[action.payload.uuid];
       if (!model) {
         return;
       }
@@ -359,11 +355,7 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
     ) => {
-      const secrets =
-        action.payload.modelUUID in state.secrets
-          ? state.secrets[action.payload.modelUUID]
-          : null;
-      if (!secrets) {
+      if (!state.secrets[action.payload.modelUUID]) {
         state.secrets[action.payload.modelUUID] = { ...DEFAULT_MODEL_SECRETS };
       }
       state.secrets[action.payload.modelUUID].loading = true;
@@ -377,11 +369,7 @@ const slice = createSlice({
         } & WsControllerURLParam
       >,
     ) => {
-      const secrets =
-        action.payload.modelUUID in state.secrets
-          ? state.secrets[action.payload.modelUUID]
-          : null;
-      if (!secrets) {
+      if (!state.secrets[action.payload.modelUUID]) {
         state.secrets[action.payload.modelUUID] = { ...DEFAULT_MODEL_SECRETS };
       }
       state.secrets[action.payload.modelUUID].items = action.payload.secrets;
@@ -394,11 +382,7 @@ const slice = createSlice({
         { modelUUID: string; errors: string } & WsControllerURLParam
       >,
     ) => {
-      const secrets =
-        action.payload.modelUUID in state.secrets
-          ? state.secrets[action.payload.modelUUID]
-          : null;
-      if (!secrets) {
+      if (!state.secrets[action.payload.modelUUID]) {
         state.secrets[action.payload.modelUUID] = { ...DEFAULT_MODEL_SECRETS };
       }
       state.secrets[action.payload.modelUUID].errors = action.payload.errors;
@@ -449,10 +433,7 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
     ) => {
-      const secrets =
-        action.payload.modelUUID in state.secrets
-          ? state.secrets[action.payload.modelUUID]
-          : null;
+      const secrets = state.secrets[action.payload.modelUUID];
       if (secrets) {
         delete secrets.content;
       }
@@ -541,7 +522,7 @@ const slice = createSlice({
     ) => {
       payload.tuples.forEach((tuple, i) => {
         updateCheckRelation(state, tuple, {
-          ...(payload.permissions[i] ?? {}),
+          ...(payload.permissions[i] ? payload.permissions[i] : {}),
           loading: false,
           loaded: true,
         });

@@ -124,8 +124,9 @@ describe("ConfirmationDialog", () => {
       ),
     ).toBeInTheDocument();
     // Check that the changed values are displayed.
-    expect(screen.getByText("email")).toBeInTheDocument();
-    expect(screen.getByText("secret:aabbccdd")).toBeInTheDocument();
+    expect(
+      screen.getByText("email") && screen.getByText("secret:aabbccdd"),
+    ).toBeInTheDocument();
     await userEvent.click(cancelButton);
     expect(mockSetConfirmType).toHaveBeenCalledWith(null);
   });
@@ -474,8 +475,9 @@ describe("ConfirmationDialog", () => {
       ),
     ).toBeInTheDocument();
     // Check that the changed values are displayed.
-    expect(screen.getByText("email")).toBeInTheDocument();
-    expect(screen.getByText("secret:aabbccdd")).toBeInTheDocument();
+    expect(
+      screen.getByText("email") && screen.getByText("secret:aabbccdd"),
+    ).toBeInTheDocument();
     await userEvent.click(cancelButton);
     expect(mockSetConfirmType).toHaveBeenCalledWith(null);
   });

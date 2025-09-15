@@ -43,7 +43,7 @@ const ResultsBlock = (): JSX.Element | null => {
     );
   }
 
-  if (!isCrossModelQueryLoaded || Boolean(crossModelQueryErrors)) {
+  if (!isCrossModelQueryLoaded || crossModelQueryErrors) {
     return null;
   }
 

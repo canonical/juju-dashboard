@@ -91,7 +91,7 @@ export const modelPollerMiddleware: Middleware<
           if (conn) {
             controllers.set(wsControllerURL, conn);
           }
-          if (error !== null && error !== undefined) {
+          if (error) {
             reduxStore.dispatch(
               generalActions.storeLoginError({
                 wsControllerURL,
@@ -126,7 +126,7 @@ export const modelPollerMiddleware: Middleware<
 
         const isProduction = import.meta.env.PROD;
         const analyticsEnabled = getAnalyticsEnabled(reduxStore.getState());
-        const isJuju = getIsJuju(reduxStore.getState());
+        const isJuju = !!getIsJuju(reduxStore.getState());
         const dashboardVersion = getAppVersion(reduxStore.getState()) ?? "";
         const controllerVersion = conn.info.serverVersion ?? "";
 
@@ -170,7 +170,7 @@ export const modelPollerMiddleware: Middleware<
         if (juju) {
           jujus.set(wsControllerURL, juju);
         }
-        if (intervalId !== null) {
+        if (intervalId) {
           reduxStore.dispatch(
             generalActions.updatePingerIntervalId({
               wsControllerURL,
@@ -198,8 +198,8 @@ export const modelPollerMiddleware: Middleware<
 
         let pollCount = 0;
         do {
-          const identity = conn?.info?.user?.identity ?? null;
-          if (identity !== null && identity) {
+          const identity = conn?.info?.user?.identity;
+          if (identity) {
             try {
               const models = await conn.facades.modelManager?.listModels({
                 tag: identity,
@@ -221,7 +221,7 @@ export const modelPollerMiddleware: Middleware<
               // If the code execution arrives here, then the model statuses
               // have been successfully updated. Models error should be removed.
               const { modelsError } = reduxStore.getState().juju;
-              if (modelsError !== null && modelsError) {
+              if (modelsError) {
                 reduxStore.dispatch(
                   jujuActions.updateModelsError({
                     modelsError: null,

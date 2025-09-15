@@ -16,7 +16,7 @@ const Label = ({ keyPath }: Props): ReturnType<LabelRenderer> => {
   const parentKey = keyPath.length >= 2 ? keyPath[1] : null;
   // The last item in keyPath should always be the model UUID.
   const modelUUID = keyPath[keyPath.length - 1];
-  if (modelUUID === "" || typeof modelUUID !== "string") {
+  if (!modelUUID || typeof modelUUID !== "string") {
     // If this is not a value that can be displayed then display "[none]" instead.
     return <span className="u-text--muted">[none]:</span>;
   }

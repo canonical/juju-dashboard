@@ -14,7 +14,7 @@ type Props = {
 const Status: FC<Props> = ({
   status = "unknown",
   children,
-  count = null,
+  count,
   inline,
   useIcon = true,
   actionsLogs = false,
@@ -34,7 +34,7 @@ const Status: FC<Props> = ({
       })}
     >
       {children ?? status}
-      {count !== null ? ` (${count})` : null}
+      {count || count === 0 ? ` (${count})` : null}
     </span>
   );
 };

@@ -19,13 +19,13 @@ const IdentityProviderForm: FC<Props> = ({ userIsLoggedIn }: Props) => {
       // This form only gets displayed on the main login page, at which point
       // there can only be one authentication request, so just return the
       // first one.
-      return state?.general?.visitURLs?.[0] ?? null;
+      return state?.general?.visitURLs?.[0];
     }
     return null;
   });
   const dispatch = useAppDispatch();
 
-  return visitURL !== null && visitURL ? (
+  return visitURL ? (
     <AuthenticationButton
       appearance="positive"
       visitURL={visitURL}

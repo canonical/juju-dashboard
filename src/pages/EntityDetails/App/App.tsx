@@ -46,9 +46,9 @@ type AppFormData = {
 
 export default function App(): JSX.Element {
   const {
-    appName: entity = null,
-    userName = null,
-    modelName = null,
+    appName: entity,
+    userName,
+    modelName,
   } = useParams<EntityDetailsRoute>();
 
   const [enableActionButtonRow, setEnableActionButtonRow] =
@@ -83,7 +83,7 @@ export default function App(): JSX.Element {
     Object.values(units).forEach((unitData) => {
       if (unitData.application === entity) {
         const machineId = unitData["machine-id"];
-        if (machineId && Boolean(machines[machineId])) {
+        if (machineId && machines[machineId]) {
           filteredMachines[machineId] = machines[machineId];
         }
       }
@@ -93,7 +93,7 @@ export default function App(): JSX.Element {
 
   const machinesPanelRows = useMemo(
     () =>
-      modelName !== null && modelName && userName !== null && userName
+      modelName && userName
         ? generateMachineRows(filteredMachineList, units, {
             modelName,
             userName,
@@ -151,7 +151,7 @@ export default function App(): JSX.Element {
 
   const unitPanelRows = useMemo(
     () =>
-      modelName !== null && modelName && userName !== null && userName
+      modelName && userName
         ? generateUnitRows(
             filteredUnitList,
             { modelName, userName },
@@ -180,7 +180,7 @@ export default function App(): JSX.Element {
     units: [],
   });
 
-  const application = entity !== null && entity ? applications?.[entity] : null;
+  const application = entity ? applications?.[entity] : null;
   const showConfig = (event: React.MouseEvent): void => {
     event.stopPropagation();
     if (application && "charm-url" in application) {
@@ -202,9 +202,9 @@ export default function App(): JSX.Element {
       status: <Status status={application.status?.current} />,
       charm: application["charm-url"],
       os: "Ubuntu",
-      revision: extractRevisionNumber(application["charm-url"]) ?? "-",
+      revision: extractRevisionNumber(application["charm-url"]) || "-",
       message: "-",
-      provider: modelData?.type ?? "-",
+      provider: modelData?.type || "-",
     };
   }
 
@@ -307,12 +307,7 @@ export default function App(): JSX.Element {
               children: tab,
               key: tab.toLowerCase(),
               to:
-                modelName !== null &&
-                modelName &&
-                userName !== null &&
-                userName &&
-                entity !== null &&
-                entity
+                userName && modelName && entity
                   ? urls.model.app.tab({
                       userName,
                       modelName,
@@ -357,10 +352,7 @@ export default function App(): JSX.Element {
                   hasIcon={true}
                   data-testid={TestId.SHOW_LOGS}
                   to={
-                    modelName !== null &&
-                    modelName &&
-                    userName !== null &&
-                    userName
+                    userName && modelName
                       ? urls.model.tab({
                           userName,
                           modelName,

@@ -83,7 +83,7 @@ const ConfirmationDialog = ({
 
   if (confirmType === ConfirmType.SUBMIT) {
     const unitCount = selectedApplications.reduce(
-      (total, app) => total + (app["unit-count"] ?? 0),
+      (total, app) => total + (app["unit-count"] || 0),
       0,
     );
     // Render the submit confirmation modal.

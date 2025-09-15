@@ -13,7 +13,7 @@ export default function RadioInputBox({
   name,
   children,
   description,
-  selectedInput = null,
+  selectedInput,
   onSelect,
 }: Props): JSX.Element {
   const [opened, setOpened] = useState<boolean>(false);

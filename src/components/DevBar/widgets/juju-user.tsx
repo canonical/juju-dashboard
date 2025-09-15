@@ -21,7 +21,7 @@ const AUTO_LOGIN_KEY = "DEV__auto-login";
 
 function useAutoLogin(
   enabled: boolean,
-  wsControllerURL: null | string,
+  wsControllerURL: string | undefined,
   credential: { user: string; password: string },
 ): void {
   const dispatch = useAppDispatch();

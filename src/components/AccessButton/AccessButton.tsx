@@ -11,7 +11,7 @@ import type { Props } from "./types";
 
 const AccessButton: FC<Props> = ({
   children,
-  displayIcon = false,
+  displayIcon,
   modelName,
   ...props
 }: Props) => {

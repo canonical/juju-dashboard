@@ -26,7 +26,7 @@ export const isPayloadAction = (
 ): action is PayloadAction<Record<string, unknown>> =>
   isAction(action) &&
   "payload" in action &&
-  action.payload !== null &&
+  !!action.payload &&
   typeof action.payload === "object";
 
 export const isSpecificAction = <A extends Action>(

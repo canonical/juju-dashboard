@@ -92,9 +92,7 @@ export default function ShareCard({
           </div>
           <div className="share-card__supplementary">
             Last connected:{" "}
-            {lastConnected !== null && lastConnected
-              ? formatFriendlyDateToNow(lastConnected)
-              : `Never`}
+            {lastConnected ? formatFriendlyDateToNow(lastConnected) : `Never`}
             <div className="share-card__access-wrapper">
               {!isOwner && (
                 <>

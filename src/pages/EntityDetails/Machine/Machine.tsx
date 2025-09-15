@@ -40,8 +40,7 @@ export default function Machine(): JSX.Element {
   const machines = useAppSelector((state) =>
     getModelMachines(state, modelUUID),
   );
-  const machine =
-    machineId !== null && machineId ? machines?.[machineId] : null;
+  const machine = machineId ? machines?.[machineId] : null;
 
   const applicationStatuses = useAppSelector((state) =>
     getAllModelApplicationStatus(state, modelUUID),
@@ -79,7 +78,7 @@ export default function Machine(): JSX.Element {
 
   const applicationRows = useMemo(
     () =>
-      modelName !== null && modelName && userName !== null && userName
+      modelName && userName
         ? generateLocalApplicationRows(
             filteredApplicationList,
             applicationStatuses,
@@ -91,7 +90,7 @@ export default function Machine(): JSX.Element {
 
   const unitRows = useMemo(
     () =>
-      modelName !== null && modelName && userName !== null && userName
+      modelName && userName
         ? generateUnitRows(filteredUnitList, { modelName, userName })
         : [],
     [filteredUnitList, modelName, userName],
@@ -99,11 +98,11 @@ export default function Machine(): JSX.Element {
 
   const hardware = machine?.["hardware-characteristics"];
   const MachineEntityData = {
-    memory: hardware?.["mem"] ?? "-",
-    disk: hardware?.["root-disk"] ?? "-",
-    cpu: hardware?.["cpu-power"] ?? "-",
-    cores: hardware?.["cpu-cores"] ?? "-",
-    message: machine?.["agent-status"].message ?? "-",
+    memory: hardware?.["mem"] || "-",
+    disk: hardware?.["root-disk"] || "-",
+    cpu: hardware?.["cpu-power"] || "-",
+    cores: hardware?.["cpu-cores"] || "-",
+    message: machine?.["agent-status"].message || "-",
   };
 
   return (
