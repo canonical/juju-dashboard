@@ -71,11 +71,10 @@ export class Auth {
    *
    * @returns Whether to continue the connection attempt.
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
   async beforeControllerConnect(
     controllerData: ControllerData,
   ): Promise<boolean> {
-    return true;
+    return Promise.resolve(true);
   }
 
   /**
