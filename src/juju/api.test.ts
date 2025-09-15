@@ -1213,7 +1213,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: vi.fn(async () => Promise.resolve()),
+            disableControllerUUIDMasking: vi.fn().mockResolvedValue(null),
           },
         },
       } as unknown as Connection;
@@ -1225,7 +1225,7 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: vi.fn(async () => Promise.resolve()),
+            disableControllerUUIDMasking: vi.fn().mockResolvedValue(null),
           },
         },
       } as unknown as Connection;
@@ -1236,9 +1236,9 @@ describe("Juju API", () => {
       const conn = {
         facades: {
           jimM: {
-            disableControllerUUIDMasking: vi.fn(async () =>
-              Promise.reject(new Error()),
-            ),
+            disableControllerUUIDMasking: vi
+              .fn()
+              .mockRejectedValue(new Error()),
           },
         },
       } as unknown as Connection;
@@ -1366,7 +1366,7 @@ describe("Juju API", () => {
             next: vi.fn().mockReturnValue(null),
           },
           pinger: {
-            ping: vi.fn().mockResolvedValue(null),
+            ping: vi.fn(),
           },
         },
       } as unknown as Connection;
@@ -1396,7 +1396,7 @@ describe("Juju API", () => {
             next: vi.fn().mockReturnValue(null),
           },
           pinger: {
-            ping: vi.fn().mockResolvedValue(null),
+            ping: vi.fn(),
           },
         },
       } as unknown as Connection;
@@ -1473,7 +1473,7 @@ describe("Juju API", () => {
             next: vi.fn().mockReturnValue({ deltas }),
           },
           pinger: {
-            ping: vi.fn().mockResolvedValue(null),
+            ping: vi.fn(),
           },
         },
       } as unknown as Connection;

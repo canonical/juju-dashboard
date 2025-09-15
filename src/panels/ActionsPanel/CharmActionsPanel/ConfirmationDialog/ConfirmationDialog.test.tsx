@@ -111,7 +111,7 @@ describe("ConfirmationDialog", () => {
     const mockOnRemovePanelQueryParams = vi.fn();
     const executeActionOnUnitsSpy = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve());
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
       () => executeActionOnUnitsSpy,
     );
@@ -147,7 +147,7 @@ describe("ConfirmationDialog", () => {
   it("should display error toast if action fails", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
-      .mockImplementation(async () => Promise.reject(new Error()));
+      .mockImplementation(vi.fn().mockRejectedValue(new Error()));
     vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
       () => executeActionOnUnitsSpy,
     );

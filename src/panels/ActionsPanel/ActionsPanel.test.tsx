@@ -69,7 +69,7 @@ describe("ActionsPanel", () => {
   beforeEach(() => {
     const getActionsForApplicationSpy = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve(mockResponse));
+      .mockImplementation(vi.fn().mockResolvedValue(mockResponse));
     vi.spyOn(actionsHooks, "useGetActionsForApplication").mockImplementation(
       () => getActionsForApplicationSpy,
     );
@@ -194,7 +194,7 @@ describe("ActionsPanel", () => {
     });
     const getActionsForApplicationSpy = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve(mockActionsResponse));
+      .mockImplementation(vi.fn().mockResolvedValue(mockActionsResponse));
     vi.spyOn(actionsHooks, "useGetActionsForApplication").mockImplementation(
       () => getActionsForApplicationSpy,
     );
@@ -218,7 +218,7 @@ describe("ActionsPanel", () => {
   it("shows a confirmation dialog on clicking submit", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve());
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
       () => executeActionOnUnitsSpy,
     );
@@ -246,7 +246,7 @@ describe("ActionsPanel", () => {
   it("submits the action request to the api without options", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve());
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
       () => executeActionOnUnitsSpy,
     );
@@ -276,7 +276,7 @@ describe("ActionsPanel", () => {
   it("submits the action request to the api with options that are required", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve());
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
       () => executeActionOnUnitsSpy,
     );
@@ -312,10 +312,12 @@ describe("ActionsPanel", () => {
   it("should display error when trying to get actions for application", async () => {
     const getActionsForApplicationSpy = vi
       .fn()
-      .mockImplementation(async () =>
-        Promise.reject(
-          new Error("Error while trying to get actions for application!"),
-        ),
+      .mockImplementation(
+        vi
+          .fn()
+          .mockRejectedValue(
+            new Error("Error while trying to get actions for application!"),
+          ),
       );
     vi.spyOn(actionsHooks, "useGetActionsForApplication").mockImplementation(
       () => getActionsForApplicationSpy,
@@ -341,10 +343,12 @@ describe("ActionsPanel", () => {
   it("should display error when trying to submit the action request", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
-      .mockImplementation(async () =>
-        Promise.reject(
-          new Error("Error while trying to execute action on units!"),
-        ),
+      .mockImplementation(
+        vi
+          .fn()
+          .mockRejectedValue(
+            new Error("Error while trying to execute action on units!"),
+          ),
       );
     vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
       () => executeActionOnUnitsSpy,

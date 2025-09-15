@@ -28,10 +28,10 @@ import type { MockMiddlewareResult } from "./types";
 vi.mock("juju/api", () => ({
   disableControllerUUIDMasking: vi
     .fn()
-    .mockImplementation(async () => await Promise.resolve()),
+    .mockImplementation(vi.fn().mockResolvedValue(null)),
   fetchControllerList: vi
     .fn()
-    .mockImplementation(async () => await Promise.resolve()),
+    .mockImplementation(vi.fn().mockResolvedValue(null)),
   loginWithBakery: vi.fn(),
   fetchAllModelStatuses: vi.fn(),
   setModelSharingPermissions: vi.fn(),
@@ -452,7 +452,7 @@ describe("model poller", () => {
 
   it("fails silently if the user is not authorised to disable masking", async () => {
     vi.spyOn(jujuModule, "disableControllerUUIDMasking").mockImplementation(
-      async () => Promise.reject(new Error()),
+      vi.fn().mockRejectedValue(new Error()),
     );
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
@@ -671,7 +671,7 @@ describe("model poller", () => {
       juju,
     }));
     vi.spyOn(jujuModule, "setModelSharingPermissions").mockImplementation(
-      async () => Promise.resolve({ results: [] }),
+      vi.fn().mockResolvedValue({ results: [] }),
     );
     const middleware = await runMiddleware();
     const action = appActions.updatePermissions({
@@ -695,8 +695,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(async () =>
-      Promise.resolve(events),
+    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(
+      vi.fn().mockResolvedValue(events),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchAuditEvents({
@@ -721,8 +721,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(async () =>
-      Promise.resolve(events),
+    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(
+      vi.fn().mockResolvedValue(events),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchAuditEvents({
@@ -739,8 +739,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(async () =>
-      Promise.reject(new Error("Uh oh!")),
+    vi.spyOn(jimmModule, "findAuditEvents").mockImplementation(
+      vi.fn().mockRejectedValue(new Error("Uh oh!")),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchAuditEvents({
@@ -760,8 +760,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(async () =>
-      Promise.resolve(crossModelQueryResponse),
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(
+      vi.fn().mockResolvedValue(crossModelQueryResponse),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
@@ -786,8 +786,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(async () =>
-      Promise.resolve(crossModelQueryResponse),
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(
+      vi.fn().mockResolvedValue(crossModelQueryResponse),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
@@ -808,8 +808,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(async () =>
-      Promise.resolve(crossModelQueryResponse),
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(
+      vi.fn().mockResolvedValue(crossModelQueryResponse),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
@@ -828,8 +828,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(async () =>
-      Promise.reject(new Error("Uh oh!")),
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(
+      vi.fn().mockRejectedValue(new Error("Uh oh!")),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
@@ -848,9 +848,9 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "crossModelQuery")
-      // eslint-disable-next-line prefer-promise-reject-errors
-      .mockImplementation(async () => Promise.reject("Uh oh!"));
+    vi.spyOn(jimmModule, "crossModelQuery").mockImplementation(
+      vi.fn().mockRejectedValue("Uh oh!"),
+    );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
       wsControllerURL: "wss://example.com",
@@ -872,8 +872,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelation").mockImplementation(async () =>
-      Promise.resolve(checkRelationResponse),
+    vi.spyOn(jimmModule, "checkRelation").mockImplementation(
+      vi.fn().mockResolvedValue(checkRelationResponse),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelation({
@@ -899,8 +899,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelation").mockImplementation(async () =>
-      Promise.resolve(checkRelationResponse),
+    vi.spyOn(jimmModule, "checkRelation").mockImplementation(
+      vi.fn().mockResolvedValue(checkRelationResponse),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelation({
@@ -921,8 +921,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelation").mockImplementation(async () =>
-      Promise.resolve(checkRelationResponse),
+    vi.spyOn(jimmModule, "checkRelation").mockImplementation(
+      vi.fn().mockResolvedValue(checkRelationResponse),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelation({
@@ -945,9 +945,9 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelation")
-      // eslint-disable-next-line prefer-promise-reject-errors
-      .mockImplementation(async () => Promise.reject("Uh oh!"));
+    vi.spyOn(jimmModule, "checkRelation").mockImplementation(
+      vi.fn().mockRejectedValue("Uh oh!"),
+    );
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelation({
       wsControllerURL: "wss://example.com",
@@ -973,8 +973,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelations").mockImplementation(async () =>
-      Promise.resolve(checkRelationsResponse),
+    vi.spyOn(jimmModule, "checkRelations").mockImplementation(
+      vi.fn().mockResolvedValue(checkRelationsResponse),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelations({
@@ -1008,8 +1008,8 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelations").mockImplementation(async () =>
-      Promise.resolve(checkRelationsResponse),
+    vi.spyOn(jimmModule, "checkRelations").mockImplementation(
+      vi.fn().mockResolvedValue(checkRelationsResponse),
     );
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelations({
@@ -1029,9 +1029,9 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jimmModule, "checkRelations")
-      // eslint-disable-next-line prefer-promise-reject-errors
-      .mockImplementation(async () => Promise.reject("Uh oh!"));
+    vi.spyOn(jimmModule, "checkRelations").mockImplementation(
+      vi.fn().mockRejectedValue("Uh oh!"),
+    );
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelations({
       requestId,

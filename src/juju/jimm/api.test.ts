@@ -48,7 +48,7 @@ describe("JIMM API", () => {
           jimM: {
             findAuditEvents: vi
               .fn()
-              .mockImplementation(async () => Promise.resolve(events)),
+              .mockImplementation(vi.fn().mockResolvedValue(events)),
           },
         },
       } as unknown as Connection;
@@ -64,7 +64,7 @@ describe("JIMM API", () => {
           jimM: {
             findAuditEvents: vi
               .fn()
-              .mockImplementation(async () => Promise.resolve(events)),
+              .mockImplementation(vi.fn().mockResolvedValue(events)),
           },
         },
       } as unknown as Connection;
@@ -107,7 +107,7 @@ describe("JIMM API", () => {
       const conn = {
         facades: {
           jimM: {
-            crossModelQuery: vi.fn(async () => Promise.resolve(result)),
+            crossModelQuery: vi.fn().mockResolvedValue(result),
           },
         },
       } as unknown as Connection;
@@ -143,10 +143,12 @@ describe("JIMM API", () => {
       const conn = {
         facades: {
           jimM: {
-            crossModelQuery: vi.fn(async () =>
-              Promise.reject(
-                new Error("Error while trying to run cross model query!"),
-              ),
+            crossModelQuery: vi.fn(
+              vi
+                .fn()
+                .mockRejectedValue(
+                  new Error("Error while trying to run cross model query!"),
+                ),
             ),
           },
         },
@@ -163,7 +165,7 @@ describe("JIMM API", () => {
       const conn = {
         facades: {
           jimM: {
-            checkRelation: vi.fn(async () => Promise.resolve(true)),
+            checkRelation: vi.fn().mockResolvedValue(true),
           },
         },
       } as unknown as Connection;
@@ -201,10 +203,12 @@ describe("JIMM API", () => {
       const conn = {
         facades: {
           jimM: {
-            checkRelation: vi.fn(async () =>
-              Promise.reject(
-                new Error("Error while trying to check relations!"),
-              ),
+            checkRelation: vi.fn(
+              vi
+                .fn()
+                .mockRejectedValue(
+                  new Error("Error while trying to check relations!"),
+                ),
             ),
           },
         },
@@ -223,7 +227,7 @@ describe("JIMM API", () => {
       const conn = {
         facades: {
           jimM: {
-            checkRelations: vi.fn(async () => Promise.resolve(true)),
+            checkRelations: vi.fn().mockResolvedValue(true),
           },
         },
       } as unknown as Connection;
@@ -261,8 +265,8 @@ describe("JIMM API", () => {
       const conn = {
         facades: {
           jimM: {
-            checkRelations: vi.fn(async () =>
-              Promise.reject(new Error("Uh oh!")),
+            checkRelations: vi.fn(
+              vi.fn().mockRejectedValue(new Error("Uh oh!")),
             ),
           },
         },
@@ -278,7 +282,7 @@ describe("JIMM API", () => {
       const conn = {
         facades: {
           jimM: {
-            migrateModel: vi.fn(async () => Promise.resolve(true)),
+            migrateModel: vi.fn().mockResolvedValue(true),
           },
         },
       } as unknown as Connection;
@@ -324,9 +328,7 @@ describe("JIMM API", () => {
       const conn = {
         facades: {
           jimM: {
-            migrateModel: vi.fn(async () =>
-              Promise.reject(new Error("Uh oh!")),
-            ),
+            migrateModel: vi.fn(vi.fn().mockRejectedValue(new Error("Uh oh!"))),
           },
         },
       } as unknown as Connection;
@@ -343,7 +345,7 @@ describe("JIMM API", () => {
       const conn = {
         facades: {
           jimM: {
-            listMigrationTargets: vi.fn(async () => Promise.resolve(true)),
+            listMigrationTargets: vi.fn().mockResolvedValue(true),
           },
         },
       } as unknown as Connection;
@@ -381,8 +383,8 @@ describe("JIMM API", () => {
       const conn = {
         facades: {
           jimM: {
-            listMigrationTargets: vi.fn(async () =>
-              Promise.reject(new Error("Uh oh!")),
+            listMigrationTargets: vi.fn(
+              vi.fn().mockRejectedValue(new Error("Uh oh!")),
             ),
           },
         },

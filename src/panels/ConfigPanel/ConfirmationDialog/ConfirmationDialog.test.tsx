@@ -79,7 +79,7 @@ describe("ConfirmationDialog", () => {
     state = rootStateFactory.build();
     const setApplicationConfig = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve());
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     vi.spyOn(applicationHooks, "useSetApplicationConfig").mockImplementation(
       () => setApplicationConfig,
     );
@@ -133,7 +133,7 @@ describe("ConfirmationDialog", () => {
   it("should submit successfully and remove panel query params", async () => {
     const setApplicationConfig = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve());
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     vi.spyOn(applicationHooks, "useSetApplicationConfig").mockImplementation(
       () => setApplicationConfig,
     );
@@ -176,7 +176,7 @@ describe("ConfirmationDialog", () => {
   it("should submit successfully and open up grant confirmation dialog", async () => {
     const setApplicationConfig = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve());
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     vi.spyOn(applicationHooks, "useSetApplicationConfig").mockImplementation(
       () => setApplicationConfig,
     );
@@ -228,8 +228,8 @@ describe("ConfirmationDialog", () => {
   it("should console error when trying to submit", async () => {
     const setApplicationConfig = vi
       .fn()
-      .mockImplementation(async () =>
-        Promise.reject(new Error("Error while trying to save")),
+      .mockImplementation(
+        vi.fn().mockRejectedValue(new Error("Error while trying to save")),
       );
     vi.spyOn(applicationHooks, "useSetApplicationConfig").mockImplementation(
       () => setApplicationConfig,
@@ -328,7 +328,7 @@ describe("ConfirmationDialog", () => {
   it("should grant secret successfully and remove panel query params", async () => {
     const grantSecret = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve());
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
       () => grantSecret,
     );
@@ -371,9 +371,7 @@ describe("ConfirmationDialog", () => {
   it("should console error when trying to grant access", async () => {
     const grantSecret = vi
       .fn()
-      .mockImplementation(async () =>
-        Promise.reject(new Error("Caught error")),
-      );
+      .mockImplementation(vi.fn().mockRejectedValue(new Error("Caught error")));
     vi.spyOn(secretHooks, "useGrantSecret").mockImplementation(
       () => grantSecret,
     );

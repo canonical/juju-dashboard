@@ -337,8 +337,10 @@ describe("SecretsPicker", () => {
     });
     const createSecrets = vi
       .fn()
-      .mockImplementation(async () =>
-        Promise.resolve({ results: [{ result: "secret:newlycreated" }] }),
+      .mockImplementation(
+        vi
+          .fn()
+          .mockResolvedValue({ results: [{ result: "secret:newlycreated" }] }),
       );
     vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
       () => createSecrets,

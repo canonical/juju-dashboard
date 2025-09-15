@@ -69,8 +69,8 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useGetActionsForApplication("eggman@external", "test-model"),
@@ -95,14 +95,14 @@ describe("actions", () => {
             action: {
               applicationsCharmsActions: vi
                 .fn()
-                .mockImplementation(async () => Promise.resolve(actionList)),
+                .mockImplementation(vi.fn().mockResolvedValue(actionList)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useGetActionsForApplication("eggman@external", "test-model"),
@@ -135,8 +135,8 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useExecuteActionOnUnits("eggman@external", "test-model"),
@@ -161,14 +161,14 @@ describe("actions", () => {
             action: {
               enqueueOperation: vi
                 .fn()
-                .mockImplementation(async () => Promise.resolve(returnResult)),
+                .mockImplementation(vi.fn().mockResolvedValue(returnResult)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useExecuteActionOnUnits("eggman@external", "test-model"),
@@ -216,8 +216,8 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useQueryOperationsList("eggman@external", "test-model"),
@@ -244,14 +244,14 @@ describe("actions", () => {
             action: {
               listOperations: vi
                 .fn()
-                .mockImplementation(async () => Promise.resolve(returnResult)),
+                .mockImplementation(vi.fn().mockResolvedValue(returnResult)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useQueryOperationsList("eggman@external", "test-model"),
@@ -294,8 +294,8 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useQueryActionsList("eggman@external", "test-model"),
@@ -322,14 +322,14 @@ describe("actions", () => {
             action: {
               actions: vi
                 .fn()
-                .mockImplementation(async () => Promise.resolve(returnResult)),
+                .mockImplementation(vi.fn().mockResolvedValue(returnResult)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useQueryActionsList("eggman@external", "test-model"),

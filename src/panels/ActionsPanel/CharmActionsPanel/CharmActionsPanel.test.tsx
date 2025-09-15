@@ -218,7 +218,7 @@ describe("CharmActionsPanel", () => {
   it("shows a confirmation dialog on clicking submit", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve());
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
       () => executeActionOnUnitsSpy,
     );
@@ -249,7 +249,7 @@ describe("CharmActionsPanel", () => {
   it("submits the action request to the api without options", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve());
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
       () => executeActionOnUnitsSpy,
     );
@@ -287,7 +287,7 @@ describe("CharmActionsPanel", () => {
   it("should pass the selected action form values to the API call", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve());
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     vi.spyOn(actionsHooks, "useExecuteActionOnUnits").mockImplementation(
       () => executeActionOnUnitsSpy,
     );
@@ -357,8 +357,8 @@ describe("CharmActionsPanel", () => {
   });
 
   it("should throw error when executing action on unit", async () => {
-    const executeActionOnUnitsSpy = vi.fn().mockImplementation(async () =>
-      Promise.resolve({
+    const executeActionOnUnitsSpy = vi.fn().mockImplementation(
+      vi.fn().mockResolvedValue({
         actions: [{ error: "Error when executing action on unit!" }],
       }),
     );

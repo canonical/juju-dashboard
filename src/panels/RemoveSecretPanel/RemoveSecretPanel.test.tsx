@@ -80,7 +80,7 @@ describe("RemoveSecretPanel", () => {
   it("shows a confirmation when the form is submitted", async () => {
     const removeSecrets = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve({ results: [] }));
+      .mockImplementation(vi.fn().mockResolvedValue({ results: [] }));
     vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
       () => removeSecrets,
     );
@@ -95,7 +95,7 @@ describe("RemoveSecretPanel", () => {
   it("can remove a secret", async () => {
     const removeSecrets = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve({ results: [] }));
+      .mockImplementation(vi.fn().mockResolvedValue({ results: [] }));
     vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
       () => removeSecrets,
     );
@@ -115,9 +115,7 @@ describe("RemoveSecretPanel", () => {
   it("displays caught errors", async () => {
     const removeSecrets = vi
       .fn()
-      .mockImplementation(async () =>
-        Promise.reject(new Error("Caught error")),
-      );
+      .mockImplementation(vi.fn().mockRejectedValue(new Error("Caught error")));
     vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
       () => removeSecrets,
     );
@@ -134,9 +132,7 @@ describe("RemoveSecretPanel", () => {
   it("displays error string results", async () => {
     const removeSecrets = vi
       .fn()
-      .mockImplementation(async () =>
-        Promise.reject(new Error("String error")),
-      );
+      .mockImplementation(vi.fn().mockRejectedValue(new Error("String error")));
     vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
       () => removeSecrets,
     );
@@ -151,11 +147,11 @@ describe("RemoveSecretPanel", () => {
   });
 
   it("displays error object results", async () => {
-    const removeSecrets = vi
-      .fn()
-      .mockImplementation(async () =>
-        Promise.resolve({ results: [{ error: { message: "Error result" } }] }),
-      );
+    const removeSecrets = vi.fn().mockImplementation(
+      vi.fn().mockResolvedValue({
+        results: [{ error: { message: "Error result" } }],
+      }),
+    );
     vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
       () => removeSecrets,
     );
@@ -172,7 +168,7 @@ describe("RemoveSecretPanel", () => {
   it("closes the panel if successful", async () => {
     const removeSecrets = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve({ results: [] }));
+      .mockImplementation(vi.fn().mockResolvedValue({ results: [] }));
     vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
       () => removeSecrets,
     );
@@ -194,7 +190,7 @@ describe("RemoveSecretPanel", () => {
   it("refetches the secrets if successful", async () => {
     const removeSecrets = vi
       .fn()
-      .mockImplementation(async () => Promise.resolve({ results: [] }));
+      .mockImplementation(vi.fn().mockResolvedValue({ results: [] }));
     vi.spyOn(secretHooks, "useRemoveSecrets").mockImplementation(
       () => removeSecrets,
     );
