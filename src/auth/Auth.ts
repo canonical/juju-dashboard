@@ -74,7 +74,7 @@ export class Auth {
   async beforeControllerConnect(
     controllerData: ControllerData,
   ): Promise<boolean> {
-    return true;
+    return Promise.resolve(true);
   }
 
   /**
