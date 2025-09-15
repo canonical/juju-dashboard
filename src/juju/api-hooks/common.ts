@@ -74,7 +74,7 @@ export const useCallWithConnectionPromise = <R, A extends unknown[]>(
   );
   const modelConnectionCallback = useModelConnectionCallback(modelUUID);
   return useCallback(
-    (...args: A) => {
+    async (...args: A) => {
       return new Promise<R>((resolve, reject) => {
         modelConnectionCallback((result) => {
           if ("error" in result) {
@@ -99,7 +99,7 @@ export const useCallWithConnection = <R, A extends unknown[]>(
   modelName: null | string = null,
 ): ((...args: A) => void) => {
   const callbackHandler = useCallback(
-    (connection: ConnectionWithFacades, ...args: A) => {
+    async (connection: ConnectionWithFacades, ...args: A) => {
       return handler(connection, ...(args ?? []));
     },
     [handler],

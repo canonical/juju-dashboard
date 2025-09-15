@@ -19,7 +19,7 @@ export const useGetApplicationConfig = (
   modelName: null | string = null,
 ): ((appName: string) => Promise<ApplicationGetResults>) => {
   const handler = useCallback(
-    (connection: ConnectionWithFacades, appName: string) => {
+    async (connection: ConnectionWithFacades, appName: string) => {
       if (!connection.facades.application) {
         throw new Error(Label.NO_APP_FACADE_ERROR);
       }
@@ -38,7 +38,11 @@ export const useSetApplicationConfig = (
   modelName: null | string = null,
 ): ((appName: string, config: Config) => Promise<ErrorResults>) => {
   const handler = useCallback(
-    (connection: ConnectionWithFacades, appName: string, config: Config) => {
+    async (
+      connection: ConnectionWithFacades,
+      appName: string,
+      config: Config,
+    ) => {
       if (!connection.facades.application) {
         throw new Error(Label.NO_APP_FACADE_ERROR);
       }

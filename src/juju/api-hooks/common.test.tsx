@@ -72,8 +72,8 @@ describe("useModelConnectionCallback", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-      Promise.resolve(loginResponse),
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      vi.fn().mockResolvedValue(loginResponse),
     );
     const callback = vi.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
@@ -112,8 +112,8 @@ describe("useModelConnectionCallback", () => {
 
   it("returns connection errors", async () => {
     changeURL("/models/eggman@external/group-test/app/etcd");
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-      Promise.reject(new Error("Uh oh!")),
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      vi.fn().mockRejectedValue(new Error("Uh oh!")),
     );
     const callback = vi.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
@@ -165,8 +165,8 @@ describe("useModelConnectionCallback", () => {
     const loginResponse = {
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-      Promise.resolve(loginResponse),
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      vi.fn().mockResolvedValue(loginResponse),
     );
     const callback = vi.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
@@ -218,8 +218,8 @@ describe("useModelConnectionCallback", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-      Promise.resolve(loginResponse),
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      vi.fn().mockResolvedValue(loginResponse),
     );
     const callback = vi.fn();
     const { result } = renderHook(() => useModelConnectionCallback("abc123"), {
@@ -279,10 +279,12 @@ describe("useCallWithConnectionPromise", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-      Promise.resolve(loginResponse),
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      vi.fn().mockResolvedValue(loginResponse),
     );
-    const handler = vi.fn().mockImplementation(() => Promise.resolve("result"));
+    const handler = vi
+      .fn()
+      .mockImplementation(vi.fn().mockResolvedValue("result"));
     const { result } = renderHook(
       () =>
         useCallWithConnectionPromise(handler, "eggman@external", "test-model"),
@@ -309,10 +311,12 @@ describe("useCallWithConnectionPromise", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-      Promise.resolve(loginResponse),
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      vi.fn().mockResolvedValue(loginResponse),
     );
-    const handler = vi.fn().mockImplementation(() => Promise.resolve("result"));
+    const handler = vi
+      .fn()
+      .mockImplementation(vi.fn().mockResolvedValue("result"));
     const { result } = renderHook(
       () =>
         useCallWithConnectionPromise(handler, "eggman@external", "test-model"),
@@ -338,12 +342,12 @@ describe("useCallWithConnectionPromise", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-      Promise.resolve(loginResponse),
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      vi.fn().mockResolvedValue(loginResponse),
     );
     const handler = vi
       .fn()
-      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
+      .mockImplementation(vi.fn().mockRejectedValue(new Error("Uh oh!")));
     const { result } = renderHook(
       () =>
         useCallWithConnectionPromise(handler, "eggman@external", "test-model"),
@@ -402,8 +406,8 @@ describe("useCallWithConnection", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-      Promise.resolve(loginResponse),
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      vi.fn().mockResolvedValue(loginResponse),
     );
     const handler = vi.fn();
     const onSuccess = vi.fn();
@@ -442,10 +446,12 @@ describe("useCallWithConnection", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-      Promise.resolve(loginResponse),
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      vi.fn().mockResolvedValue(loginResponse),
     );
-    const handler = vi.fn().mockImplementation(() => Promise.resolve("result"));
+    const handler = vi
+      .fn()
+      .mockImplementation(vi.fn().mockResolvedValue("result"));
     const onSuccess = vi.fn();
     const onError = vi.fn();
     const { result } = renderHook(
@@ -482,12 +488,12 @@ describe("useCallWithConnection", () => {
       } as unknown as Connection,
       logout: vi.fn(),
     };
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-      Promise.resolve(loginResponse),
+    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+      vi.fn().mockResolvedValue(loginResponse),
     );
     const handler = vi
       .fn()
-      .mockImplementation(() => Promise.reject(new Error("Uh oh!")));
+      .mockImplementation(vi.fn().mockRejectedValue(new Error("Uh oh!")));
     const onSuccess = vi.fn();
     const onError = vi.fn();
     const { result } = renderHook(

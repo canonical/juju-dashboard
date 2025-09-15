@@ -65,7 +65,7 @@ class Connection {
     this.#messageBuffer = [];
   }
 
-  reconnect(): Promise<void> {
+  async reconnect(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.connect(resolve, reject);
     });

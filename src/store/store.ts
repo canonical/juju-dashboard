@@ -64,7 +64,7 @@ export const usePromiseDispatch = (): (<Result>(
 ) => Promise<Result>) => {
   const dispatch = useAppDispatch();
   return useCallback(
-    <Result>(action: UnknownAction) =>
+    async <Result>(action: UnknownAction) =>
       (dispatch as (action: UnknownAction) => Promise<Result>)(action),
     [dispatch],
   );

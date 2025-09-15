@@ -135,7 +135,7 @@ describe("Share Model Panel", () => {
 
   it("handles errors when adding a user", async () => {
     vi.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
-      vi.fn().mockImplementation(() => Promise.reject(new Error())),
+      vi.fn().mockImplementation(vi.fn().mockRejectedValue(new Error())),
     );
     renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
@@ -167,8 +167,8 @@ describe("Share Model Panel", () => {
 
   it("handles error responses when adding a user", async () => {
     vi.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
-      vi.fn().mockImplementation(() =>
-        Promise.resolve({
+      vi.fn().mockImplementation(
+        vi.fn().mockResolvedValue({
           results: [{ error: { message: "This is an error" } }],
         }),
       ),
@@ -187,7 +187,7 @@ describe("Share Model Panel", () => {
   it("can add a user", async () => {
     const dispatch = vi
       .fn()
-      .mockImplementation(() => Promise.resolve({ results: [] }));
+      .mockImplementation(vi.fn().mockResolvedValue({ results: [] }));
     vi.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(dispatch);
     renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
@@ -272,8 +272,8 @@ describe("Share Model Panel", () => {
 
   it("can handle errors when changing permissions", async () => {
     vi.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
-      vi.fn().mockImplementation(() =>
-        Promise.resolve({
+      vi.fn().mockImplementation(
+        vi.fn().mockResolvedValue({
           results: [{ error: { message: "No no no no no" } }],
         }),
       ),
@@ -287,8 +287,8 @@ describe("Share Model Panel", () => {
 
   it("ignores greater access errors when updating permissions", async () => {
     vi.spyOn(storeModule, "usePromiseDispatch").mockReturnValue(
-      vi.fn().mockImplementation(() =>
-        Promise.resolve({
+      vi.fn().mockImplementation(
+        vi.fn().mockResolvedValue({
           results: [
             { error: { message: "user already has admin access or greater" } },
           ],

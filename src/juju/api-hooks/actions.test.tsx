@@ -69,8 +69,8 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useGetActionsForApplication("eggman@external", "test-model"),
@@ -81,7 +81,7 @@ describe("actions", () => {
         },
       );
       await expect(result.current("etcd")).rejects.toStrictEqual(
-        Label.NO_ACTION_FACADE_ERROR,
+        new Error(Label.NO_ACTION_FACADE_ERROR),
       );
     });
 
@@ -95,14 +95,14 @@ describe("actions", () => {
             action: {
               applicationsCharmsActions: vi
                 .fn()
-                .mockImplementation(() => Promise.resolve(actionList)),
+                .mockImplementation(vi.fn().mockResolvedValue(actionList)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useGetActionsForApplication("eggman@external", "test-model"),
@@ -135,8 +135,8 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useExecuteActionOnUnits("eggman@external", "test-model"),
@@ -148,7 +148,7 @@ describe("actions", () => {
       );
       await expect(
         result.current(["etcd/0", "mysql/2"], "reboot", { extra: "options" }),
-      ).rejects.toStrictEqual(Label.NO_ACTION_FACADE_ERROR);
+      ).rejects.toStrictEqual(new Error(Label.NO_ACTION_FACADE_ERROR));
     });
 
     it("can execute actions on units", async () => {
@@ -161,14 +161,14 @@ describe("actions", () => {
             action: {
               enqueueOperation: vi
                 .fn()
-                .mockImplementation(() => Promise.resolve(returnResult)),
+                .mockImplementation(vi.fn().mockResolvedValue(returnResult)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useExecuteActionOnUnits("eggman@external", "test-model"),
@@ -216,8 +216,8 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useQueryOperationsList("eggman@external", "test-model"),
@@ -231,7 +231,7 @@ describe("actions", () => {
         result.current({
           limit: 99,
         }),
-      ).rejects.toStrictEqual(Label.NO_ACTION_FACADE_ERROR);
+      ).rejects.toStrictEqual(new Error(Label.NO_ACTION_FACADE_ERROR));
     });
 
     it("get the operations list", async () => {
@@ -244,14 +244,14 @@ describe("actions", () => {
             action: {
               listOperations: vi
                 .fn()
-                .mockImplementation(() => Promise.resolve(returnResult)),
+                .mockImplementation(vi.fn().mockResolvedValue(returnResult)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useQueryOperationsList("eggman@external", "test-model"),
@@ -294,8 +294,8 @@ describe("actions", () => {
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useQueryActionsList("eggman@external", "test-model"),
@@ -309,7 +309,7 @@ describe("actions", () => {
         result.current({
           entities: [{ tag: "one" }],
         }),
-      ).rejects.toStrictEqual(Label.NO_ACTION_FACADE_ERROR);
+      ).rejects.toStrictEqual(new Error(Label.NO_ACTION_FACADE_ERROR));
     });
 
     it("can get the actions list", async () => {
@@ -322,14 +322,14 @@ describe("actions", () => {
             action: {
               actions: vi
                 .fn()
-                .mockImplementation(() => Promise.resolve(returnResult)),
+                .mockImplementation(vi.fn().mockResolvedValue(returnResult)),
             },
           },
         } as unknown as Connection,
         logout: vi.fn(),
       };
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(() =>
-        Promise.resolve(loginResponse),
+      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(
+        vi.fn().mockResolvedValue(loginResponse),
       );
       const { result } = renderHook(
         () => useQueryActionsList("eggman@external", "test-model"),

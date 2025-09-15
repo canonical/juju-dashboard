@@ -99,6 +99,7 @@ export default [
       "@typescript-eslint/prefer-nullish-coalescing": "error",
       "init-declarations": "off",
       "@typescript-eslint/init-declarations": "error",
+      "@typescript-eslint/promise-function-async": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
       "import/first": ["error"],

@@ -465,7 +465,7 @@ export async function fetchControllerList(
   if the user is not an administrator on the controller.
   @param conn The controller connection instance.
 */
-export function disableControllerUUIDMasking(
+export async function disableControllerUUIDMasking(
   conn: ConnectionWithFacades,
 ): Promise<void> {
   return new Promise<void>((resolve, reject) => {
@@ -661,7 +661,7 @@ export async function getCharmsURLFromApplications(
     (app) => "charm-url" in app && uniqueCharmURLs.add(app["charm-url"]),
   );
   const charms = await Promise.all(
-    [...uniqueCharmURLs].map((charmURL) =>
+    [...uniqueCharmURLs].map(async (charmURL) =>
       getCharmInfo(charmURL, modelUUID, appState),
     ),
   );

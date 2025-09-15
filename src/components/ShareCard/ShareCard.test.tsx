@@ -59,7 +59,9 @@ describe("Share Card", () => {
 
   it("should call access change function when select value clicked", async () => {
     const removeUserFn = vi.fn();
-    const accessSelectChangeFn = vi.fn(() => Promise.resolve(null));
+    const accessSelectChangeFn = vi
+      .fn()
+      .mockImplementation(vi.fn().mockResolvedValue(null));
     render(
       <ShareCard
         userName="janedoe"
