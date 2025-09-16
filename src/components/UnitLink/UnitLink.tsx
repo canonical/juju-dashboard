@@ -29,7 +29,9 @@ const UnitLink = ({ uuid, appName, unitId, children }: Props): JSX.Element => {
   return (
     <Link
       // Prevent toggling the object when the link is clicked.
-      onClick={(event) => event.stopPropagation()}
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
       to={urls.model.unit({ userName, modelName, appName, unitId })}
     >
       {children}

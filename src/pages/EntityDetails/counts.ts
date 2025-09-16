@@ -71,7 +71,7 @@ export function generateMachineCounts(
   const counts: Counts = {};
   if (machines && units && applicationName !== null && applicationName) {
     const machineIds: MachineChangeDelta["id"][] = [];
-    Object.entries(units).forEach(([, unitData]) => {
+    Object.entries(units).forEach(([_unitName, unitData]) => {
       if (unitData.application === applicationName) {
         machineIds.push(unitData["machine-id"]);
       }

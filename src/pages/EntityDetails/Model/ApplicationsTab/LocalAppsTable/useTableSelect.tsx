@@ -87,7 +87,9 @@ export const addSelectAllColumn = (
             className="p-checkbox__input"
             id="select-all"
             name="selectAll"
-            onChange={() => handleSelectAll(!selectAll)}
+            onChange={() => {
+              handleSelectAll(!selectAll);
+            }}
             checked={selectAll}
             data-testid="select-all-apps"
           />

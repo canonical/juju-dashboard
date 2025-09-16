@@ -41,7 +41,7 @@ describe("usePanelQueryParams", () => {
 
   it("should have correct query params after changing a param value", () => {
     const { result } = mockRenderHook();
-    const [, setQueryParams] = result.current;
+    const [_queryParams, setQueryParams] = result.current;
 
     act(() => {
       setQueryParams({ mockParam: "newMockValue" });
@@ -58,9 +58,12 @@ describe("usePanelQueryParams", () => {
     const { result, router } = mockRenderHook(
       "?externalParam=externalValue&panel=mockPanelName&mockParam=mockValue",
     );
-    const [, , handleRemovePanelQueryParams] = result.current;
+    const [_queryParams, _setQueryParams, handleRemovePanelQueryParams] =
+      result.current;
 
-    act(() => handleRemovePanelQueryParams());
+    act(() => {
+      handleRemovePanelQueryParams();
+    });
 
     expect(router?.state.location.search).toBe("?externalParam=externalValue");
   });

@@ -105,7 +105,9 @@ const ConfirmationDialog = ({
             );
             onRemovePanelQueryParams();
           }}
-          close={() => setConfirmType(null)}
+          close={() => {
+            setConfirmType(null);
+          }}
         >
           <h4 className="p-muted-heading u-no-margin--bottom">
             APPLICATION COUNT (UNIT COUNT)

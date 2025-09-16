@@ -65,14 +65,16 @@ const Panel = forwardRef<HTMLDivElement, Props>(
   ) => {
     useListener(
       window,
-      (ev: React.KeyboardEvent) =>
-        close.onEscape(ev, onRemovePanelQueryParams, checkCanClose),
+      (ev: React.KeyboardEvent) => {
+        close.onEscape(ev, onRemovePanelQueryParams, checkCanClose);
+      },
       "keydown",
     );
     useListener(
       window,
-      (ev: React.MouseEvent) =>
-        close.onClickOutside(ev, onRemovePanelQueryParams, checkCanClose),
+      (ev: React.MouseEvent) => {
+        close.onClickOutside(ev, onRemovePanelQueryParams, checkCanClose);
+      },
       "click",
     );
 

@@ -50,21 +50,27 @@ const ModelTabs: FC = () => {
       {
         active: activeView === ModelTab.APPS,
         label: Label.APPLICATIONS,
-        onClick: (ev: React.MouseEvent) => handleNavClick(ev),
+        onClick: (ev: React.MouseEvent) => {
+          handleNavClick(ev);
+        },
         to: urls.model.tab({ userName, modelName, tab: ModelTab.APPS }),
         component: Link,
       },
       {
         active: activeView === ModelTab.INTEGRATIONS,
         label: Label.INTEGRATIONS,
-        onClick: (ev: React.MouseEvent) => handleNavClick(ev),
+        onClick: (ev: React.MouseEvent) => {
+          handleNavClick(ev);
+        },
         to: urls.model.tab({ userName, modelName, tab: ModelTab.INTEGRATIONS }),
         component: Link,
       },
       {
         active: activeView === "logs",
         label: auditLogsAllowed ? Label.LOGS : Label.ACTION_LOGS,
-        onClick: (ev: React.MouseEvent) => handleNavClick(ev),
+        onClick: (ev: React.MouseEvent) => {
+          handleNavClick(ev);
+        },
         to: urls.model.tab({ userName, modelName, tab: ModelTab.LOGS }),
         component: Link,
       },
@@ -74,7 +80,9 @@ const ModelTabs: FC = () => {
       tabs.push({
         active: activeView === "secrets",
         label: Label.SECRETS,
-        onClick: (ev: React.MouseEvent) => handleNavClick(ev),
+        onClick: (ev: React.MouseEvent) => {
+          handleNavClick(ev);
+        },
         to: urls.model.tab({ userName, modelName, tab: ModelTab.SECRETS }),
         component: Link,
       });
@@ -84,7 +92,9 @@ const ModelTabs: FC = () => {
       tabs.push({
         active: activeView === ModelTab.MACHINES,
         label: Label.MACHINES,
-        onClick: (ev: React.MouseEvent) => handleNavClick(ev),
+        onClick: (ev: React.MouseEvent) => {
+          handleNavClick(ev);
+        },
         to: urls.model.tab({ userName, modelName, tab: ModelTab.MACHINES }),
         component: Link,
       });

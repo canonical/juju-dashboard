@@ -26,12 +26,8 @@ import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
 import type { MockMiddlewareResult } from "./types";
 
 vi.mock("juju/api", () => ({
-  disableControllerUUIDMasking: vi
-    .fn()
-    .mockImplementation(vi.fn().mockResolvedValue(null)),
-  fetchControllerList: vi
-    .fn()
-    .mockImplementation(vi.fn().mockResolvedValue(null)),
+  disableControllerUUIDMasking: vi.fn(),
+  fetchControllerList: vi.fn(),
   loginWithBakery: vi.fn(),
   fetchAllModelStatuses: vi.fn(),
   setModelSharingPermissions: vi.fn(),
@@ -561,15 +557,8 @@ describe("model poller", () => {
       juju,
     }));
     vi.spyOn(jujuModule, "fetchAllModelStatuses")
-      .mockImplementationOnce(
-        async () => new Promise<void>((resolve) => resolve()),
-      )
-      .mockImplementationOnce(
-        async () =>
-          new Promise<void>((resolve, reject) =>
-            reject(new Error(ModelsError.LOAD_SOME_MODELS)),
-          ),
-      );
+      .mockImplementationOnce(vi.fn())
+      .mockRejectedValueOnce(new Error(ModelsError.LOAD_SOME_MODELS));
     runMiddleware({
       payload: { controllers, isJuju: true, poll: 1 },
     }).catch(() => vi.fn());

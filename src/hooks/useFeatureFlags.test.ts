@@ -18,7 +18,9 @@ describe("useFeatureFlags", () => {
       { "enable-flag": [], "disable-flag": [] },
       vi.fn(),
     ]);
-    renderHook(() => useFeatureFlags());
+    renderHook(() => {
+      useFeatureFlags();
+    });
     expect(LocalStorage.default).toHaveBeenCalledWith("flags", []);
   });
 
@@ -29,7 +31,9 @@ describe("useFeatureFlags", () => {
       { "enable-flag": ["featureA", "featureB"], "disable-flag": [] },
       vi.fn(),
     ]);
-    renderHook(() => useFeatureFlags());
+    renderHook(() => {
+      useFeatureFlags();
+    });
     expect(setLocalStorage).toHaveBeenCalledWith(["featureA", "featureB"]);
   });
 
@@ -43,7 +47,9 @@ describe("useFeatureFlags", () => {
       { "enable-flag": [], "disable-flag": ["featureB"] },
       vi.fn(),
     ]);
-    renderHook(() => useFeatureFlags());
+    renderHook(() => {
+      useFeatureFlags();
+    });
     expect(setLocalStorage).toHaveBeenCalledWith(["featureA", "featureC"]);
   });
 
@@ -57,7 +63,9 @@ describe("useFeatureFlags", () => {
       { "enable-flag": ["featureD"], "disable-flag": ["featureB"] },
       vi.fn(),
     ]);
-    renderHook(() => useFeatureFlags());
+    renderHook(() => {
+      useFeatureFlags();
+    });
     expect(setLocalStorage).toHaveBeenCalledWith([
       "featureA",
       "featureC",
@@ -75,7 +83,9 @@ describe("useFeatureFlags", () => {
       { "enable-flag": ["featureA", "featureB"], "disable-flag": [] },
       vi.fn(),
     ]);
-    renderHook(() => useFeatureFlags());
+    renderHook(() => {
+      useFeatureFlags();
+    });
     expect(setLocalStorage).toHaveBeenCalledTimes(1);
   });
 
@@ -90,7 +100,9 @@ describe("useFeatureFlags", () => {
       vi.fn(),
     ]);
     const setItemSpy = vi.spyOn(window.localStorage, "setItem");
-    renderHook(() => useFeatureFlags());
+    renderHook(() => {
+      useFeatureFlags();
+    });
     expect(setLocalStorage).toHaveBeenCalledTimes(1);
     expect(setItemSpy).not.toHaveBeenCalled();
   });

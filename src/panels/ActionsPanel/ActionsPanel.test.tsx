@@ -324,9 +324,9 @@ describe("ActionsPanel", () => {
     );
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(getActionsForApplicationSpy).toHaveBeenCalledTimes(1);
-    await waitFor(() =>
-      expect(getActionsForApplicationSpy).toHaveBeenCalledTimes(1),
-    );
+    await waitFor(() => {
+      expect(getActionsForApplicationSpy).toHaveBeenCalledTimes(1);
+    });
     await waitFor(() =>
       expect(
         screen.getByText(ActionsPanelLabel.GET_ACTIONS_ERROR, { exact: false }),
@@ -369,9 +369,9 @@ describe("ActionsPanel", () => {
         name: ConfirmationDialogLabel.CONFIRM_BUTTON,
       }),
     );
-    await waitFor(() =>
-      expect(executeActionOnUnitsSpy).toHaveBeenCalledTimes(1),
-    );
+    await waitFor(() => {
+      expect(executeActionOnUnitsSpy).toHaveBeenCalledTimes(1);
+    });
     await waitFor(() =>
       expect(
         screen.getByText(ConfirmationDialogLabel.EXECUTE_ACTION_ERROR, {

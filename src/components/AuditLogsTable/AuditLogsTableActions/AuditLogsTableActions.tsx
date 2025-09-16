@@ -10,7 +10,7 @@ import { useFetchAuditEvents } from "../hooks";
 import { Label } from "./types";
 
 const AuditLogsTableActions: FC = () => {
-  const [, setQueryParams] = useQueryParams<{
+  const [_queryParams, setQueryParams] = useQueryParams<{
     panel: null | string;
     page: null | string;
   }>({
@@ -34,9 +34,9 @@ const AuditLogsTableActions: FC = () => {
       </Tooltip>
       <Button
         className="u-no-margin--right"
-        onClick={() =>
-          setQueryParams({ panel: "audit-log-filters" }, { replace: true })
-        }
+        onClick={() => {
+          setQueryParams({ panel: "audit-log-filters" }, { replace: true });
+        }}
       >
         <Icon name="filter" /> {Label.FILTER}
       </Button>

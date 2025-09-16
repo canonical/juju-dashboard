@@ -312,7 +312,9 @@ export default function ActionLogs(): JSX.Element {
               {Object.keys(actionFullDetails?.output ?? {}).length > 0 ? (
                 <div>
                   <Button
-                    onClick={() => setModalDetails(actionFullDetails.output)}
+                    onClick={() => {
+                      setModalDetails(actionFullDetails.output);
+                    }}
                     data-testid="show-output"
                     dense
                     hasIcon
@@ -343,28 +345,37 @@ export default function ActionLogs(): JSX.Element {
                     links={[
                       {
                         children: Output.ALL,
-                        onClick: (): void =>
-                          actionData.action &&
-                          handleOutputSelect(actionData.action.tag, Output.ALL),
+                        onClick: (): void => {
+                          if (actionData.action) {
+                            handleOutputSelect(
+                              actionData.action.tag,
+                              Output.ALL,
+                            );
+                          }
+                        },
                       },
                       {
                         children: Output.STDOUT,
-                        onClick: (): void =>
-                          actionData.action &&
-                          handleOutputSelect(
-                            actionData.action.tag,
-                            Output.STDOUT,
-                          ),
+                        onClick: (): void => {
+                          if (actionData.action) {
+                            handleOutputSelect(
+                              actionData.action.tag,
+                              Output.STDOUT,
+                            );
+                          }
+                        },
                         disabled: stdout ? !stdout.length : true,
                       },
                       {
                         children: Output.STDERR,
-                        onClick: (): void =>
-                          actionData.action &&
-                          handleOutputSelect(
-                            actionData.action.tag,
-                            Output.STDERR,
-                          ),
+                        onClick: (): void => {
+                          if (actionData.action) {
+                            handleOutputSelect(
+                              actionData.action.tag,
+                              Output.STDERR,
+                            );
+                          }
+                        },
                         disabled:
                           stderr !== null && stderr ? !stderr.length : true,
                       },
@@ -460,7 +471,9 @@ export default function ActionLogs(): JSX.Element {
         >
           <ActionPayloadModal
             payload={modalDetails}
-            onClose={() => setModalDetails(null)}
+            onClose={() => {
+              setModalDetails(null);
+            }}
           />
         </FadeIn>
       </Portal>

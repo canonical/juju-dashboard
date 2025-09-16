@@ -51,7 +51,7 @@ export default function ShareModel(): JSX.Element {
   const [showAddNewUser, setShowAddNewUser] = useState(false);
 
   const defaultQueryParams: ShareModelQueryParams = { panel: null };
-  const [, , handleRemovePanelQueryParams] =
+  const [_queryParams, _setQueryParams, handleRemovePanelQueryParams] =
     usePanelQueryParams<ShareModelQueryParams>(defaultQueryParams);
 
   const modelStatusData = useModelStatus() ?? null;
@@ -176,7 +176,9 @@ export default function ShareModel(): JSX.Element {
       username: "",
       access: "read",
     },
-    validate: (values) => handleValidateNewUser(values),
+    validate: (values) => {
+      handleValidateNewUser(values);
+    },
     onSubmit: (values, { resetForm }) => {
       void handleNewUserFormSubmit(values, resetForm);
       setShowAddNewUser(false);
@@ -421,7 +423,9 @@ export default function ShareModel(): JSX.Element {
           <h5>Sharing with:</h5>
           <button
             className="add-user-btn p-button--base has-icon"
-            onClick={() => setShowAddNewUser(true)}
+            onClick={() => {
+              setShowAddNewUser(true);
+            }}
           >
             <i className="p-icon--plus"></i>
             <span>{Label.SHOW_ADD_FORM}</span>

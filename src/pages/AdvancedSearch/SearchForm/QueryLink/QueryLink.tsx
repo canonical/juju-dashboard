@@ -11,7 +11,7 @@ const QueryLink = ({ handleQuery, query }: Props): JSX.Element => {
     <Button
       appearance="link"
       className="u-no-margin u-no-padding u-align--left p-text--small"
-      onClick={async () => await handleQuery(query)}
+      onClick={() => void handleQuery(query)}
       type="button"
     >
       <code>{query}</code>

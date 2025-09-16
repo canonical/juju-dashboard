@@ -129,7 +129,9 @@ const RemoveSecretPanel: FC = () => {
                 </h5>
                 <Fields
                   handleRemoveSecret={handleRemoveSecret}
-                  hideConfirm={() => setShowConfirm(false)}
+                  hideConfirm={() => {
+                    setShowConfirm(false);
+                  }}
                   secretURI={secretURI}
                   showConfirm={showConfirm}
                 />

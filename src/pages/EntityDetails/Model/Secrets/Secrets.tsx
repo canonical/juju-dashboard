@@ -36,7 +36,7 @@ const Secrets: FC = () => {
   );
   const canManageSecrets = useCanManageSecrets();
 
-  const [, setQuery] = useQueryParams<{
+  const [_query, setQuery] = useQueryParams<{
     panel: null | string;
   }>({
     panel: null,
@@ -67,7 +67,9 @@ const Secrets: FC = () => {
         {canManageSecrets ? (
           <Button
             hasIcon
-            onClick={() => setQuery({ panel: "add-secret" }, { replace: true })}
+            onClick={() => {
+              setQuery({ panel: "add-secret" }, { replace: true });
+            }}
           >
             <Icon name="plus" />
             <span>{Label.ADD}</span>

@@ -91,6 +91,7 @@ export default [
       "@typescript-eslint/explicit-module-boundary-types": "error",
       "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/no-unsafe-assignment": "error",
+      "@typescript-eslint/no-confusing-void-expression": "error",
       "no-use-before-define": "off",
       "@typescript-eslint/no-use-before-define": "error",
       "require-await": "off",

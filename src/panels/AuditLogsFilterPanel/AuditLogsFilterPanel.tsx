@@ -14,11 +14,12 @@ import { Label, TestId, type FormFields } from "./types";
 
 const AuditLogsFilterPanel = (): JSX.Element => {
   const formId = useId();
-  const [, , handleRemovePanelQueryParams] = usePanelQueryParams<{
-    panel: null | string;
-  }>({
-    panel: null,
-  });
+  const [_queryParams, _setQueryParams, handleRemovePanelQueryParams] =
+    usePanelQueryParams<{
+      panel: null | string;
+    }>({
+      panel: null,
+    });
   // These params are handled separately from the values in usePanelQueryParams
   // as they shouldn't be cleared when the panel closes.
   const [queryParams, setQueryParams] = useQueryParams<
