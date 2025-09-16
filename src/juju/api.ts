@@ -332,9 +332,11 @@ export async function fetchAllModelStatuses(
   for (const modelUUID of modelUUIDList) {
     if (isLoggedIn(getState(), wsControllerURL)) {
       try {
-        const modelWsControllerURL =
-          getModelByUUID(getState(), modelUUID)?.wsControllerURL ?? null;
-        if (modelWsControllerURL !== null && modelWsControllerURL) {
+        const modelWsControllerURL = getModelByUUID(
+          getState(),
+          modelUUID,
+        )?.wsControllerURL;
+        if (modelWsControllerURL) {
           await fetchAndStoreModelStatus(
             modelUUID,
             modelWsControllerURL,
@@ -361,11 +363,7 @@ export async function fetchAllModelStatuses(
           // progress.
           return;
         }
-        if (
-          modelInfo &&
-          modelInfo.results[0].result &&
-          modelInfo.results[0].result?.["is-controller"]
-        ) {
+        if (modelInfo?.results[0].result?.["is-controller"]) {
           // If this is a controller model then update the
           // controller data with this model data.
           dispatch(addControllerCloudRegion({ wsControllerURL, modelInfo }))
@@ -512,9 +510,8 @@ export async function connectAndLoginToModel(
   modelUUID: string,
   appState: RootState,
 ): Promise<ConnectionWithFacades | null | undefined> {
-  const wsControllerURL =
-    getModelByUUID(appState, modelUUID)?.wsControllerURL ?? null;
-  if (wsControllerURL === null || !wsControllerURL) {
+  const wsControllerURL = getModelByUUID(appState, modelUUID)?.wsControllerURL;
+  if (!wsControllerURL) {
     return null;
   }
   const credentials = getUserPass(appState, wsControllerURL);
@@ -548,8 +545,8 @@ export async function startModelWatcher(
   }
   const watcherHandle = await conn?.facades.client?.watchAll(null);
   const pingerIntervalId = startPingerLoop(conn);
-  const id = watcherHandle?.["watcher-id"] ?? null;
-  if (id === null || !id) {
+  const id = watcherHandle?.["watcher-id"];
+  if (!id) {
     throw new Error(Label.START_MODEL_WATCHER_NO_ID_ERROR);
   }
   const data = await conn?.facades.allWatcher?.next({ id });
@@ -610,11 +607,11 @@ export async function setModelSharingPermissions(
   let response: ErrorResults | null | Promise<never> | undefined = null;
 
   if (conn) {
-    if (permissionFrom !== undefined && permissionFrom) {
+    if (permissionFrom) {
       response = await modifyAccess(permissionFrom, "revoke");
     }
 
-    if (action === "grant" && permissionTo !== undefined && permissionTo) {
+    if (action === "grant" && permissionTo) {
       response = await modifyAccess(permissionTo, "grant");
     }
 
@@ -667,7 +664,7 @@ export async function getCharmsURLFromApplications(
   dispatch(
     jujuActions.updateCharms({
       charms: charms.filter((charm): charm is Charm => !!charm),
-      wsControllerURL: baseWSControllerURL ?? undefined,
+      wsControllerURL: baseWSControllerURL,
     }),
   );
   return charms.filter((charm) => !!charm).map((charm) => charm?.url);

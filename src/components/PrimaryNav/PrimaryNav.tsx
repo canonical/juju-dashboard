@@ -54,7 +54,7 @@ const useControllersLink = (): {
         controllersCount +
         controllerArray.reduce(
           (count, controller) =>
-            "version" in controller && Boolean(controller.updateAvailable)
+            "version" in controller && controller.updateAvailable
               ? count + 1
               : count,
           0,
@@ -100,7 +100,7 @@ const PrimaryNav: FC = () => {
   const rebacAllowed = rebacEnabled && isJIMMControllerAdmin;
 
   useEffect(() => {
-    if (appVersion !== null && appVersion && !versionRequested.current) {
+    if (appVersion && !versionRequested.current) {
       dashboardUpdateAvailable(appVersion || "")
         .then((available) => {
           setUpdateAvailable(available ?? false);

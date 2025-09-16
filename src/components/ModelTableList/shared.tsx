@@ -37,7 +37,7 @@ export const getControllerName = (
               ? (controllerData.name ?? null)
               : controllerData.path;
         }
-        return Boolean(controllerName);
+        return !!controllerName;
       }),
   );
   return controllerName ?? controllerUUID;
@@ -74,26 +74,21 @@ export type TableHeaderOptions = {
 export const generateTableHeaders = (
   label: string,
   count: number,
-  options: null | TableHeaderOptions = null,
+  options?: TableHeaderOptions,
 ): MainTableHeader[] => {
   const rows = [
     {
-      content:
-        options !== null && Boolean(options.showHeaderStatus) ? (
-          <Status status={label} count={count} />
-        ) : (
-          `${label} (${count})`
-        ),
+      content: options?.showHeaderStatus ? (
+        <Status status={label} count={count} />
+      ) : (
+        `${label} (${count})`
+      ),
       sortKey: "name",
     },
     { content: "", sortKey: "summary" }, // The unit/machines/apps counts
-    options !== null && Boolean(options?.showOwner)
-      ? { content: "Owner", sortKey: "owner" }
-      : null,
-    options !== null && Boolean(options?.showStatus)
-      ? { content: "Status", sortKey: "status" }
-      : null,
-    options !== null && Boolean(options?.showCloud)
+    options?.showOwner ? { content: "Owner", sortKey: "owner" } : null,
+    options?.showStatus ? { content: "Status", sortKey: "status" } : null,
+    options?.showCloud
       ? { content: "Cloud/Region", sortKey: "cloud" }
       : { content: "Region", sortKey: "region" },
     { content: "Credential", sortKey: "credential" },

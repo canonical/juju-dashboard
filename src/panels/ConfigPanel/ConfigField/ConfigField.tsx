@@ -59,16 +59,14 @@ const ConfigField = <V extends ConfigValue>({
   const updateDescriptionHeight = useCallback(() => {
     if (
       // Don't update if the height has already been retrieved.
-      maxDescriptionHeight === null ||
-      (!maxDescriptionHeight &&
-        descriptionRef.current?.firstChild &&
-        // Don't try and update if the element is not visible.
-        descriptionRef.current?.offsetParent !== null)
+      !maxDescriptionHeight &&
+      descriptionRef.current?.firstChild &&
+      // Don't try and update if the element is not visible.
+      descriptionRef.current?.offsetParent !== null
     ) {
       setMaxDescriptionHeight(
         `${
-          (descriptionRef.current?.firstChild as HTMLPreElement)
-            ?.clientHeight ?? 0
+          (descriptionRef.current.firstChild as HTMLPreElement).clientHeight
         }px`,
       );
     }
@@ -80,7 +78,7 @@ const ConfigField = <V extends ConfigValue>({
   );
 
   useEffect(() => {
-    if (maxDescriptionHeight !== null && maxDescriptionHeight) {
+    if (maxDescriptionHeight) {
       // There's no need to keep observing the element once the height has
       // been retrieved.
       resizeObserver.disconnect();
@@ -198,11 +196,11 @@ const ConfigField = <V extends ConfigValue>({
       </div>
       <div
         className={classNames("p-form-validation", {
-          "is-error": Boolean(config.error),
+          "is-error": !!config.error,
         })}
       >
         {input(inputValue as V)}
-        {config.error !== null && config.error !== undefined && config.error ? (
+        {config.error ? (
           <p className="p-form-validation__message">{config.error}</p>
         ) : null}
       </div>

@@ -121,7 +121,7 @@ export const getModelStatusGroupData = (
       });
       return;
     }
-    const units = app.units ?? {}; // subordinates do not have units.
+    const units = app.units || {}; // subordinates do not have units.
     Object.keys(units).forEach((unitId) => {
       const unit = units[unitId];
       const { status: unitStatus } = getUnitStatusGroup(unit);
@@ -246,7 +246,7 @@ export const extractCloudName = (tag = ""): string => {
 export const extractCredentialName = (tag: null | string = null): string => {
   // @ is not there in local boostraps
   // cloudcred-localhost_admin_localhost
-  if (tag === null || !tag) {
+  if (!tag) {
     return "-";
   }
   const [_tag, cred] = tag.split("cloudcred-");
@@ -304,11 +304,10 @@ export const generateIconPath = (charmId: string): string => {
     // Regex explanation:
     // "ch:amd64/xenial/content-cache-425".match(/\/(?:(?<release>.+)\/)?(?<charmName>.+)-\d+/).groups
     // Object { release: "xenial", charmName: "content-cache" }
-    const charmName =
-      charmId.match(/:(?:(?<release>.+)\/)?(?<charmName>.+)-\d+/)?.groups?.[
-        "charmName"
-      ] ?? null;
-    if (charmName !== null && charmName) {
+    const charmName = charmId.match(
+      /:(?:(?<release>.+)\/)?(?<charmName>.+)-\d+/,
+    )?.groups?.["charmName"];
+    if (charmName) {
       return `https://charmhub.io/${charmName}/icon`;
     }
   }

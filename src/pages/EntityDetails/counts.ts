@@ -31,12 +31,12 @@ const generateOfferCounts = (
   return { joined: offerCount };
 };
 
-const generateSecondaryCounts = <M extends ModelData>(
+const generateSecondaryCounts = <M = ModelData>(
   modelStatusData: M,
   segment: keyof M,
   selector: string,
 ): Counts | void => {
-  const data = segment in modelStatusData ? modelStatusData[segment] : null;
+  const data = modelStatusData[segment];
   if (data && typeof data === "object") {
     return Object.entries(data).reduce<Counts>((counts, section) => {
       const { status } = section[1][selector] as { status: string };
@@ -46,11 +46,11 @@ const generateSecondaryCounts = <M extends ModelData>(
 };
 
 export function generateUnitCounts(
-  units: null | UnitData,
-  applicationName: null | string = null,
+  units?: null | UnitData,
+  applicationName?: null | string,
 ): Counts {
   const counts: Counts = {};
-  if (units && applicationName !== null && applicationName) {
+  if (units && applicationName) {
     Object.values(units).forEach((unitData): void => {
       if (unitData.application === applicationName) {
         const status = unitData["agent-status"].current;
@@ -64,9 +64,9 @@ export function generateUnitCounts(
 }
 
 export function generateMachineCounts(
-  machines: MachineData | null,
-  units: null | UnitData,
-  applicationName: null | string = null,
+  machines?: MachineData | null,
+  units?: null | UnitData,
+  applicationName?: null | string,
 ): Counts {
   const counts: Counts = {};
   if (machines && units && applicationName !== null && applicationName) {

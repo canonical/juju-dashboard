@@ -27,7 +27,7 @@ type Props = {
   history?: CommandHistory;
   modelUUID: string;
   onCommandSent: (command?: string) => void;
-  activeUser?: null | string;
+  activeUser?: string;
   onHistoryChange?: (modelUUID: string, historyItem: HistoryItem) => void;
   /**
    * When overriding this function then ANSI codes need to be manually handled.
@@ -44,7 +44,7 @@ type Authentication = {
 };
 
 const WebCLI: FC<Props> = ({
-  activeUser = null,
+  activeUser,
   controllerWSHost,
   credentials,
   history,
@@ -121,13 +121,13 @@ const WebCLI: FC<Props> = ({
   }, [controllerWSHost, modelUUID, protocol]);
 
   useEffect(() => {
-    if (wsAddress === null || !wsAddress) {
+    if (!wsAddress) {
       setInlineError(InlineErrors.CONNECTION, Label.CONNECTION_ERROR);
       return;
     }
     setInlineError(InlineErrors.CONNECTION, null);
     // If we have an active WebSocket connection then don't create a new one.
-    if (connection.current && connection.current.isActive()) {
+    if (connection.current?.isActive()) {
       return;
     }
     const conn = new Connection({
@@ -141,7 +141,7 @@ const WebCLI: FC<Props> = ({
       onerror: (error): void => {
         // Only display errors if they're related to the current WebSocket
         // connection.
-        if (connection.current && connection.current.isWebSocketEqual(conn)) {
+        if (connection.current?.isWebSocketEqual(conn)) {
           setInlineError(
             InlineErrors.CONNECTION,
             typeof error === "string" ? error : Label.UNKNOWN_ERROR,
@@ -150,7 +150,7 @@ const WebCLI: FC<Props> = ({
       },
       messageCallback: (messages: string[]): void => {
         const command = lastCommand.current;
-        if (command !== null && command) {
+        if (command) {
           setOutput((previousOutput) => ({
             ...previousOutput,
             [modelUUID]: [
@@ -182,7 +182,7 @@ const WebCLI: FC<Props> = ({
     // that the original connection was redirected. This typically happens in
     // a JAAS style environment.
     const authentication: Authentication = {};
-    if (credentials && credentials.user && credentials.password) {
+    if (credentials?.user && credentials.password) {
       authentication.user = credentials.user;
       authentication.credentials = credentials.password;
       setInlineError(InlineErrors.AUTHENTICATION, null);
@@ -190,23 +190,18 @@ const WebCLI: FC<Props> = ({
       // A user name and password were not provided so try and get a macaroon.
       // The macaroon should be already stored as we've already connected to
       // the model for the model status.
-      const origin =
-        connection.current && connection.current.address
-          ? new URL(connection.current?.address)?.origin
-          : null;
-      const macaroons =
-        origin !== null && origin ? bakery.storage.get(`${origin}/api`) : null;
-      if (macaroons !== null && macaroons) {
+      const origin = connection.current?.address
+        ? new URL(connection.current?.address)?.origin
+        : null;
+      const macaroons = origin ? bakery.storage.get(`${origin}/api`) : null;
+      if (macaroons) {
         const deserialized = JSON.parse(atob(macaroons)) as Macaroon;
-        authentication.user =
-          activeUser !== null && activeUser
-            ? getUserName(activeUser)
-            : undefined;
+        authentication.user = activeUser ? getUserName(activeUser) : undefined;
         authentication.macaroons = [deserialized];
       }
       setInlineError(
         InlineErrors.AUTHENTICATION,
-        macaroons !== null && macaroons ? null : Label.AUTHENTICATION_ERROR,
+        macaroons ? null : Label.AUTHENTICATION_ERROR,
       );
     }
 
@@ -223,7 +218,7 @@ const WebCLI: FC<Props> = ({
     // Reset the position in case the user was navigating through the history.
     setHistoryPosition(0);
 
-    if (!connection.current || !connection.current.isOpen()) {
+    if (!connection.current?.isOpen()) {
       try {
         await connection.current?.reconnect();
       } catch (error) {
@@ -255,7 +250,7 @@ const WebCLI: FC<Props> = ({
   return (
     <div className="webcli is-dark" data-testid={TestId.COMPONENT}>
       <WebCLIOutput
-        content={modelUUID in output ? output[modelUUID] : []}
+        content={output && modelUUID in output ? output[modelUUID] : []}
         showHelp={shouldShowHelp || hasInlineError()}
         setShouldShowHelp={setShouldShowHelp}
         tableLinks={tableLinks}

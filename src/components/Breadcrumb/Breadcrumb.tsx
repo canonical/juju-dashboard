@@ -16,8 +16,8 @@ export default function Breadcrumb(): JSX.Element {
   } = useEntityDetailsParams();
 
   const generateBreadcrumbs = function (): ReactNode {
-    const view = machineId !== null ? ModelTab.MACHINES : ModelTab.APPS;
-    if (userName === null || !userName || modelName === null || !modelName) {
+    const view = machineId ? ModelTab.MACHINES : ModelTab.APPS;
+    if (!userName || !modelName) {
       return null;
     }
 
@@ -31,17 +31,17 @@ export default function Breadcrumb(): JSX.Element {
       title: undefined,
     };
 
-    if (appName !== null && appName) {
+    if (appName) {
       entityType.id = appName;
       entityType.title = "Applications";
     }
 
-    if (unitId !== null && unitId) {
+    if (unitId) {
       entityType.id = unitId;
       entityType.title = "Units";
     }
 
-    if (machineId !== null && machineId) {
+    if (machineId) {
       entityType.id = machineId;
       entityType.title = "Machines";
     }
@@ -57,7 +57,7 @@ export default function Breadcrumb(): JSX.Element {
               {modelName}
             </Link>
           </li>
-          {unitId === null || !unitId ? (
+          {!unitId && (
             <li
               className="p-breadcrumbs__item u-no-padding--top"
               data-testid="breadcrumb-section"
@@ -66,8 +66,8 @@ export default function Breadcrumb(): JSX.Element {
                 {entityType.title}
               </Link>
             </li>
-          ) : null}
-          {unitId !== null && unitId ? (
+          )}
+          {unitId && (
             <>
               <li
                 className="p-breadcrumbs__item u-no-padding--top"
@@ -87,7 +87,7 @@ export default function Breadcrumb(): JSX.Element {
                 className="p-breadcrumbs__item u-no-padding--top"
                 data-testid="breadcrumb-app"
               >
-                {appName !== null && appName ? (
+                {appName ? (
                   <Link
                     to={urls.model.app.index({ userName, modelName, appName })}
                   >
@@ -96,7 +96,7 @@ export default function Breadcrumb(): JSX.Element {
                 ) : null}
               </li>
             </>
-          ) : null}
+          )}
           <li
             className="p-breadcrumbs__item u-no-padding--top"
             data-testid={`breadcrumb-${entityType.title?.toLowerCase()}`}

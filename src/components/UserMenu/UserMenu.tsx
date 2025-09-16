@@ -40,7 +40,7 @@ const UserMenu: FC = () => {
 
   return (
     <>
-      {activeUser !== null && activeUser ? (
+      {activeUser && (
         <div
           className={classNames("user-menu", {
             "is-active": isActive,
@@ -75,7 +75,7 @@ const UserMenu: FC = () => {
             ]}
           />
         </div>
-      ) : null}
+      )}
     </>
   );
 };

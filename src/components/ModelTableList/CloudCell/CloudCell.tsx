@@ -36,7 +36,7 @@ const CloudCell: FC<Props> = ({ model }: Props) => {
   }
   return (
     <>
-      {src !== null && src && alt !== null && alt ? (
+      {src && alt ? (
         <img
           src={src}
           alt={alt}

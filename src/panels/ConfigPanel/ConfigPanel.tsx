@@ -49,7 +49,7 @@ const hasChangedFields = (newConfig: Config): boolean => {
 };
 
 const hasErrors = (config: Config): boolean =>
-  Object.values(config).some((field) => Boolean(field.error));
+  Object.values(config).some((field) => !!field.error);
 
 function getConfig(
   appName: string,
@@ -137,7 +137,7 @@ function generateConfigElementList(
               !validateConfig.newValue
             ) {
               // Clear previous errors
-              if (error !== null && error) {
+              if (error) {
                 setError(validateConfig.name, null);
               }
               // Don't validate unchanged fields.
@@ -171,7 +171,7 @@ function generateConfigElementList(
               }
             }
             // Clear previous errors.
-            if (error !== null && error) {
+            if (error) {
               setError(validateConfig.name, null);
             }
           }}
@@ -255,23 +255,18 @@ export default function ConfigPanel(): JSX.Element {
   const [queryParams, , handleRemovePanelQueryParams] =
     usePanelQueryParams<ConfigQueryParams>(defaultQueryParams);
   const { entity: appName, charm, modelUUID } = queryParams;
-  const hasConfig = !isLoading && Object.keys(config).length > 0;
+  const hasConfig = !isLoading && !!config && Object.keys(config).length > 0;
   const secrets = useAppSelector((state) => getModelSecrets(state, modelUUID));
-  const wsControllerURL =
-    useAppSelector((state) => getModelByUUID(state, modelUUID))
-      ?.wsControllerURL ?? null;
+  const wsControllerURL = useAppSelector((state) =>
+    getModelByUUID(state, modelUUID),
+  )?.wsControllerURL;
   const listSecrets = useListSecrets(userName, modelName);
   const getApplicationConfig = useGetApplicationConfig(userName, modelName);
 
   useEffect(() => {
     listSecrets();
     return (): void => {
-      if (
-        modelUUID == null ||
-        !modelUUID ||
-        wsControllerURL === null ||
-        !wsControllerURL
-      ) {
+      if (!modelUUID || !wsControllerURL) {
         return;
       }
       dispatch(jujuActions.clearSecrets({ modelUUID, wsControllerURL }));
@@ -279,7 +274,7 @@ export default function ConfigPanel(): JSX.Element {
   }, [dispatch, listSecrets, modelUUID, wsControllerURL]);
 
   const getConfigCallback = useCallback(() => {
-    if (modelUUID !== null && modelUUID && appName !== null && appName) {
+    if (modelUUID && appName) {
       getConfig(
         appName,
         setIsLoading,
@@ -389,7 +384,7 @@ export default function ConfigPanel(): JSX.Element {
       ref={scrollArea}
       title={
         <>
-          {appName !== null && appName && charm !== null && charm ? (
+          {appName && charm ? (
             <CharmIcon name={appName} charmId={charm} />
           ) : null}{" "}
           {appName}

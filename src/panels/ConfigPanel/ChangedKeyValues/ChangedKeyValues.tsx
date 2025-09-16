@@ -11,7 +11,7 @@ type Props = {
 
 const generateValue = (config: ConfigData): number | string | undefined => {
   if (config.type === "boolean") {
-    return config.newValue !== undefined && config.newValue ? "true" : "false";
+    return config.newValue ? "true" : "false";
   }
   return config.newValue;
 };

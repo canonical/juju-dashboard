@@ -17,7 +17,7 @@ const EntityIdentifier: FC<Props> = ({
   return (
     <TruncatedTooltip message={name} wrapperClassName="entity-name">
       {subordinate && <span className="subordinate"></span>}
-      {charmId !== null ? <CharmIcon name={name} charmId={charmId} /> : null}
+      {charmId && <CharmIcon name={name} charmId={charmId} />}
       {name}
     </TruncatedTooltip>
   );

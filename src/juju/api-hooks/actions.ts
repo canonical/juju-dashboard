@@ -19,8 +19,8 @@ export enum Label {
 }
 
 export const useGetActionsForApplication = (
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ((appName: string) => Promise<ApplicationsCharmActionsResults>) => {
   const handler = useCallback(
     async (connection: ConnectionWithFacades, appName: string) => {
@@ -37,8 +37,8 @@ export const useGetActionsForApplication = (
 };
 
 export const useExecuteActionOnUnits = (
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ((
   unitList: string[] | undefined,
   actionName: string,
@@ -72,8 +72,8 @@ export const useExecuteActionOnUnits = (
 };
 
 export const useQueryOperationsList = (
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ((queryArgs: Partial<OperationQueryArgs>) => Promise<OperationResults>) => {
   const handler = useCallback(
     async (
@@ -100,8 +100,8 @@ export const useQueryOperationsList = (
 };
 
 export const useQueryActionsList = (
-  userName: null | string = null,
-  modelName: null | string = null,
+  userName?: null | string,
+  modelName?: null | string,
 ): ((queryArgs: Entities) => Promise<ActionResults>) => {
   const handler = useCallback(
     async (connection: ConnectionWithFacades, queryArgs: Entities) => {

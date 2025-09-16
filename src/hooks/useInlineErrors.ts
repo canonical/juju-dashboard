@@ -39,12 +39,12 @@ function useInlineErrors(
     [],
   );
   const hasError = useCallback(
-    (key: InlineError["key"] | null = null) => {
+    (key?: InlineError["key"]) => {
       const hasIndividualError = (inlineError: InlineError): boolean =>
         Array.isArray(inlineError.error)
           ? inlineError.error.some(Boolean)
-          : Boolean(inlineError.error);
-      return key !== null && key
+          : !!inlineError.error;
+      return key
         ? !!inlineErrors.find(
             (inlineError) =>
               inlineError.key === key && hasIndividualError(inlineError),
@@ -55,7 +55,7 @@ function useInlineErrors(
   );
   const errors = inlineErrors.reduce<ReactNode[]>((nodes, { key, error }) => {
     const errorItems =
-      Boolean(error) && mapping && key in mapping ? mapping[key](error) : error;
+      error && mapping && key in mapping ? mapping[key](error) : error;
     const filteredErrorItems = (
       Array.isArray(errorItems) ? errorItems : [errorItems]
     ).filter(Boolean);

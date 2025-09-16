@@ -10,11 +10,11 @@ import { Label } from "../types";
 
 export function login(
   dispatch: AppDispatch,
-  wsControllerURL: null | string,
+  wsControllerURL: null | string | undefined,
   { user, password }: { user: string; password: string },
 ): void {
   dispatch(actions.cleanupLoginErrors());
-  if (wsControllerURL !== null && wsControllerURL) {
+  if (wsControllerURL) {
     dispatch(
       actions.storeUserPass({
         wsControllerURL,
@@ -23,8 +23,7 @@ export function login(
     );
   }
   dispatch(actions.updateLoginLoading(true));
-  const hasBakery = Boolean(bakery);
-  if (hasBakery) {
+  if (bakery) {
     dispatch(thunks.connectAndStartPolling())
       .then(unwrapResult)
       .catch((error) => {

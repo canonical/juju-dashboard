@@ -7,7 +7,7 @@ import { useAppSelector } from "store/store";
 
 // Return model status data based on model name in URL
 export default function useModelStatus(
-  modelUUID: null | string = null,
+  modelUUID?: null | string,
 ): ModelData | null {
   let modelName: null | string = null;
   ({ modelName = null } = useParams());
@@ -18,7 +18,7 @@ export default function useModelStatus(
     model: null,
   });
 
-  if (modelName === null || !modelName) {
+  if (!modelName) {
     modelName = queryParams[0].model;
   }
 
@@ -27,6 +27,6 @@ export default function useModelStatus(
   );
 
   return useAppSelector((state) =>
-    getModelStatus(state, modelUUID ?? urlModelUUID),
+    getModelStatus(state, modelUUID || urlModelUUID),
   );
 }

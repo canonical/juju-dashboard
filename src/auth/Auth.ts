@@ -44,8 +44,7 @@ export class Auth {
    * override the previously instantiated singleton instance.
    */
   constructor(dispatch: AppDispatch, name: AuthMethod) {
-    const hasInstance = Boolean(Auth.instance);
-    if (hasInstance) {
+    if (Auth.instance) {
       logger.warn(
         "Singleton instance already exists, and is being re-constructed. Overriding previous instance with incoming.",
       );

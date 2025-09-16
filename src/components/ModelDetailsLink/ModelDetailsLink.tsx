@@ -35,7 +35,7 @@ const ModelDetailsLink: React.FC<Props> = ({
   modelName,
   ownerTag,
   children,
-  replaceLabel = false,
+  replaceLabel,
   uuid,
   view,
   ...props
@@ -43,7 +43,7 @@ const ModelDetailsLink: React.FC<Props> = ({
   // This component's props require either uuid or modelName to exist,
   // but this characteristic gets lost when the props are destructured.
   const { modelName: model, userName: owner } = useModelByUUIDDetails(
-    uuid !== undefined && uuid
+    uuid
       ? ({ uuid } as UUIDProps)
       : ({
           ownerTag,
@@ -54,7 +54,7 @@ const ModelDetailsLink: React.FC<Props> = ({
   // we need to check for their existence and supply reasonable fallbacks if it
   // isn't available. Once we have a single API call for all the data this check
   // can be removed.
-  if (owner === null || !owner || model === null || !model) {
+  if (!owner || !model) {
     // We will just return an unclickable name until we get an owner tag as
     // without it we can't create a reliable link.
     return <>{children}</>;
@@ -67,7 +67,7 @@ const ModelDetailsLink: React.FC<Props> = ({
   return (
     <Link
       to={
-        view !== undefined && Boolean(view)
+        view
           ? urls.model.tab({ userName, modelName: model, tab: view })
           : urls.model.index({ userName, modelName: model })
       }

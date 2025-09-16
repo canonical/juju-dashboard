@@ -19,8 +19,8 @@ type Props<C> = PropsWithSpread<
 const Logo = <C,>({
   className,
   component: Component = "div",
-  dark = false,
-  isJuju = false,
+  dark,
+  isJuju,
   ...props
 }: Props<C>): JSX.Element => {
   return (

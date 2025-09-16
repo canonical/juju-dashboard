@@ -83,7 +83,7 @@ const InfoPanel: FC = () => {
           <Modal
             className="info-panel__modal"
             close={closePortal}
-            title={modelName?.split("/")[1] ?? modelName}
+            title={modelName?.split("/")[1] || modelName}
           >
             <Topology
               width={width}

@@ -53,14 +53,14 @@ const COLUMN_DATA = [
 
 const AuditLogsTable: FC = () => {
   const { modelName = null } = useParams<EntityDetailsRoute>();
-  const showModel = modelName === null || !modelName;
+  const showModel = !modelName;
   const dispatch = useAppDispatch();
   const auditLogs = useAppSelector(getAuditEvents);
   const auditLogsLoaded = useAppSelector(getAuditEventsLoaded);
   const auditLogsLoading = useAppSelector(getAuditEventsLoading);
   const auditLogsLimit = useAppSelector(getAuditEventsLimit);
   const [filters] = useQueryParams<AuditLogFilters>(DEFAULT_AUDIT_LOG_FILTERS);
-  const hasFilters = Object.values(filters).some((filter) => Boolean(filter));
+  const hasFilters = Object.values(filters).some((filter) => !!filter);
   const additionalEmptyMsg = showModel ? "" : ` for ${modelName}`;
   const emptyMsg = hasFilters
     ? "No audit logs found. Try changing the filters."

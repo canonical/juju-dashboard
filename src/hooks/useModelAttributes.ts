@@ -30,12 +30,8 @@ export default function useModelAttributes(modelData: ModelDataList | null): {
       }
 
       // Extract region filters
-      const regionFilter = model.info["cloud-region"] ?? null;
-      if (
-        regionFilter !== null &&
-        regionFilter &&
-        !regions.includes(regionFilter)
-      ) {
+      const regionFilter = model.info["cloud-region"];
+      if (regionFilter && !regions.includes(regionFilter)) {
         regions.push(regionFilter);
       }
 

@@ -52,9 +52,7 @@ export default function ToastCard({
       data-testid="toast-card"
     >
       <div className="toast-card__body">
-        {iconName !== null && iconName ? (
-          <i className={`p-icon--${iconName}`}>{iconName}</i>
-        ) : null}
+        {iconName && <i className={`p-icon--${iconName}`}>{iconName}</i>}
         <div className="toast-card__message">{children}</div>
         <i
           className="p-icon--close"

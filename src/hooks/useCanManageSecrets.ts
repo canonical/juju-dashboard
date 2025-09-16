@@ -17,7 +17,7 @@ const useCanManageSecrets = (): boolean => {
     getCanManageSecrets(state, modelUUID),
   );
   const canConfigureModel = useCanConfigureModel();
-  return canManageSecrets && canConfigureModel;
+  return (canManageSecrets && canConfigureModel) ?? false;
 };
 
 export default useCanManageSecrets;

@@ -6,9 +6,9 @@ import PageNotFound from "pages/PageNotFound";
 import type { Props } from "./types";
 
 const CheckPermissions = ({
-  allowed = false,
+  allowed,
   children,
-  loading = false,
+  loading,
   ...props
 }: Props): JSX.Element => {
   if (loading) {

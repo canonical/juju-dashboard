@@ -14,7 +14,7 @@ const RemoteAppsTable: FC = () => {
   const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
   const modelStatusData = useModelStatus();
   const remoteApplicationTableRows = useMemo(() => {
-    return modelName !== null && modelName && userName !== null && userName
+    return modelName && userName
       ? generateRemoteApplicationRows(modelStatusData)
       : [];
   }, [modelStatusData, modelName, userName]);

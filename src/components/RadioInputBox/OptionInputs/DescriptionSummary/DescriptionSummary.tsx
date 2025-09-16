@@ -5,9 +5,9 @@ type Props = {
 };
 
 export default function DescriptionSummary({
-  description = null,
+  description,
 }: Props): JSX.Element | null {
-  if (description === null || !description) {
+  if (!description) {
     return null;
   }
   // 30 is a magic number, the width of the available text area of the field

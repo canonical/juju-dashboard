@@ -43,7 +43,7 @@ if (
   window.HTMLDivElement.prototype.animate = animateMock;
 } else {
   console.error(
-    "happy-dom appears to support the web animations api",
+    "JSDOM appears to support the web animations api",
     "you may now remove the mock",
   );
 }

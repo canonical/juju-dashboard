@@ -11,15 +11,14 @@ import { TestId } from "./types";
 
 const MainContent: FC<Props> = ({
   children,
-  loading = false,
-  secondaryNav = null,
+  loading,
+  secondaryNav,
   title,
   titleClassName,
   titleComponent,
   ...props
 }: Props) => {
-  const hasSecondaryNav =
-    secondaryNav !== null && secondaryNav.items.length > 0;
+  const hasSecondaryNav = !!secondaryNav?.items.length;
   return (
     <div
       id="main-content"

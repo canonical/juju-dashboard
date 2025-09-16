@@ -38,7 +38,7 @@ export default {
     const [items, setItems] = useState<Record<string, React.ReactNode>>({});
 
     useEffect(() => {
-      if (wsControllerURL === null || !wsControllerURL) {
+      if (!wsControllerURL) {
         setHint(
           "No controller URL is detected. Please check configuration and try again.",
         );
@@ -77,7 +77,7 @@ export default {
 
     useEffect(() => {
       if (!connection) {
-        if (wsControllerURL !== null && wsControllerURL) {
+        if (wsControllerURL) {
           // Don't override any existing error.
           setHint(
             "Unable to connect to controller. Visit the controller URL, and ensure that HTTPS certificates have been accepted.",
@@ -112,7 +112,7 @@ export default {
 
     return (
       <>
-        {hint !== null && hint ? <p>{hint}</p> : null}
+        {hint ? <p>{hint}</p> : null}
         <EntityInfo data={items} />
       </>
     );

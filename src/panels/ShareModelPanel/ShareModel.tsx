@@ -57,8 +57,8 @@ export default function ShareModel(): JSX.Element {
   const modelStatusData = useModelStatus() ?? null;
   const controllerUUID = modelStatusData?.info?.["controller-uuid"];
 
-  const modelUUID = modelStatusData?.info?.uuid ?? null;
-  const modelName = modelStatusData?.info?.name ?? null;
+  const modelUUID = modelStatusData?.info?.uuid;
+  const modelName = modelStatusData?.info?.name;
 
   const modelControllerData = useAppSelector((state) =>
     getModelControllerDataByUUID(state, controllerUUID),
@@ -73,7 +73,7 @@ export default function ShareModel(): JSX.Element {
   // Display the domains used in this model first.
   const userDomains = [...modelUserDomains, ...allDomains].slice(0, 5);
 
-  const modelControllerURL = modelControllerData?.url ?? null;
+  const modelControllerURL = modelControllerData?.url;
   const users = modelStatusData?.info?.users;
 
   const userAlreadyHasAccess = (
@@ -98,12 +98,7 @@ export default function ShareModel(): JSX.Element {
     permissionFrom: string | undefined,
   ): Promise<ErrorResults | null> => {
     let response: ErrorResults | null = null;
-    if (
-      modelControllerURL === null ||
-      !modelControllerURL ||
-      modelUUID === null ||
-      !modelUUID
-    ) {
+    if (!modelControllerURL || !modelUUID) {
       return null;
     }
     try {
@@ -144,7 +139,7 @@ export default function ShareModel(): JSX.Element {
       const newUserName = values.username;
       const newUserPermission = values.access;
       let response = null;
-      if (newUserName && newUserPermission !== null && newUserPermission) {
+      if (newUserName && newUserPermission) {
         response = await updateModelPermissions(
           "grant",
           newUserName,
@@ -153,8 +148,8 @@ export default function ShareModel(): JSX.Element {
         );
       }
 
-      const error = response?.results?.[0]?.error?.message ?? null;
-      if (error !== null && error) {
+      const error = response?.results?.[0]?.error?.message;
+      if (error) {
         reactHotToast.custom((toast: ToastInstance) => (
           <ToastCard toastInstance={toast} type="negative">
             {error}
@@ -198,7 +193,7 @@ export default function ShareModel(): JSX.Element {
 
   const isOwner = (user: string): boolean => {
     const ownerTag = modelStatusData?.info?.["owner-tag"] ?? null;
-    return ownerTag !== null && !!ownerTag && user === getUserName(ownerTag);
+    return !!ownerTag && user === getUserName(ownerTag);
   };
 
   const handleAccessSelectChange = async (
@@ -218,20 +213,13 @@ export default function ShareModel(): JSX.Element {
     );
     let error: null | string = response?.results?.[0]?.error?.message ?? null;
     // ignore this error as it means that it's a success
-    if (
-      error !== null &&
-      error &&
-      error.match(/user already has .+ access or greater/i)
-    ) {
+    if (error?.match(/user already has .+ access or greater/i)) {
       delete response?.results[0];
       error = null;
     }
 
     reactHotToast.custom((toast: ToastInstance) => (
-      <ToastCard
-        toastInstance={toast}
-        type={error !== null && error ? "negative" : "positive"}
-      >
+      <ToastCard toastInstance={toast} type={error ? "negative" : "positive"}>
         {error ?? (
           <>
             Permissions for <strong>{username}</strong> have been changed to{" "}
@@ -279,8 +267,7 @@ export default function ShareModel(): JSX.Element {
   const sortedUsers = cloneDeep(users ?? null);
   sortedUsers?.some(
     (item: User, i: number) =>
-      isOwner(item.user) &&
-      sortedUsers.unshift(sortedUsers.splice(i, 1)[0]) > 0,
+      isOwner(item.user) && sortedUsers.unshift(sortedUsers.splice(i, 1)[0]),
   );
 
   return (

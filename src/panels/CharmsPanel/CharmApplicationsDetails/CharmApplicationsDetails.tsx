@@ -13,7 +13,7 @@ type Props = {
 const formatApplicationsDetails = (applications: ApplicationInfo[]): string =>
   applications
     .map((application) => ("name" in application ? application.name : null))
-    .filter((application) => Boolean(application))
+    .filter((application) => !!application)
     .join(", ");
 
 const CharmApplicationsDetails = ({ charmURL }: Props): JSX.Element => {

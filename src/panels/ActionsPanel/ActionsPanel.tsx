@@ -90,7 +90,7 @@ export default function ActionsPanel(): JSX.Element {
 
   const getActionsForApplicationCallback = useCallback(() => {
     setFetchingActionData(true);
-    if (appName !== null && appName && modelUUID !== null && modelUUID) {
+    if (appName && modelUUID) {
       getActionsForApplication(appName)
         .then((actions) => {
           if (actions?.results?.[0]?.actions) {
@@ -114,9 +114,8 @@ export default function ActionsPanel(): JSX.Element {
   }, [getActionsForApplicationCallback]);
 
   const namespace =
-    appName !== null && appName && modelUUID !== null && modelUUID
-      ? (appState.juju?.modelData?.[modelUUID]?.applications?.[appName]
-          ?.charm ?? null)
+    appName && modelUUID
+      ? appState.juju?.modelData?.[modelUUID]?.applications?.[appName]?.charm
       : null;
 
   const generateSelectedUnitList = useCallback(() => {
@@ -132,7 +131,7 @@ export default function ActionsPanel(): JSX.Element {
     const unitLength = selectedUnits.length;
     return (
       <>
-        {appName !== null && appName && namespace !== null && namespace ? (
+        {appName && namespace ? (
           <CharmIcon name={appName} charmId={namespace} />
         ) : null}{" "}
         {unitLength} {pluralize(unitLength, "unit")} selected
@@ -224,7 +223,7 @@ export default function ActionsPanel(): JSX.Element {
           </RadioInputBox>
         ))}
       </LoadingHandler>
-      {selectedAction !== null && selectedAction && confirmType !== null ? (
+      {selectedAction && confirmType ? (
         <ConfirmationDialog
           confirmType={confirmType}
           selectedAction={selectedAction}

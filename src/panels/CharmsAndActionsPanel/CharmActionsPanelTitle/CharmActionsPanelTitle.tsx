@@ -32,7 +32,7 @@ const CharmActionsPanelTitle = ({ charmURL }: Props): JSX.Element => {
 
   return (
     <>
-      {selectedCharm?.meta?.name !== undefined && selectedCharm?.url ? (
+      {selectedCharm?.meta?.name && selectedCharm?.url ? (
         <CharmIcon name={selectedCharm.meta.name} charmId={selectedCharm.url} />
       ) : null}{" "}
       {selectedApplications.length}{" "}

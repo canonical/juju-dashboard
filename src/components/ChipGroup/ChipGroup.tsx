@@ -45,11 +45,11 @@ const ChipGroup: FC<Props> = ({ chips, className, descriptor }: Props) => {
     <>
       {numberOfChips > 0 && (
         <div className={classNames("chip-group", className)}>
-          {labelType !== null && labelType ? (
+          {labelType && (
             <strong className="chip-group__descriptor">
               {`${numberOfChips} ${labelType}`}
             </strong>
-          ) : null}
+          )}
           {Object.entries(chips ?? {}).map(([label, count]) => {
             return (
               count > 0 && (

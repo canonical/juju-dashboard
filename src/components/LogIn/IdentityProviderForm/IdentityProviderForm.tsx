@@ -25,7 +25,7 @@ const IdentityProviderForm: FC<Props> = ({ userIsLoggedIn }: Props) => {
   });
   const dispatch = useAppDispatch();
 
-  return visitURL !== null && visitURL ? (
+  return visitURL ? (
     <AuthenticationButton
       appearance="positive"
       visitURL={visitURL}
