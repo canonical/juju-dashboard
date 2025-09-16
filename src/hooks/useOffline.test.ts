@@ -19,6 +19,6 @@ describe("useOffline", () => {
     const { result, unmount } = renderHook(() => useOffline());
     unmount();
     fireEvent.offline(window);
-    expect(result.current).toBeNull();
+    expect(result.current).toStrictEqual(false);
   });
 });

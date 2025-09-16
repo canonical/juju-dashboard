@@ -26,7 +26,7 @@ const CharmActionsPanelTitle = ({ charmURL }: Props): JSX.Element => {
     return <>{Label.NONE_SELECTED_TITLE}</>;
   }
   const totalUnits = selectedApplications.reduce(
-    (total, app) => total + (app["unit-count"] || 0),
+    (total, app) => total + (app["unit-count"] ?? 0),
     0,
   );
 

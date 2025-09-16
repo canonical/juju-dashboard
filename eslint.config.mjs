@@ -97,7 +97,14 @@ export default [
       "require-await": "off",
       "@typescript-eslint/require-await": "error",
       "@typescript-eslint/no-unsafe-argument": "error",
-      "@typescript-eslint/prefer-nullish-coalescing": "error",
+      "@typescript-eslint/prefer-nullish-coalescing": [
+        "error",
+        {
+          ignorePrimitives: {
+            string: true,
+          },
+        },
+      ],
       "init-declarations": "off",
       "@typescript-eslint/init-declarations": "error",
       "@typescript-eslint/promise-function-async": "error",

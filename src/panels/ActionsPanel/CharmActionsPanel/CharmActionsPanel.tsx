@@ -50,7 +50,7 @@ export default function CharmActionsPanel({
     [selectedCharm],
   );
   const unitCount = selectedApplications.reduce(
-    (total, app) => total + (app["unit-count"] || 0),
+    (total, app) => total + (app["unit-count"] ?? 0),
     0,
   );
 

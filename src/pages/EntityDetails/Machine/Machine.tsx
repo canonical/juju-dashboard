@@ -97,11 +97,11 @@ export default function Machine(): JSX.Element {
   );
 
   const hardware = machine?.["hardware-characteristics"];
-  const MachineEntityData = {
-    memory: hardware?.["mem"] || "-",
-    disk: hardware?.["root-disk"] || "-",
-    cpu: hardware?.["cpu-power"] || "-",
-    cores: hardware?.["cpu-cores"] || "-",
+  const machineEntityData = {
+    memory: hardware?.["mem"] ?? "-",
+    disk: hardware?.["root-disk"] ?? "-",
+    cpu: hardware?.["cpu-power"] ?? "-",
+    cores: hardware?.["cpu-cores"] ?? "-",
     message: machine?.["agent-status"].message || "-",
   };
 
@@ -109,7 +109,7 @@ export default function Machine(): JSX.Element {
     <>
       <div>
         <InfoPanel />
-        <EntityInfo data={MachineEntityData} />
+        <EntityInfo data={machineEntityData} />
       </div>
       <div className="entity-details__main">
         <MainTable
