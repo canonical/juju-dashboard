@@ -51,7 +51,7 @@ const WebCLIOutput: FC<Props> = ({
         (outputRef.current.clientHeight +
           outputRef.current.scrollTop +
           // Need to get the position from the bottom before the new content in.
-          (newResponseHeight || 0));
+          (newResponseHeight ?? 0));
       if (distance <= AUTO_SCROLL_DISTANCE) {
         outputRef.current.scrollTo({ top: scrollHeight });
       }

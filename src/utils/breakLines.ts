@@ -10,7 +10,7 @@ const breakLines = (
   let chunks = [];
 
   // Check if text is null or undefined
-  if (text == null) {
+  if (!text) {
     return "";
   }
   // Check that the text includes whitespace, otherwise we'll treat it as if we

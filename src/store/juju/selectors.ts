@@ -189,8 +189,7 @@ export const getModelSecretsState = createSelector(
     getSecretsState,
     (_state: RootState, modelUUID: null | string): null | string => modelUUID,
   ],
-  (secrets, modelUUID) =>
-    modelUUID !== null && modelUUID ? secrets[modelUUID] : null,
+  (secrets, modelUUID) => (modelUUID ? secrets[modelUUID] : null),
 );
 
 export const getModelSecrets = createSelector(

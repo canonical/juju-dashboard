@@ -726,7 +726,7 @@ export function generateConsumedRows(
     return [];
   }
 
-  const remoteApplications = modelStatusData["remote-applications"] || {};
+  const remoteApplications = modelStatusData["remote-applications"] ?? {};
   return Object.keys(remoteApplications).map((appName) => {
     const application: RemoteApplicationStatus = remoteApplications[appName];
     const endpoints = Object.entries<RemoteEndpoint>(application.endpoints)

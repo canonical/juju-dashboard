@@ -112,7 +112,7 @@ export default {
 
     return (
       <>
-        {hint && <p>{hint}</p>}
+        {hint ? <p>{hint}</p> : null}
         <EntityInfo data={items} />
       </>
     );

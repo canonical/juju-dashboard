@@ -189,7 +189,7 @@ export const isLoggedIn = createSelector(
     (state, wsControllerURL): null | string =>
       getActiveUserTag(state, wsControllerURL) ?? null,
   ],
-  (_sliceState, userTag) => userTag !== null && !!userTag,
+  (_sliceState, userTag) => !!userTag,
 );
 
 /**

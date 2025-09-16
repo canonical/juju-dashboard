@@ -34,7 +34,7 @@ const WarningMessage: FC<Props> = ({ model }: Props) => {
     </ModelDetailsLink>
   );
   const list: ListItem[] = messages.slice(0, 5).map((message) => {
-    const unitId = message.unitId ? message.unitId.replace("/", "-") : null;
+    const unitId = message.unitId?.replace("/", "-");
     const { appName } = message;
     return {
       className: "u-truncate",

@@ -25,7 +25,7 @@ const ErrorsBlock = (): JSX.Element | null => {
     );
   };
 
-  if (isCrossModelQueryLoading || crossModelQueryErrors === null) {
+  if (isCrossModelQueryLoading || !crossModelQueryErrors) {
     return null;
   }
 

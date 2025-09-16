@@ -79,7 +79,9 @@ export default function SecretsPicker({ setValue }: Props): JSX.Element {
       if (!secretIsAppOwned(secret)) {
         linkList.push({
           children: <SecretLabel secret={secret} />,
-          onClick: () => setValue(secret.uri),
+          onClick: () => {
+            setValue(secret.uri);
+          },
         });
       }
       return linkList;

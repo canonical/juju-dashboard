@@ -47,8 +47,7 @@ const SearchForm = (): JSX.Element => {
   );
   const isCrossModelQueryLoaded = useAppSelector(getCrossModelQueryLoaded);
   const isCrossModelQueryLoading = useAppSelector(getCrossModelQueryLoading);
-  const isCrossModelQueryError =
-    useAppSelector(getCrossModelQueryErrors) !== null;
+  const isCrossModelQueryError = !!useAppSelector(getCrossModelQueryErrors);
 
   const search = useCallback(
     (query: string) => {

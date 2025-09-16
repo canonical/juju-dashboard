@@ -17,7 +17,7 @@ const ModelSummary: FC<Props> = ({ modelData, ownerTag }: Props) => {
   const applicationCount = applicationKeys.length;
   const machineCount = Object.keys(modelData.machines).length;
   const unitCount = applicationKeys.reduce((prev, key) => {
-    const units = modelData.applications[key].units || {};
+    const units = modelData.applications[key].units ?? {};
     return prev + Object.keys(units).length;
   }, 0);
   return (

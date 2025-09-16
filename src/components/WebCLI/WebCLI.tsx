@@ -182,11 +182,7 @@ const WebCLI: FC<Props> = ({
     // that the original connection was redirected. This typically happens in
     // a JAAS style environment.
     const authentication: Authentication = {};
-    if (
-      credentials?.user !== undefined &&
-      credentials.user &&
-      credentials.password
-    ) {
+    if (credentials?.user && credentials.password) {
       authentication.user = credentials.user;
       authentication.credentials = credentials.password;
       setInlineError(InlineErrors.AUTHENTICATION, null);
@@ -194,10 +190,9 @@ const WebCLI: FC<Props> = ({
       // A user name and password were not provided so try and get a macaroon.
       // The macaroon should be already stored as we've already connected to
       // the model for the model status.
-      const origin =
-        connection.current?.address !== undefined && connection.current.address
-          ? new URL(connection.current?.address)?.origin
-          : null;
+      const origin = connection.current?.address
+        ? new URL(connection.current?.address)?.origin
+        : null;
       const macaroons = origin ? bakery.storage.get(`${origin}/api`) : null;
       if (macaroons) {
         const deserialized = JSON.parse(atob(macaroons)) as Macaroon;

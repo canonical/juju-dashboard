@@ -156,7 +156,7 @@ const slice = createSlice({
           uuid,
           wsControllerURL: action.payload.wsControllerURL,
         };
-        if (state.modelData[uuid] !== undefined) {
+        if (state.modelData[uuid]) {
           modelDataList[uuid] = state.modelData[uuid];
         }
       });

@@ -21,7 +21,7 @@ export function useWidgets(): {
     }
 
     return { title, content: <Widget /> };
-  }).filter((widget) => widget !== null);
+  }).filter((widget) => !!widget);
 
   return sections;
 }

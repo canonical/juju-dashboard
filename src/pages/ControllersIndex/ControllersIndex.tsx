@@ -86,7 +86,7 @@ const ControllersIndex: FC = () => {
             controllerMap[controllerUUID].applications +=
               applicationKeys.length;
             const unitCount = applicationKeys.reduce((acc, appName) => {
-              const units = model.applications[appName].units || {}; // Subordinates don't have units
+              const units = model.applications[appName].units ?? {}; // Subordinates don't have units
               return acc + Object.keys(units).length;
             }, 0);
             controllerMap[controllerUUID].units += unitCount;
@@ -164,17 +164,13 @@ const ControllersIndex: FC = () => {
     let cloud: null | string = "unknown";
     if ("cloud-tag" in controller && controller["cloud-tag"]) {
       cloud = controller["cloud-tag"] ?? null;
-    } else if (
-      "location" in controller &&
-      controller.location?.cloud !== undefined &&
-      controller.location.cloud
-    ) {
+    } else if (controller.location?.cloud) {
       ({ cloud } = controller.location);
     }
     let region = "unknown";
     if ("cloud-region" in controller && controller["cloud-region"]) {
       region = controller["cloud-region"];
-    } else if ("location" in controller && controller.location?.region) {
+    } else if (controller.location?.region) {
       ({ region } = controller.location);
     }
     const cloudRegion = `${cloud}/${region}`;
@@ -214,10 +210,10 @@ const ControllersIndex: FC = () => {
     if ("agent-version" in controller && controller["agent-version"]) {
       version = controller["agent-version"];
     }
-    if ("version" in controller && controller.version !== undefined) {
+    if ("version" in controller && controller.version) {
       ({ version } = controller);
     }
-    if (version !== null && version) {
+    if (version) {
       columns[columns.length - 1] = {
         content: (
           <>

@@ -446,7 +446,7 @@ export async function fetchControllerList(
             (await jujuUpdateAvailable(
               "agent-version" in controller
                 ? controller["agent-version"]
-                : controller.version || "",
+                : (controller.version ?? ""),
             )) ?? false;
         } catch (error) {
           updateAvailable = false;

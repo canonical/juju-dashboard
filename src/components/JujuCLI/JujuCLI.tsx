@@ -128,7 +128,7 @@ const JujuCLI: FC = () => {
       .replace("ws://", "")
       .replace("wss://", "")
       .replace("/api", "") || null;
-  const wsProtocol = primaryControllerData?.[0].split("://")[0] ?? "wss";
+  const wsProtocol = primaryControllerData?.[0].split("://")[0] || "wss";
   const activeUser = useAppSelector((state) =>
     getActiveUserTag(state, primaryControllerData?.[0]),
   );
