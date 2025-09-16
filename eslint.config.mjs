@@ -102,6 +102,7 @@ export default [
         {
           ignorePrimitives: {
             string: true,
+            boolean: true,
           },
         },
       ],
