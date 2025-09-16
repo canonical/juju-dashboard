@@ -59,7 +59,7 @@ describe("useQueryParams", () => {
       useQueryParams<{ panel: null | string }>({ panel: null }),
     );
     let [searchParams] = result.current;
-    const [, setSearchParams] = result.current;
+    const [_searchParams, setSearchParams] = result.current;
     expect(searchParams.panel).toBeNull();
     expect(router?.state.location.search).toBe("");
     act(() => {
@@ -75,7 +75,7 @@ describe("useQueryParams", () => {
       useQueryParams<{ panels: string[] }>({ panels: [] }),
     );
     let [searchParams] = result.current;
-    const [, setSearchParams] = result.current;
+    const [_searchParams, setSearchParams] = result.current;
     expect(searchParams.panels).toStrictEqual([]);
     expect(router?.state.location.search).toBe("");
     act(() => {
@@ -96,7 +96,7 @@ describe("useQueryParams", () => {
       { url: "?panel=config&other=something" },
     );
     let [searchParams] = result.current;
-    const [, setSearchParams] = result.current;
+    const [_searchParams, setSearchParams] = result.current;
     expect(searchParams.panel).toBe("config");
     act(() => {
       setSearchParams({ panel: null });
@@ -112,7 +112,7 @@ describe("useQueryParams", () => {
       { url: "?panel=config" },
     );
     let [searchParams] = result.current;
-    const [, setSearchParams] = result.current;
+    const [_searchParams, setSearchParams] = result.current;
     expect(searchParams.panel).toBe("config");
     act(() => {
       setSearchParams(null);
@@ -146,7 +146,7 @@ describe("useQueryParams", () => {
       // Decoded: ?<svg><g/onload=alert(2)//<p>=something
       "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something",
     );
-    const [, setSearchParams] = result.current;
+    const [_searchParams, setSearchParams] = result.current;
     act(() => {
       setSearchParams({ panel: "config" });
     });
@@ -162,7 +162,7 @@ describe("useQueryParams", () => {
     );
     let [searchParams] = result.current;
     expect(searchParams.xss).toStrictEqual(null);
-    const [, setSearchParams] = result.current;
+    const [_searchParams, setSearchParams] = result.current;
     act(() => {
       setSearchParams({ xss: "<img src=x onerror=alert(1)//>" });
     });

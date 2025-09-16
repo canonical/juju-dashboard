@@ -11,7 +11,7 @@ import { rebacURLS } from "urls";
 import { Label, type Props } from "./types";
 
 const ModelActions: FC<Props> = ({ modelName, modelUUID }: Props) => {
-  const [, setPanelQs] = useQueryParams<{
+  const [_panelQs, setPanelQs] = useQueryParams<{
     model: null | string;
     panel: null | string;
   }>({

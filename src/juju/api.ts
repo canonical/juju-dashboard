@@ -470,23 +470,16 @@ export async function fetchControllerList(
 export async function disableControllerUUIDMasking(
   conn: ConnectionWithFacades,
 ): Promise<void> {
-  return new Promise<void>((resolve, reject) => {
-    if (conn?.facades?.jimM) {
-      conn.facades.jimM
-        .disableControllerUUIDMasking()
-        .then(() => {
-          resolve();
-          return;
-        })
-        .catch((error: Error) => {
-          reject(
-            new Error("Unable to disabled controller UUID masking.", error),
-          );
-        });
-    } else {
-      resolve();
-    }
-  });
+  if (!conn?.facades?.jimM) {
+    return;
+  }
+  try {
+    await conn.facades.jimM.disableControllerUUIDMasking();
+  } catch (error) {
+    throw new Error(
+      `Unable to disabled controller UUID masking. ${toErrorString(error)}`.trim(),
+    );
+  }
 }
 
 /**

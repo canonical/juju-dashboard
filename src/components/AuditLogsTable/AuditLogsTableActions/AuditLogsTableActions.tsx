@@ -10,7 +10,7 @@ import { useFetchAuditEvents } from "../hooks";
 import { Label } from "./types";
 
 const AuditLogsTableActions: FC = () => {
-  const [, setQueryParams] = useQueryParams<{
+  const [_queryParams, setQueryParams] = useQueryParams<{
     panel: null | string;
     page: null | string;
   }>({

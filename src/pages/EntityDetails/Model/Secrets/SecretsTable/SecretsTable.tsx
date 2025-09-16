@@ -42,7 +42,7 @@ const SecretsTable: FC = () => {
   const secretsLoading = useAppSelector((state) =>
     getSecretsLoading(state, modelUUID),
   );
-  const [, setQuery] = useQueryParams<{
+  const [_query, setQuery] = useQueryParams<{
     panel: null | string;
     secret: null | string;
   }>({

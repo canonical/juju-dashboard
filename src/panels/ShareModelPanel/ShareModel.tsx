@@ -51,7 +51,7 @@ export default function ShareModel(): JSX.Element {
   const [showAddNewUser, setShowAddNewUser] = useState(false);
 
   const defaultQueryParams: ShareModelQueryParams = { panel: null };
-  const [, , handleRemovePanelQueryParams] =
+  const [_queryParams, _setQueryParams, handleRemovePanelQueryParams] =
     usePanelQueryParams<ShareModelQueryParams>(defaultQueryParams);
 
   const modelStatusData = useModelStatus() ?? null;

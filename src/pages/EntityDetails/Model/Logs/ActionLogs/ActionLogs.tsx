@@ -346,32 +346,35 @@ export default function ActionLogs(): JSX.Element {
                       {
                         children: Output.ALL,
                         onClick: (): void => {
-                          actionData.action &&
+                          if (actionData.action) {
                             handleOutputSelect(
                               actionData.action.tag,
                               Output.ALL,
                             );
+                          }
                         },
                       },
                       {
                         children: Output.STDOUT,
                         onClick: (): void => {
-                          actionData.action &&
+                          if (actionData.action) {
                             handleOutputSelect(
                               actionData.action.tag,
                               Output.STDOUT,
                             );
+                          }
                         },
                         disabled: stdout ? !stdout.length : true,
                       },
                       {
                         children: Output.STDERR,
                         onClick: (): void => {
-                          actionData.action &&
+                          if (actionData.action) {
                             handleOutputSelect(
                               actionData.action.tag,
                               Output.STDERR,
                             );
+                          }
                         },
                         disabled:
                           stderr !== null && stderr ? !stderr.length : true,

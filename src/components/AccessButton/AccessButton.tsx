@@ -16,7 +16,7 @@ const AccessButton: FC<Props> = ({
   ...props
 }: Props) => {
   const isJuju = useAppSelector(getIsJuju);
-  const [, setPanelQs] = useQueryParams<{
+  const [_panelQs, setPanelQs] = useQueryParams<{
     model: null | string;
     panel: null | string;
   }>({

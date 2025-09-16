@@ -36,7 +36,7 @@ const Secrets: FC = () => {
   );
   const canManageSecrets = useCanManageSecrets();
 
-  const [, setQuery] = useQueryParams<{
+  const [_query, setQuery] = useQueryParams<{
     panel: null | string;
   }>({
     panel: null,

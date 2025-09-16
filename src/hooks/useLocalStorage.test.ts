@@ -37,7 +37,7 @@ describe("useLocalStorage", () => {
     const { result } = renderHook(() =>
       useLocalStorage("test-key", "init-val"),
     );
-    const [, setValue] = result.current;
+    const [_value, setValue] = result.current;
     act(() => {
       setValue("new-val");
     });
@@ -61,7 +61,7 @@ describe("useLocalStorage", () => {
     const { result } = renderHook(() =>
       useLocalStorage("test-key", "init-val"),
     );
-    const [, setValue] = result.current;
+    const [_value, setValue] = result.current;
     // Create a value that can't be JSON stringified:
     const circular: Record<string, unknown> = {};
     circular.a = { b: circular };

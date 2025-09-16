@@ -32,7 +32,7 @@ const CharmsAndActionsPanel: FC = () => {
   const defaultQueryParams: CharmsAndActionsQueryParams = {
     panel: null,
   };
-  const [, , handleRemovePanelQueryParams] =
+  const [_queryParams, _setQueryParams, handleRemovePanelQueryParams] =
     usePanelQueryParams<CharmsAndActionsQueryParams>(defaultQueryParams);
 
   const selectedApplications = useAppSelector(getSelectedApplications);

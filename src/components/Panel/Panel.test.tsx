@@ -19,9 +19,10 @@ describe("Panel", () => {
     ) => boolean;
   }): RenderComponentResult => {
     const MockPanelHeader = (): JSX.Element => {
-      const [, , handleRemovePanelQueryParams] = usePanelQueryParams<{
-        panel: null | string;
-      }>({ panel: null });
+      const [_queryParams, _setQueryParams, handleRemovePanelQueryParams] =
+        usePanelQueryParams<{
+          panel: null | string;
+        }>({ panel: null });
 
       return (
         <Panel
