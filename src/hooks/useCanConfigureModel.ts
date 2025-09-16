@@ -57,8 +57,8 @@ const useCanConfigureModel = (
   userName?: null | string,
 ): boolean => {
   const params = useParams<EntityDetailsRoute>();
-  userName = userName || params.userName;
-  modelName = modelName || params.modelName;
+  userName ||= params.userName;
+  modelName ||= params.modelName;
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );
