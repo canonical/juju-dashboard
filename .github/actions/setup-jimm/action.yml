@@ -103,7 +103,7 @@ runs:
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
-        command: juju wait-for unit postgresql/0 --timeout=1m # Wait for postgres to prevent issues when relating to openfga: https://github.com/canonical/openfga-operator/issues/25.
+        command: juju wait-for unit postgresql/0 --timeout=1m # Wait for postgres to prevent issues when relating to other apps: https://github.com/canonical/openfga-operator/issues/25.
     - name: Add JIMM relations
       shell: bash
       run: |
@@ -130,6 +130,8 @@ runs:
           if [ "$STATUS" == "error" ]; then
             # Sometimes the postgresql unit has a PrematureDataAccessError error so remove the relation and try again.
             juju remove-relation openfga:database postgresql
+            # The unit will be blocked when it is waiting for the relation
+            juju wait-for application openfga --timeout=1m --query='name=="openfga" && status=="blocked"'
             juju relate openfga:database postgresql
           fi
           juju wait-for unit openfga/0 --timeout=1m
