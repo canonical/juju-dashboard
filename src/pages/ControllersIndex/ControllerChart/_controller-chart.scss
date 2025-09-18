@@ -1,6 +1,6 @@
 .p-chart {
   .is-disabled {
-    fill: rgba($color-mid-light, 0.33);
+    fill: rgba($color-positive, 0.33);
   }
 
   .is-blocked {
@@ -12,7 +12,7 @@
   }
 
   .is-running {
-    fill: $color-mid-light;
+    fill: $color-positive;
   }
 
   @media (min-width: $breakpoint-large) {
@@ -65,7 +65,7 @@
     }
 
     &.is-running::before {
-      background-color: $color-mid-light;
+      background-color: $color-positive;
     }
   }
 }
