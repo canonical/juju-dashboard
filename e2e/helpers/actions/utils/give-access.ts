@@ -28,7 +28,7 @@ export class GiveAccess<Entity extends Model | Controller>
     if (jujuCLI.jujuEnv == JujuEnv.JUJU) {
       const entityName =
         this.tag === "controller" ? "" : `'${this.entityName}'`;
-      await this.entity.owner.cliLogin(jujuCLI.browser);
+      await jujuCLI.loginLocalCLIAdmin();
       await exec(
         `juju ${jujuCommand} '${this.user.cliUsername}' '${this.access}' '${entityName}'`,
       );

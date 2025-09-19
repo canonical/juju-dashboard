@@ -1,3 +1,6 @@
+import { JujuEnv } from "../fixtures/setup";
+import { exec } from "../utils";
+
 import type { JujuCLI } from "./juju-cli";
 
 /**
@@ -83,6 +86,14 @@ export class ActionStack {
 
     let action: Action<unknown> | undefined;
     while ((action = this.actions.pop())) {
+      // Perform all rollback actions as the admin.
+      if (this.jujuCLI.jujuEnv === JujuEnv.JIMM) {
+        // When using JIMM the actions need to be performed in the workloads controller.
+        await exec(`juju switch '${this.jujuCLI.controller}'`);
+        await this.jujuCLI.loginIdentityCLIAdmin();
+      } else {
+        await this.jujuCLI.loginLocalCLIAdmin();
+      }
       console.log(`Action: ${action.debug()}`);
 
       await action.rollback(this.jujuCLI);

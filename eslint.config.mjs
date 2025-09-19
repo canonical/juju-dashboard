@@ -163,7 +163,7 @@ export default [
     },
   },
   {
-    files: ["**/*.test.ts", "**/*.tsx"],
+    files: ["src/**/*.test.ts", "src/**/*.test.tsx"],
     rules: {
       "@typescript-eslint/require-await": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",

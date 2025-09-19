@@ -89,5 +89,16 @@ jobs:
           PROVIDER: localhost
           ADMIN_USERNAME: ${{ inputs.admin-username }}
           ADMIN_PASSWORD: ${{ inputs.admin-password }}
-          ADMIN_IDENTITY_USERNAME: jimm-test
+          ADMIN_IDENTITY_USERNAME: jimm-test@canonical.com
           ADMIN_IDENTITY_PASSWORD: password
+      - name: Display logs
+        if: failure()
+        uses: ./.github/actions/failure-log
+        with:
+          juju-env: "juju"
+          controller: ${{ env.CONTROLLER_NAME }}
+      - name: Send notification on failure
+        if: steps.config.outputs.send-failure-notification && failure()
+        uses: ./.github/actions/send-notification
+        with:
+          webhook-url: ${{ secrets.WEBBOT_URL }}
