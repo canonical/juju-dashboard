@@ -222,7 +222,7 @@ export default function ModelTable({
   useEffect(() => {
     Object.entries(destructionState).forEach(([modelTag, status]) => {
       // Check if the destruction is in a loading state.
-      if (status.loading === true) {
+      if (status.loading) {
         // Handle an initiated destruction
         reactHotToast.custom((toast: ToastInstance) => (
           <ToastCard type="info" toastInstance={toast}>
@@ -250,7 +250,7 @@ export default function ModelTable({
         );
       }
 
-      if (status.errors !== null && status.errors !== undefined) {
+      if (status.errors) {
         // Handle a failed destruction
         reactHotToast.custom((toast: ToastInstance) => (
           <ToastCard type="negative" toastInstance={toast}>

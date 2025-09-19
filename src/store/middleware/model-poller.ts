@@ -487,8 +487,9 @@ export const modelPollerMiddleware: Middleware<
           });
         } while (!isDestructionComplete);
         result?.results.forEach((errorResult) => {
-          if (errorResult.error)
+          if (errorResult.error) {
             errors.push(new Error(errorResult.error.message));
+          }
         });
         if (errors.length) {
           throw errors;
