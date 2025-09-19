@@ -21,7 +21,7 @@ test.describe("Web CLI", () => {
   test("Web CLI", async ({ page, jujuCLI }) => {
     const { user, model } = await actions.prepare((add) => {
       const user = add(jujuCLI.createUser());
-      const model = add(new AddModel(user));
+      const model = add(new AddModel(jujuCLI, user));
       return { user, model };
     });
     await user.dashboardLogin(page, model.url);
