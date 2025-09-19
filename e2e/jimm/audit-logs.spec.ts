@@ -28,7 +28,7 @@ test.describe("audit logs", () => {
     await actions.prepare((add) => {
       user = add(jujuCLI.createUser());
       nonAdminUser = add(jujuCLI.createUser());
-      model = add(new AddModel(user));
+      model = add(new AddModel(jujuCLI, user));
       add(
         new GiveControllerAccess(
           jujuCLI.controllerInstance,

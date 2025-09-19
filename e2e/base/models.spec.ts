@@ -25,12 +25,12 @@ test.describe("Models", () => {
     actions = new ActionStack(jujuCLI);
 
     await actions.prepare((add) => {
-      user1 = add(jujuCLI.createUser());
-      user2 = add(jujuCLI.createUser());
+      user1 = add(jujuCLI.createUser(true));
+      user2 = add(jujuCLI.createUser(true));
 
-      user1Model = add(new AddModel(user1));
-      sharedModel = add(new AddModel(user1));
-      user2Model = add(new AddModel(user2));
+      user1Model = add(new AddModel(jujuCLI, user1, true));
+      sharedModel = add(new AddModel(jujuCLI, user1, true));
+      user2Model = add(new AddModel(jujuCLI, user2, true));
 
       add(new GiveModelAccess(sharedModel, user2, ModelPermission.READ));
     });

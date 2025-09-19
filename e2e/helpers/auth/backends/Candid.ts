@@ -1,7 +1,7 @@
 import type { Browser } from "@playwright/test";
 import { type Page } from "@playwright/test";
 
-import { addFeatureFlags } from "../../../utils";
+import { addFeatureFlags, juju } from "../../../utils";
 import { exec } from "../../../utils/exec";
 import { findLine } from "../../../utils/findLine";
 import type { Action } from "../../action";
@@ -54,9 +54,7 @@ export class CreateCandidUser implements Action<CandidUser> {
     await exec(`juju grant '${user.cliUsername}' 'login'`);
   }
 
-  async rollback(jujuCLI: JujuCLI) {
-    await jujuCLI.loginLocalCLIAdmin();
-
+  async rollback() {
     // Revoke the user's grant.
     const user = this.result();
     await exec(`juju revoke '${user.cliUsername}' 'login'`);
@@ -101,6 +99,9 @@ export class CandidUser extends LocalUser {
   }
 
   override async cliLogin() {
+    if (await juju.isUser(this.username)) {
+      return;
+    }
     await exec("juju logout");
 
     // Begin the login

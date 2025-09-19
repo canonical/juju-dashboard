@@ -27,7 +27,6 @@ export class CreateLocalUser implements Action<LocalUser> {
   }
 
   async rollback(jujuCLI: JujuCLI) {
-    await jujuCLI.loginLocalCLIAdmin();
     await exec(
       `juju remove-user --yes --quiet --controller '${jujuCLI.controller}' '${this.username}'`,
     );
@@ -61,6 +60,9 @@ export class LocalUser implements User {
   }
 
   async cliLogin(_browser: Browser) {
+    if (await juju.isUser(this.cliUsername)) {
+      return;
+    }
     await juju.login(this.cliUsername, this.password);
   }
 
