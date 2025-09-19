@@ -45,7 +45,7 @@ test.describe("secrets", () => {
     await actions.prepare((add) => {
       user = add(jujuCLI.createUser());
       nonAdmin = add(jujuCLI.createUser());
-      model = add(new AddModel(user));
+      model = add(new AddModel(jujuCLI, user));
       add(new GiveModelAccess(model, nonAdmin, ModelPermission.READ));
       application = add(new DeployApplication(model, testOptions.provider));
     });

@@ -28,7 +28,7 @@ export class JujuCLI {
    * Auth backend that is currently in use.
    */
   private users: Users;
-  private localAdmin: User;
+  public localAdmin: User;
   public identityAdmin: User;
   public controllerInstance: Controller;
 
@@ -69,9 +69,9 @@ export class JujuCLI {
    *
    * - Credential added to the controller
    */
-  public createUser(): Action<User> {
+  public createUser(giveCredentials = false): Action<User> {
     const userAction = this.users.createUser();
-    return new BootstrapAction(userAction);
+    return new BootstrapAction(userAction, giveCredentials);
   }
 
   /**
@@ -128,12 +128,19 @@ export class JujuCLI {
  * provided by the inner action _after_ the corresponding run/rollback methods have completed.
  */
 class BootstrapAction implements Action<User> {
-  constructor(private userAction: Action<User>) {}
+  constructor(
+    private userAction: Action<User>,
+    // Whether to give the user credentials and cloud access for deploying models.
+    private giveCredentials = false,
+  ) {}
 
   async run(jujuCLI: JujuCLI) {
     await this.userAction.run(jujuCLI);
 
     const user = this.result();
+    if (!this.giveCredentials) {
+      return;
+    }
 
     if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
       // Granting clouds must be done by the JIMM admin.
@@ -166,28 +173,19 @@ class BootstrapAction implements Action<User> {
    * Rollback this action, using the provided state from when the action was run.
    */
   async rollback(jujuCLI: JujuCLI) {
-    const user = this.result();
-
-    await user.cliLogin(jujuCLI.browser);
-
-    // Remove the user's credential
-    await exec(
-      `juju remove-credential --force -c '${jujuCLI.controller}' '${jujuCLI.provider}' '${user.cliUsername}'`,
-    );
-
-    if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
-      // Granting clouds must be done by the JIMM admin.
-      await jujuCLI.loginIdentityCLIAdmin();
-    } else {
-      // Bootstrap must be done by the admin.
-      await jujuCLI.loginLocalCLIAdmin();
-    }
-
-    if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
-      // Remove the user's access to the cloud
+    if (this.giveCredentials) {
+      const user = this.result();
+      // Remove the user's credential
       await exec(
-        `juju revoke-cloud -c '${jujuCLI.controller}' ${user.cliUsername} ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
+        `juju remove-credential --force -c '${jujuCLI.controller}' '${jujuCLI.provider}' '${user.cliUsername}'`,
       );
+
+      if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
+        // Remove the user's access to the cloud
+        await exec(
+          `juju revoke-cloud -c '${jujuCLI.controller}' ${user.cliUsername} ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
+        );
+      }
     }
 
     await this.userAction.rollback(jujuCLI);

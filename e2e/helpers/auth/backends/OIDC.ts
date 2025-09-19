@@ -1,7 +1,7 @@
 import type { Browser, Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 
-import { getEnv, exec, addFeatureFlags } from "../../../utils";
+import { getEnv, exec, addFeatureFlags, juju } from "../../../utils";
 import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
@@ -39,9 +39,8 @@ export class CreateOIDCUser implements Action<OIDCUser> {
     console.log(`OIDC user created: ${this.username}`);
   }
 
-  async rollback(jujuCLI: JujuCLI) {
+  async rollback() {
     await exec(`juju switch ${getEnv("JIMM_CONTROLLER_NAME")}:iam`);
-    await jujuCLI.loginLocalCLIAdmin();
     const user = this.result();
     await exec(
       `juju run --format=json kratos/0 delete-identity email='${user.dashboardUsername}'`,
@@ -83,6 +82,9 @@ export class OIDCUser extends LocalUser {
   }
 
   override async cliLogin(browser: Browser) {
+    if (await juju.isUser(this.cliUsername)) {
+      return;
+    }
     let retry = 3;
     // This login is retried as sometimes the login fails if it is too slow and an error is displayed:
     // `cannot log into controller "jimm-k8s": connection is shut down`.

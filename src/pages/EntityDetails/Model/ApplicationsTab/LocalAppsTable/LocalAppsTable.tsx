@@ -80,7 +80,7 @@ const LocalAppsTable: FC<Props> = ({ applications }: Props) => {
     headers = addSelectAllColumn(headers, selectAll, handleSelectAll);
     rows = addSelectColumn(rows, applications, handleSelect);
   }
-  const handleRunAction = async (event: React.MouseEvent): Promise<void> => {
+  const handleRunAction = (event: React.MouseEvent): void => {
     event.stopPropagation();
     sendAnalytics({
       category: "ApplicationSearch",

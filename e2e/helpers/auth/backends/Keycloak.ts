@@ -1,9 +1,8 @@
 import type { Browser, Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 
-import { addFeatureFlags, exec } from "../../../utils";
+import { addFeatureFlags, exec, juju } from "../../../utils";
 import type { Action } from "../../action";
-import type { JujuCLI } from "../../juju-cli";
 
 import { LocalUser } from "./Local";
 import type { Secret } from "./utils";
@@ -12,18 +11,27 @@ import { deviceCodeLogin } from "./utils";
 const KEYCLOAK_DEVICE_CODE_REGEX = /(?<=enter code ).\w+-\w+/;
 
 export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
+  private identityUsername: string;
+  private identityPassword: string;
+  private identityDomain: string;
+
   constructor(
     private username: string,
     private password: string,
-    private identityUsername?: string | null,
-    private identityPassword?: string | null,
+    identityUsername?: string | null,
+    identityPassword?: string | null,
   ) {
-    this.identityUsername = identityUsername || username;
+    // The admin identity created by the JIMM set up uses @canonical.com so we need to
+    // use that domain if it is received as part of identityUsername.
+    const [identityName, domain] = (identityUsername || "").split("@");
+    this.identityUsername = identityName || username;
+    this.identityDomain = domain || "example.com";
     this.identityPassword = identityPassword || password;
   }
 
-  async run(jujuCLI: JujuCLI) {
-    // Give the keycloak user acccess to a file to store the login credentials in.
+  async run() {
+    const email = [this.identityUsername, this.identityDomain].join("@");
+    // Give the keycloak user access to a file to store the login credentials in.
     await exec(
       'docker exec --user root keycloak sh -c "touch /kcadm.config && chown keycloak /kcadm.config"',
     );
@@ -32,7 +40,7 @@ export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
       'docker exec keycloak sh -c "kcadm.sh config credentials --user jimm --password jimm --server http://0.0.0.0:8082/ --realm master --config /kcadm.config"',
     );
     await exec(
-      `docker exec keycloak sh -c "kcadm.sh create users -s username=${this.identityUsername} -s enabled=true -s email=${this.identityUsername}@example.com -r jimm --config /kcadm.config"`,
+      `docker exec keycloak sh -c "kcadm.sh create users -s username=${this.identityUsername} -s enabled=true -s email=${email} -r jimm --config /kcadm.config"`,
     );
     await exec(
       `docker exec keycloak sh -c "kcadm.sh set-password -r jimm --username ${this.identityUsername} --new-password ${this.identityPassword} --config /kcadm.config"`,
@@ -40,10 +48,10 @@ export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
     console.log(`Keycloak OIDC user created: ${this.identityUsername}`);
   }
 
-  async rollback(jujuCLI: JujuCLI) {
+  async rollback() {
     const user = this.result();
     const userId = await exec(
-      `docker exec keycloak sh -c "kcadm.sh get users -q exact=true -q username=${user.identityUsername} -r jimm --config /kcadm.config" | yq .[0].id`,
+      `docker exec keycloak sh -c "kcadm.sh get users -q exact=true -q username=${user.identityUsername.split("@")[0]} -r jimm --config /kcadm.config" | yq .[0].id`,
     );
     await exec(
       `docker exec keycloak sh -c "kcadm.sh delete users/'${userId.stdout.trim()}' -r jimm --config /kcadm.config"`,
@@ -61,6 +69,7 @@ export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
       this.password,
       this.identityUsername,
       this.identityPassword,
+      this.identityDomain,
     );
   }
 }
@@ -74,6 +83,7 @@ export class KeycloakOIDCUser extends LocalUser {
     password: string,
     identityUsername?: string | null,
     identityPassword?: string | null,
+    private identityDomain?: string | null,
   ) {
     super(username, password);
     this.identityUsername = identityUsername || username;
@@ -101,6 +111,9 @@ export class KeycloakOIDCUser extends LocalUser {
   }
 
   override async cliLogin(browser: Browser) {
+    if (await juju.isUser(this.cliUsername)) {
+      return;
+    }
     let retry = 3;
     // This login is retried as sometimes the login fails if it is too slow and an error is displayed:
     // `cannot log into controller "jimm": connection is shut down`.
@@ -120,7 +133,7 @@ export class KeycloakOIDCUser extends LocalUser {
   }
 
   override get cliUsername(): string {
-    return `${this.identityUsername}@example.com`;
+    return [this.identityUsername, this.identityDomain].join("@");
   }
 
   override get dashboardUsername(): string {

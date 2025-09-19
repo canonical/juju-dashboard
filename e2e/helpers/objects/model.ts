@@ -18,6 +18,10 @@ export class Model {
     public owner: User,
   ) {}
 
+  public get qualifiedName(): string {
+    return `${this.owner.cliUsername}/${this.name}`;
+  }
+
   public get url(): string {
     return urls.model.index({
       userName: this.owner.cliUsername,
