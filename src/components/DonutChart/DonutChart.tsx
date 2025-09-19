@@ -47,7 +47,7 @@ const DonutChart: FC<Props> = ({
       .domain(Object.keys(data))
       .range(
         !isDisabled
-          ? ["is-blocked", "is-alert", "is-running"]
+          ? ["is-alert", "is-blocked", "is-running"]
           : ["is-disabled"],
       );
 
