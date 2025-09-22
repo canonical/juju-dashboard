@@ -106,7 +106,6 @@ export default defineConfig(
       "@typescript-eslint/promise-function-async": "error",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
-      "import/prefer-default-export": 0,
       "import/first": ["error"],
       "import/newline-after-import": "error",
       // Prevent conflicts with consistent-type-imports
