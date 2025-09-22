@@ -108,8 +108,8 @@ export default defineConfig(
       "import/prefer-default-export": 0,
       "import/prefer-default-export": 0,
       "import/first": ["error"],
-      // Prevent conflicts with consistent-type-imports
       "import/newline-after-import": "error",
+      // Prevent conflicts with consistent-type-imports
       "import/no-duplicates": "off",
       "import/order": [
         "error",
