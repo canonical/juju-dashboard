@@ -3,6 +3,12 @@ import type { PullRequest } from "@/lib/github";
 import { CHANGELOG_LABEL, MAJOR_SEVERITY_LABEL } from "@/lib/labels";
 import { setPackageVersion } from "@/lib/package";
 import { severityFits, type Severity } from "@/lib/severity";
+import type { MajorMinorVersion } from "@/lib/version";
+
+export type CutResult = {
+  cutPrNumber: number;
+  cutBranch: string;
+};
 
 /**
  * Determine what the next cut version will be, based on existing `release/x.y` branches in the repo.
@@ -10,13 +16,13 @@ import { severityFits, type Severity } from "@/lib/severity";
 export async function getNextCutVersion(
   ctx: Ctx,
   severity: Severity,
-): Promise<{ major: number; minor: number }> {
-  let version: { major: number; minor: number } | null = null;
+): Promise<MajorMinorVersion> {
+  let version: MajorMinorVersion | null = null;
 
   // Search through each branch, and try find a release branch.
   for await (const { name } of ctx.repo.branches()) {
     // Parse out release information from branches formatted as `release/x.y`.
-    let branchInfo: { major: number; minor: number } | null;
+    let branchInfo: MajorMinorVersion | null = null;
     try {
       branchInfo = branch.shortRelease.parse(name);
     } catch (_err) {
@@ -62,7 +68,7 @@ export async function getNextCutVersion(
   return version;
 }
 
-export async function run(ctx: Ctx) {
+export async function run(ctx: Ctx): Promise<CutResult> {
   // Ensure running on `main` branch
   if (ctx.context.refName !== ctx.git.mainBranch) {
     throw new Error(
@@ -73,7 +79,7 @@ export async function run(ctx: Ctx) {
   // Determine the severity (major/minor) of the merged PR (default to minor if pushed commit)
   let requiredSeverity: Severity = "minor";
 
-  let cutPr: PullRequest | null = null;
+  let cutPr: null | PullRequest = null;
   const changelogItems: string[] = [];
 
   if (ctx.pr) {

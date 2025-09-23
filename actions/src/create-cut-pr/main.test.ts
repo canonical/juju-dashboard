@@ -1,7 +1,6 @@
 import type { OctokitResponse } from "@octokit/types";
+import type { MockInstance } from "vitest";
 import { describe, afterEach, beforeEach, it, vi } from "vitest";
-
-import { getNextCutVersion, run } from "./main";
 
 import { changelog, type Ctx } from "@/lib";
 import {
@@ -16,6 +15,8 @@ import {
   MINOR_SEVERITY_LABEL,
 } from "@/lib/labels";
 import { asyncIterable, mockPr } from "@/lib/test-utils";
+
+import { getNextCutVersion, run } from "./main";
 
 describe("create-cut-pr", () => {
   let ctx: Ctx;
@@ -317,9 +318,11 @@ describe("getNextCutVersion", () => {
     octokit,
   } as unknown as Ctx;
 
-  function mockListBranches(branches: string[]) {
+  function mockListBranches(branches: string[]): MockInstance {
     return vi.spyOn(ctx.octokit.paginate, "iterator").mockImplementation(() => {
-      return (async function* () {
+      return (async function* (): AsyncGenerator<
+        OctokitResponse<unknown, number>
+      > {
         yield {
           data: branches.map((branch) => ({ name: branch })),
         } as OctokitResponse<unknown>;

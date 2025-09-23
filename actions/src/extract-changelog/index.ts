@@ -1,8 +1,8 @@
-import { run } from "./main";
-
 import { createCtx } from "@/lib";
 
-void (async () => {
+import { run } from "./main";
+
+void (async (): Promise<void> => {
   const ctx = await createCtx();
 
   const output = await run(ctx);

@@ -22,10 +22,18 @@ const __dirname = path.dirname(__filename);
 export default defineConfig(
   includeIgnoreFile(gitignorePath),
   {
-    ignores: [".yarn/", "charms/", "actions/", ".github/", "docs/", "public/", "konf/"],
+    ignores: [
+      ".yarn/",
+      "charms/",
+      "actions/dist/",
+      ".github/",
+      "docs/",
+      "public/",
+      "konf/",
+    ],
   },
   {
-    files: ["src/**/*.ts", "src/**/*.tsx", "e2e/**/*.ts"],
+    files: ["src/**/*.ts", "src/**/*.tsx", "e2e/**/*.ts", "actions/**/*.ts"],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
@@ -160,7 +168,7 @@ export default defineConfig(
     },
   },
   {
-    files: ["src/**/*.test.ts", "src/**/*.test.tsx", "e2e/**/*.spec.ts"],
+    files: ["src/**/*.test.ts", "src/**/*.test.tsx", "e2e/**/*.spec.ts", "actions/**/*.test.ts"],
     rules: {
       "@typescript-eslint/require-await": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
@@ -172,6 +180,17 @@ export default defineConfig(
     rules: {
       // Prevent Playwright's `use` from being misidentified as a hook.
       "react-hooks/rules-of-hooks": "off",
+    }
+  }, 
+  {
+    files: ["actions/**/*.ts"],
+    settings: {
+      "import/resolver": {
+        node: { paths: ["actions/src"] },
+        typescript: {
+          project: ["actions/tsconfig.json"],
+        },
+      },
     },
   },
 );

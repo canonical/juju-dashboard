@@ -16,6 +16,9 @@ export async function getPackageVersion(ctx: Ctx): Promise<string> {
 /**
  * Update `package.json` with the provided version.
  */
-export async function setPackageVersion(ctx: Ctx, version: string) {
+export async function setPackageVersion(
+  ctx: Ctx,
+  version: string,
+): Promise<void> {
   await ctx.exec("yq", ["-i", `.version = "${version}"`, "./package.json"]);
 }
