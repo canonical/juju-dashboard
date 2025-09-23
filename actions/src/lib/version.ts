@@ -5,7 +5,12 @@ export type Version = {
   preRelease?: {
     identifier: string;
     number: number;
-  };
+  } | null;
+};
+
+export type MajorMinorVersion = {
+  major: number;
+  minor: number;
 };
 
 /**
@@ -18,7 +23,8 @@ export function parseVersion(version: string): Version {
     .split(".")
     .map((component) => (component === "x" ? -1 : Number(component)));
 
-  let preRelease: { identifier: string; number: number } | undefined;
+  let preRelease: { identifier: string; number: number } | undefined =
+    undefined;
   if (preReleaseStr) {
     const [identifier, number] = preReleaseStr.split(".");
     preRelease = {

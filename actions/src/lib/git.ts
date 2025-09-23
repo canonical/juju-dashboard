@@ -1,6 +1,6 @@
 import * as exec from "@actions/exec";
 
-export type ConfigScope = "global" | "system" | "local" | "worktree";
+export type ConfigScope = "global" | "local" | "system" | "worktree";
 
 /**
  * Email and username for the Github Actions bot. Any commits from this user will show up as a bot
@@ -32,7 +32,7 @@ export default class Git {
   /**
    * Execute the provided git command.
    */
-  private async exec(...args: string[]) {
+  private async exec(...args: string[]): Promise<number> {
     return exec.exec("git", args);
   }
 
@@ -43,14 +43,14 @@ export default class Git {
     key: string,
     value: string,
     scope: ConfigScope = "local",
-  ) {
+  ): Promise<number> {
     return this.exec("config", `--${scope}`, key, value);
   }
 
   /**
    * Setup git to use the provided user.
    */
-  async configUser() {
+  async configUser(): Promise<void> {
     await this.config("user.email", this.user.email);
     await this.config("user.name", this.user.name);
   }
@@ -58,7 +58,7 @@ export default class Git {
   /**
    * Checkout the provided branch.
    */
-  async checkout(branch: string) {
+  async checkout(branch: string): Promise<void> {
     await this.exec("checkout", branch);
   }
 
@@ -68,28 +68,28 @@ export default class Git {
   async createBranch(
     name: string,
     oldBranch: string = `${this.origin}/${this.mainBranch}`,
-  ) {
+  ): Promise<void> {
     await this.exec("branch", name, oldBranch);
   }
 
   /**
    * Run `git fetch`.
    */
-  async fetch() {
+  async fetch(): Promise<void> {
     await this.exec("fetch");
   }
 
   /**
    * Move a branch to point at a new target. Target can be a ref or a branch name.
    */
-  async moveBranch(name: string, target: string) {
+  async moveBranch(name: string, target: string): Promise<void> {
     await this.exec("branch", "--force", name, target);
   }
 
   /**
    * Stage and commit the specified files, with a commit message.
    */
-  async commit(message: string, files: string[]) {
+  async commit(message: string, files: string[]): Promise<void> {
     await this.exec("commit", "-m", message, "--", ...files);
   }
 
@@ -104,7 +104,7 @@ export default class Git {
   async push(
     maybeOptions: { force?: boolean } | string = {},
     ...branches: string[]
-  ) {
+  ): Promise<void> {
     if (typeof maybeOptions === "string") {
       branches.unshift(maybeOptions);
       maybeOptions = {};

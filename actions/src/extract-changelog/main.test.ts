@@ -1,9 +1,9 @@
 import { describe, beforeEach, it, vi } from "vitest";
 
-import { run } from "./main";
-
 import type { Ctx } from "@/lib";
 import { mockCutPr } from "@/lib/test-utils";
+
+import { run } from "./main";
 
 describe("create-cut-pr", () => {
   let ctx: Ctx;

@@ -22,10 +22,18 @@ const __dirname = path.dirname(__filename);
 export default defineConfig(
   includeIgnoreFile(gitignorePath),
   {
-    ignores: [".yarn/", "charms/", "actions/", ".github/", "docs/", "public/", "konf/"],
+    ignores: [
+      ".yarn/",
+      "charms/",
+      "actions/dist/",
+      ".github/",
+      "docs/",
+      "public/",
+      "konf/",
+    ],
   },
   {
-    files: ["src/**/*.ts", "src/**/*.tsx"],
+    files: ["src/**/*.ts", "src/**/*.tsx", "actions/**/*.ts"],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
@@ -160,11 +168,22 @@ export default defineConfig(
     },
   },
   {
-    files: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+    files: ["src/**/*.test.ts", "src/**/*.test.tsx", "actions/**/*.test.ts"],
     rules: {
       "@typescript-eslint/require-await": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/init-declarations": "off",
+    },
+  },
+  {
+    files: ["actions/**/*.ts"],
+    settings: {
+      "import/resolver": {
+        node: { paths: ["actions/src"] },
+        typescript: {
+          project: ["actions/tsconfig.json"],
+        },
+      },
     },
   },
 );
