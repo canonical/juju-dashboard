@@ -94,7 +94,7 @@ runs:
         juju add-model jimm
         juju deploy juju-jimm-k8s --channel=${{ inputs.jimm-channel }} jimm
         juju deploy openfga-k8s --channel=edge openfga
-        juju deploy postgresql-k8s --channel=14/stable postgresql
+        juju deploy postgresql-k8s --channel=16/edge postgresql
         juju deploy vault-k8s --channel=1.15/beta vault
         juju deploy nginx-ingress-integrator --channel=latest/stable --trust ingress
         juju trust postgresql --scope=cluster
