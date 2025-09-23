@@ -21,6 +21,87 @@ const LOCAL_CLI_ADMIN = {
 };
 
 /**
+ * Encapsulates common logic required to bring a user up to a base-level set of permissions (able
+ * to manage their own models, access the cloud, etc.
+ *
+ * This is additional logic on top of backend-specific logic from each auth provider, so this
+ * action wraps an existing action which produces a user. The bootstrap will operate on the user
+ * provided by the inner action _after_ the corresponding run/rollback methods have completed.
+ */
+class BootstrapAction implements Action<User> {
+  constructor(
+    private userAction: Action<User>,
+    // Whether to give the user credentials and cloud access for deploying models.
+    private giveCredentials = false,
+  ) {}
+
+  async run(jujuCLI: JujuCLI): Promise<void> {
+    await this.userAction.run(jujuCLI);
+
+    const user = this.result();
+    if (!this.giveCredentials) {
+      return;
+    }
+
+    if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
+      // Granting clouds must be done by the JIMM admin.
+      await jujuCLI.loginIdentityCLIAdmin();
+    } else {
+      // Bootstrap must be done by the admin.
+      await jujuCLI.loginLocalCLIAdmin();
+    }
+
+    if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
+      // Grant access to the cloud.
+      await exec(
+        `juju grant-cloud '${user.cliUsername}' ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
+      );
+    }
+
+    // Login as the user.
+    await user.cliLogin(jujuCLI.browser);
+
+    // Use the client credentials for this user (stored in
+    // ~/.local/share/juju/credentials.yaml). This allows authentication via the
+    // oauth token which is required in some scenarios (e.g. adding secrets when
+    // using microk8s).
+    await exec(
+      `juju update-credential ${jujuCLI.provider} ${jujuCLI.provider} -c '${jujuCLI.controller}'`,
+    );
+  }
+
+  /**
+   * Rollback this action, using the provided state from when the action was run.
+   */
+  async rollback(jujuCLI: JujuCLI): Promise<void> {
+    if (this.giveCredentials) {
+      const user = this.result();
+      // Remove the user's credential
+      await exec(
+        `juju remove-credential --force -c '${jujuCLI.controller}' '${jujuCLI.provider}' '${user.cliUsername}'`,
+      );
+
+      if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
+        // Remove the user's access to the cloud
+        await exec(
+          `juju revoke-cloud -c '${jujuCLI.controller}' ${user.cliUsername} ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
+        );
+      }
+    }
+
+    await this.userAction.rollback(jujuCLI);
+  }
+
+  result(): User {
+    return this.userAction.result();
+  }
+
+  debug(): string {
+    return `Bootstrapping user: ${this.userAction.debug()}`;
+  }
+}
+
+/**
  * Wraps interactions with to the Juju CLI.
  */
 export class JujuCLI {
@@ -84,8 +165,8 @@ export class JujuCLI {
   public fakeUser(
     username: string,
     password: string,
-    identityUsername?: string | null,
-    identityPassword?: string | null,
+    identityUsername?: null | string,
+    identityPassword?: null | string,
   ): User {
     return this.users.createUserInstance(
       username,
@@ -116,86 +197,5 @@ export class JujuCLI {
    */
   async loginIdentityCLIAdmin(): Promise<void> {
     await this.identityAdmin.cliLogin(this.browser);
-  }
-}
-
-/**
- * Encapsulates common logic required to bring a user up to a base-level set of permissions (able
- * to manage their own models, access the cloud, etc.
- *
- * This is additional logic on top of backend-specific logic from each auth provider, so this
- * action wraps an existing action which produces a user. The bootstrap will operate on the user
- * provided by the inner action _after_ the corresponding run/rollback methods have completed.
- */
-class BootstrapAction implements Action<User> {
-  constructor(
-    private userAction: Action<User>,
-    // Whether to give the user credentials and cloud access for deploying models.
-    private giveCredentials = false,
-  ) {}
-
-  async run(jujuCLI: JujuCLI) {
-    await this.userAction.run(jujuCLI);
-
-    const user = this.result();
-    if (!this.giveCredentials) {
-      return;
-    }
-
-    if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
-      // Granting clouds must be done by the JIMM admin.
-      await jujuCLI.loginIdentityCLIAdmin();
-    } else {
-      // Bootstrap must be done by the admin.
-      await jujuCLI.loginLocalCLIAdmin();
-    }
-
-    if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
-      // Grant access to the cloud.
-      await exec(
-        `juju grant-cloud '${user.cliUsername}' ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
-      );
-    }
-
-    // Login as the user.
-    await user.cliLogin(jujuCLI.browser);
-
-    // Use the client credentials for this user (stored in
-    // ~/.local/share/juju/credentials.yaml). This allows authentication via the
-    // oauth token which is required in some scenarios (e.g. adding secrets when
-    // using microk8s).
-    await exec(
-      `juju update-credential ${jujuCLI.provider} ${jujuCLI.provider} -c '${jujuCLI.controller}'`,
-    );
-  }
-
-  /**
-   * Rollback this action, using the provided state from when the action was run.
-   */
-  async rollback(jujuCLI: JujuCLI) {
-    if (this.giveCredentials) {
-      const user = this.result();
-      // Remove the user's credential
-      await exec(
-        `juju remove-credential --force -c '${jujuCLI.controller}' '${jujuCLI.provider}' '${user.cliUsername}'`,
-      );
-
-      if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
-        // Remove the user's access to the cloud
-        await exec(
-          `juju revoke-cloud -c '${jujuCLI.controller}' ${user.cliUsername} ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
-        );
-      }
-    }
-
-    await this.userAction.rollback(jujuCLI);
-  }
-
-  result() {
-    return this.userAction.result();
-  }
-
-  debug(): string {
-    return `Bootstrapping user: ${this.userAction.debug()}`;
   }
 }

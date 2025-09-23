@@ -20,8 +20,8 @@ export type TestOptions = {
   admin: {
     name: string;
     password: string;
-    identityName?: string | null;
-    identityPassword?: string | null;
+    identityName?: null | string;
+    identityPassword?: null | string;
   };
 };
 
@@ -47,7 +47,7 @@ export enum ResourceType {
 }
 
 export type Resource = {
-  resourceName: string | CloudAccessType;
+  resourceName: CloudAccessType | string;
   type: ResourceType;
   owner?: string;
 };

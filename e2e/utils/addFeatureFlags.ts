@@ -6,6 +6,6 @@ const flags = [["enable-flag", "rebac"]];
 export const addFeatureFlags = (url: string): string => {
   const [path, search] = url.split("?");
   const params = new URLSearchParams(search);
-  flags.forEach(([flag, value]) => params.append(flag, value));
+  flags.forEach(([flag, value]) => { params.append(flag, value); });
   return [path, params].join("?");
 };

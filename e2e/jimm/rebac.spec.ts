@@ -26,15 +26,15 @@ test.describe("ReBAC Admin", () => {
 
   test("can be accessed", async ({ jujuCLI, page }) => {
     const user = await actions.prepare((add) => {
-      const user = add(jujuCLI.createUser());
+      const newUser = add(jujuCLI.createUser());
       add(
         new GiveControllerAccess(
           jujuCLI.controllerInstance,
-          user,
+          newUser,
           ControllerPermission.SUPERUSER,
         ),
       );
-      return user;
+      return newUser;
     });
     await user.dashboardLogin(page, rebacURLS.users.index);
     await expect(
