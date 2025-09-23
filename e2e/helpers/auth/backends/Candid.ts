@@ -1,5 +1,5 @@
 import type { Browser } from "@playwright/test";
-import { type Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 import { addFeatureFlags, juju } from "../../../utils";
 import { exec } from "../../../utils/exec";
@@ -11,71 +11,67 @@ import { LocalUser } from "./Local";
 
 const CONFIG_PATH = "/var/snap/candid/current/config.yaml";
 
-export class CreateCandidUser implements Action<CandidUser> {
-  private static browser: Browser;
+type CandidConfig = {
+  "identity-providers": {
+    type: string;
+    users: CandidConfigUsers;
+  }[];
+};
 
-  constructor(
-    private username: string,
-    private password: string,
-  ) {}
+type CandidConfigUsers = Record<
+  string,
+  { name: string; email: string; password: string; groups: string[] }
+>;
 
-  public static prepare(browser: Browser) {
-    CreateCandidUser.browser = browser;
-  }
+async function restartCandid(): Promise<void> {
+  await exec("sudo snap restart candid");
+  while (true) {
+    const output = await exec("snap changes candid");
+    const inProgress = output.stdout
+      .trim()
+      // Pull out each line
+      .split("\n")
+      // Skip header
+      .slice(1)
+      // Find changes that are in progress
+      .filter((line) => line.includes("Doing")).length;
 
-  result(): CandidUser {
-    return new CandidUser(
-      this.username,
-      this.password,
-      CreateCandidUser.browser,
-    );
-  }
+    if (inProgress === 0) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-  async run(jujuCLI: JujuCLI) {
-    const candidConfig = await getCandidConfig();
+      break;
+    }
 
-    // Extract users already in the config
-    const staticUsers = getStaticUsers(candidConfig);
-
-    // Add the user to the config, and restart Candid.
-    staticUsers[this.username] = {
-      name: `User '${this.username}'`,
-      email: `${this.username}@example.com`,
-      password: this.password,
-      groups: [],
-    };
-    await setCandidConfig(candidConfig);
-    console.log(`Candid user created: ${this.username}`);
-
-    await jujuCLI.loginLocalCLIAdmin();
-
-    // Ensure the user has the correct grant to allow them to login.
-    const user = this.result();
-    await exec(`juju grant '${user.cliUsername}' 'login'`);
-  }
-
-  async rollback() {
-    // Revoke the user's grant.
-    const user = this.result();
-    await exec(`juju revoke '${user.cliUsername}' 'login'`);
-
-    // Remove the user from Candid.
-    const candidConfig = await getCandidConfig();
-
-    // Extract users already in the config
-    const staticUsers = getStaticUsers(candidConfig);
-
-    // Remove the user from the config, and restart Candid.
-    delete staticUsers[this.username];
-    await setCandidConfig(candidConfig);
-    console.log(`Candid user deleted: ${this.username}`);
-  }
-
-  debug(): string {
-    return `Create Candid user '${this.username}' (password '${this.password}')`;
+    console.log(`Waiting for candid restart: ${inProgress}`);
   }
 }
 
+async function getCandidConfig(): Promise<CandidConfig> {
+  return JSON.parse((await exec(`yq -oj '${CONFIG_PATH}'`)).stdout);
+}
+
+async function setCandidConfig(config: CandidConfig): Promise<void> {
+  // Write the config
+  const writeCommand = `yq -P -oy  <<- EOF | sudo tee '${CONFIG_PATH}'
+      ${JSON.stringify(config)}
+      EOF`;
+  await exec(writeCommand);
+
+  await restartCandid();
+}
+
+function getStaticUsers(candidConfig: CandidConfig): CandidConfigUsers {
+  const identityProviders = candidConfig["identity-providers"] ?? [];
+  const staticProvider = identityProviders.find(
+    (provider) => provider.type === "static",
+  );
+
+  if (!staticProvider) {
+    throw new Error("Candid static provider must be configured");
+  }
+
+  return staticProvider.users;
+}
 export class CandidUser extends LocalUser {
   constructor(
     username: string,
@@ -85,7 +81,7 @@ export class CandidUser extends LocalUser {
     super(username, password);
   }
 
-  override async dashboardLogin(page: Page, url: string) {
+  override async dashboardLogin(page: Page, url: string): Promise<void> {
     await page.goto(addFeatureFlags(url));
     const popupPromise = page.waitForEvent("popup");
     await page.getByRole("link", { name: "Log in to the dashboard" }).click();
@@ -94,11 +90,11 @@ export class CandidUser extends LocalUser {
     await this.candidUILogin(popup);
   }
 
-  override async reloadDashboard(page: Page) {
+  override async reloadDashboard(page: Page): Promise<void> {
     await page.reload();
   }
 
-  override async cliLogin() {
+  override async cliLogin(): Promise<void> {
     if (await juju.isUser(this.username)) {
       return;
     }
@@ -140,7 +136,7 @@ export class CandidUser extends LocalUser {
     return `${this.username}@external`;
   }
 
-  async candidUILogin(page: Page) {
+  async candidUILogin(page: Page): Promise<void> {
     await page.getByRole("link", { name: "static" }).click();
     await page.getByRole("textbox", { name: "Username" }).fill(this.username);
     await page.getByRole("textbox", { name: "Password" }).fill(this.password);
@@ -148,64 +144,67 @@ export class CandidUser extends LocalUser {
   }
 }
 
-type CandidConfig = {
-  "identity-providers": {
-    type: string;
-    users: CandidConfigUsers;
-  }[];
-};
+export class CreateCandidUser implements Action<CandidUser> {
+  private static browser: Browser;
 
-type CandidConfigUsers = Record<
-  string,
-  { name: string; email: string; password: string; groups: string[] }
->;
+  constructor(
+    private username: string,
+    private password: string,
+  ) {}
 
-async function getCandidConfig(): Promise<CandidConfig> {
-  return JSON.parse((await exec(`yq -oj '${CONFIG_PATH}'`)).stdout);
-}
-
-async function setCandidConfig(config: CandidConfig): Promise<void> {
-  // Write the config
-  const writeCommand = `yq -P -oy  <<- EOF | sudo tee '${CONFIG_PATH}'
-      ${JSON.stringify(config)}
-      EOF`;
-  await exec(writeCommand);
-
-  await restartCandid();
-}
-
-function getStaticUsers(candidConfig: CandidConfig): CandidConfigUsers {
-  const identityProviders = candidConfig["identity-providers"] ?? [];
-  const staticProvider = identityProviders.find(
-    (provider) => provider.type === "static",
-  );
-
-  if (!staticProvider) {
-    throw new Error("Candid static provider must be configured");
+  public static prepare(browser: Browser): void {
+    CreateCandidUser.browser = browser;
   }
 
-  return staticProvider.users;
-}
+  result(): CandidUser {
+    return new CandidUser(
+      this.username,
+      this.password,
+      CreateCandidUser.browser,
+    );
+  }
 
-async function restartCandid(): Promise<void> {
-  await exec("sudo snap restart candid");
-  while (true) {
-    const output = await exec("snap changes candid");
-    const inProgress = output.stdout
-      .trim()
-      // Pull out each line
-      .split("\n")
-      // Skip header
-      .slice(1)
-      // Find changes that are in progress
-      .filter((line) => line.includes("Doing")).length;
+  async run(jujuCLI: JujuCLI): Promise<void> {
+    const candidConfig = await getCandidConfig();
 
-    if (inProgress === 0) {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+    // Extract users already in the config
+    const staticUsers = getStaticUsers(candidConfig);
 
-      break;
-    }
+    // Add the user to the config, and restart Candid.
+    staticUsers[this.username] = {
+      name: `User '${this.username}'`,
+      email: `${this.username}@example.com`,
+      password: this.password,
+      groups: [],
+    };
+    await setCandidConfig(candidConfig);
+    console.log(`Candid user created: ${this.username}`);
 
-    console.log(`Waiting for candid restart: ${inProgress}`);
+    await jujuCLI.loginLocalCLIAdmin();
+
+    // Ensure the user has the correct grant to allow them to login.
+    const user = this.result();
+    await exec(`juju grant '${user.cliUsername}' 'login'`);
+  }
+
+  async rollback(): Promise<void> {
+    // Revoke the user's grant.
+    const user = this.result();
+    await exec(`juju revoke '${user.cliUsername}' 'login'`);
+
+    // Remove the user from Candid.
+    const candidConfig = await getCandidConfig();
+
+    // Extract users already in the config
+    const staticUsers = getStaticUsers(candidConfig);
+
+    // Remove the user from the config, and restart Candid.
+    delete staticUsers[this.username];
+    await setCandidConfig(candidConfig);
+    console.log(`Candid user deleted: ${this.username}`);
+  }
+
+  debug(): string {
+    return `Create Candid user '${this.username}' (password '${this.password}')`;
   }
 }

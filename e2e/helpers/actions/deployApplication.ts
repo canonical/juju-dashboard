@@ -19,7 +19,7 @@ export class DeployApplication implements Action<Application> {
     this.application = new Application(name, charm, model);
   }
 
-  async run(jujuCLI: JujuCLI) {
+  async run(jujuCLI: JujuCLI): Promise<void> {
     if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
       await jujuCLI.loginIdentityCLIAdmin();
     } else {
@@ -33,7 +33,7 @@ export class DeployApplication implements Action<Application> {
     );
   }
 
-  async rollback() {
+  async rollback(): Promise<void> {
     await exec(
       `juju remove-application '${this.application.name}' -m '${this.model.name}' --force --destroy-storage --no-prompt --no-wait`,
     );

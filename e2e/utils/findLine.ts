@@ -1,6 +1,6 @@
 import type { Readable } from "node:stream";
 
-export function findLine(
+export async function findLine(
   stream: Readable,
   filter: (line: string, allLines: string[]) => boolean,
 ): Promise<string> {
@@ -8,7 +8,15 @@ export function findLine(
     const allLines: string[] = [];
     let prefix: string = "";
 
-    function onData(data: string) {
+    function removeListeners(): void {
+      // There are circular dependencies between the listener and handlers that gets resolved at run time.
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      stream.off("data", onData);
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      stream.off("end", onEnd);
+    }
+
+    function onData(data: string): void {
       const lines = data.split("\n");
 
       if (lines.length > 0) {
@@ -24,18 +32,20 @@ export function findLine(
           removeListeners();
 
           // Produce the line
-          return resolve(line);
+          resolve(line);
+          return;
         }
       }
     }
 
-    function onEnd() {
+    function onEnd(): void {
       removeListeners();
 
       allLines.push(prefix);
 
       if (filter(prefix, allLines)) {
-        return resolve(prefix);
+        resolve(prefix);
+        return;
       }
 
       reject(
@@ -43,11 +53,6 @@ export function findLine(
           cause: { lines: allLines },
         }),
       );
-    }
-
-    function removeListeners() {
-      stream.off("data", onData);
-      stream.off("end", onEnd);
     }
 
     stream.on("data", onData).on("end", onEnd);

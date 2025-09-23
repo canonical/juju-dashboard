@@ -25,7 +25,7 @@ export default defineConfig(
     ignores: [".yarn/", "charms/", "actions/", ".github/", "docs/", "public/", "konf/"],
   },
   {
-    files: ["src/**/*.ts", "src/**/*.tsx"],
+    files: ["src/**/*.ts", "src/**/*.tsx", "e2e/**/*.ts"],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
@@ -160,11 +160,18 @@ export default defineConfig(
     },
   },
   {
-    files: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+    files: ["src/**/*.test.ts", "src/**/*.test.tsx", "e2e/**/*.spec.ts"],
     rules: {
       "@typescript-eslint/require-await": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/init-declarations": "off",
+    },
+  },
+  {
+    files: ["e2e/**/*.ts"],
+    rules: {
+      // Prevent Playwright's `use` from being misidentified as a hook.
+      "react-hooks/rules-of-hooks": "off",
     },
   },
 );

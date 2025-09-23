@@ -9,7 +9,7 @@ import type { Controller, Model } from "../../objects";
  * Give a user access to a controller or model.
  * Note: application offers are also granted in the same way but this does not currently support them.
  */
-export class GiveAccess<Entity extends Model | Controller>
+export class GiveAccess<Entity extends Controller | Model>
   implements Action<void>
 {
   constructor(
@@ -24,7 +24,7 @@ export class GiveAccess<Entity extends Model | Controller>
     jujuCLI: JujuCLI,
     jujuCommand: string,
     jimmCommand: string,
-  ) {
+  ): Promise<void> {
     if (jujuCLI.jujuEnv == JujuEnv.JUJU) {
       const entityName =
         this.tag === "controller" ? "" : `'${this.entityName}'`;
@@ -44,11 +44,11 @@ export class GiveAccess<Entity extends Model | Controller>
     return this.entity.name;
   }
 
-  async run(jujuCLI: JujuCLI) {
+  async run(jujuCLI: JujuCLI): Promise<void> {
     await this.action(jujuCLI, "grant", "add-permission");
   }
 
-  async rollback(jujuCLI: JujuCLI) {
+  async rollback(jujuCLI: JujuCLI): Promise<void> {
     await this.action(jujuCLI, "revoke", "remove-permission");
   }
 

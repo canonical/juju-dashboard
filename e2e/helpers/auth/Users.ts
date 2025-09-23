@@ -46,8 +46,8 @@ export class Users {
   createUserInstance(
     username: string,
     password: string,
-    identityUsername?: string | null,
-    identityPassword?: string | null,
+    identityUsername?: null | string,
+    identityPassword?: null | string,
   ): User {
     return new this.CreateUser(
       username,
