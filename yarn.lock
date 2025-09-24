@@ -7498,7 +7498,7 @@ __metadata:
     "@vercel/ncc": "npm:0.38.3"
     eslint: "npm:9.34.0"
     typescript: "npm:5.8.3"
-    vite: "npm:7.0.3"
+    vite: "npm:7.0.7"
     vite-tsconfig-paths: "npm:5.1.4"
     vitest: "npm:3.2.4"
   languageName: unknown
@@ -7590,7 +7590,7 @@ __metadata:
     stylelint-order: "npm:7.0.0"
     typescript: "npm:5.8.2"
     vanilla-framework: "npm:4.25.0"
-    vite: "npm:7.0.3"
+    vite: "npm:7.0.7"
     vite-plugin-html: "npm:3.2.2"
     vite-tsconfig-paths: "npm:5.1.4"
     vitest: "npm:3.2.4"
@@ -8730,6 +8730,13 @@ __metadata:
   version: 4.0.2
   resolution: "picomatch@npm:4.0.2"
   checksum: 10c0/7c51f3ad2bb42c776f49ebf964c644958158be30d0a510efd5a395e8d49cb5acfed5b82c0c5b365523ce18e6ab85013c9ebe574f60305892ec3fa8eee8304ccc
+  languageName: node
+  linkType: hard
+
+"picomatch@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "picomatch@npm:4.0.3"
+  checksum: 10c0/9582c951e95eebee5434f59e426cddd228a7b97a0161a375aed4be244bd3fe8e3a31b846808ea14ef2c8a2527a6eeab7b3946a67d5979e81694654f939473ae2
   languageName: node
   linkType: hard
 
@@ -11460,14 +11467,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:7.0.3":
-  version: 7.0.3
-  resolution: "vite@npm:7.0.3"
+"vite@npm:7.0.7":
+  version: 7.0.7
+  resolution: "vite@npm:7.0.7"
   dependencies:
     esbuild: "npm:^0.25.0"
     fdir: "npm:^6.4.6"
     fsevents: "npm:~2.3.3"
-    picomatch: "npm:^4.0.2"
+    picomatch: "npm:^4.0.3"
     postcss: "npm:^8.5.6"
     rollup: "npm:^4.40.0"
     tinyglobby: "npm:^0.2.14"
@@ -11511,7 +11518,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/9173a1bf9fee82606f39c7b3e785638c1ac7f3473879fc88593f3a2093ed766140a08b845050fd790adb8a36e2cbc81b71401407da05d5dd747ae4f3adb89794
+  checksum: 10c0/ccede60fced8a738f10c804a47d82b551a4250114ceb3026dc65a7ef8ba4700154ad59a85674862271a53eecc3c300bfe4d41672ae26212d9f0a99fb995344fc
   languageName: node
   linkType: hard
 
