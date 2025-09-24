@@ -1,3 +1,4 @@
+import type { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/application/ApplicationV19";
 import {
   ConfirmationModal,
   Icon,
@@ -8,7 +9,7 @@ import { useState } from "react";
 import type { JSX } from "react";
 import { useDispatch } from "react-redux";
 
-import useModelStatus from "hooks/useModelStatus";
+import useModelDestructionData from "hooks/useModelDestructionData";
 import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { useAppSelector } from "store/store";
@@ -24,33 +25,19 @@ export default function DestroyModelDialog({
   modelUUID,
   closePortal,
 }: Props): JSX.Element {
-  const modelStatusData = useModelStatus(modelUUID);
+  const {
+    hasStorage,
+    applications,
+    machines,
+    crossModelRelations,
+    connectedOffers,
+    showInfoTable,
+    storageIDs,
+  } = useModelDestructionData(modelUUID);
+
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
   const [destroyStorage, setDestroyStorage] = useState<boolean | undefined>();
-
-  const applications = Object.keys(modelStatusData?.applications ?? {});
-  const machines = Object.keys(modelStatusData?.machines ?? {});
-  const offers = modelStatusData?.offers;
-  const remoteApplications = modelStatusData?.["remote-applications"];
-  const crossModelRelations = Object.keys(offers ?? {}).map((offer) => ({
-    name: offer,
-    type: "offer",
-  }));
-  const connectedOffers = Object.entries(offers ?? {}).filter(
-    ([offer, data]) => (data["total-connected-count"] > 0 ? offer : null),
-  );
-  if (remoteApplications) {
-    crossModelRelations.push(
-      ...Object.keys(remoteApplications).map((remoteApp) => ({
-        name: remoteApp,
-        type: "remoteApp",
-      })),
-    );
-  }
-
-  const showInfoTable =
-    applications.length || machines.length || crossModelRelations;
 
   return (
     <ConfirmationModal
@@ -62,8 +49,7 @@ export default function DestroyModelDialog({
       className="p-modal--min-width"
       confirmButtonLabel="Destroy model"
       confirmButtonDisabled={
-        (destroyStorage === undefined &&
-          modelStatusData?.storage !== undefined) ||
+        (destroyStorage === undefined && hasStorage) ||
         connectedOffers.length > 0
       }
       onConfirm={() => {
@@ -111,7 +97,7 @@ export default function DestroyModelDialog({
                     },
                   ]
                 : []),
-              ...(crossModelRelations
+              ...(crossModelRelations.length
                 ? [
                     {
                       columns: [
@@ -127,41 +113,23 @@ export default function DestroyModelDialog({
                         {
                           content: (
                             <>
-                              {crossModelRelations.map(({ name, type }) => (
-                                <div key={name}>
-                                  {type === "offer" ? (
-                                    <>
-                                      {name}{" "}
-                                      {
-                                        modelStatusData?.offers[name].endpoints[
-                                          "db"
-                                        ].name
-                                      }
-                                      :
-                                      {
-                                        modelStatusData?.offers[name].endpoints[
-                                          "db"
-                                        ].interface
-                                      }
-                                    </>
-                                  ) : (
-                                    <>
-                                      {name}{" "}
-                                      {
-                                        modelStatusData?.[
-                                          "remote-applications"
-                                        ][name].endpoints[0].name
-                                      }
-                                      :
-                                      {
-                                        modelStatusData?.[
-                                          "remote-applications"
-                                        ][name].endpoints[0].interface
-                                      }
-                                    </>
-                                  )}
-                                </div>
-                              ))}
+                              {crossModelRelations.map(
+                                ({ name, endpoints }) => (
+                                  <div key={name}>
+                                    {name}{" "}
+                                    {endpoints.map(
+                                      (
+                                        endpoint: RemoteEndpoint,
+                                        index: number,
+                                      ) => (
+                                        <span key={index}>
+                                          {endpoint.name}:{endpoint.interface}
+                                        </span>
+                                      ),
+                                    )}
+                                  </div>
+                                ),
+                              )}
                             </>
                           ),
                         },
@@ -197,10 +165,12 @@ export default function DestroyModelDialog({
             ]}
             className="p-main-table destroy-model-table"
           />
-          {modelStatusData?.storage !== undefined ? (
+          {hasStorage ? (
             <>
               <hr />
-              <div>Model has attached storage</div>
+              <div>
+                Model has attached storage <b>{storageIDs.join(", ")}</b>
+              </div>
               <RadioInput
                 label="Destroy storage"
                 checked={destroyStorage}
@@ -220,10 +190,7 @@ export default function DestroyModelDialog({
           {connectedOffers.length ? (
             <>
               <hr />
-              <div>
-                Model has cross-model relations that need to be removed
-                manually:
-              </div>
+              <div>Model has offers that need to be removed manually:</div>
               <MainTable
                 className="p-main-table destroy-model-table"
                 headers={[{ content: "application" }, { content: "offer" }]}

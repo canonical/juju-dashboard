@@ -277,9 +277,6 @@ export default function ModelTable({
         );
       }
     });
-
-    // The dependencies are just the state and dispatch
-    // since `Object.entries` creates a new array on each render
   }, [destructionState, wsControllerURL, modelsList, dispatch]);
 
   return (
