@@ -23,6 +23,7 @@ import type {
 import type {
   AllWatcherDelta,
   ApplicationInfo,
+  DestroyModelErrors,
   FullStatusWithAnnotations,
 } from "juju/types";
 import { processDeltas } from "juju/watchers";
@@ -250,10 +251,26 @@ const slice = createSlice({
       action.payload.modelParams.forEach(
         (model, index) =>
           (state.destroyModel[model["model-tag"]] = {
-            loading: true,
+            loading: false,
             errors: null,
             loaded: false,
             modelName: action.payload.models[index],
+          }),
+      );
+    },
+    updateDestroyModelsLoading: (
+      state,
+      action: PayloadAction<
+        {
+          modelTags: string[];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      action.payload.modelTags.forEach(
+        (modelTag) =>
+          (state.destroyModel[modelTag] = {
+            ...state.destroyModel[modelTag],
+            loading: true,
           }),
       );
     },
@@ -275,7 +292,7 @@ const slice = createSlice({
           }),
       );
     },
-    clearDeletedModel: (
+    clearDestroyedModel: (
       state,
       action: PayloadAction<
         {
@@ -284,6 +301,22 @@ const slice = createSlice({
       >,
     ) => {
       delete state.destroyModel[action.payload.modelTag];
+    },
+    destroyModelErrors: (
+      state,
+      action: PayloadAction<{
+        errors: DestroyModelErrors;
+      }>,
+    ) => {
+      action.payload.errors.forEach(
+        ([modelTag, error]) =>
+          (state.destroyModel[modelTag] = {
+            ...state.destroyModel[modelTag],
+            loading: false,
+            errors: error,
+            loaded: true,
+          }),
+      );
     },
     // This action can be dispatched to fetch audit events which is handled in
     // the model-poller middleware.

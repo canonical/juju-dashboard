@@ -376,3 +376,5 @@ export type Facades = {
 export type ConnectionWithFacades = {
   facades: Facades;
 } & Connection;
+
+export type DestroyModelErrors = [string, string][];

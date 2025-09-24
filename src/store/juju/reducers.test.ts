@@ -292,6 +292,38 @@ describe("reducers", () => {
         "model-abc123": {
           errors: null,
           loaded: false,
+          loading: false,
+          modelName: "model123",
+        },
+      },
+    });
+  });
+
+  it("updateDestroyModelsLoading", () => {
+    const state = jujuStateFactory.build({
+      destroyModel: {
+        "model-abc123": {
+          errors: null,
+          loaded: false,
+          loading: false,
+          modelName: "model123",
+        },
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.updateDestroyModelsLoading({
+          modelTags: ["model-abc123"],
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      destroyModel: {
+        "model-abc123": {
+          errors: null,
+          loaded: false,
           loading: true,
           modelName: "model123",
         },
@@ -331,7 +363,7 @@ describe("reducers", () => {
     });
   });
 
-  it("clearDeletedModel", () => {
+  it("clearDestroyedModel", () => {
     const state = jujuStateFactory.build({
       destroyModel: {
         "model-abc123": {
@@ -351,7 +383,7 @@ describe("reducers", () => {
     expect(
       reducer(
         state,
-        actions.clearDeletedModel({
+        actions.clearDestroyedModel({
           modelTag: "model-abc123",
           wsControllerURL: "wss://example.com",
         }),
@@ -364,6 +396,35 @@ describe("reducers", () => {
           loaded: false,
           loading: true,
           modelName: "model456",
+        },
+      },
+    });
+  });
+
+  it("destroyModelErrors", () => {
+    const state = jujuStateFactory.build({
+      destroyModel: {
+        "model-abc123": {
+          errors: null,
+          loaded: false,
+          loading: true,
+          modelName: "model123",
+        },
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.destroyModelErrors({ errors: [["model-abc123", "Uh oh!"]] }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      destroyModel: {
+        "model-abc123": {
+          errors: "Uh oh!",
+          loaded: true,
+          loading: false,
+          modelName: "model123",
         },
       },
     });

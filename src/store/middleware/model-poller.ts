@@ -17,7 +17,7 @@ import {
   crossModelQuery,
   findAuditEvents,
 } from "juju/jimm/api";
-import type { ConnectionWithFacades } from "juju/types";
+import type { ConnectionWithFacades, DestroyModelErrors } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import {
@@ -31,6 +31,7 @@ import type { RootState, Store } from "store/store";
 import { isSpecificAction, FeatureFlags } from "types";
 import { toErrorString } from "utils";
 import analytics from "utils/analytics";
+import isDestroyModelErrors from "utils/isDestroyModelErrors";
 import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
 import { logger } from "utils/logger";
 
@@ -457,50 +458,78 @@ export const modelPollerMiddleware: Middleware<
       if (!conn) {
         return;
       }
+      const remainingModels: string[] = [];
 
       try {
         const result = await conn.facades.modelManager?.destroyModels({
           models: modelParams,
         });
-        const errors: Error[] = [];
-        let isDestructionComplete = false;
-        do {
-          const modelInfo = await fetchModelInfo(
-            conn,
-            modelParams[0]["model-tag"].split("model-")[1],
-          );
-          if (modelInfo?.results[0].result?.life === undefined) {
-            isDestructionComplete = true;
-            break;
+        const errors: DestroyModelErrors = [];
+        result?.results.forEach((errorResult, index) => {
+          if (errorResult.error) {
+            errors.push([
+              modelParams[index]["model-tag"],
+              errorResult.error.message,
+            ]);
+          } else {
+            remainingModels.push(modelParams[index]["model-tag"]);
           }
+        });
+
+        // Dispatch partial errors, if any, and continue with successful destructions
+        if (errors.length > 0) {
+          reduxStore.dispatch(jujuActions.destroyModelErrors({ errors }));
+        }
+
+        // Only proceed to check for completion if at least one model had no errors
+        if (remainingModels.length) {
           reduxStore.dispatch(
-            jujuActions.updateModelsDestroyed({
-              models: [modelParams[0]["model-tag"]],
+            jujuActions.updateDestroyModelsLoading({
+              modelTags: remainingModels,
               wsControllerURL,
             }),
           );
-          // Wait 1s then start again.
-          await new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(true);
-            }, 1000);
-          });
-        } while (!isDestructionComplete);
-        result?.results.forEach((errorResult) => {
-          if (errorResult.error) {
-            errors.push(new Error(errorResult.error.message));
-          }
-        });
-        if (errors.length) {
-          throw errors;
+          let isDestructionComplete = false;
+          do {
+            const modelInfo = await fetchModelInfo(
+              conn,
+              remainingModels[0].split("model-")[1],
+            );
+            if (modelInfo?.results[0].result?.life === undefined) {
+              isDestructionComplete = true;
+              break;
+            }
+            reduxStore.dispatch(
+              jujuActions.updateModelsDestroyed({
+                models: [remainingModels[0]],
+                wsControllerURL,
+              }),
+            );
+            // Wait 1s then start again.
+            await new Promise((resolve) => {
+              setTimeout(() => {
+                resolve(true);
+              }, 1000);
+            });
+          } while (!isDestructionComplete);
         }
       } catch (errors) {
-        console.log(errors);
-        const errorMessages = Array.isArray(errors)
-          ? errors.map((error) => error.message)
-          : ["Could not destroy model"];
-        console.log(errorMessages);
-        // reduxStore.dispatch(jujuActions.migrationTargetErrors(errorMessage));
+        let errorMessages: DestroyModelErrors = [];
+
+        if (isDestroyModelErrors(errors)) {
+          errorMessages = errors;
+        } else {
+          errorMessages = modelParams.map((modelParam) => [
+            modelParam["model-tag"],
+            "Something went wrong during the model destruction process",
+          ]);
+        }
+
+        reduxStore.dispatch(
+          jujuActions.destroyModelErrors({
+            errors: errorMessages,
+          }),
+        );
       }
       // The action has already been passed to the next middleware
       // at the top of this handler.

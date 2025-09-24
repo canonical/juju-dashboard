@@ -231,6 +231,7 @@ export default function ModelTable({
         ));
       } else if (
         status.loaded &&
+        status.errors === null &&
         !Object.keys(modelsList).includes(modelTag.split("model-")[1])
       ) {
         // Handle a successful destruction
@@ -243,7 +244,7 @@ export default function ModelTable({
         // Dispatch the clear action to remove this entry from the state.
         // This prevents the useEffect from re-running for this item.
         dispatch(
-          jujuActions.clearDeletedModel({
+          jujuActions.clearDestroyedModel({
             modelTag,
             wsControllerURL,
           }),
@@ -270,7 +271,7 @@ export default function ModelTable({
         // Dispatch the clear action to remove this entry from the state.
         // This prevents the useEffect from re-running for this item.
         dispatch(
-          jujuActions.clearDeletedModel({
+          jujuActions.clearDestroyedModel({
             modelTag,
             wsControllerURL,
           }),
