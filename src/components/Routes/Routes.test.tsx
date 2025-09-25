@@ -14,7 +14,7 @@ import { rootStateFactory } from "testing/factories/root";
 import { changeURL, createStore } from "testing/utils";
 import urls from "urls";
 
-import Routes from "./Routes";
+import { Routes } from "./Routes";
 
 describe("Routes", () => {
   let state: RootState;

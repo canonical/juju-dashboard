@@ -12,8 +12,8 @@ export const deviceCodeLogin = async (
   user: Secret,
   codeRegex: RegExp,
   loginMethod: (page: Page, secret: Secret, code: string) => Promise<void>,
-  loginArgs?: string | null,
-) => {
+  loginArgs?: null | string,
+): Promise<void> => {
   // Begin the login. The controller only needs to be registered the first
   // time (which is done when the workflow uses this function to log in to add
   // the controller).
