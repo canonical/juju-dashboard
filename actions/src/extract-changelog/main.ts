@@ -1,6 +1,11 @@
 import { changelog, type Ctx } from "@/lib";
 
-export async function run(ctx: Ctx) {
+type ChangelogResult = {
+  changelog: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/require-await
+export async function run(ctx: Ctx): Promise<ChangelogResult> {
   if (!ctx.pr) {
     throw new Error("can only extract changelog from a running PR");
   }

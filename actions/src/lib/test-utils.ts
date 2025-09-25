@@ -1,7 +1,25 @@
 import { CHANGELOG_END_MARKER, CHANGELOG_START_MARKER } from "./changelog";
 import type { Severity } from "./severity";
 
-export async function* asyncIterable<T>(items: T[]) {
+type PRArgs = {
+  base?: string;
+  body?: string;
+  head: string;
+  labels?: string[];
+  number?: number;
+  title?: string;
+};
+
+type PRResult = {
+  changelogEntry: () => string;
+  hasLabel: (label: string) => boolean;
+  labels: { name: string }[];
+} & Omit<PRArgs, "labels">;
+
+// eslint-disable-next-line @typescript-eslint/require-await
+export async function* asyncIterable<T>(
+  items: T[],
+): AsyncGenerator<Awaited<T>> {
   yield* items;
 }
 
@@ -12,14 +30,7 @@ export function mockPr({
   labels = [],
   title = "",
   body = "",
-}: {
-  number?: number;
-  base?: string;
-  head: string;
-  labels?: string[];
-  title?: string;
-  body?: string;
-}) {
+}: PRArgs): PRResult {
   return {
     number,
     base,
@@ -27,8 +38,8 @@ export function mockPr({
     labels: labels.map((name) => ({ name })),
     title,
     body,
-    hasLabel: (label: string) => labels.includes(label),
-    changelogEntry: () => `${title} by @user (#${number})`,
+    hasLabel: (label: string): boolean => labels.includes(label),
+    changelogEntry: (): string => `${title} by @user (#${number})`,
   };
 }
 
@@ -48,7 +59,7 @@ export function mockCutPr({
   /** Optional beta version to append to head branch. */
   patchVersion?: number;
   /** Optional suffix for the `head` branch. */
-  headSuffix?: string | null;
+  headSuffix?: null | string;
   /** Pull request number. */
   number?: number;
   /** If `true`, default release labels will be included. */
@@ -56,7 +67,7 @@ export function mockCutPr({
   /** Additional labels to add to the pull request. */
   additionalLabels?: string[];
   changelog?: string[];
-} = {}) {
+} = {}): PRResult {
   const labels = [
     "release: cut",
     `release-severity: ${severity}`,

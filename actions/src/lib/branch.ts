@@ -1,3 +1,4 @@
+import type { MajorMinorVersion } from "./version";
 import { parseVersion, serialiseVersion, type Version } from "./version";
 
 /**
@@ -16,7 +17,7 @@ export const CUT_BRANCH_PREFIX = "cut";
  * @param branch - Branch name to parse.
  * @returns Suffix of branch.
  */
-function parseBranchPrefix(prefix: string, branch: string) {
+function parseBranchPrefix(prefix: string, branch: string): string {
   const [branchPrefix, branchSuffix, ...rest] = branch.split("/");
 
   if (prefix !== branchPrefix) {
@@ -37,7 +38,7 @@ function parseBranchPrefix(prefix: string, branch: string) {
  * @param majorMinor - String to parse.
  * @returns Major and minor component of the string.
  */
-function parseMajorMinor(majorMinor: string): { major: number; minor: number } {
+function parseMajorMinor(majorMinor: string): MajorMinorVersion {
   const [majorStr, minorStr, ...suffixRest] = majorMinor.split(".");
   if (suffixRest.length > 0) {
     throw new Error(`Expected 'major.minor' string: ${majorMinor}`);
@@ -63,7 +64,7 @@ const branch = {
      * @param branchName - Release branch name.
      * @returns Version encoded in the release branch.
      */
-    parse: (branchName: string) => {
+    parse: (branchName: string): null | Version => {
       try {
         const suffix = parseBranchPrefix(RELEASE_BRANCH_PREFIX, branchName);
         return parseVersion(suffix);
@@ -76,7 +77,7 @@ const branch = {
      * @param version - Version for the release branch.
      * @returns Branch name.
      */
-    serialise: (version: Version) => {
+    serialise: (version: Version): string => {
       return `${RELEASE_BRANCH_PREFIX}/${serialiseVersion(version)}`;
     },
     /**
@@ -87,7 +88,7 @@ const branch = {
     test: (
       branchName: string,
       { preRelease = false }: { preRelease?: boolean },
-    ) => {
+    ): boolean => {
       const version = branch.release.parse(branchName);
 
       if (version === null) {
@@ -109,7 +110,7 @@ const branch = {
      * @param branchName - Short release branch name.
      * @returns Version encoded in the short release branch.
      */
-    parse: (branchName: string) => {
+    parse: (branchName: string): MajorMinorVersion | null => {
       try {
         const suffix = parseBranchPrefix(RELEASE_BRANCH_PREFIX, branchName);
         const { major, minor } = parseMajorMinor(suffix);
@@ -125,7 +126,7 @@ const branch = {
      * @param minor - Minor version for the cut branch.
      * @returns Branch name.
      */
-    serialise: (major: number, minor: number) => {
+    serialise: (major: number, minor: number): string => {
       return `${RELEASE_BRANCH_PREFIX}/${major}.${minor}`;
     },
     /**
@@ -133,7 +134,7 @@ const branch = {
      * @param branchName - Branch name to test.
      * @returns `true` if the branch name is a valid short release branch.
      */
-    test: (branchName: string) => {
+    test: (branchName: string): boolean => {
       return branch.shortRelease.parse(branchName) !== null;
     },
   },
@@ -145,7 +146,7 @@ const branch = {
      * @param branchName - Cut branch name.
      * @returns Major and minor version encoded in the cut branch.
      */
-    parse: (branchName: string) => {
+    parse: (branchName: string): MajorMinorVersion | null => {
       try {
         const suffix = parseBranchPrefix(CUT_BRANCH_PREFIX, branchName);
         const { major, minor } = parseMajorMinor(suffix);
@@ -161,7 +162,7 @@ const branch = {
      * @param minor - Minor version for the cut branch.
      * @returns Branch name.
      */
-    serialise: (major: number, minor: number) => {
+    serialise: (major: number, minor: number): string => {
       return `${CUT_BRANCH_PREFIX}/${major}.${minor}`;
     },
     /**
@@ -169,7 +170,7 @@ const branch = {
      * @param branchName - Branch name to test.
      * @returns `true` if the branch name is a valid cut branch.
      */
-    test: (branchName: string) => {
+    test: (branchName: string): boolean => {
       return branch.cut.parse(branchName) !== null;
     },
   },

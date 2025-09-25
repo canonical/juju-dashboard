@@ -18,16 +18,16 @@ export type Octokit = ReturnType<typeof github.getOctokit>;
  */
 export type GithubPullRequest = Pick<
   GetResponseDataTypeFromEndpointMethod<Octokit["rest"]["pulls"]["get"]>,
-  | "id"
-  | "user"
-  | "url"
-  | "number"
-  | "body"
-  | "title"
-  | "labels"
-  | "head"
   | "base"
+  | "body"
+  | "head"
+  | "id"
+  | "labels"
+  | "number"
   | "state"
+  | "title"
+  | "url"
+  | "user"
 >;
 
 /**
