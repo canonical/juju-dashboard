@@ -1,48 +1,44 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { fixupConfigRules, fixupPluginRules } from "@eslint/compat";
-import { FlatCompat } from "@eslint/eslintrc";
-import js from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
 import vitest from "@vitest/eslint-plugin";
-import _import from "eslint-plugin-import";
+import importPlugin from "eslint-plugin-import";
 import perfectionist from "eslint-plugin-perfectionist";
 import prettier from "eslint-plugin-prettier";
 import promise from "eslint-plugin-promise";
 import react from "eslint-plugin-react";
 import reactRefresh from "eslint-plugin-react-refresh";
+import reactHooks from "eslint-plugin-react-hooks";
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
+import { includeIgnoreFile } from "@eslint/compat";
 
+const gitignorePath = fileURLToPath(new URL(".gitignore", import.meta.url));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
 
-export default [
-  ...fixupConfigRules(
-    compat.extends(
-      "eslint:recommended",
-      "plugin:react/recommended",
-      "plugin:react/jsx-runtime",
-      "plugin:prettier/recommended",
-      "plugin:import/typescript",
-      "plugin:promise/recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:react-hooks/recommended",
-    ),
-  ),
+export default defineConfig(
+  includeIgnoreFile(gitignorePath),
   {
+    ignores: [".yarn/", "charms/", "actions/", ".github/", "docs/", "public/", "konf/"],
+  },
+  {
+    files: ["src/**/*.ts", "src/**/*.tsx"],
+    extends: [
+      eslint.configs.recommended,
+      ...tseslint.configs.recommended,
+      promise.configs["flat/recommended"],
+      reactHooks.configs["recommended-latest"],
+      importPlugin.flatConfigs.recommended,
+      importPlugin.flatConfigs.typescript,
+    ],
     plugins: {
-      prettier: fixupPluginRules(prettier),
-      vitest: fixupPluginRules(vitest),
-      promise: fixupPluginRules(promise),
+      prettier,
+      vitest,
       "react-refresh": reactRefresh,
-      react: fixupPluginRules(react),
-      import: fixupPluginRules(_import),
+      react,
       "@stylistic": stylistic,
       perfectionist,
     },
@@ -55,7 +51,6 @@ export default [
         jujuDashboardConfig: true,
         lightningjs: true,
       },
-      parser: tsParser,
       ecmaVersion: 5,
       sourceType: "script",
       parserOptions: {
@@ -69,7 +64,7 @@ export default [
       },
     },
     settings: {
-      "import/resolver": { node: { paths: ["src"] } },
+      "import/resolver": { node: { paths: ["src"] }, typescript: true },
       react: { version: "detect" },
     },
     rules: {
@@ -113,6 +108,8 @@ export default [
       "import/prefer-default-export": 0,
       "import/first": ["error"],
       "import/newline-after-import": "error",
+      // Prevent conflicts with consistent-type-imports
+      "import/no-duplicates": "off",
       "import/order": [
         "error",
         {
@@ -170,4 +167,4 @@ export default [
       "@typescript-eslint/init-declarations": "off",
     },
   },
-];
+);
