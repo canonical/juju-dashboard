@@ -278,14 +278,14 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         {
-          models: string[];
+          modelTags: string[];
         } & WsControllerURLParam
       >,
     ) => {
-      action.payload.models.forEach(
-        (model) =>
-          (state.destroyModel[model] = {
-            ...state.destroyModel[model],
+      action.payload.modelTags.forEach(
+        (modelTag) =>
+          (state.destroyModel[modelTag] = {
+            ...state.destroyModel[modelTag],
             loading: false,
             errors: null,
             loaded: true,

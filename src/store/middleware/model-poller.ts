@@ -458,7 +458,7 @@ export const modelPollerMiddleware: Middleware<
       if (!conn) {
         return;
       }
-      const remainingModels: string[] = [];
+      let remainingModels: string[] = [];
 
       try {
         const result = await conn.facades.modelManager?.destroyModels({
@@ -482,7 +482,7 @@ export const modelPollerMiddleware: Middleware<
         }
 
         // Only proceed to check for completion if at least one model had no errors
-        if (remainingModels.length) {
+        if (errors.length < modelParams.length) {
           reduxStore.dispatch(
             jujuActions.updateDestroyModelsLoading({
               modelTags: remainingModels,
@@ -491,27 +491,47 @@ export const modelPollerMiddleware: Middleware<
           );
           let isDestructionComplete = false;
           do {
-            const modelInfo = await fetchModelInfo(
-              conn,
-              remainingModels[0].split("model-")[1],
-            );
-            if (modelInfo?.results[0].result?.life === undefined) {
+            const modelInfos = await fetchModelInfo(conn, remainingModels);
+
+            // Get the list of models that are not destroyed yet
+            const destroyedModels =
+              modelInfos?.results.reduce((acc, info, index) => {
+                if (info.result?.life === undefined) {
+                  acc.push(remainingModels[index]);
+                }
+                return acc;
+              }, [] as string[]) ?? [];
+
+            if (destroyedModels?.length === remainingModels.length) {
               isDestructionComplete = true;
+              reduxStore.dispatch(
+                jujuActions.updateModelsDestroyed({
+                  modelTags: remainingModels,
+                  wsControllerURL,
+                }),
+              );
               break;
             }
-            reduxStore.dispatch(
-              jujuActions.updateModelsDestroyed({
-                models: [remainingModels[0]],
-                wsControllerURL,
-              }),
+
+            if (destroyedModels && destroyedModels.length > 0) {
+              reduxStore.dispatch(
+                jujuActions.updateModelsDestroyed({
+                  modelTags: destroyedModels,
+                  wsControllerURL,
+                }),
+              );
+            }
+            remainingModels = remainingModels.filter(
+              (modelTag) => !destroyedModels?.includes(modelTag),
             );
+
             // Wait 1s then start again.
             await new Promise((resolve) => {
               setTimeout(() => {
                 resolve(true);
               }, 1000);
             });
-          } while (!isDestructionComplete);
+          } while (remainingModels.length > 0 && !isDestructionComplete);
         }
       } catch (errors) {
         let errorMessages: DestroyModelErrors = [];

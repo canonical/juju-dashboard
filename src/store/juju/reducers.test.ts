@@ -346,7 +346,7 @@ describe("reducers", () => {
       reducer(
         state,
         actions.updateModelsDestroyed({
-          models: ["model-abc123"],
+          modelTags: ["model-abc123"],
           wsControllerURL: "wss://example.com",
         }),
       ),

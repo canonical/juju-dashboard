@@ -56,6 +56,38 @@ const getStorageIDs = (storage: StorageDetails[] | undefined): string[] => {
   return storageIDs;
 };
 
+const getConnectedOffers = (
+  modelStatusData: ModelData | null,
+): {
+  offerName: string;
+  applicationName: string;
+  endpoint: {
+    name: string;
+    interface: string;
+  };
+}[] => {
+  const offers = modelStatusData?.offers ?? {};
+  const connectedEntries = Object.entries(offers).filter(
+    ([, data]) => data["total-connected-count"] > 0,
+  ) as [string, ApplicationOfferStatus][];
+
+  return connectedEntries.map(([offerName, data]) => {
+    const endpointDetails = Object.values(data.endpoints)[0] ?? {
+      name: "unknown",
+      interface: "unknown",
+    };
+
+    return {
+      offerName,
+      applicationName: data["application-name"],
+      endpoint: {
+        name: endpointDetails.name,
+        interface: endpointDetails.interface,
+      },
+    };
+  });
+};
+
 // Custom hook to prepare all data needed by the component
 export default function useModelDestructionData(modelUUID: string): {
   hasStorage: boolean;
@@ -65,7 +97,11 @@ export default function useModelDestructionData(modelUUID: string): {
     name: string;
     endpoints: RemoteEndpoint[];
   }[];
-  connectedOffers: [string, ApplicationOfferStatus][];
+  connectedOffers: {
+    offerName: string;
+    applicationName: string;
+    endpoint: { name: string; interface: string };
+  }[];
   showInfoTable: boolean;
   storageIDs: string[];
 } {
@@ -74,9 +110,7 @@ export default function useModelDestructionData(modelUUID: string): {
   const applications = Object.keys(modelStatusData?.applications ?? {});
   const machines = Object.keys(modelStatusData?.machines ?? {});
   const crossModelRelations = getCrossModelRelations(modelStatusData);
-  const connectedOffers = Object.entries(modelStatusData?.offers ?? {}).filter(
-    ([, data]) => data["total-connected-count"] > 0,
-  );
+  const connectedOffers = getConnectedOffers(modelStatusData);
   const showInfoTable =
     applications.length > 0 ||
     machines.length > 0 ||

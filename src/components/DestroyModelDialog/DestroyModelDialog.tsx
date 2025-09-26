@@ -203,7 +203,7 @@ export default function DestroyModelDialog({
                             <Icon name="applications" className="icon" />
                             {connectedOffers.map(
                               (connectedOffer) =>
-                                connectedOffer[1]["application-name"],
+                                connectedOffer.applicationName,
                             )}
                           </>
                         ),
@@ -213,11 +213,11 @@ export default function DestroyModelDialog({
                           <>
                             <Icon name="get-link" className="icon" />
                             {connectedOffers.map(
-                              (connectedOffer) => connectedOffer[0],
+                              (connectedOffer) => connectedOffer.offerName,
                             )}{" "}
                             {connectedOffers.map(
                               (connectedOffer) =>
-                                `${connectedOffer[1].endpoints["db"].name}:${connectedOffer[1].endpoints["db"].interface}`,
+                                `${connectedOffer.endpoint.name}:${connectedOffer.endpoint.interface}`,
                             )}
                           </>
                         ),
