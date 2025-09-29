@@ -7,6 +7,7 @@ import {
   disableControllerUUIDMasking,
   fetchAllModelStatuses,
   fetchControllerList,
+  fetchModelInfo,
   loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
@@ -16,7 +17,7 @@ import {
   crossModelQuery,
   findAuditEvents,
 } from "juju/jimm/api";
-import type { ConnectionWithFacades } from "juju/types";
+import type { ConnectionWithFacades, DestroyModelErrors } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { actions as generalActions } from "store/general";
 import {
@@ -30,6 +31,7 @@ import type { RootState, Store } from "store/store";
 import { isSpecificAction, FeatureFlags } from "types";
 import { toErrorString } from "utils";
 import analytics from "utils/analytics";
+import isDestroyModelErrors from "utils/isDestroyModelErrors";
 import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
 import { logger } from "utils/logger";
 
@@ -434,6 +436,118 @@ export const modelPollerMiddleware: Middleware<
             requestId: action.payload.requestId,
             tuples,
             errors: errorMessage,
+          }),
+        );
+      }
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
+    } else if (
+      isSpecificAction<ReturnType<typeof jujuActions.destroyModels>>(
+        action,
+        jujuActions.destroyModels.type,
+      )
+    ) {
+      // Intercept destroyModel actions and fetch and store
+      // the modelParams via the controller connection.
+      const { wsControllerURL, modelParams } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+      let remainingModels: string[] = [];
+
+      try {
+        const result = await conn.facades.modelManager?.destroyModels({
+          models: modelParams,
+        });
+        const errors: DestroyModelErrors = [];
+        result?.results.forEach((errorResult, index) => {
+          if (errorResult.error) {
+            errors.push([
+              modelParams[index]["model-tag"],
+              errorResult.error.message,
+            ]);
+          } else {
+            remainingModels.push(modelParams[index]["model-tag"]);
+          }
+        });
+
+        // Dispatch partial errors, if any, and continue with successful destructions
+        if (errors.length > 0) {
+          reduxStore.dispatch(jujuActions.destroyModelErrors({ errors }));
+        }
+
+        // Only proceed to check for completion if at least one model had no errors
+        if (errors.length < modelParams.length) {
+          reduxStore.dispatch(
+            jujuActions.updateDestroyModelsLoading({
+              modelTags: remainingModels,
+              wsControllerURL,
+            }),
+          );
+          let isDestructionComplete = false;
+          do {
+            const modelInfos = await fetchModelInfo(conn, remainingModels);
+
+            // Get the list of models that are not destroyed yet
+            const destroyedModels =
+              modelInfos?.results.reduce((acc, info, index) => {
+                if (info.result?.life === undefined) {
+                  acc.push(remainingModels[index]);
+                }
+                return acc;
+              }, [] as string[]) ?? [];
+
+            if (destroyedModels?.length === remainingModels.length) {
+              isDestructionComplete = true;
+              reduxStore.dispatch(
+                jujuActions.updateModelsDestroyed({
+                  modelTags: remainingModels,
+                  wsControllerURL,
+                }),
+              );
+              break;
+            }
+
+            if (destroyedModels && destroyedModels.length > 0) {
+              reduxStore.dispatch(
+                jujuActions.updateModelsDestroyed({
+                  modelTags: destroyedModels,
+                  wsControllerURL,
+                }),
+              );
+            }
+            remainingModels = remainingModels.filter(
+              (modelTag) => !destroyedModels?.includes(modelTag),
+            );
+
+            // Wait 1s then start again.
+            await new Promise((resolve) => {
+              setTimeout(() => {
+                resolve(true);
+              }, 1000);
+            });
+          } while (remainingModels.length > 0 && !isDestructionComplete);
+        }
+      } catch (errors) {
+        let errorMessages: DestroyModelErrors = [];
+
+        if (isDestroyModelErrors(errors)) {
+          errorMessages = errors;
+        } else {
+          errorMessages = modelParams.map((modelParam) => [
+            modelParam["model-tag"],
+            "Something went wrong during the model destruction process",
+          ]);
+        }
+
+        reduxStore.dispatch(
+          jujuActions.destroyModelErrors({
+            errors: errorMessages,
           }),
         );
       }
