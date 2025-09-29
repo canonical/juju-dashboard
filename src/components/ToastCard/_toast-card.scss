@@ -45,6 +45,10 @@
     border-left: 3px solid $color-negative;
   }
 
+  &[data-type="info"] {
+    border-left: 3px solid $color-info;
+  }
+
   &__undo {
     display: flex;
     width: 100%;
