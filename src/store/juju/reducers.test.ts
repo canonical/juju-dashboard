@@ -282,7 +282,6 @@ describe("reducers", () => {
         state,
         actions.destroyModels({
           modelParams: destroyModelParams,
-          models: ["model123"],
           wsControllerURL: "wss://example.com",
         }),
       ),
@@ -293,7 +292,6 @@ describe("reducers", () => {
           errors: null,
           loaded: false,
           loading: false,
-          modelName: "model123",
         },
       },
     });
@@ -306,7 +304,6 @@ describe("reducers", () => {
           errors: null,
           loaded: false,
           loading: false,
-          modelName: "model123",
         },
       },
     });
@@ -325,7 +322,6 @@ describe("reducers", () => {
           errors: null,
           loaded: false,
           loading: true,
-          modelName: "model123",
         },
       },
     });
@@ -338,7 +334,6 @@ describe("reducers", () => {
           errors: null,
           loaded: false,
           loading: true,
-          modelName: "model123",
         },
       },
     });
@@ -357,7 +352,6 @@ describe("reducers", () => {
           errors: null,
           loaded: true,
           loading: false,
-          modelName: "model123",
         },
       },
     });
@@ -370,13 +364,11 @@ describe("reducers", () => {
           errors: null,
           loaded: false,
           loading: true,
-          modelName: "model123",
         },
         "model-xyz456": {
           errors: null,
           loaded: false,
           loading: true,
-          modelName: "model456",
         },
       },
     });
@@ -395,7 +387,6 @@ describe("reducers", () => {
           errors: null,
           loaded: false,
           loading: true,
-          modelName: "model456",
         },
       },
     });
@@ -408,7 +399,6 @@ describe("reducers", () => {
           errors: null,
           loaded: false,
           loading: true,
-          modelName: "model123",
         },
       },
     });
@@ -424,7 +414,6 @@ describe("reducers", () => {
           errors: "Uh oh!",
           loaded: true,
           loading: false,
-          modelName: "model123",
         },
       },
     });
