@@ -23,7 +23,6 @@ import type {
 import type {
   AllWatcherDelta,
   ApplicationInfo,
-  DestroyModelErrors,
   FullStatusWithAnnotations,
 } from "juju/types";
 import { processDeltas } from "juju/watchers";
@@ -244,17 +243,15 @@ const slice = createSlice({
       action: PayloadAction<
         {
           modelParams: DestroyModelParams[];
-          models: string[];
         } & WsControllerURLParam
       >,
     ) => {
       action.payload.modelParams.forEach(
-        (model, index) =>
+        (model) =>
           (state.destroyModel[model["model-tag"]] = {
             loading: false,
             errors: null,
             loaded: false,
-            modelName: action.payload.models[index],
           }),
       );
     },
@@ -305,7 +302,7 @@ const slice = createSlice({
     destroyModelErrors: (
       state,
       action: PayloadAction<{
-        errors: DestroyModelErrors;
+        errors: string[][];
       }>,
     ) => {
       action.payload.errors.forEach(
