@@ -73,6 +73,16 @@ describe("Toast Card", () => {
     expect(document.querySelector(".p-icon--warning")).toBeInTheDocument();
   });
 
+  it("should display correct information icon", () => {
+    const toast = cloneDeep(toastInstanceExample);
+    render(
+      <ToastCard type="info" toastInstance={toast}>
+        I am a toast message
+      </ToastCard>,
+    );
+    expect(document.querySelector(".p-icon--information")).toBeInTheDocument();
+  });
+
   it("should display close icon", () => {
     const toast = cloneDeep(toastInstanceExample);
     render(
