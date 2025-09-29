@@ -5,8 +5,8 @@ import type { AnnotationsGetResult } from "@canonical/jujulib/dist/api/facades/a
 import type AnnotationsV2 from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
 import type ApplicationV18 from "@canonical/jujulib/dist/api/facades/application/ApplicationV18";
 import type CharmsV6 from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
-import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import type ClientV6 from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type ClientV7 from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import type CloudV7 from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 import type ControllerV9 from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
 import type ModelManagerV9 from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
@@ -364,7 +364,7 @@ export type Facades = {
   annotations?: AnnotationsV2;
   application?: ApplicationV18;
   charms?: CharmsV6;
-  client?: ClientV6;
+  client?: ClientV7;
   cloud?: CloudV7;
   controller?: ControllerV9;
   modelManager?: ModelManagerV9;
@@ -376,3 +376,5 @@ export type Facades = {
 export type ConnectionWithFacades = {
   facades: Facades;
 } & Connection;
+
+export type DestroyModelErrors = [string, string][];
