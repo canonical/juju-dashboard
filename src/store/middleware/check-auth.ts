@@ -100,6 +100,7 @@ export const checkAuthMiddleware: Middleware<
       jujuActions.clearCrossModelQuery.type,
       jujuActions.updateSelectedApplications.type,
       jujuActions.addCheckRelationsErrors.type,
+      jujuActions.destroyModelErrors.type,
       jujuActions.addCheckRelations.type,
       jujuActions.checkRelations.type,
       jujuActions.removeCheckRelations.type,
