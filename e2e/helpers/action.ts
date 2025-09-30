@@ -84,8 +84,8 @@ export class ActionStack {
     console.log("--------------------------------");
     console.log(TIME_KEY, "starting.");
 
-    let action: Action<unknown> | null | undefined = null;
-    while ((action = this.actions.pop())) {
+    let action: Action<unknown> | null = null;
+    while ((action = this.actions.pop() ?? null)) {
       // Perform all rollback actions as the admin.
       if (this.jujuCLI.jujuEnv === JujuEnv.JIMM) {
         // When using JIMM the actions need to be performed in the workloads controller.

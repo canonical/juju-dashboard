@@ -1,5 +1,4 @@
-import type { Browser } from "@playwright/test";
-import type { Page } from "@playwright/test";
+import type { Browser, Page } from "@playwright/test";
 
 import { addFeatureFlags, juju } from "../../../utils";
 import { exec } from "../../../utils/exec";
