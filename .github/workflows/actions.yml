@@ -39,7 +39,7 @@ jobs:
           cache: "yarn"
       - name: Install
         run: yarn install --immutable
-      - run: yarn eslint-check
+      - run: yarn eslint
   stylelint:
     name: Lint SCSS
     runs-on: ubuntu-latest

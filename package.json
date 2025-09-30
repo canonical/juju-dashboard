@@ -23,10 +23,9 @@
   "scripts": {
     "build": "vite build && yarn run generate-version-file",
     "clean": "./scripts/clean-files",
-    "eslint-check": "eslint",
     "generate-release-tarball": "yarn run build && ./scripts/generate-release-tarball",
     "generate-version-file": "./scripts/generate-version-file",
-    "lint": "yarn lint:package-json && yarn run eslint-check && yarn run prettier-check && yarn run stylelint-check",
+    "lint": "yarn lint:package-json && yarn eslint && yarn run prettier-check && yarn run stylelint-check",
     "lint:package-json": "npmPkgJsonLint -c ./.npmpackagejsonlintrc.json ./ ./actions",
     "prettier-check": "prettier --check 'src/**/*'",
     "serve": "yarn run start",
