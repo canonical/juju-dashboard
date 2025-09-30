@@ -5,8 +5,8 @@ import type { User } from ".";
 type Constructor<T> = new (
   username: string,
   password: string,
-  identityUsername?: string | null,
-  identityPassword?: string | null,
+  identityUsername?: null | string,
+  identityPassword?: null | string,
 ) => T;
 
 /**

@@ -10,67 +10,57 @@ import { deviceCodeLogin } from "./utils";
 
 const KEYCLOAK_DEVICE_CODE_REGEX = /(?<=enter code ).\w+-\w+/;
 
-export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
-  private identityUsername: string;
-  private identityPassword: string;
-  private identityDomain: string;
-
-  constructor(
-    private username: string,
-    private password: string,
-    identityUsername?: string | null,
-    identityPassword?: string | null,
-  ) {
-    // The admin identity created by the JIMM set up uses @canonical.com so we need to
-    // use that domain if it is received as part of identityUsername.
-    const [identityName, domain] = (identityUsername || "").split("@");
-    this.identityUsername = identityName || username;
-    this.identityDomain = domain || "example.com";
-    this.identityPassword = identityPassword || password;
+export class KeycloakOIDC {
+  static async loginCLI(browser: Browser, user: Secret): Promise<void> {
+    await deviceCodeLogin(
+      browser,
+      user,
+      KEYCLOAK_DEVICE_CODE_REGEX,
+      KeycloakOIDC.uiLogin,
+    );
   }
 
-  async run() {
-    const email = [this.identityUsername, this.identityDomain].join("@");
-    // Give the keycloak user access to a file to store the login credentials in.
-    await exec(
-      'docker exec --user root keycloak sh -c "touch /kcadm.config && chown keycloak /kcadm.config"',
-    );
-    // Log in to the keycloak API. This is done each time as the token might expire during the test run.
-    await exec(
-      'docker exec keycloak sh -c "kcadm.sh config credentials --user jimm --password jimm --server http://0.0.0.0:8082/ --realm master --config /kcadm.config"',
-    );
-    await exec(
-      `docker exec keycloak sh -c "kcadm.sh create users -s username=${this.identityUsername} -s enabled=true -s email=${email} -r jimm --config /kcadm.config"`,
-    );
-    await exec(
-      `docker exec keycloak sh -c "kcadm.sh set-password -r jimm --username ${this.identityUsername} --new-password ${this.identityPassword} --config /kcadm.config"`,
-    );
-    console.log(`Keycloak OIDC user created: ${this.identityUsername}`);
+  private static async uiLogin(
+    page: Page,
+    secret: Secret,
+    code: string,
+  ): Promise<void> {
+    await page
+      .getByRole("textbox", {
+        name: "Enter the code provided by your device and click Submit",
+      })
+      .fill(code);
+    await page.getByRole("button", { name: "Submit" }).click();
+    await page
+      .getByRole("textbox", { name: "Username or email" })
+      .fill(secret.username);
+    await page.getByRole("textbox", { name: "Password" }).fill(secret.password);
+    await page.getByRole("button", { name: "Sign In" }).click();
+    await page.getByRole("button", { name: "Yes" }).click();
+    await expect(page.getByText("Device Login Successful")).toBeVisible();
   }
 
-  async rollback() {
-    const user = this.result();
-    const userId = await exec(
-      `docker exec keycloak sh -c "kcadm.sh get users -q exact=true -q username=${user.identityUsername.split("@")[0]} -r jimm --config /kcadm.config" | yq .[0].id`,
-    );
-    await exec(
-      `docker exec keycloak sh -c "kcadm.sh delete users/'${userId.stdout.trim()}' -r jimm --config /kcadm.config"`,
-    );
-    console.log(`Keycloak OIDC user deleted: ${user.identityUsername}`);
-  }
-
-  debug(): string {
-    return `Create Keycloak OIDC user '${this.identityUsername}' (password '${this.identityPassword}')`;
-  }
-
-  result(): KeycloakOIDCUser {
-    return new KeycloakOIDCUser(
-      this.username,
-      this.password,
-      this.identityUsername,
-      this.identityPassword,
-      this.identityDomain,
-    );
+  static async dashboardLogin(
+    page: Page,
+    user: Secret,
+    url: string,
+    expectError?: boolean,
+  ): Promise<void> {
+    await page.goto(addFeatureFlags(url));
+    await page.getByRole("link", { name: "Log in to the dashboard" }).click();
+    await page
+      .getByRole("textbox", { name: "Username or email" })
+      .fill(user.username);
+    await page.getByRole("textbox", { name: "Password" }).fill(user.password);
+    await page.getByRole("button", { name: "Sign In" }).click();
+    if (!expectError) {
+      // Wait until the login flow redirects back to the dashboard so that the
+      // cookies get set.
+      await page.waitForURL("**/models");
+      // The Keycloak OIDC flow always redirects back to /models so now we need to visit
+      // the expected URL:
+      await page.goto(addFeatureFlags(url));
+    }
   }
 }
 
@@ -81,9 +71,9 @@ export class KeycloakOIDCUser extends LocalUser {
   constructor(
     username: string,
     password: string,
-    identityUsername?: string | null,
-    identityPassword?: string | null,
-    private identityDomain?: string | null,
+    identityUsername?: null | string,
+    identityPassword?: null | string,
+    private identityDomain?: null | string,
   ) {
     super(username, password);
     this.identityUsername = identityUsername || username;
@@ -94,7 +84,7 @@ export class KeycloakOIDCUser extends LocalUser {
     page: Page,
     url: string,
     expectError?: boolean,
-  ) {
+  ): Promise<void> {
     await KeycloakOIDC.dashboardLogin(
       page,
       {
@@ -106,11 +96,11 @@ export class KeycloakOIDCUser extends LocalUser {
     );
   }
 
-  override async reloadDashboard(page: Page) {
+  override async reloadDashboard(page: Page): Promise<void> {
     await page.reload();
   }
 
-  override async cliLogin(browser: Browser) {
+  override async cliLogin(browser: Browser): Promise<void> {
     if (await juju.isUser(this.cliUsername)) {
       return;
     }
@@ -145,52 +135,66 @@ export class KeycloakOIDCUser extends LocalUser {
   }
 }
 
-export class KeycloakOIDC {
-  static async loginCLI(browser: Browser, user: Secret): Promise<void> {
-    await deviceCodeLogin(
-      browser,
-      user,
-      KEYCLOAK_DEVICE_CODE_REGEX,
-      KeycloakOIDC.uiLogin,
-    );
-  }
+export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
+  private identityUsername: string;
+  private identityPassword: string;
+  private identityDomain: string;
 
-  private static async uiLogin(page: Page, secret: Secret, code: string) {
-    await page
-      .getByRole("textbox", {
-        name: "Enter the code provided by your device and click Submit",
-      })
-      .fill(code);
-    await page.getByRole("button", { name: "Submit" }).click();
-    await page
-      .getByRole("textbox", { name: "Username or email" })
-      .fill(secret.username);
-    await page.getByRole("textbox", { name: "Password" }).fill(secret.password);
-    await page.getByRole("button", { name: "Sign In" }).click();
-    await page.getByRole("button", { name: "Yes" }).click();
-    await expect(page.getByText("Device Login Successful")).toBeVisible();
-  }
-
-  static async dashboardLogin(
-    page: Page,
-    user: Secret,
-    url: string,
-    expectError?: boolean,
+  constructor(
+    private username: string,
+    private password: string,
+    identityUsername?: null | string,
+    identityPassword?: null | string,
   ) {
-    await page.goto(addFeatureFlags(url));
-    await page.getByRole("link", { name: "Log in to the dashboard" }).click();
-    await page
-      .getByRole("textbox", { name: "Username or email" })
-      .fill(user.username);
-    await page.getByRole("textbox", { name: "Password" }).fill(user.password);
-    await page.getByRole("button", { name: "Sign In" }).click();
-    if (!expectError) {
-      // Wait until the login flow redirects back to the dashboard so that the
-      // cookies get set.
-      await page.waitForURL("**/models");
-      // The Keycloak OIDC flow always redirects back to /models so now we need to visit
-      // the expected URL:
-      await page.goto(addFeatureFlags(url));
-    }
+    // The admin identity created by the JIMM set up uses @canonical.com so we need to
+    // use that domain if it is received as part of identityUsername.
+    const [identityName, domain] = (identityUsername || "").split("@");
+    this.identityUsername = identityName || username;
+    this.identityDomain = domain || "example.com";
+    this.identityPassword = identityPassword || password;
+  }
+
+  async run(): Promise<void> {
+    const email = [this.identityUsername, this.identityDomain].join("@");
+    // Give the keycloak user access to a file to store the login credentials in.
+    await exec(
+      'docker exec --user root keycloak sh -c "touch /kcadm.config && chown keycloak /kcadm.config"',
+    );
+    // Log in to the keycloak API. This is done each time as the token might expire during the test run.
+    await exec(
+      'docker exec keycloak sh -c "kcadm.sh config credentials --user jimm --password jimm --server http://0.0.0.0:8082/ --realm master --config /kcadm.config"',
+    );
+    await exec(
+      `docker exec keycloak sh -c "kcadm.sh create users -s username=${this.identityUsername} -s enabled=true -s email=${email} -r jimm --config /kcadm.config"`,
+    );
+    await exec(
+      `docker exec keycloak sh -c "kcadm.sh set-password -r jimm --username ${this.identityUsername} --new-password ${this.identityPassword} --config /kcadm.config"`,
+    );
+    console.log(`Keycloak OIDC user created: ${this.identityUsername}`);
+  }
+
+  async rollback(): Promise<void> {
+    const user = this.result();
+    const userId = await exec(
+      `docker exec keycloak sh -c "kcadm.sh get users -q exact=true -q username=${user.identityUsername.split("@")[0]} -r jimm --config /kcadm.config" | yq .[0].id`,
+    );
+    await exec(
+      `docker exec keycloak sh -c "kcadm.sh delete users/'${userId.stdout.trim()}' -r jimm --config /kcadm.config"`,
+    );
+    console.log(`Keycloak OIDC user deleted: ${user.identityUsername}`);
+  }
+
+  debug(): string {
+    return `Create Keycloak OIDC user '${this.identityUsername}' (password '${this.identityPassword}')`;
+  }
+
+  result(): KeycloakOIDCUser {
+    return new KeycloakOIDCUser(
+      this.username,
+      this.password,
+      this.identityUsername,
+      this.identityPassword,
+      this.identityDomain,
+    );
   }
 }

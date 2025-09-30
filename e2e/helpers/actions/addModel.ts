@@ -31,7 +31,7 @@ export class AddModel implements Action<Model> {
     this.model = new Model(name, owner);
   }
 
-  async run(jujuCLI: JujuCLI) {
+  async run(jujuCLI: JujuCLI): Promise<void> {
     if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
       // In JIMM models need to be added to the workloads controller.
       await exec(`juju switch '${jujuCLI.controller}'`);
@@ -50,7 +50,7 @@ export class AddModel implements Action<Model> {
     }
   }
 
-  async rollback() {
+  async rollback(): Promise<void> {
     await exec(
       `juju destroy-model ${this.model.qualifiedName} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
     );

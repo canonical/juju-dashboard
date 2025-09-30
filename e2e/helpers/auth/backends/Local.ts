@@ -6,60 +6,29 @@ import { exec } from "../../../utils/exec";
 import type { Action } from "../../action";
 import type { JujuCLI } from "../../juju-cli";
 
-export class CreateLocalUser implements Action<LocalUser> {
-  constructor(
-    private username: string,
-    private password: string,
-  ) {}
-
-  result(): LocalUser {
-    return new LocalUser(this.username, this.password);
-  }
-
-  async run(jujuCLI: JujuCLI) {
-    await jujuCLI.loginLocalCLIAdmin();
-    await exec(
-      `juju add-user --controller '${jujuCLI.controller}' '${this.username}'`,
-    );
-    await exec(
-      `{ echo ${this.password}; echo ${this.password}; } | juju change-user-password '${this.username}'`,
-    );
-  }
-
-  async rollback(jujuCLI: JujuCLI) {
-    await exec(
-      `juju remove-user --yes --quiet --controller '${jujuCLI.controller}' '${this.username}'`,
-    );
-  }
-
-  debug(): string {
-    return `Create local user '${this.username}' (password '${this.password}')`;
-  }
-}
-
 export class LocalUser implements User {
   constructor(
     public username: string,
     public password: string,
   ) {}
 
-  private async enterCredentials(page: Page) {
+  private async enterCredentials(page: Page): Promise<void> {
     await page.getByRole("textbox", { name: "Username" }).fill(this.username);
     await page.getByRole("textbox", { name: "Password" }).fill(this.password);
     await page.getByRole("button", { name: "Log in to the dashboard" }).click();
   }
 
-  async dashboardLogin(page: Page, url: string) {
+  async dashboardLogin(page: Page, url: string): Promise<void> {
     await page.goto(addFeatureFlags(url));
     await this.enterCredentials(page);
   }
 
-  async reloadDashboard(page: Page) {
+  async reloadDashboard(page: Page): Promise<void> {
     await page.reload();
     await this.enterCredentials(page);
   }
 
-  async cliLogin(_browser: Browser) {
+  async cliLogin(_browser: Browser): Promise<void> {
     if (await juju.isUser(this.cliUsername)) {
       return;
     }
@@ -76,5 +45,36 @@ export class LocalUser implements User {
 
   public get displayName(): string {
     return this.dashboardUsername;
+  }
+}
+
+export class CreateLocalUser implements Action<LocalUser> {
+  constructor(
+    private username: string,
+    private password: string,
+  ) {}
+
+  result(): LocalUser {
+    return new LocalUser(this.username, this.password);
+  }
+
+  async run(jujuCLI: JujuCLI): Promise<void> {
+    await jujuCLI.loginLocalCLIAdmin();
+    await exec(
+      `juju add-user --controller '${jujuCLI.controller}' '${this.username}'`,
+    );
+    await exec(
+      `{ echo ${this.password}; echo ${this.password}; } | juju change-user-password '${this.username}'`,
+    );
+  }
+
+  async rollback(jujuCLI: JujuCLI): Promise<void> {
+    await exec(
+      `juju remove-user --yes --quiet --controller '${jujuCLI.controller}' '${this.username}'`,
+    );
+  }
+
+  debug(): string {
+    return `Create local user '${this.username}' (password '${this.password}')`;
   }
 }

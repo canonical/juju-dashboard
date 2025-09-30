@@ -41,12 +41,12 @@ export class ActionStack {
   constructor(private jujuCLI: JujuCLI) {}
 
   public async prepare<T = void>(
-    prepare_fn: (add: <S>(action: Action<S>) => S) => T,
-  ) {
+    prepareFn: (add: <S>(action: Action<S>) => S) => T,
+  ): Promise<T> {
     const actions: Action<unknown>[] = [];
 
     // Let the user function queue actions
-    const value = prepare_fn((action) => {
+    const value = prepareFn((action) => {
       actions.push(action);
       return action.result();
     });
@@ -84,8 +84,8 @@ export class ActionStack {
     console.log("--------------------------------");
     console.log(TIME_KEY, "starting.");
 
-    let action: Action<unknown> | undefined;
-    while ((action = this.actions.pop())) {
+    let action: Action<unknown> | null = null;
+    while ((action = this.actions.pop() ?? null)) {
       // Perform all rollback actions as the admin.
       if (this.jujuCLI.jujuEnv === JujuEnv.JIMM) {
         // When using JIMM the actions need to be performed in the workloads controller.
