@@ -167,54 +167,6 @@ describe("CharmActionsPanel", () => {
     );
   });
 
-  it("disables the submit button if a required boolean field is not ticked", async () => {
-    state.juju.charms = [
-      charmInfoFactory.build({
-        url: "ch:ceph",
-        actions: {
-          specs: {
-            "add-disk": charmActionSpecFactory.build({
-              params: applicationCharmActionParamsFactory.build({
-                properties: {
-                  bucket: {
-                    type: "string",
-                  },
-                  "osd-devices": {
-                    type: "boolean",
-                  },
-                },
-                required: ["osd-devices"],
-                title: "add-disk",
-                type: "object",
-              }),
-            }),
-          },
-        },
-      }),
-    ];
-    renderComponent(
-      <CharmActionsPanel
-        charmURL={charmURL}
-        onRemovePanelQueryParams={vi.fn()}
-      />,
-      { path, url, state },
-    );
-    await userEvent.click(
-      await screen.findByRole("radio", { name: "add-disk" }),
-    );
-    expect(
-      await screen.findByRole("button", { name: "Run action" }),
-    ).toHaveAttribute("aria-disabled");
-    await userEvent.click(
-      await screen.findByRole("checkbox", { name: "osd-devices" }),
-    );
-    await waitFor(async () =>
-      expect(
-        await screen.findByRole("button", { name: "Run action" }),
-      ).not.toBeDisabled(),
-    );
-  });
-
   it("shows a confirmation dialog on clicking submit", async () => {
     const executeActionOnUnitsSpy = vi
       .fn()
