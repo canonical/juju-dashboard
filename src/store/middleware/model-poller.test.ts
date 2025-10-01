@@ -97,6 +97,7 @@ describe("model poller", () => {
       facades: {
         modelManager: {
           listModels: vi.fn().mockResolvedValue({ "user-models": models }),
+          destroyModels: vi.fn().mockResolvedValue({}),
         },
       },
       info: {
@@ -1033,6 +1034,118 @@ describe("model poller", () => {
         requestId,
         tuples,
         errors: "Could not check relations.",
+      }),
+    );
+  });
+
+  it("handles destroy model action", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    const middleware = await runMiddleware();
+    const action = jujuActions.destroyModels({
+      wsControllerURL: "wss://example.com",
+      modelParams: [{ "model-tag": "model-123abc" }],
+      models: ["model123"],
+    });
+    await middleware(next)(action);
+    expect(conn.facades.modelManager.destroyModels).toHaveBeenCalledWith({
+      models: [{ "model-tag": "model-123abc" }],
+    });
+    expect(next).toHaveBeenCalledWith(action);
+  });
+
+  it("handles no controller when destroying models", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    const middleware = await runMiddleware();
+    const action = jujuActions.destroyModels({
+      wsControllerURL: "nothing",
+      modelParams: [{ "model-tag": "model-123abc" }],
+      models: ["model123"],
+    });
+    await middleware(next)(action);
+    expect(conn.facades.modelManager.destroyModels).not.toHaveBeenCalled();
+  });
+
+  it("handles errors from response when destroying models", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    conn.facades.modelManager.destroyModels.mockResolvedValue({
+      results: [{ error: { code: "BOOM", message: "Error" } }],
+    });
+    const middleware = await runMiddleware();
+    const action = jujuActions.destroyModels({
+      wsControllerURL: "wss://example.com",
+      modelParams: [{ "model-tag": "model-123abc" }],
+      models: ["model123"],
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.destroyModelErrors({
+        errors: [["model-123abc", "Error"]],
+      }),
+    );
+  });
+
+  it("handles partial errors from response when destroying models", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    conn.facades.modelManager.destroyModels.mockResolvedValue({
+      results: [{ error: { code: "BOOM", message: "Error" } }, {}],
+    });
+    const middleware = await runMiddleware();
+    const action = jujuActions.destroyModels({
+      wsControllerURL: "wss://example.com",
+      modelParams: [
+        { "model-tag": "model-123abc" },
+        { "model-tag": "model-456xyz" },
+      ],
+      models: ["model123", "model456"],
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.destroyModelErrors({
+        errors: [["model-123abc", "Error"]],
+      }),
+    );
+  });
+
+  it("handles non-standard errors when destroying models", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    conn.facades.modelManager.destroyModels.mockResolvedValue(
+      vi.fn().mockRejectedValue("Uh oh!"),
+    );
+    const middleware = await runMiddleware();
+    const action = jujuActions.destroyModels({
+      wsControllerURL: "wss://example.com",
+      modelParams: [{ "model-tag": "model-123abc" }],
+      models: ["model123"],
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.destroyModelErrors({
+        errors: [
+          [
+            "model-123abc",
+            "Something went wrong during the model destruction process",
+          ],
+        ],
       }),
     );
   });

@@ -9,4 +9,5 @@ export type Props = {
 
 export enum Label {
   ACCESS = "Manage access",
+  DESTROY = "Destroy model",
 }

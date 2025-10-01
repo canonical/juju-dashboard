@@ -764,6 +764,14 @@ export const getFilteredModelData = createSelector(
 );
 
 /**
+  Fetches the destroy model state.
+*/
+export const getDestructionState = createSelector(
+  [slice],
+  (sliceState) => sliceState.destroyModel,
+);
+
+/**
   Gets the model UUID from the supplied name using a memoized selector
   Usage:
     const getModelUUIDMemo = useMemo(getModelUUID.bind(null, modelName), [
