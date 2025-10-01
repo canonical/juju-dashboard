@@ -20,7 +20,7 @@
     "@vercel/ncc": "0.38.3",
     "eslint": "9.34.0",
     "typescript": "5.8.3",
-    "vite": "7.0.3",
+    "vite": "7.0.7",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.2.4"
   }
