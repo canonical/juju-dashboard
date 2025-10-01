@@ -1,17 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Button } from "@canonical/react-components";
-import type { JSX } from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, type JSX } from "react";
 
 import LoadingHandler from "components/LoadingHandler";
 import Panel from "components/Panel";
-import RadioInputBox from "components/RadioInputBox";
-import ActionOptions from "panels/ActionsPanel/ActionOptions";
-import type {
-  ActionOptionValue,
-  ActionOptionValues,
-} from "panels/ActionsPanel/types";
-import { enableSubmit, onValuesChange } from "panels/ActionsPanel/utils";
 import { CharmsAndActionsPanelTestId } from "panels/CharmsAndActionsPanel";
 import CharmActionsPanelTitle from "panels/CharmsAndActionsPanel/CharmActionsPanelTitle";
 import { ConfirmType, type ConfirmTypes } from "panels/types";
@@ -21,9 +12,10 @@ import {
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
-import ConfirmationDialog from "./ConfirmationDialog";
+import ActionsList from "../ActionsList";
+import type { FormControlRef } from "../ActionsList/types";
 
-const filterExist = <I,>(item: I | null): item is I => !!item;
+import ConfirmationDialog from "./ConfirmationDialog";
 
 export type Props = {
   charmURL: string;
@@ -34,10 +26,7 @@ export default function CharmActionsPanel({
   charmURL,
   onRemovePanelQueryParams,
 }: Props): JSX.Element {
-  const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
-  const [selectedAction, setSelectedAction] = useState<null | string>(null);
-  const actionOptionsValues = useRef<ActionOptionValues>({});
 
   const selectedApplications = useAppSelector((state) =>
     getSelectedApplications(state, charmURL),
@@ -54,53 +43,42 @@ export default function CharmActionsPanel({
     0,
   );
 
-  const handleSubmit = (): void => {
+  const [validAction, setValidAction] = useState(false);
+  const [pendingAction, setPendingAction] = useState<{
+    name: string;
+    properties: Record<string, string>;
+  } | null>(null);
+  const formControlRef = useRef<FormControlRef>(null);
+
+  function handleSubmit(
+    name: string,
+    properties: Record<string, boolean | string>,
+  ): void {
+    setPendingAction({
+      name,
+      properties: Object.fromEntries(
+        // Ensure all values are strings.
+        Object.entries(properties).map(([key, value]) => [
+          key,
+          value.toString(),
+        ]),
+      ),
+    });
     setConfirmType(ConfirmType.SUBMIT);
-  };
+  }
 
-  const changeHandler = useCallback(
-    (actionName: string, values: ActionOptionValue) => {
-      onValuesChange(actionName, values, actionOptionsValues);
-      enableSubmit(
-        selectedAction,
-        selectedApplications
-          .map((application) =>
-            "name" in application ? application.name : null,
-          )
-          .filter(filterExist),
-        actionData,
-        actionOptionsValues,
-        setDisableSubmit,
-      );
-    },
-    [selectedAction],
-  );
-
-  const selectHandler = useCallback(
-    (actionName: string) => {
-      setSelectedAction(actionName);
-      enableSubmit(
-        actionName,
-        selectedApplications
-          .map((application) =>
-            "name" in application ? application.name : null,
-          )
-          .filter(filterExist),
-        actionData,
-        actionOptionsValues,
-        setDisableSubmit,
-      );
-    },
-    [actionData],
-  );
+  function submitSelectedAction(): void {
+    // Trigger the corresponding `handleSubmit` by submitting the underlying form.
+    void formControlRef.current?.submitForm();
+  }
 
   return (
     <Panel
       drawer={
         <Button
           appearance="positive"
-          disabled={disableSubmit || unitCount === 0}
-          onClick={handleSubmit}
+          disabled={!validAction || unitCount === 0}
+          onClick={submitSelectedAction}
         >
           Run action
         </Button>
@@ -116,30 +94,19 @@ export default function CharmActionsPanel({
         loading={false}
         noDataMessage="This charm has not provided any actions."
       >
-        {Object.keys(actionData).map((actionName) => (
-          <RadioInputBox
-            name={actionName}
-            description={actionData[actionName].description}
-            onSelect={selectHandler}
-            selectedInput={selectedAction}
-            key={actionName}
-          >
-            <ActionOptions
-              name={actionName}
-              data={actionData}
-              onValuesChange={changeHandler}
-            />
-          </RadioInputBox>
-        ))}
-        {selectedAction ? (
+        <ActionsList
+          actions={actionData}
+          onSubmit={handleSubmit}
+          onValidate={setValidAction}
+          formControlRef={formControlRef}
+        />
+        {pendingAction ? (
           <ConfirmationDialog
             confirmType={confirmType}
-            selectedAction={selectedAction}
+            selectedAction={pendingAction.name}
             selectedApplications={selectedApplications}
             setConfirmType={setConfirmType}
-            selectedActionOptionValue={
-              actionOptionsValues.current[selectedAction]
-            }
+            selectedActionOptionValue={pendingAction.properties}
             onRemovePanelQueryParams={onRemovePanelQueryParams}
           />
         ) : null}

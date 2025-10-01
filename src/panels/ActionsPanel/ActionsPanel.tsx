@@ -1,11 +1,11 @@
 import { ActionButton, Button } from "@canonical/react-components";
+import type { FormikProps } from "formik";
 import type { JSX, ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import CharmIcon from "components/CharmIcon";
 import LoadingHandler from "components/LoadingHandler";
 import Panel from "components/Panel";
-import RadioInputBox from "components/RadioInputBox";
 import { useModelAppParams } from "components/hooks";
 import useInlineErrors from "hooks/useInlineErrors";
 import { useGetActionsForApplication } from "juju/api-hooks";
@@ -18,17 +18,10 @@ import type { RootState } from "store/store";
 import { useAppStore, useAppSelector } from "store/store";
 import { logger } from "utils/logger";
 
-import ActionOptions from "./ActionOptions";
+import ActionsList from "./ActionsList";
 import ConfirmationDialog from "./ConfirmationDialog";
-import type {
-  ActionData,
-  ActionOptionValue,
-  ActionOptionValues,
-} from "./types";
+import type { ActionData } from "./types";
 import { InlineErrors, Label, TestId } from "./types";
-import { enableSubmit, onValuesChange } from "./utils";
-
-type SetSelectedAction = (actionName: string) => void;
 
 type ActionsQueryParams = {
   panel?: null | string;
@@ -42,7 +35,6 @@ export default function ActionsPanel(): JSX.Element {
   const modelUUID = useAppSelector((state: RootState) =>
     getModelUUID(state, modelName),
   );
-  const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
   const [actionData, setActionData] = useState<ActionData>({});
   const [fetchingActionData, setFetchingActionData] = useState(false);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
@@ -50,10 +42,6 @@ export default function ActionsPanel(): JSX.Element {
     userName,
     modelName,
   );
-  const [selectedAction, setSelectedAction]: [
-    null | string,
-    SetSelectedAction,
-  ] = useState<null | string>(null);
   const [inlineErrors, setInlineErrors, hasInlineError] = useInlineErrors({
     [InlineErrors.GET_ACTION]: (error) => (
       // If get actions for application fails, we add a button for
@@ -77,8 +65,6 @@ export default function ActionsPanel(): JSX.Element {
   });
   const [isExecutingAction, setIsExecutingAction] = useState<boolean>(false);
   const scrollArea = useRef<HTMLDivElement>(null);
-
-  const actionOptionsValues = useRef<ActionOptionValues>({});
 
   const defaultQueryParams: ActionsQueryParams = { panel: null, units: [] };
   const [queryParams, , handleRemovePanelQueryParams] =
@@ -139,37 +125,33 @@ export default function ActionsPanel(): JSX.Element {
     );
   };
 
-  const handleSubmit = (): void => {
+  const [validAction, setValidAction] = useState<boolean>(false);
+  const [pendingAction, setPendingAction] = useState<{
+    name: string;
+    properties: Record<string, string>;
+  } | null>(null);
+  const actionFormRef = useRef<FormikProps<Record<string, string>>>(null);
+
+  function handleSubmit(
+    name: string,
+    properties: Record<string, boolean | string>,
+  ): void {
+    setPendingAction({
+      name,
+      properties: Object.fromEntries(
+        Object.entries(properties).map(([key, value]) => [
+          key,
+          value.toString(),
+        ]),
+      ),
+    });
     setConfirmType(ConfirmType.SUBMIT);
-  };
+  }
 
-  const changeHandler = useCallback(
-    (actionName: string, values: ActionOptionValue) => {
-      onValuesChange(actionName, values, actionOptionsValues);
-      enableSubmit(
-        selectedAction,
-        selectedUnits,
-        actionData,
-        actionOptionsValues,
-        setDisableSubmit,
-      );
-    },
-    [actionData, selectedAction, selectedUnits],
-  );
-
-  const selectHandler = useCallback(
-    (actionName: string) => {
-      setSelectedAction(actionName);
-      enableSubmit(
-        actionName,
-        selectedUnits,
-        actionData,
-        actionOptionsValues,
-        setDisableSubmit,
-      );
-    },
-    [actionData, selectedUnits],
-  );
+  function submitSelectedAction(): void {
+    // Trigger the corresponding `handleSubmit` by submitting the underlying form.
+    void actionFormRef.current?.submitForm();
+  }
 
   const data = Object.keys(actionData).length > 0 ? actionData : null;
 
@@ -179,8 +161,10 @@ export default function ActionsPanel(): JSX.Element {
         <ActionButton
           appearance="positive"
           loading={isExecutingAction}
-          disabled={disableSubmit || isExecutingAction}
-          onClick={handleSubmit}
+          disabled={
+            !validAction || isExecutingAction || selectedUnits.length === 0
+          }
+          onClick={submitSelectedAction}
         >
           Run action
         </ActionButton>
@@ -207,32 +191,21 @@ export default function ActionsPanel(): JSX.Element {
             : Label.NO_ACTIONS_PROVIDED
         }
       >
-        {Object.keys(actionData).map((actionName) => (
-          <RadioInputBox
-            name={actionName}
-            description={actionData[actionName].description}
-            onSelect={selectHandler}
-            selectedInput={selectedAction}
-            key={actionName}
-          >
-            <ActionOptions
-              name={actionName}
-              data={actionData}
-              onValuesChange={changeHandler}
-            />
-          </RadioInputBox>
-        ))}
+        <ActionsList
+          actions={actionData}
+          onValidate={setValidAction}
+          onSubmit={handleSubmit}
+          formControlRef={actionFormRef}
+        />
       </LoadingHandler>
-      {selectedAction && confirmType ? (
+      {pendingAction && confirmType ? (
         <ConfirmationDialog
           confirmType={confirmType}
-          selectedAction={selectedAction}
+          selectedAction={pendingAction.name}
           selectedUnits={selectedUnits}
           setConfirmType={setConfirmType}
           setIsExecutingAction={setIsExecutingAction}
-          selectedActionOptionValue={
-            actionOptionsValues.current[selectedAction]
-          }
+          selectedActionOptionValue={pendingAction.properties}
           handleRemovePanelQueryParams={handleRemovePanelQueryParams}
           setInlineErrors={setInlineErrors}
         />
