@@ -31994,7 +31994,7 @@ function parseVersion(version) {
     const [major, minor, patch] = coreStr
         .split(".")
         .map((component) => (component === "x" ? -1 : Number(component)));
-    let preRelease;
+    let preRelease = undefined;
     if (preReleaseStr) {
         const [identifier, number] = preReleaseStr.split(".");
         preRelease = {
@@ -32279,7 +32279,7 @@ function bumpPackageVersion(version, bumpKind, options = {}) {
 }
 async function run(ctx) {
     // Extract versioning information for the current branch.
-    let versioningInfo;
+    let versioningInfo = null;
     try {
         versioningInfo = lib_branch.shortRelease.parse(ctx.context.refName);
     }

@@ -31994,7 +31994,7 @@ function parseVersion(version) {
     const [major, minor, patch] = coreStr
         .split(".")
         .map((component) => (component === "x" ? -1 : Number(component)));
-    let preRelease;
+    let preRelease = undefined;
     if (preReleaseStr) {
         const [identifier, number] = preReleaseStr.split(".");
         preRelease = {
@@ -32225,6 +32225,7 @@ async function createCtx(fallback) {
 
 ;// CONCATENATED MODULE: ./src/extract-changelog/main.ts
 
+// eslint-disable-next-line @typescript-eslint/require-await
 async function run(ctx) {
     if (!ctx.pr) {
         throw new Error("can only extract changelog from a running PR");

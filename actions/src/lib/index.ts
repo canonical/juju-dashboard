@@ -16,7 +16,7 @@ export { default as branch } from "./branch";
 export type Ctx = {
   octokit: InstanceType<typeof GitHub>;
   core: typeof core;
-  context: Context & { refName: string };
+  context: { refName: string } & Context;
   exec: typeof exec.exec;
   execOutput: typeof exec.getExecOutput;
   repo: Repository;

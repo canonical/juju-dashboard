@@ -2,7 +2,14 @@ import { branch, changelog, type Ctx } from "@/lib";
 import type { PullRequest } from "@/lib/github";
 import { CHANGELOG_LABEL } from "@/lib/labels";
 import { getPackageVersion, setPackageVersion } from "@/lib/package";
+import type { MajorMinorVersion } from "@/lib/version";
 import { parseVersion, serialiseVersion, type Version } from "@/lib/version";
+
+export type ReleaseResult = {
+  releasePrNumber?: number;
+  releasePrHead?: string;
+  releaseVersion?: null | string;
+};
 
 export function bumpPackageVersion(
   version: Version,
@@ -17,7 +24,7 @@ export function bumpPackageVersion(
   version: Version,
   bumpKind: "beta" | "candidate",
   options: { versionComponent?: "major" | "minor" | "patch" } = {},
-) {
+): Version {
   if (bumpKind === "beta") {
     if (version.preRelease?.identifier === "beta") {
       // Already a beta version, bump the number.
@@ -46,9 +53,9 @@ export function bumpPackageVersion(
   return version;
 }
 
-export async function run(ctx: Ctx) {
+export async function run(ctx: Ctx): Promise<ReleaseResult> {
   // Extract versioning information for the current branch.
-  let versioningInfo: { major: number; minor: number } | null;
+  let versioningInfo: MajorMinorVersion | null = null;
   try {
     versioningInfo = branch.shortRelease.parse(ctx.context.refName);
   } catch (_e) {
@@ -102,8 +109,8 @@ export async function run(ctx: Ctx) {
   }
 
   // Create or select the release PR.
-  let releasePr: PullRequest | null = null;
-  let releaseVersion: string | null = null;
+  let releasePr: null | PullRequest = null;
+  let releaseVersion: null | string = null;
 
   if (matchingPrs.length > 1) {
     // Multiple release PRs for this branch, which is invalid.

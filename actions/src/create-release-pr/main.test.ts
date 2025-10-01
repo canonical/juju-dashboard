@@ -1,13 +1,13 @@
 import { describe, beforeEach, it, vi } from "vitest";
 
-import { bumpPackageVersion, run } from "./main";
-
 import { changelog, type Ctx } from "@/lib";
 import { CHANGELOG_END_MARKER, CHANGELOG_START_MARKER } from "@/lib/changelog";
 import type { PullRequest } from "@/lib/github";
 import { CHANGELOG_LABEL } from "@/lib/labels";
 import { asyncIterable, mockCutPr, mockPr } from "@/lib/test-utils";
 import { parseVersion } from "@/lib/version";
+
+import { bumpPackageVersion, run } from "./main";
 
 describe("create-release-pr", () => {
   let ctx: Ctx;

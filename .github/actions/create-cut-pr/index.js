@@ -31994,7 +31994,7 @@ function parseVersion(version) {
     const [major, minor, patch] = coreStr
         .split(".")
         .map((component) => (component === "x" ? -1 : Number(component)));
-    let preRelease;
+    let preRelease = undefined;
     if (preReleaseStr) {
         const [identifier, number] = preReleaseStr.split(".");
         preRelease = {
@@ -32280,7 +32280,7 @@ async function getNextCutVersion(ctx, severity) {
     // Search through each branch, and try find a release branch.
     for await (const { name } of ctx.repo.branches()) {
         // Parse out release information from branches formatted as `release/x.y`.
-        let branchInfo;
+        let branchInfo = null;
         try {
             branchInfo = lib_branch.shortRelease.parse(name);
         }
