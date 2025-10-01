@@ -84,7 +84,7 @@
     "redux": "5.0.1",
     "slice-ansi": "7.1.0",
     "strip-ansi": "7.1.0",
-    "vanilla-framework": "4.25.0",
+    "vanilla-framework": "4.34.1",
     "yup": "1.6.1"
   },
   "devDependencies": {
