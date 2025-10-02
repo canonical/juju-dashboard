@@ -135,7 +135,6 @@ describe("model poller", () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    localStorage.clear();
     vi.useRealTimers();
     // @ts-expect-error - Resetting singleton for each test run.
     delete Auth.instance;

@@ -8,10 +8,6 @@ import {
 import useModelAttributes from "./useModelAttributes";
 
 describe("useModelAttributes", () => {
-  afterEach(() => {
-    localStorage.clear();
-  });
-
   it("handles no model data", () => {
     const { result } = renderHook(() => useModelAttributes(null));
     expect(result.current).toMatchObject({

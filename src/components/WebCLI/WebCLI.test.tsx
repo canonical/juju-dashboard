@@ -49,7 +49,6 @@ describe("WebCLI", () => {
 
   afterEach(() => {
     bakerySpy.mockClear();
-    localStorage.clear();
     WS.clean();
   });
 

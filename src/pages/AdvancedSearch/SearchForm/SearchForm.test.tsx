@@ -38,10 +38,6 @@ describe("SearchForm", () => {
     });
   });
 
-  afterEach(() => {
-    localStorage.clear();
-  });
-
   it("should initialise the form with the query from the URL", async () => {
     renderComponent(<SearchForm />, { state, url: "/?q=.applications" });
     expect(screen.getByRole("textbox")).toHaveTextContent(".applications");

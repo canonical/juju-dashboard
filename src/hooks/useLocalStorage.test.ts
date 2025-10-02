@@ -3,10 +3,6 @@ import { act, renderHook } from "@testing-library/react";
 import useLocalStorage from "./useLocalStorage";
 
 describe("useLocalStorage", () => {
-  afterEach(() => {
-    localStorage.clear();
-  });
-
   it("can set an initial value", () => {
     const { result } = renderHook(() =>
       useLocalStorage("test-key", "init-val"),
