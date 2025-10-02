@@ -30,7 +30,9 @@ import {
 } from "store/juju/selectors";
 import type { Controllers } from "store/juju/types";
 import { useAppSelector } from "store/store";
+import { FeatureFlags } from "types";
 import urls, { externalURLs, rebacURLS } from "urls";
+import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
 
 import { Label } from "./types";
 
@@ -91,13 +93,15 @@ const PrimaryNav: FC = () => {
   const versionRequested = useRef(false);
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
   const rebacEnabled = useAppSelector(isReBACEnabled);
+  const rebacFlagEnabled = isFeatureFlagEnabled(FeatureFlags.REBAC);
   const { blocked: blockedModels } = useAppSelector(
     getGroupedModelStatusCounts,
   );
   const { permitted: isJIMMControllerAdmin } = useIsJIMMAdmin();
   const { permitted: auditLogsAllowed } = useAuditLogsPermitted();
   const controllersLink = useControllersLink();
-  const rebacAllowed = rebacEnabled && isJIMMControllerAdmin;
+  const rebacAllowed =
+    rebacEnabled && rebacFlagEnabled && isJIMMControllerAdmin;
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {

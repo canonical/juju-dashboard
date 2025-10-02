@@ -80,8 +80,13 @@ export class CandidUser extends LocalUser {
     super(username, password);
   }
 
-  override async dashboardLogin(page: Page, url: string): Promise<void> {
-    await page.goto(addFeatureFlags(url));
+  override async dashboardLogin(
+    page: Page,
+    url: string,
+    _expectError?: boolean,
+    featureFlags?: string[],
+  ): Promise<void> {
+    await page.goto(addFeatureFlags(url, featureFlags));
     const popupPromise = page.waitForEvent("popup");
     await page.getByRole("link", { name: "Log in to the dashboard" }).click();
 

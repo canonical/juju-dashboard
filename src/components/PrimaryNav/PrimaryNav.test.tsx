@@ -382,7 +382,48 @@ it("should not show Permissions navigation button if the controller doesn't supp
   ).not.toBeInTheDocument();
 });
 
-it("should show Permissions navigation button if the controller supports it", () => {
+it("should not show Permissions navigation button if the feature flag is not enabled", () => {
+  const state = rootStateFactory.build({
+    general: generalStateFactory.build({
+      config: configFactory.build({
+        controllerAPIEndpoint: "wss://controller.example.com",
+        isJuju: false,
+      }),
+      controllerConnections: {
+        "wss://controller.example.com": {
+          user: authUserInfoFactory.build(),
+        },
+      },
+      controllerFeatures: controllerFeaturesStateFactory.build({
+        "wss://controller.example.com": controllerFeaturesFactory.build({
+          rebac: true,
+        }),
+      }),
+    }),
+    juju: jujuStateFactory.build({
+      rebac: {
+        allowed: [
+          rebacAllowedFactory.build({
+            tuple: relationshipTupleFactory.build({
+              object: "user-eggman@external",
+              relation: JIMMRelation.ADMINISTRATOR,
+              target_object: JIMMTarget.JIMM_CONTROLLER,
+            }),
+            allowed: true,
+            loaded: true,
+          }),
+        ],
+      },
+    }),
+  });
+  renderComponent(<PrimaryNav />, { state });
+  expect(
+    screen.queryByRole("link", { name: Label.PERMISSIONS }),
+  ).not.toBeInTheDocument();
+});
+
+it("should show Permissions navigation button if the controller supports it and the feature flag is enabled", () => {
+  localStorage.setItem("flags", JSON.stringify(["rebac"]));
   const state = rootStateFactory.build({
     general: generalStateFactory.build({
       config: configFactory.build({
