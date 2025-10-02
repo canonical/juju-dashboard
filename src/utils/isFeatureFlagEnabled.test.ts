@@ -1,10 +1,6 @@
 import isFeatureFlagEnabled from "./isFeatureFlagEnabled";
 
 describe("isFeatureFlagEnabled", () => {
-  afterEach(() => {
-    localStorage.clear();
-  });
-
   it("should return true when flag is present in local storage", () => {
     localStorage.setItem("flags", JSON.stringify(["featureA"]));
     expect(isFeatureFlagEnabled("featureA")).toEqual(true);

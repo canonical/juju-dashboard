@@ -31,6 +31,7 @@ describe("PermissionsPage", () => {
   let state: RootState;
 
   beforeEach(() => {
+    localStorage.setItem("flags", JSON.stringify(["rebac"]));
     mock.reset();
     mock.onGet(endpoints().whoami).reply(200, {
       data: {
@@ -79,6 +80,10 @@ describe("PermissionsPage", () => {
   });
 
   describe("it doesn't display ReBAC Admin", () => {
+    beforeEach(() => {
+      localStorage.setItem("flags", JSON.stringify([]));
+    });
+
     it("if the feature is disabled", () => {
       state.general.controllerFeatures = controllerFeaturesStateFactory.build({
         "wss://controller.example.com": controllerFeaturesFactory.build({
@@ -109,6 +114,11 @@ describe("PermissionsPage", () => {
       expect(
         screen.queryByText("Canonical ReBAC Admin"),
       ).not.toBeInTheDocument();
+      expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
+    });
+
+    it("if the feature flag is disabled", () => {
+      renderComponent(<PermissionsPage />, { state });
       expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
     });
   });

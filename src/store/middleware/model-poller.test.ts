@@ -135,7 +135,6 @@ describe("model poller", () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    localStorage.clear();
     vi.useRealTimers();
     // @ts-expect-error - Resetting singleton for each test run.
     delete Auth.instance;
@@ -298,7 +297,6 @@ describe("model poller", () => {
   });
 
   it("disables the controller features if JIMM < 4", async () => {
-    localStorage.setItem("flags", JSON.stringify(["rebac"]));
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
     });
@@ -327,38 +325,7 @@ describe("model poller", () => {
     );
   });
 
-  it("disables rebac features if JIMM >= 4 but feature flag is disabled", async () => {
-    localStorage.setItem("flags", JSON.stringify([]));
-    conn.facades.modelManager.listModels.mockResolvedValue({
-      "user-models": [],
-    });
-    conn.facades.jimM = {
-      checkRelation: vi.fn().mockImplementation(async () => ({
-        allowed: true,
-      })),
-      version: 4,
-    };
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    await runMiddleware();
-    expect(next).not.toHaveBeenCalled();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.updateControllerFeatures({
-        wsControllerURL,
-        features: {
-          auditLogs: true,
-          crossModelQueries: true,
-          rebac: false,
-        },
-      }),
-    );
-  });
-
-  it("updates the controller features if JIMM >= 4 and feature flag enabled", async () => {
-    localStorage.setItem("flags", JSON.stringify(["rebac"]));
+  it("updates the controller features if JIMM >= 4", async () => {
     conn.facades.modelManager.listModels.mockResolvedValue({
       "user-models": [],
     });

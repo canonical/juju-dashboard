@@ -18,8 +18,13 @@ export class LocalUser implements User {
     await page.getByRole("button", { name: "Log in to the dashboard" }).click();
   }
 
-  async dashboardLogin(page: Page, url: string): Promise<void> {
-    await page.goto(addFeatureFlags(url));
+  async dashboardLogin(
+    page: Page,
+    url: string,
+    _expectError?: boolean,
+    featureFlags?: string[],
+  ): Promise<void> {
+    await page.goto(addFeatureFlags(url, featureFlags));
     await this.enterCredentials(page);
   }
 

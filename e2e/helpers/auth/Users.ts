@@ -74,6 +74,7 @@ export abstract class User {
     page: Page,
     url: string,
     expectError?: boolean,
+    featureFlags?: string[],
   ): Promise<void>;
 
   /**

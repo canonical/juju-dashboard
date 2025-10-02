@@ -27,10 +27,9 @@ import {
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import type { RootState, Store } from "store/store";
-import { isSpecificAction, FeatureFlags } from "types";
+import { isSpecificAction } from "types";
 import { toErrorString } from "utils";
 import analytics from "utils/analytics";
-import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
 import { logger } from "utils/logger";
 
 export enum LoginError {
@@ -156,14 +155,13 @@ export const modelPollerMiddleware: Middleware<
           }),
         );
         const jimmVersion = conn.facades.jimM?.version ?? 0;
-        const rebacFlagEnabled = isFeatureFlagEnabled(FeatureFlags.REBAC);
         reduxStore.dispatch(
           generalActions.updateControllerFeatures({
             wsControllerURL,
             features: {
               auditLogs: jimmVersion >= 4,
               crossModelQueries: jimmVersion >= 4,
-              rebac: rebacFlagEnabled && jimmVersion >= 4,
+              rebac: jimmVersion >= 4,
             },
           }),
         );

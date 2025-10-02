@@ -45,8 +45,9 @@ export class KeycloakOIDC {
     user: Secret,
     url: string,
     expectError?: boolean,
+    featureFlags?: string[],
   ): Promise<void> {
-    await page.goto(addFeatureFlags(url));
+    await page.goto(addFeatureFlags(url, featureFlags));
     await page.getByRole("link", { name: "Log in to the dashboard" }).click();
     await page
       .getByRole("textbox", { name: "Username or email" })
@@ -59,7 +60,7 @@ export class KeycloakOIDC {
       await page.waitForURL("**/models");
       // The Keycloak OIDC flow always redirects back to /models so now we need to visit
       // the expected URL:
-      await page.goto(addFeatureFlags(url));
+      await page.goto(addFeatureFlags(url, featureFlags));
     }
   }
 }
@@ -84,6 +85,7 @@ export class KeycloakOIDCUser extends LocalUser {
     page: Page,
     url: string,
     expectError?: boolean,
+    featureFlags?: string[],
   ): Promise<void> {
     await KeycloakOIDC.dashboardLogin(
       page,
@@ -93,6 +95,7 @@ export class KeycloakOIDCUser extends LocalUser {
       },
       url,
       expectError,
+      featureFlags,
     );
   }
 

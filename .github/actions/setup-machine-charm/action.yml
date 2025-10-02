@@ -64,6 +64,12 @@ runs:
       if: ${{ env.build_type != 'charm-release' }}
       run: juju deploy ${{ github.workspace }}/charms/machine-charm/juju-dashboard*.charm dashboard
       shell: bash
+    - name: Wait for charm to be ready for integration
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
+        command: juju wait-for application dashboard --timeout=1m --query='name=="dashboard" && status=="blocked"' # The charm will be blocked when it needs the relation to the controller.
     - name: Integrate charm
       run: juju integrate '${{ inputs.controller-app }}' dashboard
       shell: bash

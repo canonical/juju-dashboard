@@ -70,3 +70,7 @@ vi.mock("@canonical/jujulib", () => ({
 vi.mock("@canonical/jujulib/dist/api/versions", () => ({
   jujuUpdateAvailable: vi.fn(),
 }));
+
+afterEach(() => {
+  localStorage.clear();
+});

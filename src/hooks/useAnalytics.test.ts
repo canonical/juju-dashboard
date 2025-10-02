@@ -13,10 +13,6 @@ describe("useAnalytics", () => {
     vi.spyOn(analyticsUtils, "default").mockImplementation(() => vi.fn());
   });
 
-  afterEach(() => {
-    localStorage.clear();
-  });
-
   it("does not send events if analytics are disabled", () => {
     const { result } = renderWrappedHook(() => useAnalytics(), {
       state: rootStateFactory.build({

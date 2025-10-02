@@ -12,7 +12,9 @@ import { endpoints } from "juju/jimm/api";
 import MainContent from "layout/MainContent";
 import { isReBACEnabled } from "store/general/selectors";
 import { useAppSelector } from "store/store";
+import { FeatureFlags } from "types";
 import { rebacURLS } from "urls";
+import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
 
 import { Label, TestId } from "./types";
 
@@ -42,6 +44,7 @@ const navItems = [
 const PermissionsPage = (): JSX.Element => {
   const logout = useLogout();
   const rebacEnabled = useAppSelector(isReBACEnabled);
+  const rebacFlagEnabled = isFeatureFlagEnabled(FeatureFlags.REBAC);
   const { permitted, loading } = useIsJIMMAdmin();
 
   useRef(
@@ -66,7 +69,7 @@ const PermissionsPage = (): JSX.Element => {
 
   return (
     <CheckPermissions
-      allowed={rebacEnabled && permitted}
+      allowed={rebacEnabled && rebacFlagEnabled && permitted}
       data-testid={TestId.COMPONENT}
       loading={loading}
     >
