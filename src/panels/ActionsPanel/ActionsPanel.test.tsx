@@ -42,6 +42,24 @@ const mockResponse = applicationsCharmActionsResultsFactory.build({
             type: "object",
           }),
         }),
+        "get-quota": charmActionSpecFactory.build({
+          params: applicationCharmActionParamsFactory.build({
+            properties: {
+              directory: {
+                type: "string",
+              },
+              "max-bytes": {
+                type: "integer",
+              },
+              "max-files": {
+                type: "integer",
+              },
+            },
+            required: ["directory"],
+            title: "add-disk",
+            type: "object",
+          }),
+        }),
         pause: charmActionSpecFactory.build({
           params: applicationCharmActionParamsFactory.build({
             title: "pause",
@@ -93,7 +111,7 @@ describe("ActionsPanel", () => {
 
   it("Renders the list of available actions", async () => {
     renderComponent(<ActionsPanel />, { path, url, state });
-    expect(await screen.findAllByRole("radio")).toHaveLength(2);
+    expect(await screen.findAllByRole("radio")).toHaveLength(3);
   });
 
   it("validates that an action is selected before submitting", async () => {
@@ -159,54 +177,6 @@ describe("ActionsPanel", () => {
     await userEvent.type(
       await screen.findByRole("textbox", { name: "osd-devices" }),
       "some content",
-    );
-    await waitFor(async () =>
-      expect(
-        await screen.findByRole("button", { name: "Run action" }),
-      ).not.toBeDisabled(),
-    );
-  });
-
-  it("disables the submit button if a required boolean field is not ticked", async () => {
-    const mockActionsResponse = applicationsCharmActionsResultsFactory.build({
-      results: [
-        applicationCharmActionsResultFactory.build({
-          "application-tag": "application-ceph",
-          actions: {
-            "add-disk": charmActionSpecFactory.build({
-              params: applicationCharmActionParamsFactory.build({
-                properties: {
-                  bucket: {
-                    type: "string",
-                  },
-                  "osd-devices": {
-                    type: "boolean",
-                  },
-                },
-                required: ["osd-devices"],
-                title: "add-disk",
-                type: "object",
-              }),
-            }),
-          },
-        }),
-      ],
-    });
-    const getActionsForApplicationSpy = vi
-      .fn()
-      .mockImplementation(vi.fn().mockResolvedValue(mockActionsResponse));
-    vi.spyOn(actionsHooks, "useGetActionsForApplication").mockImplementation(
-      () => getActionsForApplicationSpy,
-    );
-    renderComponent(<ActionsPanel />, { path, url, state });
-    await userEvent.click(
-      await screen.findByRole("radio", { name: "add-disk" }),
-    );
-    expect(
-      await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
-    await userEvent.click(
-      await screen.findByRole("checkbox", { name: "osd-devices" }),
     );
     await waitFor(async () =>
       expect(
@@ -379,5 +349,26 @@ describe("ActionsPanel", () => {
         }),
       ).toBeInTheDocument(),
     );
+  });
+
+  it("correctly allows for tab navigation", async () => {
+    const { result } = renderComponent(<ActionsPanel />, { path, url, state });
+    expect(await screen.findByText("2 units selected")).toBeInTheDocument();
+
+    // Select the action.
+    await userEvent.click(result.getByLabelText("add-disk"));
+
+    // Select the first field and fill it in.
+    await userEvent.click(result.getByLabelText("bucket"));
+    await userEvent.keyboard("some value{Tab}");
+
+    // Next field should be focused.
+    expect(result.getByLabelText("osd-devices")).toHaveFocus();
+
+    // Fill it in and move on.
+    await userEvent.keyboard("another value{Tab}");
+
+    // Run button should be focused
+    expect(result.getByRole("button", { name: "Run action" })).toHaveFocus();
   });
 });
