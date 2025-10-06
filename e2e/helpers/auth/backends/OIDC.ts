@@ -44,8 +44,9 @@ export class OIDC {
     user: Secret,
     url: string,
     expectError?: boolean,
+    featureFlags?: string[],
   ): Promise<void> {
-    await page.goto(addFeatureFlags(url));
+    await page.goto(addFeatureFlags(url, featureFlags));
     await page.getByRole("link", { name: "Log in to the dashboard" }).click();
     await page.getByRole("textbox", { name: "Email" }).fill(user.username);
     await page.getByRole("textbox", { name: "Password" }).fill(user.password);
@@ -56,7 +57,7 @@ export class OIDC {
       await page.waitForURL("**/models");
       // The OIDC flow always redirects back to /models so now we need to visit
       // the expected URL:
-      await page.goto(addFeatureFlags(url));
+      await page.goto(addFeatureFlags(url, featureFlags));
     }
   }
 }
@@ -70,6 +71,7 @@ export class OIDCUser extends LocalUser {
     page: Page,
     url: string,
     expectError?: boolean,
+    featureFlags?: string[],
   ): Promise<void> {
     await OIDC.dashboardLogin(
       page,
@@ -79,6 +81,7 @@ export class OIDCUser extends LocalUser {
       },
       url,
       expectError,
+      featureFlags,
     );
   }
 

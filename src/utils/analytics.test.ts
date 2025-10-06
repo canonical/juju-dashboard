@@ -22,10 +22,6 @@ describe("analytics", () => {
     pageviewSpy = vi.spyOn(ReactGA, "send");
   });
 
-  afterEach(() => {
-    localStorage.clear();
-  });
-
   it("does not send events if analytics are disabled", () => {
     analytics(
       false,

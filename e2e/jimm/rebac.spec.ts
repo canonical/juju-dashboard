@@ -36,7 +36,7 @@ test.describe("ReBAC Admin", () => {
       );
       return newUser;
     });
-    await user.dashboardLogin(page, rebacURLS.users.index);
+    await user.dashboardLogin(page, rebacURLS.users.index, false, ["rebac"]);
     await expect(
       page.getByRole("link", { name: PrimaryNavLabel.PERMISSIONS }),
     ).toBeVisible();
@@ -47,7 +47,9 @@ test.describe("ReBAC Admin", () => {
   });
 
   test("link is not displayed for non-admins", async ({ page }) => {
-    await nonAdminUser.dashboardLogin(page, urls.models.index);
+    await nonAdminUser.dashboardLogin(page, urls.models.index, false, [
+      "rebac",
+    ]);
     await expect(
       page
         .getByRole("banner")
@@ -56,7 +58,9 @@ test.describe("ReBAC Admin", () => {
   });
 
   test("can't be accessed by non-admins", async ({ page }) => {
-    await nonAdminUser.dashboardLogin(page, rebacURLS.users.index);
+    await nonAdminUser.dashboardLogin(page, rebacURLS.users.index, false, [
+      "rebac",
+    ]);
     await expect(
       page.getByRole("heading", {
         name: "Hmm, we can't seem to find that page...",
