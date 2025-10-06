@@ -538,6 +538,7 @@ export const modelPollerMiddleware: Middleware<
             (modelUUID) => !destroyedModels.includes(modelUUID),
           );
 
+          // TODO: Clear this timeout. Refer: WD-29374
           // Wait 10s then start again.
           await new Promise((resolve) => {
             setTimeout(() => {
