@@ -306,10 +306,10 @@ export async function fetchAndStoreModelStatus(
 */
 export async function fetchModelInfo(
   conn: ConnectionWithFacades,
-  modelTags: string[],
+  modelUUIDs: string[],
 ): Promise<ModelInfoResults | undefined> {
-  const entities = modelTags.map((modelTag) => ({
-    tag: modelTag,
+  const entities = modelUUIDs.map((modelUUID) => ({
+    tag: `model-${modelUUID}`,
   }));
   const modelInfo = await conn.facades.modelManager?.modelInfo({ entities });
   return modelInfo;
@@ -353,7 +353,7 @@ export async function fetchAllModelStatuses(
           // progress.
           return;
         }
-        const modelInfo = await fetchModelInfo(conn, [`model-${modelUUID}`]);
+        const modelInfo = await fetchModelInfo(conn, [modelUUID]);
         if (modelInfo) {
           dispatch(
             jujuActions.updateModelInfo({
@@ -619,7 +619,7 @@ export async function setModelSharingPermissions(
       response = await modifyAccess(permissionTo, "grant");
     }
 
-    const modelInfo = await fetchModelInfo(conn, [`model-${modelUUID}`]);
+    const modelInfo = await fetchModelInfo(conn, [modelUUID]);
     if (modelInfo) {
       dispatch(
         jujuActions.updateModelInfo({

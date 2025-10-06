@@ -1023,21 +1023,21 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
       wsControllerURL: "wss://example.com",
-      modelParams: [{ "model-tag": "model-123abc" }],
+      models: [{ "model-tag": "model-123abc", modelUUID: "123abc" }],
     });
     await middleware(next)(action);
     expect(conn.facades.modelManager.destroyModels).toHaveBeenCalledWith({
-      models: [{ "model-tag": "model-123abc" }],
+      models: [{ "model-tag": "model-123abc", modelUUID: "123abc" }],
     });
     expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
       jujuActions.destroyModelErrors({
         errors: [["model-123abc", "Error"]],
       }),
     );
-    expect(fetchModelInfo).toHaveBeenCalledWith(conn, ["model-123abc"]);
+    expect(fetchModelInfo).toHaveBeenCalledWith(conn, ["123abc"]);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateModelsDestroyed({
-        modelTags: ["model-123abc"],
+        modelUUIDs: ["123abc"],
         wsControllerURL: "wss://example.com",
       }),
     );
@@ -1052,7 +1052,7 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
       wsControllerURL: "nothing",
-      modelParams: [{ "model-tag": "model-123abc" }],
+      models: [{ "model-tag": "model-123abc", modelUUID: "123abc" }],
     });
     await middleware(next)(action);
     expect(conn.facades.modelManager.destroyModels).not.toHaveBeenCalled();
@@ -1071,18 +1071,18 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
       wsControllerURL: "wss://example.com",
-      modelParams: [{ "model-tag": "model-123abc" }],
+      models: [{ "model-tag": "model-123abc", modelUUID: "123abc" }],
     });
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.destroyModelErrors({
-        errors: [["model-123abc", "Error"]],
+        errors: [["123abc", "Error"]],
       }),
     );
     expect(fetchModelInfo).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
       jujuActions.updateModelsDestroyed({
-        modelTags: ["model-123abc"],
+        modelUUIDs: ["123abc"],
         wsControllerURL: "wss://example.com",
       }),
     );
@@ -1105,22 +1105,22 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
       wsControllerURL: "wss://example.com",
-      modelParams: [
-        { "model-tag": "model-123abc" },
-        { "model-tag": "model-456xyz" },
+      models: [
+        { "model-tag": "model-123abc", modelUUID: "123abc" },
+        { "model-tag": "model-456xyz", modelUUID: "456xyz" },
       ],
     });
     await middleware(next)(action);
     await vi.advanceTimersByTimeAsync(10000);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.destroyModelErrors({
-        errors: [["model-123abc", "Error"]],
+        errors: [["123abc", "Error"]],
       }),
     );
-    expect(fetchModelInfo).toHaveBeenCalledWith(conn, ["model-456xyz"]);
+    expect(fetchModelInfo).toHaveBeenCalledWith(conn, ["456xyz"]);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateModelsDestroyed({
-        modelTags: ["model-456xyz"],
+        modelUUIDs: ["456xyz"],
         wsControllerURL: "wss://example.com",
       }),
     );
@@ -1138,14 +1138,14 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
       wsControllerURL: "wss://example.com",
-      modelParams: [{ "model-tag": "model-123abc" }],
+      models: [{ "model-tag": "model-123abc", modelUUID: "123abc" }],
     });
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.destroyModelErrors({
         errors: [
           [
-            "model-123abc",
+            "123abc",
             "Something went wrong during the model destruction process",
           ],
         ],

@@ -242,13 +242,13 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         {
-          modelParams: DestroyModelParams[];
+          models: ({ modelUUID: string } & DestroyModelParams)[];
         } & WsControllerURLParam
       >,
     ) => {
-      action.payload.modelParams.forEach(
+      action.payload.models.forEach(
         (model) =>
-          (state.destroyModel[model["model-tag"]] = {
+          (state.destroyModel[model.modelUUID] = {
             loading: false,
             errors: null,
             loaded: false,
@@ -259,14 +259,14 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         {
-          modelTags: string[];
+          modelUUIDs: string[];
         } & WsControllerURLParam
       >,
     ) => {
-      action.payload.modelTags.forEach(
-        (modelTag) =>
-          (state.destroyModel[modelTag] = {
-            ...state.destroyModel[modelTag],
+      action.payload.modelUUIDs.forEach(
+        (modelUUID) =>
+          (state.destroyModel[modelUUID] = {
+            ...state.destroyModel[modelUUID],
             loading: true,
           }),
       );
@@ -275,14 +275,14 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         {
-          modelTags: string[];
+          modelUUIDs: string[];
         } & WsControllerURLParam
       >,
     ) => {
-      action.payload.modelTags.forEach(
-        (modelTag) =>
-          (state.destroyModel[modelTag] = {
-            ...state.destroyModel[modelTag],
+      action.payload.modelUUIDs.forEach(
+        (modelUUID) =>
+          (state.destroyModel[modelUUID] = {
+            ...state.destroyModel[modelUUID],
             loading: false,
             errors: null,
             loaded: true,
@@ -293,11 +293,11 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         {
-          modelTag: string;
+          modelUUID: string;
         } & WsControllerURLParam
       >,
     ) => {
-      delete state.destroyModel[action.payload.modelTag];
+      delete state.destroyModel[action.payload.modelUUID];
     },
     destroyModelErrors: (
       state,
@@ -306,9 +306,9 @@ const slice = createSlice({
       }>,
     ) => {
       action.payload.errors.forEach(
-        ([modelTag, error]) =>
-          (state.destroyModel[modelTag] = {
-            ...state.destroyModel[modelTag],
+        ([modelUUID, error]) =>
+          (state.destroyModel[modelUUID] = {
+            ...state.destroyModel[modelUUID],
             loading: false,
             errors: error,
             loaded: true,

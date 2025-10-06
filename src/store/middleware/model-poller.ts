@@ -446,8 +446,8 @@ export const modelPollerMiddleware: Middleware<
       )
     ) {
       // Intercept destroyModel actions and fetch and store
-      // the modelParams via the controller connection.
-      const { wsControllerURL, modelParams } = action.payload;
+      // the models via the controller connection.
+      const { wsControllerURL, models } = action.payload;
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
@@ -460,21 +460,22 @@ export const modelPollerMiddleware: Middleware<
 
       try {
         const result = await conn.facades.modelManager?.destroyModels({
-          models: modelParams,
+          models,
         });
         result?.results.forEach((errorResult, index) => {
           if (errorResult.error) {
             destroyModelErrors.push([
-              modelParams[index]["model-tag"],
+              models[index].modelUUID,
               errorResult.error.message,
             ]);
           } else {
-            remainingModels.push(modelParams[index]["model-tag"]);
+            remainingModels.push(models[index].modelUUID);
           }
         });
-      } catch (errors) {
-        const errorMessages = modelParams.map((modelParam) => [
-          modelParam["model-tag"],
+      } catch (error) {
+        logger.error("Could not destroy model", error);
+        const errorMessages = models.map(({ modelUUID }) => [
+          modelUUID,
           "Something went wrong during the model destruction process",
         ]);
 
@@ -493,10 +494,10 @@ export const modelPollerMiddleware: Middleware<
       }
 
       // Only proceed to check for completion if at least one model had no errors
-      if (destroyModelErrors.length < modelParams.length) {
+      if (destroyModelErrors.length < models.length) {
         reduxStore.dispatch(
           jujuActions.updateDestroyModelsLoading({
-            modelTags: remainingModels,
+            modelUUIDs: remainingModels,
             wsControllerURL,
           }),
         );
@@ -518,7 +519,7 @@ export const modelPollerMiddleware: Middleware<
             isDestructionComplete = true;
             reduxStore.dispatch(
               jujuActions.updateModelsDestroyed({
-                modelTags: remainingModels,
+                modelUUIDs: remainingModels,
                 wsControllerURL,
               }),
             );
@@ -528,13 +529,13 @@ export const modelPollerMiddleware: Middleware<
           if (destroyedModels.length > 0) {
             reduxStore.dispatch(
               jujuActions.updateModelsDestroyed({
-                modelTags: destroyedModels,
+                modelUUIDs: destroyedModels,
                 wsControllerURL,
               }),
             );
           }
           remainingModels = remainingModels.filter(
-            (modelTag) => !destroyedModels.includes(modelTag),
+            (modelUUID) => !destroyedModels.includes(modelUUID),
           );
 
           // Wait 10s then start again.

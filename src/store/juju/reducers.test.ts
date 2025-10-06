@@ -275,20 +275,21 @@ describe("reducers", () => {
       {
         "model-tag": "model-abc123",
         "destroy-storage": true,
+        modelUUID: "abc123",
       },
     ];
     expect(
       reducer(
         state,
         actions.destroyModels({
-          modelParams: destroyModelParams,
+          models: destroyModelParams,
           wsControllerURL: "wss://example.com",
         }),
       ),
     ).toStrictEqual({
       ...state,
       destroyModel: {
-        "model-abc123": {
+        abc123: {
           errors: null,
           loaded: false,
           loading: false,
@@ -300,7 +301,7 @@ describe("reducers", () => {
   it("updateDestroyModelsLoading", () => {
     const state = jujuStateFactory.build({
       destroyModel: {
-        "model-abc123": {
+        abc123: {
           errors: null,
           loaded: false,
           loading: false,
@@ -311,14 +312,14 @@ describe("reducers", () => {
       reducer(
         state,
         actions.updateDestroyModelsLoading({
-          modelTags: ["model-abc123"],
+          modelUUIDs: ["abc123"],
           wsControllerURL: "wss://example.com",
         }),
       ),
     ).toStrictEqual({
       ...state,
       destroyModel: {
-        "model-abc123": {
+        abc123: {
           errors: null,
           loaded: false,
           loading: true,
@@ -330,7 +331,7 @@ describe("reducers", () => {
   it("updateModelsDestroyed", () => {
     const state = jujuStateFactory.build({
       destroyModel: {
-        "model-abc123": {
+        abc123: {
           errors: null,
           loaded: false,
           loading: true,
@@ -341,14 +342,14 @@ describe("reducers", () => {
       reducer(
         state,
         actions.updateModelsDestroyed({
-          modelTags: ["model-abc123"],
+          modelUUIDs: ["abc123"],
           wsControllerURL: "wss://example.com",
         }),
       ),
     ).toStrictEqual({
       ...state,
       destroyModel: {
-        "model-abc123": {
+        abc123: {
           errors: null,
           loaded: true,
           loading: false,
@@ -360,12 +361,12 @@ describe("reducers", () => {
   it("clearDestroyedModel", () => {
     const state = jujuStateFactory.build({
       destroyModel: {
-        "model-abc123": {
+        abc123: {
           errors: null,
           loaded: false,
           loading: true,
         },
-        "model-xyz456": {
+        xyz456: {
           errors: null,
           loaded: false,
           loading: true,
@@ -376,14 +377,14 @@ describe("reducers", () => {
       reducer(
         state,
         actions.clearDestroyedModel({
-          modelTag: "model-abc123",
+          modelUUID: "abc123",
           wsControllerURL: "wss://example.com",
         }),
       ),
     ).toStrictEqual({
       ...state,
       destroyModel: {
-        "model-xyz456": {
+        xyz456: {
           errors: null,
           loaded: false,
           loading: true,
@@ -395,7 +396,7 @@ describe("reducers", () => {
   it("destroyModelErrors", () => {
     const state = jujuStateFactory.build({
       destroyModel: {
-        "model-abc123": {
+        abc123: {
           errors: null,
           loaded: false,
           loading: true,
@@ -405,12 +406,12 @@ describe("reducers", () => {
     expect(
       reducer(
         state,
-        actions.destroyModelErrors({ errors: [["model-abc123", "Uh oh!"]] }),
+        actions.destroyModelErrors({ errors: [["abc123", "Uh oh!"]] }),
       ),
     ).toStrictEqual({
       ...state,
       destroyModel: {
-        "model-abc123": {
+        abc123: {
           errors: "Uh oh!",
           loaded: true,
           loading: false,
