@@ -40,5 +40,9 @@ export default function FormikFormData<V>({
     onValidate?.(isValid);
   }, [onValidate, isValid]);
 
-  return <Form {...props}>{children}</Form>;
+  return (
+    <Form role="form" {...props}>
+      {children}
+    </Form>
+  );
 }

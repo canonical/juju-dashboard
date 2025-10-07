@@ -13,6 +13,9 @@ describe("ActionForm", () => {
       renderComponent(<ActionForm properties={[]} />),
     );
     expect(result.getByTestId(TestId.ActionForm)).toBeDefined();
+    expect((result.getByRole("form") as HTMLFormElement).elements).toHaveLength(
+      0,
+    );
   });
 
   it.for([
@@ -78,7 +81,7 @@ describe("ActionForm", () => {
       />,
     );
 
-    // Try submit the form with nothing filled in.
+    // Try to submit the form with nothing filled in.
     await act(async () => formRef.current?.submitForm());
     expect(result.getByText("field-a is a required field")).toBeVisible();
     expect(onSubmit).not.toHaveBeenCalled();

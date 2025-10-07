@@ -48,7 +48,7 @@ export default function ActionForm({
     return formikRef.current;
   }, []);
 
-  // Ensure fields default to empty by default.
+  // Ensure fields default to empty.
   const initialValues = useMemo(
     () =>
       properties.reduce(
@@ -91,21 +91,17 @@ export default function ActionForm({
       ) {
         return;
       }
-
       // Sometimes Formik will automatically submit if there's only one field.
       ev.preventDefault();
-
       const { form } = ev.currentTarget;
       if (!form) {
         return;
       }
-
       if (currentIndex === properties.length - 1) {
         // Reached end of list, allow form submission.
         void formikRef.current?.submitForm();
         return;
       }
-
       // Find the next field, and focus it.
       const nextField = form.querySelectorAll("input")[currentIndex + 1];
       nextField?.focus();
