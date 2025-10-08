@@ -97,14 +97,17 @@ export default function RadioInputBox({
             className="p-radio__input"
             name="inputRadioSelector"
             aria-labelledby={labelId}
-            onClick={handleSelect}
             onChange={handleSelect}
           />
           <span className="p-radio__label" id={labelId}>
             {name}
           </span>
         </label>
-        <div className="radio-input-box__content">
+        <div
+          className="radio-input-box__content"
+          // NOTE: This is defined inline so that `.toBeVisible` works in the test.
+          style={{ visibility: opened ? "unset" : "hidden" }}
+        >
           <div className="radio-input-box__description">{description}</div>
           <div className="radio-input-box__options">{children}</div>
         </div>
