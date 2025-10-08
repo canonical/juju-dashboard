@@ -65,6 +65,7 @@ const model = modelDataFactory.build({
   offers: status.offers,
   relations: status.relations,
   "remote-applications": status["remote-applications"],
+  storage: undefined,
 });
 
 describe("reducers", () => {
@@ -266,6 +267,157 @@ describe("reducers", () => {
     expect(reducer(state, actions.clearModelData())).toStrictEqual(
       jujuStateFactory.build({ modelsLoaded: false }),
     );
+  });
+
+  it("destroyModels", () => {
+    const state = jujuStateFactory.build();
+    const destroyModelParams = [
+      {
+        "model-tag": "model-abc123",
+        "destroy-storage": true,
+        modelUUID: "abc123",
+      },
+    ];
+    expect(
+      reducer(
+        state,
+        actions.destroyModels({
+          models: destroyModelParams,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      destroyModel: {
+        abc123: {
+          errors: null,
+          loaded: false,
+          loading: false,
+        },
+      },
+    });
+  });
+
+  it("updateDestroyModelsLoading", () => {
+    const state = jujuStateFactory.build({
+      destroyModel: {
+        abc123: {
+          errors: null,
+          loaded: false,
+          loading: false,
+        },
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.updateDestroyModelsLoading({
+          modelUUIDs: ["abc123"],
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      destroyModel: {
+        abc123: {
+          errors: null,
+          loaded: false,
+          loading: true,
+        },
+      },
+    });
+  });
+
+  it("updateModelsDestroyed", () => {
+    const state = jujuStateFactory.build({
+      destroyModel: {
+        abc123: {
+          errors: null,
+          loaded: false,
+          loading: true,
+        },
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.updateModelsDestroyed({
+          modelUUIDs: ["abc123"],
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      destroyModel: {
+        abc123: {
+          errors: null,
+          loaded: true,
+          loading: false,
+        },
+      },
+    });
+  });
+
+  it("clearDestroyedModel", () => {
+    const state = jujuStateFactory.build({
+      destroyModel: {
+        abc123: {
+          errors: null,
+          loaded: false,
+          loading: true,
+        },
+        xyz456: {
+          errors: null,
+          loaded: false,
+          loading: true,
+        },
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.clearDestroyedModel({
+          modelUUID: "abc123",
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      destroyModel: {
+        xyz456: {
+          errors: null,
+          loaded: false,
+          loading: true,
+        },
+      },
+    });
+  });
+
+  it("destroyModelErrors", () => {
+    const state = jujuStateFactory.build({
+      destroyModel: {
+        abc123: {
+          errors: null,
+          loaded: false,
+          loading: true,
+        },
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.destroyModelErrors({ errors: [["abc123", "Uh oh!"]] }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      destroyModel: {
+        abc123: {
+          errors: "Uh oh!",
+          loaded: true,
+          loading: false,
+        },
+      },
+    });
   });
 
   it("fetchCrossModelQuery", () => {

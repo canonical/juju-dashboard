@@ -216,7 +216,10 @@ export async function fetchModelStatus(
       if (isLoggedIn(getState(), wsControllerURL)) {
         try {
           status =
-            (await conn?.facades.client?.fullStatus({ patterns: [] })) ?? null;
+            (await conn?.facades.client?.fullStatus({
+              patterns: [],
+              "include-storage": true,
+            })) ?? null;
           if (!status) {
             throw new Error("Status not returned.");
           }
@@ -303,11 +306,12 @@ export async function fetchAndStoreModelStatus(
 */
 export async function fetchModelInfo(
   conn: ConnectionWithFacades,
-  modelUUID: string,
+  modelUUIDs: string[],
 ): Promise<ModelInfoResults | undefined> {
-  const modelInfo = await conn.facades.modelManager?.modelInfo({
-    entities: [{ tag: `model-${modelUUID}` }],
-  });
+  const entities = modelUUIDs.map((modelUUID) => ({
+    tag: `model-${modelUUID}`,
+  }));
+  const modelInfo = await conn.facades.modelManager?.modelInfo({ entities });
   return modelInfo;
 }
 
@@ -349,7 +353,7 @@ export async function fetchAllModelStatuses(
           // progress.
           return;
         }
-        const modelInfo = await fetchModelInfo(conn, modelUUID);
+        const modelInfo = await fetchModelInfo(conn, [modelUUID]);
         if (modelInfo) {
           dispatch(
             jujuActions.updateModelInfo({
@@ -615,7 +619,7 @@ export async function setModelSharingPermissions(
       response = await modifyAccess(permissionTo, "grant");
     }
 
-    const modelInfo = await fetchModelInfo(conn, modelUUID);
+    const modelInfo = await fetchModelInfo(conn, [modelUUID]);
     if (modelInfo) {
       dispatch(
         jujuActions.updateModelInfo({

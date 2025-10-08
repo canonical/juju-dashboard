@@ -1,6 +1,7 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type {
+  DestroyModelParams,
   ModelInfoResults,
   UserModelList,
 } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
@@ -122,6 +123,7 @@ const slice = createSlice({
       loaded: false,
       loading: false,
     },
+    destroyModel: {},
     commandHistory: {},
     controllers: null,
     models: {},
@@ -185,6 +187,7 @@ const slice = createSlice({
         offers: action.payload.status.offers,
         relations: action.payload.status.relations,
         "remote-applications": action.payload.status["remote-applications"],
+        storage: action.payload.status.storage,
       };
       // The status doesn't contain a top level uuid and when this data is
       // fetched it doesn't contain the UUID.
@@ -234,6 +237,83 @@ const slice = createSlice({
     },
     clearControllerData: (state) => {
       state.controllers = {};
+    },
+    destroyModels: (
+      state,
+      action: PayloadAction<
+        {
+          models: ({ modelUUID: string } & DestroyModelParams)[];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      action.payload.models.forEach(
+        (model) =>
+          (state.destroyModel[model.modelUUID] = {
+            loading: false,
+            errors: null,
+            loaded: false,
+          }),
+      );
+    },
+    updateDestroyModelsLoading: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUIDs: string[];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      action.payload.modelUUIDs.forEach(
+        (modelUUID) =>
+          (state.destroyModel[modelUUID] = {
+            ...state.destroyModel[modelUUID],
+            loading: true,
+          }),
+      );
+    },
+    updateModelsDestroyed: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUIDs: string[];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      action.payload.modelUUIDs.forEach(
+        (modelUUID) =>
+          (state.destroyModel[modelUUID] = {
+            ...state.destroyModel[modelUUID],
+            loading: false,
+            errors: null,
+            loaded: true,
+          }),
+      );
+    },
+    clearDestroyedModel: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      delete state.destroyModel[action.payload.modelUUID];
+    },
+    destroyModelErrors: (
+      state,
+      action: PayloadAction<{
+        errors: string[][];
+      }>,
+    ) => {
+      action.payload.errors.forEach(
+        ([modelUUID, error]) =>
+          (state.destroyModel[modelUUID] = {
+            ...state.destroyModel[modelUUID],
+            loading: false,
+            errors: error,
+            loaded: true,
+          }),
+      );
     },
     // This action can be dispatched to fetch audit events which is handled in
     // the model-poller middleware.

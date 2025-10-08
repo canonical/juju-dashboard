@@ -134,6 +134,7 @@ import {
   getCommandHistory,
   getReBACPermissionErrors,
   getModelUUIDs,
+  getDestructionState,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -1141,6 +1142,26 @@ describe("selectors", () => {
         "abc123",
       ),
     ).toStrictEqual(modelWatcherData.abc123.model);
+  });
+
+  it("getDestructionState", () => {
+    const destroyModelData = {
+      "model-xyz456": {
+        errors: null,
+        loaded: true,
+        loading: false,
+        modelName: "model456",
+      },
+    };
+    expect(
+      getDestructionState(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            destroyModel: destroyModelData,
+          }),
+        }),
+      ),
+    ).toStrictEqual(destroyModelData);
   });
 
   it("getModelUUID from model name", () => {
