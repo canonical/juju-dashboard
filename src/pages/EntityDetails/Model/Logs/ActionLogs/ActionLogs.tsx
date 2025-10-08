@@ -230,9 +230,32 @@ export default function ActionLogs(): JSX.Element {
         [actionTag]: output,
       }));
     };
+    // Group actions by the application they ran in.
+    const groupedActions = operations.flatMap((operationData) =>
+      Object.values(
+        operationData.actions?.reduce(
+          (apps, actionResult) => {
+            const appName =
+              actionResult.action?.receiver.match(/unit-(?<appName>.+)-\d+/)
+                ?.groups?.["appName"] ?? "unknown-app";
 
+            apps[appName] = apps[appName] ?? [];
+            apps[appName].push(actionResult);
+
+            return apps;
+          },
+          {} as Record<string, ActionResult[]>,
+        ) ?? {},
+      ).map(
+        (appActions) =>
+          ({
+            ...operationData,
+            actions: appActions,
+          }) satisfies OperationResult,
+      ),
+    );
     const rows: TableRows = [];
-    operations?.forEach((operationData) => {
+    groupedActions.forEach((operationData) => {
       if (!operationData.actions?.length || !userName || !modelName) {
         return;
       }

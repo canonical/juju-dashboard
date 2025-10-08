@@ -390,4 +390,92 @@ describe("Action Logs", () => {
     await userEvent.click(refetchButton);
     expect(queryOperationsListSpy).toHaveBeenCalledTimes(2);
   });
+
+  it("should render applications separately", async ({ expect }) => {
+    const mockResults = actionResultsFactory.build({
+      results: [
+        actionResultFactory.build({
+          action: actionFactory.build({
+            tag: "action-2",
+            receiver: "unit-app1-0",
+            name: "list-disks",
+          }),
+          completed: completed.toISOString(),
+          log: [
+            actionMessageFactory.build({
+              message: "log message 1",
+            }),
+          ],
+          output: {
+            key1: "value1",
+            test: 123,
+          },
+        }),
+        actionResultFactory.build({
+          action: actionFactory.build({
+            tag: "action-2",
+            receiver: "unit-app2-0",
+            name: "list-disks",
+          }),
+          completed: completed.toISOString(),
+          log: [
+            actionMessageFactory.build({
+              message: "log message 2",
+            }),
+          ],
+          output: {
+            key2: "value2",
+            test: 123,
+          },
+        }),
+      ],
+    });
+    const mockOperations = operationResultsFactory.build({
+      results: [
+        operationResultFactory.build({
+          actions: [
+            actionResultFactory.build({
+              action: actionFactory.build({
+                tag: "action-2",
+                receiver: "unit-app1-0",
+                name: "list-disks",
+              }),
+              completed: completed.toISOString(),
+            }),
+            actionResultFactory.build({
+              action: actionFactory.build({
+                tag: "action-2",
+                receiver: "unit-app2-0",
+                name: "list-disks",
+              }),
+              completed: completed.toISOString(),
+            }),
+          ],
+        }),
+      ],
+    });
+    vi.spyOn(actionsHooks, "useQueryActionsList").mockReturnValue(
+      vi.fn().mockResolvedValue(mockResults),
+    );
+    vi.spyOn(actionsHooks, "useQueryOperationsList").mockReturnValue(
+      vi.fn().mockResolvedValue(mockOperations),
+    );
+
+    renderComponent(<ActionLogs />, { path, url, state });
+    const expected = [
+      ["app2", "1/list-disks", "completed", "", ""],
+      ["└app2/0", "2", "completed", "log message 1", "over 1 year ago"],
+      ["app1", "1/list-disks", "completed", "", ""],
+      ["└app1/0", "2", "completed", "log message 1", "over 1 year ago"],
+    ];
+    const rows = await screen.findAllByRole("row");
+    // Remove the header row
+    rows.shift();
+    // Assert each row, plus length check
+    expect.assertions(rows.length + 1);
+    expect(rows).toHaveLength(expected.length);
+    for (let i = 0; i < rows.length; i++) {
+      expect(rows[i].textContent).toEqual(expected[i].join(""));
+    }
+  });
 });
