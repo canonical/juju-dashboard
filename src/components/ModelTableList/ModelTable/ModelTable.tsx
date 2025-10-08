@@ -75,9 +75,7 @@ function generateModelTableList(
     const credential = getCredential(model);
     const controller = getControllerName(model, controllers);
     const lastUpdated = getLastUpdated(model);
-    const isDying = Object.keys(destructionState).includes(
-      `model-${model.uuid}`,
-    );
+    const isDying = Object.keys(destructionState).includes(model.uuid);
 
     const columns = [
       {
@@ -227,24 +225,24 @@ export default function ModelTable({
   };
 
   useEffect(() => {
-    Object.entries(destructionState).forEach(([modelTag, status]) => {
+    Object.entries(destructionState).forEach(([modelUUID, status]) => {
       // Check if the destruction is in a loading state.
       if (status.loading) {
         // Handle an initiated destruction
         reactHotToast.custom((toast: ToastInstance) => (
           <ToastCard type="info" toastInstance={toast}>
-            <b>Destroying model "{status.modelName}"...</b>
+            <b>Destroying model "{modelUUID}"...</b>
           </ToastCard>
         ));
       } else if (
         status.loaded &&
         status.errors === null &&
-        !Object.keys(modelsList).includes(modelTag.split("model-")[1])
+        !Object.keys(modelsList).includes(modelUUID)
       ) {
         // Handle a successful destruction
         reactHotToast.custom((toast: ToastInstance) => (
           <ToastCard type="positive" toastInstance={toast}>
-            <b>Model "{status.modelName}" destroyed successfully</b>
+            <b>Model "{modelUUID}" destroyed successfully</b>
           </ToastCard>
         ));
 
@@ -252,7 +250,7 @@ export default function ModelTable({
         // This prevents the useEffect from re-running for this item.
         dispatch(
           jujuActions.clearDestroyedModel({
-            modelTag,
+            modelUUID,
             wsControllerURL,
           }),
         );
@@ -262,7 +260,7 @@ export default function ModelTable({
         // Handle a failed destruction
         reactHotToast.custom((toast: ToastInstance) => (
           <ToastCard type="negative" toastInstance={toast}>
-            <b>Destroying model "{status.modelName}" failed</b>
+            <b>Destroying model "{modelUUID}" failed</b>
             <div>
               Retry or consult{" "}
               <Link
@@ -279,7 +277,7 @@ export default function ModelTable({
         // This prevents the useEffect from re-running for this item.
         dispatch(
           jujuActions.clearDestroyedModel({
-            modelTag,
+            modelUUID,
             wsControllerURL,
           }),
         );

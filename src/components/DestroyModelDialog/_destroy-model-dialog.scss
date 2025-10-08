@@ -1,12 +1,13 @@
-.destroy-model-table {
-  width: -webkit-fill-available;
+.destroy-model-dialog {
+  min-width: 50%;
 
-  tr {
-    border: none !important;
+  .p-modal__dialog {
+    width: 50%;
   }
+}
 
+.destroy-model-table {
   .icon {
     margin-right: 10px;
-    opacity: 0.5;
   }
 }

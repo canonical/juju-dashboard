@@ -192,16 +192,19 @@ describe("useModelDestructionData", () => {
     expect(result.current.crossModelRelations[0]).toEqual({
       name: "http",
       endpoints: [],
+      isOffer: true,
     });
     expect(result.current.crossModelRelations[1]).toEqual({
       name: "nrpe",
       endpoints: [],
+      isOffer: true,
     });
 
     // Check Remote Application aggregation
     expect(result.current.crossModelRelations[2]).toEqual({
       name: "mysql",
       endpoints: [],
+      isOffer: false,
     });
   });
 

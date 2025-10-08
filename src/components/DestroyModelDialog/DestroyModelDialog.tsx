@@ -4,6 +4,7 @@ import {
   Icon,
   MainTable,
   RadioInput,
+  Notification as ReactNotification,
 } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { useState, useMemo } from "react";
@@ -39,7 +40,11 @@ const ApplicationsRow = (applications: string[]): MainTableRow | null => {
 
 // Helper to render the Cross-Model Relations
 const CrossModelRelationsRow = (
-  crossModelRelations: { name: string; endpoints: RemoteEndpoint[] }[],
+  crossModelRelations: {
+    name: string;
+    endpoints: RemoteEndpoint[];
+    isOffer: boolean;
+  }[],
 ): MainTableRow | null => {
   if (!crossModelRelations.length) {
     return null;
@@ -57,12 +62,12 @@ const CrossModelRelationsRow = (
       {
         content: (
           <>
-            {crossModelRelations.map(({ name, endpoints }) => (
+            {crossModelRelations.map(({ name, endpoints, isOffer }) => (
               <div key={name}>
                 {name}{" "}
                 {endpoints.map((endpoint: RemoteEndpoint, index: number) => (
                   <span key={index}>
-                    {endpoint.name}:{endpoint.interface}
+                    {endpoint.name}:{endpoint.interface} {isOffer ? "(!)" : ""}
                   </span>
                 ))}
               </div>
@@ -119,7 +124,7 @@ export default function DestroyModelDialog({
 
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
-  const [destroyStorage, setDestroyStorage] = useState<boolean | undefined>();
+  const [destroyStorage, setDestroyStorage] = useState<boolean>(true);
 
   const infoTableRows = useMemo(() => {
     return [
@@ -129,20 +134,19 @@ export default function DestroyModelDialog({
     ].filter((row): row is Exclude<typeof row, null> => row !== null);
   }, [applications, crossModelRelations, machines]);
 
-  // Determine the disabled state based on storage and connected offers
-  const isConfirmDisabled =
-    (destroyStorage === undefined && hasStorage) || connectedOffers.length > 0;
+  // Determine the disabled state based on connected offers
+  const isConfirmDisabled = connectedOffers.length > 0;
 
   const handleConfirm = (): void => {
     dispatch(
       jujuActions.destroyModels({
-        modelParams: [
+        models: [
           {
             "model-tag": `model-${modelUUID}`,
-            "destroy-storage": destroyStorage,
+            ...(hasStorage ? { "destroy-storage": destroyStorage } : {}),
+            modelUUID,
           },
         ],
-        models: [modelName],
         wsControllerURL,
       }),
     );
@@ -157,12 +161,30 @@ export default function DestroyModelDialog({
         </>
       }
       data-testid="destroy-model-dialog"
-      className="p-modal--min-width"
+      className="destroy-model-dialog"
       confirmButtonLabel="Destroy model"
       confirmButtonDisabled={isConfirmDisabled}
       onConfirm={handleConfirm}
       close={closePortal}
     >
+      {connectedOffers.length > 0 ? (
+        <ReactNotification
+          severity="caution"
+          title={`${modelName} cannot be deleted`}
+        >
+          Offer{connectedOffers.length > 1 ? "s" : ""}{" "}
+          <b>
+            {connectedOffers
+              .map(
+                ({ offerName, endpoint }) =>
+                  `${offerName} ${endpoint.name}:${endpoint.interface}`,
+              )
+              .join(", ")}{" "}
+          </b>
+          {connectedOffers.length > 1 ? "are" : "is"} being consumed. Remove
+          offer from the consuming model to delete this model.
+        </ReactNotification>
+      ) : null}
       {showInfoTable ? (
         <>
           By destroying model <b>{modelName}</b>, you will also be removing:
@@ -187,47 +209,10 @@ export default function DestroyModelDialog({
               />
               <RadioInput
                 label="Detach storage"
-                checked={destroyStorage === false}
+                checked={!destroyStorage}
                 onChange={() => {
                   setDestroyStorage(false);
                 }}
-              />
-            </>
-          ) : null}
-          {connectedOffers.length > 0 ? (
-            <>
-              <hr />
-              <div>Model has offers that need to be removed manually:</div>
-              <MainTable
-                className="p-main-table destroy-model-table"
-                headers={[{ content: "application" }, { content: "offer" }]}
-                rows={[
-                  {
-                    columns: [
-                      {
-                        content: (
-                          <>
-                            <Icon name="applications" className="icon" />
-                            {connectedOffers.map(
-                              ({ applicationName }) => applicationName,
-                            )}
-                          </>
-                        ),
-                      },
-                      {
-                        content: (
-                          <>
-                            <Icon name="get-link" className="icon" />
-                            {connectedOffers.map(
-                              ({ offerName, endpoint }) =>
-                                `${offerName} ${endpoint.name}:${endpoint.interface}`,
-                            )}
-                          </>
-                        ),
-                      },
-                    ],
-                  },
-                ]}
               />
             </>
           ) : null}

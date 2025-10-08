@@ -116,23 +116,6 @@ describe("DestroyModelDialog", () => {
     ).toBeInTheDocument();
   });
 
-  it("disables confirm button when storage exists but no option is selected", () => {
-    renderComponent(
-      <DestroyModelDialog
-        modelName="model123"
-        modelUUID="abc123"
-        closePortal={vi.fn()}
-      />,
-      { state },
-    );
-
-    const destroyModelDialog = screen.getByTestId("destroy-model-dialog");
-    expect(destroyModelDialog).toBeInTheDocument();
-    expect(
-      within(destroyModelDialog).getByRole("button", { name: "Destroy model" }),
-    ).toBeDisabled();
-  });
-
   it("disables confirm button when connected offers exist", () => {
     state = rootStateFactory.build({
       juju: jujuStateFactory.build({
@@ -161,7 +144,7 @@ describe("DestroyModelDialog", () => {
     expect(destroyModelDialog).toBeInTheDocument();
     expect(
       within(destroyModelDialog).getByText(
-        /Model has offers that need to be removed manually:/,
+        /Offer is being consumed. Remove offer from the consuming model to delete this model./,
       ),
     ).toBeInTheDocument();
     expect(
@@ -182,13 +165,13 @@ describe("DestroyModelDialog", () => {
     );
 
     const destroyModelsAction = jujuActions.destroyModels({
-      modelParams: [
+      models: [
         {
-          "model-tag": `model-abc123`,
+          "model-tag": "model-abc123",
           "destroy-storage": true,
+          modelUUID: "abc123",
         },
       ],
-      models: ["model123"],
       wsControllerURL: "",
     });
 
@@ -218,13 +201,13 @@ describe("DestroyModelDialog", () => {
     );
 
     const destroyModelsAction = jujuActions.destroyModels({
-      modelParams: [
+      models: [
         {
-          "model-tag": `model-abc123`,
+          "model-tag": "model-abc123",
           "destroy-storage": false,
+          modelUUID: "abc123",
         },
       ],
-      models: ["model123"],
       wsControllerURL: "",
     });
 

@@ -14,6 +14,7 @@ const getCrossModelRelations = (
 ): {
   name: string;
   endpoints: RemoteEndpoint[];
+  isOffer: boolean;
 }[] => {
   const relations = [];
 
@@ -24,6 +25,7 @@ const getCrossModelRelations = (
         name,
         // Convert endpoints object to an array of endpoint values
         endpoints: Object.values(data.endpoints),
+        isOffer: true,
       }),
     ),
   );
@@ -34,6 +36,7 @@ const getCrossModelRelations = (
       ([name, data]: [string, RemoteApplicationStatus]) => ({
         name,
         endpoints: data.endpoints,
+        isOffer: false,
       }),
     ),
   );
@@ -95,6 +98,7 @@ export default function useModelDestructionData(modelUUID: string): {
   crossModelRelations: {
     name: string;
     endpoints: RemoteEndpoint[];
+    isOffer: boolean;
   }[];
   connectedOffers: {
     offerName: string;
