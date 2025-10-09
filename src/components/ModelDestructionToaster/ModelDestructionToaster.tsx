@@ -13,12 +13,12 @@ import { externalURLs } from "urls";
 
 type Props = {
   modelUUID: string;
-  status: DestroyModelState;
+  destructionStatus: DestroyModelState;
 };
 
 export default function ModelDestructionToaster({
   modelUUID,
-  status,
+  destructionStatus,
 }: Props): null {
   const modelsList = useAppSelector(getModelList);
   const wsControllerURL = useAppSelector(getWSControllerURL);
@@ -29,7 +29,7 @@ export default function ModelDestructionToaster({
 
   useEffect(() => {
     // Check if the destruction is in a loading state.
-    if (status.loading) {
+    if (destructionStatus.loading) {
       // Handle an initiated destruction
       reactHotToast.custom((toast: ToastInstance) => (
         <ToastCard type="info" toastInstance={toast}>
@@ -38,8 +38,8 @@ export default function ModelDestructionToaster({
       ));
     } else if (
       wsControllerURL &&
-      status.loaded &&
-      status.errors === null &&
+      destructionStatus.loaded &&
+      destructionStatus.errors === null &&
       !Object.keys(modelsList).includes(modelUUID)
     ) {
       // Handle a successful destruction (model is no longer in modelsList)
@@ -58,7 +58,7 @@ export default function ModelDestructionToaster({
       );
     }
 
-    if (wsControllerURL && status.errors) {
+    if (wsControllerURL && destructionStatus.errors) {
       // Handle a failed destruction
       reactHotToast.custom((toast: ToastInstance) => (
         <ToastCard type="negative" toastInstance={toast}>
@@ -80,7 +80,14 @@ export default function ModelDestructionToaster({
         }),
       );
     }
-  }, [wsControllerURL, modelsList, modelUUID, modelName, status, dispatch]);
+  }, [
+    wsControllerURL,
+    modelsList,
+    modelUUID,
+    modelName,
+    destructionStatus,
+    dispatch,
+  ]);
 
   return null;
 }

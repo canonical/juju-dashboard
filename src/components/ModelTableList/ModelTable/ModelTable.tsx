@@ -238,7 +238,7 @@ export default function ModelTable({
         <ModelDestructionToaster
           key={modelUUID}
           modelUUID={modelUUID}
-          status={status}
+          destructionStatus={status}
         />
       ))}
       <MainTable

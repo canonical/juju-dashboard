@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
+import { configFactory, generalStateFactory } from "testing/factories/general";
 import { applicationOfferStatusFactory } from "testing/factories/juju/ClientV6";
 import {
   jujuStateFactory,
@@ -22,6 +23,11 @@ describe("DestroyModelDialog", () => {
 
   beforeEach(() => {
     state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          controllerAPIEndpoint: "wss://example.com:17070/api",
+        }),
+      }),
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
@@ -172,7 +178,7 @@ describe("DestroyModelDialog", () => {
           modelUUID: "abc123",
         },
       ],
-      wsControllerURL: "",
+      wsControllerURL: "wss://example.com:17070/api",
     });
 
     // Since the "Destroy" option is rendered pre-selected, we select the "Detach" first
@@ -211,7 +217,7 @@ describe("DestroyModelDialog", () => {
           modelUUID: "abc123",
         },
       ],
-      wsControllerURL: "",
+      wsControllerURL: "wss://example.com:17070/api",
     });
 
     await userEvent.click(screen.getByLabelText("Detach storage"));
