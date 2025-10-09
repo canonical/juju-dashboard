@@ -3,7 +3,8 @@ import type {
   MainTableCell,
   MainTableRow,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import { useEffect } from "react";
+import classNames from "classnames";
+import { useEffect, useMemo } from "react";
 import type { JSX } from "react";
 import reactHotToast from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -28,6 +29,7 @@ import {
   getModelStatusGroupData,
 } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
+import { externalURLs } from "urls";
 
 import CloudCell from "../CloudCell";
 import ModelSummary from "../ModelSummary";
@@ -75,7 +77,7 @@ function generateModelTableList(
     const credential = getCredential(model);
     const controller = getControllerName(model, controllers);
     const lastUpdated = getLastUpdated(model);
-    const isDying = Object.keys(destructionState).includes(model.uuid);
+    const isDying = model.uuid in destructionState;
 
     const columns = [
       {
@@ -85,7 +87,7 @@ function generateModelTableList(
             {isDying ? "Destroying... " : ""}
             <TruncatedTooltip
               message={model.model.name}
-              className={isDying ? "dying-model" : ""}
+              className={classNames({ "dying-model": isDying })}
             >
               <ModelDetailsLink
                 modelName={model.model.name}
@@ -108,18 +110,22 @@ function generateModelTableList(
             ownerTag={model.info?.["owner-tag"]}
           />
         ),
-        className: `u-overflow--visible ${isDying ? "dying-model" : ""}`,
+        className: classNames("u-overflow--visible", {
+          "dying-model": isDying,
+        }),
       },
       // Conditionally include cells based on the group type
       ...getConditionalCell(GroupBy.OWNER, groupBy, {
         "data-testid": TestId.COLUMN_OWNER,
         content: <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>,
-        className: isDying ? "dying-model" : "",
+        className: classNames({ "dying-model": isDying }),
       }),
       ...getConditionalCell(GroupBy.STATUS, groupBy, {
         "data-testid": TestId.COLUMN_STATUS,
         content: <Status status={highestStatus} />,
-        className: `u-capitalise ${isDying ? "dying-model" : ""}`,
+        className: classNames("u-capitalise", {
+          "dying-model": isDying,
+        }),
       }),
       ...getConditionalCell(
         GroupBy.CLOUD,
@@ -131,14 +137,14 @@ function generateModelTableList(
               {cloud}
             </TruncatedTooltip>
           ),
-          className: isDying ? "dying-model" : "",
+          className: classNames({ "dying-model": isDying }),
         },
         {
           "data-testid": TestId.COLUMN_REGION,
           content: (
             <TruncatedTooltip message={region}>{region}</TruncatedTooltip>
           ),
-          className: isDying ? "dying-model" : "",
+          className: classNames({ "dying-model": isDying }),
         },
       ),
       {
@@ -146,14 +152,14 @@ function generateModelTableList(
         content: (
           <TruncatedTooltip message={credential}>{credential}</TruncatedTooltip>
         ),
-        className: isDying ? "dying-model" : "",
+        className: classNames({ "dying-model": isDying }),
       },
       {
         "data-testid": TestId.COLUMN_CONTROLLER,
         content: (
           <TruncatedTooltip message={controller}>{controller}</TruncatedTooltip>
         ),
-        className: isDying ? "dying-model" : "",
+        className: classNames({ "dying-model": isDying }),
       },
       // We're not currently able to get a last-accessed or updated from JAAS.
       {
@@ -163,14 +169,18 @@ function generateModelTableList(
             {lastUpdated}
           </TruncatedTooltip>
         ),
-        className: `u-align--right lrg-screen-access-cell ${isDying ? "dying-model" : ""}`,
+        className: classNames("u-align--right lrg-screen-access-cell", {
+          "dying-model": isDying,
+        }),
       },
       {
         "data-testid": TestId.COLUMN_ACTIONS,
         content: (
           <ModelActions modelUUID={model.uuid} modelName={model.model.name} />
         ),
-        className: `u-align--right ${isDying ? "dying-model" : ""}`,
+        className: classNames("u-align--right", {
+          "dying-model": isDying,
+        }),
       },
     ];
 
@@ -212,7 +222,7 @@ export default function ModelTable({
   const controllers = useAppSelector(getControllerData);
   const modelsList = useAppSelector(getModelList);
   const destructionState = useAppSelector(getDestructionState);
-  const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
+  const wsControllerURL = useAppSelector(getWSControllerURL);
   const dispatch = useDispatch();
 
   const headerOptions = {
@@ -235,6 +245,7 @@ export default function ModelTable({
           </ToastCard>
         ));
       } else if (
+        wsControllerURL &&
         status.loaded &&
         status.errors === null &&
         !Object.keys(modelsList).includes(modelUUID)
@@ -256,17 +267,14 @@ export default function ModelTable({
         );
       }
 
-      if (status.errors) {
+      if (wsControllerURL && status.errors) {
         // Handle a failed destruction
         reactHotToast.custom((toast: ToastInstance) => (
           <ToastCard type="negative" toastInstance={toast}>
             <b>Destroying model "{modelUUID}" failed</b>
             <div>
               Retry or consult{" "}
-              <Link
-                to="https://documentation.ubuntu.com/juju/3.6/reference/juju-cli/list-of-juju-cli-commands/destroy-model/"
-                target="_blank"
-              >
+              <Link to={externalURLs.destroyModel} target="_blank">
                 documentation
               </Link>
             </div>
@@ -285,19 +293,25 @@ export default function ModelTable({
     });
   }, [destructionState, wsControllerURL, modelsList, dispatch]);
 
+  const tableRows = useMemo(
+    () =>
+      generateModelTableList(
+        models,
+        controllers,
+        groupBy,
+        destructionState,
+        groupLabel,
+      ),
+    [models, controllers, groupBy, destructionState, groupLabel],
+  );
+
   return (
     <MainTable
       headers={generateTableHeaders(groupLabel, models.length, headerOptions)}
       className="p-main-table"
       sortable
       emptyStateMsg={emptyStateMessage}
-      rows={generateModelTableList(
-        models,
-        controllers,
-        groupBy,
-        destructionState,
-        groupLabel,
-      )}
+      rows={tableRows}
     />
   );
 }

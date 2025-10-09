@@ -175,6 +175,9 @@ describe("DestroyModelDialog", () => {
       wsControllerURL: "",
     });
 
+    // Since the "Destroy" option is rendered pre-selected, we select the "Detach" first
+    // to allow testing the callback for "Destroy"
+    await userEvent.click(screen.getByLabelText("Detach storage"));
     await userEvent.click(screen.getByLabelText("Destroy storage"));
     await userEvent.click(
       screen.getByRole("button", { name: "Destroy model" }),

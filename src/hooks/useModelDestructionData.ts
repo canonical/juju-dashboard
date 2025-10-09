@@ -7,20 +7,22 @@ import type {
 
 import useModelStatus from "hooks/useModelStatus";
 
+type CrossModelRelation = {
+  name: string;
+  endpoints: RemoteEndpoint[];
+  isOffer: boolean;
+};
+
 // Helper function to extract and format cross-model relations
 const getCrossModelRelations = (
   offers: Record<string, ApplicationOfferStatus>,
   remoteApplications: Record<string, RemoteApplicationStatus>,
-): {
-  name: string;
-  endpoints: RemoteEndpoint[];
-  isOffer: boolean;
-}[] => {
-  const relations = [];
+): CrossModelRelation[] => {
+  let relations: CrossModelRelation[] = [];
 
   // Handle offers
-  relations.push(
-    ...Object.entries(offers).map(
+  relations = relations.concat(
+    Object.entries(offers).map(
       ([name, data]: [string, ApplicationOfferStatus]) => ({
         name,
         // Convert endpoints object to an array of endpoint values
@@ -31,8 +33,8 @@ const getCrossModelRelations = (
   );
 
   // Handle remote applications
-  relations.push(
-    ...Object.entries(remoteApplications).map(
+  relations = relations.concat(
+    Object.entries(remoteApplications).map(
       ([name, data]: [string, RemoteApplicationStatus]) => ({
         name,
         endpoints: data.endpoints,
@@ -46,15 +48,9 @@ const getCrossModelRelations = (
 
 // Helper function to create list of storage IDs from storage tags
 const getStorageIDs = (storage: StorageDetails[] | undefined): string[] => {
-  const storageIDs = [];
-  if (storage) {
-    storageIDs.push(
-      ...storage.map((storageItem) =>
-        storageItem["storage-tag"].split("storage-")[1].replace("-", "/"),
-      ),
-    );
-  }
-  return storageIDs;
+  return (storage ?? []).map((storageItem) =>
+    storageItem["storage-tag"].split("storage-")[1].replace("-", "/"),
+  );
 };
 
 const getConnectedOffers = (
@@ -95,11 +91,7 @@ export default function useModelDestructionData(modelUUID: string): {
   hasStorage: boolean;
   applications: string[];
   machines: string[];
-  crossModelRelations: {
-    name: string;
-    endpoints: RemoteEndpoint[];
-    isOffer: boolean;
-  }[];
+  crossModelRelations: CrossModelRelation[];
   connectedOffers: {
     offerName: string;
     applicationName: string;
