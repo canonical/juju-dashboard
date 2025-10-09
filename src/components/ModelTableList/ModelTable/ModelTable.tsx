@@ -4,32 +4,21 @@ import type {
   MainTableRow,
 } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import classNames from "classnames";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import type { JSX } from "react";
-import reactHotToast from "react-hot-toast";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router";
 
 import ModelActions from "components/ModelActions";
+import ModelDestructionToaster from "components/ModelDestructionToaster";
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
-import ToastCard from "components/ToastCard";
-import type { ToastInstance } from "components/ToastCard";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import { getWSControllerURL } from "store/general/selectors";
-import { actions as jujuActions } from "store/juju";
-import {
-  getControllerData,
-  getDestructionState,
-  getModelList,
-} from "store/juju/selectors";
+import { getControllerData, getDestructionState } from "store/juju/selectors";
 import type { Controllers, DestroyState, ModelData } from "store/juju/types";
 import {
   extractOwnerName,
   getModelStatusGroupData,
 } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
-import { externalURLs } from "urls";
 
 import CloudCell from "../CloudCell";
 import ModelSummary from "../ModelSummary";
@@ -220,10 +209,7 @@ export default function ModelTable({
   emptyStateMessage = "",
 }: Props): JSX.Element {
   const controllers = useAppSelector(getControllerData);
-  const modelsList = useAppSelector(getModelList);
   const destructionState = useAppSelector(getDestructionState);
-  const wsControllerURL = useAppSelector(getWSControllerURL);
-  const dispatch = useDispatch();
 
   const headerOptions = {
     showCloud: [GroupBy.STATUS, GroupBy.OWNER].includes(groupBy),
@@ -233,65 +219,6 @@ export default function ModelTable({
       ? { showHeaderStatus: true }
       : {}),
   };
-
-  useEffect(() => {
-    Object.entries(destructionState).forEach(([modelUUID, status]) => {
-      // Check if the destruction is in a loading state.
-      if (status.loading) {
-        // Handle an initiated destruction
-        reactHotToast.custom((toast: ToastInstance) => (
-          <ToastCard type="info" toastInstance={toast}>
-            <b>Destroying model "{modelUUID}"...</b>
-          </ToastCard>
-        ));
-      } else if (
-        wsControllerURL &&
-        status.loaded &&
-        status.errors === null &&
-        !Object.keys(modelsList).includes(modelUUID)
-      ) {
-        // Handle a successful destruction
-        reactHotToast.custom((toast: ToastInstance) => (
-          <ToastCard type="positive" toastInstance={toast}>
-            <b>Model "{modelUUID}" destroyed successfully</b>
-          </ToastCard>
-        ));
-
-        // Dispatch the clear action to remove this entry from the state.
-        // This prevents the useEffect from re-running for this item.
-        dispatch(
-          jujuActions.clearDestroyedModel({
-            modelUUID,
-            wsControllerURL,
-          }),
-        );
-      }
-
-      if (wsControllerURL && status.errors) {
-        // Handle a failed destruction
-        reactHotToast.custom((toast: ToastInstance) => (
-          <ToastCard type="negative" toastInstance={toast}>
-            <b>Destroying model "{modelUUID}" failed</b>
-            <div>
-              Retry or consult{" "}
-              <Link to={externalURLs.destroyModel} target="_blank">
-                documentation
-              </Link>
-            </div>
-          </ToastCard>
-        ));
-
-        // Dispatch the clear action to remove this entry from the state.
-        // This prevents the useEffect from re-running for this item.
-        dispatch(
-          jujuActions.clearDestroyedModel({
-            modelUUID,
-            wsControllerURL,
-          }),
-        );
-      }
-    });
-  }, [destructionState, wsControllerURL, modelsList, dispatch]);
 
   const tableRows = useMemo(
     () =>
@@ -306,12 +233,21 @@ export default function ModelTable({
   );
 
   return (
-    <MainTable
-      headers={generateTableHeaders(groupLabel, models.length, headerOptions)}
-      className="p-main-table"
-      sortable
-      emptyStateMsg={emptyStateMessage}
-      rows={tableRows}
-    />
+    <>
+      {Object.entries(destructionState).map(([modelUUID, status]) => (
+        <ModelDestructionToaster
+          key={modelUUID}
+          modelUUID={modelUUID}
+          status={status}
+        />
+      ))}
+      <MainTable
+        headers={generateTableHeaders(groupLabel, models.length, headerOptions)}
+        className="p-main-table"
+        sortable
+        emptyStateMsg={emptyStateMessage}
+        rows={tableRows}
+      />
+    </>
   );
 }
