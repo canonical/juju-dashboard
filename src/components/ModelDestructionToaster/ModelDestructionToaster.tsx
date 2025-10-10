@@ -25,6 +25,7 @@ export default function ModelDestructionToaster({
   const modelName = useAppSelector((state) =>
     getModelByUUID(state, modelUUID),
   )?.name;
+  const modelReference = modelName ? ` "${modelName}"` : "";
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export default function ModelDestructionToaster({
       // Handle an initiated destruction
       reactHotToast.custom((toast: ToastInstance) => (
         <ToastCard type="info" toastInstance={toast}>
-          <b>Destroying model "{modelName}"...</b>
+          <b>Destroying model{modelReference}...</b>
         </ToastCard>
       ));
     } else if (
@@ -45,7 +46,7 @@ export default function ModelDestructionToaster({
       // Handle a successful destruction (model is no longer in modelsList)
       reactHotToast.custom((toast: ToastInstance) => (
         <ToastCard type="positive" toastInstance={toast}>
-          <b>Model "{modelName}" destroyed successfully</b>
+          <b>Model{modelReference} destroyed successfully</b>
         </ToastCard>
       ));
 
@@ -62,7 +63,7 @@ export default function ModelDestructionToaster({
       // Handle a failed destruction
       reactHotToast.custom((toast: ToastInstance) => (
         <ToastCard type="negative" toastInstance={toast}>
-          <b>Destroying model "{modelName}" failed</b>
+          <b>Destroying model{modelReference} failed</b>
           <div>
             Retry or consult{" "}
             <Link to={externalURLs.destroyModel} target="_blank">
@@ -84,7 +85,7 @@ export default function ModelDestructionToaster({
     wsControllerURL,
     modelsList,
     modelUUID,
-    modelName,
+    modelReference,
     destructionStatus,
     dispatch,
   ]);

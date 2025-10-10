@@ -127,7 +127,7 @@ describe("ModelDestructionToaster", () => {
     const card = await screen.findByTestId("toast-card");
     expect(card).toHaveAttribute("data-type", "positive");
     expect(
-      await within(card).findByText('Model "" destroyed successfully'),
+      await within(card).findByText("Model destroyed successfully"),
     ).toBeInTheDocument();
 
     await waitFor(() => {
