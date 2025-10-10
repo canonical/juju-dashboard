@@ -1146,11 +1146,10 @@ describe("selectors", () => {
 
   it("getDestructionState", () => {
     const destroyModelData = {
-      "model-xyz456": {
+      xyz456: {
         errors: null,
         loaded: true,
         loading: false,
-        modelName: "model456",
       },
     };
     expect(

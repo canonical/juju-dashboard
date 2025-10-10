@@ -68,6 +68,8 @@ export const externalURLs = {
     `https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/${command.replace(/^\//, "")}`,
   deployingApplication:
     "https://documentation.ubuntu.com/juju/latest/howto/manage-applications/#deploy-an-application",
+  destroyModel:
+    "https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/destroy-model/",
   machine: "https://documentation.ubuntu.com/juju/latest/reference/machine/",
   manageAccess:
     "https://documentation.ubuntu.com/juju/latest/howto/manage-users/index.html#manage-access-at-the-controller-model-application-or-offer-level",
