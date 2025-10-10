@@ -13,6 +13,22 @@ type CrossModelRelation = {
   isOffer: boolean;
 };
 
+type ConnectedOffer = {
+  offerName: string;
+  applicationName: string;
+  endpoint: { name: string; interface: string };
+};
+
+type ModelDestructionData = {
+  hasStorage: boolean;
+  applications: string[];
+  machines: string[];
+  crossModelRelations: CrossModelRelation[];
+  connectedOffers: ConnectedOffer[];
+  showInfoTable: boolean;
+  storageIDs: string[];
+};
+
 // Helper function to extract and format cross-model relations
 const getCrossModelRelations = (
   offers: Record<string, ApplicationOfferStatus>,
@@ -55,14 +71,7 @@ const getStorageIDs = (storage: StorageDetails[] | undefined): string[] => {
 
 const getConnectedOffers = (
   offers: Record<string, ApplicationOfferStatus>,
-): {
-  offerName: string;
-  applicationName: string;
-  endpoint: {
-    name: string;
-    interface: string;
-  };
-}[] => {
+): ConnectedOffer[] => {
   // This filtering is disabled due to this bug in Juju: https://github.com/juju/juju/issues/20725
   const connectedEntries = Object.entries(offers);
   // .filter(
@@ -87,19 +96,9 @@ const getConnectedOffers = (
 };
 
 // Custom hook to prepare all data needed by the component
-export default function useModelDestructionData(modelUUID: string): {
-  hasStorage: boolean;
-  applications: string[];
-  machines: string[];
-  crossModelRelations: CrossModelRelation[];
-  connectedOffers: {
-    offerName: string;
-    applicationName: string;
-    endpoint: { name: string; interface: string };
-  }[];
-  showInfoTable: boolean;
-  storageIDs: string[];
-} {
+export default function useModelDestructionData(
+  modelUUID: string,
+): ModelDestructionData {
   const modelStatusData = useModelStatus(modelUUID);
 
   const offers = modelStatusData?.offers ?? {};

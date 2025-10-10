@@ -158,7 +158,7 @@ function generateModelTableList(
             {lastUpdated}
           </TruncatedTooltip>
         ),
-        className: classNames("u-align--right lrg-screen-access-cell", {
+        className: classNames("u-align--right", "lrg-screen-access-cell", {
           "dying-model": isDying,
         }),
       },
