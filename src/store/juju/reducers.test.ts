@@ -276,6 +276,7 @@ describe("reducers", () => {
         "model-tag": "model-abc123",
         "destroy-storage": true,
         modelUUID: "abc123",
+        modelName: "abc",
       },
     ];
     expect(
@@ -290,6 +291,7 @@ describe("reducers", () => {
       ...state,
       destroyModel: {
         abc123: {
+          modelName: "abc",
           errors: null,
           loaded: false,
           loading: false,

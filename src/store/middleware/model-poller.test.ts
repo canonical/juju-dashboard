@@ -1025,11 +1025,23 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
       wsControllerURL: "wss://example.com",
-      models: [{ "model-tag": "model-123abc", modelUUID: "123abc" }],
+      models: [
+        {
+          "model-tag": "model-123abc",
+          modelUUID: "123abc",
+          modelName: "model123",
+        },
+      ],
     });
     await middleware(next)(action);
     expect(conn.facades.modelManager.destroyModels).toHaveBeenCalledWith({
-      models: [{ "model-tag": "model-123abc", modelUUID: "123abc" }],
+      models: [
+        {
+          "model-tag": "model-123abc",
+          modelUUID: "123abc",
+          modelName: "model123",
+        },
+      ],
     });
     expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
       jujuActions.destroyModelErrors({
@@ -1054,7 +1066,13 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
       wsControllerURL: "nothing",
-      models: [{ "model-tag": "model-123abc", modelUUID: "123abc" }],
+      models: [
+        {
+          "model-tag": "model-123abc",
+          modelUUID: "123abc",
+          modelName: "model123",
+        },
+      ],
     });
     await middleware(next)(action);
     expect(conn.facades.modelManager.destroyModels).not.toHaveBeenCalled();
@@ -1073,7 +1091,13 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
       wsControllerURL: "wss://example.com",
-      models: [{ "model-tag": "model-123abc", modelUUID: "123abc" }],
+      models: [
+        {
+          "model-tag": "model-123abc",
+          modelUUID: "123abc",
+          modelName: "model123",
+        },
+      ],
     });
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -1108,8 +1132,16 @@ describe("model poller", () => {
     const action = jujuActions.destroyModels({
       wsControllerURL: "wss://example.com",
       models: [
-        { "model-tag": "model-123abc", modelUUID: "123abc" },
-        { "model-tag": "model-456xyz", modelUUID: "456xyz" },
+        {
+          "model-tag": "model-123abc",
+          modelUUID: "123abc",
+          modelName: "model123",
+        },
+        {
+          "model-tag": "model-456xyz",
+          modelUUID: "456xyz",
+          modelName: "model456",
+        },
       ],
     });
     await middleware(next)(action);
@@ -1157,16 +1189,32 @@ describe("model poller", () => {
     const action = jujuActions.destroyModels({
       wsControllerURL: "wss://example.com",
       models: [
-        { "model-tag": "model-123abc", modelUUID: "123abc" },
-        { "model-tag": "model-456xyz", modelUUID: "456xyz" },
+        {
+          "model-tag": "model-123abc",
+          modelUUID: "123abc",
+          modelName: "model123",
+        },
+        {
+          "model-tag": "model-456xyz",
+          modelUUID: "456xyz",
+          modelName: "model456",
+        },
       ],
     });
     middleware(next)(action);
     await waitFor(() => {
       expect(conn.facades.modelManager.destroyModels).toHaveBeenCalledWith({
         models: [
-          { "model-tag": "model-123abc", modelUUID: "123abc" },
-          { "model-tag": "model-456xyz", modelUUID: "456xyz" },
+          {
+            "model-tag": "model-123abc",
+            modelUUID: "123abc",
+            modelName: "model123",
+          },
+          {
+            "model-tag": "model-456xyz",
+            modelUUID: "456xyz",
+            modelName: "model456",
+          },
         ],
       });
       expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -1215,7 +1263,13 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
       wsControllerURL: "wss://example.com",
-      models: [{ "model-tag": "model-123abc", modelUUID: "123abc" }],
+      models: [
+        {
+          "model-tag": "model-123abc",
+          modelUUID: "123abc",
+          modelName: "model123",
+        },
+      ],
     });
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(

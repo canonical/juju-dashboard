@@ -1,4 +1,5 @@
 import { screen, waitFor, within } from "@testing-library/react";
+import type { JSX } from "react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
 import { actions as jujuActions } from "store/juju";
@@ -8,7 +9,7 @@ import { configFactory, generalStateFactory } from "testing/factories/general";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { createStore, renderComponent } from "testing/utils";
 
-import ModelDestructionToaster from "./ModelDestructionToaster";
+import useModelDestructionToaster from "./useModelDestructionToaster";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -18,13 +19,13 @@ vi.mock("react-router", async () => {
   };
 });
 
-describe("ModelDestructionToaster", () => {
+const TestComponent = (): JSX.Element => {
+  useModelDestructionToaster();
+  return <div>Model</div>;
+};
+
+describe("useModelDestructionToaster", () => {
   let state: RootState;
-  const baseStatus = {
-    loading: false,
-    loaded: false,
-    errors: null,
-  };
 
   beforeEach(() => {
     state = rootStateFactory.build({
@@ -43,6 +44,7 @@ describe("ModelDestructionToaster", () => {
         },
         destroyModel: {
           xyz456: {
+            modelName: "enterprise",
             errors: null,
             loaded: false,
             loading: false,
@@ -57,14 +59,21 @@ describe("ModelDestructionToaster", () => {
   });
 
   it("shows an info toast when destruction is loading", async () => {
-    const destructionStatus = { ...baseStatus, loading: true };
-    renderComponent(
-      <ModelDestructionToaster
-        modelUUID="xyz456"
-        destructionStatus={destructionStatus}
-      />,
-      { state },
-    );
+    state = {
+      ...state,
+      juju: {
+        ...state.juju,
+        destroyModel: {
+          xyz456: {
+            modelName: "enterprise",
+            errors: null,
+            loaded: false,
+            loading: true,
+          },
+        },
+      },
+    };
+    renderComponent(<TestComponent />, { state });
 
     const card = await screen.findByTestId("toast-card");
     expect(card).toHaveAttribute("data-type", "info");
@@ -74,18 +83,22 @@ describe("ModelDestructionToaster", () => {
   });
 
   it("shows a negative toast and dispatches clear action on failure", async () => {
-    const [store, actions] = createStore(state, { trackActions: true });
-    const destructionStatus = {
-      ...baseStatus,
-      errors: "Permission denied",
+    state = {
+      ...state,
+      juju: {
+        ...state.juju,
+        destroyModel: {
+          xyz456: {
+            modelName: "enterprise",
+            errors: "Permission denied",
+            loaded: false,
+            loading: false,
+          },
+        },
+      },
     };
-    renderComponent(
-      <ModelDestructionToaster
-        modelUUID="xyz456"
-        destructionStatus={destructionStatus}
-      />,
-      { state, store },
-    );
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<TestComponent />, { state, store });
 
     const clearAction = jujuActions.clearDestroyedModel({
       modelUUID: "xyz456",
@@ -106,18 +119,28 @@ describe("ModelDestructionToaster", () => {
   });
 
   it("shows a positive toast and dispatches clear action on success", async () => {
-    const [store, actions] = createStore(state, { trackActions: true });
-    const destructionStatus = {
-      ...baseStatus,
-      loaded: true,
+    state = {
+      ...state,
+      juju: jujuStateFactory.build({
+        models: {
+          xyz456: modelListInfoFactory.build({
+            uuid: "xyz456",
+            name: "enterprise",
+            ownerTag: "user-kirk@external",
+          }),
+        },
+        destroyModel: {
+          abc123: {
+            modelName: "enterprise",
+            errors: null,
+            loaded: true,
+            loading: false,
+          },
+        },
+      }),
     };
-    renderComponent(
-      <ModelDestructionToaster
-        modelUUID="abc123"
-        destructionStatus={destructionStatus}
-      />,
-      { state, store },
-    );
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<TestComponent />, { state, store });
 
     const clearAction = jujuActions.clearDestroyedModel({
       modelUUID: "abc123",
@@ -127,7 +150,9 @@ describe("ModelDestructionToaster", () => {
     const card = await screen.findByTestId("toast-card");
     expect(card).toHaveAttribute("data-type", "positive");
     expect(
-      await within(card).findByText("Model destroyed successfully"),
+      await within(card).findByText(
+        'Model "enterprise" destroyed successfully',
+      ),
     ).toBeInTheDocument();
 
     await waitFor(() => {
@@ -138,17 +163,21 @@ describe("ModelDestructionToaster", () => {
   });
 
   it("takes no action when loaded=true but model is still present", () => {
-    const destructionStatus = {
-      ...baseStatus,
-      loaded: true,
+    state = {
+      ...state,
+      juju: {
+        ...state.juju,
+        destroyModel: {
+          xyz456: {
+            modelName: "enterprise",
+            errors: null,
+            loaded: true,
+            loading: false,
+          },
+        },
+      },
     };
-    renderComponent(
-      <ModelDestructionToaster
-        modelUUID="xyz456"
-        destructionStatus={destructionStatus}
-      />,
-      { state },
-    );
+    renderComponent(<TestComponent />, { state });
 
     expect(screen.queryByTestId("toast-card")).toBeNull();
   });
