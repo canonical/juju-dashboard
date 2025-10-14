@@ -145,6 +145,7 @@ export default function DestroyModelDialog({
             "model-tag": `model-${modelUUID}`,
             ...(hasStorage ? { "destroy-storage": destroyStorage } : {}),
             modelUUID,
+            modelName,
           },
         ],
         wsControllerURL,

@@ -8,10 +8,10 @@ import { useMemo } from "react";
 import type { JSX } from "react";
 
 import ModelActions from "components/ModelActions";
-import ModelDestructionToaster from "components/ModelDestructionToaster";
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
+import useModelDestructionToaster from "hooks/useModelDestructionToaster";
 import { getControllerData, getDestructionState } from "store/juju/selectors";
 import type { Controllers, DestroyState, ModelData } from "store/juju/types";
 import {
@@ -210,6 +210,7 @@ export default function ModelTable({
 }: Props): JSX.Element {
   const controllers = useAppSelector(getControllerData);
   const destructionState = useAppSelector(getDestructionState);
+  useModelDestructionToaster();
 
   const headerOptions = {
     showCloud: [GroupBy.STATUS, GroupBy.OWNER].includes(groupBy),
@@ -233,21 +234,12 @@ export default function ModelTable({
   );
 
   return (
-    <>
-      {Object.entries(destructionState).map(([modelUUID, status]) => (
-        <ModelDestructionToaster
-          key={modelUUID}
-          modelUUID={modelUUID}
-          destructionStatus={status}
-        />
-      ))}
-      <MainTable
-        headers={generateTableHeaders(groupLabel, models.length, headerOptions)}
-        className="p-main-table"
-        sortable
-        emptyStateMsg={emptyStateMessage}
-        rows={tableRows}
-      />
-    </>
+    <MainTable
+      headers={generateTableHeaders(groupLabel, models.length, headerOptions)}
+      className="p-main-table"
+      sortable
+      emptyStateMsg={emptyStateMessage}
+      rows={tableRows}
+    />
   );
 }

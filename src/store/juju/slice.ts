@@ -242,16 +242,20 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         {
-          models: ({ modelUUID: string } & DestroyModelParams)[];
+          models: ({
+            modelUUID: string;
+            modelName: string;
+          } & DestroyModelParams)[];
         } & WsControllerURLParam
       >,
     ) => {
       action.payload.models.forEach(
-        (model) =>
-          (state.destroyModel[model.modelUUID] = {
+        ({ modelUUID, modelName }) =>
+          (state.destroyModel[modelUUID] = {
             loading: false,
             errors: null,
             loaded: false,
+            modelName: modelName,
           }),
       );
     },
