@@ -51,9 +51,15 @@ export class AddModel implements Action<Model> {
   }
 
   async rollback(): Promise<void> {
-    await exec(
-      `juju destroy-model ${this.model.qualifiedName} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
-    );
+    try {
+      await exec(
+        `juju destroy-model ${this.model.qualifiedName} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
+      );
+    } catch (error) {
+      if (error !== `model ${this.model.qualifiedName} not found`) {
+        throw error;
+      }
+    }
   }
 
   result(): Model {
