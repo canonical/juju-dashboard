@@ -56,7 +56,11 @@ export class AddModel implements Action<Model> {
         `juju destroy-model ${this.model.qualifiedName} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
       );
     } catch (error) {
-      if (error !== `model ${this.model.qualifiedName} not found`) {
+      const errorMessage =
+        (error instanceof Error && error.message) || String(error);
+      const startsWithModel = errorMessage.includes("model ");
+      const endsWithNotFound = errorMessage.includes(" not found");
+      if (!startsWithModel || !endsWithNotFound) {
         throw error;
       }
     }

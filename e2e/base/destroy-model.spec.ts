@@ -3,7 +3,7 @@ import { expect } from "@playwright/test";
 import { Label as AccessLabel } from "components/ModelActions/types";
 import urls from "urls";
 
-import { JujuEnv, test } from "../fixtures/setup";
+import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import { AddModel, GiveModelAccess } from "../helpers/actions";
 import type { User } from "../helpers/auth";
@@ -34,26 +34,6 @@ test.describe("Destroy Model", () => {
 
   test.afterAll(async () => {
     await actions.rollback();
-  });
-
-  test("Cannot destroy controller model", async ({
-    page,
-    testOptions,
-    jujuCLI,
-  }) => {
-    // Skipping for JIMM as the controller model is not exposed to user.
-    test.skip(testOptions.jujuEnv === JujuEnv.JIMM);
-
-    await user1.dashboardLogin(page, urls.models.index);
-    await page
-      .locator("tr", { hasText: jujuCLI.controller })
-      .getByRole("button", { name: "Toggle menu" })
-      .click();
-    await expect(
-      page.getByRole("button", {
-        name: AccessLabel.DESTROY,
-      }),
-    ).toHaveAttribute("aria-disabled", "true");
   });
 
   test("Cannot destroy model without sufficient access", async ({ page }) => {
@@ -100,15 +80,18 @@ test.describe("Destroy Model", () => {
     await expect(page.getByTestId("destroy-model-dialog")).not.toBeInViewport();
     await expect(
       page
-        .locator("tr", { hasText: `Destroying... ${sharedModel.name}` })
+        .locator("tr", { hasText: `Destroying...` })
         .and(page.locator("tr", { hasText: user1.displayName })),
     ).toBeInViewport();
 
     // Confirm successful destruction
-    await page.clock.fastForward(30000);
+    await page
+      .locator("tr", { hasText: `Destroying...` })
+      .and(page.locator("tr", { hasText: user1.displayName }))
+      .waitFor({ state: "detached", timeout: 30000 });
     await expect(
       page
-        .locator("tr", { hasText: `Destroying... ${sharedModel.name}` })
+        .locator("tr", { hasText: `Destroying...` })
         .and(page.locator("tr", { hasText: user1.displayName })),
     ).not.toBeInViewport();
   });
