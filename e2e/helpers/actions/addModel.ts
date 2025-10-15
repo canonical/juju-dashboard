@@ -51,18 +51,17 @@ export class AddModel implements Action<Model> {
   }
 
   async rollback(): Promise<void> {
+    let modelExists = true;
     try {
+      await exec(`juju show-model ${this.model.qualifiedName}`);
+    } catch (error) {
+      modelExists = false;
+    }
+
+    if (modelExists) {
       await exec(
         `juju destroy-model ${this.model.qualifiedName} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
       );
-    } catch (error) {
-      const errorMessage =
-        (error instanceof Error && error.message) || String(error);
-      const startsWithModel = errorMessage.includes("model ");
-      const endsWithNotFound = errorMessage.includes(" not found");
-      if (!startsWithModel || !endsWithNotFound) {
-        throw error;
-      }
     }
   }
 

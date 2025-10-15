@@ -11,10 +11,9 @@ import { ModelPermission, type Model } from "../helpers/objects";
 
 test.describe("Destroy Model", () => {
   let actions: ActionStack;
-  let user1: User;
-  let user2: User;
-  let user1Model: Model;
-  let sharedModel: Model;
+  let user: User;
+  let nonAdminUser: User;
+  let model: Model;
 
   test.beforeAll(async ({ jujuCLI }) => {
     // Give the beforeAll enough time to create the models:
@@ -22,13 +21,10 @@ test.describe("Destroy Model", () => {
     actions = new ActionStack(jujuCLI);
 
     await actions.prepare((add) => {
-      user1 = add(jujuCLI.createUser(true));
-      user2 = add(jujuCLI.createUser(true));
-
-      user1Model = add(new AddModel(jujuCLI, user1, true));
-      sharedModel = add(new AddModel(jujuCLI, user1, true));
-
-      add(new GiveModelAccess(sharedModel, user2, ModelPermission.READ));
+      user = add(jujuCLI.createUser());
+      model = add(new AddModel(jujuCLI, user));
+      nonAdminUser = add(jujuCLI.createUser());
+      add(new GiveModelAccess(model, nonAdminUser, ModelPermission.READ));
     });
   });
 
@@ -37,9 +33,9 @@ test.describe("Destroy Model", () => {
   });
 
   test("Cannot destroy model without sufficient access", async ({ page }) => {
-    await user2.dashboardLogin(page, urls.models.index);
+    await nonAdminUser.dashboardLogin(page, urls.models.index);
     await page
-      .locator("tr", { hasText: sharedModel.name })
+      .locator("tr", { hasText: model.name })
       .getByRole("button", { name: "Toggle menu" })
       .click();
     await expect(
@@ -52,11 +48,11 @@ test.describe("Destroy Model", () => {
   test("Can destroy model with sufficient level of access", async ({
     page,
   }) => {
-    await user1.dashboardLogin(page, urls.models.index);
+    await user.dashboardLogin(page, urls.models.index);
 
     // Open the destroy model dialog
     await page
-      .locator("tr", { hasText: user1Model.name })
+      .locator("tr", { hasText: model.name })
       .getByRole("button", { name: "Toggle menu" })
       .click();
     await page
@@ -68,7 +64,7 @@ test.describe("Destroy Model", () => {
     // Confirm destroy
     await expect(page.getByTestId("destroy-model-dialog")).toBeInViewport();
     await expect(
-      page.getByText(`Destroy model ${user1Model.name}`),
+      page.getByText(`Destroy model ${model.name}`),
     ).toBeInViewport();
     await page
       .getByRole("button", {
@@ -79,20 +75,33 @@ test.describe("Destroy Model", () => {
     // Destruction in progress
     await expect(page.getByTestId("destroy-model-dialog")).not.toBeInViewport();
     await expect(
-      page
-        .locator("tr", { hasText: `Destroying...` })
-        .and(page.locator("tr", { hasText: user1.displayName })),
+      page.locator("tr", { hasText: `Destroying...` }),
     ).toBeInViewport();
 
     // Confirm successful destruction
-    await page
-      .locator("tr", { hasText: `Destroying...` })
-      .and(page.locator("tr", { hasText: user1.displayName }))
-      .waitFor({ state: "detached", timeout: 30000 });
+    // This check is retried as sometimes the destruction takes longer
+    let retry = 3;
+    while (retry-- > 0) {
+      try {
+        // Reloading the page before checking refetches the list of models
+        // which should be updated and we won't have to wait until the next poll
+        await user.reloadDashboard(page);
+        await page
+          .locator("tr", { hasText: model.name })
+          .and(page.locator("tr", { hasText: user.displayName }))
+          .waitFor({ state: "detached", timeout: 30000 });
+        break;
+      } catch (error) {
+        if (retry === 0) {
+          throw error;
+        }
+      }
+    }
+
     await expect(
       page
-        .locator("tr", { hasText: `Destroying...` })
-        .and(page.locator("tr", { hasText: user1.displayName })),
+        .locator("tr", { hasText: model.name })
+        .and(page.locator("tr", { hasText: user.displayName })),
     ).not.toBeInViewport();
   });
 });
