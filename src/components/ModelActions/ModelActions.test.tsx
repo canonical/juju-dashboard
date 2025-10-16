@@ -48,6 +48,7 @@ describe("ModelActions", () => {
         modelData: {
           abc123: modelDataFactory.build({
             info: modelDataInfoFactory.build({
+              "is-controller": false,
               uuid: "abc123",
               name: "test1",
               "controller-uuid": "controller123",
@@ -130,7 +131,21 @@ describe("ModelActions", () => {
   });
 
   it("disables the option to destroy a model if the user does not have permission", async () => {
-    renderComponent(<ModelActions modelUUID="abc123" modelName="test-model" />);
+    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+      "is-controller": false,
+      uuid: "abc123",
+      name: "test1",
+      "controller-uuid": "controller123",
+      users: [
+        modelUserInfoFactory.build({
+          user: "eggman@external",
+          access: "read",
+        }),
+      ],
+    });
+    renderComponent(<ModelActions modelUUID="abc123" modelName="test1" />, {
+      state,
+    });
 
     await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
     expect(screen.getByRole("button", { name: Label.DESTROY })).toHaveAttribute(

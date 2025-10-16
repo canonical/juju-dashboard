@@ -70,7 +70,7 @@ const ModelActions: FC<Props> = ({ modelName, modelUUID }: Props) => {
           },
           {
             children: Label.DESTROY,
-            disabled: isController ?? !canConfigureModel,
+            disabled: isController || !canConfigureModel,
             onClick: (event: React.MouseEvent<HTMLButtonElement>): void => {
               event.stopPropagation();
               openPortal(event);

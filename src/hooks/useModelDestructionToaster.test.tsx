@@ -59,19 +59,11 @@ describe("useModelDestructionToaster", () => {
   });
 
   it("shows an info toast when destruction is loading", async () => {
-    state = {
-      ...state,
-      juju: {
-        ...state.juju,
-        destroyModel: {
-          xyz456: {
-            modelName: "enterprise",
-            errors: null,
-            loaded: false,
-            loading: true,
-          },
-        },
-      },
+    state.juju.destroyModel.xyz456 = {
+      modelName: "enterprise",
+      errors: null,
+      loaded: false,
+      loading: true,
     };
     renderComponent(<TestComponent />, { state });
 
@@ -83,19 +75,11 @@ describe("useModelDestructionToaster", () => {
   });
 
   it("shows a negative toast and dispatches clear action on failure", async () => {
-    state = {
-      ...state,
-      juju: {
-        ...state.juju,
-        destroyModel: {
-          xyz456: {
-            modelName: "enterprise",
-            errors: "Permission denied",
-            loaded: false,
-            loading: false,
-          },
-        },
-      },
+    state.juju.destroyModel.xyz456 = {
+      modelName: "enterprise",
+      errors: "Permission denied",
+      loaded: false,
+      loading: false,
     };
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(<TestComponent />, { state, store });
@@ -119,26 +103,23 @@ describe("useModelDestructionToaster", () => {
   });
 
   it("shows a positive toast and dispatches clear action on success", async () => {
-    state = {
-      ...state,
-      juju: jujuStateFactory.build({
-        models: {
-          xyz456: modelListInfoFactory.build({
-            uuid: "xyz456",
-            name: "enterprise",
-            ownerTag: "user-kirk@external",
-          }),
+    state.juju = jujuStateFactory.build({
+      models: {
+        xyz456: modelListInfoFactory.build({
+          uuid: "xyz456",
+          name: "enterprise",
+          ownerTag: "user-kirk@external",
+        }),
+      },
+      destroyModel: {
+        abc123: {
+          modelName: "enterprise",
+          errors: null,
+          loaded: true,
+          loading: false,
         },
-        destroyModel: {
-          abc123: {
-            modelName: "enterprise",
-            errors: null,
-            loaded: true,
-            loading: false,
-          },
-        },
-      }),
-    };
+      },
+    });
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(<TestComponent />, { state, store });
 
@@ -163,19 +144,11 @@ describe("useModelDestructionToaster", () => {
   });
 
   it("takes no action when loaded=true but model is still present", () => {
-    state = {
-      ...state,
-      juju: {
-        ...state.juju,
-        destroyModel: {
-          xyz456: {
-            modelName: "enterprise",
-            errors: null,
-            loaded: true,
-            loading: false,
-          },
-        },
-      },
+    state.juju.destroyModel.xyz456 = {
+      modelName: "enterprise",
+      errors: null,
+      loaded: true,
+      loading: false,
     };
     renderComponent(<TestComponent />, { state });
 
