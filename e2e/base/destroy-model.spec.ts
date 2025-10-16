@@ -22,8 +22,8 @@ test.describe("Destroy Model", () => {
 
     await actions.prepare((add) => {
       user = add(jujuCLI.createUser());
-      model = add(new AddModel(jujuCLI, user));
       nonAdminUser = add(jujuCLI.createUser());
+      model = add(new AddModel(jujuCLI, user));
       add(new GiveModelAccess(model, nonAdminUser, ModelPermission.READ));
     });
   });
@@ -75,7 +75,7 @@ test.describe("Destroy Model", () => {
     // Destruction in progress
     await expect(page.getByTestId("destroy-model-dialog")).not.toBeInViewport();
     await expect(
-      page.locator("tr", { hasText: `Destroying...` }),
+      page.locator("tr", { hasText: "Destroying..." }),
     ).toBeInViewport();
 
     // Confirm successful destruction

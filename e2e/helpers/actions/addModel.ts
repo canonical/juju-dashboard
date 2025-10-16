@@ -1,5 +1,5 @@
 import { JujuEnv } from "../../fixtures/setup";
-import { exec, generateRandomName } from "../../utils";
+import { exec, execIfModelExists, generateRandomName } from "../../utils";
 import type { Action } from "../action";
 import type { User } from "../auth";
 import type { JujuCLI } from "../juju-cli";
@@ -51,18 +51,11 @@ export class AddModel implements Action<Model> {
   }
 
   async rollback(): Promise<void> {
-    let modelExists = true;
-    try {
-      await exec(`juju show-model ${this.model.qualifiedName}`);
-    } catch (error) {
-      modelExists = false;
-    }
-
-    if (modelExists) {
-      await exec(
-        `juju destroy-model ${this.model.qualifiedName} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
-      );
-    }
+    const modelName = this.model.qualifiedName;
+    await execIfModelExists(
+      `juju destroy-model ${modelName} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
+      modelName,
+    );
   }
 
   result(): Model {

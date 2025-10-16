@@ -1,5 +1,5 @@
 import { JujuEnv } from "../../../fixtures/setup";
-import { exec } from "../../../utils";
+import { exec, execIfModelExists } from "../../../utils";
 import type { Action } from "../../action";
 import type { User } from "../../auth";
 import type { JujuCLI } from "../../juju-cli";
@@ -24,14 +24,18 @@ export class GiveAccess<Entity extends Controller | Model>
     jujuCLI: JujuCLI,
     jujuCommand: string,
     jimmCommand: string,
+    isRollback?: boolean,
   ): Promise<void> {
     if (jujuCLI.jujuEnv == JujuEnv.JUJU) {
       const entityName =
         this.tag === "controller" ? "" : `'${this.entityName}'`;
       await jujuCLI.loginLocalCLIAdmin();
-      await exec(
-        `juju ${jujuCommand} '${this.user.cliUsername}' '${this.access}' '${entityName}'`,
-      );
+      const command = `juju ${jujuCommand} '${this.user.cliUsername}' '${this.access}' '${entityName}'`;
+      if (isRollback && this.tag === "model") {
+        await execIfModelExists(command, entityName);
+      } else {
+        await exec(command);
+      }
     } else {
       await jujuCLI.loginIdentityCLIAdmin();
       await exec(
@@ -49,7 +53,7 @@ export class GiveAccess<Entity extends Controller | Model>
   }
 
   async rollback(jujuCLI: JujuCLI): Promise<void> {
-    await this.action(jujuCLI, "revoke", "remove-permission");
+    await this.action(jujuCLI, "revoke", "remove-permission", true);
   }
 
   result(): void {}
