@@ -11,6 +11,7 @@ import PrimaryNav from "components/PrimaryNav";
 import { DARK_THEME } from "consts";
 import useAnalytics from "hooks/useAnalytics";
 import useFeatureFlags from "hooks/useFeatureFlags";
+import useModelDestructionToaster from "hooks/useModelDestructionToaster";
 import useOffline from "hooks/useOffline";
 import type { StatusView } from "layout/Status";
 import Status from "layout/Status";
@@ -36,6 +37,8 @@ const BaseLayout: FC = () => {
       path: window.location.href.replace(window.location.origin, ""),
     });
   }, [location, sendAnalytics]);
+
+  useModelDestructionToaster();
 
   return (
     <>
