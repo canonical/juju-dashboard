@@ -11,7 +11,6 @@ import ModelActions from "components/ModelActions";
 import ModelDetailsLink from "components/ModelDetailsLink";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import useModelDestructionToaster from "hooks/useModelDestructionToaster";
 import { getControllerData, getDestructionState } from "store/juju/selectors";
 import type { Controllers, DestroyState, ModelData } from "store/juju/types";
 import {
@@ -210,7 +209,6 @@ export default function ModelTable({
 }: Props): JSX.Element {
   const controllers = useAppSelector(getControllerData);
   const destructionState = useAppSelector(getDestructionState);
-  useModelDestructionToaster();
 
   const headerOptions = {
     showCloud: [GroupBy.STATUS, GroupBy.OWNER].includes(groupBy),
