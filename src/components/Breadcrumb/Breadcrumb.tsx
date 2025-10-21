@@ -1,7 +1,10 @@
 import type { JSX, ReactNode } from "react";
 import { Link } from "react-router";
 
+import ModelActions from "components/ModelActions";
 import { useEntityDetailsParams } from "components/hooks";
+import { getModelUUIDFromList } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 import urls from "urls";
 import { ModelTab } from "urls";
 
@@ -14,6 +17,9 @@ export default function Breadcrumb(): JSX.Element {
     machineId,
     isNestedEntityPage,
   } = useEntityDetailsParams();
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
 
   const generateBreadcrumbs = function (): ReactNode {
     const view = machineId ? ModelTab.MACHINES : ModelTab.APPS;
@@ -114,10 +120,16 @@ export default function Breadcrumb(): JSX.Element {
       >
         <Link
           to={urls.model.index({ userName, modelName })}
-          className="p-link--soft"
+          className="p-link--soft p-breadcrumbs__model-name"
         >
           <strong>{modelName}</strong>
         </Link>
+        <ModelActions
+          modelUUID={modelUUID}
+          modelName={modelName}
+          redirectOnDestroy
+          position="left"
+        />
       </li>
     );
   };

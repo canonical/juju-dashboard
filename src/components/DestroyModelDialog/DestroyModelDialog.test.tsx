@@ -15,8 +15,10 @@ import {
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { createStore, renderComponent } from "testing/utils";
+import urls from "urls";
 
 import DestroyModelDialog from "./DestroyModelDialog";
+import { Label } from "./types";
 
 describe("DestroyModelDialog", () => {
   let state: RootState;
@@ -154,7 +156,7 @@ describe("DestroyModelDialog", () => {
       ),
     ).toBeInTheDocument();
     expect(
-      within(destroyModelDialog).getByRole("button", { name: "Destroy model" }),
+      within(destroyModelDialog).getByRole("button", { name: Label.DESTROY }),
     ).toBeDisabled();
   });
 
@@ -186,9 +188,7 @@ describe("DestroyModelDialog", () => {
     // to allow testing the callback for "Destroy"
     await userEvent.click(screen.getByLabelText("Detach storage"));
     await userEvent.click(screen.getByLabelText("Destroy storage"));
-    await userEvent.click(
-      screen.getByRole("button", { name: "Destroy model" }),
-    );
+    await userEvent.click(screen.getByRole("button", { name: Label.DESTROY }));
 
     await waitFor(() => {
       expect(
@@ -223,9 +223,7 @@ describe("DestroyModelDialog", () => {
     });
 
     await userEvent.click(screen.getByLabelText("Detach storage"));
-    await userEvent.click(
-      screen.getByRole("button", { name: "Destroy model" }),
-    );
+    await userEvent.click(screen.getByRole("button", { name: Label.DESTROY }));
 
     await waitFor(() => {
       expect(
@@ -233,5 +231,26 @@ describe("DestroyModelDialog", () => {
       ).toMatchObject(destroyModelsAction);
     });
     expect(mockClosePortal).toHaveBeenCalledTimes(1);
+  });
+
+  it("can redirect after destroying", async () => {
+    const { router } = renderComponent(
+      <DestroyModelDialog
+        closePortal={vi.fn()}
+        modelName="model123"
+        modelUUID="abc123"
+        redirectOnDestroy
+      />,
+      {
+        state,
+        path: urls.model.index(null),
+        url: urls.model.index({
+          userName: "user@external",
+          modelName: "test-model",
+        }),
+      },
+    );
+    await userEvent.click(screen.getByRole("button", { name: Label.DESTROY }));
+    expect(router.state.location.pathname).toBe(urls.models.index);
   });
 });

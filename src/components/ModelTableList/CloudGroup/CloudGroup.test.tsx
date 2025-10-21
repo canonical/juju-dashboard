@@ -1,5 +1,6 @@
 import { screen, within } from "@testing-library/react";
 
+import { ModelActionsLabel } from "components/ModelActions";
 import type { RootState } from "store/store";
 import {
   configFactory,
@@ -122,7 +123,9 @@ describe("CloudGroup", () => {
     renderComponent(<CloudGroup filters={filters} />, { state });
     const [_header, firstContentRow] = screen.getAllByRole("row");
     expect(
-      within(firstContentRow).getByRole("button", { name: "Toggle menu" }),
+      within(firstContentRow).getByRole("button", {
+        name: ModelActionsLabel.TOGGLE,
+      }),
     ).toBeInTheDocument();
     expect(within(firstContentRow).getAllByRole("gridcell")[7]).toHaveClass(
       "lrg-screen-access-cell",

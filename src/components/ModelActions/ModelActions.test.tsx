@@ -69,7 +69,7 @@ describe("ModelActions", () => {
   it("displays the actions menu", () => {
     renderComponent(<ModelActions modelUUID="abc123" modelName="test-model" />);
     expect(
-      screen.getByRole("button", { name: "Toggle menu" }),
+      screen.getByRole("button", { name: Label.TOGGLE }),
     ).toBeInTheDocument();
   });
 
@@ -78,7 +78,7 @@ describe("ModelActions", () => {
       state,
     });
 
-    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
     expect(
       screen.queryByRole("button", { name: Label.ACCESS }),
     ).toBeInTheDocument();
@@ -90,7 +90,7 @@ describe("ModelActions", () => {
       { state },
     );
 
-    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
     await userEvent.click(screen.getByRole("button", { name: Label.ACCESS }));
     expect(router.state.location.search).toEqual(
       "?model=test1&panel=share-model",
@@ -100,7 +100,7 @@ describe("ModelActions", () => {
   it("disables the option to manage access if the user does not have permission", async () => {
     renderComponent(<ModelActions modelUUID="abc123" modelName="test-model" />);
 
-    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
     expect(screen.getByRole("link", { name: Label.ACCESS })).toHaveAttribute(
       "aria-disabled",
       "true",
@@ -112,7 +112,7 @@ describe("ModelActions", () => {
       state,
     });
 
-    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
     expect(
       screen.queryByRole("button", { name: Label.DESTROY }),
     ).toBeInTheDocument();
@@ -123,7 +123,7 @@ describe("ModelActions", () => {
       state,
     });
 
-    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
     await userEvent.click(screen.getByRole("button", { name: Label.DESTROY }));
     expect(
       screen.getByRole("dialog", { name: "Destroy model test1" }),
@@ -147,7 +147,7 @@ describe("ModelActions", () => {
       state,
     });
 
-    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
     expect(screen.getByRole("button", { name: Label.DESTROY })).toHaveAttribute(
       "aria-disabled",
       "true",
@@ -201,7 +201,7 @@ describe("ModelActions", () => {
       { state: controllerModelState },
     );
 
-    await userEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
     expect(screen.getByRole("button", { name: Label.DESTROY })).toHaveAttribute(
       "aria-disabled",
       "true",
