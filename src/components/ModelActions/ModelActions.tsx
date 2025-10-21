@@ -1,4 +1,4 @@
-import { ContextualMenu, usePortal } from "@canonical/react-components";
+import { ContextualMenu, Icon, usePortal } from "@canonical/react-components";
 import type { FC } from "react";
 import { Link } from "react-router";
 
@@ -10,9 +10,14 @@ import { getIsJuju } from "store/general/selectors";
 import { useAppSelector } from "store/store";
 import { rebacURLS } from "urls";
 
-import { Label, type Props } from "./types";
+import { Label, TestId, type Props } from "./types";
 
-const ModelActions: FC<Props> = ({ modelName, modelUUID }: Props) => {
+const ModelActions: FC<Props> = ({
+  modelName,
+  modelUUID,
+  redirectOnDestroy,
+  position,
+}: Props) => {
   const [_panelQs, setPanelQs] = useQueryParams<{
     model: null | string;
     panel: null | string;
@@ -39,13 +44,24 @@ const ModelActions: FC<Props> = ({ modelName, modelUUID }: Props) => {
             modelName={modelName}
             modelUUID={modelUUID}
             closePortal={closePortal}
+            redirectOnDestroy={redirectOnDestroy}
           />
         </Portal>
       )}
       <ContextualMenu
-        hasToggleIcon
+        data-testid={TestId.MENU}
         toggleAppearance="base"
-        toggleClassName="has-icon u-no-margin--bottom"
+        toggleClassName="u-no-margin--bottom"
+        toggleLabel={
+          <Icon
+            name="contextual-menu"
+            className="p-contextual-menu__indicator"
+          />
+        }
+        toggleProps={{
+          hasIcon: true,
+          "aria-label": Label.TOGGLE,
+        }}
         links={[
           {
             children: Label.ACCESS,
@@ -77,6 +93,7 @@ const ModelActions: FC<Props> = ({ modelName, modelUUID }: Props) => {
             },
           },
         ]}
+        position={position}
       />
     </>
   );

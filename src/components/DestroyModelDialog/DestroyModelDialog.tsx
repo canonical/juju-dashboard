@@ -10,14 +10,18 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import { useState, useMemo } from "react";
 import type { JSX } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 import useModelDestructionData from "hooks/useModelDestructionData";
 import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { useAppSelector } from "store/store";
+import urls from "urls";
+
+import { Label } from "./types";
 
 // Helper to render the Applications
-const ApplicationsRow = (applications: string[]): MainTableRow | null => {
+const applicationsRow = (applications: string[]): MainTableRow | null => {
   if (!applications.length) {
     return null;
   }
@@ -39,7 +43,7 @@ const ApplicationsRow = (applications: string[]): MainTableRow | null => {
 };
 
 // Helper to render the Cross-Model Relations
-const CrossModelRelationsRow = (
+const crossModelRelationsRow = (
   crossModelRelations: {
     name: string;
     endpoints: RemoteEndpoint[];
@@ -80,7 +84,7 @@ const CrossModelRelationsRow = (
 };
 
 // Helper to render the Machines
-const MachinesRow = (machines: string[]): MainTableRow | null => {
+const machinesRow = (machines: string[]): MainTableRow | null => {
   if (!machines.length) {
     return null;
   }
@@ -105,11 +109,13 @@ type Props = {
   modelName: string;
   modelUUID: string;
   closePortal: () => void;
+  redirectOnDestroy?: boolean;
 };
 
 export default function DestroyModelDialog({
   modelName,
   modelUUID,
+  redirectOnDestroy,
   closePortal,
 }: Props): JSX.Element {
   const {
@@ -121,16 +127,16 @@ export default function DestroyModelDialog({
     showInfoTable,
     storageIDs,
   } = useModelDestructionData(modelUUID);
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
   const [destroyStorage, setDestroyStorage] = useState<boolean>(true);
 
   const infoTableRows = useMemo(() => {
     return [
-      ApplicationsRow(applications),
-      CrossModelRelationsRow(crossModelRelations),
-      MachinesRow(machines),
+      applicationsRow(applications),
+      crossModelRelationsRow(crossModelRelations),
+      machinesRow(machines),
     ].filter((row): row is Exclude<typeof row, null> => row !== null);
   }, [applications, crossModelRelations, machines]);
 
@@ -152,6 +158,9 @@ export default function DestroyModelDialog({
       }),
     );
     closePortal();
+    if (redirectOnDestroy) {
+      void navigate(urls.models.index);
+    }
   };
 
   return (
@@ -163,7 +172,7 @@ export default function DestroyModelDialog({
       }
       data-testid="destroy-model-dialog"
       className="destroy-model-dialog"
-      confirmButtonLabel="Destroy model"
+      confirmButtonLabel={Label.DESTROY}
       confirmButtonDisabled={isConfirmDisabled}
       onConfirm={handleConfirm}
       close={closePortal}

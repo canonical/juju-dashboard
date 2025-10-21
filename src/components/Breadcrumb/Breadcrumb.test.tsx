@@ -1,10 +1,19 @@
 import { screen } from "@testing-library/react";
 
+import { ModelActionsTestId } from "components/ModelActions";
 import { renderComponent } from "testing/utils";
 
 import Breadcrumb from "./Breadcrumb";
 
 describe("Breadcrumb", () => {
+  it("displays model actions", () => {
+    renderComponent(<Breadcrumb />, {
+      path: "/models/:userName/:modelName",
+      url: "/models/eggman@external/group-test",
+    });
+    expect(screen.getByTestId(ModelActionsTestId.MENU)).toBeInTheDocument();
+  });
+
   it("displays correctly on model details", () => {
     renderComponent(<Breadcrumb />, {
       path: "/models/:userName/:modelName",
