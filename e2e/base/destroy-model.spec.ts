@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 
-import { Label as AccessLabel } from "components/ModelActions/types";
+import { Label as ModelActionsLabel } from "components/ModelActions/types";
 import urls from "urls";
 
 import { test } from "../fixtures/setup";
@@ -36,11 +36,11 @@ test.describe("Destroy Model", () => {
     await nonAdminUser.dashboardLogin(page, urls.models.index);
     await page
       .locator("tr", { hasText: model.name })
-      .getByRole("button", { name: "Toggle menu" })
+      .getByRole("button", { name: ModelActionsLabel.TOGGLE })
       .click();
     await expect(
       page.getByRole("button", {
-        name: AccessLabel.DESTROY,
+        name: ModelActionsLabel.DESTROY,
       }),
     ).toHaveAttribute("aria-disabled", "true");
   });
@@ -53,11 +53,11 @@ test.describe("Destroy Model", () => {
     // Open the destroy model dialog
     await page
       .locator("tr", { hasText: model.name })
-      .getByRole("button", { name: "Toggle menu" })
+      .getByRole("button", { name: ModelActionsLabel.TOGGLE })
       .click();
     await page
       .getByRole("button", {
-        name: AccessLabel.DESTROY,
+        name: ModelActionsLabel.DESTROY,
       })
       .click();
 
@@ -75,7 +75,7 @@ test.describe("Destroy Model", () => {
     // Destruction in progress
     await expect(page.getByTestId("destroy-model-dialog")).not.toBeInViewport();
     await expect(
-      page.locator("tr", { hasText: "Destroying..." }),
+      page.locator("tr", { hasText: "Destroying…" }),
     ).toBeInViewport();
 
     // Confirm successful destruction
