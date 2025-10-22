@@ -34,7 +34,7 @@ const ModelSummary: FC<Props> = ({ modelData, ownerTag }: Props) => {
           className="p-link--soft"
           aria-label={Label.APPS}
         >
-          <Icon name="applications" />
+          <Icon name="applications" className="u-no-margin--top" />
           <span>{applicationCount}</span>
         </ModelDetailsLink>
       </Tooltip>
@@ -43,7 +43,7 @@ const ModelSummary: FC<Props> = ({ modelData, ownerTag }: Props) => {
         position="top-center"
         className="u-flex--block u-has-icon"
       >
-        <Icon name="units" />
+        <Icon name="units" className="u-no-margin--top" />
         <span aria-label={Label.UNITS}>{unitCount}</span>
       </Tooltip>
       <Tooltip
@@ -58,7 +58,7 @@ const ModelSummary: FC<Props> = ({ modelData, ownerTag }: Props) => {
           className="p-link--soft"
           aria-label={Label.MACHINES}
         >
-          <Icon name="machines" />
+          <Icon name="machines" className="u-no-margin--top" />
           <span>{machineCount}</span>
         </ModelDetailsLink>
       </Tooltip>

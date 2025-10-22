@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 
+import { ModelActionsLabel } from "components/ModelActions";
 import { Label as AccessLabel } from "components/ModelActions/types";
 import { Label as ModelLabel } from "pages/EntityDetails/Model/types";
 import { Label as EntityDetailsLabel } from "pages/EntityDetails/types";
@@ -66,7 +67,7 @@ test.describe("Models", () => {
     await user2.dashboardLogin(page, urls.models.index);
     await page
       .locator("tr", { hasText: sharedModel.name })
-      .getByRole("button", { name: "Toggle menu" })
+      .getByRole("button", { name: ModelActionsLabel.TOGGLE })
       .click();
     await expect(
       // In JIMM, this element is rendered as a link.

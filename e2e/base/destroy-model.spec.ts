@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 
+import { ModelActionsLabel } from "components/ModelActions";
 import { Label as AccessLabel } from "components/ModelActions/types";
 import urls from "urls";
 
@@ -36,7 +37,7 @@ test.describe("Destroy Model", () => {
     await nonAdminUser.dashboardLogin(page, urls.models.index);
     await page
       .locator("tr", { hasText: model.name })
-      .getByRole("button", { name: "Toggle menu" })
+      .getByRole("button", { name: ModelActionsLabel.TOGGLE })
       .click();
     await expect(
       page.getByRole("button", {
@@ -53,7 +54,7 @@ test.describe("Destroy Model", () => {
     // Open the destroy model dialog
     await page
       .locator("tr", { hasText: model.name })
-      .getByRole("button", { name: "Toggle menu" })
+      .getByRole("button", { name: ModelActionsLabel.TOGGLE })
       .click();
     await page
       .getByRole("button", {
