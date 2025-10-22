@@ -51,7 +51,7 @@ const ModelActions: FC<Props> = ({
       <ContextualMenu
         data-testid={TestId.MENU}
         toggleAppearance="base"
-        toggleClassName="u-no-margin--bottom"
+        toggleClassName="u-no-margin--bottom is-dense"
         toggleLabel={
           <Icon
             name="contextual-menu"

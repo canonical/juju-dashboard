@@ -1,13 +1,16 @@
 .models .p-main-table {
-  .dying-model {
-    cursor: not-allowed;
-    opacity: 0.5;
-    pointer-events: none;
-  }
-
-  .model-name {
+  .model-name-column {
     display: flex;
-    white-space: pre;
+    overflow: hidden;
+
+    &__status {
+      flex-shrink: 0;
+    }
+
+    &__name {
+      flex-shrink: 1;
+      overflow: hidden;
+    }
   }
 
   caption {

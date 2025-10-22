@@ -71,23 +71,29 @@ function generateModelTableList(
       {
         "data-testid": TestId.COLUMN_NAME,
         content: (
-          <div className="model-name">
-            {isDying ? "Destroying... " : ""}
-            <TruncatedTooltip
-              message={model.model.name}
-              className={classNames({ "dying-model": isDying })}
-            >
-              <ModelDetailsLink
-                modelName={model.model.name}
-                ownerTag={model.info?.["owner-tag"]}
-              >
-                {model.model.name}
-              </ModelDetailsLink>
-            </TruncatedTooltip>
+          <>
+            <div className="model-name-column">
+              {isDying ? (
+                <span className="model-name-column__status u-truncate">
+                  Destroying&hellip;&nbsp;
+                </span>
+              ) : null}
+              <div className="model-name-column__name">
+                <TruncatedTooltip message={model.model.name}>
+                  <ModelDetailsLink
+                    className={classNames({ "u-text--muted": isDying })}
+                    modelName={model.model.name}
+                    ownerTag={model.info?.["owner-tag"]}
+                  >
+                    {model.model.name}
+                  </ModelDetailsLink>
+                </TruncatedTooltip>
+              </div>
+            </div>
             {groupBy === GroupBy.STATUS && groupLabel === "Blocked" ? (
               <WarningMessage model={model} />
             ) : null}
-          </div>
+          </>
         ),
       },
       {
