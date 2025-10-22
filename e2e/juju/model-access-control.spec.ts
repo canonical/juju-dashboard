@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 
-import { Label as AccessLabel } from "components/ModelActions/types";
+import { Label as ModelActionsLabel } from "components/ModelActions/types";
 import {
   Label as ShareModelLabel,
   TestId as ShareModelTestId,
@@ -38,8 +38,8 @@ test.describe("Model Access Control", () => {
   test("Can change model permissions", async ({ browser, page }) => {
     await user2.dashboardLogin(page, urls.models.index);
 
-    await page.getByRole("button", { name: "Toggle menu" }).click();
-    await page.getByRole("button", { name: AccessLabel.ACCESS }).click();
+    await page.getByRole("button", { name: ModelActionsLabel.TOGGLE }).click();
+    await page.getByRole("button", { name: ModelActionsLabel.ACCESS }).click();
 
     await expect(page.getByTestId(ShareModelTestId.PANEL)).toBeInViewport();
 

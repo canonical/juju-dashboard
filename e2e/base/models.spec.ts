@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 
-import { Label as AccessLabel } from "components/ModelActions/types";
+import { Label as ModelActionsLabel } from "components/ModelActions/types";
 import { Label as ModelLabel } from "pages/EntityDetails/Model/types";
 import { Label as EntityDetailsLabel } from "pages/EntityDetails/types";
 import urls from "urls";
@@ -66,12 +66,12 @@ test.describe("Models", () => {
     await user2.dashboardLogin(page, urls.models.index);
     await page
       .locator("tr", { hasText: sharedModel.name })
-      .getByRole("button", { name: "Toggle menu" })
+      .getByRole("button", { name: ModelActionsLabel.TOGGLE })
       .click();
     await expect(
       // In JIMM, this element is rendered as a link.
       page.getByRole(testOptions.jujuEnv === JujuEnv.JIMM ? "link" : "button", {
-        name: AccessLabel.ACCESS,
+        name: ModelActionsLabel.ACCESS,
       }),
     ).toHaveAttribute("aria-disabled", "true");
   });
