@@ -75,7 +75,7 @@ test.describe("Destroy Model", () => {
     // Destruction in progress
     await expect(page.getByTestId("destroy-model-dialog")).not.toBeInViewport();
     await expect(
-      page.locator("tr", { hasText: "Destroying..." }),
+      page.locator("tr", { hasText: "Destroying…" }),
     ).toBeInViewport();
 
     // Confirm successful destruction
