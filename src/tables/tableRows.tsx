@@ -32,6 +32,7 @@ import {
   extractRevisionNumber,
   extractRelationEndpoints,
 } from "store/juju/utils/models";
+import { testId } from "testing/utils";
 import urls from "urls";
 
 export type ModelParams = {
@@ -364,7 +365,7 @@ export function generateUnitRows(
               className="p-checkbox__input"
               name="selectedUnits"
               value={unitId}
-              data-testid={fieldID}
+              {...testId(fieldID)}
             />
             <span className="p-checkbox__label" id={ariaLabeledBy}>
               <span className="u-off-screen">Select unit {unitId}</span>

@@ -8,6 +8,7 @@ import { DEFAULT_AUDIT_LOG_FILTERS } from "components/AuditLogsTable/AuditLogsTa
 import Panel from "components/Panel";
 import { useQueryParams } from "hooks/useQueryParams";
 import { usePanelQueryParams } from "panels/hooks";
+import { testId } from "testing/utils";
 
 import Fields from "./Fields";
 import { Label, TestId, type FormFields } from "./types";
@@ -35,7 +36,7 @@ const AuditLogsFilterPanel = (): JSX.Element => {
   return (
     <>
       <Panel
-        data-testid={TestId.PANEL}
+        {...testId(TestId.PANEL)}
         drawer={
           <>
             <Button

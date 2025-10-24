@@ -20,6 +20,7 @@ import {
   getLoginLoading,
 } from "store/general/selectors";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import IdentityProviderForm from "./IdentityProviderForm";
 import OIDCForm from "./OIDCForm";
@@ -126,7 +127,7 @@ export default function LogIn(): JSX.Element {
   return (
     <>
       {!userIsLoggedIn && (
-        <div className="login" data-testid={TestId.LOGIN_FORM}>
+        <div className="login" {...testId(TestId.LOGIN_FORM)}>
           <FadeUpIn isActive={!userIsLoggedIn}>
             <div className="login__inner p-card--highlighted">
               <Logo className="login__logo" dark isJuju={isJuju} />

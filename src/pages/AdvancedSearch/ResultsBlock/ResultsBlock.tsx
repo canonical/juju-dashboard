@@ -10,6 +10,7 @@ import {
   getCrossModelQueryResults,
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import CodeSnippetBlock from "../CodeSnippetBlock/CodeSnippetBlock";
 
@@ -38,7 +39,7 @@ const ResultsBlock = (): JSX.Element | null => {
         <div className="u-sv3">
           <hr />
         </div>
-        <Spinner data-testid={TestId.LOADING} />
+        <Spinner {...testId(TestId.LOADING)} />
       </div>
     );
   }

@@ -31,6 +31,7 @@ import {
   machineTableHeaders,
 } from "tables/tableHeaders";
 import { generateMachineRows, generateUnitRows } from "tables/tableRows";
+import { testId } from "testing/utils";
 import type { AppTab } from "urls";
 import { ModelTab } from "urls";
 import urls from "urls";
@@ -115,7 +116,7 @@ export default function App(): JSX.Element {
                   aria-labelledby="select-all-units"
                   className="p-checkbox__input"
                   name="selectAll"
-                  data-testid={TestId.SELECT_ALL}
+                  {...testId(TestId.SELECT_ALL)}
                 />
                 <span
                   className="p-checkbox__label"
@@ -337,7 +338,7 @@ export default function App(): JSX.Element {
                         showActions();
                       }}
                       disabled={!enableActionButtonRow}
-                      data-testid={TestId.RUN_ACTION_BUTTON}
+                      {...testId(TestId.RUN_ACTION_BUTTON)}
                     >
                       <Icon name="run-action" />
                       <span>{Label.RUN_ACTION}</span>
@@ -350,7 +351,7 @@ export default function App(): JSX.Element {
                   appearance="base"
                   className="entity-details__action-button"
                   hasIcon={true}
-                  data-testid={TestId.SHOW_LOGS}
+                  {...testId(TestId.SHOW_LOGS)}
                   to={
                     userName && modelName
                       ? urls.model.tab({
@@ -386,7 +387,7 @@ export default function App(): JSX.Element {
                     )}
                     sortable
                     emptyStateMsg={Label.NO_UNITS}
-                    data-testid={TestId.UNITS_TABLE}
+                    {...testId(TestId.UNITS_TABLE)}
                   />
                 </FormikFormData>
               </Formik>
@@ -401,7 +402,7 @@ export default function App(): JSX.Element {
                 className="entity-details__machines p-main-table"
                 sortable
                 emptyStateMsg="There are no machines in this model"
-                data-testid={TestId.MACHINES_TABLE}
+                {...testId(TestId.MACHINES_TABLE)}
               />
             </>
           )}

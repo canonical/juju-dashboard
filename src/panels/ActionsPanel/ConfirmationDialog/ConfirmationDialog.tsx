@@ -6,6 +6,7 @@ import type { SetError } from "hooks/useInlineErrors";
 import { useExecuteActionOnUnits } from "juju/api-hooks";
 import type { ConfirmTypes } from "panels/types";
 import { ConfirmType } from "panels/types";
+import { testId } from "testing/utils";
 import { logger } from "utils/logger";
 
 import { InlineErrors, type ActionOptionValue } from "../types";
@@ -75,13 +76,13 @@ const ConfirmationDialog = ({
           }}
         >
           <h4 className="p-muted-heading u-no-margin--bottom">UNIT COUNT</h4>
-          <p data-testid="confirmation-modal-unit-count">
+          <p {...testId("confirmation-modal-unit-count")}>
             {selectedUnits.length}
           </p>
           <h4 className="p-muted-heading u-no-margin--bottom u-no-padding--top">
             UNIT NAME
           </h4>
-          <p data-testid="confirmation-modal-unit-names">{unitNames}</p>
+          <p {...testId("confirmation-modal-unit-names")}>{unitNames}</p>
         </ConfirmationModal>
       </Portal>
     );

@@ -23,6 +23,7 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import urls, { externalURLs } from "urls";
 
 import ModelTabs from "./Model/ModelTabs";
@@ -101,7 +102,7 @@ const EntityDetails: FC<Props> = ({ modelWatcherError }: Props) => {
 
   return (
     <MainContent
-      data-testid={TestId.COMPONENT}
+      {...testId(TestId.COMPONENT)}
       title={
         <>
           <Breadcrumb />

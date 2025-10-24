@@ -18,6 +18,7 @@ import {
   getSecretsErrors,
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import SecretsTable from "./SecretsTable";
 import { Label, TestId } from "./types";
@@ -80,7 +81,7 @@ const Secrets: FC = () => {
     );
   }
 
-  return <div data-testid={TestId.SECRETS_TAB}>{content}</div>;
+  return <div {...testId(TestId.SECRETS_TAB)}>{content}</div>;
 };
 
 export default Secrets;

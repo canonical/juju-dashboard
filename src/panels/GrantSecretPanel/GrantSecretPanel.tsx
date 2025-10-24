@@ -25,6 +25,7 @@ import {
   getModelApplications,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import { toErrorString } from "utils";
 
 import { Label, TestId } from "./types";
@@ -81,7 +82,7 @@ const GrantSecretPanel: FC = () => {
   return (
     <>
       <Panel
-        data-testid={TestId.PANEL}
+        {...testId(TestId.PANEL)}
         drawer={
           <>
             <Button onClick={handleRemovePanelQueryParams}>

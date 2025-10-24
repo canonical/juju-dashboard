@@ -34,6 +34,7 @@ import {
   generateOffersRows,
   generateRelationRows,
 } from "tables/tableRows";
+import { testId } from "testing/utils";
 import { externalURLs } from "urls";
 
 import ApplicationsTab from "./ApplicationsTab";
@@ -168,7 +169,7 @@ const Model: FC = () => {
           />
         )}
       </div>
-      <div className="entity-details__main" data-testid={TestId.MAIN}>
+      <div className="entity-details__main" {...testId(TestId.MAIN)}>
         {shouldShow("apps", query.activeView) && <ApplicationsTab />}
         {shouldShow("machines", query.activeView) &&
           (machinesTableRows.length > 0 ? (
@@ -179,7 +180,7 @@ const Model: FC = () => {
               sortable
             />
           ) : (
-            <span data-testid="no-machines-msg">
+            <span {...testId("no-machines-msg")}>
               There are no machines in this model -{" "}
               <a className="p-link--external" href={externalURLs.machine}>
                 learn more about machines
@@ -212,7 +213,7 @@ const Model: FC = () => {
             )}
             {consumedTableRows.length > 0 && (
               <MainTable
-                data-testid={TestId.CONSUMED}
+                {...testId(TestId.CONSUMED)}
                 headers={consumedTableHeaders}
                 rows={consumedTableRows}
                 className="p-main-table"
@@ -222,7 +223,7 @@ const Model: FC = () => {
             )}
             {offersTableRows.length > 0 && (
               <MainTable
-                data-testid={TestId.OFFERS}
+                {...testId(TestId.OFFERS)}
                 headers={offersTableHeaders}
                 rows={offersTableRows}
                 className="p-main-table"
@@ -234,7 +235,7 @@ const Model: FC = () => {
         ) : (
           <>
             {query.activeView === "integrations" && (
-              <span data-testid="no-integrations-msg">
+              <span {...testId("no-integrations-msg")}>
                 There are no integrations associated with this model -{" "}
                 <a
                   className="p-link--external"

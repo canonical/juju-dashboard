@@ -7,6 +7,7 @@ import useLocalStorage from "hooks/useLocalStorage";
 import bakery from "juju/bakery";
 import type { AuthCredential } from "store/general/types";
 import type { HistoryItem, CommandHistory } from "store/juju/types";
+import { testId } from "testing/utils";
 import { externalURLs } from "urls";
 import { getUserName } from "utils";
 
@@ -248,7 +249,7 @@ const WebCLI: FC<Props> = ({
   };
 
   return (
-    <div className="webcli is-dark" data-testid={TestId.COMPONENT}>
+    <div className="webcli is-dark" {...testId(TestId.COMPONENT)}>
       <WebCLIOutput
         content={output && modelUUID in output ? output[modelUUID] : []}
         showHelp={shouldShowHelp || hasInlineError()}

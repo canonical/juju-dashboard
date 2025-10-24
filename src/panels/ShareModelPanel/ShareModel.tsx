@@ -19,6 +19,7 @@ import {
   getUserDomainsInModel,
 } from "store/juju/selectors";
 import { useAppSelector, usePromiseDispatch } from "store/store";
+import { testId } from "testing/utils";
 import { getUserName } from "utils";
 
 import { Label, TestId } from "./types";
@@ -275,7 +276,7 @@ export default function ShareModel(): JSX.Element {
       // This attribute toggles between the cards and form on small screens
       data-mobile-show-add-user={showAddNewUser}
       panelClassName="share-model"
-      data-testid={TestId.PANEL}
+      {...testId(TestId.PANEL)}
       title={
         showAddNewUser ? (
           <Button

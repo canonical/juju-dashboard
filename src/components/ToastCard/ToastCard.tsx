@@ -2,6 +2,8 @@ import type { JSX, PropsWithChildren } from "react";
 import type { Renderable, Toast, ValueOrFunction } from "react-hot-toast";
 import reactHotToast from "react-hot-toast";
 
+import { testId } from "testing/utils";
+
 export type ToastInstance = {
   createdAt: number;
   duration?: number | undefined;
@@ -52,7 +54,7 @@ export default function ToastCard({
       data-type={type}
       role="status"
       aria-live="polite"
-      data-testid="toast-card"
+      {...testId("toast-card")}
     >
       <div className="toast-card__body">
         {iconName && <i className={`p-icon--${iconName}`}>{iconName}</i>}

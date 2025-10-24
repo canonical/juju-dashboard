@@ -7,6 +7,7 @@ import { CharmsAndActionsPanelTestId } from "panels/CharmsAndActionsPanel";
 import PanelInlineErrors from "panels/PanelInlineErrors";
 import { getCharms } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import CharmApplicationsDetails from "./CharmApplicationsDetails";
 import { Label } from "./types";
@@ -45,7 +46,7 @@ export default function CharmsPanel({
         </Button>
       }
       width="narrow"
-      data-testid={CharmsAndActionsPanelTestId.PANEL}
+      {...testId(CharmsAndActionsPanelTestId.PANEL)}
       title={Label.PANEL_TITLE}
       onRemovePanelQueryParams={onRemovePanelQueryParams}
       loading={isLoading}

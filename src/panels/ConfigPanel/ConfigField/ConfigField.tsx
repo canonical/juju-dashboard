@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import DivButton from "components/DivButton";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { isSet } from "components/utils";
+import { testId } from "testing/utils";
 
 import type { ConfigData, ConfigValue } from "../types";
 
@@ -154,7 +155,7 @@ const ConfigField = <V extends ConfigValue>({
         "config-input--focused": inputFocused,
         "config-input--changed": inputChanged,
       })}
-      data-testid={config.name}
+      {...testId(config.name)}
       onClick={() => {
         setSelectedConfig(config);
       }}

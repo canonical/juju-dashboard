@@ -1,6 +1,8 @@
 import { Spinner } from "@canonical/react-components";
 import type { JSX, ReactNode } from "react";
 
+import { testId } from "testing/utils";
+
 import { TestId } from "./types";
 
 type LoadingHandlerProps = {
@@ -22,7 +24,7 @@ export default function LoadingHandler({
         return (
           <div className="loading-handler__spinner">
             <div className="loading-handler__spinner-content">
-              <Spinner data-testid={TestId.LOADING} />
+              <Spinner {...testId(TestId.LOADING)} />
             </div>
           </div>
         );

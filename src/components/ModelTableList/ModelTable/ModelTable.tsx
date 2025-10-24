@@ -18,6 +18,7 @@ import {
   getModelStatusGroupData,
 } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import CloudCell from "../CloudCell";
 import ModelSummary from "../ModelSummary";
@@ -69,7 +70,7 @@ function generateModelTableList(
 
     const columns = [
       {
-        "data-testid": TestId.COLUMN_NAME,
+        ...testId(TestId.COLUMN_NAME),
         content: (
           <>
             <div className="model-name-column">
@@ -97,7 +98,7 @@ function generateModelTableList(
         ),
       },
       {
-        "data-testid": TestId.COLUMN_SUMMARY,
+        ...testId(TestId.COLUMN_SUMMARY),
         content: (
           <ModelSummary
             modelData={model}
@@ -110,12 +111,12 @@ function generateModelTableList(
       },
       // Conditionally include cells based on the group type
       ...getConditionalCell(GroupBy.OWNER, groupBy, {
-        "data-testid": TestId.COLUMN_OWNER,
+        ...testId(TestId.COLUMN_OWNER),
         content: <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>,
         className: classNames({ "dying-model": isDying }),
       }),
       ...getConditionalCell(GroupBy.STATUS, groupBy, {
-        "data-testid": TestId.COLUMN_STATUS,
+        ...testId(TestId.COLUMN_STATUS),
         content: <Status status={highestStatus} />,
         className: classNames("u-capitalise", {
           "dying-model": isDying,
@@ -125,7 +126,7 @@ function generateModelTableList(
         GroupBy.CLOUD,
         groupBy,
         {
-          "data-testid": TestId.COLUMN_CLOUD,
+          ...testId(TestId.COLUMN_CLOUD),
           content: (
             <TruncatedTooltip message={generateCloudAndRegion(model)}>
               {cloud}
@@ -134,7 +135,7 @@ function generateModelTableList(
           className: classNames({ "dying-model": isDying }),
         },
         {
-          "data-testid": TestId.COLUMN_REGION,
+          ...testId(TestId.COLUMN_REGION),
           content: (
             <TruncatedTooltip message={region}>{region}</TruncatedTooltip>
           ),
@@ -142,14 +143,14 @@ function generateModelTableList(
         },
       ),
       {
-        "data-testid": TestId.COLUMN_CREDENTIAL,
+        ...testId(TestId.COLUMN_CREDENTIAL),
         content: (
           <TruncatedTooltip message={credential}>{credential}</TruncatedTooltip>
         ),
         className: classNames({ "dying-model": isDying }),
       },
       {
-        "data-testid": TestId.COLUMN_CONTROLLER,
+        ...testId(TestId.COLUMN_CONTROLLER),
         content: (
           <TruncatedTooltip message={controller}>{controller}</TruncatedTooltip>
         ),
@@ -157,7 +158,7 @@ function generateModelTableList(
       },
       // We're not currently able to get a last-accessed or updated from JAAS.
       {
-        "data-testid": TestId.COLUMN_UPDATED,
+        ...testId(TestId.COLUMN_UPDATED),
         content: (
           <TruncatedTooltip message={lastUpdated}>
             {lastUpdated}
@@ -168,7 +169,7 @@ function generateModelTableList(
         }),
       },
       {
-        "data-testid": TestId.COLUMN_ACTIONS,
+        ...testId(TestId.COLUMN_ACTIONS),
         content: (
           <ModelActions modelUUID={model.uuid} modelName={model.model.name} />
         ),
@@ -189,7 +190,7 @@ function generateModelTableList(
     };
 
     const row = {
-      "data-testid": `model-uuid-${model?.uuid}`,
+      ...testId(`model-uuid-${model?.uuid}`),
       columns,
       sortData,
     };

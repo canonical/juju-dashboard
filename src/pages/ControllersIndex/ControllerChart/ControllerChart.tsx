@@ -2,6 +2,7 @@ import type { JSX } from "react";
 
 import DonutChart from "components/DonutChart";
 import { pluralize } from "store/juju/utils/models";
+import { testId } from "testing/utils";
 
 type Props = {
   alert?: number;
@@ -38,27 +39,27 @@ export default function ControllerChart({
         <ul className="p-list p-legend">
           <li
             className="p-list__item p-legend__item label"
-            data-testid="legend-label"
+            {...testId("legend-label")}
           >
-            <strong data-testid="total-count">
+            <strong {...testId("total-count")}>
               {totalCount} {pluralize(totalCount, totalLabel)}
             </strong>
           </li>
           <li
             className="p-list__item p-legend__item is-blocked"
-            data-testid="legend-blocked"
+            {...testId("legend-blocked")}
           >
             Blocked: {getPercentage(totalCount, blocked)}%, {blocked}
           </li>
           <li
             className="p-list__item p-legend__item is-alert"
-            data-testid="legend-alert"
+            {...testId("legend-alert")}
           >
             Alerts: {getPercentage(totalCount, alert)}%, {alert}
           </li>
           <li
             className="p-list__item p-legend__item is-running"
-            data-testid="legend-running"
+            {...testId("legend-running")}
           >
             Running: {getPercentage(totalCount, running)}%, {running}
           </li>

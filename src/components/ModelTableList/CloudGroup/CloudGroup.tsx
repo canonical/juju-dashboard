@@ -3,6 +3,7 @@ import type { JSX, ReactNode } from "react";
 import { getGroupedByCloudAndFilteredModelData } from "store/juju/selectors";
 import type { Filters } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import ModelTable from "../ModelTable";
 import { GroupBy, TestId } from "../types";
@@ -29,7 +30,7 @@ export default function CloudGroup({ filters }: Props): JSX.Element {
   }
 
   return (
-    <div className="cloud-group" data-testid={TestId.CLOUD_GROUP}>
+    <div className="cloud-group" {...testId(TestId.CLOUD_GROUP)}>
       {cloudTables}
     </div>
   );

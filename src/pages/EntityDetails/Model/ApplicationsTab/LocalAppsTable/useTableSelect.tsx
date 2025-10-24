@@ -11,6 +11,7 @@ import { actions as jujuActions } from "store/juju";
 import { getSelectedApplications } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import type { Header } from "tables/tableHeaders";
+import { testId } from "testing/utils";
 
 type SelectHandlers = {
   selectAll: boolean;
@@ -91,7 +92,7 @@ export const addSelectAllColumn = (
               handleSelectAll(!selectAll);
             }}
             checked={selectAll}
-            data-testid="select-all-apps"
+            {...testId("select-all-apps")}
           />
           <span className="p-checkbox__label"></span>
         </label>
@@ -120,7 +121,7 @@ const Checkbox: FC<Props> = ({ onSelect, app }) => {
         name="selectApp"
         onChange={handleSelect}
         checked={selectedApplications.includes(app)}
-        data-testid={`select-app-${app.name}`}
+        {...testId(`select-app-${app.name}`)}
       />
       <span className="p-checkbox__label"></span>
     </label>

@@ -3,6 +3,8 @@ import fastDeepEqual from "fast-deep-equal/es6";
 import type { FC } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { testId } from "testing/utils";
+
 import OutputCommand from "./OutputCommand";
 import {
   HELP_HEIGHT,
@@ -181,13 +183,13 @@ const WebCLIOutput: FC<Props> = ({
       <pre
         className="webcli__output-content"
         style={{ height: `${height}px` }}
-        data-testid={TestId.CONTENT}
+        {...testId(TestId.CONTENT)}
         ref={outputRef}
       >
         {showHelp || (!loading && !content?.length) ? (
-          <code data-testid={TestId.HELP}>{helpMessage}</code>
+          <code {...testId(TestId.HELP)}>{helpMessage}</code>
         ) : (
-          <code data-testid={TestId.CODE}>{output}</code>
+          <code {...testId(TestId.CODE)}>{output}</code>
         )}
       </pre>
     </div>

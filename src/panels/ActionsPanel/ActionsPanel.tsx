@@ -16,6 +16,7 @@ import { getModelUUID } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 import type { RootState } from "store/store";
 import { useAppStore, useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import { logger } from "utils/logger";
 
 import ActionsList from "./ActionsList";
@@ -170,7 +171,7 @@ export default function ActionsPanel(): JSX.Element {
         </ActionButton>
       }
       width="narrow"
-      data-testid={TestId.PANEL}
+      {...testId(TestId.PANEL)}
       title={generateTitle()}
       onRemovePanelQueryParams={handleRemovePanelQueryParams}
       ref={scrollArea}
@@ -179,7 +180,7 @@ export default function ActionsPanel(): JSX.Element {
         inlineErrors={inlineErrors}
         scrollArea={scrollArea.current}
       />
-      <p data-testid="actions-panel-unit-list">
+      <p {...testId("actions-panel-unit-list")}>
         Run action on: {generateSelectedUnitList()}
       </p>
       <LoadingHandler

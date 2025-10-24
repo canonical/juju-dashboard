@@ -16,6 +16,7 @@ import useModelDestructionData from "hooks/useModelDestructionData";
 import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import urls from "urls";
 
 import { Label } from "./types";
@@ -170,7 +171,7 @@ export default function DestroyModelDialog({
           Destroy model <b>{modelName}</b>
         </>
       }
-      data-testid="destroy-model-dialog"
+      {...testId("destroy-model-dialog")}
       className="destroy-model-dialog"
       confirmButtonLabel={Label.DESTROY}
       confirmButtonDisabled={isConfirmDisabled}
@@ -199,7 +200,7 @@ export default function DestroyModelDialog({
         <>
           By destroying model <b>{modelName}</b>, you will also be removing:
           <MainTable
-            data-testid="model-status-info"
+            {...testId("model-status-info")}
             headers={[{ content: "type" }, { content: "name" }]}
             rows={infoTableRows}
             className="p-main-table destroy-model-table"

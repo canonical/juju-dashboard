@@ -6,6 +6,7 @@ import AuditLogsTableActions from "components/AuditLogsTable/AuditLogsTableActio
 import CheckPermissions from "components/CheckPermissions";
 import { useAuditLogsPermitted } from "juju/api-hooks/permissions";
 import MainContent from "layout/MainContent";
+import { testId } from "testing/utils";
 
 import { Label, TestId } from "./types";
 
@@ -14,10 +15,10 @@ const Logs = (): JSX.Element => {
   return (
     <CheckPermissions
       allowed={permitted}
-      data-testid={TestId.COMPONENT}
+      {...testId(TestId.COMPONENT)}
       loading={loading}
     >
-      <MainContent data-testid={TestId.COMPONENT} title={Label.TITLE}>
+      <MainContent {...testId(TestId.COMPONENT)} title={Label.TITLE}>
         <ActionBar>
           <AuditLogsTableActions />
         </ActionBar>

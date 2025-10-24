@@ -24,6 +24,7 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import { getLatestRevision, secretIsAppOwned } from "utils";
 
 import SecretContent from "../SecretContent";
@@ -146,7 +147,7 @@ const SecretsTable: FC = () => {
         ),
         revision: latestRevision,
         description: secret.description,
-        granted: <span data-testid={TestId.GRANTED_TO}>{granted}</span>,
+        granted: <span {...testId(TestId.GRANTED_TO)}>{granted}</span>,
         owner,
         created: <RelativeDate datetime={secret["create-time"]} />,
         updated: <RelativeDate datetime={secret["update-time"]} />,
@@ -207,7 +208,7 @@ const SecretsTable: FC = () => {
         <LoadingSpinner />
       ) : (
         <ModularTable
-          data-testid={TestId.SECRETS_TABLE}
+          {...testId(TestId.SECRETS_TABLE)}
           className="secrets-table"
           columns={columnData}
           data={tableData}

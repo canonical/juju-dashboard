@@ -3,6 +3,7 @@ import type { JSX } from "react";
 import { getGroupedByStatusAndFilteredModelData } from "store/juju/selectors";
 import type { Filters } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import ModelTable from "../ModelTable";
 import { GroupBy, TestId } from "../types";
@@ -18,7 +19,7 @@ export default function StatusGroup({
   const emptyStateMsg = "There are no models with this status";
 
   return (
-    <div className="status-group" data-testid={TestId.STATUS_GROUP}>
+    <div className="status-group" {...testId(TestId.STATUS_GROUP)}>
       {blocked.length ? (
         <ModelTable
           models={blocked}

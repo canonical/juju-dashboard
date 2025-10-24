@@ -8,6 +8,7 @@ import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
 import { getIsJuju } from "store/general/selectors";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import { rebacURLS } from "urls";
 
 import { Label, TestId, type Props } from "./types";
@@ -49,7 +50,7 @@ const ModelActions: FC<Props> = ({
         </Portal>
       )}
       <ContextualMenu
-        data-testid={TestId.MENU}
+        {...testId(TestId.MENU)}
         toggleAppearance="base"
         toggleClassName="u-no-margin--bottom is-dense"
         toggleLabel={

@@ -22,6 +22,7 @@ import boxImage from "static/images/no-config-params.svg";
 import { actions as jujuActions } from "store/juju";
 import { getModelSecrets, getModelByUUID } from "store/juju/selectors";
 import { useAppSelector, useAppDispatch } from "store/store";
+import { testId } from "testing/utils";
 import { secretIsAppOwned } from "utils";
 import { logger } from "utils/logger";
 
@@ -350,7 +351,7 @@ export default function ConfigPanel(): JSX.Element {
   return (
     <Panel
       checkCanClose={checkCanClose}
-      data-testid={TestId.PANEL}
+      {...testId(TestId.PANEL)}
       drawer={
         hasConfig ? (
           <>
