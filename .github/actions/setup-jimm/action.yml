@@ -50,7 +50,7 @@ runs:
     - name: Set up deps
       shell: bash
       run: |
-        sudo snap install yq vault jaas
+        sudo snap install yq jaas
     - name: Setup Go
       uses: actions/setup-go@v5
     - name: Set up IAM
@@ -92,10 +92,9 @@ runs:
       shell: bash
       run: |
         juju add-model jimm
-        juju deploy juju-jimm-k8s --channel=${{ inputs.jimm-channel }} jimm
+        juju deploy juju-jimm-k8s --channel=${{ inputs.jimm-channel }} jimm --config postgres-secret-storage=true
         juju deploy openfga-k8s --channel=edge openfga
         juju deploy postgresql-k8s --channel=16/edge postgresql
-        juju deploy vault-k8s --channel=1.15/beta vault
         juju deploy nginx-ingress-integrator --channel=latest/stable --trust ingress
         juju trust postgresql --scope=cluster
     - name: Wait for Postgres
@@ -110,7 +109,6 @@ runs:
         juju relate jimm:nginx-route ingress
         juju relate jimm:openfga openfga
         juju relate jimm:database postgresql
-        juju relate jimm:vault vault
     - name: Wait for Postgres
       uses: nick-fields/retry@v3
       with:
@@ -142,29 +140,6 @@ runs:
         juju relate jimm admin/iam.self-signed-certificates
         juju deploy self-signed-certificates jimm-cert
         juju relate ingress:certificates jimm-cert:certificates
-    - name: Wait for vault
-      uses: nick-fields/retry@v3
-      with:
-        timeout_minutes: 1
-        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
-        command: juju wait-for application vault --timeout=1m --query='name=="vault" && status=="blocked"'
-    - name: Set up Vault
-      shell: bash
-      run: |
-        export VAULT_ADDR=https://$(juju status vault/leader --format=yaml | yq '.applications.vault.address'):8200; echo "Vault address =" "$VAULT_ADDR"
-        cert_juju_secret_id=$(juju secrets --format=yaml | yq 'to_entries | .[] | select(.value.label == "self-signed-vault-ca-certificate") | .key'); echo "Vault ca-cert secret ID =" "$cert_juju_secret_id"
-        juju show-secret ${cert_juju_secret_id} --reveal --format=yaml | yq '.[].content.certificate' > vault.pem && echo "saved certificate contents to vault.pem"
-        export VAULT_CAPATH=$(pwd)/vault.pem; echo "Setting VAULT_CAPATH from" "$VAULT_CAPATH"
-        # Wait until the cert file exists and isn't empty:
-        timeout 30s bash -c "until [ -s $VAULT_CAPATH ]; do sleep 1; done"
-        key_init=$(vault operator init -key-shares=1 -key-threshold=1); echo "$key_init"
-        export VAULT_TOKEN=$(echo "$key_init" | sed -n -e 's/.*Root Token: //p'); echo "RootToken = $VAULT_TOKEN"
-        export UNSEAL_KEY=$(echo "$key_init" | sed -n -e 's/.*Unseal Key 1: //p'); echo "UnsealKey = $UNSEAL_KEY"
-        vault operator unseal "$UNSEAL_KEY"
-        vault_secret_id=$(juju add-secret vault-token token="$VAULT_TOKEN")
-        juju grant-secret vault-token vault
-        juju run --wait=2m vault/leader authorize-charm secret-id="$vault_secret_id"
-        juju remove-secret "vault-token"
     - name: Configure JIMM
       shell: bash
       run: |
