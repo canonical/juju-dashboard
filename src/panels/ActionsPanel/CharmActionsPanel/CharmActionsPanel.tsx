@@ -11,6 +11,7 @@ import {
   getSelectedCharm,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import ActionsList from "../ActionsList";
 import type { FormControlRef } from "../ActionsList/types";
@@ -84,7 +85,7 @@ export default function CharmActionsPanel({
         </Button>
       }
       width="narrow"
-      data-testid={CharmsAndActionsPanelTestId.PANEL}
+      {...testId(CharmsAndActionsPanelTestId.PANEL)}
       title={<CharmActionsPanelTitle charmURL={charmURL} />}
       onRemovePanelQueryParams={onRemovePanelQueryParams}
       animateMount={false}

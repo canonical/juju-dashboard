@@ -5,6 +5,7 @@ import type { FC } from "react";
 import FadeIn from "animations/FadeIn";
 import LoadingSpinner from "components/LoadingSpinner";
 import SecondaryNavigation from "components/SecondaryNavigation";
+import { testId } from "testing/utils";
 
 import type { Props } from "./types";
 import { TestId } from "./types";
@@ -35,7 +36,7 @@ const MainContent: FC<Props> = ({
         ) : null}
         <Panel
           className="l-main__panel"
-          data-testid={TestId.MAIN}
+          {...testId(TestId.MAIN)}
           titleClassName={titleClassName}
           titleComponent={titleComponent}
           stickyHeader

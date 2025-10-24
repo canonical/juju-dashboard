@@ -5,6 +5,7 @@ import azureLogo from "static/images/logo/cloud/azure.svg";
 import gceLogo from "static/images/logo/cloud/gce.svg";
 import kubernetesLogo from "static/images/logo/cloud/kubernetes.svg";
 import type { ModelData } from "store/juju/types";
+import { testId } from "testing/utils";
 
 import { generateCloudAndRegion } from "../shared";
 
@@ -41,7 +42,7 @@ const CloudCell: FC<Props> = ({ model }: Props) => {
           src={src}
           alt={alt}
           className="p-table__logo"
-          data-testid="provider-logo"
+          {...testId("provider-logo")}
         />
       ) : null}
       {generateCloudAndRegion(model)}

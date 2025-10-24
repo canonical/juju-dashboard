@@ -31,6 +31,7 @@ import {
   getSecretLatestRevision,
 } from "store/juju/selectors";
 import { useAppSelector, useAppDispatch } from "store/store";
+import { testId } from "testing/utils";
 import { toErrorString } from "utils";
 
 import Fields from "./Fields";
@@ -202,7 +203,7 @@ const SecretForm: FC<Props> = ({
           }}
           validationSchema={schema}
         >
-          <Form id={formId} data-testid={TestId.SECRET_FORM}>
+          <Form id={formId} {...testId(TestId.SECRET_FORM)}>
             <Fields update={update} />
           </Form>
         </Formik>

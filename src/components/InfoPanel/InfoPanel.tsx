@@ -13,6 +13,7 @@ import {
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import { Label, TestId } from "./types";
 
@@ -77,7 +78,7 @@ const InfoPanel: FC = () => {
   };
 
   return (
-    <div className="info-panel" data-testid={TestId.INFO_PANEL}>
+    <div className="info-panel" {...testId(TestId.INFO_PANEL)}>
       {showExpandedTopology && (
         <Portal>
           <Modal

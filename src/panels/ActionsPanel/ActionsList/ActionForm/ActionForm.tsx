@@ -11,6 +11,7 @@ import {
 import * as Yup from "yup";
 
 import FormikFormData from "components/FormikFormData";
+import { testId } from "testing/utils";
 
 import type { FormRef } from "./types";
 import { TestId } from "./types";
@@ -118,7 +119,7 @@ export default function ActionForm({
       validateOnChange
       validateOnMount
     >
-      <FormikFormData data-testid={TestId.ActionForm} onValidate={onValidate}>
+      <FormikFormData {...testId(TestId.ActionForm)} onValidate={onValidate}>
         {properties.map((property, i) => (
           <FormikField
             type={property.type === "boolean" ? "checkbox" : "text"}

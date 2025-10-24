@@ -5,6 +5,7 @@ import ModelActions from "components/ModelActions";
 import { useEntityDetailsParams } from "components/hooks";
 import { getModelUUIDFromList } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import urls from "urls";
 import { ModelTab } from "urls";
 
@@ -57,7 +58,7 @@ export default function Breadcrumb(): JSX.Element {
         <>
           <li
             className="p-breadcrumbs__item u-no-padding--top"
-            data-testid="breadcrumb-model"
+            {...testId("breadcrumb-model")}
           >
             <Link to={urls.model.index({ userName, modelName })}>
               {modelName}
@@ -66,7 +67,7 @@ export default function Breadcrumb(): JSX.Element {
           {!unitId && (
             <li
               className="p-breadcrumbs__item u-no-padding--top"
-              data-testid="breadcrumb-section"
+              {...testId("breadcrumb-section")}
             >
               <Link to={urls.model.tab({ userName, modelName, tab: view })}>
                 {entityType.title}
@@ -77,7 +78,7 @@ export default function Breadcrumb(): JSX.Element {
             <>
               <li
                 className="p-breadcrumbs__item u-no-padding--top"
-                data-testid="breadcrumb-section"
+                {...testId("breadcrumb-section")}
               >
                 <Link
                   to={urls.model.tab({
@@ -91,7 +92,7 @@ export default function Breadcrumb(): JSX.Element {
               </li>
               <li
                 className="p-breadcrumbs__item u-no-padding--top"
-                data-testid="breadcrumb-app"
+                {...testId("breadcrumb-app")}
               >
                 {appName ? (
                   <Link
@@ -105,7 +106,7 @@ export default function Breadcrumb(): JSX.Element {
           )}
           <li
             className="p-breadcrumbs__item u-no-padding--top"
-            data-testid={`breadcrumb-${entityType.title?.toLowerCase()}`}
+            {...testId(`breadcrumb-${entityType.title?.toLowerCase()}`)}
           >
             <strong>{entityType.id}</strong>
           </li>
@@ -115,7 +116,7 @@ export default function Breadcrumb(): JSX.Element {
     return (
       <li
         className="p-breadcrumbs__item p-breadcrumbs__item--restricted"
-        data-testid="breadcrumb-model"
+        {...testId("breadcrumb-model")}
         title={modelName}
       >
         <Link
@@ -136,7 +137,7 @@ export default function Breadcrumb(): JSX.Element {
 
   return (
     <nav className="p-breadcrumbs" aria-label="Breadcrumb navigation">
-      <ol className="p-breadcrumbs__items" data-testid="breadcrumb-items">
+      <ol className="p-breadcrumbs__items" {...testId("breadcrumb-items")}>
         {generateBreadcrumbs()}
       </ol>
     </nav>

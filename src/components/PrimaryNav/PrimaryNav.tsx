@@ -30,6 +30,7 @@ import {
 } from "store/juju/selectors";
 import type { Controllers } from "store/juju/types";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import { FeatureFlags } from "types";
 import urls, { externalURLs, rebacURLS } from "urls";
 import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
@@ -166,7 +167,7 @@ const PrimaryNav: FC = () => {
       status={
         updateAvailable ? (
           <Tooltip message="A new version of the dashboard is available.">
-            <Icon name="warning" data-testid="dashboard-update" />
+            <Icon name="warning" {...testId("dashboard-update")} />
           </Tooltip>
         ) : (
           <StatusLabel appearance="positive">Beta</StatusLabel>

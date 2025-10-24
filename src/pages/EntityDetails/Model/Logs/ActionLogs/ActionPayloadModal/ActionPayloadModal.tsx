@@ -8,6 +8,7 @@ import {
 import type { JSX } from "react";
 
 import { copyToClipboard } from "components/utils";
+import { testId } from "testing/utils";
 
 import { Label } from "./types";
 
@@ -38,7 +39,7 @@ const ActionPayloadModal = ({
           {Label.COPY}
         </Button>
       }
-      data-testid="action-payload-modal"
+      {...testId("action-payload-modal")}
     >
       <CodeSnippet
         blocks={[

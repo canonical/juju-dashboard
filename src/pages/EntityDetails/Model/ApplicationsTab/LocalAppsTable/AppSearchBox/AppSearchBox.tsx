@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 
 import { useQueryParams } from "hooks/useQueryParams";
 import { actions as jujuActions } from "store/juju";
+import { testId } from "testing/utils";
 
 const AppSearchBox: FC = () => {
   const dispatch = useDispatch();
@@ -47,7 +48,7 @@ const AppSearchBox: FC = () => {
         }}
         onChange={setFilterQuery}
         externallyControlled
-        data-testid="filter-applications"
+        {...testId("filter-applications")}
         value={filterQuery}
       />
     </form>

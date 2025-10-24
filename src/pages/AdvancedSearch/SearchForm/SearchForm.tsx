@@ -19,6 +19,7 @@ import {
   getCrossModelQueryResults,
 } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import SearchHelp from "./SearchHelp";
 import SearchHistoryMenu from "./SearchHistoryMenu";
@@ -85,7 +86,7 @@ const SearchForm = (): JSX.Element => {
         }
       }}
     >
-      <Form data-testid="search-form" className="search-form">
+      <Form {...testId("search-form")} className="search-form">
         <div className="search-form__fields">
           <div className="search-form__field">
             <Field

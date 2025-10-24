@@ -3,6 +3,7 @@ import type { JSX, ReactNode } from "react";
 import { getGroupedByOwnerAndFilteredModelData } from "store/juju/selectors";
 import type { Filters } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import ModelTable from "../ModelTable";
 import { GroupBy, TestId } from "../types";
@@ -28,7 +29,7 @@ export default function OwnerGroup({ filters }: Props): JSX.Element {
     );
   }
   return (
-    <div className="owners-group" data-testid={TestId.OWNER_GROUP}>
+    <div className="owners-group" {...testId(TestId.OWNER_GROUP)}>
       {ownerTables}
     </div>
   );

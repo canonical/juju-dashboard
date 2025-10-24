@@ -26,6 +26,7 @@ import PanelInlineErrors from "panels/PanelInlineErrors";
 import { getModelStatus, getModelUUID } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import urls from "urls";
 import { logger } from "utils/logger";
 
@@ -320,7 +321,7 @@ export default function ActionLogs(): JSX.Element {
                     onClick={() => {
                       setModalDetails(actionFullDetails.output);
                     }}
-                    data-testid="show-output"
+                    {...testId("show-output")}
                     dense
                     hasIcon
                   >

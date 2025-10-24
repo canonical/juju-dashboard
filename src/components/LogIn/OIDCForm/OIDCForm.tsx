@@ -4,6 +4,7 @@ import type { FC } from "react";
 import { endpoints } from "juju/jimm/api";
 import { actions as generalActions } from "store/general";
 import { useAppDispatch } from "store/store";
+import { testId } from "testing/utils";
 
 import { Label } from "../types";
 
@@ -19,7 +20,7 @@ const OIDCForm: FC = () => {
       // this is so that a spinner is shown as soon as user interacts with the button
       onClick={() => dispatch(generalActions.updateLoginLoading(true))}
       href={endpoints().login}
-      data-testid={TestId.OIDC_LOGIN}
+      {...testId(TestId.OIDC_LOGIN)}
     >
       {Label.LOGIN_TO_DASHBOARD}
     </Button>

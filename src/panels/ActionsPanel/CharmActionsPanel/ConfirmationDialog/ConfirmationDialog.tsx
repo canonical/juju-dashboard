@@ -10,6 +10,7 @@ import { useExecuteActionOnUnits } from "juju/api-hooks";
 import type { ApplicationInfo } from "juju/types";
 import type { ActionOptionValue } from "panels/ActionsPanel/types";
 import { ConfirmType, type ConfirmTypes } from "panels/types";
+import { testId } from "testing/utils";
 
 import { Label } from "./types";
 
@@ -112,7 +113,7 @@ const ConfirmationDialog = ({
           <h4 className="p-muted-heading u-no-margin--bottom">
             APPLICATION COUNT (UNIT COUNT)
           </h4>
-          <p data-testid="confirmation-modal-unit-count">
+          <p {...testId("confirmation-modal-unit-count")}>
             {selectedApplications.length} ({unitCount})
           </p>
         </ConfirmationModal>

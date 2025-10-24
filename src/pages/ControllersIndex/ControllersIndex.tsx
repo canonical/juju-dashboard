@@ -29,6 +29,7 @@ import {
 } from "store/juju/selectors";
 import type { Controller } from "store/juju/types";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import urls, { externalURLs } from "urls";
 import { breakLines } from "utils";
 
@@ -235,7 +236,7 @@ const ControllersIndex: FC = () => {
                   </>
                 }
               >
-                <Icon name="warning" data-testid="update-available" />
+                <Icon name="warning" {...testId("update-available")} />
               </Tooltip>
             ) : null}
           </>
@@ -259,7 +260,7 @@ const ControllersIndex: FC = () => {
 
   return (
     <MainContent
-      data-testid={TestId.COMPONENT}
+      {...testId(TestId.COMPONENT)}
       title={
         <>
           {controllersCount} controllers,{" "}

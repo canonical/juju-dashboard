@@ -4,6 +4,7 @@ import type { FC } from "react";
 import AuthenticationButton from "components/AuthenticationButton";
 import { actions as generalActions } from "store/general";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import { Label } from "../types";
 
@@ -29,7 +30,7 @@ const IdentityProviderForm: FC<Props> = ({ userIsLoggedIn }: Props) => {
     <AuthenticationButton
       appearance="positive"
       visitURL={visitURL}
-      data-testid={TestId.CANDID_LOGIN}
+      {...testId(TestId.CANDID_LOGIN)}
       onClick={() => dispatch(generalActions.updateLoginLoading(true))}
     >
       {Label.LOGIN_TO_DASHBOARD}

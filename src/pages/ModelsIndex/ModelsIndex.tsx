@@ -29,6 +29,7 @@ import {
 } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import type { ModelsGroupedBy } from "urls";
 import urls, { externalURLs } from "urls";
 
@@ -143,7 +144,7 @@ export default function Models(): JSX.Element {
 
   return (
     <MainContent
-      data-testid={TestId.COMPONENT}
+      {...testId(TestId.COMPONENT)}
       title={
         <div className="models__header" data-disabled={modelCount === 0}>
           <span className="u-hide u-show--large">

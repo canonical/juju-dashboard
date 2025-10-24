@@ -5,6 +5,7 @@ import { useId, useState, useRef } from "react";
 import Panel from "components/Panel";
 import SecretForm from "components/secrets/SecretForm";
 import { usePanelQueryParams } from "panels/hooks";
+import { testId } from "testing/utils";
 
 import { Label, TestId } from "./types";
 
@@ -26,7 +27,7 @@ const SecretFormPanel: FC<Props> = ({ update = false }: Props) => {
 
   return (
     <Panel
-      data-testid={TestId.PANEL}
+      {...testId(TestId.PANEL)}
       drawer={
         <>
           <Button onClick={handleRemovePanelQueryParams}>{Label.CANCEL}</Button>

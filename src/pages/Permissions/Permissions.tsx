@@ -12,6 +12,7 @@ import { endpoints } from "juju/jimm/api";
 import MainContent from "layout/MainContent";
 import { isReBACEnabled } from "store/general/selectors";
 import { useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 import { FeatureFlags } from "types";
 import { rebacURLS } from "urls";
 import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
@@ -70,11 +71,11 @@ const PermissionsPage = (): JSX.Element => {
   return (
     <CheckPermissions
       allowed={rebacEnabled && rebacFlagEnabled && permitted}
-      data-testid={TestId.COMPONENT}
+      {...testId(TestId.COMPONENT)}
       loading={loading}
     >
       <MainContent
-        data-testid={TestId.COMPONENT}
+        {...testId(TestId.COMPONENT)}
         secondaryNav={{
           title: "Permissions",
           items: [

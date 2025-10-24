@@ -223,3 +223,6 @@ export const renderWrappedHook = <Result, Props>(
   });
   return { ...result, router, store };
 };
+
+export const testId = (id: string): { "data-testid": string } | undefined =>
+  import.meta.env.PROD ? undefined : { "data-testid": id };
