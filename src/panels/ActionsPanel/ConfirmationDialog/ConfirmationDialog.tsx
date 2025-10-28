@@ -11,7 +11,7 @@ import { logger } from "utils/logger";
 
 import { InlineErrors, type ActionOptionValue } from "../types";
 
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 type Props = {
   confirmType: ConfirmType;
@@ -76,13 +76,11 @@ const ConfirmationDialog = ({
           }}
         >
           <h4 className="p-muted-heading u-no-margin--bottom">UNIT COUNT</h4>
-          <p {...testId("confirmation-modal-unit-count")}>
-            {selectedUnits.length}
-          </p>
+          <p {...testId(TestId.MODEL_UNIT_COUNT)}>{selectedUnits.length}</p>
           <h4 className="p-muted-heading u-no-margin--bottom u-no-padding--top">
             UNIT NAME
           </h4>
-          <p {...testId("confirmation-modal-unit-names")}>{unitNames}</p>
+          <p {...testId(TestId.MODEL_UNIT_NAMES)}>{unitNames}</p>
         </ConfirmationModal>
       </Portal>
     );

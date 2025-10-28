@@ -205,7 +205,9 @@ describe("JujuCLI", () => {
       }),
     };
     renderComponent(<JujuCLI />, { path, url, state });
-    expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(WebCLITestId.COMPONENT),
+    ).not.toBeInTheDocument();
   });
 
   it("does not show the webCLI in juju 2.8", async () => {
@@ -222,7 +224,9 @@ describe("JujuCLI", () => {
       }),
     };
     renderComponent(<JujuCLI />, { path, url, state });
-    expect(screen.queryByTestId("webcli")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(WebCLITestId.COMPONENT),
+    ).not.toBeInTheDocument();
   });
 
   it("passes the controller details to the webCLI", () => {

@@ -8,6 +8,7 @@ export enum Label {
 
 export enum TestId {
   PANEL = "actions-panel",
+  UNIT_LIST = "actions-panel-unit-list",
 }
 
 export type ActionData = Record<string, ActionSpec>;

@@ -7,6 +7,8 @@ import { useQueryParams } from "hooks/useQueryParams";
 import { actions as jujuActions } from "store/juju";
 import { testId } from "testing/utils";
 
+import { TestId } from "./types";
+
 const AppSearchBox: FC = () => {
   const dispatch = useDispatch();
   const [query, setQuery] = useQueryParams<{
@@ -48,7 +50,7 @@ const AppSearchBox: FC = () => {
         }}
         onChange={setFilterQuery}
         externallyControlled
-        {...testId("filter-applications")}
+        {...testId(TestId.FILTER_APPS)}
         value={filterQuery}
       />
     </form>

@@ -10,7 +10,7 @@ import type { JSX } from "react";
 import { copyToClipboard } from "components/utils";
 import { testId } from "testing/utils";
 
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 type Props = {
   payload: ActionResult["output"] | null;
@@ -39,7 +39,7 @@ const ActionPayloadModal = ({
           {Label.COPY}
         </Button>
       }
-      {...testId("action-payload-modal")}
+      {...testId(TestId.ACTION_PAYLOAD_MODAL)}
     >
       <CodeSnippet
         blocks={[

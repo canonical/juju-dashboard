@@ -15,7 +15,7 @@ import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watch
 import { createStore, renderComponent } from "testing/utils";
 
 import LocalAppsTable from "./LocalAppsTable";
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 describe("LocalAppsTable", () => {
   let state: RootState;
@@ -241,7 +241,7 @@ describe("LocalAppsTable", () => {
         store,
       },
     );
-    await userEvent.click(screen.getByTestId("select-all-apps"));
+    await userEvent.click(screen.getByTestId(TestId.SELECT_ALL));
     const apps = state.juju.modelWatcherData?.test123.applications;
     expect(apps).toBeTruthy();
     const expectedAction = jujuActions.updateSelectedApplications({
@@ -272,9 +272,9 @@ describe("LocalAppsTable", () => {
         store,
       },
     );
-    expect(screen.getByTestId("select-all-apps")).toBeChecked();
-    await userEvent.click(screen.getByTestId("select-all-apps"));
-    expect(screen.getByTestId("select-all-apps")).not.toBeChecked();
+    expect(screen.getByTestId(TestId.SELECT_ALL)).toBeChecked();
+    await userEvent.click(screen.getByTestId(TestId.SELECT_ALL));
+    expect(screen.getByTestId(TestId.SELECT_ALL)).not.toBeChecked();
     const expectedAction = jujuActions.updateSelectedApplications({
       selectedApplications: Object.values(apps),
     });
@@ -304,7 +304,7 @@ describe("LocalAppsTable", () => {
         state,
       },
     );
-    expect(screen.getByTestId("select-all-apps")).toBeChecked();
+    expect(screen.getByTestId(TestId.SELECT_ALL)).toBeChecked();
   });
 
   it("unchecks the select all input when one of the apps is deselected", async () => {
@@ -323,7 +323,7 @@ describe("LocalAppsTable", () => {
         state,
       },
     );
-    expect(screen.getByTestId("select-all-apps")).not.toBeChecked();
+    expect(screen.getByTestId(TestId.SELECT_ALL)).not.toBeChecked();
   });
 
   it("doesn't show the run action button when there is no search", () => {

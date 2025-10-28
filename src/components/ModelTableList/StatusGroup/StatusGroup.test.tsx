@@ -23,6 +23,8 @@ import {
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
+import { CloudCellTestId } from "../CloudCell";
+
 import StatusGroup from "./StatusGroup";
 
 describe("StatusGroup", () => {
@@ -111,9 +113,11 @@ describe("StatusGroup", () => {
 
   it("displays the provider type icon", () => {
     renderComponent(<StatusGroup filters={{}} />, { state });
-    expect(screen.getAllByTestId("provider-logo")[0].getAttribute("src")).toBe(
-      gceLogo,
-    );
+    expect(
+      screen
+        .getAllByTestId(CloudCellTestId.PROVIDER_LOGO)[0]
+        .getAttribute("src"),
+    ).toBe(gceLogo);
   });
 
   it("model actions menu is present in status group", () => {

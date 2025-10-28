@@ -24,7 +24,7 @@ import { testId } from "testing/utils";
 import SearchHelp from "./SearchHelp";
 import SearchHistoryMenu from "./SearchHistoryMenu";
 import { QUERY_HISTORY_KEY } from "./consts";
-import { Label, type FormFields } from "./types";
+import { Label, TestId, type FormFields } from "./types";
 
 const SearchForm = (): JSX.Element => {
   const formikRef = useRef<FormikProps<FormFields>>(null);
@@ -86,7 +86,7 @@ const SearchForm = (): JSX.Element => {
         }
       }}
     >
-      <Form {...testId("search-form")} className="search-form">
+      <Form {...testId(TestId.SEARCH_FORM)} className="search-form">
         <div className="search-form__fields">
           <div className="search-form__field">
             <Field

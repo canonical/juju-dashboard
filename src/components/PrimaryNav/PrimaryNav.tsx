@@ -35,7 +35,7 @@ import { FeatureFlags } from "types";
 import urls, { externalURLs, rebacURLS } from "urls";
 import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
 
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 const useControllersLink = (): {
   component: typeof NavLink;
@@ -167,7 +167,7 @@ const PrimaryNav: FC = () => {
       status={
         updateAvailable ? (
           <Tooltip message="A new version of the dashboard is available.">
-            <Icon name="warning" {...testId("dashboard-update")} />
+            <Icon name="warning" {...testId(TestId.UPDATE)} />
           </Tooltip>
         ) : (
           <StatusLabel appearance="positive">Beta</StatusLabel>

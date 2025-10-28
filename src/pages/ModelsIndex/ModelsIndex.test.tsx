@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import { LoadingSpinnerTestId } from "components/LoadingSpinner";
+import { ModelTableListTestId } from "components/ModelTableList";
 import type { RootState } from "store/store";
 import {
   detailedStatusFactory,
@@ -143,13 +144,15 @@ describe("Models Index page", () => {
     expect(screen.getAllByRole("grid")).toHaveLength(2);
     // There will be one extra row for each table header:
     expect(screen.getAllByRole("row")).toHaveLength(4);
-    expect(screen.getAllByTestId("column-cloud")).toHaveLength(2);
-    expect(screen.getAllByTestId("column-cloud")[0]).toHaveTextContent(
-      "aws/us-east1",
-    );
-    expect(screen.getAllByTestId("column-cloud")[1]).toHaveTextContent(
-      "aws/us-east1",
-    );
+    expect(
+      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD),
+    ).toHaveLength(2);
+    expect(
+      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD)[0],
+    ).toHaveTextContent("aws/us-east1");
+    expect(
+      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD)[1],
+    ).toHaveTextContent("aws/us-east1");
   });
 
   it("can change model filters", async () => {
@@ -166,13 +169,15 @@ describe("Models Index page", () => {
     expect(screen.getAllByRole("grid")).toHaveLength(2);
     // There will be one extra row for each table header:
     expect(screen.getAllByRole("row")).toHaveLength(4);
-    expect(screen.getAllByTestId("column-cloud")).toHaveLength(2);
-    expect(screen.getAllByTestId("column-cloud")[0]).toHaveTextContent(
-      "aws/us-east1",
-    );
-    expect(screen.getAllByTestId("column-cloud")[1]).toHaveTextContent(
-      "aws/us-east1",
-    );
+    expect(
+      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD),
+    ).toHaveLength(2);
+    expect(
+      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD)[0],
+    ).toHaveTextContent("aws/us-east1");
+    expect(
+      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD)[1],
+    ).toHaveTextContent("aws/us-east1");
     const params = new URLSearchParams({
       cloud: "aws",
       owner: "",

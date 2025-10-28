@@ -180,7 +180,7 @@ export default function ActionsPanel(): JSX.Element {
         inlineErrors={inlineErrors}
         scrollArea={scrollArea.current}
       />
-      <p {...testId("actions-panel-unit-list")}>
+      <p {...testId(TestId.UNIT_LIST)}>
         Run action on: {generateSelectedUnitList()}
       </p>
       <LoadingHandler

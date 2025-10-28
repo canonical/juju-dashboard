@@ -1,2 +1,2 @@
 export { default } from "./PrimaryNav";
-export { Label as PrimaryNavLabel } from "./types";
+export { Label as PrimaryNavLabel, TestId as PrimaryNavTestId } from "./types";

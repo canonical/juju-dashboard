@@ -13,6 +13,8 @@ import { useAppSelector } from "store/store";
 import type { Header } from "tables/tableHeaders";
 import { testId } from "testing/utils";
 
+import { TestId } from "./types";
+
 type SelectHandlers = {
   selectAll: boolean;
   handleSelectAll: (selectAll?: boolean) => void;
@@ -92,7 +94,7 @@ export const addSelectAllColumn = (
               handleSelectAll(!selectAll);
             }}
             checked={selectAll}
-            {...testId("select-all-apps")}
+            {...testId(TestId.SELECT_ALL)}
           />
           <span className="p-checkbox__label"></span>
         </label>

@@ -25,7 +25,8 @@ import { renderComponent } from "testing/utils";
 import { logger } from "utils/logger";
 
 import ActionLogs from "./ActionLogs";
-import { Label, Output } from "./types";
+import { ActionPayloadModalTestId } from "./ActionPayloadModal";
+import { Label, Output, TestId } from "./types";
 
 const completed = new Date();
 completed.setMonth(completed.getMonth() - 18);
@@ -337,23 +338,27 @@ describe("Action Logs", () => {
 
   it("only shows the action result button when there is a result", async () => {
     renderComponent(<ActionLogs />, { path, url, state });
-    const showOutputBtns = await screen.findAllByTestId("show-output");
+    const showOutputBtns = await screen.findAllByTestId(TestId.SHOW_OUTPUT);
     expect(showOutputBtns.length).toBe(1);
   });
 
   it("shows the payload when the action result button is clicked", async () => {
     renderComponent(<ActionLogs />, { path, url, state });
-    const showOutputBtn = await screen.findByTestId("show-output");
+    const showOutputBtn = await screen.findByTestId(TestId.SHOW_OUTPUT);
     await userEvent.click(showOutputBtn);
-    const modal = await screen.findByTestId("action-payload-modal");
+    const modal = await screen.findByTestId(
+      ActionPayloadModalTestId.ACTION_PAYLOAD_MODAL,
+    );
     expect(modal).toBeInTheDocument();
   });
 
   it("closes the payload modal when the close button is clicked", async () => {
     renderComponent(<ActionLogs />, { path, url, state });
-    const showOutputBtn = await screen.findByTestId("show-output");
+    const showOutputBtn = await screen.findByTestId(TestId.SHOW_OUTPUT);
     await userEvent.click(showOutputBtn);
-    const modal = await screen.findByTestId("action-payload-modal");
+    const modal = await screen.findByTestId(
+      ActionPayloadModalTestId.ACTION_PAYLOAD_MODAL,
+    );
     expect(modal).toBeInTheDocument();
     await userEvent.click(screen.getByLabelText("Close active modal"));
     expect(modal).not.toBeInTheDocument();

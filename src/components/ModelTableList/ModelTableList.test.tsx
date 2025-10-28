@@ -15,6 +15,7 @@ import { CloudGroupTestId } from "./CloudGroup";
 import ModelTableList from "./ModelTableList";
 import { OwnerGroupTestId } from "./OwnerGroup";
 import { StatusGroupTestId } from "./StatusGroup";
+import { TestId } from "./types";
 
 describe("ModelTableList", () => {
   let state: RootState;
@@ -94,7 +95,7 @@ describe("ModelTableList", () => {
     }
     renderComponent(<ModelTableList filters={{}} groupedBy="" />, { state });
     const row = screen.getByTestId(`model-uuid-${testModelUUID}`);
-    expect(within(row).getByTestId("column-controller")).toHaveTextContent(
+    expect(within(row).getByTestId(TestId.COLUMN_CONTROLLER)).toHaveTextContent(
       unknownUUID,
     );
   });
@@ -117,7 +118,7 @@ describe("ModelTableList", () => {
     }
     renderComponent(<ModelTableList filters={{}} groupedBy="" />, { state });
     const row = screen.getByTestId(`model-uuid-${testModelUUID}`);
-    expect(within(row).getByTestId("column-controller")).toHaveTextContent(
+    expect(within(row).getByTestId(TestId.COLUMN_CONTROLLER)).toHaveTextContent(
       "admins/1-eu-west-1-aws-jaas",
     );
   });

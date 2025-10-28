@@ -4,6 +4,7 @@ import { ModelActionsTestId } from "components/ModelActions";
 import { renderComponent } from "testing/utils";
 
 import Breadcrumb from "./Breadcrumb";
+import { TestId } from "./types";
 
 describe("Breadcrumb", () => {
   it("displays model actions", () => {
@@ -19,12 +20,8 @@ describe("Breadcrumb", () => {
       path: "/models/:userName/:modelName",
       url: "/models/eggman@external/group-test",
     });
-    expect(
-      screen.queryByTestId("breadcrumb-application"),
-    ).not.toBeInTheDocument();
-    expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
-      "group-test",
-    );
+    expect(screen.queryByTestId(TestId.APPLICATIONS)).not.toBeInTheDocument();
+    expect(screen.getByTestId(TestId.MODEL)).toHaveTextContent("group-test");
   });
 
   it("displays correctly on application details", () => {
@@ -32,16 +29,14 @@ describe("Breadcrumb", () => {
       path: "/models/:userName/:modelName/app/:appName",
       url: "/models/eggman@external/group-test/app/easyrsa",
     });
-    expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
+    expect(screen.getByTestId(TestId.ITEMS)).toHaveTextContent(
       "group-testApplicationseasyrsa",
     );
-    expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
-      "group-test",
-    );
-    expect(screen.getByTestId("breadcrumb-section")).toHaveTextContent(
+    expect(screen.getByTestId(TestId.MODEL)).toHaveTextContent("group-test");
+    expect(screen.getByTestId(TestId.SECTION)).toHaveTextContent(
       "Applications",
     );
-    expect(screen.getByTestId("breadcrumb-applications")).toHaveTextContent(
+    expect(screen.getByTestId(TestId.APPLICATIONS)).toHaveTextContent(
       "easyrsa",
     );
   });
@@ -51,18 +46,14 @@ describe("Breadcrumb", () => {
       path: "/models/:userName/:modelName/app/:appName/unit/:unitId",
       url: "/models/eggman@external/group-test/app/logstash/unit/logstash-0",
     });
-    expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
+    expect(screen.getByTestId(TestId.ITEMS)).toHaveTextContent(
       "group-testApplicationslogstashlogstash-0",
     );
-    expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
-      "group-test",
-    );
-    expect(screen.getByTestId("breadcrumb-section")).toHaveTextContent(
+    expect(screen.getByTestId(TestId.MODEL)).toHaveTextContent("group-test");
+    expect(screen.getByTestId(TestId.SECTION)).toHaveTextContent(
       "Applications",
     );
-    expect(screen.getByTestId("breadcrumb-units")).toHaveTextContent(
-      "logstash-0",
-    );
+    expect(screen.getByTestId(TestId.UNITS)).toHaveTextContent("logstash-0");
   });
 
   it("displays correctly on machine details", () => {
@@ -70,15 +61,11 @@ describe("Breadcrumb", () => {
       path: "/models/:userName/:modelName/machine/:machineId",
       url: "/models/eggman@external/group-test/machine/0",
     });
-    expect(screen.getByTestId("breadcrumb-items")).toHaveTextContent(
+    expect(screen.getByTestId(TestId.ITEMS)).toHaveTextContent(
       "group-testMachines0",
     );
-    expect(screen.getByTestId("breadcrumb-model")).toHaveTextContent(
-      "group-test",
-    );
-    expect(screen.getByTestId("breadcrumb-section")).toHaveTextContent(
-      "Machines",
-    );
-    expect(screen.getByTestId("breadcrumb-machines")).toHaveTextContent("0");
+    expect(screen.getByTestId(TestId.MODEL)).toHaveTextContent("group-test");
+    expect(screen.getByTestId(TestId.SECTION)).toHaveTextContent("Machines");
+    expect(screen.getByTestId(TestId.MACHINES)).toHaveTextContent("0");
   });
 });

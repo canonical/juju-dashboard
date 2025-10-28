@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import type { JSX } from "react";
 import { vi } from "vitest";
 
+import { LoadingSpinnerTestId } from "components/LoadingSpinner";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
@@ -89,13 +90,17 @@ describe("Entity Details Container", () => {
     state.juju.modelsLoaded = false;
     state.juju.modelWatcherData = {};
     renderComponent(<EntityDetails />, { path, url, state });
-    expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
+    expect(
+      screen.getByTestId(LoadingSpinnerTestId.LOADING),
+    ).toBeInTheDocument();
   });
 
   it("should show a spinner if waiting on model data", () => {
     state.juju.modelWatcherData = {};
     renderComponent(<EntityDetails />, { path, url, state });
-    expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
+    expect(
+      screen.getByTestId(LoadingSpinnerTestId.LOADING),
+    ).toBeInTheDocument();
   });
 
   it("should show a not found message if the model does not exist", () => {

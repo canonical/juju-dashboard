@@ -19,8 +19,11 @@ import {
 import { renderComponent } from "testing/utils";
 
 import ActionsPanel from "./ActionsPanel";
-import { ConfirmationDialogLabel } from "./ConfirmationDialog";
-import { Label as ActionsPanelLabel } from "./types";
+import {
+  ConfirmationDialogLabel,
+  ConfirmationDialogTestId,
+} from "./ConfirmationDialog";
+import { Label as ActionsPanelLabel, TestId } from "./types";
 
 const mockResponse = applicationsCharmActionsResultsFactory.build({
   results: [
@@ -124,9 +127,9 @@ describe("ActionsPanel", () => {
   it("updates the title & unit list based on the number of units selected", async () => {
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(await screen.findByText("2 units selected")).toBeInTheDocument();
-    expect(
-      await screen.findByTestId("actions-panel-unit-list"),
-    ).toHaveTextContent("Run action on: ceph/0, 1");
+    expect(await screen.findByTestId(TestId.UNIT_LIST)).toHaveTextContent(
+      "Run action on: ceph/0, 1",
+    );
   });
 
   it("successfully handles no units selected", async () => {
@@ -138,9 +141,7 @@ describe("ActionsPanel", () => {
     expect(await screen.findByRole("heading")).toHaveTextContent(
       ActionsPanelLabel.NO_UNITS_SELECTED,
     );
-    expect(
-      await screen.findByTestId("actions-panel-unit-list"),
-    ).toHaveTextContent(
+    expect(await screen.findByTestId(TestId.UNIT_LIST)).toHaveTextContent(
       `Run action on: ${ActionsPanelLabel.NO_UNITS_SELECTED}`,
     );
   });
@@ -205,10 +206,10 @@ describe("ActionsPanel", () => {
     );
     expect(document.querySelector(".p-modal")).toBeInTheDocument();
     expect(
-      await screen.findByTestId("confirmation-modal-unit-count"),
+      await screen.findByTestId(ConfirmationDialogTestId.MODEL_UNIT_COUNT),
     ).toHaveTextContent("2");
     expect(
-      await screen.findByTestId("confirmation-modal-unit-names"),
+      await screen.findByTestId(ConfirmationDialogTestId.MODEL_UNIT_NAMES),
     ).toHaveTextContent("ceph/0, 1");
     expect(executeActionOnUnitsSpy).not.toHaveBeenCalled();
   });

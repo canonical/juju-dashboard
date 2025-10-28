@@ -1,2 +1,2 @@
 export { default } from "./ActionLogs";
-export { Label as ActionLogsLabel } from "./types";
+export { Label as ActionLogsLabel, TestId as ActionLogsTestId } from "./types";

@@ -23,13 +23,14 @@ describe("Content Reveal", () => {
   });
 
   it("should show correct title if only text and JSX", () => {
-    const title = <div data-testid="jsx-title">JSX Title</div>;
+    const TEST_ID = "jsx-title";
+    const title = <div data-testid={TEST_ID}>JSX Title</div>;
     render(
       <ContentReveal title={title}>
         <p>Banner text</p>
       </ContentReveal>,
     );
-    expect(screen.getByTestId("jsx-title")).toBeInTheDocument();
+    expect(screen.getByTestId(TEST_ID)).toBeInTheDocument();
   });
 
   it("should toggle when clicked", async () => {

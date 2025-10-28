@@ -31,7 +31,7 @@ import urls from "urls";
 import { logger } from "utils/logger";
 
 import ActionPayloadModal from "./ActionPayloadModal";
-import { Label, Output } from "./types";
+import { Label, Output, TestId } from "./types";
 
 type Operations = OperationResult[];
 type Actions = ActionResult[];
@@ -321,7 +321,7 @@ export default function ActionLogs(): JSX.Element {
                     onClick={() => {
                       setModalDetails(actionFullDetails.output);
                     }}
-                    {...testId("show-output")}
+                    {...testId(TestId.SHOW_OUTPUT)}
                     dense
                     hasIcon
                   >

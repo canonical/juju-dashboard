@@ -19,7 +19,7 @@ import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
 
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 // Helper to render the Applications
 const applicationsRow = (applications: string[]): MainTableRow | null => {
@@ -171,7 +171,7 @@ export default function DestroyModelDialog({
           Destroy model <b>{modelName}</b>
         </>
       }
-      {...testId("destroy-model-dialog")}
+      {...testId(TestId.DIALOG)}
       className="destroy-model-dialog"
       confirmButtonLabel={Label.DESTROY}
       confirmButtonDisabled={isConfirmDisabled}
@@ -200,7 +200,7 @@ export default function DestroyModelDialog({
         <>
           By destroying model <b>{modelName}</b>, you will also be removing:
           <MainTable
-            {...testId("model-status-info")}
+            {...testId(TestId.MODEL_STATUS_INFO)}
             headers={[{ content: "type" }, { content: "name" }]}
             rows={infoTableRows}
             className="p-main-table destroy-model-table"

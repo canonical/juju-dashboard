@@ -20,6 +20,7 @@ import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import ControllersIndex from "./ControllersIndex";
+import { TestId } from "./types";
 
 describe("Controllers table", () => {
   let state: RootState;
@@ -169,7 +170,7 @@ describe("Controllers table", () => {
       },
     });
     renderComponent(<ControllersIndex />, { state });
-    expect(screen.getAllByTestId("update-available")).toHaveLength(2);
+    expect(screen.getAllByTestId(TestId.UPDATE)).toHaveLength(2);
   });
 
   it("displays notifications if controllers need authentication", () => {

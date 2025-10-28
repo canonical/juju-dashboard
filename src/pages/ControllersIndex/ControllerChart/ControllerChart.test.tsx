@@ -1,11 +1,14 @@
 import { render, screen } from "@testing-library/react";
 
 import ControllerChart from "./ControllerChart";
+import { TestId } from "./types";
 
 describe("Controllers chart", () => {
   it("supports empty data", () => {
     render(<ControllerChart totalLabel="machine" />);
-    expect(screen.getByTestId("total-count")).toHaveTextContent("0 machines");
+    expect(screen.getByTestId(TestId.TOTAL_COUNT)).toHaveTextContent(
+      "0 machines",
+    );
   });
 
   it("renders the correct counts by status", () => {
@@ -17,13 +20,13 @@ describe("Controllers chart", () => {
         totalLabel="machine"
       />,
     );
-    expect(screen.getByTestId("legend-blocked")).toHaveTextContent(
+    expect(screen.getByTestId(TestId.LEGEND_BLOCKED)).toHaveTextContent(
       "Blocked: 17%, 5",
     );
-    expect(screen.getByTestId("legend-alert")).toHaveTextContent(
+    expect(screen.getByTestId(TestId.LEGEND_ALERT)).toHaveTextContent(
       "Alerts: 33%, 10",
     );
-    expect(screen.getByTestId("legend-running")).toHaveTextContent(
+    expect(screen.getByTestId(TestId.LEGEND_RUNNING)).toHaveTextContent(
       "Running: 50%, 15",
     );
   });

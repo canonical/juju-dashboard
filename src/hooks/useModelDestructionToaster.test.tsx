@@ -2,6 +2,7 @@ import { screen, waitFor, within } from "@testing-library/react";
 import type { JSX } from "react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
+import { ToastCardTestId } from "components/ToastCard";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
@@ -67,7 +68,7 @@ describe("useModelDestructionToaster", () => {
     };
     renderComponent(<TestComponent />, { state });
 
-    const card = await screen.findByTestId("toast-card");
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
     expect(card).toHaveAttribute("data-type", "info");
     expect(
       await within(card).findByText('Destroying model "enterprise"...'),
@@ -89,7 +90,7 @@ describe("useModelDestructionToaster", () => {
       wsControllerURL: "wss://example.com:17070/api",
     });
 
-    const card = await screen.findByTestId("toast-card");
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
     expect(card).toHaveAttribute("data-type", "negative");
     expect(
       await within(card).findByText('Destroying model "enterprise" failed'),
@@ -128,7 +129,7 @@ describe("useModelDestructionToaster", () => {
       wsControllerURL: "wss://example.com:17070/api",
     });
 
-    const card = await screen.findByTestId("toast-card");
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
     expect(card).toHaveAttribute("data-type", "positive");
     expect(
       await within(card).findByText(
@@ -152,6 +153,6 @@ describe("useModelDestructionToaster", () => {
     };
     renderComponent(<TestComponent />, { state });
 
-    expect(screen.queryByTestId("toast-card")).toBeNull();
+    expect(screen.queryByTestId(ToastCardTestId.TOAST_CARD)).toBeNull();
   });
 });

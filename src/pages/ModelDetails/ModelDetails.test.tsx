@@ -17,20 +17,29 @@ import urls from "urls";
 
 import ModelDetails from "./ModelDetails";
 
+const APP_TEST_ID = "app";
+const MACHINE_TEST_ID = "machine";
+const MODEL_TEST_ID = "model";
+const UNIT_TEST_ID = "unit";
+
 vi.mock("pages/EntityDetails/App", () => {
-  return { default: (): JSX.Element => <div data-testid="app"></div> };
+  return { default: (): JSX.Element => <div data-testid={APP_TEST_ID}></div> };
 });
 
 vi.mock("pages/EntityDetails/Model", () => {
-  return { default: (): JSX.Element => <div data-testid="model"></div> };
+  return {
+    default: (): JSX.Element => <div data-testid={MODEL_TEST_ID}></div>,
+  };
 });
 
 vi.mock("pages/EntityDetails/Unit", () => {
-  return { default: (): JSX.Element => <div data-testid="unit"></div> };
+  return { default: (): JSX.Element => <div data-testid={UNIT_TEST_ID}></div> };
 });
 
 vi.mock("pages/EntityDetails/Machine", () => {
-  return { default: (): JSX.Element => <div data-testid="machine"></div> };
+  return {
+    default: (): JSX.Element => <div data-testid={MACHINE_TEST_ID}></div>,
+  };
 });
 
 vi.mock("@canonical/jujulib", () => ({
@@ -96,7 +105,7 @@ describe("ModelDetails", () => {
     vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => client);
     renderComponent(<ModelDetails />, { path, url, state });
     // Wait for the component to be rendered so that async methods have completed.
-    await screen.findByTestId("model");
+    await screen.findByTestId(MODEL_TEST_ID);
     expect(client.conn.facades.client.watchAll).toHaveBeenCalled();
   });
 
@@ -112,7 +121,7 @@ describe("ModelDetails", () => {
       status,
     });
     // Wait for the component to be rendered so that async methods have completed.
-    await screen.findByTestId("model");
+    await screen.findByTestId(MODEL_TEST_ID);
     expect(
       actions.find((dispatch) => dispatch.type === action.type),
     ).toMatchObject(action);
@@ -124,7 +133,7 @@ describe("ModelDetails", () => {
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(<ModelDetails />, { path, url, store });
     // Wait for the component to be rendered so that async methods have completed.
-    await screen.findByTestId("model");
+    await screen.findByTestId(MODEL_TEST_ID);
     expect(client.conn.facades.client.fullStatus).not.toHaveBeenCalled();
     expect(
       actions.find(
@@ -137,14 +146,14 @@ describe("ModelDetails", () => {
   it("should stop watching the model on unmount", async () => {
     const { result } = renderComponent(<ModelDetails />, { path, url, state });
     // Wait for the component to be rendered so that async methods have completed.
-    await screen.findByTestId("model");
+    await screen.findByTestId(MODEL_TEST_ID);
     result.unmount();
     expect(client.conn.facades.allWatcher.stop).toHaveBeenCalled();
   });
 
   it("should display the model page", async () => {
     renderComponent(<ModelDetails />, { path, url, state });
-    expect(await screen.findByTestId("model")).toBeInTheDocument();
+    expect(await screen.findByTestId(MODEL_TEST_ID)).toBeInTheDocument();
   });
 
   it("should display the app page", async () => {
@@ -157,7 +166,7 @@ describe("ModelDetails", () => {
         appName: "ceph",
       }),
     });
-    expect(await screen.findByTestId("app")).toBeInTheDocument();
+    expect(await screen.findByTestId(APP_TEST_ID)).toBeInTheDocument();
   });
 
   it("should display the unit page", async () => {
@@ -171,7 +180,7 @@ describe("ModelDetails", () => {
         unitId: "ceph-0",
       }),
     });
-    expect(await screen.findByTestId("unit")).toBeInTheDocument();
+    expect(await screen.findByTestId(UNIT_TEST_ID)).toBeInTheDocument();
   });
 
   it("should display the machine page", async () => {
@@ -184,7 +193,7 @@ describe("ModelDetails", () => {
         machineId: "1",
       }),
     });
-    expect(await screen.findByTestId("machine")).toBeInTheDocument();
+    expect(await screen.findByTestId(MACHINE_TEST_ID)).toBeInTheDocument();
   });
 
   it("should display error if startModelWatcher timed out", async () => {

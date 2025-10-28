@@ -58,9 +58,7 @@ vi.mock("components/Topology", () => {
 });
 
 vi.mock("components/WebCLI", () => {
-  const WebCLI = (): JSX.Element => (
-    <div className="webcli" data-testid="webcli"></div>
-  );
+  const WebCLI = (): JSX.Element => <div className="webcli"></div>;
   return { default: WebCLI };
 });
 
@@ -658,7 +656,7 @@ describe("Model", () => {
     });
 
     const noMachinesMsg = document.querySelector(
-      "[data-testid='no-machines-msg']",
+      `[data-testid='${TestId.NO_MACHINES}']`,
     );
     expect(noMachinesMsg).toBeInTheDocument();
   });

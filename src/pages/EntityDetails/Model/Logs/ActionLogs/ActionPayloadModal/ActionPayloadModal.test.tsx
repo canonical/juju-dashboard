@@ -6,7 +6,7 @@ import * as componentUtils from "components/utils";
 import { renderComponent } from "testing/utils";
 
 import ActionPayloadModal from "./ActionPayloadModal";
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 vi.mock("components/utils", async () => {
   const utils = await vi.importActual("components/utils");
@@ -33,7 +33,7 @@ describe("ActionPayloadModal", () => {
     renderComponent(
       <ActionPayloadModal payload={mockPayload} onClose={vi.fn()} />,
     );
-    const actionPayloadModal = screen.getByTestId("action-payload-modal");
+    const actionPayloadModal = screen.getByTestId(TestId.ACTION_PAYLOAD_MODAL);
     expect(actionPayloadModal).toBeInTheDocument();
     expect(
       within(actionPayloadModal).getByRole("dialog", { name: Label.TITLE }),

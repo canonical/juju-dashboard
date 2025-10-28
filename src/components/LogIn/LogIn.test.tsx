@@ -2,6 +2,7 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
+import { ToastCardTestId } from "components/ToastCard";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -141,7 +142,7 @@ describe("LogIn", () => {
       }),
     });
     renderComponent(<LogIn />, { state });
-    const card = await screen.findByTestId("toast-card");
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
     expect(
       await within(card).findByText("Controller authentication required"),
     ).toBeInTheDocument();
@@ -160,12 +161,14 @@ describe("LogIn", () => {
       }),
     });
     renderComponent(<LogIn />, { state });
-    const card = await screen.findByTestId("toast-card");
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
     expect(card).toBeInTheDocument();
     await userEvent.click(
       await within(card).findByRole("link", { name: "Authenticate" }),
       { pointerEventsCheck: 0 },
     );
-    expect(screen.queryByTestId("toast-card")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(ToastCardTestId.TOAST_CARD),
+    ).not.toBeInTheDocument();
   });
 });

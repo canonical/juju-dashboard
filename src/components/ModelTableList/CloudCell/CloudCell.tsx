@@ -9,6 +9,8 @@ import { testId } from "testing/utils";
 
 import { generateCloudAndRegion } from "../shared";
 
+import { TestId } from "./types";
+
 type Props = {
   model: ModelData;
 };
@@ -42,7 +44,7 @@ const CloudCell: FC<Props> = ({ model }: Props) => {
           src={src}
           alt={alt}
           className="p-table__logo"
-          {...testId("provider-logo")}
+          {...testId(TestId.PROVIDER_LOGO)}
         />
       ) : null}
       {generateCloudAndRegion(model)}

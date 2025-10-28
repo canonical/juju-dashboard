@@ -19,7 +19,10 @@ import {
 import { renderComponent } from "testing/utils";
 
 import CharmActionsPanel from "./CharmActionsPanel";
-import { ConfirmationDialogLabel } from "./ConfirmationDialog";
+import {
+  ConfirmationDialogLabel,
+  ConfirmationDialogTestId,
+} from "./ConfirmationDialog";
 
 vi.mock("juju/api-hooks/actions", () => {
   return {
@@ -193,7 +196,7 @@ describe("CharmActionsPanel", () => {
     );
     expect(document.querySelector(".p-modal")).toBeInTheDocument();
     expect(
-      await screen.findByTestId("confirmation-modal-unit-count"),
+      await screen.findByTestId(ConfirmationDialogTestId.MODEL_UNIT_COUNT),
     ).toHaveTextContent("1 (2)");
     expect(executeActionOnUnitsSpy).not.toHaveBeenCalled();
   });

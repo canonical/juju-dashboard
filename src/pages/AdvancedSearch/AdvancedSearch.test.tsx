@@ -12,6 +12,7 @@ import {
 import { renderComponent } from "testing/utils";
 
 import AdvancedSearch from "./AdvancedSearch";
+import { SearchFormTestId } from "./SearchForm";
 
 describe("AdvancedSearch", () => {
   let state: RootState;
@@ -39,7 +40,9 @@ describe("AdvancedSearch", () => {
       }),
     });
     renderComponent(<AdvancedSearch />, { state });
-    expect(screen.queryByTestId("search-form")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(SearchFormTestId.SEARCH_FORM),
+    ).not.toBeInTheDocument();
     expect(screen.getByText(PageNotFoundLabel.NOT_FOUND)).toBeInTheDocument();
   });
 
@@ -50,6 +53,8 @@ describe("AdvancedSearch", () => {
 
   it("should display the search form", () => {
     renderComponent(<AdvancedSearch />, { state });
-    expect(screen.getByTestId("search-form")).toBeInTheDocument();
+    expect(
+      screen.getByTestId(SearchFormTestId.SEARCH_FORM),
+    ).toBeInTheDocument();
   });
 });
