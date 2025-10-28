@@ -18,7 +18,7 @@ import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import DestroyModelDialog from "./DestroyModelDialog";
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 describe("DestroyModelDialog", () => {
   let state: RootState;
@@ -80,7 +80,7 @@ describe("DestroyModelDialog", () => {
       />,
       { state },
     );
-    const destroyModelDialog = screen.getByTestId("destroy-model-dialog");
+    const destroyModelDialog = screen.getByTestId(TestId.DIALOG);
     expect(destroyModelDialog).toBeInTheDocument();
     expect(
       within(destroyModelDialog).getByRole("dialog", {
@@ -88,7 +88,7 @@ describe("DestroyModelDialog", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      within(destroyModelDialog).queryByTestId("model-status-info"),
+      within(destroyModelDialog).queryByTestId(TestId.MODEL_STATUS_INFO),
     ).toBeNull();
   });
 
@@ -102,10 +102,10 @@ describe("DestroyModelDialog", () => {
       { state },
     );
 
-    const destroyModelDialog = screen.getByTestId("destroy-model-dialog");
+    const destroyModelDialog = screen.getByTestId(TestId.DIALOG);
     expect(destroyModelDialog).toBeInTheDocument();
     expect(
-      within(destroyModelDialog).getByTestId("model-status-info"),
+      within(destroyModelDialog).getByTestId(TestId.MODEL_STATUS_INFO),
     ).toBeInTheDocument();
     expect(
       within(destroyModelDialog).getByText(/Applications \(1\)/),
@@ -148,7 +148,7 @@ describe("DestroyModelDialog", () => {
       { state },
     );
 
-    const destroyModelDialog = screen.getByTestId("destroy-model-dialog");
+    const destroyModelDialog = screen.getByTestId(TestId.DIALOG);
     expect(destroyModelDialog).toBeInTheDocument();
     expect(
       within(destroyModelDialog).getByText(

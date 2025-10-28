@@ -16,15 +16,16 @@ describe("Base Layout", () => {
   });
 
   it("should display the children", () => {
+    const TEST_ID = "main-children";
     renderComponent(<BaseLayout />, {
       routeChildren: [
         {
           path: "",
-          element: <div data-testid="main-children">App content</div>,
+          element: <div data-testid={TEST_ID}>App content</div>,
         },
       ],
     });
-    const main = screen.getByTestId("main-children");
+    const main = screen.getByTestId(TEST_ID);
     expect(within(main).getByText("App content")).toBeInTheDocument();
   });
 

@@ -1,2 +1,2 @@
 export { default } from "./SearchForm";
-export { Label as SearchFormLabel } from "./types";
+export { Label as SearchFormLabel, TestId as SearchFormTestId } from "./types";

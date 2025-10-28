@@ -4,3 +4,7 @@ export enum Label {
   LOGS = "Logs",
   PERMISSIONS = "Permissions",
 }
+
+export enum TestId {
+  UPDATE = "dashboard-update",
+}

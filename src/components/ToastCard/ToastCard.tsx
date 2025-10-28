@@ -4,6 +4,8 @@ import reactHotToast from "react-hot-toast";
 
 import { testId } from "testing/utils";
 
+import { TestId } from "./types";
+
 export type ToastInstance = {
   createdAt: number;
   duration?: number | undefined;
@@ -54,7 +56,7 @@ export default function ToastCard({
       data-type={type}
       role="status"
       aria-live="polite"
-      {...testId("toast-card")}
+      {...testId(TestId.TOAST_CARD)}
     >
       <div className="toast-card__body">
         {iconName && <i className={`p-icon--${iconName}`}>{iconName}</i>}

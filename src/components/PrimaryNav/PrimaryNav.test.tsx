@@ -25,7 +25,7 @@ import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import PrimaryNav from "./PrimaryNav";
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 vi.mock("@canonical/jujulib/dist/api/versions", () => ({
   dashboardUpdateAvailable: vi.fn(),
@@ -129,9 +129,7 @@ describe("PrimaryNav", () => {
       .build({ general: { appVersion: "0.8.0" } });
 
     renderComponent(<PrimaryNav />, { state });
-    const notification = await waitFor(() =>
-      screen.getByTestId("dashboard-update"),
-    );
+    const notification = await waitFor(() => screen.getByTestId(TestId.UPDATE));
     expect(notification).toBeInTheDocument();
   });
 
@@ -142,7 +140,7 @@ describe("PrimaryNav", () => {
       .build({ general: { appVersion: "9.9.0" } });
     renderComponent(<PrimaryNav />, { state });
     const notification = await waitFor(() =>
-      screen.queryByTestId("dashboard-update"),
+      screen.queryByTestId(TestId.UPDATE),
     );
     expect(notification).not.toBeInTheDocument();
   });
@@ -156,7 +154,7 @@ describe("PrimaryNav", () => {
       .build({ general: { appVersion: "9.9.0" } });
     renderComponent(<PrimaryNav />, { state });
     const notification = await waitFor(() =>
-      screen.queryByTestId("dashboard-update"),
+      screen.queryByTestId(TestId.UPDATE),
     );
     expect(notification).not.toBeInTheDocument();
   });

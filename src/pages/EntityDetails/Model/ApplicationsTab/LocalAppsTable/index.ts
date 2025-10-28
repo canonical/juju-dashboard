@@ -1,2 +1,5 @@
 export { default } from "./LocalAppsTable";
-export { Label as LocalAppsTableLabel } from "./types";
+export {
+  Label as LocalAppsTableLabel,
+  TestId as LocalAppsTableTestId,
+} from "./types";

@@ -6,12 +6,16 @@ import { vi } from "vitest";
 
 import FormikFormData from "./FormikFormData";
 
+const TEST_ID = "field";
+
 describe("FormikFormData", () => {
   function generateComponent(): {
     changeHandler: Mock;
     setupHandler: Mock;
   } {
-    const children = <Field type="checkbox" name="test" data-testid="field" />;
+    const children = (
+      <Field type="checkbox" name="test" data-testid={TEST_ID} />
+    );
     const changeHandler = vi.fn();
     const setupHandler = vi.fn();
     render(
@@ -31,7 +35,7 @@ describe("FormikFormData", () => {
 
   it("renders the supplied children", () => {
     generateComponent();
-    expect(screen.getByTestId("field")).toBeInTheDocument();
+    expect(screen.getByTestId(TEST_ID)).toBeInTheDocument();
   });
 
   it("emits change events for the form", async () => {

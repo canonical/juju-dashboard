@@ -236,7 +236,7 @@ const ControllersIndex: FC = () => {
                   </>
                 }
               >
-                <Icon name="warning" {...testId("update-available")} />
+                <Icon name="warning" {...testId(TestId.UPDATE)} />
               </Tooltip>
             ) : null}
           </>

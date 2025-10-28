@@ -4,3 +4,7 @@ export enum Label {
   CANCEL_BUTTON = "Cancel",
   CONFIRM_BUTTON = "Confirm",
 }
+
+export enum TestId {
+  MODEL_UNIT_COUNT = "confirmation-modal-unit-count",
+}

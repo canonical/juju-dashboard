@@ -8,3 +8,7 @@ export enum Label {
   SEARCH = "Search",
   COPY_JSON = "Copy JSON",
 }
+
+export enum TestId {
+  SEARCH_FORM = "search-form",
+}

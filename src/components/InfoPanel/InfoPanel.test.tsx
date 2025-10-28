@@ -16,8 +16,10 @@ import { renderComponent } from "testing/utils";
 import InfoPanel from "./InfoPanel";
 import { Label } from "./types";
 
+const TEST_ID = "topology";
+
 vi.mock("components/Topology", () => {
-  const Topology = (): ReactNode => <div data-testid="topology"></div>;
+  const Topology = (): ReactNode => <div data-testid={TEST_ID}></div>;
   return { default: Topology };
 });
 
@@ -53,7 +55,7 @@ describe("Info Panel", () => {
 
   it("renders the topology", () => {
     renderComponent(<InfoPanel />, { state, url, path });
-    expect(screen.getByTestId("topology")).toBeInTheDocument();
+    expect(screen.getByTestId(TEST_ID)).toBeInTheDocument();
   });
 
   it("renders the expanded topology on click", async () => {

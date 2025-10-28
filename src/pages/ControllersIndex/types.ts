@@ -5,4 +5,5 @@ export enum Label {
 
 export enum TestId {
   COMPONENT = "ControllersIndex",
+  UPDATE = "update-available",
 }

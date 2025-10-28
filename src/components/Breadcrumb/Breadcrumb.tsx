@@ -9,6 +9,8 @@ import { testId } from "testing/utils";
 import urls from "urls";
 import { ModelTab } from "urls";
 
+import { TestId } from "./types";
+
 export default function Breadcrumb(): JSX.Element {
   const {
     userName,
@@ -58,7 +60,7 @@ export default function Breadcrumb(): JSX.Element {
         <>
           <li
             className="p-breadcrumbs__item u-no-padding--top"
-            {...testId("breadcrumb-model")}
+            {...testId(TestId.MODEL)}
           >
             <Link to={urls.model.index({ userName, modelName })}>
               {modelName}
@@ -67,7 +69,7 @@ export default function Breadcrumb(): JSX.Element {
           {!unitId && (
             <li
               className="p-breadcrumbs__item u-no-padding--top"
-              {...testId("breadcrumb-section")}
+              {...testId(TestId.SECTION)}
             >
               <Link to={urls.model.tab({ userName, modelName, tab: view })}>
                 {entityType.title}
@@ -78,7 +80,7 @@ export default function Breadcrumb(): JSX.Element {
             <>
               <li
                 className="p-breadcrumbs__item u-no-padding--top"
-                {...testId("breadcrumb-section")}
+                {...testId(TestId.SECTION)}
               >
                 <Link
                   to={urls.model.tab({
@@ -92,7 +94,7 @@ export default function Breadcrumb(): JSX.Element {
               </li>
               <li
                 className="p-breadcrumbs__item u-no-padding--top"
-                {...testId("breadcrumb-app")}
+                {...testId(TestId.APP)}
               >
                 {appName ? (
                   <Link
@@ -116,7 +118,7 @@ export default function Breadcrumb(): JSX.Element {
     return (
       <li
         className="p-breadcrumbs__item p-breadcrumbs__item--restricted"
-        {...testId("breadcrumb-model")}
+        {...testId(TestId.MODEL)}
         title={modelName}
       >
         <Link
@@ -137,7 +139,7 @@ export default function Breadcrumb(): JSX.Element {
 
   return (
     <nav className="p-breadcrumbs" aria-label="Breadcrumb navigation">
-      <ol className="p-breadcrumbs__items" {...testId("breadcrumb-items")}>
+      <ol className="p-breadcrumbs__items" {...testId(TestId.ITEMS)}>
         {generateBreadcrumbs()}
       </ol>
     </nav>

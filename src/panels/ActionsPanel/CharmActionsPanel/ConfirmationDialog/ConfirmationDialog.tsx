@@ -12,7 +12,7 @@ import type { ActionOptionValue } from "panels/ActionsPanel/types";
 import { ConfirmType, type ConfirmTypes } from "panels/types";
 import { testId } from "testing/utils";
 
-import { Label } from "./types";
+import { Label, TestId } from "./types";
 
 type Props = {
   confirmType: ConfirmTypes;
@@ -113,7 +113,7 @@ const ConfirmationDialog = ({
           <h4 className="p-muted-heading u-no-margin--bottom">
             APPLICATION COUNT (UNIT COUNT)
           </h4>
-          <p {...testId("confirmation-modal-unit-count")}>
+          <p {...testId(TestId.MODEL_UNIT_COUNT)}>
             {selectedApplications.length} ({unitCount})
           </p>
         </ConfirmationModal>

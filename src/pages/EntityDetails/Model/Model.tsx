@@ -180,7 +180,7 @@ const Model: FC = () => {
               sortable
             />
           ) : (
-            <span {...testId("no-machines-msg")}>
+            <span {...testId(TestId.NO_MACHINES)}>
               There are no machines in this model -{" "}
               <a className="p-link--external" href={externalURLs.machine}>
                 learn more about machines
@@ -235,7 +235,7 @@ const Model: FC = () => {
         ) : (
           <>
             {query.activeView === "integrations" && (
-              <span {...testId("no-integrations-msg")}>
+              <span {...testId(TestId.NO_INTEGRATIONS)}>
                 There are no integrations associated with this model -{" "}
                 <a
                   className="p-link--external"

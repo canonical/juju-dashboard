@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 
+import { TestId as DestroyModelDialogTestId } from "components/DestroyModelDialog/types";
 import { Label as ModelActionsLabel } from "components/ModelActions/types";
 import urls from "urls";
 
@@ -62,7 +63,9 @@ test.describe("Destroy Model", () => {
       .click();
 
     // Confirm destroy
-    await expect(page.getByTestId("destroy-model-dialog")).toBeInViewport();
+    await expect(
+      page.getByTestId(DestroyModelDialogTestId.DIALOG),
+    ).toBeInViewport();
     await expect(
       page.getByText(`Destroy model ${model.name}`),
     ).toBeInViewport();
@@ -73,7 +76,9 @@ test.describe("Destroy Model", () => {
       .click();
 
     // Destruction in progress
-    await expect(page.getByTestId("destroy-model-dialog")).not.toBeInViewport();
+    await expect(
+      page.getByTestId(DestroyModelDialogTestId.DIALOG),
+    ).not.toBeInViewport();
     await expect(
       page.locator("tr", { hasText: "Destroying…" }),
     ).toBeInViewport();

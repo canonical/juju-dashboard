@@ -25,9 +25,7 @@ vi.mock("components/Topology", () => {
 });
 
 vi.mock("components/WebCLI", () => {
-  const WebCLI = (): JSX.Element => (
-    <div className="webcli" data-testid="webcli"></div>
-  );
+  const WebCLI = (): JSX.Element => <div className="webcli"></div>;
   return { default: WebCLI };
 });
 

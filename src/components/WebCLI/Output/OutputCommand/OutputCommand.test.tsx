@@ -4,6 +4,8 @@ import { renderComponent } from "testing/utils";
 
 import OutputCommand from "./OutputCommand";
 
+const TEST_ID = "custom";
+
 describe("OutputCommand", () => {
   it("should display the content with correct formatting", () => {
     const content = [`\u001b[1;39mApp\n\u001b[0m\u001b[33munknown`];
@@ -49,15 +51,13 @@ describe("OutputCommand", () => {
           "remove-unit": {
             exact: false,
             process: (messageList) => (
-              <div data-testid="custom">{messageList[0]}</div>
+              <div data-testid={TEST_ID}>{messageList[0]}</div>
             ),
           },
         }}
       />,
     );
-    expect(screen.getByTestId("custom")).toHaveTextContent(
-      /^Model Controller$/,
-    );
+    expect(screen.getByTestId(TEST_ID)).toHaveTextContent(/^Model Controller$/);
   });
 
   // When a tableLinks prop is supplied and a command that doesn't get
@@ -86,7 +86,6 @@ describe("OutputCommand", () => {
   // rather than returning the outputCommand of `processOutput` which would be nothing.
   it("falls back to default processor if the provided processor does not handle command", async () => {
     const messages = ["Model       Controller", "k8s         workloads"];
-    const customId = "custom";
     renderComponent(
       <OutputCommand
         command={"status"}
@@ -101,7 +100,7 @@ describe("OutputCommand", () => {
     expect(document.querySelector("body")).toHaveTextContent(
       "Model Controller",
     );
-    expect(screen.queryByTestId(customId)).not.toBeInTheDocument();
+    expect(screen.queryByTestId(TEST_ID)).not.toBeInTheDocument();
   });
 
   it("falls back to default processor if the provided processor fails", async () => {
@@ -130,7 +129,7 @@ describe("OutputCommand", () => {
     const process = vi
       .fn()
       .mockImplementation((messagesList) => (
-        <div data-testid="custom">{messagesList[0]}</div>
+        <div data-testid={TEST_ID}>{messagesList[0]}</div>
       ));
     const processOutput = {
       "remove-unit": {
@@ -161,7 +160,7 @@ describe("OutputCommand", () => {
     const process = vi
       .fn()
       .mockImplementation((messagesList) => (
-        <div data-testid="custom">{messagesList[0]}</div>
+        <div data-testid={TEST_ID}>{messagesList[0]}</div>
       ));
     const processOutput = {
       "remove-unit": {
@@ -192,7 +191,7 @@ describe("OutputCommand", () => {
     const process = vi
       .fn()
       .mockImplementation((messagesList) => (
-        <div data-testid="custom">{messagesList[0]}</div>
+        <div data-testid={TEST_ID}>{messagesList[0]}</div>
       ));
     const { rerender } = render(
       <OutputCommand
@@ -209,7 +208,7 @@ describe("OutputCommand", () => {
     const newProcess = vi
       .fn()
       .mockImplementation((messagesList) => (
-        <div data-testid="custom">{messagesList[0]}</div>
+        <div data-testid={TEST_ID}>{messagesList[0]}</div>
       ));
     expect(process).toHaveBeenCalledOnce();
     rerender(
@@ -233,7 +232,7 @@ describe("OutputCommand", () => {
     const process = vi
       .fn()
       .mockImplementation((messagesList) => (
-        <div data-testid="custom">{messagesList[0]}</div>
+        <div data-testid={TEST_ID}>{messagesList[0]}</div>
       ));
     const processOutput = {
       "remove-unit": {

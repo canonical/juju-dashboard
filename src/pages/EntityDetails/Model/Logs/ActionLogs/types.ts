@@ -8,3 +8,7 @@ export enum Output {
   STDERR = "STDERR",
   STDOUT = "STDOUT",
 }
+
+export enum TestId {
+  SHOW_OUTPUT = "show-output",
+}

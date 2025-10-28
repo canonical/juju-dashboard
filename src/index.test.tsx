@@ -19,8 +19,10 @@ import {
   renderApp,
 } from "./index";
 
+const APP_TEST_ID = "app";
+
 vi.mock("components/App", () => {
-  const App = (): JSX.Element => <div data-testid="app"></div>;
+  const App = (): JSX.Element => <div data-testid={APP_TEST_ID}></div>;
   return { default: App };
 });
 
@@ -248,7 +250,7 @@ describe("renderApp", () => {
     window.jujuDashboardConfig = config;
     renderApp();
     await waitFor(() => {
-      expect(screen.getByTestId("app")).toBeInTheDocument();
+      expect(screen.getByTestId(APP_TEST_ID)).toBeInTheDocument();
     });
   });
 });

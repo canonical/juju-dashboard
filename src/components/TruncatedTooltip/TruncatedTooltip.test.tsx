@@ -5,6 +5,9 @@ import { vi } from "vitest";
 
 import TruncatedTooltip from "./TruncatedTooltip";
 
+// The tooltip portal test id is defined in react-components.
+const TOOLTIP_PORTAL_TEST_ID = "tooltip-portal";
+
 describe("TruncatedTooltip", () => {
   const offsetWidth = Object.getOwnPropertyDescriptor(
     HTMLElement.prototype,
@@ -50,7 +53,7 @@ describe("TruncatedTooltip", () => {
       await userEventWithTimers.hover(screen.getByText(content));
       vi.runAllTimers();
     });
-    expect(screen.getByTestId("tooltip-portal")).toHaveClass("u-hide");
+    expect(screen.getByTestId(TOOLTIP_PORTAL_TEST_ID)).toHaveClass("u-hide");
   });
 
   it("displays the tooltip if the content is truncated", async () => {
@@ -69,7 +72,9 @@ describe("TruncatedTooltip", () => {
       await userEventWithTimers.hover(screen.getByText(content));
       vi.runAllTimers();
     });
-    expect(screen.getByTestId("tooltip-portal")).not.toHaveClass("u-hide");
+    expect(screen.getByTestId(TOOLTIP_PORTAL_TEST_ID)).not.toHaveClass(
+      "u-hide",
+    );
   });
 
   it("should render an inner div by default", () => {
