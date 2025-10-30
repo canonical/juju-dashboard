@@ -1,11 +1,7 @@
 import { expect } from "@playwright/test";
 
 import { Label as ModelActionsLabel } from "components/ModelActions/types";
-import { TestId as ToastCardTestId } from "components/ToastCard/types";
-import {
-  Label as ShareModelLabel,
-  TestId as ShareModelTestId,
-} from "panels/ShareModelPanel/types";
+import { Label as ShareModelLabel } from "panels/ShareModelPanel/types";
 import { Label as ShareModelPanelLabel } from "panels/ShareModelPanel/types";
 import urls from "urls";
 
@@ -42,7 +38,11 @@ test.describe("Model Access Control", () => {
     await page.getByRole("button", { name: ModelActionsLabel.TOGGLE }).click();
     await page.getByRole("button", { name: ModelActionsLabel.ACCESS }).click();
 
-    await expect(page.getByTestId(ShareModelTestId.PANEL)).toBeInViewport();
+    await expect(
+      page.getByRole("dialog", {
+        name: `Model access: ${model.name}`,
+      }),
+    ).toBeInViewport();
 
     await page
       .getByRole("textbox", { name: ShareModelPanelLabel.FIELD_USERNAME })
@@ -51,9 +51,9 @@ test.describe("Model Access Control", () => {
       .getByRole("button", { name: ShareModelLabel.ADD_BUTTON })
       .click();
 
-    await expect(
-      page.getByTestId(ToastCardTestId.TOAST_CARD).last(),
-    ).toContainText(`${user1.cliUsername} now has access to this model`);
+    await expect(page.getByRole("status").last()).toContainText(
+      `${user1.cliUsername} now has access to this model`,
+    );
     // Create a fresh context so that the second user can log in. This saves
     // logging out and clearing the IDP session for Candid.
     const context = await browser.newContext();

@@ -2,10 +2,7 @@ import { expect } from "@playwright/test";
 
 import { Label as AppLabel } from "pages/EntityDetails/App/types";
 import { Label as ConfirmationDialogLabel } from "panels/ConfigPanel/ConfirmationDialog/types";
-import {
-  Label as ConfigPanelLabel,
-  TestId as ConfigPanelTestId,
-} from "panels/ConfigPanel/types";
+import { Label as ConfigPanelLabel } from "panels/ConfigPanel/types";
 
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
@@ -42,10 +39,15 @@ test.describe("configure application", () => {
     await page.getByRole("link", { name: application.name }).click();
     // Open the configure panel for the corresponding application:
     await page.getByRole("button", { name: AppLabel.CONFIGURE }).click();
-    const configPanel = page.getByTestId(ConfigPanelTestId.PANEL);
+    const configPanel = page.getByRole("dialog", {
+      name: application.name,
+      exact: false,
+    });
     await expect(configPanel).toBeInViewport();
     // Set the config:
-    const textbox = page.getByTestId(application.config).getByRole("textbox");
+    const textbox = page
+      .getByRole("button", { name: application.config, exact: false })
+      .getByRole("textbox");
     const changed = "new value";
     await textbox.clear();
     await textbox.fill(changed);
@@ -68,10 +70,17 @@ test.describe("configure application", () => {
     await user.reloadDashboard(page);
     // Open the configure panel again:
     await page.getByRole("button", { name: AppLabel.CONFIGURE }).click();
-    await expect(page.getByTestId(ConfigPanelTestId.PANEL)).toBeInViewport();
+    await expect(
+      page.getByRole("dialog", {
+        name: application.name,
+        exact: false,
+      }),
+    ).toBeInViewport();
     // Check that the config persisted:
     await expect(
-      page.getByTestId(application.config).getByRole("textbox"),
+      page
+        .getByRole("button", { name: application.config, exact: false })
+        .getByRole("textbox"),
     ).toHaveValue(changed);
   });
 

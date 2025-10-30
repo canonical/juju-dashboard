@@ -1,11 +1,7 @@
 import { expect } from "@playwright/test";
 
-import {
-  Label as AppLabel,
-  TestId as AppTestId,
-} from "pages/EntityDetails/App/types";
+import { Label as AppLabel } from "pages/EntityDetails/App/types";
 import { Label as ConfirmationDialogLabel } from "panels/ActionsPanel/ConfirmationDialog/types";
-import { TestId as ActionsPanelTestId } from "panels/ActionsPanel/types";
 import urls from "urls";
 
 import { test } from "../fixtures/setup";
@@ -55,9 +51,14 @@ test.describe("Actions", () => {
         // The actual checkbox is hidden so force click on it.
         force: true,
       });
-    await page.getByTestId(AppTestId.RUN_ACTION_BUTTON).click();
+    await page.getByRole("button", { name: AppLabel.RUN_ACTION }).click();
 
-    await expect(page.getByTestId(ActionsPanelTestId.PANEL)).toBeInViewport();
+    await expect(
+      page.getByRole("dialog", {
+        name: application.name,
+        exact: false,
+      }),
+    ).toBeInViewport();
 
     // Run the action
     await page
@@ -66,7 +67,9 @@ test.describe("Actions", () => {
       })
       .click();
     await page
-      .getByTestId(ActionsPanelTestId.PANEL)
+      .getByRole("dialog", {
+        name: `${application.name} icon 1 unit selected`,
+      })
       .getByRole("button", { name: AppLabel.RUN_ACTION })
       .click();
 
@@ -74,11 +77,14 @@ test.describe("Actions", () => {
     await page.getByText(ConfirmationDialogLabel.CONFIRM_BUTTON).click();
 
     await expect(
-      page.getByTestId(ActionsPanelTestId.PANEL),
+      page.getByRole("dialog", {
+        name: application.name,
+        exact: false,
+      }),
     ).not.toBeInViewport();
 
     // Go to the action logs and verify that the action was executed
-    await page.getByTestId(AppTestId.SHOW_LOGS).click();
+    await page.getByRole("button", { name: AppLabel.VIEW_LOGS }).click();
     await expect(
       page
         .locator("tr", { hasText: application.name })
@@ -96,7 +102,7 @@ test.describe("Actions", () => {
     });
     await user.dashboardLogin(page, application.url);
     await expect(
-      page.getByTestId(AppTestId.UNITS_TABLE).getByRole("checkbox"),
+      page.getByRole("table").getByRole("checkbox"),
     ).not.toBeVisible();
     await expect(
       page.getByRole("button", { name: AppLabel.RUN_ACTION }),

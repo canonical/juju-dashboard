@@ -2,20 +2,11 @@ import { expect } from "@playwright/test";
 
 import { Label as AppLabel } from "pages/EntityDetails/App/types";
 import { Label as ModelTabsLabel } from "pages/EntityDetails/Model/ModelTabs/types";
-import {
-  Label as SecretsTableLabel,
-  TestId as SecretsTableTestId,
-} from "pages/EntityDetails/Model/Secrets/SecretsTable/types";
+import { Label as SecretsTableLabel } from "pages/EntityDetails/Model/Secrets/SecretsTable/types";
 import { Label as SecretsLabel } from "pages/EntityDetails/Model/Secrets/types";
 import { Label as ConfirmationDialogLabel } from "panels/ConfigPanel/ConfirmationDialog/types";
-import {
-  Label as ConfigPanelLabel,
-  TestId as ConfigPanelTestId,
-} from "panels/ConfigPanel/types";
-import {
-  Label as SecretFormPanelLabel,
-  TestId as SecretFormPanelTestId,
-} from "panels/SecretFormPanel/types";
+import { Label as ConfigPanelLabel } from "panels/ConfigPanel/types";
+import { Label as SecretFormPanelLabel } from "panels/SecretFormPanel/types";
 import urls, { ModelTab } from "urls";
 
 import { test } from "../fixtures/setup";
@@ -64,7 +55,9 @@ test.describe("secrets", () => {
 
     await page.getByRole("button", { name: SecretsLabel.ADD }).click();
     await expect(
-      page.getByTestId(SecretFormPanelTestId.PANEL),
+      page.getByRole("dialog", {
+        name: SecretFormPanelLabel.TITLE_ADD,
+      }),
     ).toBeInViewport();
 
     // Add a secret
@@ -73,13 +66,17 @@ test.describe("secrets", () => {
     await page.getByRole("textbox", { name: "Key 1" }).fill("somekey");
     await page.locator("textarea[aria-label='Value 1']").fill("somevalue");
     await page
-      .getByTestId(SecretFormPanelTestId.PANEL)
+      .getByRole("dialog", {
+        name: SecretFormPanelLabel.TITLE_ADD,
+      })
       .getByRole("button", { name: SecretFormPanelLabel.SUBMIT_ADD })
       .click();
 
     // Verify the secret was added and copy the URI
     await expect(
-      page.getByTestId(SecretFormPanelTestId.PANEL),
+      page.getByRole("dialog", {
+        name: SecretFormPanelLabel.TITLE_ADD,
+      }),
     ).not.toBeInViewport();
     await expect(page.locator("tr", { hasText: secret })).toBeInViewport();
     const secretID = await page
@@ -93,12 +90,20 @@ test.describe("secrets", () => {
     await page.getByRole("link", { name: application.name }).click();
 
     await page.getByRole("button", { name: AppLabel.CONFIGURE }).click();
-    await expect(page.getByTestId(ConfigPanelTestId.PANEL)).toBeInViewport();
+    await expect(
+      page.getByRole("dialog", {
+        name: application.name,
+        exact: false,
+      }),
+    ).toBeInViewport();
 
     // Add the URI into the configuration
-    await page.getByTestId(application.config).locator("textarea").focus();
     await page
-      .getByTestId(application.config)
+      .getByRole("button", { name: application.config, exact: false })
+      .locator("textarea")
+      .focus();
+    await page
+      .getByRole("button", { name: application.config, exact: false })
       .locator("textarea")
       .fill(secretURI);
     await page
@@ -121,19 +126,29 @@ test.describe("secrets", () => {
       .click();
 
     await expect(
-      page.getByTestId(ConfigPanelTestId.PANEL),
+      page.getByRole("dialog", {
+        name: application.name,
+        exact: false,
+      }),
     ).not.toBeInViewport();
 
     // Reload the page and verify the secret was saved
     await user.reloadDashboard(page);
     await page.getByRole("button", { name: AppLabel.CONFIGURE }).click();
-    await expect(page.getByTestId(ConfigPanelTestId.PANEL)).toBeInViewport();
+    await expect(
+      page.getByRole("dialog", {
+        name: application.name,
+        exact: false,
+      }),
+    ).toBeInViewport();
     await page
-      .getByTestId(application.config)
+      .getByRole("button", { name: application.config, exact: false })
       .locator("textarea")
       .scrollIntoViewIfNeeded();
     await expect(
-      page.getByTestId(application.config).locator("textarea"),
+      page
+        .getByRole("button", { name: application.config, exact: false })
+        .locator("textarea"),
     ).toHaveText(secretURI);
   });
 
@@ -144,7 +159,7 @@ test.describe("secrets", () => {
     ).not.toBeVisible();
     await expect(
       page
-        .getByTestId(SecretsTableTestId.SECRETS_TABLE)
+        .getByRole("table")
         .getByRole("button", { name: SecretsTableLabel.ACTION_MENU }),
     ).not.toBeVisible();
   });

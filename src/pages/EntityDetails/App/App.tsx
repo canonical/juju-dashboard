@@ -363,7 +363,7 @@ export default function App(): JSX.Element {
                   }
                 >
                   <Icon name="logs" />
-                  <span>View action logs</span>
+                  <span>{Label.VIEW_LOGS}</span>
                 </Button>
               </div>
               <Formik
