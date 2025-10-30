@@ -32,6 +32,8 @@ test.describe("Web CLI", () => {
     await expect(
       page.getByRole("code", {
         name: OutputLabel.OUTPUT,
+        // The output may be scrolled in which case it is partially hidden.
+        includeHidden: true,
       }),
     ).toContainText(
       "Juju provides easy, intelligent application orchestration on top of Kubernetes",
