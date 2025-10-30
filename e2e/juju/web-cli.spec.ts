@@ -29,13 +29,7 @@ test.describe("Web CLI", () => {
       .getByRole("textbox", { name: WebCLIFields.COMMAND })
       .fill("help");
     await page.keyboard.down("Enter");
-    await expect(
-      page.getByRole("code", {
-        name: OutputLabel.OUTPUT,
-        // The output may be scrolled in which case it is partially hidden.
-        includeHidden: true,
-      }),
-    ).toContainText(
+    await expect(page.getByLabel(OutputLabel.OUTPUT)).toContainText(
       "Juju provides easy, intelligent application orchestration on top of Kubernetes",
     );
   });

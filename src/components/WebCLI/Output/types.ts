@@ -73,6 +73,5 @@ export enum TestId {
 }
 
 export enum Label {
-  HELP = "Web CLI help",
-  OUTPUT = "Juju response",
+  OUTPUT = "Web CLI output",
 }

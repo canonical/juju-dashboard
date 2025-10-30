@@ -185,15 +185,12 @@ const WebCLIOutput: FC<Props> = ({
         style={{ height: `${height}px` }}
         {...testId(TestId.CONTENT)}
         ref={outputRef}
+        aria-label={Label.OUTPUT}
       >
         {showHelp || (!loading && !content?.length) ? (
-          <code {...testId(TestId.HELP)} aria-label={Label.HELP}>
-            {helpMessage}
-          </code>
+          <code {...testId(TestId.HELP)}>{helpMessage}</code>
         ) : (
-          <code {...testId(TestId.CODE)} aria-label={Label.OUTPUT}>
-            {output}
-          </code>
+          <code {...testId(TestId.CODE)}>{output}</code>
         )}
       </pre>
     </div>
