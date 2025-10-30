@@ -84,7 +84,7 @@ test.describe("Actions", () => {
     ).not.toBeInViewport();
 
     // Go to the action logs and verify that the action was executed
-    await page.getByRole("button", { name: AppLabel.VIEW_LOGS }).click();
+    await page.getByRole("link", { name: AppLabel.VIEW_LOGS }).click();
     await expect(
       page
         .locator("tr", { hasText: application.name })

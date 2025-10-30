@@ -43,6 +43,7 @@ exports[`WebCLI > renders correctly 1`] = `
       style="height: 0px;"
     >
       <code
+        aria-label="Web CLI help"
         data-testid="output-help"
       >
         Welcome to the Juju Web CLI - see the
