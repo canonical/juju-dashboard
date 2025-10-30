@@ -10,4 +10,5 @@ export enum Label {
   CONFIGURE = "Configure",
   NO_UNITS = "There are no units in this application",
   RUN_ACTION = "Run action",
+  VIEW_LOGS = "View action logs",
 }

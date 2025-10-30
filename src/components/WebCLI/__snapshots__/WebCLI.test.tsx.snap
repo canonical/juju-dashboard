@@ -38,6 +38,7 @@ exports[`WebCLI > renders correctly 1`] = `
       />
     </div>
     <pre
+      aria-label="Web CLI output"
       class="webcli__output-content"
       data-testid="output-content"
       style="height: 0px;"

@@ -13,7 +13,7 @@ import {
   AUTO_SCROLL_DISTANCE,
 } from "./consts";
 import type { Props } from "./types";
-import { TestId } from "./types";
+import { Label, TestId } from "./types";
 
 const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
 
@@ -185,6 +185,7 @@ const WebCLIOutput: FC<Props> = ({
         style={{ height: `${height}px` }}
         {...testId(TestId.CONTENT)}
         ref={outputRef}
+        aria-label={Label.OUTPUT}
       >
         {showHelp || (!loading && !content?.length) ? (
           <code {...testId(TestId.HELP)}>{helpMessage}</code>
