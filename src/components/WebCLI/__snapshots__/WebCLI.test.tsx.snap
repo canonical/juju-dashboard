@@ -38,12 +38,12 @@ exports[`WebCLI > renders correctly 1`] = `
       />
     </div>
     <pre
+      aria-label="Web CLI output"
       class="webcli__output-content"
       data-testid="output-content"
       style="height: 0px;"
     >
       <code
-        aria-label="Web CLI help"
         data-testid="output-help"
       >
         Welcome to the Juju Web CLI - see the
