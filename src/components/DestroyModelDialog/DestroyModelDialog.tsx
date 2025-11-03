@@ -3,11 +3,10 @@ import {
   ConfirmationModal,
   Icon,
   MainTable,
-  RadioInput,
   Notification as ReactNotification,
 } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import type { JSX } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
@@ -106,6 +105,31 @@ const machinesRow = (machines: string[]): MainTableRow | null => {
   };
 };
 
+// Helper to render the Persistent Storage
+const storageRow = (
+  hasStorage: boolean,
+  storageIDs: string[],
+): MainTableRow | null => {
+  if (!hasStorage) {
+    return null;
+  }
+  return {
+    columns: [
+      {
+        content: (
+          <>
+            <Icon name="pods" className="icon" />
+            Attached storage ({storageIDs.length})
+          </>
+        ),
+      },
+      {
+        content: <div>{storageIDs.join(", ")}</div>,
+      },
+    ],
+  };
+};
+
 type Props = {
   modelName: string;
   modelUUID: string;
@@ -131,15 +155,15 @@ export default function DestroyModelDialog({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
-  const [destroyStorage, setDestroyStorage] = useState<boolean>(true);
 
   const infoTableRows = useMemo(() => {
     return [
       applicationsRow(applications),
       crossModelRelationsRow(crossModelRelations),
       machinesRow(machines),
+      storageRow(hasStorage, storageIDs),
     ].filter((row): row is Exclude<typeof row, null> => row !== null);
-  }, [applications, crossModelRelations, machines]);
+  }, [applications, crossModelRelations, machines, hasStorage, storageIDs]);
 
   // Determine the disabled state based on connected offers
   const isConfirmDisabled = connectedOffers.length > 0;
@@ -150,7 +174,7 @@ export default function DestroyModelDialog({
         models: [
           {
             "model-tag": `model-${modelUUID}`,
-            ...(hasStorage ? { "destroy-storage": destroyStorage } : {}),
+            ...(hasStorage ? { "destroy-storage": true } : {}),
             modelUUID,
             modelName,
           },
@@ -205,28 +229,6 @@ export default function DestroyModelDialog({
             rows={infoTableRows}
             className="p-main-table destroy-model-table"
           />
-          {hasStorage ? (
-            <>
-              <hr />
-              <div>
-                Model has attached storage <b>{storageIDs.join(", ")}</b>
-              </div>
-              <RadioInput
-                label="Destroy storage"
-                checked={destroyStorage}
-                onChange={() => {
-                  setDestroyStorage(true);
-                }}
-              />
-              <RadioInput
-                label="Detach storage"
-                checked={!destroyStorage}
-                onChange={() => {
-                  setDestroyStorage(false);
-                }}
-              />
-            </>
-          ) : null}
         </>
       ) : (
         <div>

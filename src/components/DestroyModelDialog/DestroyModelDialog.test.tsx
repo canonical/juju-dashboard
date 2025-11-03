@@ -114,13 +114,10 @@ describe("DestroyModelDialog", () => {
       within(destroyModelDialog).getByText(/Machines \(1\)/),
     ).toBeInTheDocument();
     expect(
-      within(destroyModelDialog).getByText(/Model has attached storage/),
+      within(destroyModelDialog).getByText(/Attached storage \(1\)/),
     ).toBeInTheDocument();
     expect(
-      within(destroyModelDialog).getByLabelText("Destroy storage"),
-    ).toBeInTheDocument();
-    expect(
-      within(destroyModelDialog).getByLabelText("Detach storage"),
+      within(destroyModelDialog).getByText(/easyrsa\/0/),
     ).toBeInTheDocument();
   });
 
@@ -160,7 +157,7 @@ describe("DestroyModelDialog", () => {
     ).toBeDisabled();
   });
 
-  it("dispatches destroyModels with 'destroy-storage: true' when destroy option is selected", async () => {
+  it("dispatches destroyModels with 'destroy-storage: true' when destroying a model with storage", async () => {
     const [store, actions] = createStore(state, { trackActions: true });
     const mockClosePortal = vi.fn();
     renderComponent(
@@ -184,47 +181,7 @@ describe("DestroyModelDialog", () => {
       wsControllerURL: "wss://example.com:17070/api",
     });
 
-    // Since the "Destroy" option is rendered pre-selected, we select the "Detach" first
-    // to allow testing the callback for "Destroy"
-    await userEvent.click(screen.getByLabelText("Detach storage"));
-    await userEvent.click(screen.getByLabelText("Destroy storage"));
     await userEvent.click(screen.getByRole("button", { name: Label.DESTROY }));
-
-    await waitFor(() => {
-      expect(
-        actions.find((dispatch) => dispatch.type === destroyModelsAction.type),
-      ).toMatchObject(destroyModelsAction);
-    });
-    expect(mockClosePortal).toHaveBeenCalledTimes(1);
-  });
-
-  it("dispatches destroyModels with 'destroy-storage: false' when detach option is selected", async () => {
-    const [store, actions] = createStore(state, { trackActions: true });
-    const mockClosePortal = vi.fn();
-    renderComponent(
-      <DestroyModelDialog
-        modelName="model123"
-        modelUUID="abc123"
-        closePortal={mockClosePortal}
-      />,
-      { state, store },
-    );
-
-    const destroyModelsAction = jujuActions.destroyModels({
-      models: [
-        {
-          "model-tag": "model-abc123",
-          "destroy-storage": false,
-          modelUUID: "abc123",
-          modelName: "model123",
-        },
-      ],
-      wsControllerURL: "wss://example.com:17070/api",
-    });
-
-    await userEvent.click(screen.getByLabelText("Detach storage"));
-    await userEvent.click(screen.getByRole("button", { name: Label.DESTROY }));
-
     await waitFor(() => {
       expect(
         actions.find((dispatch) => dispatch.type === destroyModelsAction.type),
