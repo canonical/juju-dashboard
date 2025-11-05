@@ -1,0 +1,91 @@
+package_update: true
+package_upgrade: true
+
+packages:
+  - python3-jinja2
+  - avahi-daemon
+  - avahi-autoipd
+
+snap:
+  commands:
+    - snap install juju --channel=3.6/stable
+    - snap install microk8s --channel=1.34-strict/stable
+    - snap alias microk8s.kubectl kubectl
+    - snap install node --classic
+    - snap install yq
+
+write_files:
+  - path: "/etc/update-motd.d/99-welcome"
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+
+      HOSTNAME=$(hostname)
+      echo "======================================================================"
+      echo " View Juju Dashboard at:"
+      echo "   http://$HOSTNAME.local:8036"
+      echo
+      echo " Log in to Juju with:"
+      echo "   Username: admin"
+      echo "   Password: password1"
+      echo
+      echo " The Juju Dashboard dev server can be stopped with:"
+      echo "   sudo systemctl stop juju-dashboard.service"
+      echo " Disable the service with:"
+      echo "   sudo systemctl disable juju-dashboard.service"
+      echo "======================================================================"
+
+runcmd:
+  - |
+    # Make sure juju directory is there.
+    # https://bugs.launchpad.net/juju/+bug/1995697
+    sudo -u ubuntu mkdir -p /home/ubuntu/.local/share/juju
+
+  - |
+    # setup microk8s and bootstrap
+    usermod -a -G snap_microk8s ubuntu
+    microk8s status --wait-ready
+    microk8s.enable dns
+    microk8s.enable ingress
+    microk8s.enable hostpath-storage
+
+    # MetalLB
+    IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
+    microk8s enable metallb:$IPADDR-$IPADDR
+
+    # bootstrap controllers
+    sudo -u ubuntu juju bootstrap microk8s microk8s
+    sudo -u ubuntu juju add-model test-model
+
+  - |
+    # Add port forward.
+    sudo -u ubuntu juju switch controller
+    microk8s.kubectl port-forward controller-0 17070:17070 --namespace=controller-microk8s --address=0.0.0.0 &
+    # Set the admin user's password:
+    echo password1 | sudo -u ubuntu juju change-user-password --no-prompt
+
+  - |
+    # Set up Juju Dashboard.
+    cd /home/ubuntu/
+    sudo -u ubuntu git clone -o upstream https://github.com/canonical/juju-dashboard.git
+    cd ./juju-dashboard
+    sudo -u ubuntu yarn install
+    sudo -u ubuntu DASHBOARD_CONFIG_NAME=config.local.js HAS_EXTERNAL_CONTROLLER_URL=true DASHBOARD_IS_JUJU=true WRITE_NGINX=false DASHBOARD_CONFIG_DIR=/home/ubuntu/juju-dashboard/charms/k8s-charm/src DASHBOARD_ROOT=/home/ubuntu/juju-dashboard/public DASHBOARD_CONTROLLER_URL="wss://$(hostname).local:17070" DASHBOARD_ANALYTICS_ENABLED=false python3 ./charms/k8s-charm/src/config.py
+
+  - |
+    # Create a service to automatically start Juju Dashboard.
+    tee /lib/systemd/system/juju-dashboard.service <<'EOF'
+    [Unit]
+    Description=Juju Dashboard Dev Server
+
+    [Service]
+    ExecStart=sudo -u ubuntu bash -c "cd /home/ubuntu/juju-dashboard && yarn start"
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+    sudo systemctl daemon-reload
+    sudo systemctl enable juju-dashboard.service
+    sudo systemctl start juju-dashboard.service
+
+final_message: "The system is finally up, after $UPTIME seconds"
