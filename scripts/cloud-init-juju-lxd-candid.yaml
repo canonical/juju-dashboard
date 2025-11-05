@@ -50,7 +50,7 @@ runcmd:
   - |
     # Set up Juju Dashboard.
     cd /home/ubuntu/
-    sudo -u ubuntu git clone https://github.com/canonical/juju-dashboard.git
+    sudo -u ubuntu git clone -o upstream https://github.com/canonical/juju-dashboard.git
     cd ./juju-dashboard
     sudo -u ubuntu yarn install
     sudo -u ubuntu DASHBOARD_IDENTITY_PROVIDER_URL="/" DASHBOARD_CONFIG_NAME=config.local.js HAS_EXTERNAL_CONTROLLER_URL=true DASHBOARD_IS_JUJU=true WRITE_NGINX=false DASHBOARD_CONFIG_DIR=/home/ubuntu/juju-dashboard/charms/k8s-charm/src DASHBOARD_ROOT=/home/ubuntu/juju-dashboard/public DASHBOARD_CONTROLLER_URL="wss://$(hostname).local:17070" DASHBOARD_ANALYTICS_ENABLED=false python3 ./charms/k8s-charm/src/config.py
