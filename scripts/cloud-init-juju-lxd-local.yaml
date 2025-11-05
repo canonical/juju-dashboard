@@ -25,7 +25,7 @@ write_files:
       echo
       echo " Log in to Juju with:"
       echo "   Username: admin"
-      echo "   Password: test"
+      echo "   Password: password1"
       echo
       echo " The Juju Dashboard dev server can be stopped with:"
       echo "   sudo systemctl stop juju-dashboard.service"
@@ -55,7 +55,7 @@ runcmd:
     CONTROLLER_INSTANCE=$(sudo -u ubuntu juju show-machine $MACHINE_UD | yq ".machines.0.instance-id")
     sudo -u ubuntu lxc config device add "$CONTROLLER_INSTANCE" portforward17070 proxy listen=tcp:0.0.0.0:17070 connect=tcp:127.0.0.1:17070
     # Set the admin user's password:
-    echo test | sudo -u ubuntu juju change-user-password --no-prompt
+    echo password1 | sudo -u ubuntu juju change-user-password --no-prompt
 
   - |
     # Set up Juju Dashboard.
