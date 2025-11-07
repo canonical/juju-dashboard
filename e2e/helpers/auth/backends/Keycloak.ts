@@ -11,12 +11,17 @@ import { deviceCodeLogin } from "./utils";
 const KEYCLOAK_DEVICE_CODE_REGEX = /(?<=enter code ).\w+-\w+/;
 
 export class KeycloakOIDC {
-  static async loginCLI(browser: Browser, user: Secret): Promise<void> {
+  static async loginCLI(
+    browser: Browser,
+    user: Secret,
+    registerController = false,
+  ): Promise<void> {
     await deviceCodeLogin(
       browser,
       user,
       KEYCLOAK_DEVICE_CODE_REGEX,
       KeycloakOIDC.uiLogin,
+      registerController ? "jimm.localhost:443" : null,
     );
   }
 
