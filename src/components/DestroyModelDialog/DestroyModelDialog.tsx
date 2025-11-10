@@ -16,7 +16,7 @@ import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
-import urls from "urls";
+import urls, { externalURLs } from "urls";
 
 import { Label, TestId } from "./types";
 
@@ -37,6 +37,7 @@ const applicationsRow = (applications: string[]): MainTableRow | null => {
       },
       {
         content: applications.map((app) => <div key={app}>{app}</div>),
+        className: "p-table__cell--icon-placeholder",
       },
     ],
   };
@@ -69,11 +70,11 @@ const crossModelRelationsRow = (
             {crossModelRelations.map(
               ({ name, endpoints, isConnectedOffer }) => (
                 <div key={name}>
+                  {isConnectedOffer ? <Icon name="warning" /> : null}
                   {name}{" "}
                   {endpoints.map((endpoint: RemoteEndpoint, index: number) => (
                     <span key={index}>
-                      {endpoint.name}:{endpoint.interface}{" "}
-                      {isConnectedOffer ? "(!)" : ""}
+                      {endpoint.name}:{endpoint.interface}
                     </span>
                   ))}
                 </div>
@@ -81,6 +82,7 @@ const crossModelRelationsRow = (
             )}
           </>
         ),
+        className: "p-table__cell--icon-placeholder",
       },
     ],
   };
@@ -103,6 +105,7 @@ const machinesRow = (machines: string[]): MainTableRow | null => {
       },
       {
         content: <div>{machines.join(", ")}</div>,
+        className: "p-table__cell--icon-placeholder",
       },
     ],
   };
@@ -128,6 +131,7 @@ const storageRow = (
       },
       {
         content: <div>{storageIDs.join(", ")}</div>,
+        className: "p-table__cell--icon-placeholder",
       },
     ],
   };
@@ -208,9 +212,26 @@ export default function DestroyModelDialog({
       {connectedOffers.length > 0 ? (
         <ReactNotification
           severity="caution"
-          title={`${modelName} cannot be deleted`}
+          title="Model cannot be destroyed"
+          actions={[
+            <a
+              href={externalURLs.removingOffers}
+              target="_blank"
+              className="p-notification__action"
+            >
+              Learn about removing offers
+            </a>,
+            <a
+              href={externalURLs.crossModelRelations}
+              target="_blank"
+              className="p-notification__action"
+            >
+              Learn about cross-model relations
+            </a>,
+          ]}
         >
-          Offer{connectedOffers.length > 1 ? "s" : ""}{" "}
+          <b>{modelName}</b> cannot be destroyed because offer
+          {connectedOffers.length > 1 ? "s" : ""}{" "}
           <b>
             {connectedOffers
               .map(
@@ -219,8 +240,7 @@ export default function DestroyModelDialog({
               )
               .join(", ")}{" "}
           </b>
-          {connectedOffers.length > 1 ? "are" : "is"} being consumed. Remove
-          offer from the consuming model to delete this model.
+          {connectedOffers.length > 1 ? "are" : "is"} being consumed.
         </ReactNotification>
       ) : null}
       {showInfoTable ? (
@@ -228,7 +248,10 @@ export default function DestroyModelDialog({
           By destroying model <b>{modelName}</b>, you will also be removing:
           <MainTable
             {...testId(TestId.MODEL_STATUS_INFO)}
-            headers={[{ content: "type" }, { content: "name" }]}
+            headers={[
+              { content: "type" },
+              { content: "name", className: "p-table__cell--icon-placeholder" },
+            ]}
             rows={infoTableRows}
             className="p-main-table destroy-model-table"
           />
