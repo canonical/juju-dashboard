@@ -47,7 +47,7 @@ const crossModelRelationsRow = (
   crossModelRelations: {
     name: string;
     endpoints: RemoteEndpoint[];
-    isOffer: boolean;
+    isConnectedOffer: boolean;
   }[],
 ): MainTableRow | null => {
   if (!crossModelRelations.length) {
@@ -66,16 +66,19 @@ const crossModelRelationsRow = (
       {
         content: (
           <>
-            {crossModelRelations.map(({ name, endpoints, isOffer }) => (
-              <div key={name}>
-                {name}{" "}
-                {endpoints.map((endpoint: RemoteEndpoint, index: number) => (
-                  <span key={index}>
-                    {endpoint.name}:{endpoint.interface} {isOffer ? "(!)" : ""}
-                  </span>
-                ))}
-              </div>
-            ))}
+            {crossModelRelations.map(
+              ({ name, endpoints, isConnectedOffer }) => (
+                <div key={name}>
+                  {name}{" "}
+                  {endpoints.map((endpoint: RemoteEndpoint, index: number) => (
+                    <span key={index}>
+                      {endpoint.name}:{endpoint.interface}{" "}
+                      {isConnectedOffer ? "(!)" : ""}
+                    </span>
+                  ))}
+                </div>
+              ),
+            )}
           </>
         ),
       },
