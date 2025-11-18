@@ -192,19 +192,19 @@ describe("useModelDestructionData", () => {
     expect(result.current.crossModelRelations[0]).toEqual({
       name: "http",
       endpoints: [],
-      isOffer: true,
+      isConnectedOffer: true,
     });
     expect(result.current.crossModelRelations[1]).toEqual({
       name: "nrpe",
       endpoints: [],
-      isOffer: true,
+      isConnectedOffer: false,
     });
 
     // Check Remote Application aggregation
     expect(result.current.crossModelRelations[2]).toEqual({
       name: "mysql",
       endpoints: [],
-      isOffer: false,
+      isConnectedOffer: false,
     });
   });
 
@@ -216,6 +216,7 @@ describe("useModelDestructionData", () => {
       }),
       offers: {
         db: applicationOfferStatusFactory.build({
+          "total-connected-count": 1,
           endpoints: {
             mockEndpoint: {
               interface: "mockInterface",
@@ -247,8 +248,7 @@ describe("useModelDestructionData", () => {
       wrapper: generateContainer(state, "*", "/models"),
     });
 
-    // Due to the disabled filter, all offers are treated as connected/relevant
-    expect(result.current.connectedOffers).toHaveLength(2);
+    expect(result.current.connectedOffers).toHaveLength(1);
 
     // Check one of the mapped results
     expect(result.current.connectedOffers[0]).toEqual({
@@ -257,16 +257,6 @@ describe("useModelDestructionData", () => {
       endpoint: {
         name: "mockName",
         interface: "mockInterface",
-      },
-    });
-
-    // Check the other mapped result (unconnected, but still processed)
-    expect(result.current.connectedOffers[1]).toEqual({
-      offerName: "nrpe",
-      applicationName: "appName",
-      endpoint: {
-        name: "mockName2",
-        interface: "mockInterface2",
       },
     });
   });

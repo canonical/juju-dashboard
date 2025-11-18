@@ -10,7 +10,7 @@ import useModelStatus from "hooks/useModelStatus";
 type CrossModelRelation = {
   name: string;
   endpoints: RemoteEndpoint[];
-  isOffer: boolean;
+  isConnectedOffer: boolean;
 };
 
 type ConnectedOffer = {
@@ -43,7 +43,7 @@ const getCrossModelRelations = (
         name,
         // Convert endpoints object to an array of endpoint values
         endpoints: Object.values(data.endpoints),
-        isOffer: true,
+        isConnectedOffer: data["total-connected-count"] > 0,
       }),
     ),
   );
@@ -54,7 +54,7 @@ const getCrossModelRelations = (
       ([name, data]: [string, RemoteApplicationStatus]) => ({
         name,
         endpoints: data.endpoints,
-        isOffer: false,
+        isConnectedOffer: false,
       }),
     ),
   );
@@ -72,11 +72,9 @@ const getStorageIDs = (storage: StorageDetails[] | undefined): string[] => {
 const getConnectedOffers = (
   offers: Record<string, ApplicationOfferStatus>,
 ): ConnectedOffer[] => {
-  // This filtering is disabled due to this bug in Juju: https://github.com/juju/juju/issues/20725
-  const connectedEntries = Object.entries(offers);
-  // .filter(
-  //   ([, data]) => data["total-connected-count"] > 0,
-  // ) as [string, ApplicationOfferStatus][];
+  const connectedEntries = Object.entries(offers).filter(
+    ([, data]) => data["total-connected-count"] > 0,
+  ) as [string, ApplicationOfferStatus][];
 
   return connectedEntries.map(([offerName, data]) => {
     const endpointDetails = Object.values(data.endpoints)[0] ?? {
