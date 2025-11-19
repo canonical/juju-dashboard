@@ -38,8 +38,14 @@ export const deviceCodeLogin = async (
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
   const page = await context.newPage();
   await page.goto(loginURL);
+  await page.screenshot({ path: "login-before.png" });
   // Login with user credentials.
-  await loginMethod(page, user, loginCode);
+  try {
+    await loginMethod(page, user, loginCode);
+  } catch (error) {
+    await page.screenshot({ path: "login-after.png" });
+    throw error;
+  }
   // Wait for the original process to finish.
   await loginProc;
   // Exit the browser so the script will finish when called outside of Playwright.
