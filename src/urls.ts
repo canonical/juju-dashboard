@@ -66,6 +66,8 @@ export const externalURLs = {
     "https://documentation.ubuntu.com/juju/latest/reference/juju-web-cli/",
   cliHelpCommand: (command: string): string =>
     `https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/${command.replace(/^\//, "")}`,
+  crossModelRelations:
+    "https://documentation.ubuntu.com/juju/latest/reference/relation/#cross-model-relation",
   deployingApplication:
     "https://documentation.ubuntu.com/juju/latest/howto/manage-applications/#deploy-an-application",
   destroyModel:
@@ -76,6 +78,8 @@ export const externalURLs = {
   modelAccess:
     "https://documentation.ubuntu.com/juju/latest/howto/manage-users/#heading--model-access",
   newIssue: "https://github.com/canonical/juju-dashboard/issues/new",
+  removingOffers:
+    "https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/remove-offer/",
   troubleshootDeployment:
     "https://documentation.ubuntu.com/juju/latest/howto/manage-your-deployment/index.html#troubleshoot-your-deployment",
   upgradingThings:

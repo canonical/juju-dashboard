@@ -14,6 +14,7 @@ import {
   modelDataUnitFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
+import { customWithin } from "testing/queries/within";
 import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -148,8 +149,9 @@ describe("DestroyModelDialog", () => {
     const destroyModelDialog = screen.getByTestId(TestId.DIALOG);
     expect(destroyModelDialog).toBeInTheDocument();
     expect(
-      within(destroyModelDialog).getByText(
-        /Offer is being consumed. Remove offer from the consuming model to delete this model./,
+      customWithin(destroyModelDialog).getNotificationByText(
+        "Model cannot be destroyed",
+        { severity: "caution" },
       ),
     ).toBeInTheDocument();
     expect(
