@@ -12,7 +12,7 @@ inputs:
   jimm-channel:
     description: The JIMM charm channel to use.
     required: false
-    default: 3/edge
+    default: 3/stable
   juju-channel:
     description: Channel of Juju to use.
     required: false
@@ -70,6 +70,8 @@ runs:
     - name: Create IAM offers for cross-model relations
       shell: bash
       run: |
+        juju config hydra dev=True log_level=debug
+        juju config kratos dev=True log_level=debug
         juju offer hydra:oauth
         juju offer self-signed-certificates:send-ca-cert
     - name: Turn off MFA
