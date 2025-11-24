@@ -1342,7 +1342,7 @@ describe("Juju API", () => {
       vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
         logout: vi.fn(),
       }));
-      await expect(startModelWatcher("abc123", state, vi.fn())).rejects.toThrow(
+      await expect(startModelWatcher("abc123", state)).rejects.toThrow(
         Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR,
       );
     });
@@ -1361,7 +1361,7 @@ describe("Juju API", () => {
             watchAll: vi.fn().mockReturnValue(null),
           },
           allWatcher: {
-            next: vi.fn().mockReturnValue(null),
+            next: vi.fn().mockReturnValue(new Promise(() => {})),
           },
           pinger: {
             ping: vi.fn(),
@@ -1372,7 +1372,7 @@ describe("Juju API", () => {
         logout: vi.fn(),
         conn,
       }));
-      await expect(startModelWatcher("abc123", state, vi.fn())).rejects.toThrow(
+      await expect(startModelWatcher("abc123", state)).rejects.toThrow(
         Label.START_MODEL_WATCHER_NO_ID_ERROR,
       );
     });
@@ -1391,7 +1391,7 @@ describe("Juju API", () => {
             watchAll: vi.fn().mockRejectedValue(new Error("Uh oh!")),
           },
           allWatcher: {
-            next: vi.fn().mockReturnValue(null),
+            next: vi.fn().mockReturnValue(new Promise(() => {})),
           },
           pinger: {
             ping: vi.fn(),
@@ -1402,7 +1402,7 @@ describe("Juju API", () => {
         logout: vi.fn(),
         conn,
       }));
-      await expect(startModelWatcher("abc123", state, vi.fn())).rejects.toThrow(
+      await expect(startModelWatcher("abc123", state)).rejects.toThrow(
         "Uh oh!",
       );
     });
@@ -1422,7 +1422,7 @@ describe("Juju API", () => {
             watchAll: vi.fn().mockReturnValue(watcherHandle),
           },
           allWatcher: {
-            next: vi.fn().mockReturnValue(null),
+            next: vi.fn().mockResolvedValue([]),
           },
           pinger: {
             ping: vi.fn().mockResolvedValue(null),
@@ -1433,10 +1433,11 @@ describe("Juju API", () => {
         logout: vi.fn(),
         conn,
       }));
-      const response = await startModelWatcher("abc123", state, vi.fn());
+      const response = await startModelWatcher("abc123", state);
       expect(conn.facades.client.watchAll).toHaveBeenCalled();
       vi.advanceTimersByTime(PING_TIME);
       expect(conn.facades.pinger.ping).toHaveBeenCalled();
+      await response.next();
       expect(conn.facades.allWatcher.next).toHaveBeenCalledWith({ id: 12345 });
       expect(response).toMatchObject({
         conn,
@@ -1468,7 +1469,7 @@ describe("Juju API", () => {
             watchAll: vi.fn().mockReturnValue(watcherHandle),
           },
           allWatcher: {
-            next: vi.fn().mockReturnValue({ deltas }),
+            next: vi.fn().mockResolvedValue({ deltas }),
           },
           pinger: {
             ping: vi.fn(),
@@ -1479,11 +1480,11 @@ describe("Juju API", () => {
         logout: vi.fn(),
         conn,
       }));
-      const dispatch = vi.fn();
-      await startModelWatcher("abc123", state, dispatch);
-      expect(dispatch).toHaveBeenCalledWith(
-        jujuActions.processAllWatcherDeltas(deltas),
-      );
+      const { next } = await startModelWatcher("abc123", state);
+      await next();
+      expect(conn.facades.allWatcher.next).toHaveBeenCalledExactlyOnceWith({
+        id: 12345,
+      });
     });
   });
 
