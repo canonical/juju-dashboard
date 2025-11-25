@@ -27,6 +27,10 @@ export default function useModelWatcher(modelUUID: string): ModelWatcherResult {
     setError(null);
     setWatcherReady(false);
 
+    if (!modelUUID) {
+      return;
+    }
+
     void (async (): Promise<void> => {
       try {
         // Start the watcher.

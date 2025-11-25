@@ -10,7 +10,7 @@ import { renderWrappedHook } from "testing/utils";
 
 import useModelWatcher from "./useModelWatcher";
 
-describe("useModelwatcher", () => {
+describe("useModelWatcher", () => {
   let client: {
     conn: Connection;
     logout: () => void;
@@ -52,11 +52,11 @@ describe("useModelwatcher", () => {
   let startModelWatcherMock: MockInstance<(typeof juju)["startModelWatcher"]>;
   let stopModelWatcherMock: MockInstance<(typeof juju)["stopModelWatcher"]>;
 
-  async function runHook(): Promise<
-    WrappedHookResult<ReturnType<typeof useModelWatcher>, void>
-  > {
+  async function runHook(
+    modelUUID: string = "abc123",
+  ): Promise<WrappedHookResult<ReturnType<typeof useModelWatcher>, void>> {
     return await act(async () =>
-      renderWrappedHook(() => useModelWatcher("abc123")),
+      renderWrappedHook(() => useModelWatcher(modelUUID)),
     );
   }
 
@@ -107,6 +107,12 @@ describe("useModelwatcher", () => {
       error: "timeout",
     });
     expect(watcherNextMock).not.toHaveBeenCalled();
+  });
+
+  it("doesn't attempt connection if modelUUID isn't provided", async () => {
+    const { result } = await runHook("");
+    expect(startModelWatcherMock).not.toHaveBeenCalled();
+    expect(result.current).toEqual({ ready: false, deltas: [], error: null });
   });
 
   it("disconnects from AllWatcher", async () => {
