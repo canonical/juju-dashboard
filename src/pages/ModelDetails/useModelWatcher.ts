@@ -3,7 +3,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { startModelWatcher, stopModelWatcher } from "juju/api";
 import type { ConnectionWithFacades } from "juju/types";
-import { useAppStore } from "store/store";
+import { getUserPass } from "store/general/selectors";
+import { getModelByUUID } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 import { toErrorString } from "utils";
 
 export type ModelWatcherResult = {
@@ -14,10 +16,15 @@ export type ModelWatcherResult = {
 };
 
 export default function useModelWatcher(modelUUID: string): ModelWatcherResult {
-  const appState = useAppStore().getState();
-
   const [deltas, setDeltas] = useState<AllWatcherNextResults["deltas"]>([]);
   const [error, setError] = useState<null | string>(null);
+
+  const wsControllerURL = useAppSelector(
+    (state) => getModelByUUID(state, modelUUID)?.wsControllerURL,
+  );
+  const credentials = useAppSelector((state) =>
+    getUserPass(state, wsControllerURL),
+  );
 
   const watcherData =
     useRef<Awaited<ReturnType<typeof startModelWatcher>>>(null);
@@ -27,12 +34,12 @@ export default function useModelWatcher(modelUUID: string): ModelWatcherResult {
     setError(null);
     setWatcherReady(false);
 
-    if (!modelUUID) {
+    if (!modelUUID || !wsControllerURL) {
       return;
     }
 
     // Start the watcher.
-    startModelWatcher(modelUUID, appState)
+    startModelWatcher(modelUUID, wsControllerURL, credentials)
       .then((watcher) => {
         // Successfully started the model watcher.
         watcherData.current = watcher;
@@ -59,7 +66,7 @@ export default function useModelWatcher(modelUUID: string): ModelWatcherResult {
         );
       }
     };
-  }, [modelUUID, appState]);
+  }, [modelUUID, wsControllerURL, credentials]);
 
   const getNextDeltas = useCallback(async (): Promise<void> => {
     if (!watcherReady) {

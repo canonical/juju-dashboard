@@ -523,14 +523,15 @@ export async function connectAndLoginToModel(
 
 export async function startModelWatcher(
   modelUUID: string,
-  appState: RootState,
+  wsControllerURL: string,
+  credentials?: AuthCredential,
 ): Promise<{
   conn: ConnectionWithFacades;
   watcherHandle: AllWatcherId | undefined;
   pingerIntervalId: number;
   next: () => Promise<AllWatcherNextResults | undefined>;
 }> {
-  const conn = await connectAndLoginToModel(modelUUID, appState);
+  const conn = await connectToModel(modelUUID, wsControllerURL, credentials);
   if (!conn) {
     throw new Error(Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR);
   }

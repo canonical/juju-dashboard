@@ -5,18 +5,36 @@ import { act } from "@testing-library/react";
 import type { MockInstance } from "vitest";
 
 import * as juju from "juju/api";
+import type { RootState } from "store/store";
+import { jujuStateFactory, rootStateFactory } from "testing/factories";
+import { modelListInfoFactory } from "testing/factories/juju/juju";
+import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import type { WrappedHookResult } from "testing/utils";
 import { renderWrappedHook } from "testing/utils";
 
 import useModelWatcher from "./useModelWatcher";
 
 describe("useModelWatcher", () => {
+  let state: RootState;
   let client: {
     conn: Connection;
     logout: () => void;
   };
 
   beforeEach(() => {
+    state = rootStateFactory.withGeneralConfig().build({
+      juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            name: "test-model",
+          }),
+        },
+        modelWatcherData: {
+          abc123: modelWatcherModelDataFactory.build(),
+        },
+      }),
+    });
     client = {
       conn: {
         info: {
@@ -56,7 +74,7 @@ describe("useModelWatcher", () => {
     modelUUID: string = "abc123",
   ): Promise<WrappedHookResult<ReturnType<typeof useModelWatcher>, void>> {
     return await act(async () =>
-      renderWrappedHook(() => useModelWatcher(modelUUID)),
+      renderWrappedHook(() => useModelWatcher(modelUUID), { state }),
     );
   }
 

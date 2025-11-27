@@ -1332,29 +1332,15 @@ describe("Juju API", () => {
 
   describe("startModelWatcher", () => {
     it("handles no connection", async () => {
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
       vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
         logout: vi.fn(),
       }));
-      await expect(startModelWatcher("abc123", state)).rejects.toThrow(
-        Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR,
-      );
+      await expect(
+        startModelWatcher("abc123", "wss://example.com/api"),
+      ).rejects.toThrow(Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR);
     });
 
     it("handles no response", async () => {
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
       const conn = {
         facades: {
           client: {
@@ -1372,19 +1358,12 @@ describe("Juju API", () => {
         logout: vi.fn(),
         conn,
       }));
-      await expect(startModelWatcher("abc123", state)).rejects.toThrow(
-        Label.START_MODEL_WATCHER_NO_ID_ERROR,
-      );
+      await expect(
+        startModelWatcher("abc123", "wss://example.com/api"),
+      ).rejects.toThrow(Label.START_MODEL_WATCHER_NO_ID_ERROR);
     });
 
     it("handles error response", async () => {
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
       const conn = {
         facades: {
           client: {
@@ -1402,19 +1381,12 @@ describe("Juju API", () => {
         logout: vi.fn(),
         conn,
       }));
-      await expect(startModelWatcher("abc123", state)).rejects.toThrow(
-        "Uh oh!",
-      );
+      await expect(
+        startModelWatcher("abc123", "wss://example.com/api"),
+      ).rejects.toThrow("Uh oh!");
     });
 
     it("starts the model watcher", async () => {
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
       const watcherHandle = { "watcher-id": 12345 };
       const conn = {
         facades: {
@@ -1433,7 +1405,10 @@ describe("Juju API", () => {
         logout: vi.fn(),
         conn,
       }));
-      const response = await startModelWatcher("abc123", state);
+      const response = await startModelWatcher(
+        "abc123",
+        "wss://example.com/api",
+      );
       expect(conn.facades.client.watchAll).toHaveBeenCalled();
       vi.advanceTimersByTime(PING_TIME);
       expect(conn.facades.pinger.ping).toHaveBeenCalled();
@@ -1448,13 +1423,6 @@ describe("Juju API", () => {
     });
 
     it("processes deltas if they're returned", async () => {
-      const state = rootStateFactory.build({
-        juju: {
-          models: {
-            abc123: modelListInfoFactory.build(),
-          },
-        },
-      });
       const watcherHandle = { "watcher-id": 12345 };
       const deltas: AllWatcherDelta[] = [
         [
@@ -1480,7 +1448,10 @@ describe("Juju API", () => {
         logout: vi.fn(),
         conn,
       }));
-      const { next } = await startModelWatcher("abc123", state);
+      const { next } = await startModelWatcher(
+        "abc123",
+        "wss://example.com/api",
+      );
       await next();
       expect(conn.facades.allWatcher.next).toHaveBeenCalledExactlyOnceWith({
         id: 12345,
