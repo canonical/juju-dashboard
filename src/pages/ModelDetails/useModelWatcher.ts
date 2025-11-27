@@ -31,19 +31,19 @@ export default function useModelWatcher(modelUUID: string): ModelWatcherResult {
       return;
     }
 
-    void (async (): Promise<void> => {
-      try {
-        // Start the watcher.
-        watcherData.current = await startModelWatcher(modelUUID, appState);
-
+    // Start the watcher.
+    startModelWatcher(modelUUID, appState)
+      .then((watcher) => {
         // Successfully started the model watcher.
+        watcherData.current = watcher;
         setError(null);
         setWatcherReady(true);
-      } catch (err) {
+        return;
+      })
+      .catch((err) => {
         setError(toErrorString(err));
         setWatcherReady(false);
-      }
-    })();
+      });
 
     return (): void => {
       const { conn, watcherHandle, pingerIntervalId } =
@@ -74,14 +74,15 @@ export default function useModelWatcher(modelUUID: string): ModelWatcherResult {
     }
 
     setDeltas(result.deltas);
+    setError(null);
   }, [watcherReady]);
 
-  // Trigger loading of the next deltas whenever an existing set of deltas is loaded.
   useEffect(() => {
     if (!watcherReady) {
       return;
     }
 
+    // Trigger loading of the next deltas whenever an existing set of deltas is loaded.
     void getNextDeltas();
   }, [watcherReady, deltas, getNextDeltas]);
 

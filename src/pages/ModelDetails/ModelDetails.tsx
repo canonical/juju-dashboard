@@ -74,7 +74,7 @@ export default function ModelDetails(): JSX.Element {
       return;
     }
 
-    void loadAdditionalData().catch((err) => {
+    loadAdditionalData().catch((err) => {
       setModelError(toErrorString(err));
     });
   }, [conn?.info.serverVersion, loadAdditionalData, watcherReady]);
@@ -88,19 +88,14 @@ export default function ModelDetails(): JSX.Element {
     dispatch(jujuActions.processAllWatcherDeltas(deltas));
   }, [dispatch, deltas]);
 
-  useEffect(() => {
-    if (!modelWatcherError) {
-      return;
-    }
-    setModelError(modelWatcherError);
-  }, [modelWatcherError]);
-
   const detailsRoute = urls.model.index(null);
   return (
     <Routes>
       <Route
         path="*"
-        element={<EntityDetails modelWatcherError={modelError} />}
+        element={
+          <EntityDetails modelWatcherError={modelError || modelWatcherError} />
+        }
       >
         <Route path="" element={<Model />} />
         <Route
