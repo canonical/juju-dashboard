@@ -10,7 +10,6 @@ import { EntityDetailsLabel } from "pages/EntityDetails";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
-import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { createStore, renderComponent } from "testing/utils";
@@ -86,9 +85,6 @@ describe("ModelDetails", () => {
     });
     client = {
       conn: {
-        info: {
-          serverVersion: "3.2.1",
-        },
         facades: {
           client: {
             fullStatus: vi.fn(),
@@ -118,41 +114,6 @@ describe("ModelDetails", () => {
     // Wait for the component to be rendered so that async methods have completed.
     await screen.findByTestId(MODEL_TEST_ID);
     expect(client.conn.facades.client.watchAll).toHaveBeenCalled();
-  });
-
-  it("should load the full status when using pre 3.2 Juju", async () => {
-    const status = fullStatusFactory.build();
-    client.conn.facades.client.fullStatus.mockResolvedValue(status);
-    client.conn.info.serverVersion = "3.1.99";
-    const [store, actions] = createStore(state, { trackActions: true });
-    await act(async () => {
-      renderComponent(<ModelDetails />, { path, url, store });
-    });
-    const action = jujuActions.populateMissingAllWatcherData({
-      uuid: "abc123",
-      status,
-    });
-    // Wait for the component to be rendered so that async methods have completed.
-    await screen.findByTestId(MODEL_TEST_ID);
-    expect(
-      actions.find((dispatch) => dispatch.type === action.type),
-    ).toMatchObject(action);
-  });
-
-  it("should not load the full status when using Juju 3.2", async () => {
-    client.conn.info.serverVersion = "3.2.99";
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => client);
-    const [store, actions] = createStore(state, { trackActions: true });
-    renderComponent(<ModelDetails />, { path, url, store });
-    // Wait for the component to be rendered so that async methods have completed.
-    await screen.findByTestId(MODEL_TEST_ID);
-    expect(client.conn.facades.client.fullStatus).not.toHaveBeenCalled();
-    expect(
-      actions.find(
-        (dispatch) =>
-          dispatch.type === jujuActions.populateMissingAllWatcherData.type,
-      ),
-    ).toBeUndefined();
   });
 
   it("should stop watching the model on unmount", async () => {
@@ -217,20 +178,6 @@ describe("ModelDetails", () => {
     expect(
       document.querySelector(".p-notification--negative"),
     ).toHaveTextContent(EntityDetailsLabel.MODEL_WATCHER_TIMEOUT);
-  });
-
-  it("should display error if fullStatus request fails", async () => {
-    client.conn.info.serverVersion = "3.1.99";
-    client.conn.facades.client.fullStatus.mockRejectedValue(
-      Error("fullStatus failed"),
-    );
-    renderComponent(<ModelDetails />, { path, url, state });
-    await waitFor(() => {
-      expect(document.querySelector(".p-notification--negative")).toBeVisible();
-    });
-    expect(
-      document.querySelector(".p-notification--negative"),
-    ).toHaveTextContent("fullStatus failed");
   });
 
   it("should display console error when trying to stop model watcher", async () => {

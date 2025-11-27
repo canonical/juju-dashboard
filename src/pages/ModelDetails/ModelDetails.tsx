@@ -1,6 +1,6 @@
 import type { AllWatcherNextResults } from "@canonical/jujulib/dist/api/facades/all-watcher/AllWatcherV3";
 import type { JSX } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Routes, useParams } from "react-router";
 
@@ -15,7 +15,6 @@ import { actions as jujuActions } from "store/juju";
 import { getModelUUIDFromList } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import urls from "urls";
-import { getMajorMinorVersion, toErrorString } from "utils";
 
 import useModelWatcher from "./useModelWatcher";
 
@@ -41,43 +40,8 @@ export default function ModelDetails(): JSX.Element {
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, userName),
   );
-  const [modelError, setModelError] = useState<null | string>(null);
 
-  const {
-    conn,
-    deltas,
-    error: modelWatcherError,
-    ready: watcherReady,
-  } = useModelWatcher(modelUUID);
-
-  const loadAdditionalData = useCallback(async () => {
-    const status = await conn?.facades.client?.fullStatus({
-      patterns: [],
-    });
-
-    if (status) {
-      dispatch(
-        jujuActions.populateMissingAllWatcherData({
-          uuid: modelUUID,
-          status,
-        }),
-      );
-    }
-  }, [dispatch, modelUUID, conn]);
-
-  // Fetch additional model data for pre Juju 3.2.
-  useEffect(() => {
-    if (
-      !watcherReady ||
-      getMajorMinorVersion(conn?.info.serverVersion) >= 3.2
-    ) {
-      return;
-    }
-
-    loadAdditionalData().catch((err) => {
-      setModelError(toErrorString(err));
-    });
-  }, [conn?.info.serverVersion, loadAdditionalData, watcherReady]);
+  const { deltas, error: modelWatcherError } = useModelWatcher(modelUUID);
 
   // Process deltas as they arrive.
   useEffect(() => {
@@ -93,9 +57,7 @@ export default function ModelDetails(): JSX.Element {
     <Routes>
       <Route
         path="*"
-        element={
-          <EntityDetails modelWatcherError={modelError || modelWatcherError} />
-        }
+        element={<EntityDetails modelWatcherError={modelWatcherError} />}
       >
         <Route path="" element={<Model />} />
         <Route
