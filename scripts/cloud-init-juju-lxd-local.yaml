@@ -8,9 +8,9 @@ packages:
 
 snap:
   commands:
-    - snap install juju --channel=3.6/stable
     - snap install node --classic
     - snap install yq
+    - snap install --classic concierge
 
 write_files:
   - path: "/etc/update-motd.d/99-welcome"
@@ -35,18 +35,7 @@ write_files:
 
 runcmd:
   - |
-    # Initialise LXD.
-    lxd init --auto
-
-  - |
-    # Make sure juju directory is there.
-    # https://bugs.launchpad.net/juju/+bug/1995697
-    sudo -u ubuntu mkdir -p /home/ubuntu/.local/share/juju
-
-  - |
-    # Bootstrap controllers.
-    sudo -u ubuntu juju bootstrap localhost local
-    sudo -u ubuntu juju add-model test-model
+    sudo -u ubuntu sudo concierge prepare -p machine --juju-channel 3.6/stable
 
   - |
     # Add port forward.
