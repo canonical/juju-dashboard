@@ -8,9 +8,9 @@ packages:
 
 snap:
   commands:
-    - snap install juju --channel=3.6/stable
     - snap install node --classic
     - snap install yq candid
+    - snap install --classic concierge
 
 write_files:
   - path: "/etc/update-motd.d/99-welcome"
@@ -39,18 +39,9 @@ write_files:
 
 runcmd:
   - |
-    # Initialise LXD.
-    lxd init --auto
-
-  - |
-    # Make sure juju directory is there.
-    # https://bugs.launchpad.net/juju/+bug/1995697
-    sudo -u ubuntu mkdir -p /home/ubuntu/.local/share/juju
-
-  - |
     # Set up Juju Dashboard.
     cd /home/ubuntu/
-    sudo -u ubuntu git clone -o upstream https://github.com/canonical/juju-dashboard.git
+    sudo -u ubuntu git clone -b juju-lxd-candid-multipass-cloud-init https://github.com/huwshimi/juju-dashboard.git
     cd ./juju-dashboard
     sudo -u ubuntu yarn install
     sudo -u ubuntu DASHBOARD_IDENTITY_PROVIDER_URL="/" DASHBOARD_CONFIG_NAME=config.local.js HAS_EXTERNAL_CONTROLLER_URL=true DASHBOARD_IS_JUJU=true WRITE_NGINX=false DASHBOARD_CONFIG_DIR=/home/ubuntu/juju-dashboard/charms/k8s-charm/src DASHBOARD_ROOT=/home/ubuntu/juju-dashboard/public DASHBOARD_CONTROLLER_URL="wss://$(hostname).local:17070" DASHBOARD_ANALYTICS_ENABLED=false python3 ./charms/k8s-charm/src/config.py
@@ -67,8 +58,10 @@ runcmd:
     CANDID_KEY="$(sudo cat "$CANDID_CONFIG" | yq '.public-key')"
 
   - |
-    # Bootstrap controllers.
-    sudo -u ubuntu juju bootstrap localhost local --config "identity-url=$CANDID_ADDRESS" --config "identity-public-key=$CANDID_KEY" --config allow-model-access=true
+    cd /home/ubuntu/juju-dashboard/scripts/concierge/juju-lxd-candid/
+    sudo -u ubuntu sudo concierge prepare -p machine --juju-channel 3.6/stable
+    # Manually bootstrap the controller so that it uses Candid.
+    sudo -u ubuntu juju controller-config identity-url=$CANDID_ADDRESS --config "identity-public-key=$CANDID_KEY" --config allow-model-access=true
     sudo -u ubuntu juju add-model test-model
 
   - |
