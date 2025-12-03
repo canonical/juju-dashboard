@@ -14,6 +14,7 @@ import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
 import { includeIgnoreFile } from "@eslint/compat";
+import cspellPlugin from "@cspell/eslint-plugin";
 
 const gitignorePath = fileURLToPath(new URL(".gitignore", import.meta.url));
 const __filename = fileURLToPath(import.meta.url);
@@ -49,6 +50,7 @@ export default defineConfig(
       react,
       "@stylistic": stylistic,
       perfectionist,
+      "@cspell": cspellPlugin,
     },
     languageOptions: {
       globals: {
@@ -165,10 +167,16 @@ export default defineConfig(
       "@typescript-eslint/no-unused-expressions": ["error"],
       "perfectionist/sort-intersection-types": "error",
       "perfectionist/sort-union-types": "error",
+      "@cspell/spellchecker": ["warn", {}],
     },
   },
   {
-    files: ["src/**/*.test.ts", "src/**/*.test.tsx", "e2e/**/*.spec.ts", "actions/**/*.test.ts"],
+    files: [
+      "src/**/*.test.ts",
+      "src/**/*.test.tsx",
+      "e2e/**/*.spec.ts",
+      "actions/**/*.test.ts",
+    ],
     rules: {
       "@typescript-eslint/require-await": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
@@ -180,8 +188,8 @@ export default defineConfig(
     rules: {
       // Prevent Playwright's `use` from being misidentified as a hook.
       "react-hooks/rules-of-hooks": "off",
-    }
-  }, 
+    },
+  },
   {
     files: ["actions/**/*.ts"],
     settings: {

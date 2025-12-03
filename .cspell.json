@@ -1,0 +1,48 @@
+{
+    "version": "0.2",
+    "language": ["en", "en-GB"],
+    "dictionaries": ["lorem-ipsum"],
+    "words": [
+        "aabbccdd",
+        "eeffgghh",
+
+        "eggman",
+        "janedoe",
+
+        "easyrsa",
+        "hadoop",
+        "hadoopspark",
+        "kratos",
+        "repmgrd",
+        "slurmdbd",
+        "slurcmtld",
+
+        "arrowup",
+        "arrowdown",
+        "cloudcred",
+        "creds",
+        "kcadm",
+        "loginer",
+        "nrpe",
+        "pgdata",
+        "pgsql",
+        "ungranted",
+        "virt",
+        "webcli",
+        "worktree",
+
+        "anbox",
+        "charmhub",
+        "jaas",
+        "jimm",
+        "jimmv3",
+        "jimmv4",
+        "juju",
+        "juju-lib",
+        "jujucharms",
+        "jujulib",
+        "microk8s",
+        "rebac",
+        "snapstore"
+    ],
+}
