@@ -97,44 +97,6 @@ describe("renderApp", () => {
     });
   });
 
-  it("handles 2.9 unsecure controller endpoints", async () => {
-    window.location.href = "http://example.com";
-    const dispatch = vi
-      .spyOn(storeModule.default, "dispatch")
-      .mockImplementation(vi.fn());
-    const config = configFactory.build({
-      baseControllerURL: null,
-      isJuju: true,
-    });
-    window.jujuDashboardConfig = config;
-    renderApp();
-    expect(dispatch).toHaveBeenCalledWith(
-      generalActions.storeConfig({
-        ...config,
-        controllerAPIEndpoint: "ws://example.com/api",
-      }),
-    );
-  });
-
-  it("handles 2.9 secure controller endpoints", async () => {
-    window.location.href = "https://example.com";
-    const dispatch = vi
-      .spyOn(storeModule.default, "dispatch")
-      .mockImplementation(vi.fn());
-    const config = configFactory.build({
-      baseControllerURL: null,
-      isJuju: true,
-    });
-    window.jujuDashboardConfig = config;
-    renderApp();
-    expect(dispatch).toHaveBeenCalledWith(
-      generalActions.storeConfig({
-        ...config,
-        controllerAPIEndpoint: "wss://example.com/api",
-      }),
-    );
-  });
-
   it("displays controller endpoint errors", async () => {
     window.jujuDashboardConfig = configFactory.build({
       controllerAPIEndpoint: "",

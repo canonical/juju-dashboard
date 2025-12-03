@@ -3,8 +3,6 @@ import type { ConnectionInfo } from "@canonical/jujulib";
 export type Config = {
   analyticsEnabled: boolean;
   baseAppURL: string;
-  // Support for 2.9 configuration.
-  baseControllerURL?: null | string;
   controllerAPIEndpoint: string;
   identityProviderURL: string;
   isJuju: boolean;
