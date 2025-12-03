@@ -48,7 +48,6 @@ import { getModelByUUID } from "../store/juju/selectors";
 
 import {
   Label,
-  type AllWatcherDelta,
   type ApplicationInfo,
   type ConnectionWithFacades,
   type FullStatusAnnotations,
@@ -522,28 +521,17 @@ export async function connectAndLoginToModel(
   return connectToModel(modelUUID, wsControllerURL, credentials);
 }
 
-// A typeguard to narrow the type of the deltas to what we expect. This is
-// needed because currently jujulib doesn't define types for the delta objects.
-const isDeltas = (
-  deltas: AllWatcherNextResults["deltas"],
-): deltas is AllWatcherDelta[] =>
-  deltas.length > 0 &&
-  Array.isArray(deltas[0]) &&
-  deltas[0].length === 3 &&
-  typeof deltas[0][0] === "string" &&
-  typeof deltas[0][1] === "string" &&
-  typeof deltas[0][2] === "object";
-
 export async function startModelWatcher(
   modelUUID: string,
-  appState: RootState,
-  dispatch: Dispatch,
+  wsControllerURL: string,
+  credentials?: AuthCredential,
 ): Promise<{
   conn: ConnectionWithFacades;
   watcherHandle: AllWatcherId | undefined;
   pingerIntervalId: number;
+  next: () => Promise<AllWatcherNextResults | undefined>;
 }> {
-  const conn = await connectAndLoginToModel(modelUUID, appState);
+  const conn = await connectToModel(modelUUID, wsControllerURL, credentials);
   if (!conn) {
     throw new Error(Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR);
   }
@@ -553,11 +541,12 @@ export async function startModelWatcher(
   if (!id) {
     throw new Error(Label.START_MODEL_WATCHER_NO_ID_ERROR);
   }
-  const data = await conn?.facades.allWatcher?.next({ id });
-  if (data?.deltas && isDeltas(data?.deltas)) {
-    dispatch(jujuActions.processAllWatcherDeltas(data.deltas));
-  }
-  return { conn, watcherHandle, pingerIntervalId };
+  return {
+    conn,
+    watcherHandle,
+    pingerIntervalId,
+    next: async () => conn.facades.allWatcher?.next({ id }),
+  };
 }
 
 export async function stopModelWatcher(

@@ -1,15 +1,15 @@
 import type { Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
-import { screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 import type { JSX } from "react";
 import { vi } from "vitest";
 
 import * as juju from "juju/api";
+import type { AllWatcherDelta, ApplicationChangeDelta } from "juju/types";
 import { EntityDetailsLabel } from "pages/EntityDetails";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
-import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { createStore, renderComponent } from "testing/utils";
@@ -46,6 +46,17 @@ vi.mock("@canonical/jujulib", () => ({
   connectAndLogin: vi.fn(),
 }));
 
+function applicationDeployDelta(name: string): AllWatcherDelta {
+  return [
+    "application",
+    "change",
+    {
+      "model-uuid": "abc123",
+      name,
+    } as ApplicationChangeDelta,
+  ] as AllWatcherDelta;
+}
+
 describe("ModelDetails", () => {
   let state: RootState;
   let client: {
@@ -74,16 +85,13 @@ describe("ModelDetails", () => {
     });
     client = {
       conn: {
-        info: {
-          serverVersion: "3.2.1",
-        },
         facades: {
           client: {
             fullStatus: vi.fn(),
             watchAll: vi.fn().mockReturnValue({ "watcher-id": "123" }),
           },
           allWatcher: {
-            next: vi.fn(),
+            next: vi.fn().mockReturnValue(new Promise(() => {})),
             stop: vi.fn(),
           },
         },
@@ -102,45 +110,10 @@ describe("ModelDetails", () => {
   });
 
   it("should start the watcher when displaying the model", async () => {
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => client);
     renderComponent(<ModelDetails />, { path, url, state });
     // Wait for the component to be rendered so that async methods have completed.
     await screen.findByTestId(MODEL_TEST_ID);
     expect(client.conn.facades.client.watchAll).toHaveBeenCalled();
-  });
-
-  it("should load the full status when using pre 3.2 Juju", async () => {
-    const status = fullStatusFactory.build();
-    client.conn.facades.client.fullStatus.mockReturnValue(status);
-    client.conn.info.serverVersion = "3.1.99";
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => client);
-    const [store, actions] = createStore(state, { trackActions: true });
-    renderComponent(<ModelDetails />, { path, url, store });
-    const action = jujuActions.populateMissingAllWatcherData({
-      uuid: "abc123",
-      status,
-    });
-    // Wait for the component to be rendered so that async methods have completed.
-    await screen.findByTestId(MODEL_TEST_ID);
-    expect(
-      actions.find((dispatch) => dispatch.type === action.type),
-    ).toMatchObject(action);
-  });
-
-  it("should not load the full status when using Juju 3.2", async () => {
-    client.conn.info.serverVersion = "3.2.99";
-    vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => client);
-    const [store, actions] = createStore(state, { trackActions: true });
-    renderComponent(<ModelDetails />, { path, url, store });
-    // Wait for the component to be rendered so that async methods have completed.
-    await screen.findByTestId(MODEL_TEST_ID);
-    expect(client.conn.facades.client.fullStatus).not.toHaveBeenCalled();
-    expect(
-      actions.find(
-        (dispatch) =>
-          dispatch.type === jujuActions.populateMissingAllWatcherData.type,
-      ),
-    ).toBeUndefined();
   });
 
   it("should stop watching the model on unmount", async () => {
@@ -207,26 +180,13 @@ describe("ModelDetails", () => {
     ).toHaveTextContent(EntityDetailsLabel.MODEL_WATCHER_TIMEOUT);
   });
 
-  it("should display error if fullStatus request fails", async () => {
-    client.conn.info.serverVersion = "3.1.99";
-    client.conn.facades.client.fullStatus.mockRejectedValue(
-      Error("fullStatus failed"),
-    );
-    renderComponent(<ModelDetails />, { path, url, state });
-    await waitFor(() => {
-      expect(document.querySelector(".p-notification--negative")).toBeVisible();
-    });
-    expect(
-      document.querySelector(".p-notification--negative"),
-    ).toHaveTextContent("fullStatus failed");
-  });
-
   it("should display console error when trying to stop model watcher", async () => {
     vi.spyOn(juju, "startModelWatcher").mockImplementation(
       vi.fn().mockResolvedValue({
         conn: client.conn,
         watcherHandle: { "watcher-id": "1" },
         pingerIntervalId: 1,
+        next: async () => new Promise(() => {}),
       }),
     );
     vi.spyOn(juju, "stopModelWatcher").mockImplementation(
@@ -243,5 +203,76 @@ describe("ModelDetails", () => {
     await waitFor(() => {
       expect(juju.stopModelWatcher).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it("should update model information when watcher updates", async () => {
+    const watcherNextMock = vi
+      .fn()
+      .mockResolvedValueOnce({ deltas: [applicationDeployDelta("new-name")] })
+      .mockReturnValue(new Promise(() => {}));
+
+    vi.spyOn(juju, "startModelWatcher").mockResolvedValue({
+      conn: client.conn,
+      watcherHandle: { "watcher-id": "1" },
+      pingerIntervalId: 1,
+      next: watcherNextMock,
+    });
+
+    const [store, actions] = createStore(state, { trackActions: true });
+
+    await act(async () =>
+      renderComponent(<ModelDetails />, { path, url, store }),
+    );
+
+    const action = jujuActions.processAllWatcherDeltas([
+      applicationDeployDelta("new-name"),
+    ]);
+    expect(
+      actions.findLast((dispatch) => dispatch.type === action.type),
+    ).toMatchObject(action);
+  });
+
+  it("should update model information when multiple updates are passed in", async () => {
+    const { promise, resolve } = Promise.withResolvers();
+
+    const watcherNextMock = vi
+      .fn()
+      .mockResolvedValueOnce({ deltas: [applicationDeployDelta("new-name")] })
+      .mockReturnValueOnce(promise)
+      .mockReturnValue(new Promise(() => {}));
+
+    vi.spyOn(juju, "startModelWatcher").mockResolvedValue({
+      conn: client.conn,
+      watcherHandle: { "watcher-id": "1" },
+      pingerIntervalId: 1,
+      next: watcherNextMock,
+    });
+
+    const [store, actions] = createStore(state, { trackActions: true });
+
+    await act(async () =>
+      renderComponent(<ModelDetails />, { path, url, store }),
+    );
+
+    // Find the first action.
+    const action = jujuActions.processAllWatcherDeltas([
+      applicationDeployDelta("new-name"),
+    ]);
+    expect(
+      actions.findLast((dispatch) => dispatch.type === action.type),
+    ).toMatchObject(action);
+
+    // Trigger the next update.
+    await act(async () => {
+      resolve({ deltas: [applicationDeployDelta("another-application")] });
+    });
+
+    // Find the second action.
+    const anotherAction = jujuActions.processAllWatcherDeltas([
+      applicationDeployDelta("another-application"),
+    ]);
+    expect(
+      actions.findLast((dispatch) => dispatch.type === anotherAction.type),
+    ).toMatchObject(anotherAction);
   });
 });
