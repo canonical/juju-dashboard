@@ -15,7 +15,8 @@ links:
   documentation: https://discourse.charmhub.io/t/juju-dashboard-k8s-docs-index/10773
 assumes:
   - k8s-api
-  - juju >= 3.0
+  - juju >= 3.6
+  - juju < 4.0
 base: ubuntu@24.04
 platforms:
   amd64:
