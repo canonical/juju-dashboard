@@ -1156,7 +1156,7 @@ describe("reducers", () => {
       secrets: secretsStateFactory.build({
         abc123: modelSecretsFactory.build({
           content: modelSecretsContentFactory.build({
-            content: { oldkey: "oldval" },
+            content: { oldKey: "oldVal" },
             errors: null,
             loaded: false,
             loading: true,
@@ -1164,7 +1164,7 @@ describe("reducers", () => {
         }),
       }),
     });
-    const content = { newkey: "newval" };
+    const content = { newKey: "newVal" };
     expect(
       reducer(
         state,
@@ -1546,7 +1546,7 @@ describe("reducers", () => {
     });
   });
 
-  it("addcheckRelationsErrors", () => {
+  it("addCheckRelationsErrors", () => {
     const requestId = "123456";
     const tuples = [relationshipTupleFactory.build()];
     const state = jujuStateFactory.build({

@@ -22,12 +22,12 @@ describe("LoadingHandler", () => {
   });
 
   it("returns the children if data and not loading", () => {
-    const children = <div>I am a child, wahhhh</div>;
+    const children = <div>I am a child</div>;
     render(
       <LoadingHandler hasData={true} loading={false} noDataMessage="">
         {children}
       </LoadingHandler>,
     );
-    expect(screen.getByText("I am a child, wahhhh")).toBeInTheDocument();
+    expect(screen.getByText("I am a child")).toBeInTheDocument();
   });
 });

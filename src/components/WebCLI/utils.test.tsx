@@ -1,5 +1,7 @@
 import { getBlocks, getColumns, getHeaders } from "./utils";
 
+// spell-checker:ignore mhook
+
 describe("getBlocks", () => {
   it("extracts blocks", () => {
     expect(

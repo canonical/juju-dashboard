@@ -340,7 +340,7 @@ describe("SecretsPicker", () => {
       .mockImplementation(
         vi
           .fn()
-          .mockResolvedValue({ results: [{ result: "secret:newlycreated" }] }),
+          .mockResolvedValue({ results: [{ result: "secret:newlyCreated" }] }),
       );
     vi.spyOn(secretHooks, "useCreateSecrets").mockImplementation(
       () => createSecrets,
@@ -368,7 +368,7 @@ describe("SecretsPicker", () => {
     await userEvent.click(
       screen.getByRole("button", { name: Label.BUTTON_SUBMIT }),
     );
-    expect(setValue).toHaveBeenCalledWith("secret:newlycreated");
+    expect(setValue).toHaveBeenCalledWith("secret:newlyCreated");
     expect(
       screen.queryByRole("dialog", { name: Label.MODAL_TITLE }),
     ).not.toBeInTheDocument();

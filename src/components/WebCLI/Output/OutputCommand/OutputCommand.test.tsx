@@ -8,7 +8,7 @@ const TEST_ID = "custom";
 
 describe("OutputCommand", () => {
   it("should display the content with correct formatting", () => {
-    const content = [`\u001b[1;39mApp\n\u001b[0m\u001b[33munknown`];
+    const content = [`\u001b[1;39mApp\n\u001b[0m\u001b[33munknown`]; // spell-checker: disable-line
     renderComponent(<OutputCommand command={"status"} messages={content} />);
     expect(screen.getByText("unknown").parentElement).toHaveStyle({
       color: "color: rgb(187, 187, 0);",

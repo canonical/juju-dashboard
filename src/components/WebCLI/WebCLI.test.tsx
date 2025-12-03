@@ -36,7 +36,7 @@ describe("WebCLI", () => {
     modelUUID: "abc123",
     credentials: {
       user: "eggman@external",
-      password: "somelongpassword",
+      password: "some-long-password",
     },
     onCommandSent: vi.fn(),
     activeUser: "eggman@external",
@@ -155,7 +155,7 @@ describe("WebCLI", () => {
     await expect(server).toReceiveMessage(
       JSON.stringify({
         user: "eggman@external",
-        credentials: "somelongpassword",
+        credentials: "some-long-password",
         commands: ["status"],
       }),
     );
@@ -266,7 +266,7 @@ describe("WebCLI", () => {
     await expect(server).toReceiveMessage(
       JSON.stringify({
         user: "eggman@external",
-        macaroons: [["mac", "aroon"]],
+        macaroons: [["mac", "aroon"]], // spell-checker:disable-line
         commands: ["status"],
       }),
     );
@@ -280,7 +280,7 @@ describe("WebCLI", () => {
     await expect(server).toReceiveMessage(
       JSON.stringify({
         user: "eggman@external",
-        credentials: "somelongpassword",
+        credentials: "some-long-password",
         commands: ["some-command"],
       }),
     );
@@ -296,7 +296,7 @@ describe("WebCLI", () => {
     await expect(server).toReceiveMessage(
       JSON.stringify({
         user: "eggman@external",
-        credentials: "somelongpassword",
+        credentials: "some-long-password",
         commands: ["status --color"],
       }),
     );
@@ -371,7 +371,7 @@ describe("WebCLI", () => {
     await expect(server).toReceiveMessage(
       JSON.stringify({
         user: "eggman@external",
-        credentials: "somelongpassword",
+        credentials: "some-long-password",
         commands: ["status --color"],
       }),
     );
@@ -395,6 +395,7 @@ describe("WebCLI", () => {
       },
       {
         output: [
+          // spell-checker: disable-next-line
           "0        \u001b[32mstarted  \u001b[0m35.190.153.209  juju-3686b9-0  focal   us-east1-b  RUNNING",
         ],
       },
@@ -493,7 +494,7 @@ describe("WebCLI", () => {
     await expect(server).toReceiveMessage(
       JSON.stringify({
         user: "eggman@external",
-        credentials: "somelongpassword",
+        credentials: "some-long-password",
         commands: ["status --color"],
       }),
     );
@@ -511,7 +512,7 @@ describe("WebCLI", () => {
     await expect(server).toReceiveMessage(
       JSON.stringify({
         user: "eggman@external",
-        credentials: "somelongpassword",
+        credentials: "some-long-password",
         commands: ["status --color"],
       }),
     );
@@ -529,7 +530,7 @@ describe("WebCLI", () => {
     await expect(server).toReceiveMessage(
       JSON.stringify({
         user: "eggman@external",
-        credentials: "somelongpassword",
+        credentials: "some-long-password",
         commands: ["status --color"],
       }),
     );
@@ -547,7 +548,7 @@ describe("WebCLI", () => {
     await expect(server).toReceiveMessage(
       JSON.stringify({
         user: "eggman@external",
-        credentials: "somelongpassword",
+        credentials: "some-long-password",
         commands: ["status --color"],
       }),
     );
@@ -585,7 +586,7 @@ describe("WebCLI", () => {
     await expect(server).toReceiveMessage(
       JSON.stringify({
         user: "eggman@external",
-        credentials: "somelongpassword",
+        credentials: "some-long-password",
         commands: ["status"],
       }),
     );

@@ -40,6 +40,7 @@ import { modelStatusInfoFactory, detailedStatusFactory } from "./ClientV6";
 import { modelSLAInfoFactory } from "./ModelManagerV9";
 
 function generateUUID(): string {
+  // spell-checker:disable-next-line
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
     const num = (Math.random() * 16) | 0;
     const value = char === "x" ? num : (num & 0x3) | 0x8;
@@ -55,6 +56,7 @@ export const controllerLocationFactory = Factory.define<ControllerLocation>(
 
 export const controllerFactory = Factory.define<Controller>(() => ({
   path: "admin/jaas",
+  // spell-checker:disable-next-line
   uuid: "a030379a-940f-4760-8fcf-3062bfake4e7",
   version: "1.2.3",
 }));
@@ -75,6 +77,7 @@ export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({
   name: "test-model",
   ownerTag: "user-eggman@external",
   type: "iaas",
+  // spell-checker:disable-next-line
   uuid: "84e872ff-9171-46be-829b-70f0ffake18d",
   wsControllerURL: "wss://example.com/api",
 }));
@@ -117,7 +120,7 @@ export const modelDataApplicationFactory = Factory.define<ApplicationStatus>(
   }),
 );
 
-export const modelDataMachineNetworkInterfcaceFactory =
+export const modelDataMachineNetworkInterfaceFactory =
   Factory.define<NetworkInterface>(() => ({
     "ip-addresses": [],
     "mac-address": "a2:a2:53:31:db:9a",
@@ -149,7 +152,9 @@ export const modelDataMachineFactory = Factory.define<MachineStatus>(() => ({
 export const modelDataInfoFactory = Factory.define<ModelInfo>(() => ({
   name: "sub-test",
   type: "iaas",
+  // spell-checker:disable-next-line
   uuid: "84e872ff-9171-46be-829b-70f0ffake18d",
+  // spell-checker:disable-next-line
   "controller-uuid": "a030379a-940f-4760-8fcf-3062bfake4e7",
   "provider-type": "gce",
   "default-series": "bionic",
@@ -194,6 +199,7 @@ export const listSecretResultFactory = Factory.define<ListSecretResult>(() => ({
   "owner-tag": "model-ab02a18f-1ea9-49cb-898d-cad17d330b21",
   "update-time": "2024-01-05T05:10:17Z",
   revisions: [],
+  // spell-checker:disable-next-line
   uri: "secret:amboue9tqlp3g6kgq300",
   version: 1,
 }));

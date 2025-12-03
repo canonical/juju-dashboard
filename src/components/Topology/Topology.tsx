@@ -244,12 +244,12 @@ const Topology = memo(
       if (!svgNode) {
         return;
       }
-      const topo = d3
+      const topology = d3
         .select(svgNode)
         .attr("viewBox", `0 0 ${width} ${height}`)
         .append("g");
 
-      const appIcons = topo.selectAll(".application").data(applications);
+      const appIcons = topology.selectAll(".application").data(applications);
 
       const gridCount = {
         x: 0,
@@ -293,10 +293,10 @@ const Topology = memo(
           let svgWidth = 0;
           let parentHeight = 0;
           let parentWidth = 0;
-          const rect = topo?.node()?.getBoundingClientRect();
+          const rect = topology?.node()?.getBoundingClientRect();
           // Get the rect of the containing <svg>. This could be different to the
           // width and height passed into this component due to the responsive design.
-          const parentRect = topo
+          const parentRect = topology
             .node()
             ?.parentElement?.getBoundingClientRect();
           if (rect && parentRect) {
@@ -320,7 +320,7 @@ const Topology = memo(
               ((parentWidth - svgWidth * scale) / 2) * containerScale;
             const translateY =
               ((parentHeight - svgHeight * scale) / 2) * containerScale;
-            topo.attr(
+            topology.attr(
               "transform",
               `translate(${translateX},${translateY}) scale(${scale},${scale})`,
             );
@@ -353,7 +353,7 @@ const Topology = memo(
             : "circle(55px at 63px 63px)",
         );
 
-      const relationLines = topo.selectAll(".relation").data(relations);
+      const relationLines = topology.selectAll(".relation").data(relations);
       const relationLine = relationLines.enter().insert("g", ":first-child");
 
       relationLine
@@ -370,7 +370,7 @@ const Topology = memo(
       relationLines.exit().remove();
 
       return (): void => {
-        topo.remove();
+        topology.remove();
       };
     }, [applications, deltaX, deltaY, height, width, maxX, maxY, relations]);
     return <svg ref={ref} />;

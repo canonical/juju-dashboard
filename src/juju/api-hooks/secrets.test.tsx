@@ -267,7 +267,7 @@ describe("useGetSecretContent", () => {
         ),
       },
     );
-    result.current("sacret:aabbccdd", 2);
+    result.current("secret:aabbccdd", 2);
     const updateAction = jujuActions.updateSecretsContent({
       modelUUID: "abc123",
       content: data,
@@ -324,7 +324,7 @@ describe("useGetSecretContent", () => {
         ),
       },
     );
-    result.current("sacret:aabbccdd", 2);
+    result.current("secret:aabbccdd", 2);
     const errorAction = jujuActions.setSecretsContentErrors({
       modelUUID: "abc123",
       errors: "Uh oh!",
@@ -374,7 +374,7 @@ describe("useGetSecretContent", () => {
         ),
       },
     );
-    result.current("sacret:aabbccdd", 2);
+    result.current("secret:aabbccdd", 2);
     const errorAction = jujuActions.setSecretsContentErrors({
       modelUUID: "abc123",
       errors: "No secret data",
@@ -411,7 +411,7 @@ describe("useGetSecretContent", () => {
         ),
       },
     );
-    result.current("sacret:aabbccdd", 2);
+    result.current("secret:aabbccdd", 2);
     const errorAction = jujuActions.setSecretsContentErrors({
       modelUUID: "abc123",
       errors: Label.NO_SECRETS_FACADE_ERROR,
@@ -456,7 +456,7 @@ describe("useGetSecretContent", () => {
         ),
       },
     );
-    result.current("sacret:aabbccdd", 2);
+    result.current("secret:aabbccdd", 2);
     const errorAction = jujuActions.setSecretsContentErrors({
       modelUUID: "abc123",
       errors: "Uh oh!",

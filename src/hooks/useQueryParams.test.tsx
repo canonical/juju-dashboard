@@ -83,7 +83,7 @@ describe("useQueryParams", () => {
     });
     [searchParams] = result.current;
     expect(searchParams.panels).toStrictEqual(["config", "actions"]);
-    expect(router?.state.location.search).toBe("?panels=config%2Cactions");
+    expect(router?.state.location.search).toBe("?panels=config%2Cactions"); // spell-checker:disable-line
   });
 
   it("can clear a param", () => {
@@ -140,11 +140,11 @@ describe("useQueryParams", () => {
           panel: null,
         }),
       // Decoded: ?<svg><g/onload=alert(2)//<p>=something
-      { url: "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something" },
+      { url: "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something" }, // spell-checker:disable-line
     );
     expect(router?.state.location.search).toStrictEqual(
       // Decoded: ?<svg><g/onload=alert(2)//<p>=something
-      "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something",
+      "?%3Csvg%3E%3Cg%2Fonload%3Dalert(2)%2F%2F%3Cp%3E=something", // spell-checker:disable-line
     );
     const [_searchParams, setSearchParams] = result.current;
     act(() => {
@@ -152,7 +152,7 @@ describe("useQueryParams", () => {
     });
     expect(router?.state.location.search).toStrictEqual(
       // Decoded: ?panel=config&$<svg><g></g></svg>=something
-      "?panel=config&%3Csvg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E=something",
+      "?panel=config&%3Csvg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E=something", // spell-checker:disable-line
     );
   });
 

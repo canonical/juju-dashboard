@@ -94,7 +94,7 @@ export const getHeaders = (row: string): Header[] => {
     let split = stripAnsi(remainder).search(/(?<=\s{2})\S/);
     // If this is the last column then get all the remaining characters.
     split = split < 0 ? remainder.length : split;
-    // Use ANTSI code aware slicers as the ANTSI codes interrupt the column widths.
+    // Use ANSI code aware slicers as the ANSI codes interrupt the column widths.
     const content = sliceAnsi(remainder, 0, split);
     remainder = sliceAnsi(remainder, split);
     const start = end ? end + 1 : 0;
@@ -152,7 +152,7 @@ export const getColumns = (rows: string[], headers: Header[]): Column[][] => {
         ansiValue,
         value: stripAnsi(ansiValue),
       };
-      // This matches the whitespace after ANTSI codes have been removed other
+      // This matches the whitespace after ANSI codes have been removed other
       // the codes would interrupt the whitespace positions.
       const { before, after } =
         stripAnsi(content).match(COLUMN_WHITESPACE_REGEX)?.groups ?? {};

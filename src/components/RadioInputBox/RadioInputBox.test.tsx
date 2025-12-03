@@ -6,7 +6,7 @@ import RadioInputBox from "./RadioInputBox";
 
 describe("RadioInputBox", () => {
   it("opens to reveal a description and children on select", async () => {
-    const child = <div>I am a child, wahhh</div>;
+    const child = <div>I am a child</div>;
     const onSelect = vi.fn();
     render(
       <RadioInputBox
@@ -25,7 +25,7 @@ describe("RadioInputBox", () => {
   });
 
   it("opens if the selectedInput matches the name", async () => {
-    const child = <div>I am a child, wahhh</div>;
+    const child = <div>I am a child</div>;
     const onSelect = vi.fn();
     render(
       <RadioInputBox

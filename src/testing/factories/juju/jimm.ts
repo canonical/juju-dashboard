@@ -34,6 +34,7 @@ export const crossModelQueryControllerFactory =
 
 export const auditEventFactory = Factory.define<AuditEvent>(() => ({
   time: "2023-07-01T09:04:04.279Z",
+  // spell-checker:disable-next-line
   "conversation-id": "fakeabc123",
   "message-id": 2,
   "user-tag": "user-eggman",
@@ -45,7 +46,7 @@ export const crossModelQueryApplicationEndpointFactory =
     "application-status": crossModelQueryStatusFactory.build(),
     endpoints: { mysql: crossModelQueryEndpointFactory.build() },
     relations: { mysql: ["slurmdbd"] },
-    url: "jaas-staging:huwshimi@external/cmi-provider.mysql-cmi",
+    url: "jaas-staging:eggman@external/cmi-provider.mysql-cmi",
   }));
 
 export const crossModelQueryUnitFactory = Factory.define<CrossModelQueryUnit>(
