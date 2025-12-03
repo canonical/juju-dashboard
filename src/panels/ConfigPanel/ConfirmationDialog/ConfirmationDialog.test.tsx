@@ -415,7 +415,7 @@ describe("ConfirmationDialog", () => {
     );
   });
 
-  it("should display cancel confirmation dialog and can cancel the cancelation", async () => {
+  it("should display cancel confirmation dialog and can cancel the cancellation", async () => {
     renderComponent(
       <ConfirmationDialog
         confirmType={DefaultConfirmType.CANCEL}

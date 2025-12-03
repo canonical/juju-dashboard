@@ -15,6 +15,8 @@ import {
 import type { Props } from "./types";
 import { Label, TestId } from "./types";
 
+// spell-checker:words dragarea
+
 const dragHandles = ["webcli__output-dragarea", "webcli__output-handle"];
 
 const WebCLIOutput: FC<Props> = ({

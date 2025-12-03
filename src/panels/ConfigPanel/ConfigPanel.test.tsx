@@ -315,7 +315,7 @@ describe("ConfigPanel", () => {
     );
     await userEvent.type(
       within(await screen.findByTestId("name")).getByRole("textbox"),
-      "noteggman",
+      "not-eggman",
     );
     await userEvent.click(
       screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
@@ -334,7 +334,7 @@ describe("ConfigPanel", () => {
       name: configFactory.build({
         name: "name",
         default: "eggman",
-        newValue: "noteggman",
+        newValue: "not-eggman",
       }),
     });
     expect(getApplicationConfig).toHaveBeenCalledTimes(1);
@@ -514,7 +514,7 @@ describe("ConfigPanel", () => {
     renderComponent(<ConfigPanel />, { state, path, url });
     await userEvent.type(
       within(await screen.findByTestId("email")).getByRole("textbox"),
-      "notasecret",
+      "not-a-secret",
     );
     await userEvent.click(
       screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
@@ -764,7 +764,7 @@ describe("ConfigPanel", () => {
     const input = within(await screen.findByTestId("email")).getByRole(
       "textbox",
     );
-    await userEvent.type(input, "notasecret:aabbccdd");
+    await userEvent.type(input, "not-a-secret:aabbccdd");
     expect(screen.getByText(ConfigPanelLabel.SECRET_PREFIX_ERROR)).toHaveClass(
       "p-form-validation__message",
     );

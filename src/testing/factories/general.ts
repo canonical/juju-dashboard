@@ -19,7 +19,7 @@ export const configFactory = Factory.define<Config>(() => ({
 
 export const credentialFactory = Factory.define<AuthCredential>(() => ({
   user: "user-eggman@external",
-  password: "verysecure123",
+  password: "verySecure123",
 }));
 
 export const controllerFeaturesFactory = Factory.define<ControllerFeatures>(

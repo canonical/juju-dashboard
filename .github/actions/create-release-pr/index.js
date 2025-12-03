@@ -31972,7 +31972,7 @@ function appendItem(changelog, item) {
 
 ;// CONCATENATED MODULE: ./src/lib/util.ts
 /**
- * Split a string once at a seperator. If there isn't one instance of the seperator, an error will
+ * Split a string once at a separator. If there isn't one instance of the separator, an error will
  * be raised.
  */
 function splitOnce(str, sep, allowEmpty = true) {

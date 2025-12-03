@@ -1,6 +1,9 @@
 import urls from "urls";
 
 import type { Model } from "../objects";
+
+// spell-checker:ignore kubecon
+
 /**
  * Charm to deploy based on provider.
  */

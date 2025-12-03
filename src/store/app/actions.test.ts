@@ -20,7 +20,7 @@ describe("actions", () => {
   it("connectAndPollControllers", () => {
     const controller: ControllerArgs = [
       "wss://example.com",
-      { user: "eggman@external", password: "verysecure123" },
+      { user: "eggman@external", password: "verySecure123" },
     ];
     const args = {
       controllers: [controller],

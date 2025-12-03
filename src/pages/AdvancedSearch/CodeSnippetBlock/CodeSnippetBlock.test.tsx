@@ -385,7 +385,7 @@ describe("CodeSnippetBlock", () => {
     await userEvent.click(screen.getByText("appEndpoint_0:"));
     expect(
       screen.getByRole("link", {
-        name: '"jaas-staging:huwshimi@external/cmi-provider.mysql-cmi"',
+        name: '"jaas-staging:eggman@external/cmi-provider.mysql-cmi"',
       }),
     ).toHaveAttribute(
       "href",

@@ -192,7 +192,7 @@ describe("SecretForm", () => {
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: FieldsLabel.DESCRIPTION }),
-      "mod",
+      " mod",
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
@@ -217,7 +217,7 @@ describe("SecretForm", () => {
             key2: "dmFsMg==",
           },
         },
-        description: "a descriptionmod",
+        description: "a description mod",
         label: "secret1mod",
         uri: "secret:aabbccdd",
       },
@@ -354,7 +354,7 @@ describe("SecretForm", () => {
     );
   });
 
-  it("refetches the secrets if successful", async () => {
+  it("fetches the secrets again if successful", async () => {
     const createSecrets = vi
       .fn()
       .mockImplementation(vi.fn().mockResolvedValue({ results: [] }));

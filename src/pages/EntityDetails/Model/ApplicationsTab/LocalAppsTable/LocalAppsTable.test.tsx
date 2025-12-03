@@ -113,7 +113,7 @@ describe("LocalAppsTable", () => {
   it("displays a message when there are no search results", () => {
     renderComponent(<LocalAppsTable applications={{}} />, {
       path,
-      url: `${url}?filterQuery=nothingmatchesthis`,
+      url: `${url}?filterQuery=nothing-matches-this`,
       state,
     });
     expect(screen.queryByText(Label.NONE_SEARCH)).toBeInTheDocument();

@@ -2242,7 +2242,7 @@ describe("selectors", () => {
             info: modelDataInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "other@model2" }),
-                modelUserInfoFactory.build({ user: "other2@anothermodel2" }),
+                modelUserInfoFactory.build({ user: "other2@another-model2" }),
                 modelUserInfoFactory.build({ user: "other3" }),
               ],
             }),
@@ -2254,7 +2254,7 @@ describe("selectors", () => {
       "eggman@external",
       "spaceman@domain",
       "other@model2",
-      "other2@anothermodel2",
+      "other2@another-model2",
     ]);
   });
 

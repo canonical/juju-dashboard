@@ -14,7 +14,7 @@ describe("ConfigField", () => {
     description: "a username",
     source: "default",
     type: "string",
-    value: "eggmant1",
+    value: "eggman1",
     newValue: "eggman2",
   };
 

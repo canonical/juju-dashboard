@@ -63,8 +63,8 @@ test.describe("secrets", () => {
     // Add a secret
     const secret = generateRandomName("secret");
     await page.getByRole("textbox", { name: "Label" }).fill(secret);
-    await page.getByRole("textbox", { name: "Key 1" }).fill("somekey");
-    await page.locator("textarea[aria-label='Value 1']").fill("somevalue");
+    await page.getByRole("textbox", { name: "Key 1" }).fill("some-key");
+    await page.locator("textarea[aria-label='Value 1']").fill("some-value");
     await page
       .getByRole("dialog", {
         name: SecretFormPanelLabel.TITLE_ADD,

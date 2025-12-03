@@ -55,7 +55,7 @@ const ModelDetailsLink: React.FC<Props> = ({
   // isn't available. Once we have a single API call for all the data this check
   // can be removed.
   if (!owner || !model) {
-    // We will just return an unclickable name until we get an owner tag as
+    // We will just return an un-clickable name until we get an owner tag as
     // without it we can't create a reliable link.
     return <>{children}</>;
   }

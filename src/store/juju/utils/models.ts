@@ -53,7 +53,7 @@ const checkHighestStatus = (highestStatus: Status): boolean => {
   Returns the status for the application.
   @param application The application to check the status of in the
     format stored in the redux store.
-  @returns The status of the application and any relevent messaging.
+  @returns The status of the application and any relevant messaging.
 */
 export const getApplicationStatusGroup = (
   application: ModelData["applications"][0],
@@ -80,7 +80,7 @@ export const getApplicationStatusGroup = (
   Returns the status level for the unit.
   @param unit The unit to check the status of in the
     format stored in the redux store.
-  @returns The status of the unit and any relevent messaging.
+  @returns The status of the unit and any relevant messaging.
 */
 export const getUnitStatusGroup = (
   unit: ModelData["applications"][0]["units"][0],
@@ -171,7 +171,7 @@ export const groupModelsByStatus = (
   Returns the status level for the machine.
   @param machine The machine to check the status of in the
     format stored in the redux store.
-  @returns The status of the machine and any relevent messaging.
+  @returns The status of the machine and any relevant messaging.
 */
 export const getMachineStatusGroup = (
   machine: ModelData["machines"][0],
@@ -244,7 +244,7 @@ export const extractCloudName = (tag = ""): string => {
   @returns The simplified cloud string
 */
 export const extractCredentialName = (tag: null | string = null): string => {
-  // @ is not there in local boostraps
+  // @ is not there in local bootstraps
   // cloudcred-localhost_admin_localhost
   if (!tag) {
     return "-";
@@ -273,7 +273,7 @@ export const generateIconPath = (charmId: string): string => {
     return defaultCharmIcon;
   }
   if (charmId.indexOf("cs:") === 0) {
-    // Strip unnessesary prefixes
+    // Strip unnecessary prefixes
     // before: cs:~containers/lxd-container-47
     // after:  containers/lxd-container-47
     charmId = charmId.replace("cs:~", "");
