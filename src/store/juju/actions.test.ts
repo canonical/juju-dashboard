@@ -225,21 +225,6 @@ describe("actions", () => {
     });
   });
 
-  it("populateMissingAllWatcherData", () => {
-    expect(
-      actions.populateMissingAllWatcherData({
-        status,
-        uuid: "abc123",
-      }),
-    ).toStrictEqual({
-      type: "juju/populateMissingAllWatcherData",
-      payload: {
-        status,
-        uuid: "abc123",
-      },
-    });
-  });
-
   it("processAllWatcherDeltas", () => {
     expect(actions.processAllWatcherDeltas([])).toStrictEqual({
       type: "juju/processAllWatcherDeltas",

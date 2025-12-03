@@ -79,7 +79,6 @@ export const checkAuthMiddleware: Middleware<
       generalActions.updateLoginLoading.type,
       jimmListeners.pollWhoamiStart.type,
       jimmListeners.pollWhoamiStop.type,
-      jujuActions.populateMissingAllWatcherData.type,
       jujuActions.processAllWatcherDeltas.type,
       jujuActions.updateAuditEvents.type,
       jujuActions.updateAuditEventsLimit.type,

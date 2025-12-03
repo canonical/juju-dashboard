@@ -111,17 +111,7 @@ export interface WatcherModelData {
   units: UnitData;
 }
 
-// This type is used for Juju versions before 3.2.
-export interface Pre32AnnotatedWatcherModelInfo extends Pre32ModelChangeDelta {
-  cloud: string;
-  "cloud-region"?: string;
-  type: string;
-  version: string;
-}
-
-export type WatcherModelInfo =
-  | Post32ModelChangeDelta
-  | Pre32AnnotatedWatcherModelInfo;
+export type WatcherModelInfo = ModelChangeDelta;
 
 export interface AnnotationInfo {
   [annotationName: string]: string;
@@ -252,7 +242,11 @@ export interface HardwareCharacteristics {
   "availability-zone": string;
 }
 
-type Pre32ModelChangeDelta = {
+export type ModelChangeDelta = {
+  cloud: string;
+  "cloud-region": string;
+  type: string;
+  version: string;
   "model-uuid": string;
   name: string;
   life: Life;
@@ -264,15 +258,6 @@ type Pre32ModelChangeDelta = {
   constraints: { [key: string]: unknown };
   sla: ModelSLAInfo;
 };
-
-type Post32ModelChangeDelta = {
-  cloud: string;
-  "cloud-region": string;
-  type: string;
-  version: string;
-} & Pre32ModelChangeDelta;
-
-export type ModelChangeDelta = Post32ModelChangeDelta | Pre32ModelChangeDelta;
 
 export interface ModelAgentStatus extends Status {
   current: "" | "available" | "busy";
