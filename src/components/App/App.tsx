@@ -14,7 +14,7 @@ function App(): JSX.Element {
   const analyticsEnabled = useAppSelector(getAnalyticsEnabled);
   if (analyticsEnabled) {
     ReactGA.initialize(
-      "G-JHXHM8VXJ1",
+      "G-JHXHM8VXJ1", // spell-checker:disable-line
       isProduction ? {} : { gaOptions: { debug_mode: true } },
     );
     ReactGA.send({

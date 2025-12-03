@@ -263,7 +263,10 @@ describe("useCheckPermissions", () => {
         ),
       ).toBeUndefined();
     });
-    rerender({ tupleObject: { ...tuple, object: "newobject" }, cleanup: true });
+    rerender({
+      tupleObject: { ...tuple, object: "new-object" },
+      cleanup: true,
+    });
     const action = jujuActions.removeCheckRelation({
       tuple,
     });

@@ -23,7 +23,7 @@ export type CrossModelQueryResponse = {
 export enum JIMMRelation {
   ADMINISTRATOR = "administrator",
   AUDIT_LOG_VIEWER = "audit_log_viewer",
-  CAN_ADDMODEL = "can_addmodel",
+  CAN_ADDMODEL = "can_addmodel", // spell-checker:disable-line
   CONSUMER = "consumer",
   MEMBER = "member",
   READER = "reader",

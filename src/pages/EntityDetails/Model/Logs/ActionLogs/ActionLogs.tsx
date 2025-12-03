@@ -285,7 +285,7 @@ export default function ActionLogs(): JSX.Element {
         }
         const { log = [] } = actionFullDetails;
         const hasStdout = log.length > 0;
-        const hasSterr =
+        const hasStderr =
           actionFullDetails.status === "failed" && !!actionFullDetails.message;
         const stdout = hasStdout
           ? log.map(({ message }, i) => (
@@ -294,7 +294,7 @@ export default function ActionLogs(): JSX.Element {
               </span>
             ))
           : [];
-        const stderr = hasSterr ? actionFullDetails.message : "";
+        const stderr = hasStderr ? actionFullDetails.message : "";
         const completedDate = actionData.completed
           ? new Date(actionData.completed)
           : null;
@@ -332,7 +332,7 @@ export default function ActionLogs(): JSX.Element {
             </div>
           ),
           message:
-            hasStdout || hasSterr ? (
+            hasStdout || hasStderr ? (
               <div className="u-flex">
                 <div>
                   {outputType !== Output.STDERR ? <span>{stdout}</span> : null}

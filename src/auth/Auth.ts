@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars -- This file contains a base class with a lot
-   of unused paramters. */
+   of unused parameters. */
 
 import type { ConnectOptions, Credentials } from "@canonical/jujulib";
 

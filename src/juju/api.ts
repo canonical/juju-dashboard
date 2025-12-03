@@ -91,7 +91,7 @@ export function generateConnectionOptions(
       JIMM,
       Secrets,
     ].concat(usePinger ? Pinger : []),
-    wsclass: WebSocket,
+    wsclass: WebSocket, // spell-checker: disable-line
     ...Auth.instance.jujulibConnectOptions(),
   };
 }

@@ -85,22 +85,22 @@ describe("Fields", () => {
   it("should suggest model options", async () => {
     state.juju.auditEvents.items = [
       auditEventFactory.build({
-        model: "controller1/testmodel1",
+        model: "controller1/test-model1",
       }),
       auditEventFactory.build({
-        model: "controller1/testmodel1",
+        model: "controller1/test-model1",
       }),
       auditEventFactory.build({
-        model: "controller2/testmodel2",
+        model: "controller2/test-model2",
       }),
     ];
     state.juju.models = {
       abc123: modelListInfoFactory.build({
-        name: "testmodel1",
+        name: "test-model1",
         wsControllerURL: "wss://example.com/api",
       }),
       def456: modelListInfoFactory.build({
-        name: "testmodel3",
+        name: "test-model3",
         wsControllerURL: "wss://test.com/api",
       }),
     };
@@ -119,16 +119,16 @@ describe("Fields", () => {
       },
     );
     expect(
-      document.querySelector("option[value='controller1/testmodel1']"),
+      document.querySelector("option[value='controller1/test-model1']"),
     ).toBeInTheDocument();
     expect(
-      document.querySelectorAll("option[value='controller1/testmodel1']"),
+      document.querySelectorAll("option[value='controller1/test-model1']"),
     ).toHaveLength(1);
     expect(
-      document.querySelector("option[value='controller2/testmodel2']"),
+      document.querySelector("option[value='controller2/test-model2']"),
     ).toBeInTheDocument();
     expect(
-      document.querySelector("option[value='controller3/testmodel3']"),
+      document.querySelector("option[value='controller3/test-model3']"),
     ).toBeInTheDocument();
   });
 

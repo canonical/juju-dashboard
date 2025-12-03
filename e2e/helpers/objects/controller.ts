@@ -8,14 +8,6 @@ export enum ControllerPermission {
   SUPERUSER = "superuser",
 }
 
-/**
- * Relations that may be given if the target is a controller.
- */
-export enum ControllerTargetRelations {
-  LOGINER = "loginer",
-  ADMINISTRATOR = "administrator",
-}
-
 export class Controller {
   constructor(
     public name: string,

@@ -96,7 +96,7 @@ describe("RevisionField", () => {
         initialValues={{ revision: "" }}
         onSubmit={vi.fn()}
       >
-        <RevisionField secretURI="secret:anothersecret" modelUUID="abc123" />
+        <RevisionField secretURI="secret:another-secret" modelUUID="abc123" />
       </Formik>,
       { state, path, url },
     );

@@ -241,8 +241,8 @@ describe("getControllerAPIEndpointErrors", () => {
   });
 
   it("should error if it does not end with /api", () => {
-    expect(getControllerAPIEndpointErrors("wss://example.com:80/notapi")).toBe(
-      "controllerAPIEndpoint (wss://example.com:80/notapi) must end with /api.",
+    expect(getControllerAPIEndpointErrors("wss://example.com:80/not-api")).toBe(
+      "controllerAPIEndpoint (wss://example.com:80/not-api) must end with /api.",
     );
   });
 

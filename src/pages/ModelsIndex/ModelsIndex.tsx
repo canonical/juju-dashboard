@@ -35,6 +35,8 @@ import urls, { externalURLs } from "urls";
 
 import { Label, TestId } from "./types";
 
+// spell-checker:words groupedby
+
 export default function Models(): JSX.Element {
   useWindowTitle("Models");
 

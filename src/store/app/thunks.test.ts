@@ -120,7 +120,7 @@ describe("thunks", () => {
   it("connectAndStartPolling should catch error instanceof Error", async () => {
     const dispatch = vi
       .fn()
-      // Successfuly dispatch connectAndStartPolling/pending.
+      // Successfully dispatch connectAndStartPolling/pending.
       .mockImplementationOnce(() => {})
       // Throw error when trying to dispatch connectAndPollControllers.
       .mockImplementationOnce(() => {
@@ -145,7 +145,7 @@ describe("thunks", () => {
   it("connectAndStartPolling should catch string error", async () => {
     const dispatch = vi
       .fn()
-      // Successfuly dispatch connectAndStartPolling/pending.
+      // Successfully dispatch connectAndStartPolling/pending.
       .mockImplementationOnce(() => {})
       // Throw error when trying to dispatch connectAndPollControllers.
       .mockImplementationOnce(() => {
@@ -170,7 +170,7 @@ describe("thunks", () => {
   it("connectAndStartPolling should catch non-standard type of error", async () => {
     const dispatch = vi
       .fn()
-      // Successfuly dispatch connectAndStartPolling/pending.
+      // Successfully dispatch connectAndStartPolling/pending.
       .mockImplementationOnce(() => {})
       // Throw error when trying to dispatch connectAndPollControllers.
       .mockImplementationOnce(() => {

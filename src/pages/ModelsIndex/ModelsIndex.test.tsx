@@ -23,6 +23,8 @@ import urls from "urls";
 import ModelsIndex from "./ModelsIndex";
 import { Label, TestId } from "./types";
 
+// spell-checker:words groupedby
+
 describe("Models Index page", () => {
   let state: RootState;
 
@@ -196,12 +198,12 @@ describe("Models Index page", () => {
 
   it("clears spinner if initial error occurs", async () => {
     state.juju.modelsLoaded = false;
-    state.juju.modelsError = "An error occured";
+    state.juju.modelsError = "An error occurred";
     const {
       result: { queryAllSpinnersByLabel },
     } = renderComponent(<ModelsIndex />, { state });
     expect(queryAllSpinnersByLabel("Loading")).toHaveLength(0);
-    expect(screen.getByText(/An error occured/)).toBeInTheDocument();
+    expect(screen.getByText(/An error occurred/)).toBeInTheDocument();
     expect(screen.getByTestId(TestId.COMPONENT).childElementCount).toEqual(1);
   });
 

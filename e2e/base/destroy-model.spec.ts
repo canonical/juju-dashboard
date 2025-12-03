@@ -84,7 +84,7 @@ test.describe("Destroy Model", () => {
     let retry = 3;
     while (retry-- > 0) {
       try {
-        // Reloading the page before checking refetches the list of models
+        // Reloading the page before checking fetches the list of models
         // which should be updated and we won't have to wait until the next poll
         await user.reloadDashboard(page);
         await page

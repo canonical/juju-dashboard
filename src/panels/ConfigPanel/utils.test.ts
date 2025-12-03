@@ -14,7 +14,7 @@ describe("getRequiredGrants", () => {
       description: "a username",
       source: "default",
       type: "string",
-      value: "eggmant1",
+      value: "eggman1",
       newValue: "secret:aabbccdd",
     },
     email: {

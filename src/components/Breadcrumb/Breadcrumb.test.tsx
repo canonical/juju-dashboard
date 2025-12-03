@@ -30,7 +30,7 @@ describe("Breadcrumb", () => {
       url: "/models/eggman@external/group-test/app/easyrsa",
     });
     expect(screen.getByTestId(TestId.ITEMS)).toHaveTextContent(
-      "group-testApplicationseasyrsa",
+      "group-testApplicationseasyrsa", // spell-checker:disable-line
     );
     expect(screen.getByTestId(TestId.MODEL)).toHaveTextContent("group-test");
     expect(screen.getByTestId(TestId.SECTION)).toHaveTextContent(
@@ -47,7 +47,7 @@ describe("Breadcrumb", () => {
       url: "/models/eggman@external/group-test/app/logstash/unit/logstash-0",
     });
     expect(screen.getByTestId(TestId.ITEMS)).toHaveTextContent(
-      "group-testApplicationslogstashlogstash-0",
+      "group-testApplicationslogstashlogstash-0", // spell-checker:disable-line
     );
     expect(screen.getByTestId(TestId.MODEL)).toHaveTextContent("group-test");
     expect(screen.getByTestId(TestId.SECTION)).toHaveTextContent(

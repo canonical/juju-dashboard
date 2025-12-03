@@ -7,85 +7,85 @@ describe("breakLines", () => {
 
   it("handles lines that are the exact expected length", () => {
     expect(
-      breakLines("Lorem ipsum dolor sit amet, consectetur adipiscinges"),
-    ).toBe("Lorem ipsum dolor sit amet, consectetur adipiscinges");
+      breakLines("Lorem ipsum dolor sit amet, consectetur adipiscing"),
+    ).toBe("Lorem ipsum dolor sit amet, consectetur adipiscing");
   });
 
   it("handles lines with trailing whitespace", () => {
     expect(
-      breakLines("Lorem ipsum dolor sit amet, consectetur adipiscinges "),
-    ).toBe("Lorem ipsum dolor sit amet, consectetur adipiscinges");
+      breakLines("Lorem ipsum dolor sit amet, consectetur adipiscing "),
+    ).toBe("Lorem ipsum dolor sit amet, consectetur adipiscing");
   });
 
   it("breaks words at the desired length", () => {
     expect(
       breakLines(
-        "Lorem ipsum dolor sit amet, consectetur adipiscinges lit. Nam dapibus",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
       ),
     ).toBe(
-      "Lorem ipsum dolor sit amet, consectetur adipiscinges \nlit. Nam dapibus",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing \nelit, sed do eiusmod tempor incididunt ut labore",
     );
   });
 
   it("handles extra whitespace at the line break", () => {
     expect(
       breakLines(
-        "Lorem ipsum dolor sit amet, consectetur adipiscinges   lit. Nam dapibus",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing   elit, sed do eiusmod tempor incididunt ut labore",
       ),
     ).toBe(
-      "Lorem ipsum dolor sit amet, consectetur adipiscinges \nlit. Nam dapibus",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing \nelit, sed do eiusmod tempor incididunt ut labore",
     );
   });
 
   it("breaks at the previous word break for longer lines", () => {
     expect(
       breakLines(
-        "Lorem ipsum dolor sit amet, consectetur adipiscingeslit. Nam dapibus",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
       ),
     ).toBe(
-      "Lorem ipsum dolor sit amet, consectetur \nadipiscingeslit. Nam dapibus",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing \nelit, sed do eiusmod tempor incididunt ut labore",
     );
   });
 
   it("handles no whitespace", () => {
     expect(
       breakLines(
-        "LoremipsumdolorsitametconsecteturadipiscingeslitNamdapibustellusvitaevenenatisfacilesisis",
+        "LoremIpsumDolorSitAmetConsecteturAdipiscingElitSedDoEiusmodTemporIncididuntUtLaboreEtDoloreMagnaAliqua",
       ),
     ).toBe(
-      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvitaevenenatisfacilesisis",
+      "LoremIpsumDolorSitAmetConsecteturAdipiscingElitSedDo \nEiusmodTemporIncididuntUtLaboreEtDoloreMagnaAliqua",
     );
   });
 
   it("handles no whitespace within the line limit", () => {
     expect(
       breakLines(
-        "LoremipsumdolorsitametconsecteturadipiscingeslitNamdapibustellusvita evenenatisfacilesisis",
+        "LoremIpsumDolorSitAmetConsecteturAdipiscingElitSedDoEiusmodTemporIncididunt utLaboreEtDoloreMagnaAliqua",
       ),
     ).toBe(
-      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvita evenenatisfacilesisis",
+      "LoremIpsumDolorSitAmetConsecteturAdipiscingElitSedDo \nEiusmodTemporIncididunt utLaboreEtDoloreMagnaAliqua",
     );
   });
 
   it("handles breaking mid word", () => {
     expect(
       breakLines(
-        "LoremipsumdolorsitametconsecteturadipiscingeslitNamdapibustellusvitaevenenatisfacilesisis",
+        "LoremIpsumDolorSitAmetConsecteturAdipiscingElitSedDoEiusmodTemporIncididuntUtLaboreEtDoloreMagnaAliqua",
         false,
       ),
     ).toBe(
-      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvitaevenenatisfacilesisis",
+      "LoremIpsumDolorSitAmetConsecteturAdipiscingElitSedDo \nEiusmodTemporIncididuntUtLaboreEtDoloreMagnaAliqua",
     );
   });
 
   it("handles whitespace at the breakpoint", () => {
     expect(
       breakLines(
-        "LoremipsumdolorsitametconsecteturadipiscingeslitNamd apibustellusvitaevenenatisfacilesisis",
+        "LoremIpsumDolorSitAmetConsecteturAdipiscingElitSedDo eiusmodTemporIncididuntUtLaboreEtDoloreMagnaAliqua",
         false,
       ),
     ).toBe(
-      "LoremipsumdolorsitametconsecteturadipiscingeslitNamd \napibustellusvitaevenenatisfacilesisis",
+      "LoremIpsumDolorSitAmetConsecteturAdipiscingElitSedDo \neiusmodTemporIncididuntUtLaboreEtDoloreMagnaAliqua",
     );
   });
 

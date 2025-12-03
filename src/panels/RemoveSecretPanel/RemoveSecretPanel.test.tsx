@@ -187,7 +187,7 @@ describe("RemoveSecretPanel", () => {
     expect(router.state.location.search).toEqual("");
   });
 
-  it("refetches the secrets if successful", async () => {
+  it("refetch the secrets if successful", async () => {
     const removeSecrets = vi
       .fn()
       .mockImplementation(vi.fn().mockResolvedValue({ results: [] }));
