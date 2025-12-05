@@ -22,7 +22,8 @@ export class OIDC {
       user,
       IAM_DEVICE_CODE_REGEX,
       OIDC.uiLogin,
-      registerController ? "test-jimm.local:443" : null,
+      // TODO: allow the jimm name to be provided
+      registerController ? "jimm.localhost:443" : null,
     );
   }
 

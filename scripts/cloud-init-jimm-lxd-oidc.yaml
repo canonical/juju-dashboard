@@ -1,0 +1,139 @@
+package_update: true
+package_upgrade: true
+
+packages:
+  - python3-jinja2
+  - avahi-daemon
+  - avahi-autoipd
+  - make
+
+snap:
+  commands:
+    - snap install --classic concierge
+    - sudo snap install go --classic
+    - snap install node --classic
+    - snap install yq
+    - snap install docker
+
+write_files:
+  - path: "/etc/update-motd.d/99-welcome"
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+
+      HOSTNAME=$(hostname)
+      FQDN=$(hostname).local
+      echo "======================================================================"
+      echo " Port forwards required to access the dashboard:"
+      echo "   cat ~/.ssh/id_*.pub | multipass exec $HOSTNAME -- tee -a .ssh/authorized_keys"
+      echo "   ssh -A -L :8082:$FQDN:8082 -L :443:$FQDN:443 -L :17070:$FQDN:17070 ubuntu@$FQDN"
+      echo
+      echo " View Juju Dashboard at:"
+      echo "   http://$HOSTNAME:8036"
+      echo
+      echo " Log in to Juju Dashboard with:"
+      echo "   Username: jimm-test"
+      echo "   Password: password"
+      echo
+      echo " Log in to the Juju controller with:"
+      echo "   Username: admin"
+      echo "   Password: password"
+      echo
+      echo " Log in to the JIMM contoller with:"
+      echo "   juju login jimm.localhost -c jimm-dev"
+      echo "   Username: jimm-test"
+      echo "   Password: password"
+      echo
+      echo " The Juju Dashboard dev server can be stopped with:"
+      echo "   sudo systemctl stop juju-dashboard.service"
+      echo " Disable the service with:"
+      echo "   sudo systemctl disable juju-dashboard.service"
+      echo "======================================================================"
+
+runcmd:
+  - |
+    # Finish Docker setup.
+    sudo addgroup --system docker
+    sudo adduser ubuntu docker
+    sudo snap disable docker
+    sudo snap enable docker
+
+  - |
+
+  - |
+    # Get Juju Dashboard.
+    cd /home/ubuntu/
+    sudo -u ubuntu git clone -o upstream -b jimm-lxd-oidc-multipass-cloud-init https://github.com/huwshimi/juju-dashboard.git
+    cd /home/ubuntu/juju-dashboard/scripts/concierge/jimm-lxd-oidc/
+    # Prepare but don't bootstrap.
+    sudo -u ubuntu sudo concierge prepare
+
+  - |
+    cd /home/ubuntu/
+    sudo -u ubuntu git clone https://github.com/canonical/jimm.git
+    cd /home/ubuntu/jimm
+    go build ./cmd/jaas
+
+    HOSTNAME=$(hostname).local
+    MULTIPASS_ADDRESS=http://$HOSTNAME
+    DASHBOARD_ADDRESS="$MULTIPASS_ADDRESS:8036"
+    COMPOSE_CONFIG=/home/ubuntu/jimm/docker-compose.common.yaml
+    # TODO: not needed?
+    # export JIMM_BOOTSTRAP_LOGIN_TOKEN_REFRESH_URL="$MULTIPASS_ADDRESS:17070/.well-known/jwks.json"
+    sudo -u ubuntu yq -i ".services.jimm-base.environment.JIMM_DASHBOARD_FINAL_REDIRECT_URL = \"$DASHBOARD_ADDRESS\"" $COMPOSE_CONFIG
+    sudo -u ubuntu yq -i ".services.jimm-base.environment.JIMM_DASHBOARD_LOCATION = \"$DASHBOARD_ADDRESS\"" $COMPOSE_CONFIG
+    sudo -u ubuntu yq -i ".services.jimm-base.environment.CORS_ALLOWED_ORIGINS = \"$DASHBOARD_ADDRESS\"" $COMPOSE_CONFIG
+
+    echo "make certs"
+    sudo -u ubuntu make certs
+
+    echo "make version and commit"
+    sudo -u ubuntu make version/commit.txt
+    sudo -u ubuntu make version/version.txt
+
+    export INSECURE_SECRET_STORAGE=true
+    echo "start compose"
+    sudo -u ubuntu docker compose --profile dev up --wait -d
+    echo "finished compose"
+
+  - |
+    # Set up Juju Dashboard.
+    cd /home/ubuntu/juju-dashboard
+    sudo -u ubuntu yarn install
+    sudo -u ubuntu DASHBOARD_CONFIG_NAME=config.local.js DASHBOARD_IS_JUJU=false WRITE_NGINX=false DASHBOARD_CONFIG_DIR=/home/ubuntu/juju-dashboard/charms/k8s-charm/src DASHBOARD_ROOT=/home/ubuntu/juju-dashboard/public DASHBOARD_CONTROLLER_URL="ws://jimm.localhost:17070" DASHBOARD_ANALYTICS_ENABLED=false python3 ./charms/k8s-charm/src/config.py
+
+  - |
+    # Set up LXD controller
+    # TODO: is this necessary?
+    sudo iptables -I FORWARD -i lxdbr0 -j ACCEPT
+    sudo iptables -I FORWARD -o lxdbr0 -j ACCEPT
+    cd /home/ubuntu/juju-dashboard
+    sudo -u ubuntu yarn playwright install --with-deps --only-shell chromium
+    # sudo -i -u ubuntu npx --yes tsx /home/ubuntu/juju-dashboard/.github/actions/setup-jimm/cli-login.ts
+    su -c "export CONTROLLER_NAME=jimm && export USERNAME=admin && export PASSWORD=test && npx --yes tsx /home/ubuntu/juju-dashboard/.github/actions/setup-jimm/cli-login.ts" - ubuntu
+    # su -c /home/ubuntu/jimm/local/jimm/setup-controller.sh - ubuntu
+    # su -c /home/ubuntu/jimm/local/jimm/add-controller.sh - ubuntu
+    # docker restart jimm
+    # TODO grant correct permissions to add models
+
+  - |
+    # Set the admin user's password:
+    echo password1 | sudo -u ubuntu juju change-user-password --no-prompt
+
+  - |
+    # Create a service to automatically start Juju Dashboard.
+    tee /lib/systemd/system/juju-dashboard.service <<'EOF'
+    [Unit]
+    Description=Juju Dashboard Dev Server
+
+    [Service]
+    ExecStart=sudo -u ubuntu bash -c "cd /home/ubuntu/juju-dashboard && yarn start"
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+    sudo systemctl daemon-reload
+    sudo systemctl enable juju-dashboard.service
+    sudo systemctl start juju-dashboard.service
+
+final_message: "The system is finally up, after $UPTIME seconds"
