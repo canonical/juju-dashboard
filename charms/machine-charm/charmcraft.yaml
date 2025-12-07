@@ -14,7 +14,8 @@ links:
     - https://charmhub.io
   documentation: https://discourse.charmhub.io/t/juju-dashboard-docs-index/10772
 assumes:
-  - juju >= 3.0
+  - juju >= 3.6
+  - juju < 4.0
 base: ubuntu@24.04
 platforms:
   amd64:

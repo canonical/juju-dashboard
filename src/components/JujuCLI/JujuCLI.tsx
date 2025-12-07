@@ -1,6 +1,6 @@
 import Ansi from "@curvenote/ansi-to-react";
 import type { FC, ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
@@ -25,7 +25,6 @@ import {
 import { useAppDispatch, useAppSelector } from "store/store";
 import { externalURLs } from "urls";
 import urls from "urls";
-import { getMajorMinorVersion } from "utils";
 
 import { CLICommand } from "./types";
 
@@ -109,7 +108,6 @@ const JujuCLI: FC = () => {
   );
   const modelInfo = useAppSelector((state) => getModelInfo(state, modelUUID));
   const isJuju = useAppSelector(getIsJuju);
-  const [showWebCLI, setShowWebCLI] = useState(false);
   // In a JAAS environment the controllerUUID will be the sub controller not
   // the primary controller UUID that we connect to.
   const controllerUUID = modelInfo?.["controller-uuid"];
@@ -212,17 +210,8 @@ const JujuCLI: FC = () => {
     [modelInfo],
   );
 
-  useEffect(() => {
-    if (isJuju && getMajorMinorVersion(modelInfo?.version) >= 2.9) {
-      // The Web CLI is only available in Juju controller versions 2.9 and
-      // above. This will allow us to only show the shell on multi-controller
-      // setups with different versions where the correct controller version
-      // is available.
-      setShowWebCLI(true);
-    }
-  }, [modelInfo, isJuju]);
-
-  if (!showWebCLI || !controllerWSHost || !modelInfo) {
+  // Only show CLI on Juju.
+  if (!isJuju || !controllerWSHost || !modelInfo) {
     return null;
   }
   return (

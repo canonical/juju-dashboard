@@ -160,33 +160,6 @@ describe("JujuCLI", () => {
     });
   });
 
-  it("shows the CLI in juju 2.9", async () => {
-    renderComponent(<JujuCLI />, { path, url, state });
-    expect(
-      await screen.findByTestId(WebCLITestId.COMPONENT),
-    ).toBeInTheDocument();
-  });
-
-  it("shows the CLI in juju higher than 2.9", async () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        applications: {
-          "ceph-mon": applicationInfoFactory.build(),
-        },
-        model: modelWatcherModelInfoFactory.build({
-          name: modelName,
-          owner: userName,
-          version: "3.0.7",
-          "controller-uuid": "controller123",
-        }),
-      }),
-    };
-    renderComponent(<JujuCLI />, { path, url, state });
-    expect(
-      await screen.findByTestId(WebCLITestId.COMPONENT),
-    ).toBeInTheDocument();
-  });
-
   it("does not show the CLI in JAAS", async () => {
     state.general.config = configFactory.build({
       isJuju: false,
@@ -201,25 +174,6 @@ describe("JujuCLI", () => {
           owner: userName,
           version: "3.0.7",
           "controller-uuid": "controller123",
-        }),
-      }),
-    };
-    renderComponent(<JujuCLI />, { path, url, state });
-    expect(
-      screen.queryByTestId(WebCLITestId.COMPONENT),
-    ).not.toBeInTheDocument();
-  });
-
-  it("does not show the webCLI in juju 2.8", async () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        applications: {
-          "ceph-mon": applicationInfoFactory.build(),
-        },
-        model: modelWatcherModelInfoFactory.build({
-          name: modelName,
-          owner: userName,
-          version: "2.8.7",
         }),
       }),
     };

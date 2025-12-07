@@ -25,10 +25,7 @@ import {
   commandHistoryState,
   commandHistoryItem,
 } from "testing/factories/juju/juju";
-import {
-  modelWatcherModelDataFactory,
-  modelWatcherModelInfoFactory,
-} from "testing/factories/juju/model-watcher";
+import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 
 import { actions, reducer } from "./slice";
 
@@ -614,35 +611,6 @@ describe("reducers", () => {
       ...state,
       controllers: {
         "wss://example.com": controllers,
-      },
-    });
-  });
-
-  it("populateMissingAllWatcherData", () => {
-    const state = jujuStateFactory.build({
-      modelWatcherData: { abc123: modelWatcherModelDataFactory.build() },
-    });
-    expect(
-      reducer(
-        state,
-        actions.populateMissingAllWatcherData({
-          status,
-          uuid: "abc123",
-        }),
-      ),
-    ).toStrictEqual({
-      ...state,
-      modelWatcherData: {
-        abc123: modelWatcherModelDataFactory.build({
-          ...state.modelWatcherData?.abc123,
-          model: modelWatcherModelInfoFactory.build({
-            ...state.modelWatcherData?.abc123.model,
-            cloud: status.model["cloud-tag"],
-            type: status.model.type,
-            "cloud-region": status.model.region,
-            version: status.model.version,
-          }),
-        }),
       },
     });
   });

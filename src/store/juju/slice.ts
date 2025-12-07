@@ -1,5 +1,4 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
-import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type {
   DestroyModelParams,
   ModelInfoResults,
@@ -26,7 +25,6 @@ import type {
   FullStatusWithAnnotations,
 } from "juju/types";
 import { processDeltas } from "juju/watchers";
-import { extractCloudName } from "store/juju/utils/models";
 
 import type {
   Controllers,
@@ -389,25 +387,6 @@ const slice = createSlice({
       const controllers = state.controllers ?? {};
       controllers[action.payload.wsControllerURL] = action.payload.controllers;
       state.controllers = controllers;
-    },
-    // This is required for Juju versions before 3.2.
-    populateMissingAllWatcherData: (
-      state,
-      action: PayloadAction<{ uuid: string; status: FullStatus }>,
-    ) => {
-      state.modelWatcherData ??= {};
-      const model = state.modelWatcherData[action.payload.uuid];
-      if (!model) {
-        return;
-      }
-      state.modelWatcherData[action.payload.uuid].model = {
-        ...(state.modelWatcherData[action.payload.uuid]?.model ?? {}),
-        // Match the data returned by the Juju 3.2 watcher:
-        cloud: extractCloudName(action.payload.status.model["cloud-tag"]),
-        type: action.payload.status.model.type,
-        "cloud-region": action.payload.status.model.region,
-        version: action.payload.status.model.version,
-      };
     },
     processAllWatcherDeltas: (
       state,
