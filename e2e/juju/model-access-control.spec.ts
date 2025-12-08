@@ -61,7 +61,7 @@ test.describe("Model Access Control", () => {
     const page2 = await context.newPage();
     await user1.dashboardLogin(page2, model.url);
     await expect(page2.locator(".entity-info__grid-item").first()).toHaveText(
-      "accessread",
+      "accessread", // spell-checker:disable-line
     );
     await context.close();
   });

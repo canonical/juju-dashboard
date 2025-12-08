@@ -190,7 +190,7 @@ describe("JujuCLI", () => {
     renderComponent(<JujuCLI />, { path, url, state });
     expect(cliComponent.mock.calls[0][0]).toMatchObject({
       credentials: {
-        password: "verysecure123",
+        password: "verySecure123",
         user: userTag,
       },
       modelUUID: "abc123",

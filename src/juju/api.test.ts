@@ -1731,7 +1731,7 @@ describe("Juju API", () => {
       }));
       const apps = [
         applicationInfoFactory.build({ "charm-url": "cs:etcd" }),
-        applicationInfoFactory.build({ "charm-url": "cs:myslq" }),
+        applicationInfoFactory.build({ "charm-url": "cs:mysql" }),
         applicationInfoFactory.build({ "charm-url": "cs:etcd" }),
       ];
       await getCharmsURLFromApplications(apps, "abc123", state, dispatch);

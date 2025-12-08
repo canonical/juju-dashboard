@@ -266,6 +266,7 @@ describe("Entity Details App", () => {
       screen.getByRole("button", { name: Label.CONFIGURE }),
     );
     expect(router.state.location.search).toEqual(
+      // spell-checker:disable-next-line
       "?panel=config&entity=etcd&charm=cs%3Aceph-mon-55&modelUUID=test123",
     );
   });

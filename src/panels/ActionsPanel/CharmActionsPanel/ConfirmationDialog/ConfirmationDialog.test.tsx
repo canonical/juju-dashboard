@@ -24,7 +24,7 @@ describe("ConfirmationDialog", () => {
   const url =
     "/models/user-eggman@external/group-test/app/kubernetes-master?panel=select-charms-and-actions";
 
-  const mockSelectedApplcations = [
+  const mockSelectedApplications = [
     charmApplicationFactory.build({ name: "ceph" }),
   ];
 
@@ -119,7 +119,7 @@ describe("ConfirmationDialog", () => {
       <ConfirmationDialog
         confirmType={ConfirmType.SUBMIT}
         selectedAction={"add-disk"}
-        selectedApplications={mockSelectedApplcations}
+        selectedApplications={mockSelectedApplications}
         setConfirmType={mockSetConfirmType}
         selectedActionOptionValue={{
           bucket: "",
@@ -155,7 +155,7 @@ describe("ConfirmationDialog", () => {
       <ConfirmationDialog
         confirmType={ConfirmType.SUBMIT}
         selectedAction={"add-disk"}
-        selectedApplications={mockSelectedApplcations}
+        selectedApplications={mockSelectedApplications}
         setConfirmType={vi.fn()}
         selectedActionOptionValue={{}}
         onRemovePanelQueryParams={vi.fn()}

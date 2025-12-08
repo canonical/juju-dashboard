@@ -73,19 +73,19 @@ describe("canAdministerModel", () => {
 });
 
 describe("generateIconPath", () => {
-  it("should return an icon URI for a promulated charm", () => {
+  it("should return an icon URI for a promulgated charm", () => {
     const charmId = "cs:mysql-12";
     const iconPath = generateIconPath(charmId);
     expect(iconPath).toBe("https://charmhub.io/mysql/icon");
   });
 
-  it("should return an icon URI for a promulated charm with dash", () => {
+  it("should return an icon URI for a promulgated charm with dash", () => {
     const charmId = "cs:hadoop-client-12";
     const iconPath = generateIconPath(charmId);
     expect(iconPath).toBe("https://charmhub.io/hadoop-client/icon");
   });
 
-  it("should return an icon URI for a none promulated charm", () => {
+  it("should return an icon URI for a none promulgated charm", () => {
     const charmId = "cs:~containers/kubernetes-master-1106";
     const iconPath = generateIconPath(charmId);
     expect(iconPath).toBe(
@@ -93,7 +93,8 @@ describe("generateIconPath", () => {
     );
   });
 
-  it("should return an icon URI for a none promulated charm with release", () => {
+  it("should return an icon URI for a none promulgated charm with release", () => {
+    // spell-checker:disable-next-line
     const charmId = "cs:~hatch/precise/failtester-7";
     const iconPath = generateIconPath(charmId);
     expect(iconPath).toBe("https://charmhub.io/hatch-failtester/icon");

@@ -67,7 +67,7 @@ describe("Share Model Panel", () => {
           modelUserInfoFactory.build({ user: "eggman@external" }),
           modelUserInfoFactory.build({ user: "another@external" }),
           modelUserInfoFactory.build({ user: "other@model2" }),
-          modelUserInfoFactory.build({ user: "other2@anothermodel2" }),
+          modelUserInfoFactory.build({ user: "other2@another-model2" }),
         ],
       }),
     });
@@ -78,7 +78,7 @@ describe("Share Model Panel", () => {
     expect(screen.getByRole("button", { name: "@domain" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "@model2" })).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "@anothermodel2" }),
+      screen.getByRole("button", { name: "@another-model2" }),
     ).toBeInTheDocument();
   });
 
@@ -98,7 +98,7 @@ describe("Share Model Panel", () => {
     renderComponent(<ShareModel />, { state, url, path });
     await userEvent.type(
       screen.getByRole("textbox", { name: "Username" }),
-      "eggman@otherdomain",
+      "eggman@other-domain",
     );
     await userEvent.click(screen.getByRole("button", { name: "@external" }));
     expect(screen.getByRole("textbox", { name: "Username" })).toHaveValue(

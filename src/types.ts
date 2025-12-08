@@ -19,7 +19,7 @@ export type ExclusiveProps<A, B> =
   | (B & Partial<Record<keyof A, never>>);
 
 /*
-  This typeguard can be used to check if a Redux action includes a payload.
+  This type guard can be used to check if a Redux action includes a payload.
   */
 export const isPayloadAction = (
   action: UnknownAction,

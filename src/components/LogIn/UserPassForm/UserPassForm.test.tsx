@@ -37,11 +37,11 @@ describe("UserPassForm", () => {
       screen.getByRole("textbox", { name: "Username" }),
       "eggman",
     );
-    await userEvent.type(screen.getByLabelText("Password"), "verysecure123");
+    await userEvent.type(screen.getByLabelText("Password"), "verySecure123");
     await userEvent.click(screen.getByRole("button"));
     const storeAction = generalActions.storeUserPass({
       wsControllerURL: "wss://controller.example.com",
-      credential: { user: "eggman", password: "verysecure123" },
+      credential: { user: "eggman", password: "verySecure123" },
     });
     expect(mockUseAppDispatch.mock.calls[0][0]).toMatchObject({
       type: "general/cleanupLoginErrors",
