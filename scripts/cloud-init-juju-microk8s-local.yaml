@@ -38,19 +38,33 @@ runcmd:
     sudo -u ubuntu sudo concierge prepare -p microk8s --juju-channel 3.6/stable
 
   - |
-    # Add port forward.
-    sudo -u ubuntu juju switch controller
-    microk8s.kubectl port-forward controller-0 17070:17070 --namespace=controller-concierge-microk8s --address=0.0.0.0 &
     # Set the admin user's password:
     echo password1 | sudo -u ubuntu juju change-user-password --no-prompt
 
   - |
     # Set up Juju Dashboard.
     cd /home/ubuntu/
-    sudo -u ubuntu git clone -b juju-lxd-local-multipass-cloud-init https://github.com/huwshimi/juju-dashboard.git
+    sudo -u ubuntu git clone -o upstream https://github.com/canonical/juju-dashboard.git
     cd ./juju-dashboard
     sudo -u ubuntu yarn install
     sudo -u ubuntu DASHBOARD_CONFIG_NAME=config.local.js HAS_EXTERNAL_CONTROLLER_URL=true DASHBOARD_IS_JUJU=true WRITE_NGINX=false DASHBOARD_CONFIG_DIR=/home/ubuntu/juju-dashboard/charms/k8s-charm/src DASHBOARD_ROOT=/home/ubuntu/juju-dashboard/public DASHBOARD_CONTROLLER_URL="wss://$(hostname).local:17070" DASHBOARD_ANALYTICS_ENABLED=false python3 ./charms/k8s-charm/src/config.py
+
+  - |
+    # Create a service to automatically set up the k8s port forward.
+    tee /lib/systemd/system/k8s-port-forward.service <<'EOF'
+    [Unit]
+    Description=Port forward for Juju controller
+    After=multi-user.target
+
+    [Service]
+    ExecStart=bash -c "sudo microk8s.kubectl port-forward controller-0 17070:17070 --namespace=controller-concierge-microk8s --address=0.0.0.0"
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+    sudo systemctl daemon-reload
+    sudo systemctl enable k8s-port-forward.service
+    sudo systemctl start k8s-port-forward.service
 
   - |
     # Create a service to automatically start Juju Dashboard.
