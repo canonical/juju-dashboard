@@ -60,7 +60,7 @@ runcmd:
   - |
     # Fetch Juju Dashboard and run the setup script.
     cd /home/ubuntu/
-    sudo -u ubuntu git clone -o upstream -b jimm-lxd-oidc-multipass-cloud-init https://github.com/huwshimi/juju-dashboard.git
+    sudo -u ubuntu git clone -o upstream https://github.com/canonical/juju-dashboard.git
     cd ./juju-dashboard/scripts
     chmod +x cloud-init-jimm-lxd-oidc.sh
     su -c '/home/ubuntu/juju-dashboard/scripts/cloud-init-jimm-lxd-oidc.sh' - ubuntu
