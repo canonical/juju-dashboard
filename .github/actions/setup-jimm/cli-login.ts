@@ -1,5 +1,5 @@
 import { chromium } from "@playwright/test";
-import { OIDC } from "../../../e2e/helpers/auth/backends";
+import { OIDC, KeycloakOIDC } from "../../../e2e/helpers/auth/backends";
 
 const username = process.env.USERNAME;
 const password = process.env.PASSWORD;
@@ -11,7 +11,7 @@ if (!username || !password) {
 console.log("Logging in to JIMM.");
 // Prepare a browser instance to go to the URL.
 const browser = await chromium.launch();
-await OIDC.loginCLI(
+await (process.env.AUTH_VARIANT === "keycloak" ? KeycloakOIDC : OIDC).loginCLI(
   browser,
   {
     username,
