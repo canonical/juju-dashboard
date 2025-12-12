@@ -23,7 +23,7 @@ runs:
   using: "composite"
   steps:
     - name: Set up Juju Dashboard release
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         ref: ${{ inputs.dashboard-ref }}
         path: juju-dashboard-release

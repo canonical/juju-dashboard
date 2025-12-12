@@ -42,7 +42,7 @@ jobs:
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"/Ruby
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"/Java_Temurin-Hotspot_jdk
       - name: Checkout Juju Dashboard repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action
