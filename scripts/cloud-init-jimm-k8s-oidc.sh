@@ -12,6 +12,7 @@ cd /home/ubuntu/juju-dashboard/scripts/concierge/jimm-k8s-oidc/
 sudo concierge prepare
 sudo usermod -a -G snap_microk8s ubuntu
 sudo chown -R ubuntu ~/.kube
+# The ingress addon is deliberately not enabled as it conflicts with the JIMM docker setup.
 sudo microk8s.enable hostpath-storage
 sudo microk8s.enable dns
 sudo microk8s.enable host-access
