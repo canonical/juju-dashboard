@@ -1,0 +1,7 @@
+juju:
+  channel: 3.6/stable
+  agent-version: "3.6.8"
+providers:
+  microk8s:
+    enable: true
+    bootstrap: false

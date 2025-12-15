@@ -1,0 +1,68 @@
+package_update: true
+package_upgrade: true
+
+packages:
+  - python3-jinja2
+  - avahi-daemon
+  - avahi-autoipd
+  - make
+
+snap:
+  commands:
+    - snap install --classic concierge
+    - sudo snap install go --classic
+    - snap install yq
+    - snap install docker
+
+write_files:
+  - path: "/etc/update-motd.d/99-welcome"
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+
+      HOSTNAME=$(hostname)
+      FQDN=$(hostname).local
+      echo "======================================================================"
+      echo " Port forwards required to access the dashboard:"
+      echo "   cat ~/.ssh/id_*.pub | multipass exec $HOSTNAME -- tee -a .ssh/authorized_keys"
+      echo "   ssh -A -L :8082:$FQDN:8082 -L :443:$FQDN:443 -L :17070:$FQDN:17070 ubuntu@$FQDN"
+      echo
+      echo " View Juju Dashboard at:"
+      echo "   http://$FQDN:8036"
+      echo
+      echo " Log in to Juju Dashboard with:"
+      echo "   Username: jimm-test"
+      echo "   Password: password"
+      echo
+      echo " Log in to the Juju controller with:"
+      echo "   Username: admin"
+      echo "   Password: password"
+      echo
+      echo " Log in to the JIMM controller with:"
+      echo "   juju login jimm.localhost -c jimm-dev"
+      echo "   Username: jimm-test"
+      echo "   Password: password"
+      echo
+      echo " The Juju Dashboard dev server can be stopped with:"
+      echo "   sudo systemctl stop juju-dashboard.service"
+      echo " Disable the service with:"
+      echo "   sudo systemctl disable juju-dashboard.service"
+      echo "======================================================================"
+
+runcmd:
+  - |
+    # Finish Docker setup.
+    sudo addgroup --system docker
+    sudo adduser ubuntu docker
+    sudo snap disable docker
+    sudo snap enable docker
+
+  - |
+    # Fetch Juju Dashboard and run the setup script.
+    cd /home/ubuntu/
+    sudo -u ubuntu git clone -o upstream https://github.com/canonical/juju-dashboard.git
+    cd ./juju-dashboard/scripts
+    chmod +x cloud-init-jimm-k8s-oidc.sh
+    su -c '/home/ubuntu/juju-dashboard/scripts/cloud-init-jimm-k8s-oidc.sh' - ubuntu
+
+final_message: "The system is finally up, after $UPTIME seconds"
