@@ -184,7 +184,7 @@ export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
   async rollback(): Promise<void> {
     const user = this.result();
     const userId = await exec(
-      `docker exec keycloak sh -c "kcadm.sh get users -q exact=true -q username=${user.identityUsername.split("@")[0]} -r jimm --config /kcadm.config" | yq .[0].id`,
+      `docker exec keycloak sh -c "kcadm.sh get users -q exact=true -q username=${user.identityUsername} -r jimm --config /kcadm.config" | yq .[0].id`,
     );
     await exec(
       `docker exec keycloak sh -c "kcadm.sh delete users/'${userId.stdout.trim()}' -r jimm --config /kcadm.config"`,

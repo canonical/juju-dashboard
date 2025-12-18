@@ -19,6 +19,6 @@ export class GiveModelAccess extends GiveAccess<Model> {
   }
 
   override get entityName(): string {
-    return this.entity.qualifiedName;
+    return `${this.entity.owner.cliUsername}/${this.entity.name}`;
   }
 }
