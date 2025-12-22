@@ -111,7 +111,7 @@ runs:
         export_variable "send-failure-notification" "$SEND_FAILURE_NOTIFICATION"
         echo "=============================="
     - name: Checkout Juju Dashboard repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         ref: ${{ steps.config.outputs.repo-ref }}
         clean: false
