@@ -12,7 +12,7 @@ permissions: write-all
 jobs:
   check-valid-promotion:
     name: Check promotion conditions
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     outputs:
       tag: ${{ steps.tag.outputs.name }}
@@ -24,7 +24,7 @@ jobs:
       destination-channel: ${{ steps.channel.outputs.destination }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -93,7 +93,7 @@ jobs:
   promote-candidate:
     name: Promote to stable
     needs: [check-valid-promotion]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     if: ${{ needs.check-valid-promotion.outputs.risk == 'candidate' }}
 
@@ -107,7 +107,7 @@ jobs:
       destination: ${{ needs.check-valid-promotion.outputs.destination-channel }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ needs.check-valid-promotion.outputs.tag }}
       - name: Promote charm to stable
@@ -122,10 +122,10 @@ jobs:
   post-promotion:
     name: Post promotion operations
     needs: [check-valid-promotion, promote-candidate]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-tags: true
           ref: ${{ needs.check-valid-promotion.outputs.tag }}
@@ -150,7 +150,7 @@ jobs:
   already-promoted:
     name: Candidate already promoted
     needs: [check-valid-promotion]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     if: ${{ needs.check-valid-promotion.outputs.risk == 'stable' }}
 
@@ -161,7 +161,7 @@ jobs:
   no-candidate:
     name: No candidate
     needs: [check-valid-promotion]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     if: ${{ needs.check-valid-promotion.outputs.risk != 'stable' && needs.check-valid-promotion.outputs.risk != 'candidate' }}
 
