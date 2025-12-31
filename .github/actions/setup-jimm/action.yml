@@ -52,7 +52,7 @@ runs:
       run: |
         sudo snap install yq jaas
     - name: Setup Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
     - name: Set up IAM
       shell: bash
       run: |
@@ -185,7 +185,7 @@ runs:
         # Set the name that the workloads controller will be registered as.
         echo "public=jimm-k8s" >> $GITHUB_OUTPUT
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
         cache: "yarn"
