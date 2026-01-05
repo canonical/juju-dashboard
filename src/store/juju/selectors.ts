@@ -797,7 +797,7 @@ export const getModelUUID = createSelector(
     if (modelData) {
       for (const uuid in modelData) {
         const model = modelData[uuid].info;
-        if (model && model.name === modelName) {
+        if (model?.name === modelName) {
           if (owner) {
             if (model["owner-tag"] === `user-${owner}`) {
               // If this is a shared model then we'll also have an owner name

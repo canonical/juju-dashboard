@@ -14,8 +14,10 @@ export const updatePermissions = createAction<{
 export type ControllerArgs = [
   // wsControllerURL
   string,
-  // credentials
-  AuthCredential | undefined,
+  (
+    // credentials
+    AuthCredential | undefined
+  ),
 ];
 
 export const connectAndPollControllers = createAction<{
