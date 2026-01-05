@@ -137,6 +137,7 @@ export default defineConfig(
       ],
       "vitest/prefer-expect-assertions": 0,
       "vitest/no-hooks": 0,
+      "vitest/no-conditional-expect": 0,
       "default-case": 0,
       "no-param-reassign": 0,
       "no-case-declarations": 0,
