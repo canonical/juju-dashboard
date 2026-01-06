@@ -20,7 +20,7 @@ jobs:
         node-version: [22.x]
     steps:
       - name: Checkout Juju Dashboard repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action

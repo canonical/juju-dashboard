@@ -16,7 +16,7 @@ defaults:
 jobs:
   run-check:
     name: "Determine if workflow should run"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
 
@@ -42,7 +42,7 @@ jobs:
 
   pre-release:
     name: "Determine release parameters"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs: [run-check]
     if: needs.run-check.outputs.should-run
@@ -56,7 +56,7 @@ jobs:
       changelog: ${{ steps.changelog.outputs.changelog }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Determine release Charmhub parameters
         id: params
         run: |
@@ -87,7 +87,7 @@ jobs:
 
   release:
     name: "Release Juju Dashboard"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs: [pre-release]
 
@@ -97,7 +97,7 @@ jobs:
         charm-kind: [k8s, machine]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install LXD
         uses: canonical/setup-lxd@main
       - name: Build dashboard
@@ -137,7 +137,7 @@ jobs:
           echo "charm-dir=$(dirname $CHARM_PATH)" | tee -a "$GITHUB_OUTPUT"
           echo "charm-name=$(basename $CHARM_PATH)" | tee -a "$GITHUB_OUTPUT"
       - name: Save charm artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: juju-dashboard-${{ matrix.charm-kind }}.charm
           path: ${{ steps.post-build.outputs.charm-path }}
@@ -194,7 +194,7 @@ jobs:
 
   post-release:
     name: "Create tags and releases"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs: [pre-release, release]
 
@@ -203,7 +203,7 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-tags: true
       - name: Tag commits
@@ -235,12 +235,12 @@ jobs:
           echo "version-tag=$version_tag" | tee -a "$GITHUB_OUTPUT"
 
       - name: "Download k8s charm artifact"
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: juju-dashboard-k8s.charm
           path: release-artifacts
       - name: "Download machine charm artifact"
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: juju-dashboard-machine.charm
           path: release-artifacts
