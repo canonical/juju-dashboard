@@ -129,7 +129,7 @@
     "npm-package-json-lint": "9.1.0",
     "postcss": "8.5.6",
     "prettier": "3.7.4",
-    "react-anchorme": "5.0.0",
+    "react-anchorme": "4.0.1",
     "sass-embedded": "1.97.1",
     "stylelint": "16.26.1",
     "stylelint-config-standard-scss": "16.0.0",
