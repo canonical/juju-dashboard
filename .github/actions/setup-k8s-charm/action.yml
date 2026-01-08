@@ -68,7 +68,7 @@ runs:
       shell: bash
     - name: Deploy built charm
       if: ${{ env.build_type != 'charm-release' }}
-      run: juju deploy ${{ github.workspace }}/charms/k8s-charm/juju-dashboard*.charm dashboard --resource 'dashboard-image=${{ steps.dashboard-image.outputs.id }}'
+      run: juju deploy ${{ github.workspace }}/charms/k8s-charm/juju-dashboard-k8s_ubuntu@24.04-amd64.charm dashboard --resource 'dashboard-image=${{ steps.dashboard-image.outputs.id }}'
       shell: bash
     - name: Integrate charm
       run: juju integrate '${{ inputs.controller-app }}' dashboard

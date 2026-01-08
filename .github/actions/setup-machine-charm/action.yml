@@ -62,7 +62,7 @@ runs:
       shell: bash
     - name: Deploy built charm
       if: ${{ env.build_type != 'charm-release' }}
-      run: juju deploy ${{ github.workspace }}/charms/machine-charm/juju-dashboard*.charm dashboard
+      run: juju deploy ${{ github.workspace }}/charms/machine-charm/juju-dashboard_ubuntu@24.04-amd64.charm dashboard
       shell: bash
     - name: Integrate charm
       run: juju integrate '${{ inputs.controller-app }}' dashboard
