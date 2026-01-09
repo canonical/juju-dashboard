@@ -37,6 +37,19 @@ export default class Git {
   }
 
   /**
+   * Execute the provided git command, and return the output.
+   */
+  private async execOutput(...args: string[]): Promise<string> {
+    const output = await exec.getExecOutput("git", args);
+
+    if (output.exitCode !== 0) {
+      throw new Error(`command exited non-zero: ${output.stdout}`);
+    }
+
+    return output.stdout;
+  }
+
+  /**
    * Set a git config value.
    */
   public async config(
@@ -116,5 +129,12 @@ export default class Git {
     }
 
     await this.exec("push", ...flags, this.origin, ...branches);
+  }
+
+  /**
+   * Run `rev-parse` on the `HEAD`.
+   */
+  async revParse(): Promise<string> {
+    return await this.execOutput("rev-parse", "--abbrev-ref", "HEAD");
   }
 }
