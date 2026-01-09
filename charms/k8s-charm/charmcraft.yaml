@@ -3,15 +3,11 @@
 # Learn more about charmcraft.yaml configuration at:
 # https://juju.is/docs/sdk/charmcraft-config
 type: "charm"
-bases:
-  - build-on:
-    - name: "ubuntu"
-      channel: "22.04"
-    run-on:
-    - name: "ubuntu"
-      channel: "22.04"
-    - name: "ubuntu"
-      channel: "20.04"
+platforms:
+  ubuntu@22.04:arm64:
+  ubuntu@24.04:arm64:
+  ubuntu@22.04:amd64:
+  ubuntu@24.04:amd64:
 
 parts:
   charm:
