@@ -1700,8 +1700,8 @@ describe("selectors", () => {
   });
 
   it("getModelAnnotations", () => {
-    const modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
+    const modelData = {
+      abc123: modelDataFactory.build({
         annotations: {
           "ceph-mon": {
             "gui-x": "818",
@@ -1714,12 +1714,12 @@ describe("selectors", () => {
       getModelAnnotations(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            modelWatcherData,
+            modelData,
           }),
         }),
         "abc123",
       ),
-    ).toStrictEqual(modelWatcherData.abc123.annotations);
+    ).toStrictEqual(modelData.abc123.annotations);
   });
 
   it("getModelApplications", () => {

@@ -3,16 +3,16 @@ import * as d3 from "d3";
 import { useRef, useEffect, memo } from "react";
 
 import type {
-  AnnotationData,
   ApplicationData,
   ApplicationInfo,
+  FullStatusAnnotations,
   RelationData,
 } from "juju/types";
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import { generateIconPath } from "store/juju/utils/models";
 
 type Props = {
-  annotations: AnnotationData | null;
+  annotations: FullStatusAnnotations | null;
   applications: ApplicationData | null;
   relations: null | RelationData;
   width: number;
@@ -21,7 +21,7 @@ type Props = {
 
 type Application = {
   name: string;
-  annotations: AnnotationData[0];
+  annotations: FullStatusAnnotations[0];
 } & ApplicationInfo;
 
 /**
@@ -40,7 +40,7 @@ const isSubordinate = (app: Application): boolean =>
   @returns The deltas for x and y in the keys { deltaX, deltaY }.
 */
 const computePositionDelta = (
-  annotations: AnnotationData | null,
+  annotations: FullStatusAnnotations | null,
 ): { deltaX: null | number; deltaY: null | number } => {
   let deltaX: null | number = null;
   let deltaY: null | number = null;
@@ -70,7 +70,7 @@ const computePositionDelta = (
   @returns The value of the annotation with the highest X and Y value.
 */
 const computeMaxXY = (
-  annotations: AnnotationData | null,
+  annotations: FullStatusAnnotations | null,
 ): { maxX: number; maxY: number } => {
   let maxY = 0;
   let maxX = 0;

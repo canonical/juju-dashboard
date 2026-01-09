@@ -172,8 +172,15 @@ describe("reducers", () => {
   });
 
   it("updateModelStatus", () => {
+    const annotations = {
+      "ceph-mon": {
+        "gui-x": "818",
+        "gui-y": "563",
+      },
+    };
     const updatedModel = {
       ...model,
+      annotations,
       uuid: "abc123",
     };
     delete updatedModel.info;
@@ -183,7 +190,10 @@ describe("reducers", () => {
         state,
         actions.updateModelStatus({
           modelUUID: "abc123",
-          status,
+          status: {
+            ...status,
+            annotations,
+          },
           wsControllerURL: "wss://example.com",
         }),
       ),

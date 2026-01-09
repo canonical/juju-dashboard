@@ -10,12 +10,12 @@ import fastDeepEqual from "fast-deep-equal/es6";
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
 import type {
-  AnnotationData,
   ApplicationData,
   MachineData,
   WatcherModelInfo,
   RelationData,
   UnitData,
+  FullStatusAnnotations,
 } from "juju/types";
 import {
   getActiveUserTag,
@@ -569,10 +569,10 @@ export const getModelUUIDFromList = createSelector(
 );
 
 export const getModelAnnotations = createSelector(
-  getModelWatcherDataByUUID,
-  (modelWatcherData): AnnotationData | null => {
-    if (modelWatcherData) {
-      return modelWatcherData.annotations;
+  getModelDataByUUID,
+  (modelData): FullStatusAnnotations | null => {
+    if (modelData) {
+      return modelData.annotations ?? null;
     }
     return null;
   },
