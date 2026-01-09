@@ -9,6 +9,7 @@ import {
   detailedStatusFactory,
   modelStatusInfoFactory,
 } from "testing/factories/juju/ClientV6";
+import { relationStatusFactory } from "testing/factories/juju/ClientV7";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
@@ -40,7 +41,6 @@ import {
   applicationInfoFactory,
   machineChangeDeltaFactory,
   modelWatcherModelDataFactory,
-  relationChangeDeltaFactory,
   unitAgentStatusFactory,
   unitChangeDeltaFactory,
   workloadStatusFactory,
@@ -2013,23 +2013,25 @@ describe("selectors", () => {
   });
 
   it("getModelRelations", () => {
-    const modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        relations: {
-          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
-        },
+    const modelData = {
+      abc123: modelDataFactory.build({
+        relations: [
+          relationStatusFactory.build({
+            key: "wordpress:db mysql:db",
+          }),
+        ],
       }),
     };
     expect(
       getModelRelations(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            modelWatcherData,
+            modelData,
           }),
         }),
         "abc123",
       ),
-    ).toStrictEqual(modelWatcherData.abc123.relations);
+    ).toStrictEqual(modelData.abc123.relations);
   });
 
   it("getModelMachines", () => {

@@ -2,7 +2,7 @@ import { render, fireEvent } from "@testing-library/react";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import { charmApplicationFactory } from "testing/factories/juju/Charms";
-import { relationChangeDeltaFactory } from "testing/factories/juju/model-watcher";
+import { relationStatusFactory } from "testing/factories/juju/ClientV7";
 
 import Topology from "./Topology";
 
@@ -25,9 +25,11 @@ describe("Topology", () => {
       "charm-url": "ch:amd64/jammy/postgresql-2",
     }),
   };
-  const relations = {
-    "landscape:db postgresql:db": relationChangeDeltaFactory.build(),
-  };
+  const relations = [
+    relationStatusFactory.build({
+      key: "landscape:db postgresql:db",
+    }),
+  ];
 
   it("sets the canvas size", () => {
     render(
