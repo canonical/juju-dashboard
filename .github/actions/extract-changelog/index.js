@@ -31788,7 +31788,8 @@ class Git {
      * Run `rev-parse` on the `HEAD`.
      */
     async revParse() {
-        return await this.execOutput("rev-parse", "--abbrev-ref", "HEAD");
+        const rev = await this.execOutput("rev-parse", "--abbrev-ref", "HEAD");
+        return rev.trim();
     }
 }
 

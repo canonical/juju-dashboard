@@ -135,6 +135,7 @@ export default class Git {
    * Run `rev-parse` on the `HEAD`.
    */
   async revParse(): Promise<string> {
-    return await this.execOutput("rev-parse", "--abbrev-ref", "HEAD");
+    const rev = await this.execOutput("rev-parse", "--abbrev-ref", "HEAD");
+    return rev.trim();
   }
 }
