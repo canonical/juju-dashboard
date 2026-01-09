@@ -179,6 +179,7 @@ const slice = createSlice({
       // like controllerTimestamp.
       const model = {
         ...(state.modelData[modelUUID] ?? {}),
+        annotations: action.payload.status.annotations,
         applications: action.payload.status.applications,
         machines: action.payload.status.machines,
         model: action.payload.status.model,
