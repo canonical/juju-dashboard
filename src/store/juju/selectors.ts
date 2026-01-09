@@ -3,6 +3,7 @@ import type {
   MachineStatus,
   UnitStatus,
 } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type { RelationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { createSelector } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 import fastDeepEqual from "fast-deep-equal/es6";
@@ -13,7 +14,6 @@ import type {
   ApplicationData,
   MachineData,
   WatcherModelInfo,
-  RelationData,
   UnitData,
   FullStatusAnnotations,
 } from "juju/types";
@@ -599,10 +599,10 @@ export const getModelUnits = createSelector(
 );
 
 export const getModelRelations = createSelector(
-  getModelWatcherDataByUUID,
-  (modelWatcherData): null | RelationData => {
-    if (modelWatcherData) {
-      return modelWatcherData.relations;
+  getModelDataByUUID,
+  (modelData): null | RelationStatus[] => {
+    if (modelData) {
+      return modelData.relations;
     }
     return null;
   },

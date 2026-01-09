@@ -1,3 +1,4 @@
+import type { RelationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import cloneDeep from "clone-deep";
 import * as d3 from "d3";
 import { useRef, useEffect, memo } from "react";
@@ -6,7 +7,6 @@ import type {
   ApplicationData,
   ApplicationInfo,
   FullStatusAnnotations,
-  RelationData,
 } from "juju/types";
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import { generateIconPath } from "store/juju/utils/models";
@@ -14,7 +14,7 @@ import { generateIconPath } from "store/juju/utils/models";
 type Props = {
   annotations: FullStatusAnnotations | null;
   applications: ApplicationData | null;
-  relations: null | RelationData;
+  relations: null | RelationStatus[];
   width: number;
   height: number;
 };
@@ -209,19 +209,16 @@ const Topology = memo(
     // Dedupe the relations as we only draw a single line between two
     // applications regardless of how many relations are between them.
     const extractor = /(.+):(.+)\s(.+):(.+)/;
-    const endpoints = Object.entries(relationData ?? {}).reduce<string[]>(
-      (acc, [key, relation]) => {
-        // We don't draw peer relations so we can ignore them.
-        if (relation.endpoints.length > 1) {
-          const parts = key.match(extractor);
-          if (parts) {
-            acc.push(`${parts[1]}:${parts[3]}`);
-          }
+    const endpoints = relationData?.reduce<string[]>((acc, relation) => {
+      // We don't draw peer relations so we can ignore them.
+      if (relation.endpoints.length > 1) {
+        const parts = relation.key.match(extractor);
+        if (parts) {
+          acc.push(`${parts[1]}:${parts[3]}`);
         }
-        return acc;
-      },
-      [],
-    );
+      }
+      return acc;
+    }, []);
 
     // Remove any duplicate endpoints and split into pairs.
     const deDupedRelations = [...new Set(endpoints)].map((pair) =>
