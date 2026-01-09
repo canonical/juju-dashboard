@@ -31721,6 +31721,16 @@ class Git {
         return exec.exec("git", args);
     }
     /**
+     * Execute the provided git command, and return the output.
+     */
+    async execOutput(...args) {
+        const output = await exec.getExecOutput("git", args);
+        if (output.exitCode !== 0) {
+            throw new Error(`command exited non-zero: ${output.stdout}`);
+        }
+        return output.stdout;
+    }
+    /**
      * Set a git config value.
      */
     async config(key, value, scope = "local") {
@@ -31773,6 +31783,12 @@ class Git {
             flags.push("--force");
         }
         await this.exec("push", ...flags, this.origin, ...branches);
+    }
+    /**
+     * Run `rev-parse` on the `HEAD`.
+     */
+    async revParse() {
+        return await this.execOutput("rev-parse", "--abbrev-ref", "HEAD");
     }
 }
 
@@ -32211,10 +32227,11 @@ async function createCtx(fallback) {
     }
     const git = new Git();
     await git.configUser();
+    const refName = await git.revParse();
     return {
         octokit,
         core: core,
-        context: Object.assign({ refName: process.env["GITHUB_REF_NAME"] }, github.context),
+        context: Object.assign({ refName }, github.context),
         exec: exec.exec,
         execOutput: exec.getExecOutput,
         repo,

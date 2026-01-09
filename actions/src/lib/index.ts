@@ -54,13 +54,12 @@ export async function createCtx(fallback?: {
   const git = new Git();
   await git.configUser();
 
+  const refName = await git.revParse();
+
   return {
     octokit,
     core,
-    context: Object.assign(
-      { refName: process.env["GITHUB_REF_NAME"] },
-      github.context,
-    ),
+    context: Object.assign({ refName }, github.context),
     exec: exec.exec,
     execOutput: exec.getExecOutput,
     repo,
