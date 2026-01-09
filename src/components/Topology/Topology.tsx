@@ -209,7 +209,7 @@ const Topology = memo(
     // Dedupe the relations as we only draw a single line between two
     // applications regardless of how many relations are between them.
     const extractor = /(.+):(.+)\s(.+):(.+)/;
-    const endpoints = relationData?.reduce<string[]>((acc, relation) => {
+    const endpoints = (relationData ?? []).reduce<string[]>((acc, relation) => {
       // We don't draw peer relations so we can ignore them.
       if (relation.endpoints.length > 1) {
         const parts = relation.key.match(extractor);
