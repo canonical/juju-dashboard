@@ -24,6 +24,11 @@ jobs:
       matrix:
         node-version: [22.x]
     steps:
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+          limit-access-to-actor: true
       - name: Free Disk Space (Ubuntu)
         uses: Jayllyz/free-disk-space@fbe203b3788f2bebe2c835a15925da303eaa5efe
         with:
