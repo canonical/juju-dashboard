@@ -158,7 +158,8 @@ export class CreateKeycloakOIDCUser implements Action<KeycloakOIDCUser> {
     // use that domain if it is received as part of identityUsername.
     const [identityName, domain] = (identityUsername || "").split("@");
     this.identityUsername = identityName || username;
-    this.identityDomain = domain || "example.com";
+    // Default to the admin's domain for consistency in JIMM scenarios
+    this.identityDomain = domain || "canonical.com";
     this.identityPassword = identityPassword || password;
   }
 
