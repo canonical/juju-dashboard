@@ -11,62 +11,105 @@ contribute and what kinds of contributions are welcome.
 
 **In this document:**
 
-- [Setting up the dashboard for development](#setting-up-the-dashboard-for-development)
-  - [Controller configuration](#controller-configuration)
-  - [Dotrun vs Yarn](#dotrun-vs-yarn)
-- [Codebase and development guidelines](#codebase-and-development-guidelines)
-  - [Browser plugins](#browser-plugins)
-  - [React](#react)
-    - [Components](#components)
-    - [Common files](#common-files)
-    - [Pages](#pages)
-    - [SCSS](#scss)
-  - [Redux](#redux)
-    - [Reselect](#reselect)
-    - [Middleware](#middleware)
-  - [TypeScript](#typescript)
-  - [Testing](#testing)
-    - [Test factories](#test-factories)
-  - [Dashboard libraries](#dashboard-libraries)
-    - [Jujulib](#jujulib)
-    - [Bakeryjs](#bakeryjs)
-    - [Vanilla Framework](#vanilla-framework)
-    - [Vanilla React Components](#vanilla-react-components)
-- [Juju controllers in Multipass](#juju-controllers-in-multipass)
-  - [Juju controller](#juju-controller)
-  - [Juju controller with Candid](#juju-controller-with-candid)
+- [Developing Juju Dashboard](#developing-juju-dashboard)
+  - [Setting up the dashboard for development](#setting-up-the-dashboard-for-development)
+    - [Multipass cloud init scripts](#multipass-cloud-init-scripts)
+    - [Developing on your host](#developing-on-your-host)
+      - [Configure JIMM for localhost](#configure-jimm-for-localhost)
+      - [Dashboard setup](#dashboard-setup)
+    - [Dotrun vs Yarn](#dotrun-vs-yarn)
+    - [Controller configuration](#controller-configuration)
+  - [Codebase and development guidelines](#codebase-and-development-guidelines)
+    - [Browser plugins](#browser-plugins)
+    - [React](#react)
+      - [Components](#components)
+      - [Common files](#common-files)
+      - [Pages](#pages)
+      - [SCSS](#scss)
+    - [Redux](#redux)
+      - [Reselect](#reselect)
+      - [Middleware](#middleware)
+    - [TypeScript](#typescript)
+    - [Testing](#testing)
+      - [Test factories](#test-factories)
+    - [Dashboard libraries](#dashboard-libraries)
+      - [Jujulib](#jujulib)
+      - [Bakeryjs](#bakeryjs)
+      - [Vanilla Framework](#vanilla-framework)
+      - [Vanilla React Components](#vanilla-react-components)
   - [Deployed JIMM controller](#deployed-jimm-controller)
-  - [Local JIMM controller](#local-jimm-controller)
-    - [Set up JIMM](#set-up-jimm)
-    - [Creating the Multipass instance](#creating-the-multipass-instance)
-    - [Login to Keycloak](#login-to-keycloak)
-    - [Forward ports](#forward-ports)
-    - [Set up Juju Dashboard](#set-up-juju-dashboard)
-    - [Restarting JIMM](#restarting-jimm)
-    - [Adding users](#adding-users)
-  - [Self signed certificates](#self-signed-certificates)
-  - [Juju on M1 Macs](#juju-on-m1-macs)
-- [Building the Docker image](#building-the-docker-image)
-- [Deployment configuration guides](#deployment-configuration-guides)
-  - [Deploying a local app](#deploying-a-local-app)
-  - [Setting up cross model integrations](#setting-up-cross-model-integrations)
-  - [Getting models into a broken state](#getting-models-into-a-broken-state)
+      - [Adding users](#adding-users)
+    - [Self signed certificates](#self-signed-certificates)
+    - [Juju on M1 Macs](#juju-on-m1-macs)
+  - [Building the Docker image](#building-the-docker-image)
+  - [Deployment configuration guides](#deployment-configuration-guides)
+    - [Deploying a local app](#deploying-a-local-app)
+    - [Setting up cross model integrations](#setting-up-cross-model-integrations)
+    - [Getting models into a broken state](#getting-models-into-a-broken-state)
 
 ## Setting up the dashboard for development
 
 To get started working on the dashboard you will need to set up a local
-development environment and you will also need access to a Juju controller (JAAS may be
-sufficient to get started).
+development environment and you will also need access to a Juju controller.
 
-If you want to you can set up the dashboard inside a
-[Multipass](https://multipass.run) container. This will provide a clean
-development environment. If you choose to use a Multipass container then `launch`
-your container and `shell` into it and continue from there.
+### Multipass cloud init scripts
+
+The easiest way to get set up is to use Multipass with a cloud init script that will set up the dashboard and a
+Juju controller.
+
+The following cloud init scripts are available:
+
+| Environment | Auth                      | Platform      | Script                                                                                                                                                                                                                                |
+| ----------- | ------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Juju        | Local (username/password) | Machine (LXD) | `multipass launch --cpus 2 --disk 15G --memory 8G --name juju-lxd-local --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-lxd-local.yaml`      |
+| Juju        | Local (username/password) | K8s           | `multipass launch --cpus 2 --disk 15G --memory 8G --name juju-k8s-local --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-microk8s-local.yaml` |
+| Juju        | Candid                    | Machine (LXD) | `multipass launch --cpus 2 --disk 15G --memory 8G --name juju-lxd-candid --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-lxd-candid.yaml`    |
+| JIMM        | OIDC                      | K8s           | `multipass launch --cpus 2 --disk 25G --memory 12G --name jimm-k8s-oidc --timeout 5000 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-jimm-k8s-oidc.yaml`  |
+| JIMM        | OIDC                      | Machine (LXD) | `multipass launch --cpus 2 --disk 25G --memory 12G --name jimm-lxd-oidc --timeout 5000 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-jimm-lxd-oidc.yaml`      |
+
+After you have chosen an environment to work in then launch the multipass container using the command from the above table.
+
+For example, to use Juju, LXD and local auth you could run:
 
 ```
-multipass launch --cpus 2 --disk 15G --memory 8G --name dev
-multipass shell dev
+multipass launch --cpus 2 --disk 15G --memory 8G --name juju-lxd-local --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-lxd-local.yaml
 ```
+
+__Note: some of these environments can take a long time to launch.__
+
+Once complete you can enter the container e.g. `multipass shell juju-lxd-local` which will display a message with 
+instructions on the address to connect to, the credentials and any additional set up instructions (e.g. for 
+JIMM environments some additional SSH port forwards are required).
+
+If you are developing the dashboard using the codebase inside the Multipass you will probably want to run the dev server manually, in which case you can disable the service with `sudo systemctl stop juju-dashboard.service && sudo systemctl disable juju-dashboard.service`.
+
+The dashboard can then be run with `cd ~/juju-dashboard && yarn start`.
+
+### Developing on your host
+
+Juju Dashboard can be run on your host and can connect to the Juju controller inside the Multipass.
+
+#### Configure JIMM for localhost
+
+For JIMM, an additional step is required to allow access from the dashboard running on localhost.
+
+Update the JIMM config inside the Multipass running JIMM:
+
+```shell
+DASHBOARD_ADDRESS=http://localhost:8036
+COMPOSE_CONFIG=/home/ubuntu/jimm/docker-compose.common.yaml
+yq -i ".services.jimm-base.environment.JIMM_DASHBOARD_FINAL_REDIRECT_URL = \"$DASHBOARD_ADDRESS\"" $COMPOSE_CONFIG
+yq -i ".services.jimm-base.environment.JIMM_DASHBOARD_LOCATION = \"$DASHBOARD_ADDRESS\"" $COMPOSE_CONFIG
+yq -i ".services.jimm-base.environment.CORS_ALLOWED_ORIGINS = \"$DASHBOARD_ADDRESS\"" $COMPOSE_CONFIG
+```
+
+Now you can restart the Multipass container or running the following commands to reload the Docker environment
+
+```shell
+cd /home/ubuntu/jimm && INSECURE_SECRET_STORAGE=true docker compose --profile dev up -d && docker restart jimm && juju show-controller qa-lxd | yq '.[].controller-machines.[].instance-id' | xargs lxc restart
+```
+
+#### Dashboard setup
 
 First, install [Node.js](https://nodejs.org/) (>= v18) and
 [Yarn](https://yarnpkg.com/) (>= v2) if they're not installed already.
@@ -111,6 +154,8 @@ yarn start
 Next you can move on to [configuring](#controller-configuration) a Juju controller to use with the dashboard.
 
 ### Controller configuration
+
+If you set up your Juju controller using the cloud init scripts you can copy the config.local.js from inside the Multipass e.g. `cat ~/juju-dashboard/public/config.local.js`.
 
 To configure the controller used by Juju Dashboard, create a local config file:
 
@@ -260,250 +305,7 @@ Components](https://github.com/canonical/react-components) is a React
 implementation of Vanilla Framework and is the preferred method of consuming
 Vanilla Framework elements.
 
-## Juju controllers in Multipass
-
-The easiest way to set up a Juju controller is inside a
-[Multipass](https://multipass.run) container. This allows you cleanly add and
-remove controllers as necessary and provides a way to have multiple controllers
-running at once (with different Juju versions if needed).
-
-There are four main types of deployment:
-
-- [Juju controller](#juju-controller)
-- [Juju with Kubernetes](./docs/multipass-microk8s.md)
-- [Deployed JIMM controller](#deployed-jimm-controller)
-- [Local JIMM controller](#local-jimm-controller)
-
-### Juju controller
-
-If this controller is being created on an M1 mac then you will need to [set the
-arch](#juju-on-m1-macs) when running some of the commands.
-
-First, create a new Multipass container. You may need to adjust the resources
-depending on your host machine.
-
-```shell
-multipass launch --cpus 2 --disk 15G --memory 8G --name juju jammy
-```
-
-Enter the container:
-
-```shell
-multipass shell juju
-```
-
-Install Juju:
-
-```shell
-sudo snap install juju --channel=3/stable
-```
-
-Generate SSH keys (the defaults should be fine for testing):
-
-```shell
-ssh-keygen
-```
-
-Create a local share directory ([issue](https://bugs.launchpad.net/snapd/+bug/1997598)):
-
-```shell
-mkdir -p ~/.local/share
-```
-
-Bootstrap Juju (the defaults should work fine for most cases):
-
-```shell
-juju bootstrap
-```
-
-Get the controller machine's instance id ("Inst id")
-
-```shell
-juju switch controller
-juju status
-```
-
-So that the Juju API can be accessed outside the Multipass container the API
-port will need to be forwarded to the controller machine. Using the instance id
-from above run:
-
-```shell
-lxc config device add [inst-id] portforward17070 proxy listen=tcp:0.0.0.0:17070 connect=tcp:127.0.0.1:17070
-```
-
-To be able to authenticate as the admin you will need to set a password:
-
-```shell
-juju change-user-password admin
-```
-
-At this point you can deploy the dashboard, or skip to the next section:
-
-```shell
-juju deploy juju-dashboard dashboard
-```
-
-Then integrate the controller and the dashboard:
-
-```shell
-juju integrate dashboard controller
-```
-
-Expose the dashboard:
-
-```shell
-juju expose dashboard
-```
-
-Get the dashboard machine's instance id:
-
-```shell
-juju status
-```
-
-Then port forward to the dashboard instance so that the dashboard can be accessed
-from outside the Multipass container:
-
-```shell
-lxc config device add [inst-id] portforward8080 proxy listen=tcp:0.0.0.0:8080 connect=tcp:127.0.0.1:8080
-```
-
-If you wish you can add additional models and deploy applications:
-
-```shell
-juju add-model test
-juju deploy postgresql
-```
-
-Now exit the Multipass container and then run the following to get the IP
-address of the container:
-
-```shell
-multipass info juju
-```
-
-If you deployed the dashboard inside the container you will be able to access it
-at:
-
-```shell
-http://[container.ip]:8080/
-```
-
-If you want to use the controller with a local dashboard you can [configure
-the dashboard](#controller-configuration) by setting the endpoint in
-`config.local.js`:
-
-```shell
-controllerAPIEndpoint: "wss://[container.ip]:17070/api",
-```
-
-Once you're finished with the controller you can stop the Multipass container:
-
-```shell
-multipass stop juju
-```
-
-And if you no longer require the container you can remove it:
-
-```shell
-multipass delete juju
-multipass purge
-```
-
-### Juju controller with Candid
-
-First, create a new Multipass container. You may need to adjust the resources
-depending on your host machine.
-
-```shell
-multipass launch --cpus 2 --disk 15G --memory 8G --name juju-candid
-```
-
-Enter the container:
-
-```shell
-multipass shell juju-candid
-```
-
-Install the prerequisites:
-
-```shell
-sudo snap install juju lxd candid
-```
-
-Initialise LXD with the default configuration:
-
-```shell
-lxd init --auto
-```
-
-Bootstrap Juju with the Ubuntu SSO provider:
-
-```shell
-juju bootstrap --config identity-url=https://api.jujucharms.com/identity --config allow-model-access=true
-```
-
-Get the controller container's instance id ("Inst id")
-
-```shell
-juju switch controller
-juju status
-```
-
-So that the Juju API can be accessed outside the Multipass container the API
-port will need to be forwarded to the controller machine. Using the instance id
-from above, run:
-
-```shell
-lxc config device add [inst-id] portforward17070 proxy listen=tcp:0.0.0.0:17070 connect=tcp:127.0.0.1:17070
-```
-
-To be able to access the controller you will need to allow access to your SSO
-user (check https://login.ubuntu.com/ if you're not sure what your username is):
-
-```shell
-juju grant [your-sso-username]@external superuser
-```
-
-If you wish you can add additional models and deploy applications:
-
-```shell
-juju add-model test
-juju deploy postgresql
-```
-
-Now exit the Multipass container and then run the following to get the IP
-address of the container:
-
-```shell
-multipass info juju-candid
-```
-
-You can now configure your local dashboard by setting the endpoint in
-`config.local.js`:
-
-```shell
-controllerAPIEndpoint: "wss://[container.ip]:17070/api",
-```
-
-When deployed by a charm the controller relation will provide the value for
-`identityProviderURL`. The actual value isn't used by the dashboard at this
-time, but rather the existence of the value informs the dashboard that Candid is
-available, so in `config.local.js` you just need to set the URL to any truthy value:
-
-```shell
-identityProviderURL: "/candid",
-```
-
-You also need to configure your dashboard to work with a local controller:
-
-```shell
-isJuju: true,
-```
-
-You can now access your local dashboard and log in using your Ubuntu SSO credentials.
-
-### Deployed JIMM controller
+## Deployed JIMM controller
 
 To access the demo deployment of JIMM you need to be connected to the VPN. Note: you
 don't need to be connected to the VPN until you want to connect to JIMM.
@@ -546,130 +348,6 @@ sudo yarn start-jaas --port 443
 Now you can connect to the VPN and then you should be able to access the dashboard (note: https only):
 
 https://jimm-dashboard.k8s.dev.canonical.com
-
-### Local JIMM controller
-
-For this, you need Multipass and a local copy of the [JIMM](https://github.com/canonical/jimm) repository on your host machine.
-
-#### Set up JIMM
-
-Check out the JIMM repository:
-
-```shell
-git clone git@github.com:canonical/jimm.git
-cd jimm
-```
-
-Start by making a small configuration change so that the login process redirects
-to the development dashboard URL:
-
-```shell
-nano docker-compose.common.yaml
-```
-
-Set `JIMM_DASHBOARD_FINAL_REDIRECT_URL` and `CORS_ALLOWED_ORIGINS` to `"http://jimm.localhost:8036"`.
-
-#### Creating the Multipass instance
-
-We will be using the [`qa-lxd-multipass.sh`](https://github.com/canonical/jimm/blob/v3/local/jimm/qa-lxd-multipass.sh) script for setting our local JAAS environment up. This script allocates minimum amount of resources required to set up a Multipass instance but you can tweak the values as per your host machine [here](https://github.com/canonical/jimm/blob/4dc453250ff509d31d77840faea6d1e5c8b8c8c4/local/jimm/qa-lxd-multipass.sh#L24).
-
-Now, you can run this script:
-
-> Note: The `INSECURE_SECRET_STORAGE` option makes JIMM store secrets in Postgresql for persistence, which is necessary for container restarts. Without this flag, secrets are lost when the Vault container restarts, causing `missing target controller credentials` errors.
-
-```shell
-cd ./local/jimm
-INSECURE_SECRET_STORAGE=true ./qa-lxd-multipass.sh
-```
-
-Wait for the instance to complete setting up. This may take a while but if it takes any longer than 20 minutes, you may have to tweak the resource values in the script. For example, you might need to allocate more CPU or memory space:
-
-```shell
-multipass launch --cpus 4 --memory 16G docker -n $VM_NAME
-```
-
-#### Login to Keycloak
-
-After a while, it will prompt you to login to Keycloak with a code. Use the following credentials to login and grant access from Keycloak.
-
-- Name: `jimm-test`
-- Password: `password`
-
-After this point, the controller should start bootstrapping. When this is done, you already have a local JAAS setup on your Multipass instance. Now, all that is required is to forward ports to view this on the dashboard.
-
-#### Forward ports
-
-To expose the various JIMM APIs so that they can be accessed from outside of the
-Multipass container, you can use an SSH port forward. This will also enable
-access to the Multipass using the hostnames set up inside the Multipass e.g.
-jimm.localhost.
-
-Navigate to the JIMM repository on your host machine and run the following script to forward all necessary ports:
-
-```shell
-cd ./local/jimm
-./qa-lxd-multipass-forward.sh --wait
-```
-
-Leave this running in a terminal.
-
-#### Set up Juju Dashboard
-
-You don't need a copy of the dashboard source code in the Multipass instance. You can use the one on your host as all necessary ports are already forwarded between the two in the previous step.
-
-Edit the configuration file from your local dashboard's source code:
-
-```shell
-nano public/config.local.js
-```
-
-Change the configuration as follows:
-
-```shell
-controllerAPIEndpoint: "wss://jimm.localhost/api",
-isJuju: false
-```
-
-Now you can start the dashboard with:
-
-```shell
-yarn start
-```
-
-To access the dashboard you can visit:
-
-```shell
-http://jimm.localhost:8036/
-```
-
-#### Restarting JIMM
-
-Each time you start the multipass container you need to do the following:
-
-1. Restart all services from `docker compose` in your Multipass instance (use the `INSECURE_SECRET_STORAGE` option if you used it during the initial setup)
-
-```shell
-INSECURE_SECRET_STORAGE=true docker compose --profile dev up -d
-```
-
-2. Restart JIMM service to make sure it is aligned with others
-
-```shell
-docker restart jimm
-```
-
-3. Restart all your workloads controllers
-
-```shell
-juju controllers
-# Run the following for each non-JIMM controller you have. The <controller-name> is qa-lxd unless you have bootstrapped other controllers too.
-juju show-controller <controller-name> | yq '.[].controller-machines.[].instance-id' | xargs lxc restart
-```
-
-With the above, we are fetching the correct public key from JIMM which happens on restart.
-
-4. [Forward ports](#forward-ports)
-5. Now you can start the dashboard as normal.
 
 #### Adding users
 
