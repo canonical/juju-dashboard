@@ -4,11 +4,12 @@ To release the dashboard, first follow the [QA steps](#qa-steps), then you will
 need to do a [dashboard GitHub release](#release-the-dashboard) then [release both
 charms](#release-charms).
 
-- [Deployments](#deployments)
-  - [Local machine controller](#local-machine-controller)
-  - [Local k8s controller](#local-k8s-controller)
-- [QA steps](#qa-steps)
-- [Release the dashboard](#release-the-dashboard)
+- [Releasing Juju Dashboard](#releasing-juju-dashboard)
+  - [Deployments](#deployments)
+    - [Local machine controller](#local-machine-controller)
+    - [Local k8s controller](#local-k8s-controller)
+  - [QA steps](#qa-steps)
+  - [Release the dashboard](#release-the-dashboard)
 
 ## Deployments
 
@@ -41,10 +42,7 @@ the machine charm and finally, follow the [QA steps](#qa-steps).
 
 ### Local k8s controller
 
-To QA the dashboard in Kubernetes you will need a local k8s environment. This
-can be quite tricky, but is possible even inside a Multipass container. We have
-[a separate
-guide](/docs/multipass-microk8s.md) for how you can set this up.
+To QA the dashboard in Kubernetes you will need a local k8s environment which can be set up using Multipass and [a cloud init script](/HACKING.md#multipass-cloud-init-scripts).
 
 Once you have K8s running, shell or ssh into the Multipass container that is
 running K8s and follow the instructions to [build and
