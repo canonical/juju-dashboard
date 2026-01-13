@@ -3,6 +3,7 @@ import type {
   RemoteEndpoint,
 } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type { ApplicationOfferStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type { RelationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { Button, Icon } from "@canonical/react-components";
 import type {
   MainTableCell,
@@ -20,12 +21,7 @@ import RelationIcon from "components/RelationIcon";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { copyToClipboard } from "components/utils";
-import type {
-  ApplicationData,
-  RelationData,
-  UnitData,
-  MachineData,
-} from "juju/types";
+import type { ApplicationData, UnitData, MachineData } from "juju/types";
 import type { StatusData } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
 import {
@@ -571,14 +567,13 @@ export function generateMachineRows(
 }
 
 export function generateRelationRows(
-  relationData: null | RelationData,
+  relationData: null | RelationStatus[],
   applications: ApplicationData | null,
 ): MainTableRow[] {
   if (!relationData) {
     return [];
   }
-  return Object.keys(relationData).map((relationId) => {
-    const relation = relationData[relationId];
+  return relationData.map((relation) => {
     const {
       provider,
       requirer,
@@ -619,14 +614,14 @@ export function generateRelationRows(
             </TruncatedTooltip>
           ),
         },
-        { content: relation.endpoints[0].relation.interface },
-        { content: relation.endpoints[0].relation.role },
+        { content: relation.interface },
+        { content: relation.endpoints[0]?.role },
       ],
       sortData: {
         provider: providerLabel,
         requirer: requirerLabel,
-        interface: relation.endpoints[0].relation.interface,
-        type: relation?.endpoints[0]?.relation.role,
+        interface: relation.interface,
+        type: relation.endpoints[0]?.role,
       },
     };
   });

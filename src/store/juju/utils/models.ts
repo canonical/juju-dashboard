@@ -1,5 +1,5 @@
+import type { EndpointStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import type { ModelUserInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
-import type { Endpoint } from "@canonical/jujulib/dist/api/facades/uniter/UniterV18";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import { getUserName } from "utils";
@@ -315,14 +315,12 @@ export const generateIconPath = (charmId: string): string => {
 };
 
 export const extractRelationEndpoints = (relation: {
-  endpoints: Endpoint[];
+  endpoints: EndpointStatus[];
 }): Record<string, string> => {
   const endpoints: Record<string, string> = {};
   relation.endpoints.forEach((endpoint) => {
-    const { role } = endpoint.relation;
-    endpoints[role] =
-      endpoint["application-name"] + ":" + endpoint.relation.name;
-    endpoints[`${role}ApplicationName`] = endpoint["application-name"];
+    endpoints[endpoint.role] = endpoint.application + ":" + endpoint.name;
+    endpoints[`${endpoint.role}ApplicationName`] = endpoint.application;
   });
   return endpoints;
 };

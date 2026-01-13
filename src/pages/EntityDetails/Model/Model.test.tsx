@@ -24,6 +24,7 @@ import {
   applicationOfferStatusFactory,
   remoteApplicationStatusFactory,
 } from "testing/factories/juju/ClientV6";
+import { relationStatusFactory } from "testing/factories/juju/ClientV7";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
@@ -41,7 +42,6 @@ import {
   machineChangeDeltaFactory,
   modelWatcherModelDataFactory,
   modelWatcherModelInfoFactory,
-  relationChangeDeltaFactory,
   unitChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
@@ -203,9 +203,15 @@ describe("Model", () => {
         machines: {
           "0": machineChangeDeltaFactory.build(),
         },
-        relations: {
-          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
-        },
+      }),
+    };
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        relations: [
+          relationStatusFactory.build({
+            key: "wordpress:db mysql:db",
+          }),
+        ],
       }),
     };
     renderComponent(<Model />, { state, url, path });
@@ -239,9 +245,15 @@ describe("Model", () => {
         machines: {
           "0": machineChangeDeltaFactory.build(),
         },
-        relations: {
-          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
-        },
+      }),
+    };
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        relations: [
+          relationStatusFactory.build({
+            key: "wordpress:db mysql:db",
+          }),
+        ],
       }),
     };
     renderComponent(<Model />, {
@@ -279,9 +291,15 @@ describe("Model", () => {
         machines: {
           "0": machineChangeDeltaFactory.build(),
         },
-        relations: {
-          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
-        },
+      }),
+    };
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        relations: [
+          relationStatusFactory.build({
+            key: "wordpress:db mysql:db",
+          }),
+        ],
       }),
     };
     renderComponent(<Model />, {
@@ -319,9 +337,15 @@ describe("Model", () => {
         machines: {
           "0": machineChangeDeltaFactory.build(),
         },
-        relations: {
-          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
-        },
+      }),
+    };
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        relations: [
+          relationStatusFactory.build({
+            key: "wordpress:db mysql:db",
+          }),
+        ],
       }),
     };
     renderComponent(<Model />, {
@@ -359,9 +383,15 @@ describe("Model", () => {
         machines: {
           "0": machineChangeDeltaFactory.build(),
         },
-        relations: {
-          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
-        },
+      }),
+    };
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        relations: [
+          relationStatusFactory.build({
+            key: "wordpress:db mysql:db",
+          }),
+        ],
       }),
     };
     renderComponent(<Model />, {
@@ -402,9 +432,15 @@ describe("Model", () => {
         machines: {
           "0": machineChangeDeltaFactory.build(),
         },
-        relations: {
-          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
-        },
+      }),
+    };
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        relations: [
+          relationStatusFactory.build({
+            key: "wordpress:db mysql:db",
+          }),
+        ],
       }),
     };
     state.general.controllerFeatures = controllerFeaturesStateFactory.build({
@@ -462,9 +498,6 @@ describe("Model", () => {
         machines: {
           "0": machineChangeDeltaFactory.build(),
         },
-        relations: {
-          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
-        },
       }),
     };
     state.juju.modelData = {
@@ -476,6 +509,11 @@ describe("Model", () => {
         offers: {
           db: applicationOfferStatusFactory.build(),
         },
+        relations: [
+          relationStatusFactory.build({
+            key: "wordpress:db mysql:db",
+          }),
+        ],
       }),
     };
     renderComponent(<Model />, {
@@ -495,9 +533,6 @@ describe("Model", () => {
         machines: {
           "0": machineChangeDeltaFactory.build(),
         },
-        relations: {
-          "wordpress:db mysql:db": relationChangeDeltaFactory.build(),
-        },
       }),
     };
     state.juju.modelData = {
@@ -506,6 +541,11 @@ describe("Model", () => {
           uuid: "abc123",
           name: "test1",
         }),
+        relations: [
+          relationStatusFactory.build({
+            key: "wordpress:db mysql:db",
+          }),
+        ],
         "remote-applications": {
           mysql: remoteApplicationStatusFactory.build(),
         },
