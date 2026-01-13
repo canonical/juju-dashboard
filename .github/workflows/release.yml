@@ -125,22 +125,18 @@ jobs:
       - name: Get charm path
         id: post-build
         run: |
-          CHARM_PATH=$(ls -1 charms/${{ matrix.charm-kind }}-charm/*.charm)
+          CHARM_DIR='charms/${{ matrix.charm-kind }}-charm'
 
-          if [ $(echo "$CHARM_PATH" | wc -l) -ne 1 ]; then
-            echo "Multiple charm artifacts found:"
-            echo "$CHARM_PATH"
-            exit 1
-          fi
+          # Concatenate charm paths into a single line with commas
+          BUILT_CHARM_PATHS=$(ls -1 $CHARM_DIR/*.charm | xargs -L1 basename | paste -sd ',' -)
 
-          echo "charm-path=$CHARM_PATH" | tee -a "$GITHUB_OUTPUT"
-          echo "charm-dir=$(dirname $CHARM_PATH)" | tee -a "$GITHUB_OUTPUT"
-          echo "charm-name=$(basename $CHARM_PATH)" | tee -a "$GITHUB_OUTPUT"
+          echo "charm-dir=$CHARM_DIR" | tee -a "$GITHUB_OUTPUT"
+          echo "built-charm-path=$BUILT_CHARM_PATHS" | tee -a "$GITHUB_OUTPUT"
       - name: Save charm artifact
         uses: actions/upload-artifact@v4
         with:
-          name: juju-dashboard-${{ matrix.charm-kind }}.charm
-          path: ${{ steps.post-build.outputs.charm-path }}
+          name: juju-dashboard-${{ matrix.charm-kind }}
+          path: ${{ steps.post-build.outputs.charm-dir }}/*.charm
       - name: Create new tracks, if required
         run: |
           track='${{ needs.pre-release.outputs.track }}'
@@ -165,7 +161,7 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           channel: "${{ needs.pre-release.outputs.channel }}"
           charm-path: "${{ steps.post-build.outputs.charm-dir }}"
-          built-charm-path: "${{ steps.post-build.outputs.charm-name }}"
+          built-charm-path: "${{ steps.post-build.outputs.built-charm-path }}"
           upload-image: true
           pull-image: false
           charmcraft-channel: latest/stable
@@ -237,12 +233,12 @@ jobs:
       - name: "Download k8s charm artifact"
         uses: actions/download-artifact@v4
         with:
-          name: juju-dashboard-k8s.charm
+          name: juju-dashboard-k8s
           path: release-artifacts
       - name: "Download machine charm artifact"
         uses: actions/download-artifact@v4
         with:
-          name: juju-dashboard-machine.charm
+          name: juju-dashboard-machine
           path: release-artifacts
 
       - name: "Create release"
