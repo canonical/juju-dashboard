@@ -6,7 +6,10 @@ import {
   detailedStatusFactory,
   modelStatusInfoFactory,
 } from "testing/factories/juju/ClientV6";
-import { relationStatusFactory } from "testing/factories/juju/ClientV7";
+import {
+  relationStatusFactory,
+  machineStatusFactory,
+} from "testing/factories/juju/ClientV7";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
@@ -35,7 +38,6 @@ import {
   commandHistoryItem,
 } from "testing/factories/juju/juju";
 import {
-  machineChangeDeltaFactory,
   modelWatcherModelDataFactory,
   unitAgentStatusFactory,
   unitChangeDeltaFactory,
@@ -2047,21 +2049,21 @@ describe("selectors", () => {
   });
 
   it("getModelMachines", () => {
-    const modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        machines: { "0": machineChangeDeltaFactory.build() },
+    const modelData = {
+      abc123: modelDataFactory.build({
+        machines: { "0": machineStatusFactory.build() },
       }),
     };
     expect(
       getModelMachines(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            modelWatcherData,
+            modelData,
           }),
         }),
         "abc123",
       ),
-    ).toStrictEqual(modelWatcherData.abc123.machines);
+    ).toStrictEqual(modelData.abc123.machines);
   });
 
   it("getAllModelApplicationStatus", () => {

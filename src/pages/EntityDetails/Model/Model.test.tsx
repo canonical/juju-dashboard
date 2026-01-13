@@ -24,7 +24,10 @@ import {
   applicationOfferStatusFactory,
   remoteApplicationStatusFactory,
 } from "testing/factories/juju/ClientV6";
-import { relationStatusFactory } from "testing/factories/juju/ClientV7";
+import {
+  relationStatusFactory,
+  machineStatusFactory,
+} from "testing/factories/juju/ClientV7";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
@@ -284,13 +287,6 @@ describe("Model", () => {
   });
 
   it("can display the machines table", async () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        machines: {
-          "0": machineChangeDeltaFactory.build(),
-        },
-      }),
-    };
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
@@ -301,6 +297,9 @@ describe("Model", () => {
             key: "wordpress:db mysql:db",
           }),
         ],
+        machines: {
+          "0": machineStatusFactory.build(),
+        },
       }),
     };
     renderComponent(<Model />, {
@@ -611,10 +610,10 @@ describe("Model", () => {
   });
 
   it("renders the machine details section", () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
         machines: {
-          "0": machineChangeDeltaFactory.build(),
+          "0": machineStatusFactory.build(),
         },
       }),
     };
@@ -708,9 +707,6 @@ describe("Model", () => {
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
         model: modelWatcherModelInfoFactory.build({ name: "hadoopspark" }),
-        machines: {
-          "0": machineChangeDeltaFactory.build(),
-        },
         units: {
           "0": unitChangeDeltaFactory.build({ application: "ceph-mon-0" }),
           "1": unitChangeDeltaFactory.build({ application: "ceph-mon-1" }),
@@ -729,6 +725,9 @@ describe("Model", () => {
       abc123: modelDataFactory.build({
         applications: {
           "ceph-mon": modelDataApplicationFactory.build(),
+        },
+        machines: {
+          "0": machineStatusFactory.build(),
         },
       }),
     };
@@ -773,6 +772,10 @@ describe("Model", () => {
       abc123: modelDataFactory.build({
         applications: {
           "ceph-mon": modelDataApplicationFactory.build(),
+        },
+        machines: {
+          "0": machineStatusFactory.build({ id: "0" }),
+          "1": machineStatusFactory.build({ id: "1" }),
         },
       }),
     };

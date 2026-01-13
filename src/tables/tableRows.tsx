@@ -5,6 +5,7 @@ import type {
 import type { ApplicationOfferStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type {
   ApplicationStatus,
+  MachineStatus,
   RelationStatus,
 } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { Button, Icon } from "@canonical/react-components";
@@ -24,7 +25,7 @@ import RelationIcon from "components/RelationIcon";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { copyToClipboard } from "components/utils";
-import type { UnitData, MachineData } from "juju/types";
+import type { UnitData } from "juju/types";
 import type { StatusData } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
 import {
@@ -33,6 +34,7 @@ import {
 } from "store/juju/utils/models";
 import { testId } from "testing/utils";
 import urls from "urls";
+import { parseMachineHardware } from "utils/parseMachineHardware";
 
 export type ModelParams = {
   modelName: string;
@@ -458,7 +460,7 @@ export function generateUnitRows(
 }
 
 export function generateMachineRows(
-  machines: MachineData | null,
+  machines: null | Record<string, MachineStatus>,
   units: null | UnitData,
   modelParams: ModelParams,
   selectedEntity?: null | string,
@@ -496,8 +498,8 @@ export function generateMachineRows(
     .map((machineId) => {
       const machine = machines[machineId];
       const az =
-        machine?.["hardware-characteristics"]?.["availability-zone"] ?? "";
-      const agentStatus = machine["agent-status"].message;
+        parseMachineHardware(machine.hardware)["availability-zone"] ?? "";
+      const agentStatus = machine["agent-status"].info;
       const message = (
         <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
           {agentStatus}
@@ -515,7 +517,6 @@ export function generateMachineRows(
                 })}
               >
                 {machineId}
-                <span className="u-capitalise">. {machine.series}</span>
               </Link>
             ),
           },
@@ -526,12 +527,12 @@ export function generateMachineRows(
           {
             content: (
               <TruncatedTooltip
-                message={machine["agent-status"].current}
+                message={machine["agent-status"].status}
                 position="top-center"
                 positionElementClassName="entity-details__machines-status-icon"
               >
                 <Status
-                  status={machine["agent-status"].current}
+                  status={machine["agent-status"].status}
                   className="p-icon"
                   useIcon
                 />
@@ -554,11 +555,11 @@ export function generateMachineRows(
           },
         ],
         sortData: {
-          machine: machine.series,
-          state: machine?.["agent-status"]?.current,
+          machine: machine.base.channel,
+          state: machine["agent-status"]?.status,
           az,
           instanceId: machine["instance-id"],
-          message: machine?.["agent-status"].message,
+          message: machine["agent-status"].info,
         },
         "data-machine": machineId,
         className: selectedEntity === machineId ? "is-selected" : "",

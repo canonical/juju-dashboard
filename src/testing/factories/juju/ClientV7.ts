@@ -1,6 +1,7 @@
 import type {
   DetailedStatus,
   RelationStatus,
+  MachineStatus,
 } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { Factory } from "fishery";
 
@@ -34,4 +35,25 @@ export const relationStatusFactory = Factory.define<RelationStatus>(() => ({
   interface: "mysql",
   scope: "global",
   status: detailedStatusFactory.build(),
+}));
+
+export const machineStatusFactory = Factory.define<MachineStatus>(() => ({
+  "agent-status": detailedStatusFactory.build(),
+  "instance-status": detailedStatusFactory.build(),
+  "modification-status": detailedStatusFactory.build(),
+  "dns-name": "1.2.3.4",
+  "instance-id": "juju-123-0",
+  "display-name": "",
+  base: {
+    name: "ubuntu",
+    channel: "24.04/stable",
+  },
+  id: "0",
+  containers: {},
+  constraints: "arch=amd64",
+  hardware:
+    "arch=amd64 cores=0 mem=0M availability-zone=danger virt-type=container",
+  jobs: [],
+  "has-vote": false,
+  "wants-vote": false,
 }));

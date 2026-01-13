@@ -1,3 +1,4 @@
+import type { MachineStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { Button, MainTable, Icon } from "@canonical/react-components";
 import classNames from "classnames";
 import { Field, Formik } from "formik";
@@ -15,7 +16,7 @@ import SegmentedControl from "components/SegmentedControl";
 import Status from "components/Status";
 import useCanConfigureModel from "hooks/useCanConfigureModel";
 import { useQueryParams } from "hooks/useQueryParams";
-import type { MachineData, UnitData } from "juju/types";
+import type { UnitData } from "juju/types";
 import {
   getModelApplications,
   getModelInfo,
@@ -77,7 +78,7 @@ export default function App(): JSX.Element {
   const canConfigureModel = useCanConfigureModel();
 
   const filteredMachineList = useMemo(() => {
-    const filteredMachines: MachineData = {};
+    const filteredMachines: Record<string, MachineStatus> = {};
     if (!units || !machines) {
       return null;
     }
