@@ -3,7 +3,11 @@ import type {
   MachineStatus,
   UnitStatus,
 } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import type { RelationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+import type {
+  ModelStatusInfo,
+  RelationStatus,
+} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { createSelector } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 import fastDeepEqual from "fast-deep-equal/es6";
@@ -12,7 +16,6 @@ import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
 import type {
   MachineData,
-  WatcherModelInfo,
   UnitData,
   FullStatusAnnotations,
 } from "juju/types";
@@ -530,10 +533,21 @@ export const getModelWatcherDataByUUID = createSelector(
 );
 
 export const getModelInfo = createSelector(
-  getModelWatcherDataByUUID,
-  (modelWatcherData): null | WatcherModelInfo => {
-    if (modelWatcherData) {
-      return modelWatcherData.model;
+  getModelDataByUUID,
+  (modelData): ModelInfo | null | undefined => {
+    if (modelData) {
+      return modelData.info;
+    }
+
+    return null;
+  },
+);
+
+export const getModelStatusInfo = createSelector(
+  getModelDataByUUID,
+  (modelData): ModelStatusInfo | null | undefined => {
+    if (modelData) {
+      return modelData.model;
     }
 
     return null;
@@ -1117,14 +1131,10 @@ export const getSelectedCharm = createSelector(
 );
 
 export const isKubernetesModel = createSelector(
-  [
-    getModelDataByUUID,
-    (state: RootState, uuid?: null | string): null | WatcherModelInfo =>
-      uuid ? getModelInfo(state, uuid) : null,
-  ],
-  (modelData, modelInfo) =>
-    modelData?.info?.["provider-type"] === "kubernetes" ||
-    modelInfo?.type === "kubernetes",
+  [getModelInfo],
+  (modelData) =>
+    modelData?.["provider-type"] === "kubernetes" ||
+    modelData?.type === "kubernetes",
 );
 
 export const getReBACAllowedState = createSelector(

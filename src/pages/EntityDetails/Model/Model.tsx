@@ -16,6 +16,7 @@ import {
   getModelInfo,
   getModelMachines,
   getModelRelations,
+  getModelStatusInfo,
   getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
@@ -133,6 +134,9 @@ const Model: FC = () => {
   const modelInfoData = useAppSelector((state) =>
     getModelInfo(state, modelUUID),
   );
+  const modelStatusInfo = useAppSelector((state) =>
+    getModelStatusInfo(state, modelUUID),
+  );
   const credential = useAppSelector((state) =>
     getModelCredential(state, modelUUID),
   );
@@ -152,18 +156,18 @@ const Model: FC = () => {
             </AccessButton>
           </div>
         )}
-        {modelInfoData && (
+        {modelStatusInfo && modelInfoData && (
           <EntityInfo
             data={{
               access: modelAccess || "unknown",
               controller: modelInfoData.type,
               "Cloud/Region": generateCloudAndRegion(
-                modelInfoData["cloud"],
+                modelInfoData["cloud-tag"].replace(/^cloud-/, ""),
                 modelInfoData["cloud-region"],
               ),
-              owner: modelInfoData.owner,
+              owner: modelInfoData["owner-tag"].replace(/^user-/, ""),
               credential,
-              version: modelInfoData.version,
+              version: modelStatusInfo.version,
               sla: modelInfoData.sla?.level,
             }}
           />

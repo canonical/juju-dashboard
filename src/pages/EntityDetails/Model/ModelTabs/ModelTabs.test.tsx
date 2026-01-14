@@ -13,6 +13,8 @@ import {
   authUserInfoFactory,
 } from "testing/factories/general";
 import {
+  modelDataFactory,
+  modelDataInfoFactory,
   modelListInfoFactory,
   rebacAllowedFactory,
 } from "testing/factories/juju/juju";
@@ -20,10 +22,6 @@ import {
   modelFeaturesStateFactory,
   modelFeaturesFactory,
 } from "testing/factories/juju/juju";
-import {
-  modelWatcherModelDataFactory,
-  modelWatcherModelInfoFactory,
-} from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 import { ModelTab } from "urls";
 
@@ -87,11 +85,11 @@ describe("ModelTabs", () => {
   });
 
   it("does not display the machine tab for kubernetes", () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        model: modelWatcherModelInfoFactory.build({
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        info: modelDataInfoFactory.build({
           name: "enterprise",
-          owner: "eggman@external",
+          "owner-tag": "user-eggman@external",
           type: "kubernetes",
         }),
       }),

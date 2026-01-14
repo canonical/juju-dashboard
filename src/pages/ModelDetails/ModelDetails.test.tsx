@@ -10,8 +10,10 @@ import { EntityDetailsLabel } from "pages/EntityDetails";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
-import { modelListInfoFactory } from "testing/factories/juju/juju";
-import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
+import {
+  modelDataFactory,
+  modelListInfoFactory,
+} from "testing/factories/juju/juju";
 import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -78,8 +80,8 @@ describe("ModelDetails", () => {
             name: "test-model",
           }),
         },
-        modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build(),
+        modelData: {
+          abc123: modelDataFactory.build(),
         },
       }),
     });

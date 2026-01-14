@@ -131,6 +131,7 @@ const JujuCLI: FC = () => {
     getActiveUserTag(state, primaryControllerData?.[0]),
   );
   const commandHistory = useAppSelector(getCommandHistory);
+  const owner = modelInfo?.["owner-tag"].replace(/^user-/, "") ?? "";
 
   function onCommandSent(_command?: string): void {
     sendAnalytics({
@@ -149,7 +150,7 @@ const JujuCLI: FC = () => {
                 App: {
                   App: (column): TableLinksLink => ({
                     link: urls.model.app.index({
-                      userName: modelInfo.owner,
+                      userName: owner,
                       modelName: modelInfo.name,
                       appName: column.value,
                     }),
@@ -158,7 +159,7 @@ const JujuCLI: FC = () => {
                 Machine: {
                   Machine: (column): TableLinksLink => ({
                     link: urls.model.machine({
-                      userName: modelInfo.owner,
+                      userName: owner,
                       modelName: modelInfo.name,
                       machineId: column.value,
                     }),
@@ -173,7 +174,7 @@ const JujuCLI: FC = () => {
                   }),
                   Model: (): TableLinksLink => ({
                     link: urls.model.index({
-                      userName: modelInfo.owner,
+                      userName: owner,
                       modelName: modelInfo.name,
                     }),
                   }),
@@ -183,7 +184,7 @@ const JujuCLI: FC = () => {
                     const [appName] = column.value.split("/");
                     return {
                       link: urls.model.unit({
-                        userName: modelInfo.owner,
+                        userName: owner,
                         modelName: modelInfo.name,
                         appName,
                         unitId: column.value
@@ -194,7 +195,7 @@ const JujuCLI: FC = () => {
                   },
                   Machine: (column): TableLinksLink => ({
                     link: urls.model.machine({
-                      userName: modelInfo.owner,
+                      userName: owner,
                       modelName: modelInfo.name,
                       machineId: column.value,
                     }),
@@ -207,7 +208,7 @@ const JujuCLI: FC = () => {
             },
           }
         : null,
-    [modelInfo],
+    [modelInfo, owner],
   );
 
   // Only show CLI on Juju.
