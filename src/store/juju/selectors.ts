@@ -14,11 +14,7 @@ import fastDeepEqual from "fast-deep-equal/es6";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
-import type {
-  MachineData,
-  UnitData,
-  FullStatusAnnotations,
-} from "juju/types";
+import type { MachineData, UnitData, FullStatusAnnotations } from "juju/types";
 import {
   getActiveUserTag,
   getActiveUserControllerAccess,
