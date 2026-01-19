@@ -1,3 +1,4 @@
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { MainTable } from "@canonical/react-components";
 import type { JSX } from "react";
 import { useMemo } from "react";
@@ -6,7 +7,7 @@ import { useParams } from "react-router";
 import EntityInfo from "components/EntityInfo";
 import InfoPanel from "components/InfoPanel";
 import type { EntityDetailsRoute } from "components/Routes";
-import type { ApplicationData, UnitData } from "juju/types";
+import type { UnitData } from "juju/types";
 import {
   getAllModelApplicationStatus,
   getModelApplications,
@@ -50,7 +51,7 @@ export default function Machine(): JSX.Element {
     if (!applications || !units) {
       return null;
     }
-    const filteredApps: ApplicationData = {};
+    const filteredApps: Record<string, ApplicationStatus> = {};
     const appList = new Set<string>();
     Object.values(units).forEach((unitData) => {
       if (unitData["machine-id"] === machineId) {

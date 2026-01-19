@@ -25,7 +25,7 @@ const AppSearchBox: FC = () => {
     // search results.
     dispatch(
       jujuActions.updateSelectedApplications({
-        selectedApplications: [],
+        selectedApplications: {},
       }),
     );
     setQuery({ filterQuery: queryString });

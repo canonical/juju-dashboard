@@ -1,10 +1,7 @@
 import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
-import {
-  charmApplicationFactory,
-  charmInfoFactory,
-} from "testing/factories/juju/Charms";
+import { charmInfoFactory } from "testing/factories/juju/Charms";
 import {
   detailedStatusFactory,
   modelStatusInfoFactory,
@@ -38,7 +35,6 @@ import {
   commandHistoryItem,
 } from "testing/factories/juju/juju";
 import {
-  applicationInfoFactory,
   machineChangeDeltaFactory,
   modelWatcherModelDataFactory,
   unitAgentStatusFactory,
@@ -1607,12 +1603,12 @@ describe("selectors", () => {
             url: "ch:amd64/focal/redis-k8s",
           }),
         ],
-        selectedApplications: [
-          charmApplicationFactory.build({ "charm-url": "ch:nothing" }),
-          charmApplicationFactory.build({
-            "charm-url": "ch:amd64/focal/redis-k8s",
+        selectedApplications: {
+          nothing: modelDataApplicationFactory.build({ charm: "ch:nothing" }),
+          redis: modelDataApplicationFactory.build({
+            charm: "ch:amd64/focal/redis-k8s",
           }),
-        ],
+        },
       }),
     });
     expect(getCharms(state)).toStrictEqual([
@@ -1626,12 +1622,12 @@ describe("selectors", () => {
   it("getSelectedApplications without charm URL", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
-        selectedApplications: [
-          charmApplicationFactory.build({ "charm-url": "ch:nothing" }),
-          charmApplicationFactory.build({
-            "charm-url": "ch:amd64/focal/redis-k8s",
+        selectedApplications: {
+          nothing: modelDataApplicationFactory.build({ charm: "ch:nothing" }),
+          redis: modelDataApplicationFactory.build({
+            charm: "ch:amd64/focal/redis-k8s",
           }),
-        ],
+        },
       }),
     });
     expect(getSelectedApplications(state)).toStrictEqual(
@@ -1642,21 +1638,21 @@ describe("selectors", () => {
   it("getSelectedApplications with charm URL", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
-        selectedApplications: [
-          charmApplicationFactory.build({ "charm-url": "ch:nothing" }),
-          charmApplicationFactory.build({
-            "charm-url": "ch:amd64/focal/redis-k8s",
+        selectedApplications: {
+          nothing: modelDataApplicationFactory.build({ charm: "ch:nothing" }),
+          redis: modelDataApplicationFactory.build({
+            charm: "ch:amd64/focal/redis-k8s",
           }),
-        ],
+        },
       }),
     });
     expect(
       getSelectedApplications(state, "ch:amd64/focal/redis-k8s"),
-    ).toStrictEqual([
-      charmApplicationFactory.build({
-        "charm-url": "ch:amd64/focal/redis-k8s",
+    ).toStrictEqual({
+      redis: modelDataApplicationFactory.build({
+        charm: "ch:amd64/focal/redis-k8s",
       }),
-    ]);
+    });
   });
 
   it("getSelectedCharm", () => {
@@ -1723,10 +1719,10 @@ describe("selectors", () => {
   });
 
   it("getModelApplications", () => {
-    const modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
+    const modelData = {
+      abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": applicationInfoFactory.build(),
+          "ceph-mon": modelDataApplicationFactory.build(),
         },
       }),
     };
@@ -1734,12 +1730,12 @@ describe("selectors", () => {
       getModelApplications(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            modelWatcherData,
+            modelData,
           }),
         }),
         "abc123",
       ),
-    ).toStrictEqual(modelWatcherData.abc123.applications);
+    ).toStrictEqual(modelData.abc123.applications);
   });
 
   it("getModelList", () => {

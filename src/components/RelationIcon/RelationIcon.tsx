@@ -2,13 +2,10 @@ import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/clie
 import type { FC } from "react";
 
 import CharmIcon from "components/CharmIcon/CharmIcon";
-import type { WatcherModelData } from "juju/types";
 
 type Props = {
   applicationName: string;
-  applications:
-    | Record<string, ApplicationStatus>
-    | WatcherModelData["applications"];
+  applications: Record<string, ApplicationStatus>;
 };
 
 const RelationIcon: FC<Props> = ({ applicationName, applications }: Props) => {
@@ -16,16 +13,7 @@ const RelationIcon: FC<Props> = ({ applicationName, applications }: Props) => {
     return null;
   }
   const application = applications[applicationName];
-  const charmId =
-    "charm-url" in application
-      ? application["charm-url"]
-      : "charm" in application
-        ? application["charm"]
-        : null;
-  if (!charmId) {
-    return null;
-  }
-  return <CharmIcon name={applicationName} charmId={charmId} />;
+  return <CharmIcon name={applicationName} charmId={application.charm} />;
 };
 
 export default RelationIcon;

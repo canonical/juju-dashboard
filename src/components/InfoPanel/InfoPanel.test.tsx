@@ -5,9 +5,12 @@ import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
-import { modelListInfoFactory } from "testing/factories/juju/juju";
 import {
-  applicationInfoFactory,
+  modelDataApplicationFactory,
+  modelDataFactory,
+  modelListInfoFactory,
+} from "testing/factories/juju/juju";
+import {
   modelWatcherModelDataFactory,
   modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
@@ -38,11 +41,15 @@ describe("Info Panel", () => {
             ownerTag: "user-kirk@external",
           }),
         },
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications: {
+              "ceph-mon": modelDataApplicationFactory.build(),
+            },
+          }),
+        },
         modelWatcherData: {
           abc123: modelWatcherModelDataFactory.build({
-            applications: {
-              "ceph-mon": applicationInfoFactory.build(),
-            },
             model: modelWatcherModelInfoFactory.build({
               name: "enterprise",
               owner: "kirk@external",

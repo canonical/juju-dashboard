@@ -1,4 +1,5 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import type {
   DestroyModelParams,
   ModelInfoResults,
@@ -19,11 +20,7 @@ import type {
   CrossModelQueryResponse,
   RelationshipTuple,
 } from "juju/jimm/JIMMV4";
-import type {
-  AllWatcherDelta,
-  ApplicationInfo,
-  FullStatusWithAnnotations,
-} from "juju/types";
+import type { AllWatcherDelta, FullStatusWithAnnotations } from "juju/types";
 import { processDeltas } from "juju/watchers";
 
 import type {
@@ -136,7 +133,7 @@ const slice = createSlice({
       relationships: [],
     },
     secrets: {},
-    selectedApplications: [],
+    selectedApplications: {},
   } as JujuState,
   reducers: {
     updateModelList: (
@@ -411,7 +408,9 @@ const slice = createSlice({
     },
     updateSelectedApplications: (
       state,
-      action: PayloadAction<{ selectedApplications: ApplicationInfo[] }>,
+      action: PayloadAction<{
+        selectedApplications: Record<string, ApplicationStatus>;
+      }>,
     ) => {
       state.selectedApplications = action.payload.selectedApplications;
     },

@@ -14,14 +14,17 @@ import {
   configFactory,
   authUserInfoFactory,
 } from "testing/factories/general";
-import { modelListInfoFactory } from "testing/factories/juju/juju";
+import {
+  modelDataApplicationFactory,
+  modelDataFactory,
+  modelListInfoFactory,
+} from "testing/factories/juju/juju";
 import {
   controllerFactory,
   commandHistoryState,
   commandHistoryItem,
 } from "testing/factories/juju/juju";
 import {
-  applicationInfoFactory,
   modelWatcherModelDataFactory,
   modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
@@ -164,11 +167,15 @@ describe("JujuCLI", () => {
     state.general.config = configFactory.build({
       isJuju: false,
     });
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        applications: {
+          "ceph-mon": modelDataApplicationFactory.build(),
+        },
+      }),
+    };
     state.juju.modelWatcherData = {
       abc123: modelWatcherModelDataFactory.build({
-        applications: {
-          "ceph-mon": applicationInfoFactory.build(),
-        },
         model: modelWatcherModelInfoFactory.build({
           name: modelName,
           owner: userName,

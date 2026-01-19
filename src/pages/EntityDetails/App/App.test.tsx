@@ -17,9 +17,9 @@ import {
   modelListInfoFactory,
   modelDataFactory,
   modelDataInfoFactory,
+  modelDataApplicationFactory,
 } from "testing/factories/juju/juju";
 import {
-  applicationInfoFactory,
   modelWatcherModelDataFactory,
   unitChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
@@ -82,6 +82,9 @@ describe("Entity Details App", () => {
         },
         modelData: {
           test123: modelDataFactory.build({
+            applications: {
+              etcd: modelDataApplicationFactory.build(),
+            },
             info: modelDataInfoFactory.build({
               uuid: "test123",
               name: "canonical-kubernetes",
@@ -97,9 +100,6 @@ describe("Entity Details App", () => {
         },
         modelWatcherData: {
           test123: modelWatcherModelDataFactory.build({
-            applications: {
-              etcd: applicationInfoFactory.build(),
-            },
             units: {
               "0": unitChangeDeltaFactory.build({
                 application: "etcd",
@@ -267,7 +267,7 @@ describe("Entity Details App", () => {
     );
     expect(router.state.location.search).toEqual(
       // spell-checker:disable-next-line
-      "?panel=config&entity=etcd&charm=cs%3Aceph-mon-55&modelUUID=test123",
+      "?panel=config&entity=etcd&charm=cs%3A%7Econtainers%2Feasyrsa-278&modelUUID=test123",
     );
   });
 

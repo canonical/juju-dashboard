@@ -15,12 +15,10 @@ import {
   secretsStateFactory,
   listSecretResultFactory,
   modelSecretsFactory,
+  modelDataApplicationFactory,
+  modelDataFactory,
 } from "testing/factories/juju/juju";
 import { secretAccessInfoFactory } from "testing/factories/juju/juju";
-import {
-  applicationInfoFactory,
-  modelWatcherModelDataFactory,
-} from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -60,12 +58,12 @@ describe("GrantSecretPanel", () => {
             uuid: "abc123",
           }),
         },
-        modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
             applications: {
-              lxd: applicationInfoFactory.build(),
-              etcd: applicationInfoFactory.build(),
-              nginx: applicationInfoFactory.build(),
+              lxd: modelDataApplicationFactory.build(),
+              etcd: modelDataApplicationFactory.build(),
+              nginx: modelDataApplicationFactory.build(),
             },
           }),
         },
@@ -91,8 +89,8 @@ describe("GrantSecretPanel", () => {
   });
 
   it("displays a message if there are no applications", async () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
         applications: {},
       }),
     };

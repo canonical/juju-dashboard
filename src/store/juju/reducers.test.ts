@@ -1,8 +1,5 @@
 import { DeltaChangeTypes, DeltaEntityTypes } from "juju/types";
-import {
-  charmInfoFactory,
-  charmApplicationFactory,
-} from "testing/factories/juju/Charms";
+import { charmInfoFactory } from "testing/factories/juju/Charms";
 import { fullStatusFactory } from "testing/factories/juju/ClientV6";
 import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import { auditEventFactory } from "testing/factories/juju/jimm";
@@ -24,6 +21,7 @@ import {
   rebacState,
   commandHistoryState,
   commandHistoryItem,
+  modelDataApplicationFactory,
 } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 
@@ -724,13 +722,13 @@ describe("reducers", () => {
 
   it("updateSelectedApplications", () => {
     const state = jujuStateFactory.build({
-      selectedApplications: [
-        charmApplicationFactory.build({ "charm-url": "ch:mysql" }),
-      ],
+      selectedApplications: {
+        mysql: modelDataApplicationFactory.build(),
+      },
     });
-    const selectedApplications = [
-      charmApplicationFactory.build({ "charm-url": "ch:ceph" }),
-    ];
+    const selectedApplications = {
+      ceph: modelDataApplicationFactory.build({ charm: "ch:ceph" }),
+    };
     expect(
       reducer(
         state,

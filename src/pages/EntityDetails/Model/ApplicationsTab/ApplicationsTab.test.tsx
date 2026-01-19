@@ -3,12 +3,12 @@ import { screen } from "@testing-library/react";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
-import { charmApplicationFactory } from "testing/factories/juju/Charms";
 import {
   applicationOfferStatusFactory,
   remoteApplicationStatusFactory,
 } from "testing/factories/juju/ClientV6";
 import {
+  modelDataApplicationFactory,
   modelDataFactory,
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
@@ -34,31 +34,21 @@ describe("ApplicationsTab", () => {
             type: "iaas",
           },
         },
+        modelData: {
+          test123: modelDataFactory.build({
+            applications: {
+              mysql1: modelDataApplicationFactory.build(),
+              mysql2: modelDataApplicationFactory.build(),
+              db2: modelDataApplicationFactory.build(),
+              db1: modelDataApplicationFactory.build(),
+              "jupyter-controller": modelDataApplicationFactory.build(),
+              "jupyter-ui": modelDataApplicationFactory.build(),
+              redis1: modelDataApplicationFactory.build(),
+            },
+          }),
+        },
         modelWatcherData: {
           test123: modelWatcherModelDataFactory.build({
-            applications: {
-              mysql1: charmApplicationFactory.build({
-                name: "mysql1",
-              }),
-              mysql2: charmApplicationFactory.build({
-                name: "mysql2",
-              }),
-              db2: charmApplicationFactory.build({
-                name: "db2",
-              }),
-              db1: charmApplicationFactory.build({
-                name: "db1",
-              }),
-              "jupyter-controller": charmApplicationFactory.build({
-                name: "jupyter-controller",
-              }),
-              "jupyter-ui": charmApplicationFactory.build({
-                name: "jupyter-ui",
-              }),
-              redis1: charmApplicationFactory.build({
-                name: "redis1",
-              }),
-            },
             charms: {
               "ch:amd64/focal/postgresql-k8s-20": {
                 "model-uuid": "test123",
@@ -75,7 +65,7 @@ describe("ApplicationsTab", () => {
   });
 
   it("displays a message when there are no applications", () => {
-    state.juju.modelWatcherData = {};
+    state.juju.modelData = {};
     renderComponent(<ApplicationsTab />, { path, url, state });
     expect(
       screen.queryByText(

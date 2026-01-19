@@ -5,9 +5,12 @@ import { vi } from "vitest";
 import { InfoPanelTestId } from "components/InfoPanel";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
-import { modelListInfoFactory } from "testing/factories/juju/juju";
 import {
-  applicationInfoFactory,
+  modelDataApplicationFactory,
+  modelDataFactory,
+  modelListInfoFactory,
+} from "testing/factories/juju/juju";
+import {
   machineChangeDeltaFactory,
   modelWatcherModelDataFactory,
   modelWatcherModelInfoFactory,
@@ -48,11 +51,15 @@ describe("Unit", () => {
             uuid: "abc123",
           }),
         },
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications: {
+              etcd: modelDataApplicationFactory.build(),
+            },
+          }),
+        },
         modelWatcherData: {
           abc123: modelWatcherModelDataFactory.build({
-            applications: {
-              etcd: applicationInfoFactory.build(),
-            },
             machines: {
               "0": machineChangeDeltaFactory.build({ id: "0" }),
             },

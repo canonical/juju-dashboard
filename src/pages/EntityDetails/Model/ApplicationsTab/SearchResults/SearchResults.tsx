@@ -1,3 +1,4 @@
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import Fuse from "fuse.js";
 import type { FC } from "react";
 import { useState, useEffect, useMemo } from "react";
@@ -6,7 +7,6 @@ import { useParams } from "react-router";
 
 import type { EntityDetailsRoute } from "components/Routes";
 import { useQueryParams } from "hooks/useQueryParams";
-import type { ApplicationData, ApplicationInfo } from "juju/types";
 import { actions as jujuActions } from "store/juju";
 import {
   getModelApplications,
@@ -25,9 +25,12 @@ const SearchResults: FC = () => {
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
   );
-  const [filteredApplications, setFilteredApplications] =
-    useState<ApplicationData>({});
-  const [fuse, setFuse] = useState<Fuse<ApplicationInfo>>(new Fuse([]));
+  const [filteredApplications, setFilteredApplications] = useState<
+    Record<string, ApplicationStatus>
+  >({});
+  const [fuse, setFuse] = useState<Fuse<{ name: string; charm: string }>>(
+    new Fuse([]),
+  );
   const [{ filterQuery }] = useQueryParams<{
     filterQuery: string;
   }>({
@@ -37,9 +40,15 @@ const SearchResults: FC = () => {
   useMemo(() => {
     if (applications) {
       setFuse(
-        new Fuse(Object.values(applications), {
-          keys: ["name", "charm-url", "owner-tag", "constraints.arch"],
-        }),
+        new Fuse(
+          Object.entries(applications).map(([name, { charm }]) => ({
+            name,
+            charm,
+          })),
+          {
+            keys: ["name", "charm"],
+          },
+        ),
       );
     }
   }, [applications]);
@@ -49,17 +58,17 @@ const SearchResults: FC = () => {
       return;
     }
     const searchedApps = fuse.search(filterQuery).map(({ item }) => item);
-    const filtered: ApplicationData = {};
+    const filtered: Record<string, ApplicationStatus> = {};
     searchedApps.forEach((application) => {
-      if ("name" in application && applications[application.name]) {
-        filtered[application.name] = application;
+      if (application.name in applications) {
+        filtered[application.name] = applications[application.name];
       }
     });
     setFilteredApplications(filtered);
     // On a new search reset the selected applications.
     dispatch(
       jujuActions.updateSelectedApplications({
-        selectedApplications: [],
+        selectedApplications: {},
       }),
     );
   }, [fuse, filterQuery, applications, dispatch]);
@@ -69,7 +78,7 @@ const SearchResults: FC = () => {
       // Clean up any selected applications that have been stored in Redux.
       dispatch(
         jujuActions.updateSelectedApplications({
-          selectedApplications: [],
+          selectedApplications: {},
         }),
       );
     },

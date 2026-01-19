@@ -1,3 +1,4 @@
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { MainTable, Button, Icon } from "@canonical/react-components";
 import type {
   MainTableCell,
@@ -12,7 +13,6 @@ import type { EntityDetailsRoute } from "components/Routes";
 import useAnalytics from "hooks/useAnalytics";
 import useCanConfigureModel from "hooks/useCanConfigureModel";
 import { useQueryParams } from "hooks/useQueryParams";
-import type { ApplicationData } from "juju/types";
 import {
   getAllModelApplicationStatus,
   getModelUUIDFromList,
@@ -32,7 +32,7 @@ import {
 } from "./useTableSelect";
 
 type Props = {
-  applications?: ApplicationData | null;
+  applications?: null | Record<string, ApplicationStatus>;
 };
 
 const LocalAppsTable: FC<Props> = ({ applications }: Props) => {
@@ -58,7 +58,7 @@ const LocalAppsTable: FC<Props> = ({ applications }: Props) => {
     filterQuery: null,
   });
   const { handleSelect, handleSelectAll, selectAll } = useTableSelect(
-    applications ? Object.values(applications) : [],
+    applications ?? {},
   );
   const selectable =
     queryParams.filterQuery && applications && canConfigureModel;
@@ -98,7 +98,7 @@ const LocalAppsTable: FC<Props> = ({ applications }: Props) => {
             className="entity-details__action-button"
             hasIcon={true}
             onClick={handleRunAction}
-            disabled={!selectedApplications.length}
+            disabled={!Object.keys(selectedApplications).length}
           >
             <Icon name="run-action" />
             <span>{Label.RUN_ACTION}</span>

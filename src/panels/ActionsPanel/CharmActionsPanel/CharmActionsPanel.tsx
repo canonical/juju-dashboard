@@ -39,8 +39,8 @@ export default function CharmActionsPanel({
     () => selectedCharm?.actions?.specs ?? {},
     [selectedCharm],
   );
-  const unitCount = selectedApplications.reduce(
-    (total, app) => total + (app["unit-count"] ?? 0),
+  const unitCount = Object.values(selectedApplications).reduce(
+    (total, app) => total + (Object.keys(app.units ?? {}).length ?? 0),
     0,
   );
 

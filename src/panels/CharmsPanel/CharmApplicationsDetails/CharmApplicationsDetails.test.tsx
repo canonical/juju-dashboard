@@ -9,9 +9,9 @@ import { generalStateFactory } from "testing/factories/general";
 import {
   charmActionSpecFactory,
   charmActionsFactory,
-  charmApplicationFactory,
   charmInfoFactory,
 } from "testing/factories/juju/Charms";
+import { modelDataApplicationFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import CharmApplicationsDetails from "./CharmApplicationsDetails";
@@ -39,17 +39,15 @@ describe("CharmApplicationsDetails", () => {
             url: "ch:amd64/focal/redis-k8s",
           }),
         ],
-        selectedApplications: [
-          charmApplicationFactory.build(),
-          charmApplicationFactory.build({
-            name: "Mock app 1",
-            "charm-url": "ch:amd64/focal/redis-k8s",
+        selectedApplications: {
+          app1: modelDataApplicationFactory.build(),
+          app2: modelDataApplicationFactory.build({
+            charm: "ch:amd64/focal/redis-k8s",
           }),
-          charmApplicationFactory.build({
-            name: "Mock app 2",
-            "charm-url": "ch:amd64/focal/redis-k8s",
+          app3: modelDataApplicationFactory.build({
+            charm: "ch:amd64/focal/redis-k8s",
           }),
-        ],
+        },
       }),
     });
   });
@@ -64,33 +62,31 @@ describe("CharmApplicationsDetails", () => {
       { state },
     );
     expect(document.querySelector(".p-form-help-text")).toHaveTextContent(
-      "Mock app 1, Mock app 2",
+      "app2, app3",
     );
   });
 
   it("should show tooltip if more than 5 apps are available", async () => {
-    for (let i = 3; i < 10; i++) {
-      state.juju.selectedApplications.push(
-        charmApplicationFactory.build({
-          name: `Mock app ${i}`,
-          "charm-url": "ch:amd64/focal/redis-k8s",
-        }),
-      );
+    for (let i = 4; i < 10; i++) {
+      state.juju.selectedApplications[`mock-app-${i}`] =
+        modelDataApplicationFactory.build({
+          charm: "ch:amd64/focal/redis-k8s",
+        });
     }
     renderComponent(
       <CharmApplicationsDetails charmURL="ch:amd64/focal/redis-k8s" />,
       { state },
     );
     expect(document.querySelector(".p-form-help-text")).toHaveTextContent(
-      "Mock app 1, Mock app 2, Mock app 3, Mock app 4, Mock app 5 + 4 more",
+      "app2, app3, mock-app-4, mock-app-5, mock-app-6 + 3 more",
     );
     await act(async () => {
-      await userEventWithTimers.hover(screen.getByText("4 more"));
+      await userEventWithTimers.hover(screen.getByText("3 more"));
       vi.runAllTimers();
     });
     expect(
       screen.getByRole("tooltip", {
-        name: "Mock app 6, Mock app 7, Mock app 8, Mock app 9",
+        name: "mock-app-7, mock-app-8, mock-app-9",
       }),
     ).toBeVisible();
   });
