@@ -131,7 +131,11 @@ const JujuCLI: FC = () => {
     getActiveUserTag(state, primaryControllerData?.[0]),
   );
   const commandHistory = useAppSelector(getCommandHistory);
-  const owner = modelInfo?.["owner-tag"].replace(/^user-/, "") ?? "";
+  const ownerTag = modelInfo?.["owner-tag"];
+  const owner = useMemo(
+    () => ownerTag?.replace(/^user-/, "") ?? "",
+    [ownerTag],
+  );
 
   function onCommandSent(_command?: string): void {
     sendAnalytics({

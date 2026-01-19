@@ -140,6 +140,16 @@ const Model: FC = () => {
   const credential = useAppSelector((state) =>
     getModelCredential(state, modelUUID),
   );
+  const ownerTag = modelInfoData?.["owner-tag"];
+  const owner = useMemo(
+    () => ownerTag?.replace(/^user-/, "") ?? "",
+    [ownerTag],
+  );
+  const cloudTag = modelInfoData?.["cloud-tag"];
+  const cloud = useMemo(
+    () => cloudTag?.replace(/^cloud-/, "") ?? "",
+    [cloudTag],
+  );
 
   return (
     <>
@@ -162,10 +172,10 @@ const Model: FC = () => {
               access: modelAccess || "unknown",
               controller: modelInfoData.type,
               "Cloud/Region": generateCloudAndRegion(
-                modelInfoData["cloud-tag"].replace(/^cloud-/, ""),
+                cloud,
                 modelInfoData["cloud-region"],
               ),
-              owner: modelInfoData["owner-tag"].replace(/^user-/, ""),
+              owner: owner,
               credential,
               version: modelStatusInfo.version,
               sla: modelInfoData.sla?.level,
