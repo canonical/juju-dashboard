@@ -24,6 +24,7 @@ import {
   generateLocalApplicationRows,
   generateUnitRows,
 } from "tables/tableRows";
+import { parseMachineHardware } from "utils/parseMachineHardware";
 
 export default function Machine(): JSX.Element {
   const {
@@ -97,13 +98,13 @@ export default function Machine(): JSX.Element {
     [filteredUnitList, modelName, userName],
   );
 
-  const hardware = machine?.["hardware-characteristics"];
+  const hardware = parseMachineHardware(machine?.hardware);
   const machineEntityData = {
-    memory: hardware?.["mem"] ?? "-",
-    disk: hardware?.["root-disk"] ?? "-",
-    cpu: hardware?.["cpu-power"] ?? "-",
-    cores: hardware?.["cpu-cores"] ?? "-",
-    message: machine?.["agent-status"].message || "-",
+    memory: hardware.mem ?? "-",
+    disk: hardware["root-disk"] ?? "-",
+    cpu: hardware["cpu-power"] ?? "-",
+    cores: hardware["cpu-cores"] ?? "-",
+    message: machine?.["agent-status"].info || "-",
   };
 
   return (

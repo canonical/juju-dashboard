@@ -1,10 +1,10 @@
 import { applicationOfferStatusFactory } from "testing/factories/juju/ClientV6";
-import { modelDataFactory } from "testing/factories/juju/juju";
 import {
-  machineAgentStatusFactory,
-  machineChangeDeltaFactory,
-  unitChangeDeltaFactory,
-} from "testing/factories/juju/model-watcher";
+  detailedStatusFactory,
+  machineStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { modelDataFactory } from "testing/factories/juju/juju";
+import { unitChangeDeltaFactory } from "testing/factories/juju/model-watcher";
 import { unitAgentStatusFactory } from "testing/factories/juju/model-watcher";
 
 import {
@@ -78,34 +78,34 @@ describe("generateUnitCounts", () => {
 describe("generateMachineCounts", () => {
   it("gets machine status counts", () => {
     const machines = {
-      0: machineChangeDeltaFactory.build({
+      0: machineStatusFactory.build({
         id: "0",
-        "agent-status": machineAgentStatusFactory.build({
-          current: "pending",
+        "agent-status": detailedStatusFactory.build({
+          status: "pending",
         }),
       }),
-      1: machineChangeDeltaFactory.build({
+      1: machineStatusFactory.build({
         id: "1",
-        "agent-status": machineAgentStatusFactory.build({
-          current: "pending",
+        "agent-status": detailedStatusFactory.build({
+          status: "pending",
         }),
       }),
-      2: machineChangeDeltaFactory.build({
+      2: machineStatusFactory.build({
         id: "2",
-        "agent-status": machineAgentStatusFactory.build({
-          current: "pending",
+        "agent-status": detailedStatusFactory.build({
+          status: "pending",
         }),
       }),
-      3: machineChangeDeltaFactory.build({
+      3: machineStatusFactory.build({
         id: "3",
-        "agent-status": machineAgentStatusFactory.build({
-          current: "error",
+        "agent-status": detailedStatusFactory.build({
+          status: "error",
         }),
       }),
-      4: machineChangeDeltaFactory.build({
+      4: machineStatusFactory.build({
         id: "4",
-        "agent-status": machineAgentStatusFactory.build({
-          current: undefined,
+        "agent-status": detailedStatusFactory.build({
+          status: undefined,
         }),
       }),
     };

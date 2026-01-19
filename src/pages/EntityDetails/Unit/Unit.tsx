@@ -1,4 +1,7 @@
-import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+import type {
+  ApplicationStatus,
+  MachineStatus,
+} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { MainTable } from "@canonical/react-components";
 import type { JSX } from "react";
 import { useMemo } from "react";
@@ -8,7 +11,6 @@ import EntityInfo from "components/EntityInfo";
 import InfoPanel from "components/InfoPanel";
 import NotFound from "components/NotFound";
 import type { EntityDetailsRoute } from "components/Routes";
-import type { MachineData } from "juju/types";
 import {
   getAllModelApplicationStatus,
   getModelApplications,
@@ -57,7 +59,7 @@ export default function Unit(): JSX.Element {
   const unit = unitIdentifier && units?.[unitIdentifier];
 
   const filteredMachineList = useMemo(() => {
-    const filteredMachines: MachineData = {};
+    const filteredMachines: Record<string, MachineStatus> = {};
     if (machines && unit) {
       const machineId = unit["machine-id"];
       filteredMachines[machineId] = machines[machineId];

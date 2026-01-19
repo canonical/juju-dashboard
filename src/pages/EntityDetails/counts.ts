@@ -1,5 +1,7 @@
+import type { MachineStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+
 import type { Chip } from "components/ChipGroup";
-import type { MachineChangeDelta, MachineData, UnitData } from "juju/types";
+import type { MachineChangeDelta, UnitData } from "juju/types";
 import type { ModelData } from "store/juju/types";
 
 type Counts = {
@@ -64,7 +66,7 @@ export function generateUnitCounts(
 }
 
 export function generateMachineCounts(
-  machines?: MachineData | null,
+  machines?: null | Record<string, MachineStatus>,
   units?: null | UnitData,
   applicationName?: null | string,
 ): Counts {
@@ -77,7 +79,7 @@ export function generateMachineCounts(
       }
     });
     machineIds.forEach((id) => {
-      const status = machines[id]?.["agent-status"]?.current;
+      const status = machines[id]?.["agent-status"]?.status;
       if (status) {
         incrementCounts(status, counts);
       }
