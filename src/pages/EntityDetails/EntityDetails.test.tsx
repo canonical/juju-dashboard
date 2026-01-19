@@ -14,13 +14,10 @@ import {
 import {
   modelDataApplicationFactory,
   modelDataFactory,
+  modelDataInfoFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { controllerFactory } from "testing/factories/juju/juju";
-import {
-  modelWatcherModelDataFactory,
-  modelWatcherModelInfoFactory,
-} from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -55,6 +52,18 @@ describe("Entity Details Container", () => {
             controllerFactory.build({ uuid: "controller123" }),
           ],
         },
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
+              "controller-uuid": "controller123",
+              name: "enterprise",
+              "owner-tag": "user-kirk@external",
+            }),
+            applications: {
+              "ceph-mon": modelDataApplicationFactory.build(),
+            },
+          }),
+        },
         models: {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
@@ -63,22 +72,6 @@ describe("Entity Details Container", () => {
           }),
         },
         modelsLoaded: true,
-        modelData: {
-          abc123: modelDataFactory.build({
-            applications: {
-              "ceph-mon": modelDataApplicationFactory.build(),
-            },
-          }),
-        },
-        modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build({
-            model: modelWatcherModelInfoFactory.build({
-              "controller-uuid": "controller123",
-              name: "enterprise",
-              owner: "kirk@external",
-            }),
-          }),
-        },
       }),
     });
   });
@@ -96,6 +89,7 @@ describe("Entity Details Container", () => {
   it("should show a spinner if waiting on model list data", () => {
     state.juju.modelsLoaded = false;
     state.juju.modelWatcherData = {};
+    state.juju.modelData = {};
     renderComponent(<EntityDetails />, { path, url, state });
     expect(
       screen.getByTestId(LoadingSpinnerTestId.LOADING),
@@ -104,6 +98,7 @@ describe("Entity Details Container", () => {
 
   it("should show a spinner if waiting on model data", () => {
     state.juju.modelWatcherData = {};
+    state.juju.modelData = {};
     renderComponent(<EntityDetails />, { path, url, state });
     expect(
       screen.getByTestId(LoadingSpinnerTestId.LOADING),

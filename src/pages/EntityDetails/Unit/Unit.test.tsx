@@ -6,6 +6,7 @@ import { InfoPanelTestId } from "components/InfoPanel";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import {
+  modelDataInfoFactory,
   modelDataApplicationFactory,
   modelDataFactory,
   modelListInfoFactory,
@@ -13,7 +14,6 @@ import {
 import {
   machineChangeDeltaFactory,
   modelWatcherModelDataFactory,
-  modelWatcherModelInfoFactory,
   unitChangeDeltaFactory,
 } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
@@ -93,11 +93,10 @@ describe("Unit", () => {
   });
 
   it("does not display the machines table for k8s", async () => {
-    if (state.juju.modelWatcherData?.abc123.model) {
-      state.juju.modelWatcherData.abc123.model =
-        modelWatcherModelInfoFactory.build({
-          type: "kubernetes",
-        });
+    if (state.juju.modelData?.abc123.model) {
+      state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+        "provider-type": "kubernetes",
+      });
     }
     renderComponent(<Unit />, { path, url, state });
     expect(

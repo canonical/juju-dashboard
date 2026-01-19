@@ -40,7 +40,6 @@ import {
   unitAgentStatusFactory,
   unitChangeDeltaFactory,
   workloadStatusFactory,
-  modelWatcherModelInfoFactory,
 } from "testing/factories/juju/model-watcher";
 
 import {
@@ -131,6 +130,7 @@ import {
   getReBACPermissionErrors,
   getModelUUIDs,
   getDestructionState,
+  getModelStatusInfo,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -1125,19 +1125,35 @@ describe("selectors", () => {
   });
 
   it("getModelInfo", () => {
-    const modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build(),
+    const modelData = {
+      abc123: modelDataFactory.build(),
     };
     expect(
       getModelInfo(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            modelWatcherData,
+            modelData,
           }),
         }),
         "abc123",
       ),
-    ).toStrictEqual(modelWatcherData.abc123.model);
+    ).toStrictEqual(modelData.abc123.info);
+  });
+
+  it("getModelStatusInfo", () => {
+    const modelData = {
+      abc123: modelDataFactory.build(),
+    };
+    expect(
+      getModelStatusInfo(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelData,
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(modelData.abc123.model);
   });
 
   it("getDestructionState", () => {
@@ -2532,26 +2548,6 @@ describe("selectors", () => {
           "abc123",
         ),
       ).toBe(false);
-    });
-
-    it("handles kubernetes in model watcher info", () => {
-      const modelWatcherData = {
-        abc123: modelWatcherModelDataFactory.build({
-          model: modelWatcherModelInfoFactory.build({
-            type: "kubernetes",
-          }),
-        }),
-      };
-      expect(
-        isKubernetesModel(
-          rootStateFactory.build({
-            juju: jujuStateFactory.build({
-              modelWatcherData,
-            }),
-          }),
-          "abc123",
-        ),
-      ).toBe(true);
     });
 
     it("handles kubernetes in model data", () => {

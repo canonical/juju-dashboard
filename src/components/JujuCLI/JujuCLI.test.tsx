@@ -17,6 +17,7 @@ import {
 import {
   modelDataApplicationFactory,
   modelDataFactory,
+  modelDataInfoFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import {
@@ -79,12 +80,12 @@ describe("JujuCLI", () => {
             ownerTag: userTag,
           }),
         },
-        modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build({
-            model: modelWatcherModelInfoFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelDataInfoFactory.build({
               "controller-uuid": "controller123",
               name: modelName,
-              owner: userName,
+              "owner-tag": `user-${userName}`,
             }),
           }),
         },
