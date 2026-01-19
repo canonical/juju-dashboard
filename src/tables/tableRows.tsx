@@ -3,7 +3,10 @@ import type {
   RemoteEndpoint,
 } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
 import type { ApplicationOfferStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import type { RelationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+import type {
+  ApplicationStatus,
+  RelationStatus,
+} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { Button, Icon } from "@canonical/react-components";
 import type {
   MainTableCell,
@@ -21,7 +24,7 @@ import RelationIcon from "components/RelationIcon";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { copyToClipboard } from "components/utils";
-import type { ApplicationData, UnitData, MachineData } from "juju/types";
+import type { UnitData, MachineData } from "juju/types";
 import type { StatusData } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
 import {
@@ -76,7 +79,7 @@ const generateAddress = (address: null | string = null): ReactNode =>
   );
 
 export function generateLocalApplicationRows(
-  applications: ApplicationData | null,
+  applications: null | Record<string, ApplicationStatus>,
   applicationStatuses: null | StatusData,
   modelParams: ModelParams,
   query?: Query,
@@ -94,23 +97,23 @@ export function generateLocalApplicationRows(
 
   return Object.keys(applications).map((key) => {
     const app = applications[key];
-    const rev =
-      ("charm-url" in app && extractRevisionNumber(app["charm-url"])) ?? "-";
-    const store = "charm-url" in app && getStore(app["charm-url"]);
+    const rev = extractRevisionNumber(app.charm) ?? "-";
+    const store = getStore(app.charm);
     const version =
       ("workload-version" in app && app["workload-version"]) || "-";
     const status =
       "status" in app && app.status ? (
-        <Status inline status={applicationStatuses[app.name]} />
+        <Status inline status={applicationStatuses[key]} />
       ) : (
         "-"
       );
     const message =
-      "status" in app && app.status?.message ? (
+      "status" in app && app.status?.info ? (
         <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
-          {app.status.message}
+          {app.status.info}
         </Anchorme>
       ) : null;
+    const scale = Object.keys(app.units ?? {}).length;
     return {
       columns: [
         {
@@ -123,10 +126,7 @@ export function generateLocalApplicationRows(
                 appName: key.replace("/", "-"),
               })}
             >
-              <EntityIdentifier
-                charmId={"charm-url" in app ? app["charm-url"] : null}
-                name={key}
-              />
+              <EntityIdentifier charmId={app.charm} name={key} />
             </Link>
           ),
         },
@@ -144,7 +144,7 @@ export function generateLocalApplicationRows(
         },
         {
           "data-test-column": "scale",
-          content: app["unit-count"],
+          content: scale,
           className: "u-align--right",
         },
         {
@@ -159,7 +159,7 @@ export function generateLocalApplicationRows(
         {
           "data-test-column": "message",
           content:
-            "status" in app && app.status?.message ? (
+            "status" in app && app.status?.info ? (
               <TruncatedTooltip message={message}>{message}</TruncatedTooltip>
             ) : null,
         },
@@ -168,7 +168,7 @@ export function generateLocalApplicationRows(
         app: key,
         status,
         version,
-        scale: app["unit-count"],
+        scale,
         store,
         rev,
         notes: "-",
@@ -568,7 +568,7 @@ export function generateMachineRows(
 
 export function generateRelationRows(
   relationData: null | RelationStatus[],
-  applications: ApplicationData | null,
+  applications: null | Record<string, ApplicationStatus>,
 ): MainTableRow[] {
   if (!relationData) {
     return [];

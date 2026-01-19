@@ -5,6 +5,10 @@ import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import { charmApplicationFactory } from "testing/factories/juju/Charms";
+import {
+  modelDataApplicationFactory,
+  modelDataFactory,
+} from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { createStore, renderComponent } from "testing/utils";
 
@@ -26,6 +30,19 @@ describe("SearchResults", () => {
             ownerTag: "test@external",
             type: "iaas",
           },
+        },
+        modelData: {
+          test123: modelDataFactory.build({
+            applications: {
+              mysql1: modelDataApplicationFactory.build(),
+              mysql2: modelDataApplicationFactory.build(),
+              db2: modelDataApplicationFactory.build(),
+              db1: modelDataApplicationFactory.build(),
+              "jupyter-controller": modelDataApplicationFactory.build(),
+              "jupyter-ui": modelDataApplicationFactory.build(),
+              redis1: modelDataApplicationFactory.build(),
+            },
+          }),
         },
         modelWatcherData: {
           test123: modelWatcherModelDataFactory.build({
@@ -74,24 +91,18 @@ describe("SearchResults", () => {
     ).toBeInTheDocument();
   });
 
-  it("can filter applications by charm-url", () => {
-    state.juju.modelWatcherData = {
-      test123: modelWatcherModelDataFactory.build({
+  it("can filter applications by charm", () => {
+    state.juju.modelData = {
+      test123: modelDataFactory.build({
         applications: {
-          mysql1: charmApplicationFactory.build({
-            name: "mysql1",
-            "charm-url": "ch:mysql",
+          mysql1: modelDataApplicationFactory.build({
+            charm: "ch:mysql",
           }),
-          mysql2: charmApplicationFactory.build({
-            name: "mysql2",
-            "charm-url": "ch:mysql",
+          mysql2: modelDataApplicationFactory.build({
+            charm: "ch:mysql",
           }),
-          db2: charmApplicationFactory.build({
-            name: "db2",
-          }),
-          db1: charmApplicationFactory.build({
-            name: "db1",
-          }),
+          db2: modelDataApplicationFactory.build(),
+          db1: modelDataApplicationFactory.build(),
         },
       }),
     };
@@ -110,89 +121,11 @@ describe("SearchResults", () => {
     ).toBeInTheDocument();
   });
 
-  it("can filter applications by owner-tag", () => {
-    state.juju.modelWatcherData = {
-      test123: modelWatcherModelDataFactory.build({
-        applications: {
-          mysql1: charmApplicationFactory.build({
-            name: "mysql1",
-            "owner-tag": "user-eggman",
-          }),
-          mysql2: charmApplicationFactory.build({
-            name: "mysql2",
-            "owner-tag": "user-eggman",
-          }),
-          db2: charmApplicationFactory.build({
-            name: "db2",
-          }),
-          db1: charmApplicationFactory.build({
-            name: "db1",
-          }),
-        },
-      }),
-    };
-    renderComponent(<SearchResults />, {
-      path,
-      url: `${url}?filterQuery=eggman`,
-      state,
-    });
-    const rows = screen.queryAllByRole("row");
-    expect(rows).toHaveLength(3);
-    expect(
-      within(rows[1]).getByRole("gridcell", { name: "mysql1 icon mysql1" }),
-    ).toBeInTheDocument();
-    expect(
-      within(rows[2]).getByRole("gridcell", { name: "mysql2 icon mysql2" }),
-    ).toBeInTheDocument();
-  });
-
-  it("can filter applications by architecture", () => {
-    state.juju.modelWatcherData = {
-      test123: modelWatcherModelDataFactory.build({
-        applications: {
-          mysql1: charmApplicationFactory.build({
-            name: "mysql1",
-            constraints: { arch: "ppc" },
-          }),
-          mysql2: charmApplicationFactory.build({
-            name: "mysql2",
-            constraints: { arch: "ppc" },
-          }),
-          db2: charmApplicationFactory.build({
-            name: "db2",
-            constraints: { arch: "intel" },
-          }),
-          db1: charmApplicationFactory.build({
-            name: "db1",
-            constraints: { arch: "intel" },
-          }),
-        },
-      }),
-    };
-    renderComponent(<SearchResults />, {
-      path,
-      url: `${url}?filterQuery=ppc`,
-      state,
-    });
-    const rows = screen.queryAllByRole("row");
-    expect(rows).toHaveLength(3);
-    expect(
-      within(rows[1]).getByRole("gridcell", { name: "mysql1 icon mysql1" }),
-    ).toBeInTheDocument();
-    expect(
-      within(rows[2]).getByRole("gridcell", { name: "mysql2 icon mysql2" }),
-    ).toBeInTheDocument();
-  });
-
   it("cleans up selected applications when unmounting", () => {
-    state.juju.selectedApplications = [
-      charmApplicationFactory.build({
-        name: "mysql1",
-      }),
-      charmApplicationFactory.build({
-        name: "mysql2",
-      }),
-    ];
+    state.juju.selectedApplications = {
+      mysql1: modelDataApplicationFactory.build(),
+      mysql2: modelDataApplicationFactory.build(),
+    };
     const [store, actions] = createStore(state, { trackActions: true });
     const { result } = renderComponent(<SearchResults />, {
       path,
@@ -206,7 +139,7 @@ describe("SearchResults", () => {
       ),
     ).toMatchObject(
       jujuActions.updateSelectedApplications({
-        selectedApplications: [],
+        selectedApplications: {},
       }),
     );
   });

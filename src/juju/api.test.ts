@@ -27,13 +27,11 @@ import {
 import {
   controllerFactory,
   controllerInfoFactory,
+  modelDataApplicationFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { connectionInfoFactory } from "testing/factories/juju/jujulib";
-import {
-  applicationInfoFactory,
-  machineChangeDeltaFactory,
-} from "testing/factories/juju/model-watcher";
+import { machineChangeDeltaFactory } from "testing/factories/juju/model-watcher";
 
 import {
   CLIENT_VERSION,
@@ -1729,11 +1727,11 @@ describe("Juju API", () => {
         logout: vi.fn(),
         conn,
       }));
-      const apps = [
-        applicationInfoFactory.build({ "charm-url": "cs:etcd" }),
-        applicationInfoFactory.build({ "charm-url": "cs:mysql" }),
-        applicationInfoFactory.build({ "charm-url": "cs:etcd" }),
-      ];
+      const apps = {
+        etcd1: modelDataApplicationFactory.build({ charm: "cs:etcd" }),
+        mysql: modelDataApplicationFactory.build({ charm: "cs:mysql" }),
+        etcd2: modelDataApplicationFactory.build({ charm: "cs:etcd" }),
+      };
       await getCharmsURLFromApplications(apps, "abc123", state, dispatch);
       expect(dispatch).toHaveBeenCalledWith(
         jujuActions.updateCharms({

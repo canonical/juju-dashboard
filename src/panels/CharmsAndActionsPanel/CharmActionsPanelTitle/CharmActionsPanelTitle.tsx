@@ -21,12 +21,13 @@ const CharmActionsPanelTitle = ({ charmURL }: Props): JSX.Element => {
   const selectedCharm = useAppSelector((state) =>
     getSelectedCharm(state, charmURL),
   );
+  const selectedCount = Object.keys(selectedApplications).length;
 
-  if (!selectedApplications.length || !selectedCharm) {
+  if (!selectedCount || !selectedCharm) {
     return <>{Label.NONE_SELECTED_TITLE}</>;
   }
-  const totalUnits = selectedApplications.reduce(
-    (total, app) => total + (app["unit-count"] ?? 0),
+  const totalUnits = Object.values(selectedApplications).reduce(
+    (total, app) => total + (Object.keys(app.units).length ?? 0),
     0,
   );
 
@@ -35,8 +36,7 @@ const CharmActionsPanelTitle = ({ charmURL }: Props): JSX.Element => {
       {selectedCharm?.meta?.name && selectedCharm?.url ? (
         <CharmIcon name={selectedCharm.meta.name} charmId={selectedCharm.url} />
       ) : null}{" "}
-      {selectedApplications.length}{" "}
-      {pluralize(selectedApplications.length, "application")} ({totalUnits}{" "}
+      {selectedCount} {pluralize(selectedCount, "application")} ({totalUnits}{" "}
       {pluralize(totalUnits, "unit")}) selected
     </>
   );

@@ -7,9 +7,9 @@ import ToastCard from "components/ToastCard";
 import type { ToastInstance } from "components/ToastCard";
 import useAnalytics from "hooks/useAnalytics";
 import { useExecuteActionOnUnits } from "juju/api-hooks";
-import type { ApplicationInfo } from "juju/types";
 import type { ActionOptionValue } from "panels/ActionsPanel/types";
 import { ConfirmType, type ConfirmTypes } from "panels/types";
+import type { JujuState } from "store/juju/types";
 import { testId } from "testing/utils";
 
 import { Label, TestId } from "./types";
@@ -17,7 +17,7 @@ import { Label, TestId } from "./types";
 type Props = {
   confirmType: ConfirmTypes;
   selectedAction: string;
-  selectedApplications: ApplicationInfo[];
+  selectedApplications: JujuState["selectedApplications"];
   setConfirmType: React.Dispatch<React.SetStateAction<ConfirmTypes>>;
   selectedActionOptionValue: ActionOptionValue;
   onRemovePanelQueryParams: () => void;
@@ -28,7 +28,7 @@ const executeAction = (
   selectedAction: string,
   selectedActionOptionValue: ActionOptionValue,
   executeActionOnUnits: ReturnType<typeof useExecuteActionOnUnits>,
-  selectedApplications: ApplicationInfo[],
+  selectedApplications: JujuState["selectedApplications"],
 ): void => {
   sendAnalytics({
     category: "ApplicationSearch",
@@ -37,10 +37,10 @@ const executeAction = (
 
   executeActionOnUnits(
     // transform applications to unit list for the API
-    selectedApplications
-      .map((application) =>
-        Array(application["unit-count"])
-          .fill("name" in application ? application.name : null)
+    Object.entries(selectedApplications)
+      .map(([name, application]) =>
+        Array(Object.keys(application.units ?? {}).length)
+          .fill(name)
           .filter(Boolean)
           .map((unit, i) => `${unit}-${i}`),
       )
@@ -83,8 +83,8 @@ const ConfirmationDialog = ({
   const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
 
   if (confirmType === ConfirmType.SUBMIT) {
-    const unitCount = selectedApplications.reduce(
-      (total, app) => total + (app["unit-count"] ?? 0),
+    const unitCount = Object.values(selectedApplications).reduce(
+      (total, app) => total + (Object.keys(app.units ?? {}).length ?? 0),
       0,
     );
     // Render the submit confirmation modal.
@@ -114,7 +114,7 @@ const ConfirmationDialog = ({
             APPLICATION COUNT (UNIT COUNT)
           </h4>
           <p {...testId(TestId.MODEL_UNIT_COUNT)}>
-            {selectedApplications.length} ({unitCount})
+            {Object.keys(selectedApplications).length} ({unitCount})
           </p>
         </ConfirmationModal>
       </Portal>

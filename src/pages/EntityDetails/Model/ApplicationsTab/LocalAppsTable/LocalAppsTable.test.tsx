@@ -5,9 +5,9 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
-import { charmApplicationFactory } from "testing/factories/juju/Charms";
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
+  modelDataApplicationFactory,
   modelDataFactory,
   modelDataInfoFactory,
 } from "testing/factories/juju/juju";
@@ -52,6 +52,15 @@ describe("LocalAppsTable", () => {
         },
         modelData: {
           test123: modelDataFactory.build({
+            applications: {
+              mysql1: modelDataApplicationFactory.build(),
+              mysql2: modelDataApplicationFactory.build(),
+              db2: modelDataApplicationFactory.build(),
+              db1: modelDataApplicationFactory.build(),
+              "jupyter-controller": modelDataApplicationFactory.build(),
+              "jupyter-ui": modelDataApplicationFactory.build(),
+              redis1: modelDataApplicationFactory.build(),
+            },
             info: modelDataInfoFactory.build({
               uuid: "test123",
               name: "test-model",
@@ -67,29 +76,6 @@ describe("LocalAppsTable", () => {
         },
         modelWatcherData: {
           test123: modelWatcherModelDataFactory.build({
-            applications: {
-              mysql1: charmApplicationFactory.build({
-                name: "mysql1",
-              }),
-              mysql2: charmApplicationFactory.build({
-                name: "mysql2",
-              }),
-              db2: charmApplicationFactory.build({
-                name: "db2",
-              }),
-              db1: charmApplicationFactory.build({
-                name: "db1",
-              }),
-              "jupyter-controller": charmApplicationFactory.build({
-                name: "jupyter-controller",
-              }),
-              "jupyter-ui": charmApplicationFactory.build({
-                name: "jupyter-ui",
-              }),
-              redis1: charmApplicationFactory.build({
-                name: "redis1",
-              }),
-            },
             charms: {
               "ch:amd64/focal/postgresql-k8s-20": {
                 "model-uuid": "test123",
@@ -122,7 +108,7 @@ describe("LocalAppsTable", () => {
   it("shows all the application by default", () => {
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       { path, url, state },
     );
@@ -132,7 +118,7 @@ describe("LocalAppsTable", () => {
   it("doesn't show the select column when there is no search", () => {
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       { path, url, state },
     );
@@ -145,7 +131,7 @@ describe("LocalAppsTable", () => {
   it("shows the select column when there is a search", () => {
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -173,7 +159,7 @@ describe("LocalAppsTable", () => {
     });
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -191,7 +177,7 @@ describe("LocalAppsTable", () => {
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -200,10 +186,10 @@ describe("LocalAppsTable", () => {
       },
     );
     await userEvent.click(screen.getByTestId("select-app-db1"));
-    const db1 = state.juju.modelWatcherData?.test123.applications.db1;
+    const db1 = state.juju.modelData?.test123.applications.db1;
     expect(db1).toBeTruthy();
     const expectedAction = jujuActions.updateSelectedApplications({
-      selectedApplications: db1 ? [db1] : [],
+      selectedApplications: db1 ? { db1 } : {},
     });
     expect(
       actions.find((action) => action.type === expectedAction.type),
@@ -211,14 +197,14 @@ describe("LocalAppsTable", () => {
   });
 
   it("checks selected apps", async () => {
-    if (state.juju.modelWatcherData?.test123.applications.db1) {
-      state.juju.selectedApplications = [
-        state.juju.modelWatcherData?.test123.applications.db1,
-      ];
+    if (state.juju.modelData?.test123.applications.db1) {
+      state.juju.selectedApplications = {
+        db1: state.juju.modelData?.test123.applications.db1,
+      };
     }
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -233,7 +219,7 @@ describe("LocalAppsTable", () => {
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -242,29 +228,29 @@ describe("LocalAppsTable", () => {
       },
     );
     await userEvent.click(screen.getByTestId(TestId.SELECT_ALL));
-    const apps = state.juju.modelWatcherData?.test123.applications;
+    const apps = state.juju.modelData?.test123.applications;
     expect(apps).toBeTruthy();
     const expectedAction = jujuActions.updateSelectedApplications({
-      selectedApplications: Object.values(apps ?? {}),
+      selectedApplications: apps,
     });
     const action = actions.find(
       (dispatchedAction) => dispatchedAction.type === expectedAction.type,
     ) as typeof expectedAction;
-    expect(action.payload.selectedApplications).toHaveLength(
-      expectedAction.payload.selectedApplications.length,
+    expect(Object.keys(action.payload.selectedApplications)).toHaveLength(
+      Object.keys(expectedAction.payload.selectedApplications).length,
     );
-    expect(action.payload.selectedApplications).toEqual(
-      expect.arrayContaining(expectedAction.payload.selectedApplications),
+    expect(action.payload.selectedApplications).toStrictEqual(
+      expectedAction.payload.selectedApplications,
     );
   });
 
   it("can deselect all apps", async () => {
-    const apps = state.juju.modelWatcherData?.test123.applications ?? {};
-    state.juju.selectedApplications = Object.values(apps);
+    const apps = state.juju.modelData?.test123.applications ?? {};
+    state.juju.selectedApplications = apps;
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -276,27 +262,29 @@ describe("LocalAppsTable", () => {
     await userEvent.click(screen.getByTestId(TestId.SELECT_ALL));
     expect(screen.getByTestId(TestId.SELECT_ALL)).not.toBeChecked();
     const expectedAction = jujuActions.updateSelectedApplications({
-      selectedApplications: Object.values(apps),
+      selectedApplications: apps,
     });
     const selectActions = actions.filter(
       (action) => action.type === expectedAction.type,
     ) as (typeof expectedAction)[];
     expect(
-      selectActions[selectActions.length - 1].payload.selectedApplications,
+      Object.keys(
+        selectActions[selectActions.length - 1].payload.selectedApplications,
+      ),
     ).toHaveLength(0);
     expect(
       selectActions[selectActions.length - 1].payload.selectedApplications,
-    ).toStrictEqual([]);
+    ).toStrictEqual({});
   });
 
   it("checks the select all input when all the apps are selected", async () => {
-    const apps = state.juju.modelWatcherData?.test123.applications;
+    const apps = state.juju.modelData?.test123.applications;
     if (apps) {
-      state.juju.selectedApplications = Object.values(apps);
+      state.juju.selectedApplications = apps;
     }
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -308,14 +296,16 @@ describe("LocalAppsTable", () => {
   });
 
   it("unchecks the select all input when one of the apps is deselected", async () => {
-    const apps = state.juju.modelWatcherData?.test123.applications;
+    const apps = state.juju.modelData?.test123.applications;
     if (apps) {
-      state.juju.selectedApplications = Object.values(apps);
+      state.juju.selectedApplications = { ...apps };
     }
-    state.juju.selectedApplications.pop();
+    delete state.juju.selectedApplications[
+      Object.keys(state.juju.selectedApplications)[0]
+    ];
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -329,7 +319,7 @@ describe("LocalAppsTable", () => {
   it("doesn't show the run action button when there is no search", () => {
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       { path, url, state },
     );
@@ -341,7 +331,7 @@ describe("LocalAppsTable", () => {
   it("shows the run action button when there is a search", () => {
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -368,7 +358,7 @@ describe("LocalAppsTable", () => {
     });
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -384,7 +374,7 @@ describe("LocalAppsTable", () => {
   it("disables the run action button when there are no applications selected", () => {
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -398,10 +388,12 @@ describe("LocalAppsTable", () => {
   });
 
   it("enables the run action button when there is at least one application selected", () => {
-    state.juju.selectedApplications = [charmApplicationFactory.build()];
+    state.juju.selectedApplications = {
+      app1: modelDataApplicationFactory.build(),
+    };
     renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,
@@ -415,10 +407,12 @@ describe("LocalAppsTable", () => {
   });
 
   it("opens the choose-charm panel when clicking the run action button", async () => {
-    state.juju.selectedApplications = [charmApplicationFactory.build()];
+    state.juju.selectedApplications = {
+      app1: modelDataApplicationFactory.build(),
+    };
     const { router } = renderComponent(
       <LocalAppsTable
-        applications={state.juju.modelWatcherData?.test123.applications}
+        applications={state.juju.modelData?.test123.applications}
       />,
       {
         path,

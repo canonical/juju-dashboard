@@ -1,4 +1,5 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import type { ErrorResult } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import type {
@@ -12,11 +13,7 @@ import type {
   CrossModelQueryResponse,
   RelationshipTuple,
 } from "juju/jimm/JIMMV4";
-import type {
-  ApplicationInfo,
-  FullStatusWithAnnotations,
-  ModelWatcherData,
-} from "juju/types";
+import type { FullStatusWithAnnotations, ModelWatcherData } from "juju/types";
 import type { GenericItemsState, GenericState } from "store/types";
 
 export type ControllerLocation = {
@@ -130,5 +127,5 @@ export type JujuState = {
   charms: Charm[];
   rebac: ReBACState;
   secrets: SecretsState;
-  selectedApplications: ApplicationInfo[];
+  selectedApplications: Record<string, ApplicationStatus>;
 };

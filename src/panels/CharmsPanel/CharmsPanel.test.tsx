@@ -9,9 +9,12 @@ import { generalStateFactory } from "testing/factories/general";
 import {
   charmActionSpecFactory,
   charmActionsFactory,
-  charmApplicationFactory,
   charmInfoFactory,
 } from "testing/factories/juju/Charms";
+import {
+  modelDataApplicationFactory,
+  modelDataUnitFactory,
+} from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import CharmsPanel from "./CharmsPanel";
@@ -36,20 +39,25 @@ describe("CharmsPanel", () => {
             actions: charmActionsFactory.build({
               specs: { "apt-update": charmActionSpecFactory.build() },
             }),
+            url: "ch:amd64/focal/postgresql-k8s-20",
           }),
           charmInfoFactory.build({
             meta: { name: "Redis k8s" },
             url: "ch:amd64/focal/redis-k8s",
           }),
         ],
-        selectedApplications: [
-          charmApplicationFactory.build({
-            name: "Mock app 1",
+        selectedApplications: {
+          "mock-app-1": modelDataApplicationFactory.build({
+            charm: "ch:amd64/focal/postgresql-k8s-20",
           }),
-          charmApplicationFactory.build({
-            "charm-url": "ch:amd64/focal/redis-k8s",
+          redis: modelDataApplicationFactory.build({
+            charm: "ch:amd64/focal/redis-k8s",
+            units: {
+              0: modelDataUnitFactory.build(),
+              1: modelDataUnitFactory.build(),
+            },
           }),
-        ],
+        },
       }),
     });
   });
@@ -163,17 +171,17 @@ describe("CharmsPanel", () => {
     );
     const charmHelperMessages = document.querySelectorAll(".p-form-help-text");
     expect(charmHelperMessages).toHaveLength(2);
-    expect(charmHelperMessages[0]).toHaveTextContent("Mock app 1");
-    expect(charmHelperMessages[1]).toHaveTextContent("db2");
+    expect(charmHelperMessages[0]).toHaveTextContent("mock-app-1");
+    expect(charmHelperMessages[1]).toHaveTextContent("redis");
   });
 
   it("should show tooltip with additional applications details if there are more than 5 apps", async () => {
+    state.juju.selectedApplications = {};
     for (let i = 2; i < 10; i++) {
-      state.juju.selectedApplications.push(
-        charmApplicationFactory.build({
-          name: `Mock app ${i}`,
-        }),
-      );
+      state.juju.selectedApplications[`mock-app-${i}`] =
+        modelDataApplicationFactory.build({
+          charm: "ch:amd64/focal/redis-k8s",
+        });
     }
     renderComponent(
       <CharmsPanel
@@ -185,15 +193,15 @@ describe("CharmsPanel", () => {
       { path, url, state },
     );
     expect(document.querySelectorAll(".p-form-help-text")[0]).toHaveTextContent(
-      "Mock app 1, Mock app 2, Mock app 3, Mock app 4, Mock app 5 + 4 more",
+      "mock-app-2, mock-app-3, mock-app-4, mock-app-5, mock-app-6 + 3 more",
     );
     await act(async () => {
-      await userEventWithTimers.hover(screen.getByText("4 more"));
+      await userEventWithTimers.hover(screen.getByText("3 more"));
       vi.runAllTimers();
     });
     expect(
       screen.getByRole("tooltip", {
-        name: "Mock app 6, Mock app 7, Mock app 8, Mock app 9",
+        name: "mock-app-7, mock-app-8, mock-app-9",
       }),
     ).toBeVisible();
   });

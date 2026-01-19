@@ -1,11 +1,12 @@
 import { screen } from "@testing-library/react";
 
 import { rootStateFactory } from "testing/factories";
+import { charmInfoFactory } from "testing/factories/juju/Charms";
 import {
-  charmApplicationFactory,
-  charmInfoFactory,
-} from "testing/factories/juju/Charms";
-import { jujuStateFactory } from "testing/factories/juju/juju";
+  jujuStateFactory,
+  modelDataApplicationFactory,
+  modelDataUnitFactory,
+} from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import CharmActionsPanelTitle from "./CharmActionsPanelTitle";
@@ -31,11 +32,9 @@ describe("CharmActionsPanelTitle", () => {
   it("should display a warning message if there is no selected charm", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
-        selectedApplications: [
-          charmApplicationFactory.build({
-            "charm-url": "ch:ceph",
-          }),
-        ],
+        selectedApplications: {
+          ceph: modelDataApplicationFactory.build({ charm: "ch:ceph" }),
+        },
       }),
     });
     renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, { state });
@@ -47,11 +46,9 @@ describe("CharmActionsPanelTitle", () => {
   it("should display a warning message if there is nothing in store that corresponds to charmURL", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
-        selectedApplications: [
-          charmApplicationFactory.build({
-            "charm-url": "ch:ceph",
-          }),
-        ],
+        selectedApplications: {
+          ceph: modelDataApplicationFactory.build({ charm: "ch:ceph" }),
+        },
         charms: [
           charmInfoFactory.build({
             url: "ch:ceph",
@@ -71,11 +68,15 @@ describe("CharmActionsPanelTitle", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         charms: [{ url: "ch:ceph", config: {}, revision: 0 }],
-        selectedApplications: [
-          charmApplicationFactory.build({
-            "charm-url": "ch:ceph",
+        selectedApplications: {
+          ceph: modelDataApplicationFactory.build({
+            charm: "ch:ceph",
+            units: {
+              0: modelDataUnitFactory.build(),
+              1: modelDataUnitFactory.build(),
+            },
           }),
-        ],
+        },
       }),
     });
     renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, {
@@ -97,12 +98,12 @@ describe("CharmActionsPanelTitle", () => {
             url: "ch:ceph",
           }),
         ],
-        selectedApplications: [
-          charmApplicationFactory.build({
-            "charm-url": "ch:ceph",
-            "unit-count": 0,
+        selectedApplications: {
+          ceph: modelDataApplicationFactory.build({
+            charm: "ch:ceph",
+            units: {},
           }),
-        ],
+        },
       }),
     });
     renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, { state });
@@ -119,11 +120,15 @@ describe("CharmActionsPanelTitle", () => {
             url: "ch:ceph",
           }),
         ],
-        selectedApplications: [
-          charmApplicationFactory.build({
-            "charm-url": "ch:ceph",
+        selectedApplications: {
+          ceph: modelDataApplicationFactory.build({
+            charm: "ch:ceph",
+            units: {
+              0: modelDataUnitFactory.build(),
+              1: modelDataUnitFactory.build(),
+            },
           }),
-        ],
+        },
       }),
     });
     renderComponent(<CharmActionsPanelTitle charmURL="ch:ceph" />, {

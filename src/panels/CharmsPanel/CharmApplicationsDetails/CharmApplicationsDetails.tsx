@@ -1,7 +1,6 @@
 import { Tooltip } from "@canonical/react-components";
 import type { JSX } from "react";
 
-import type { ApplicationInfo } from "juju/types";
 import { getSelectedApplications } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { breakLines } from "utils";
@@ -10,18 +9,15 @@ type Props = {
   charmURL: string;
 };
 
-const formatApplicationsDetails = (applications: ApplicationInfo[]): string =>
-  applications
-    .map((application) => ("name" in application ? application.name : null))
-    .filter((application) => !!application)
-    .join(", ");
+const formatApplicationsDetails = (applications: string[]): string =>
+  applications.join(", ");
 
 const CharmApplicationsDetails = ({ charmURL }: Props): JSX.Element => {
   const selectedApplications = useAppSelector((state) =>
     getSelectedApplications(state, charmURL),
   );
-  const displayedApplications = selectedApplications.slice(0, 5);
-  const hiddenApplications = selectedApplications.slice(5);
+  const displayedApplications = Object.keys(selectedApplications).slice(0, 5);
+  const hiddenApplications = Object.keys(selectedApplications).slice(5);
 
   return (
     <p className="p-form-help-text is-tick-element">

@@ -1,19 +1,18 @@
-import type { RelationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+import type {
+  ApplicationStatus,
+  RelationStatus,
+} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import cloneDeep from "clone-deep";
 import * as d3 from "d3";
 import { useRef, useEffect, memo } from "react";
 
-import type {
-  ApplicationData,
-  ApplicationInfo,
-  FullStatusAnnotations,
-} from "juju/types";
+import type { FullStatusAnnotations } from "juju/types";
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import { generateIconPath } from "store/juju/utils/models";
 
 type Props = {
   annotations: FullStatusAnnotations | null;
-  applications: ApplicationData | null;
+  applications: null | Record<string, ApplicationStatus>;
   relations: null | RelationStatus[];
   width: number;
   height: number;
@@ -22,7 +21,7 @@ type Props = {
 type Application = {
   name: string;
   annotations: FullStatusAnnotations[0];
-} & ApplicationInfo;
+} & ApplicationStatus;
 
 /**
   Returns whether the application is a subordinate.
@@ -30,7 +29,7 @@ type Application = {
   @returns If the application is a subordinate.
 */
 const isSubordinate = (app: Application): boolean =>
-  "subordinate" in app && app.subordinate;
+  !!app?.["subordinate-to"]?.length;
 
 /**
   Computes the maximum delta from 0 for both the x and y axis. This is necessary
@@ -327,9 +326,7 @@ const Topology = memo(
       appIcon
         .append("image")
         .attr("xlink:href", (application) =>
-          "charm-url" in application
-            ? generateIconPath(application["charm-url"])
-            : null,
+          generateIconPath(application.charm),
         )
         // use a fallback image if the icon is not found
         .on("error", function () {

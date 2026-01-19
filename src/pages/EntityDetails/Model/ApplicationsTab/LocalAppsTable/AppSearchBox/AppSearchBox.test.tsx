@@ -27,7 +27,7 @@ describe("AppSearchBox", () => {
       ),
     ).toMatchObject(
       jujuActions.updateSelectedApplications({
-        selectedApplications: [],
+        selectedApplications: {},
       }),
     );
   });

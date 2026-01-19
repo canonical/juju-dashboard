@@ -304,5 +304,5 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   charms: [],
   rebac: rebacState.build(),
   secrets: {},
-  selectedApplications: [],
+  selectedApplications: {},
 }));

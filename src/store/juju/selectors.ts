@@ -11,7 +11,6 @@ import fastDeepEqual from "fast-deep-equal/es6";
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
 import type {
-  ApplicationData,
   MachineData,
   WatcherModelInfo,
   UnitData,
@@ -579,10 +578,10 @@ export const getModelAnnotations = createSelector(
 );
 
 export const getModelApplications = createSelector(
-  getModelWatcherDataByUUID,
-  (modelWatcherData): ApplicationData | null => {
-    if (modelWatcherData) {
-      return modelWatcherData.applications;
+  getModelDataByUUID,
+  (modelData): null | Record<string, ApplicationStatus> => {
+    if (modelData) {
+      return modelData.applications;
     }
     return null;
   },
@@ -1075,9 +1074,8 @@ export const getModelControllerDataByUUID = createSelector(
  */
 export const getCharms = createSelector(slice, (sliceState) => {
   return sliceState.charms.filter((charm) => {
-    return sliceState.selectedApplications.some(
-      (application) =>
-        "charm-url" in application && application["charm-url"] === charm.url,
+    return Object.values(sliceState.selectedApplications).some(
+      (application) => application.charm === charm.url,
     );
   });
 });
@@ -1096,10 +1094,14 @@ export const getSelectedApplications = createSelector(
     if (!charmURL) {
       return sliceState.selectedApplications;
     }
-    return sliceState.selectedApplications.filter(
-      (application) =>
-        "charm-url" in application && application["charm-url"] === charmURL,
-    );
+    return Object.entries(sliceState.selectedApplications).reduce<
+      Record<string, ApplicationStatus>
+    >((selectedApplications, [name, application]) => {
+      if (application.charm === charmURL) {
+        selectedApplications[name] = application;
+      }
+      return selectedApplications;
+    }, {});
   },
 );
 

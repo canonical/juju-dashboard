@@ -1,8 +1,8 @@
 import { render, fireEvent } from "@testing-library/react";
 
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
-import { charmApplicationFactory } from "testing/factories/juju/Charms";
 import { relationStatusFactory } from "testing/factories/juju/ClientV7";
+import { modelDataApplicationFactory } from "testing/factories/juju/juju";
 
 import Topology from "./Topology";
 
@@ -18,11 +18,11 @@ describe("Topology", () => {
     },
   };
   const applications = {
-    landscape: charmApplicationFactory.build({
-      "charm-url": "ch:amd64/jammy/landscape-1",
+    landscape: modelDataApplicationFactory.build({
+      charm: "ch:amd64/jammy/landscape-1",
     }),
-    postgresql: charmApplicationFactory.build({
-      "charm-url": "ch:amd64/jammy/postgresql-2",
+    postgresql: modelDataApplicationFactory.build({
+      charm: "ch:amd64/jammy/postgresql-2",
     }),
   };
   const relations = [
@@ -101,11 +101,11 @@ describe("Topology", () => {
 
   it("sets the size of subordinate applications", () => {
     const applicationList = {
-      landscape: charmApplicationFactory.build({
-        subordinate: false,
+      landscape: modelDataApplicationFactory.build({
+        "subordinate-to": undefined,
       }),
-      postgresql: charmApplicationFactory.build({
-        subordinate: true,
+      postgresql: modelDataApplicationFactory.build({
+        "subordinate-to": ["landscape"],
       }),
     };
     render(

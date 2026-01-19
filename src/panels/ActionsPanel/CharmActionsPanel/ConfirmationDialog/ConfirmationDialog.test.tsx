@@ -10,9 +10,12 @@ import { applicationCharmActionParamsFactory } from "testing/factories/juju/Acti
 import {
   charmInfoFactory,
   charmActionSpecFactory,
-  charmApplicationFactory,
 } from "testing/factories/juju/Charms";
-import { jujuStateFactory } from "testing/factories/juju/juju";
+import {
+  jujuStateFactory,
+  modelDataApplicationFactory,
+  modelDataUnitFactory,
+} from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import ConfirmationDialog from "./ConfirmationDialog";
@@ -24,9 +27,14 @@ describe("ConfirmationDialog", () => {
   const url =
     "/models/user-eggman@external/group-test/app/kubernetes-master?panel=select-charms-and-actions";
 
-  const mockSelectedApplications = [
-    charmApplicationFactory.build({ name: "ceph" }),
-  ];
+  const mockSelectedApplications = {
+    ceph: modelDataApplicationFactory.build({
+      units: {
+        0: modelDataUnitFactory.build(),
+        1: modelDataUnitFactory.build(),
+      },
+    }),
+  };
 
   beforeAll(() => {
     state = rootStateFactory.build({
@@ -71,7 +79,7 @@ describe("ConfirmationDialog", () => {
       <ConfirmationDialog
         confirmType={ConfirmType.CANCEL}
         selectedAction=""
-        selectedApplications={[]}
+        selectedApplications={{}}
         setConfirmType={vi.fn()}
         selectedActionOptionValue={{}}
         onRemovePanelQueryParams={vi.fn()}
@@ -87,7 +95,18 @@ describe("ConfirmationDialog", () => {
       <ConfirmationDialog
         confirmType={ConfirmType.SUBMIT}
         selectedAction={"stdout"}
-        selectedApplications={[{ "unit-count": 3 }, { "unit-count": 1 }]}
+        selectedApplications={{
+          ceph: modelDataApplicationFactory.build({
+            units: {
+              0: modelDataUnitFactory.build(),
+              1: modelDataUnitFactory.build(),
+              2: modelDataUnitFactory.build(),
+            },
+          }),
+          mysql: modelDataApplicationFactory.build({
+            units: { 0: modelDataUnitFactory.build() },
+          }),
+        }}
         setConfirmType={mockSetConfirmType}
         selectedActionOptionValue={{}}
         onRemovePanelQueryParams={vi.fn()}

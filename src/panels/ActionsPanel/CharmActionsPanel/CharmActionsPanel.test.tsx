@@ -7,14 +7,15 @@ import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { applicationCharmActionParamsFactory } from "testing/factories/juju/ActionV7";
 import {
-  charmApplicationFactory,
   charmInfoFactory,
   charmActionSpecFactory,
 } from "testing/factories/juju/Charms";
 import {
   jujuStateFactory,
+  modelDataApplicationFactory,
   modelDataFactory,
   modelDataInfoFactory,
+  modelDataUnitFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -77,12 +78,15 @@ describe("CharmActionsPanel", () => {
             }),
           }),
         },
-        selectedApplications: [
-          charmApplicationFactory.build({
-            name: "ceph",
-            "charm-url": "ch:ceph",
+        selectedApplications: {
+          ceph: modelDataApplicationFactory.build({
+            charm: "ch:ceph",
+            units: {
+              0: modelDataUnitFactory.build(),
+              1: modelDataUnitFactory.build(),
+            },
           }),
-        ],
+        },
       }),
     });
   });
@@ -117,12 +121,12 @@ describe("CharmActionsPanel", () => {
   });
 
   it("disables the submit button if no units are selected", async () => {
-    state.juju.selectedApplications = [
-      charmApplicationFactory.build({
-        "charm-url": "ch:ceph",
-        "unit-count": 0,
+    state.juju.selectedApplications = {
+      ceph: modelDataApplicationFactory.build({
+        charm: "ch:ceph",
+        units: {},
       }),
-    ];
+    };
     renderComponent(
       <CharmActionsPanel
         charmURL={charmURL}

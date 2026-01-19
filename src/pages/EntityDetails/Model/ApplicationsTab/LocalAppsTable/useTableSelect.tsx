@@ -1,3 +1,4 @@
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import type {
   MainTableCell,
   MainTableRow,
@@ -6,7 +7,6 @@ import type { FC } from "react";
 import { useDispatch } from "react-redux";
 
 import useAnalytics from "hooks/useAnalytics";
-import type { ApplicationData, ApplicationInfo } from "juju/types";
 import { actions as jujuActions } from "store/juju";
 import { getSelectedApplications } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
@@ -18,16 +18,17 @@ import { TestId } from "./types";
 type SelectHandlers = {
   selectAll: boolean;
   handleSelectAll: (selectAll?: boolean) => void;
-  handleSelect: (application: ApplicationInfo) => void;
+  handleSelect: (application: ApplicationStatus, name: string) => void;
 };
 
 type Props = {
-  onSelect: (app: ApplicationInfo) => void;
-  app: ApplicationInfo;
+  onSelect: (app: ApplicationStatus, name: string) => void;
+  app: ApplicationStatus;
+  name: string;
 };
 
 export const useTableSelect = (
-  applications: ApplicationInfo[],
+  applications: Record<string, ApplicationStatus>,
 ): SelectHandlers => {
   let selectedApplications = useAppSelector(getSelectedApplications);
 
@@ -41,7 +42,7 @@ export const useTableSelect = (
       action: "Select all applications",
     });
     if (!selectAll) {
-      selectedApplications = [];
+      selectedApplications = {};
     } else {
       selectedApplications = applications;
     }
@@ -52,16 +53,16 @@ export const useTableSelect = (
     );
   };
 
-  const handleSelect = (application: ApplicationInfo): void => {
+  const handleSelect = (application: ApplicationStatus, name: string): void => {
     sendAnalytics({
       category: "ApplicationSearch",
       action: "Select application",
     });
-    let apps = selectedApplications;
-    if (apps.includes(application)) {
-      apps = apps.filter((testApplication) => testApplication !== application);
+    const apps = { ...selectedApplications };
+    if (name in apps) {
+      delete apps[name];
     } else {
-      apps = [...apps, application];
+      apps[name] = application;
     }
     selectedApplications = apps;
     dispatch(
@@ -71,7 +72,9 @@ export const useTableSelect = (
     );
   };
   return {
-    selectAll: selectedApplications.length === applications.length,
+    selectAll:
+      Object.keys(selectedApplications).length ===
+      Object.keys(applications).length,
     handleSelectAll,
     handleSelect,
   };
@@ -105,14 +108,11 @@ export const addSelectAllColumn = (
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-const Checkbox: FC<Props> = ({ onSelect, app }) => {
+const Checkbox: FC<Props> = ({ onSelect, app, name }) => {
   const selectedApplications = useAppSelector(getSelectedApplications);
-  if (!("name" in app)) {
-    return null;
-  }
-  const fieldID = `select-app-${app.name}`;
+  const fieldID = `select-app-${name}`;
   const handleSelect = (): void => {
-    onSelect(app);
+    onSelect(app, name);
   };
   return (
     <label className="p-checkbox--inline" htmlFor={fieldID}>
@@ -122,8 +122,8 @@ const Checkbox: FC<Props> = ({ onSelect, app }) => {
         id={fieldID}
         name="selectApp"
         onChange={handleSelect}
-        checked={selectedApplications.includes(app)}
-        {...testId(`select-app-${app.name}`)}
+        checked={name in selectedApplications}
+        {...testId(`select-app-${name}`)}
       />
       <span className="p-checkbox__label"></span>
     </label>
@@ -132,17 +132,25 @@ const Checkbox: FC<Props> = ({ onSelect, app }) => {
 
 export const addSelectColumn = (
   rows: MainTableRow[],
-  applications: ApplicationData,
-  handleSelect: (application: ApplicationInfo) => void,
+  applications: Record<string, ApplicationStatus>,
+  handleSelect: (application: ApplicationStatus, name: string) => void,
 ): MainTableRow[] => {
-  const apps = Object.values(applications);
-  return rows.map((row, i) => {
-    const app = apps[i];
+  return rows.map((row) => {
+    const name =
+      "data-app" in row &&
+      row["data-app"] &&
+      typeof row["data-app"] === "string"
+        ? row["data-app"]
+        : null;
+    const app = name && name in applications ? applications[name] : null;
     return {
       ...row,
       columns: [
         {
-          content: <Checkbox app={app} onSelect={handleSelect} />,
+          content:
+            name && app ? (
+              <Checkbox app={app} onSelect={handleSelect} name={name} />
+            ) : null,
         },
         ...(row.columns ?? []),
       ],
