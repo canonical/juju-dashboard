@@ -2,7 +2,7 @@ import {
   Notification as ReactNotification,
   Strip,
 } from "@canonical/react-components";
-import * as Sentry from "@sentry/browser";
+import * as Sentry from "@sentry/react";
 import type { LogLevelDesc } from "loglevel";
 import { StrictMode } from "react";
 import type { Root } from "react-dom/client";
@@ -26,11 +26,18 @@ export enum Label {
   POLLING_ERROR = "Error while trying to connect and start polling.",
 }
 
-if (import.meta.env.PROD && window.jujuDashboardConfig?.analyticsEnabled) {
+if (window.jujuDashboardConfig?.analyticsEnabled) {
   Sentry.init({
-    dsn: "https://5f679e274f34464194e9592a91ed65d4@sentry.is.canonical.com//29",
+    dsn: "https://e2f2cf871a2bf7879fc7d08434f02886@o4510662863749120.ingest.de.sentry.io/4510739815858256",
+    sendDefaultPii: false,
+    environment: import.meta.env.MODE,
+    initialScope: {
+      tags: {
+        dashboardVersion: appVersion,
+        isJuju: window.jujuDashboardConfig?.isJuju,
+      },
+    },
   });
-  Sentry.setTag("dashboardVersion", appVersion);
 }
 
 const addressRegex = new RegExp(/^ws[s]?:\/\/(\S+)\//);
@@ -104,10 +111,6 @@ function bootstrap(): void {
         : "ws";
       config.controllerAPIEndpoint = `${protocol}://${window.location.host}${controllerAPIEndpoint}`;
     }
-  }
-
-  if (isProduction && config.analyticsEnabled) {
-    Sentry.setTag("isJuju", config.isJuju);
   }
 
   reduxStore.dispatch(generalActions.storeConfig(config));

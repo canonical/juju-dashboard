@@ -1,5 +1,5 @@
 import type { Client } from "@canonical/jujulib";
-import * as Sentry from "@sentry/browser";
+import * as Sentry from "@sentry/react";
 import { isAction, type Middleware } from "redux";
 
 import { Auth } from "auth";
@@ -124,7 +124,6 @@ export const modelPollerMiddleware: Middleware<
           return;
         }
 
-        const isProduction = import.meta.env.PROD;
         const analyticsEnabled = getAnalyticsEnabled(reduxStore.getState());
         const isJuju = !!getIsJuju(reduxStore.getState());
         const dashboardVersion = getAppVersion(reduxStore.getState()) ?? "";
@@ -141,7 +140,7 @@ export const modelPollerMiddleware: Middleware<
 
         // XXX Now that we can register multiple controllers this needs
         // to be sent per controller.
-        if (isProduction && analyticsEnabled) {
+        if (analyticsEnabled) {
           Sentry.setTag("jujuVersion", conn.info.serverVersion);
         }
 

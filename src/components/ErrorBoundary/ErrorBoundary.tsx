@@ -4,8 +4,6 @@ import {
   Notification as ReactNotification,
   Strip,
 } from "@canonical/react-components";
-import * as Sentry from "@sentry/browser";
-import type { Extras } from "@sentry/core";
 import type { JSX, PropsWithChildren } from "react";
 import { Component } from "react";
 
@@ -30,16 +28,6 @@ export default class ErrorBoundary extends Component<Props, State> {
       hasError: true,
       error,
     };
-  }
-
-  componentDidCatch(error: Error, info: unknown): void {
-    if (import.meta.env.PROD && window.jujuDashboardConfig?.analyticsEnabled) {
-      Sentry.withScope((scope) => {
-        scope.setExtras(info as Extras);
-        const eventId = Sentry.captureException(error);
-        this.setState({ eventId });
-      });
-    }
   }
 
   render(): JSX.Element {
