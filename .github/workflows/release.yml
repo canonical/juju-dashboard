@@ -252,7 +252,7 @@ jobs:
           tag: ${{ steps.tags.outputs.version-tag }}
           allowUpdates: true
           replacesArtifacts: true
-          prerelease: ${{ steps.pre-release.outputs.is-pre-release }}
+          prerelease: ${{ needs.pre-release.outputs.is-pre-release }}
           artifacts: release-artifacts/**/*.charm
           body: |
             Published `${{ steps.tags.outputs.version-tag }}` to Charmhub on `${{ needs.pre-release.outputs.promote-channel || needs.pre-release.outputs.channel }}` channel.
@@ -262,3 +262,33 @@ jobs:
             # Changelog
 
             ${{ needs.pre-release.outputs.changelog }}
+
+  sentry-release:
+    name: "Create Sentry release"
+    runs-on: ubuntu-24.04
+
+    needs: [pre-release]
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build dashboard with sourcemaps
+        run: yarn run vite build --sourcemap=hidden
+
+      - name: "Create Sentry release"
+        uses: getsentry/action-release@v3
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: canonical-ax
+          SENTRY_PROJECT: juju-dashboard
+        with:
+          environment: production
+          version: ${{ needs.pre-release.outputs.version }}
+          sourcemaps: "./build"
