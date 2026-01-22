@@ -28,9 +28,9 @@ if (window.jujuDashboardConfig?.analyticsEnabled) {
     dsn: "https://e2f2cf871a2bf7879fc7d08434f02886@o4510662863749120.ingest.de.sentry.io/4510739815858256",
     sendDefaultPii: false,
     environment: import.meta.env.MODE,
+    release: appVersion,
     initialScope: {
       tags: {
-        dashboardVersion: appVersion,
         isJuju: window.jujuDashboardConfig?.isJuju,
       },
     },
