@@ -286,5 +286,8 @@ jobs:
           SENTRY_PROJECT: juju-dashboard
         with:
           environment: production
-          version: ${{ needs.pre-release.outputs.version }}
+          release: ${{ needs.pre-release.outputs.version }}
           sourcemaps: "./build"
+          ignore_missing: true
+          ignore_empty: true
+
