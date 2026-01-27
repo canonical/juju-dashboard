@@ -57,7 +57,7 @@ jobs:
       - name: Start JIMM (pull request)
         uses: ./jimm/.github/actions/test-server
         with:
-          jimm-version: v3.2.2
+          jimm-version: v3.3.14
           juju-channel: "3.6/stable"
           ghcr-pat: ${{ secrets.GITHUB_TOKEN }}
           dump-logs: true
