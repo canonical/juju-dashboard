@@ -14,11 +14,19 @@ import fastDeepEqual from "fast-deep-equal/es6";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
-import type { UnitData, FullStatusAnnotations } from "juju/types";
+import type { FullStatusAnnotations, UnitData } from "juju/types";
 import {
   getActiveUserTag,
   getActiveUserControllerAccess,
 } from "store/general/selectors";
+import {
+  getAppMachines as getAppMachinesUtil,
+  getAppUnits as getAppUnitsUtil,
+  getMachineApps as getMachineAppsUtil,
+  getMachineUnits as getMachineUnitsUtil,
+  getUnit as getUnitUtil,
+  getUnitApp as getUnitAppUtil,
+} from "store/juju/utils/units";
 import type { RootState } from "store/store";
 import { getLatestRevision, getUserName } from "utils";
 
@@ -957,7 +965,7 @@ export const getGroupedUnitsDataByStatus = createSelector(
       const model = modelData[modelUUID];
       for (const applicationID in model.applications) {
         const application = model.applications[applicationID];
-        for (const unitID in application.units) {
+        for (const unitID in application.units ?? {}) {
           const unit = application.units[unitID];
           grouped[getUnitStatusGroup(unit).status].push(unit);
         }
@@ -1254,4 +1262,97 @@ export const getReBACRelationshipsErrors = createSelector(
 export const getCommandHistory = createSelector(
   [slice],
   ({ commandHistory }) => commandHistory,
+);
+
+export const getMachineApps = createSelector(
+  getModelApplications,
+  (
+    _state,
+    _modelUUID?: string,
+    machineId?: null | string,
+  ): null | string | undefined => machineId,
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    machineId?: null | string,
+  ) => (machineId ? getMachineAppsUtil(machineId, applications) : null),
+);
+
+export const getMachineUnits = createSelector(
+  getModelApplications,
+  (
+    _state,
+    _modelUUID?: string,
+    machineId?: null | string,
+    includeSubordinates?: boolean,
+  ): {
+    machineId?: null | string;
+    includeSubordinates?: boolean;
+  } => ({
+    machineId,
+    includeSubordinates,
+  }),
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    {
+      machineId,
+      includeSubordinates,
+    }: { machineId?: null | string; includeSubordinates?: boolean },
+  ) =>
+    machineId
+      ? getMachineUnitsUtil(machineId, applications, includeSubordinates)
+      : null,
+);
+
+export const getAppMachines = createSelector(
+  getModelApplications,
+  getModelMachines,
+  (
+    _state,
+    _modelUUID?: string,
+    appId?: null | string,
+  ): null | string | undefined => appId,
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    machines: null | Record<string, MachineStatus>,
+    appId?: null | string,
+  ) => (appId ? getAppMachinesUtil(appId, applications, machines) : null),
+);
+
+export const getAppUnits = createSelector(
+  getModelApplications,
+  (
+    _state,
+    _modelUUID?: string,
+    appId?: null | string,
+  ): null | string | undefined => appId,
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    appId?: null | string,
+  ) => (appId ? getAppUnitsUtil(appId, applications) : null),
+);
+
+export const getUnit = createSelector(
+  getModelApplications,
+  (
+    _state,
+    _modelUUID?: string,
+    unitId?: null | string,
+  ): null | string | undefined => unitId,
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    unitId?: null | string,
+  ) => (unitId ? getUnitUtil(unitId, applications) : null),
+);
+
+export const getUnitApp = createSelector(
+  getModelApplications,
+  (
+    _state,
+    _modelUUID?: string,
+    unitId?: null | string,
+  ): null | string | undefined => unitId,
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    unitId?: null | string,
+  ) => (unitId ? getUnitAppUtil(unitId, applications) : null),
 );
