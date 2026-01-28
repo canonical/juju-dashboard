@@ -76,7 +76,6 @@ import {
   getModelStatus,
   getModelUUID,
   getModelUUIDFromList,
-  getModelUnits,
   getModelWatcherDataByUUID,
   getSelectedApplications,
   getSelectedCharm,
@@ -133,6 +132,13 @@ import {
   getModelUUIDs,
   getDestructionState,
   getModelStatusInfo,
+  getMachineApps,
+  getMachineUnits,
+  getAppMachines,
+  getAppUnits,
+  getUnit,
+  getUnitApp,
+  getModelUnits,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -2537,14 +2543,14 @@ describe("selectors", () => {
 
   describe("isKubernetesModel", () => {
     it("handles non-kubernetes models", () => {
-      const modelWatcherData = {
-        abc123: modelWatcherModelDataFactory.build(),
+      const modelData = {
+        abc123: modelDataFactory.build(),
       };
       expect(
         isKubernetesModel(
           rootStateFactory.build({
             juju: jujuStateFactory.build({
-              modelWatcherData,
+              modelData,
             }),
           }),
           "abc123",
@@ -2583,5 +2589,480 @@ describe("selectors", () => {
       }),
     });
     expect(getCommandHistory(state)).toStrictEqual(commandHistory);
+  });
+});
+
+describe("getMachineApps", () => {
+  it("gets applications on a machine", () => {
+    const applications = {
+      // This application should be included as its parent application is on the machine.
+      app1: modelDataApplicationFactory.build({
+        "subordinate-to": ["app2"],
+      }),
+      app2: modelDataApplicationFactory.build({
+        units: {
+          "app2/0": modelDataUnitFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": modelDataUnitFactory.build(),
+            },
+          }),
+          "app2/1": modelDataUnitFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": modelDataUnitFactory.build(),
+            },
+          }),
+        },
+      }),
+      app3: modelDataApplicationFactory.build({
+        units: {
+          "app3/0": modelDataUnitFactory.build({
+            machine: "0",
+          }),
+          "app3/1": modelDataUnitFactory.build({
+            machine: "1",
+          }),
+        },
+      }),
+      // This application should not be included as it has no units on the machine.
+      app4: modelDataApplicationFactory.build({
+        units: {
+          "app4/0": modelDataUnitFactory.build({
+            machine: "1",
+          }),
+          "app4/1": modelDataUnitFactory.build({
+            machine: "2",
+          }),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+          }),
+        },
+      }),
+    });
+    expect(getMachineApps(state, "abc123", "0")).toStrictEqual({
+      app1: applications.app1,
+      app2: applications.app2,
+      app3: applications.app3,
+    });
+  });
+});
+
+describe("getMachineUnits", () => {
+  it("gets units on a machine", () => {
+    const applications = {
+      // This application should be included as its parent application is on the machine.
+      app1: modelDataApplicationFactory.build({
+        "subordinate-to": ["app2"],
+      }),
+      app2: modelDataApplicationFactory.build({
+        units: {
+          "app2/0": modelDataUnitFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": modelDataUnitFactory.build(),
+            },
+          }),
+          "app2/1": modelDataUnitFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": modelDataUnitFactory.build(),
+            },
+          }),
+        },
+      }),
+      app3: modelDataApplicationFactory.build({
+        units: {
+          "app3/0": modelDataUnitFactory.build({
+            machine: "0",
+          }),
+          "app3/1": modelDataUnitFactory.build({
+            machine: "1",
+          }),
+        },
+      }),
+      // This application should not be included as it has no units on the machine.
+      app4: modelDataApplicationFactory.build({
+        units: {
+          "app4/0": modelDataUnitFactory.build({
+            machine: "1",
+          }),
+          "app4/1": modelDataUnitFactory.build({
+            machine: "2",
+          }),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+          }),
+        },
+      }),
+    });
+    expect(getMachineUnits(state, "abc123", "0")).toStrictEqual({
+      "app1/0": applications.app2.units["app2/0"].subordinates["app1/0"],
+      "app2/0": applications.app2.units["app2/0"],
+      "app3/0": applications.app3.units["app3/0"],
+    });
+  });
+});
+
+describe("getUnit", () => {
+  it("gets a unit", () => {
+    const applications = {
+      app1: modelDataApplicationFactory.build({
+        "subordinate-to": ["app2"],
+      }),
+      app2: modelDataApplicationFactory.build({
+        units: {
+          "app2/0": modelDataUnitFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": modelDataUnitFactory.build(),
+            },
+          }),
+          "app2/1": modelDataUnitFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": modelDataUnitFactory.build(),
+            },
+          }),
+        },
+      }),
+      app3: modelDataApplicationFactory.build({
+        units: {
+          "app3/0": modelDataUnitFactory.build(),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+          }),
+        },
+      }),
+    });
+    expect(getUnit(state, "abc123", "app2/1")).toStrictEqual(
+      applications.app2.units["app2/1"],
+    );
+  });
+
+  it("gets a unit for a subordinate application", () => {
+    const applications = {
+      app1: modelDataApplicationFactory.build({
+        "subordinate-to": ["app2", "app3"],
+      }),
+      app2: modelDataApplicationFactory.build({
+        units: {
+          "app2/0": modelDataUnitFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": modelDataUnitFactory.build(),
+            },
+          }),
+          "app2/1": modelDataUnitFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": modelDataUnitFactory.build(),
+            },
+          }),
+        },
+      }),
+      app3: modelDataApplicationFactory.build({
+        units: {
+          "app3/0": modelDataUnitFactory.build({
+            subordinates: {
+              "app1/2": modelDataUnitFactory.build(),
+            },
+          }),
+        },
+      }),
+      // This application should not be included.
+      app4: modelDataApplicationFactory.build({
+        units: {
+          "app4/0": modelDataUnitFactory.build(),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+          }),
+        },
+      }),
+    });
+    expect(getUnit(state, "abc123", "app1/1")).toStrictEqual(
+      applications.app2.units["app2/1"].subordinates["app1/1"],
+    );
+  });
+});
+
+describe("getUnitApp", () => {
+  it("gets an application from the unit id", () => {
+    const applications = {
+      app1: modelDataApplicationFactory.build({
+        "subordinate-to": ["app2"],
+      }),
+      app2: modelDataApplicationFactory.build({
+        units: {
+          "app2/0": modelDataUnitFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": modelDataUnitFactory.build(),
+            },
+          }),
+          "app2/1": modelDataUnitFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": modelDataUnitFactory.build(),
+            },
+          }),
+        },
+      }),
+      app3: modelDataApplicationFactory.build({
+        units: {
+          "app3/0": modelDataUnitFactory.build(),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+          }),
+        },
+      }),
+    });
+    expect(getUnitApp(state, "abc123", "app2/1")).toStrictEqual(
+      applications.app2,
+    );
+  });
+});
+
+describe("getAppMachines", () => {
+  it("gets machines for an application", () => {
+    const applications = {
+      app1: modelDataApplicationFactory.build({
+        "subordinate-to": ["app2"],
+      }),
+      app2: modelDataApplicationFactory.build({
+        units: {
+          "app2/0": modelDataUnitFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": modelDataUnitFactory.build(),
+            },
+          }),
+          "app2/1": modelDataUnitFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": modelDataUnitFactory.build(),
+            },
+          }),
+        },
+      }),
+      // This application's machines should not be included.
+      app3: modelDataApplicationFactory.build({
+        units: {
+          "app3/0": modelDataUnitFactory.build({
+            machine: "2",
+          }),
+        },
+      }),
+    };
+    const machines = {
+      0: modelDataMachineFactory.build({ id: "0" }),
+      1: modelDataMachineFactory.build({ id: "1" }),
+      2: modelDataMachineFactory.build({ id: "2" }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+            machines,
+          }),
+        },
+      }),
+    });
+    expect(getAppMachines(state, "abc123", "app2")).toStrictEqual({
+      0: machines["0"],
+      1: machines["1"],
+    });
+  });
+
+  it("gets machines for a subordinate application", () => {
+    const applications = {
+      app1: modelDataApplicationFactory.build({
+        "subordinate-to": ["app2", "app3"],
+      }),
+      // This application's machines should be included as it is a parent to app1.
+      app2: modelDataApplicationFactory.build({
+        units: {
+          "app2/0": modelDataUnitFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": modelDataUnitFactory.build(),
+            },
+          }),
+          "app2/1": modelDataUnitFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": modelDataUnitFactory.build(),
+            },
+          }),
+        },
+      }),
+      // This application's machines should be included as it is a parent to app1.
+      app3: modelDataApplicationFactory.build({
+        units: {
+          "app3/0": modelDataUnitFactory.build({
+            machine: "2",
+          }),
+        },
+      }),
+      // This application's machines should not be included.
+      app4: modelDataApplicationFactory.build({
+        units: {
+          "app4/0": modelDataUnitFactory.build({
+            machine: "3",
+          }),
+        },
+      }),
+    };
+    const machines = {
+      0: modelDataMachineFactory.build({ id: "0" }),
+      1: modelDataMachineFactory.build({ id: "1" }),
+      2: modelDataMachineFactory.build({ id: "2" }),
+      3: modelDataMachineFactory.build({ id: "3" }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+            machines,
+          }),
+        },
+      }),
+    });
+    expect(getAppMachines(state, "abc123", "app1")).toStrictEqual({
+      0: machines["0"],
+      1: machines["1"],
+      2: machines["2"],
+    });
+  });
+});
+
+describe("getAppUnits", () => {
+  it("gets units for an application", () => {
+    const applications = {
+      // This application's units should not be included.
+      app1: modelDataApplicationFactory.build({
+        "subordinate-to": ["app2"],
+      }),
+      app2: modelDataApplicationFactory.build({
+        units: {
+          "app2/0": modelDataUnitFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": modelDataUnitFactory.build(),
+            },
+          }),
+          "app2/1": modelDataUnitFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": modelDataUnitFactory.build(),
+            },
+          }),
+        },
+      }),
+      // This application's units should not be included.
+      app3: modelDataApplicationFactory.build({
+        units: {
+          "app3/0": modelDataUnitFactory.build(),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+          }),
+        },
+      }),
+    });
+    expect(getAppUnits(state, "abc123", "app2")).toStrictEqual({
+      "app2/0": applications.app2.units["app2/0"],
+      "app2/1": applications.app2.units["app2/1"],
+    });
+  });
+
+  it("gets units for a subordinate application", () => {
+    const applications = {
+      app1: modelDataApplicationFactory.build({
+        "subordinate-to": ["app2", "app3"],
+      }),
+      app2: modelDataApplicationFactory.build({
+        units: {
+          "app2/0": modelDataUnitFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": modelDataUnitFactory.build(),
+            },
+          }),
+          "app2/1": modelDataUnitFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": modelDataUnitFactory.build(),
+            },
+          }),
+        },
+      }),
+      app3: modelDataApplicationFactory.build({
+        units: {
+          "app3/0": modelDataUnitFactory.build({
+            subordinates: {
+              "app1/2": modelDataUnitFactory.build(),
+            },
+          }),
+        },
+      }),
+      // This application should not be included.
+      app4: modelDataApplicationFactory.build({
+        units: {
+          "app4/0": modelDataUnitFactory.build(),
+        },
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+          }),
+        },
+      }),
+    });
+    expect(getAppUnits(state, "abc123", "app1")).toStrictEqual({
+      "app1/0": applications.app2.units["app2/0"].subordinates["app1/0"],
+      "app1/1": applications.app2.units["app2/1"].subordinates["app1/1"],
+      "app1/2": applications.app3.units["app3/0"].subordinates["app1/2"],
+    });
   });
 });
