@@ -3,9 +3,11 @@ import {
   detailedStatusFactory,
   machineStatusFactory,
 } from "testing/factories/juju/ClientV7";
-import { modelDataFactory } from "testing/factories/juju/juju";
-import { unitChangeDeltaFactory } from "testing/factories/juju/model-watcher";
-import { unitAgentStatusFactory } from "testing/factories/juju/model-watcher";
+import {
+  modelDataApplicationFactory,
+  modelDataFactory,
+  modelDataUnitFactory,
+} from "testing/factories/juju/juju";
 
 import {
   generateMachineCounts,
@@ -33,35 +35,38 @@ describe("incrementCounts", () => {
 describe("generateUnitCounts", () => {
   it("gets unit status counts", () => {
     const units = {
-      "etcd/1": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "agent-status": unitAgentStatusFactory.build({
-          current: "idle",
-        }),
+      etcd: modelDataApplicationFactory.build({
+        units: {
+          "etcd/1": modelDataUnitFactory.build({
+            "agent-status": detailedStatusFactory.build({
+              status: "idle",
+            }),
+          }),
+          "etcd/2": modelDataUnitFactory.build({
+            "agent-status": detailedStatusFactory.build({
+              status: "allocating",
+            }),
+          }),
+          "etcd/3": modelDataUnitFactory.build({
+            "agent-status": detailedStatusFactory.build({
+              status: "idle",
+            }),
+          }),
+          "etcd/4": modelDataUnitFactory.build({
+            "agent-status": detailedStatusFactory.build({
+              status: undefined,
+            }),
+          }),
+        },
       }),
-      "mysql/1": unitChangeDeltaFactory.build({
-        application: "mysql",
-        "agent-status": unitAgentStatusFactory.build({
-          current: "idle",
-        }),
-      }),
-      "etcd/2": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "agent-status": unitAgentStatusFactory.build({
-          current: "allocating",
-        }),
-      }),
-      "etcd/3": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "agent-status": unitAgentStatusFactory.build({
-          current: "idle",
-        }),
-      }),
-      "etcd/4": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "agent-status": unitAgentStatusFactory.build({
-          current: undefined,
-        }),
+      mysql: modelDataApplicationFactory.build({
+        units: {
+          "mysql/1": modelDataUnitFactory.build({
+            "agent-status": detailedStatusFactory.build({
+              status: "idle",
+            }),
+          }),
+        },
       }),
     };
     expect(generateUnitCounts(units, "etcd")).toMatchObject({
@@ -110,25 +115,28 @@ describe("generateMachineCounts", () => {
       }),
     };
     const units = {
-      "etcd/1": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "machine-id": "0",
+      etcd: modelDataApplicationFactory.build({
+        units: {
+          "etcd/1": modelDataUnitFactory.build({
+            machine: "0",
+          }),
+          "etcd/2": modelDataUnitFactory.build({
+            machine: "1",
+          }),
+          "etcd/3": modelDataUnitFactory.build({
+            machine: "3",
+          }),
+          "etcd/4": modelDataUnitFactory.build({
+            machine: "4",
+          }),
+        },
       }),
-      "mysql/1": unitChangeDeltaFactory.build({
-        application: "mysql",
-        "machine-id": "2",
-      }),
-      "etcd/2": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "machine-id": "1",
-      }),
-      "etcd/3": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "machine-id": "3",
-      }),
-      "etcd/4": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "machine-id": "4",
+      mysql: modelDataApplicationFactory.build({
+        units: {
+          "mysql/1": modelDataUnitFactory.build({
+            machine: "2",
+          }),
+        },
       }),
     };
     expect(generateMachineCounts(machines, units, "etcd")).toMatchObject({

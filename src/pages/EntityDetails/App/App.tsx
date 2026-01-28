@@ -1,4 +1,3 @@
-import type { MachineStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { Button, MainTable, Icon } from "@canonical/react-components";
 import classNames from "classnames";
 import { Field, Formik } from "formik";
@@ -16,12 +15,12 @@ import SegmentedControl from "components/SegmentedControl";
 import Status from "components/Status";
 import useCanConfigureModel from "hooks/useCanConfigureModel";
 import { useQueryParams } from "hooks/useQueryParams";
-import type { UnitData } from "juju/types";
 import {
+  getAppMachines,
+  getAppUnits,
   getModelApplications,
   getModelInfo,
   getModelMachines,
-  getModelUnits,
   getModelUUIDFromList,
   isKubernetesModel,
 } from "store/juju/selectors";
@@ -67,7 +66,11 @@ export default function App(): JSX.Element {
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
   );
-  const units = useAppSelector((state) => getModelUnits(state, modelUUID));
+  const application =
+    entity && applications && entity in applications
+      ? applications[entity]
+      : null;
+  const units = application ? application.units : null;
   const machines = useAppSelector((state) =>
     getModelMachines(state, modelUUID),
   );
@@ -76,32 +79,22 @@ export default function App(): JSX.Element {
     isKubernetesModel(state, modelUUID),
   );
   const canConfigureModel = useCanConfigureModel();
-
-  const filteredMachineList = useMemo(() => {
-    const filteredMachines: Record<string, MachineStatus> = {};
-    if (!units || !machines) {
-      return null;
-    }
-    Object.values(units).forEach((unitData) => {
-      if (unitData.application === entity) {
-        const machineId = unitData["machine-id"];
-        if (machineId && machines[machineId]) {
-          filteredMachines[machineId] = machines[machineId];
-        }
-      }
-    });
-    return filteredMachines;
-  }, [units, machines, entity]);
+  const filteredMachineList = useAppSelector((state) =>
+    getAppMachines(state, modelUUID, entity),
+  );
+  const filteredUnitList = useAppSelector((state) =>
+    getAppUnits(state, modelUUID, entity),
+  );
 
   const machinesPanelRows = useMemo(
     () =>
       modelName && userName
-        ? generateMachineRows(filteredMachineList, units, {
+        ? generateMachineRows(filteredMachineList, applications, {
             modelName,
             userName,
           })
         : [],
-    [filteredMachineList, units, modelName, userName],
+    [filteredMachineList, applications, modelName, userName],
   );
 
   const unitTableHeaders = useMemo(() => {
@@ -133,35 +126,25 @@ export default function App(): JSX.Element {
     );
   }, [canConfigureModel, hideMachines]);
 
-  const filteredUnitList = useMemo(() => {
-    if (!units) {
-      return null;
-    }
-    const filteredUnits: UnitData = {};
-    Object.entries(units).forEach(([unitId, unitData]) => {
-      if (
-        unitData.application === entity ||
-        // Add any units that are a subordinate to the parent to the list
-        // It will be re-sorted in the unit table generation code.
-        (unitData.subordinate && unitData.principal.split("/")[0] === entity)
-      ) {
-        filteredUnits[unitId] = unitData;
-      }
-    });
-    return filteredUnits;
-  }, [units, entity]);
-
   const unitPanelRows = useMemo(
     () =>
       modelName && userName
         ? generateUnitRows(
+            applications,
             filteredUnitList,
             { modelName, userName },
             canConfigureModel,
             hideMachines,
           )
         : [],
-    [canConfigureModel, filteredUnitList, modelName, userName, hideMachines],
+    [
+      modelName,
+      userName,
+      applications,
+      filteredUnitList,
+      canConfigureModel,
+      hideMachines,
+    ],
   );
 
   const [query, setQuery] = useQueryParams<{
@@ -182,7 +165,6 @@ export default function App(): JSX.Element {
     units: [],
   });
 
-  const application = entity ? applications?.[entity] : null;
   const showConfig = (event: React.MouseEvent): void => {
     event.stopPropagation();
     if (application?.charm) {
@@ -211,13 +193,13 @@ export default function App(): JSX.Element {
   }
 
   const unitChipData = useMemo(
-    () => generateUnitCounts(units, entity),
-    [units, entity],
+    () => generateUnitCounts(applications, entity),
+    [applications, entity],
   );
 
   const machineChipData = useMemo(
-    () => generateMachineCounts(machines, units, entity),
-    [machines, units, entity],
+    () => generateMachineCounts(machines, applications, entity),
+    [machines, applications, entity],
   );
 
   const showActions = (): void => {
@@ -234,12 +216,7 @@ export default function App(): JSX.Element {
     // If the app is a subordinate and has not been related to any other apps
     // then its unit list will be `null`.
 
-    let unitList: string[] = [];
-    if (units) {
-      unitList = Object.keys(units).filter(
-        (unitId) => units[unitId].application === entity,
-      );
-    }
+    const unitList: string[] = Object.keys(units ?? {});
 
     // Handle the selectAll checkbox interactions.
     if (selectAll.current && !formData.selectAll) {

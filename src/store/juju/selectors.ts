@@ -14,11 +14,19 @@ import fastDeepEqual from "fast-deep-equal/es6";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
-import type { UnitData, FullStatusAnnotations } from "juju/types";
+import type { FullStatusAnnotations } from "juju/types";
 import {
   getActiveUserTag,
   getActiveUserControllerAccess,
 } from "store/general/selectors";
+import {
+  getAppMachines as getAppMachinesUtil,
+  getAppUnits as getAppUnitsUtil,
+  getMachineApps as getMachineAppsUtil,
+  getMachineUnits as getMachineUnitsUtil,
+  getUnit as getUnitUtil,
+  getUnitApp as getUnitAppUtil,
+} from "store/juju/utils/units";
 import type { RootState } from "store/store";
 import { getLatestRevision, getUserName } from "utils";
 
@@ -597,16 +605,6 @@ export const getModelApplications = createSelector(
   },
 );
 
-export const getModelUnits = createSelector(
-  getModelWatcherDataByUUID,
-  (modelWatcherData): null | UnitData => {
-    if (modelWatcherData) {
-      return modelWatcherData.units;
-    }
-    return null;
-  },
-);
-
 export const getModelRelations = createSelector(
   getModelDataByUUID,
   (modelData): null | RelationStatus[] => {
@@ -646,49 +644,54 @@ export interface StatusData {
   applications aggregate unit status.
 */
 export const getAllModelApplicationStatus = createSelector(
-  getModelUnits,
-  (units): null | StatusData => {
-    if (!units) {
+  getModelApplications,
+  (applications): null | StatusData => {
+    if (!applications) {
       return null;
     }
 
     const applicationStatuses: StatusData = {};
     // Convert the various unit statuses into our three current
     // status types "blocked", "alert", "running".
-    Object.entries(units).forEach(([_unitId, unitData]) => {
-      let workloadStatus = Statuses.running;
-      switch (unitData["workload-status"].current) {
-        case "maintenance":
-        case "waiting":
-          workloadStatus = Statuses.alert;
-          break;
-        case "blocked":
-          workloadStatus = Statuses.blocked;
-          break;
-      }
+    Object.entries(applications).forEach(([appName, app]) => {
+      Object.entries(app.units ?? {}).forEach(([_unitId, unitData]) => {
+        let workloadStatus = Statuses.running;
+        switch (unitData["workload-status"].status) {
+          case "maintenance":
+          case "waiting":
+            workloadStatus = Statuses.alert;
+            break;
+          case "blocked":
+            workloadStatus = Statuses.blocked;
+            break;
+        }
 
-      let agentStatus = Statuses.running;
-      switch (unitData["agent-status"].current) {
-        case "allocating":
-        case "executing":
-        case "rebooting":
-          agentStatus = Statuses.alert;
-          break;
-        case "failed":
-        case "lost":
-          agentStatus = Statuses.blocked;
-          break;
-      }
-      // Use the enum index to determine the worst status value.
-      const worstStatusIndex = Math.max(
-        workloadStatus,
-        agentStatus,
-        Statuses.running,
-      );
+        let agentStatus = Statuses.running;
+        switch (unitData["agent-status"].status) {
+          case "allocating":
+          case "executing":
+          case "rebooting":
+            agentStatus = Statuses.alert;
+            break;
+          case "failed":
+          case "lost":
+            agentStatus = Statuses.blocked;
+            break;
+        }
+        // Use the enum index to determine the worst status value.
+        const worstStatusIndex = Math.max(
+          workloadStatus,
+          agentStatus,
+          Statuses.running,
+          appName in applicationStatuses
+            ? Statuses[applicationStatuses[appName]]
+            : 0,
+        );
 
-      applicationStatuses[unitData.application] = Statuses[
-        worstStatusIndex
-      ] as keyof typeof Statuses;
+        applicationStatuses[appName] = Statuses[
+          worstStatusIndex
+        ] as keyof typeof Statuses;
+      });
     });
 
     return applicationStatuses;
@@ -957,7 +960,7 @@ export const getGroupedUnitsDataByStatus = createSelector(
       const model = modelData[modelUUID];
       for (const applicationID in model.applications) {
         const application = model.applications[applicationID];
-        for (const unitID in application.units) {
+        for (const unitID in application.units ?? {}) {
           const unit = application.units[unitID];
           grouped[getUnitStatusGroup(unit).status].push(unit);
         }
@@ -1254,4 +1257,97 @@ export const getReBACRelationshipsErrors = createSelector(
 export const getCommandHistory = createSelector(
   [slice],
   ({ commandHistory }) => commandHistory,
+);
+
+export const getMachineApps = createSelector(
+  getModelApplications,
+  (
+    _state,
+    _modelUUID?: string,
+    machineId?: null | string,
+  ): null | string | undefined => machineId,
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    machineId?: null | string,
+  ) => (machineId ? getMachineAppsUtil(machineId, applications) : null),
+);
+
+export const getMachineUnits = createSelector(
+  getModelApplications,
+  (
+    _state,
+    _modelUUID?: string,
+    machineId?: null | string,
+    includeSubordinates?: boolean,
+  ): {
+    machineId?: null | string;
+    includeSubordinates?: boolean;
+  } => ({
+    machineId,
+    includeSubordinates,
+  }),
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    {
+      machineId,
+      includeSubordinates,
+    }: { machineId?: null | string; includeSubordinates?: boolean },
+  ) =>
+    machineId
+      ? getMachineUnitsUtil(machineId, applications, includeSubordinates)
+      : null,
+);
+
+export const getAppMachines = createSelector(
+  getModelApplications,
+  getModelMachines,
+  (
+    _state,
+    _modelUUID?: string,
+    appId?: null | string,
+  ): null | string | undefined => appId,
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    machines: null | Record<string, MachineStatus>,
+    appId?: null | string,
+  ) => (appId ? getAppMachinesUtil(appId, applications, machines) : null),
+);
+
+export const getAppUnits = createSelector(
+  getModelApplications,
+  (
+    _state,
+    _modelUUID?: string,
+    appId?: null | string,
+  ): null | string | undefined => appId,
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    appId?: null | string,
+  ) => (appId ? getAppUnitsUtil(appId, applications) : null),
+);
+
+export const getUnit = createSelector(
+  getModelApplications,
+  (
+    _state,
+    _modelUUID?: string,
+    unitId?: null | string,
+  ): null | string | undefined => unitId,
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    unitId?: null | string,
+  ) => (unitId ? getUnitUtil(unitId, applications) : null),
+);
+
+export const getUnitApp = createSelector(
+  getModelApplications,
+  (
+    _state,
+    _modelUUID?: string,
+    unitId?: null | string,
+  ): null | string | undefined => unitId,
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    unitId?: null | string,
+  ) => (unitId ? getUnitAppUtil(unitId, applications) : null),
 );
