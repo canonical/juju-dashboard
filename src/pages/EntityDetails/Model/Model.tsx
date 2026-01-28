@@ -17,7 +17,6 @@ import {
   getModelMachines,
   getModelRelations,
   getModelStatusInfo,
-  getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { getModelCredential, getCanListSecrets } from "store/juju/selectors";
@@ -99,7 +98,6 @@ const Model: FC = () => {
   const machines = useAppSelector((state) =>
     getModelMachines(state, modelUUID),
   );
-  const units = useAppSelector((state) => getModelUnits(state, modelUUID));
   const canListSecrets = useAppSelector((state) =>
     getCanListSecrets(state, modelUUID),
   );
@@ -110,12 +108,12 @@ const Model: FC = () => {
     return modelName && userName
       ? generateMachineRows(
           machines,
-          units,
+          applications,
           { modelName, userName },
           query?.entity,
         )
       : [];
-  }, [machines, units, modelName, userName, query]);
+  }, [machines, applications, modelName, userName, query]);
 
   const relationTableRows = useMemo(
     () => generateRelationRows(relations, applications),

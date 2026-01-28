@@ -14,7 +14,10 @@ import {
 import {
   jujuStateFactory,
   modelDataApplicationFactory,
+  modelDataFactory,
+  modelDataInfoFactory,
   modelDataUnitFactory,
+  modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -25,7 +28,7 @@ describe("ConfirmationDialog", () => {
   let state: RootState;
   const path = "/models/:userName/:modelName/app/:appName";
   const url =
-    "/models/user-eggman@external/group-test/app/kubernetes-master?panel=select-charms-and-actions";
+    "/models/eggman@external/test-model/app/kubernetes-master?panel=select-charms-and-actions";
 
   const mockSelectedApplications = {
     ceph: modelDataApplicationFactory.build({
@@ -63,6 +66,33 @@ describe("ConfirmationDialog", () => {
             },
           }),
         ],
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications: {
+              ceph: modelDataApplicationFactory.build({
+                units: {
+                  0: modelDataUnitFactory.build(),
+                  1: modelDataUnitFactory.build(),
+                  2: modelDataUnitFactory.build(),
+                },
+              }),
+              mysql: modelDataApplicationFactory.build({
+                units: { 0: modelDataUnitFactory.build() },
+              }),
+            },
+            info: modelDataInfoFactory.build({
+              name: "test-model",
+            }),
+            uuid: "abc123",
+          }),
+        },
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            name: "test-model",
+            ownerTag: "user-eggman@external",
+          }),
+        },
       }),
     });
   });
@@ -84,6 +114,7 @@ describe("ConfirmationDialog", () => {
         selectedActionOptionValue={{}}
         onRemovePanelQueryParams={vi.fn()}
       />,
+      { path, state, url },
     );
     expect(container.children.length).toBe(1);
     expect(container.firstChild).toBeEmptyDOMElement();
@@ -111,6 +142,7 @@ describe("ConfirmationDialog", () => {
         selectedActionOptionValue={{}}
         onRemovePanelQueryParams={vi.fn()}
       />,
+      { path, state, url },
     );
 
     expect(

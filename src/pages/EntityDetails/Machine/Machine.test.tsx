@@ -10,13 +10,13 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
-import { modelListInfoFactory } from "testing/factories/juju/juju";
 import {
-  applicationInfoFactory,
-  machineChangeDeltaFactory,
-  modelWatcherModelDataFactory,
-  unitChangeDeltaFactory,
-} from "testing/factories/juju/model-watcher";
+  modelDataApplicationFactory,
+  modelDataFactory,
+  modelDataMachineFactory,
+  modelDataUnitFactory,
+  modelListInfoFactory,
+} from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -58,20 +58,19 @@ describe("Machine", () => {
             uuid: "abc123",
           }),
         },
-        modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
             applications: {
-              etcd: applicationInfoFactory.build(),
+              etcd: modelDataApplicationFactory.build({
+                units: {
+                  "etcd/0": modelDataUnitFactory.build({
+                    charm: "cs:etcd-50",
+                  }),
+                },
+              }),
             },
             machines: {
-              "0": machineChangeDeltaFactory.build({ id: "0" }),
-            },
-            units: {
-              "etcd/0": unitChangeDeltaFactory.build({
-                application: "etcd",
-                name: "etcd/0",
-                "charm-url": "cs:etcd-50",
-              }),
+              "0": modelDataMachineFactory.build({ id: "0" }),
             },
           }),
         },

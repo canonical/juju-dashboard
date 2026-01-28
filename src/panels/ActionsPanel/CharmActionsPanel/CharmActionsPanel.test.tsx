@@ -16,6 +16,7 @@ import {
   modelDataFactory,
   modelDataInfoFactory,
   modelDataUnitFactory,
+  modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -35,7 +36,7 @@ describe("CharmActionsPanel", () => {
   let state: RootState;
   const path = "/models/:userName/:modelName/app/:appName";
   const url =
-    "/models/user-eggman@external/group-test/app/kubernetes-master?panel=select-charms-and-actions";
+    "/models/eggman@external/group-test/app/kubernetes-master?panel=select-charms-and-actions";
   const charmURL = "ch:ceph";
 
   beforeEach(() => {
@@ -73,9 +74,26 @@ describe("CharmActionsPanel", () => {
         ],
         modelData: {
           abc123: modelDataFactory.build({
+            applications: {
+              ceph: modelDataApplicationFactory.build({
+                charm: "ch:ceph",
+                units: {
+                  0: modelDataUnitFactory.build(),
+                  1: modelDataUnitFactory.build(),
+                },
+              }),
+            },
             info: modelDataInfoFactory.build({
               name: "group-test",
             }),
+            uuid: "abc123",
+          }),
+        },
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            name: "group-test",
+            ownerTag: "user-eggman@external",
           }),
         },
         selectedApplications: {
@@ -96,7 +114,7 @@ describe("CharmActionsPanel", () => {
     vi.restoreAllMocks();
   });
 
-  it("Renders the list of available actions", async () => {
+  it("renders the list of available actions", async () => {
     renderComponent(
       <CharmActionsPanel
         charmURL={charmURL}
@@ -122,6 +140,12 @@ describe("CharmActionsPanel", () => {
 
   it("disables the submit button if no units are selected", async () => {
     state.juju.selectedApplications = {
+      ceph: modelDataApplicationFactory.build({
+        charm: "ch:ceph",
+        units: {},
+      }),
+    };
+    state.juju.modelData.abc123.applications = {
       ceph: modelDataApplicationFactory.build({
         charm: "ch:ceph",
         units: {},
