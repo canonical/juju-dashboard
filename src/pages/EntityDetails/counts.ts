@@ -1,8 +1,12 @@
-import type { MachineStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+import type {
+  ApplicationStatus,
+  MachineStatus,
+} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 
 import type { Chip } from "components/ChipGroup";
-import type { MachineChangeDelta, UnitData } from "juju/types";
+import type { MachineChangeDelta } from "juju/types";
 import type { ModelData } from "store/juju/types";
+import { getAppMachines, getAppUnits } from "store/juju/utils/units";
 
 type Counts = {
   [status: string]: number;
@@ -48,36 +52,38 @@ const generateSecondaryCounts = <M = ModelData>(
 };
 
 export function generateUnitCounts(
-  units?: null | UnitData,
+  applications?: null | Record<string, ApplicationStatus>,
   applicationName?: null | string,
 ): Counts {
   const counts: Counts = {};
-  if (units && applicationName) {
-    Object.values(units).forEach((unitData): void => {
-      if (unitData.application === applicationName) {
-        const status = unitData["agent-status"].current;
+  if (applications && applicationName) {
+    Object.values(getAppUnits(applicationName, applications) ?? {}).forEach(
+      (unitData): void => {
+        const { status } = unitData["agent-status"];
         if (status) {
           incrementCounts(status, counts);
         }
-      }
-    });
+      },
+    );
   }
   return counts;
 }
 
 export function generateMachineCounts(
   machines?: null | Record<string, MachineStatus>,
-  units?: null | UnitData,
+  applications?: null | Record<string, ApplicationStatus>,
   applicationName?: null | string,
 ): Counts {
   const counts: Counts = {};
-  if (machines && units && applicationName !== null && applicationName) {
-    const machineIds: MachineChangeDelta["id"][] = [];
-    Object.entries(units).forEach(([_unitName, unitData]) => {
-      if (unitData.application === applicationName) {
-        machineIds.push(unitData["machine-id"]);
-      }
-    });
+  if (
+    machines &&
+    applications &&
+    applicationName &&
+    applicationName in applications
+  ) {
+    const machineIds: MachineChangeDelta["id"][] = Object.keys(
+      getAppMachines(applicationName, applications, machines) ?? {},
+    );
     machineIds.forEach((id) => {
       const status = machines[id]?.["agent-status"]?.status;
       if (status) {

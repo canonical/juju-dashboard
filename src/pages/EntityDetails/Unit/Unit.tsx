@@ -1,6 +1,7 @@
 import type {
   ApplicationStatus,
   MachineStatus,
+  UnitStatus,
 } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { MainTable } from "@canonical/react-components";
 import type { JSX } from "react";
@@ -15,8 +16,9 @@ import {
   getAllModelApplicationStatus,
   getModelApplications,
   getModelMachines,
-  getModelUnits,
   getModelUUIDFromList,
+  getUnit,
+  getUnitApp,
   isKubernetesModel,
 } from "store/juju/selectors";
 import { extractRevisionNumber } from "store/juju/utils/models";
@@ -50,31 +52,55 @@ export default function Unit(): JSX.Element {
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
   );
-  const units = useAppSelector((state) => getModelUnits(state, modelUUID));
   const machines = useAppSelector((state) =>
     getModelMachines(state, modelUUID),
   );
   const isK8s = useAppSelector((state) => isKubernetesModel(state, modelUUID));
-
-  const unit = unitIdentifier && units?.[unitIdentifier];
-
-  const filteredMachineList = useMemo(() => {
-    const filteredMachines: Record<string, MachineStatus> = {};
-    if (machines && unit) {
-      const machineId = unit["machine-id"];
-      filteredMachines[machineId] = machines[machineId];
-    }
-    return filteredMachines;
-  }, [machines, unit]);
+  const unit = useAppSelector((state) =>
+    getUnit(state, modelUUID, unitIdentifier),
+  );
+  const unitApp = useAppSelector((state) =>
+    getUnitApp(state, modelUUID, unitIdentifier),
+  );
 
   const filteredApplicationList = useMemo(() => {
-    const filteredApps: Record<string, ApplicationStatus> = {};
-    if (applications && unit) {
-      const name = unit.application;
-      filteredApps[name] = applications[name];
+    const unitAppId = unitIdentifier?.split("/")[0];
+    return unitApp && unitAppId ? { [unitAppId]: unitApp } : null;
+  }, [unitApp, unitIdentifier]);
+
+  const { filteredMachines: filteredMachineList } = useMemo(() => {
+    const apps: Record<string, ApplicationStatus> = {};
+    let appUnit: null | UnitStatus = null;
+    const filteredMachines: Record<string, MachineStatus> = {};
+    if (applications && machines) {
+      const unitAppId = unitIdentifier?.split("/")[0];
+      if (unitAppId && unitAppId in applications) {
+        apps[unitAppId] = applications[unitAppId];
+      }
+      for (const appId in applications) {
+        const app = applications[appId];
+        if (unitIdentifier && app.units) {
+          if (unitIdentifier in app.units) {
+            appUnit = app.units[unitIdentifier];
+            const machineId = app.units[unitIdentifier].machine;
+            filteredMachines[machineId] = machines[machineId];
+          } else {
+            Object.values(app.units).forEach((currentAppUnit) => {
+              if (
+                currentAppUnit.subordinates &&
+                unitIdentifier in currentAppUnit.subordinates
+              ) {
+                appUnit = currentAppUnit.subordinates[unitIdentifier];
+                filteredMachines[currentAppUnit.machine] =
+                  machines[currentAppUnit.machine];
+              }
+            });
+          }
+        }
+      }
     }
-    return filteredApps;
-  }, [applications, unit]);
+    return { apps, unit: appUnit, filteredMachines };
+  }, [applications, machines, unitIdentifier]);
 
   const applicationStatuses = useAppSelector((state) =>
     getAllModelApplicationStatus(state, modelUUID),
@@ -83,24 +109,31 @@ export default function Unit(): JSX.Element {
   const machineRows = useMemo(
     () =>
       modelName && userName
-        ? generateMachineRows(filteredMachineList, units, {
+        ? generateMachineRows(filteredMachineList, applications, {
             modelName,
             userName,
           })
         : [],
-    [filteredMachineList, units, modelName, userName],
+    [modelName, userName, filteredMachineList, applications],
   );
 
   const applicationRows = useMemo(
     () =>
       modelName && userName
         ? generateLocalApplicationRows(
-            filteredApplicationList,
+            Object.keys(filteredApplicationList ?? {}),
+            applications,
             applicationStatuses,
             { modelName, userName },
           )
         : [],
-    [filteredApplicationList, applicationStatuses, modelName, userName],
+    [
+      modelName,
+      userName,
+      filteredApplicationList,
+      applications,
+      applicationStatuses,
+    ],
   );
 
   if (!unit) {
@@ -131,13 +164,13 @@ export default function Unit(): JSX.Element {
     );
   }
 
-  const charm = unit?.["charm-url"] || "-";
+  const charm = unit?.charm || "-";
   const unitEntityData = {
     charm,
     os: "-",
     revision: extractRevisionNumber(charm) || "-",
     version: unit?.["workload-status"].version || "-",
-    message: unit?.["workload-status"].message || "-",
+    message: unit?.["workload-status"].info || "-",
   };
 
   return (

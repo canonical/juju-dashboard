@@ -40,12 +40,7 @@ import {
   commandHistoryState,
   commandHistoryItem,
 } from "testing/factories/juju/juju";
-import {
-  modelWatcherModelDataFactory,
-  unitAgentStatusFactory,
-  unitChangeDeltaFactory,
-  workloadStatusFactory,
-} from "testing/factories/juju/model-watcher";
+import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 
 import {
   getActiveUser,
@@ -141,7 +136,6 @@ import {
   getAppUnits,
   getUnit,
   getUnitApp,
-  getModelUnits,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -2015,26 +2009,6 @@ describe("selectors", () => {
     ).toBe(true);
   });
 
-  it("getModelUnits", () => {
-    const modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        units: {
-          "ceph-mon/0": unitChangeDeltaFactory.build(),
-        },
-      }),
-    };
-    expect(
-      getModelUnits(
-        rootStateFactory.build({
-          juju: jujuStateFactory.build({
-            modelWatcherData,
-          }),
-        }),
-        "abc123",
-      ),
-    ).toStrictEqual(modelWatcherData.abc123.units);
-  });
-
   it("getModelRelations", () => {
     const modelData = {
       abc123: modelDataFactory.build({
@@ -2076,53 +2050,76 @@ describe("selectors", () => {
   });
 
   it("getAllModelApplicationStatus", () => {
-    const modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        units: {
-          "ceph-mon/0": unitChangeDeltaFactory.build({
-            "agent-status": unitAgentStatusFactory.build({
-              current: "idle",
-            }),
-            "workload-status": workloadStatusFactory.build({
-              current: "blocked",
-            }),
-            application: "ceph-mon",
+    const modelData = {
+      abc123: modelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationStatusFactory.build({
+            units: {
+              "ceph-mon/0": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "idle",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "blocked",
+                }),
+              }),
+            },
           }),
-          "postgres/0": unitChangeDeltaFactory.build({
-            "agent-status": unitAgentStatusFactory.build({
-              current: "rebooting",
-            }),
-            "workload-status": workloadStatusFactory.build({
-              current: "waiting",
-            }),
-            application: "postgres",
+          postgres: applicationStatusFactory.build({
+            units: {
+              "postgres/0": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "rebooting",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "waiting",
+                }),
+              }),
+            },
           }),
-          "etcd/0": unitChangeDeltaFactory.build({
-            "agent-status": unitAgentStatusFactory.build({
-              current: "failed",
-            }),
-            "workload-status": workloadStatusFactory.build({
-              current: "maintenance",
-            }),
-            application: "etcd",
+          etcd: applicationStatusFactory.build({
+            units: {
+              "etcd/0": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "failed",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "maintenance",
+                }),
+              }),
+            },
           }),
-          "wordpress/0": unitChangeDeltaFactory.build({
-            "agent-status": unitAgentStatusFactory.build({
-              current: "allocating",
-            }),
-            "workload-status": workloadStatusFactory.build({
-              current: "maintenance",
-            }),
-            application: "wordpress",
+          wordpress: applicationStatusFactory.build({
+            units: {
+              "wordpress/0": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "allocating",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "maintenance",
+                }),
+              }),
+            },
           }),
-          "dashboard/0": unitChangeDeltaFactory.build({
-            "agent-status": unitAgentStatusFactory.build({
-              current: "executing",
-            }),
-            "workload-status": workloadStatusFactory.build({
-              current: "maintenance",
-            }),
-            application: "dashboard",
+          dashboard: applicationStatusFactory.build({
+            units: {
+              "dashboard/0": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "executing",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "maintenance",
+                }),
+              }),
+              "dashboard/1": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "idle",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "unknown",
+                }),
+              }),
+            },
           }),
         },
       }),
@@ -2131,7 +2128,7 @@ describe("selectors", () => {
       getAllModelApplicationStatus(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            modelWatcherData,
+            modelData,
           }),
         }),
         "abc123",

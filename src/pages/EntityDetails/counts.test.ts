@@ -1,11 +1,13 @@
-import { applicationOfferStatusFactory } from "testing/factories/juju/ClientV7";
+import {
+  applicationOfferStatusFactory,
+  applicationStatusFactory,
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
 import {
   detailedStatusFactory,
   machineStatusFactory,
 } from "testing/factories/juju/ClientV7";
 import { modelDataFactory } from "testing/factories/juju/juju";
-import { unitChangeDeltaFactory } from "testing/factories/juju/model-watcher";
-import { unitAgentStatusFactory } from "testing/factories/juju/model-watcher";
 
 import {
   generateMachineCounts,
@@ -33,35 +35,38 @@ describe("incrementCounts", () => {
 describe("generateUnitCounts", () => {
   it("gets unit status counts", () => {
     const units = {
-      "etcd/1": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "agent-status": unitAgentStatusFactory.build({
-          current: "idle",
-        }),
+      etcd: applicationStatusFactory.build({
+        units: {
+          "etcd/1": unitStatusFactory.build({
+            "agent-status": detailedStatusFactory.build({
+              status: "idle",
+            }),
+          }),
+          "etcd/2": unitStatusFactory.build({
+            "agent-status": detailedStatusFactory.build({
+              status: "allocating",
+            }),
+          }),
+          "etcd/3": unitStatusFactory.build({
+            "agent-status": detailedStatusFactory.build({
+              status: "idle",
+            }),
+          }),
+          "etcd/4": unitStatusFactory.build({
+            "agent-status": detailedStatusFactory.build({
+              status: undefined,
+            }),
+          }),
+        },
       }),
-      "mysql/1": unitChangeDeltaFactory.build({
-        application: "mysql",
-        "agent-status": unitAgentStatusFactory.build({
-          current: "idle",
-        }),
-      }),
-      "etcd/2": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "agent-status": unitAgentStatusFactory.build({
-          current: "allocating",
-        }),
-      }),
-      "etcd/3": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "agent-status": unitAgentStatusFactory.build({
-          current: "idle",
-        }),
-      }),
-      "etcd/4": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "agent-status": unitAgentStatusFactory.build({
-          current: undefined,
-        }),
+      mysql: applicationStatusFactory.build({
+        units: {
+          "mysql/1": unitStatusFactory.build({
+            "agent-status": detailedStatusFactory.build({
+              status: "idle",
+            }),
+          }),
+        },
       }),
     };
     expect(generateUnitCounts(units, "etcd")).toMatchObject({
@@ -110,25 +115,28 @@ describe("generateMachineCounts", () => {
       }),
     };
     const units = {
-      "etcd/1": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "machine-id": "0",
+      etcd: applicationStatusFactory.build({
+        units: {
+          "etcd/1": unitStatusFactory.build({
+            machine: "0",
+          }),
+          "etcd/2": unitStatusFactory.build({
+            machine: "1",
+          }),
+          "etcd/3": unitStatusFactory.build({
+            machine: "3",
+          }),
+          "etcd/4": unitStatusFactory.build({
+            machine: "4",
+          }),
+        },
       }),
-      "mysql/1": unitChangeDeltaFactory.build({
-        application: "mysql",
-        "machine-id": "2",
-      }),
-      "etcd/2": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "machine-id": "1",
-      }),
-      "etcd/3": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "machine-id": "3",
-      }),
-      "etcd/4": unitChangeDeltaFactory.build({
-        application: "etcd",
-        "machine-id": "4",
+      mysql: applicationStatusFactory.build({
+        units: {
+          "mysql/1": unitStatusFactory.build({
+            machine: "2",
+          }),
+        },
       }),
     };
     expect(generateMachineCounts(machines, units, "etcd")).toMatchObject({

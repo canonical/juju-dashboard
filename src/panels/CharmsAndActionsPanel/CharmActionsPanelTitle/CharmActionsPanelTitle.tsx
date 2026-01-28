@@ -1,11 +1,15 @@
 import type { JSX } from "react";
+import { useParams } from "react-router";
 
 import CharmIcon from "components/CharmIcon";
 import {
+  getModelApplications,
+  getModelUUIDFromList,
   getSelectedApplications,
   getSelectedCharm,
 } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
+import { getScale } from "store/juju/utils/units";
 import { useAppSelector } from "store/store";
 
 import { Label } from "./types";
@@ -21,15 +25,21 @@ const CharmActionsPanelTitle = ({ charmURL }: Props): JSX.Element => {
   const selectedCharm = useAppSelector((state) =>
     getSelectedCharm(state, charmURL),
   );
+  const { userName, modelName } = useParams();
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
+  const applications = useAppSelector((state) =>
+    getModelApplications(state, modelUUID),
+  );
   const selectedCount = Object.keys(selectedApplications).length;
 
   if (!selectedCount || !selectedCharm) {
     return <>{Label.NONE_SELECTED_TITLE}</>;
   }
-  const totalUnits = Object.values(selectedApplications).reduce(
-    (total, app) => total + (Object.keys(app.units).length ?? 0),
-    0,
-  );
+  const totalUnits = applications
+    ? getScale(Object.keys(selectedApplications), applications)
+    : 0;
 
   return (
     <>

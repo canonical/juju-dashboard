@@ -1,4 +1,3 @@
-import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { MainTable } from "@canonical/react-components";
 import type { JSX } from "react";
 import { useMemo } from "react";
@@ -7,12 +6,12 @@ import { useParams } from "react-router";
 import EntityInfo from "components/EntityInfo";
 import InfoPanel from "components/InfoPanel";
 import type { EntityDetailsRoute } from "components/Routes";
-import type { UnitData } from "juju/types";
 import {
   getAllModelApplicationStatus,
+  getMachineApps,
+  getMachineUnits,
   getModelApplications,
   getModelMachines,
-  getModelUnits,
   getModelUUIDFromList,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
@@ -38,64 +37,48 @@ export default function Machine(): JSX.Element {
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
   );
-  const units = useAppSelector((state) => getModelUnits(state, modelUUID));
   const machines = useAppSelector((state) =>
     getModelMachines(state, modelUUID),
   );
   const machine = machineId ? machines?.[machineId] : null;
-
   const applicationStatuses = useAppSelector((state) =>
     getAllModelApplicationStatus(state, modelUUID),
   );
-
-  const filteredApplicationList = useMemo(() => {
-    if (!applications || !units) {
-      return null;
-    }
-    const filteredApps: Record<string, ApplicationStatus> = {};
-    const appList = new Set<string>();
-    Object.values(units).forEach((unitData) => {
-      if (unitData["machine-id"] === machineId) {
-        appList.add(unitData.application);
-      }
-    });
-    [...appList].forEach((appName) => {
-      filteredApps[appName] = applications[appName];
-    });
-    return filteredApps;
-  }, [applications, units, machineId]);
-
-  const filteredUnitList = useMemo(() => {
-    if (!units) {
-      return null;
-    }
-    const filteredUnits: UnitData = {};
-    Object.entries(units).forEach(([unitId, unitData]) => {
-      if (unitData["machine-id"] === machineId) {
-        filteredUnits[unitId] = unitData;
-      }
-    });
-    return filteredUnits;
-  }, [units, machineId]);
+  const filteredApplicationList = useAppSelector((state) =>
+    getMachineApps(state, modelUUID, machineId),
+  );
+  const filteredUnitList = useAppSelector((state) =>
+    getMachineUnits(state, modelUUID, machineId, false),
+  );
 
   const applicationRows = useMemo(
     () =>
       modelName && userName
         ? generateLocalApplicationRows(
-            filteredApplicationList,
+            Object.keys(filteredApplicationList ?? {}),
+            applications,
             applicationStatuses,
             { modelName, userName },
           )
         : [],
-    [filteredApplicationList, applicationStatuses, modelName, userName],
+    [
+      modelName,
+      userName,
+      filteredApplicationList,
+      applications,
+      applicationStatuses,
+    ],
   );
 
   const unitRows = useMemo(
     () =>
       modelName && userName
-        ? generateUnitRows(filteredUnitList, { modelName, userName })
+        ? generateUnitRows(applications, filteredUnitList, {
+            modelName,
+            userName,
+          })
         : [],
-    [filteredUnitList, modelName, userName],
+    [applications, filteredUnitList, modelName, userName],
   );
 
   const hardware = parseMachineHardware(machine?.hardware);

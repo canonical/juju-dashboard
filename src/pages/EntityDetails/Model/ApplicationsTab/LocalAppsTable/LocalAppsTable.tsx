@@ -68,6 +68,7 @@ const LocalAppsTable: FC<Props> = ({ applications }: Props) => {
   let rows: MainTableRow[] = useMemo(() => {
     return modelName && userName && applications
       ? generateLocalApplicationRows(
+          Object.keys(applications),
           applications,
           applicationStatuses,
           { modelName, userName },

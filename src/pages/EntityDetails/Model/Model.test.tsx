@@ -23,6 +23,7 @@ import {
 import {
   applicationOfferStatusFactory,
   applicationStatusFactory,
+  modelStatusInfoFactory,
   remoteApplicationStatusFactory,
   unitStatusFactory,
 } from "testing/factories/juju/ClientV7";
@@ -46,12 +47,6 @@ import {
   modelFeaturesFactory,
   rebacState,
 } from "testing/factories/juju/juju";
-import {
-  machineChangeDeltaFactory,
-  modelWatcherModelDataFactory,
-  modelWatcherModelInfoFactory,
-  unitChangeDeltaFactory,
-} from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 
 import Model from "./Model";
@@ -130,9 +125,6 @@ describe("Model", () => {
             wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
         },
-        modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build(),
-        },
       }),
     });
   });
@@ -203,17 +195,13 @@ describe("Model", () => {
   });
 
   it("displays the apps table by default", async () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        machines: {
-          "0": machineChangeDeltaFactory.build(),
-        },
-      }),
-    };
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
           "ceph-mon": applicationStatusFactory.build(),
+        },
+        machines: {
+          "0": machineStatusFactory.build(),
         },
         relations: [
           relationStatusFactory.build({
@@ -245,17 +233,13 @@ describe("Model", () => {
   });
 
   it("can display the apps table", async () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        machines: {
-          "0": machineChangeDeltaFactory.build(),
-        },
-      }),
-    };
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
           "ceph-mon": applicationStatusFactory.build(),
+        },
+        machines: {
+          "0": machineStatusFactory.build(),
         },
         relations: [
           relationStatusFactory.build({
@@ -333,17 +317,13 @@ describe("Model", () => {
   });
 
   it("can display the relations table", async () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        machines: {
-          "0": machineChangeDeltaFactory.build(),
-        },
-      }),
-    };
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
           "ceph-mon": applicationStatusFactory.build(),
+        },
+        machines: {
+          "0": machineStatusFactory.build(),
         },
         relations: [
           relationStatusFactory.build({
@@ -379,17 +359,13 @@ describe("Model", () => {
   });
 
   it("can display the action logs table", async () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        machines: {
-          "0": machineChangeDeltaFactory.build(),
-        },
-      }),
-    };
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
           "ceph-mon": applicationStatusFactory.build(),
+        },
+        machines: {
+          "0": machineStatusFactory.build(),
         },
         relations: [
           relationStatusFactory.build({
@@ -428,17 +404,13 @@ describe("Model", () => {
     if (state.general.config) {
       state.general.config.isJuju = false;
     }
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        machines: {
-          "0": machineChangeDeltaFactory.build(),
-        },
-      }),
-    };
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
           "ceph-mon": applicationStatusFactory.build(),
+        },
+        machines: {
+          "0": machineStatusFactory.build(),
         },
         relations: [
           relationStatusFactory.build({
@@ -494,13 +466,6 @@ describe("Model", () => {
   });
 
   it("can display the offers table", async () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        machines: {
-          "0": machineChangeDeltaFactory.build(),
-        },
-      }),
-    };
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
@@ -510,6 +475,9 @@ describe("Model", () => {
           uuid: "abc123",
           name: "test1",
         }),
+        machines: {
+          "0": machineStatusFactory.build(),
+        },
         offers: {
           db: applicationOfferStatusFactory.build(),
         },
@@ -529,13 +497,6 @@ describe("Model", () => {
   });
 
   it("can display the consumed table", async () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        machines: {
-          "0": machineChangeDeltaFactory.build(),
-        },
-      }),
-    };
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
@@ -545,6 +506,9 @@ describe("Model", () => {
           uuid: "abc123",
           name: "test1",
         }),
+        machines: {
+          "0": machineStatusFactory.build(),
+        },
         relations: [
           relationStatusFactory.build({
             key: "wordpress:db mysql:db",
@@ -676,8 +640,8 @@ describe("Model", () => {
   });
 
   it("should show a message if a model has no integrations", () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build(),
+    state.juju.modelData = {
+      abc123: modelDataFactory.build(),
     };
     renderComponent(<Model />, {
       state,
@@ -692,8 +656,8 @@ describe("Model", () => {
   });
 
   it("should show a message if a model has no machines", () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build(),
+    state.juju.modelData = {
+      abc123: modelDataFactory.build(),
     };
     renderComponent(<Model />, {
       state,
@@ -708,27 +672,60 @@ describe("Model", () => {
   });
 
   it("should show apps appropriate number of apps on machine in hadoopspark model", () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        model: modelWatcherModelInfoFactory.build({ name: "hadoopspark" }),
-        units: {
-          "0": unitChangeDeltaFactory.build({ application: "ceph-mon-0" }),
-          "1": unitChangeDeltaFactory.build({ application: "ceph-mon-1" }),
-          "2": unitChangeDeltaFactory.build({ application: "ceph-mon-2" }),
-          "3": unitChangeDeltaFactory.build({ application: "ceph-mon-3" }),
-          "4": unitChangeDeltaFactory.build({ application: "ceph-mon-4" }),
-          "5": unitChangeDeltaFactory.build({ application: "ceph-mon-5" }),
-          "6": unitChangeDeltaFactory.build({ application: "ceph-mon-6" }),
-          "7": unitChangeDeltaFactory.build({ application: "ceph-mon-7" }),
-          "8": unitChangeDeltaFactory.build({ application: "ceph-mon-8" }),
-          "9": unitChangeDeltaFactory.build({ application: "ceph-mon-9" }),
-        },
-      }),
-    };
     state.juju.modelData = {
       abc123: modelDataFactory.build({
+        model: modelStatusInfoFactory.build({ name: "hadoopspark" }),
         applications: {
-          "ceph-mon": applicationStatusFactory.build(),
+          "ceph-mon-0": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-0/0": unitStatusFactory.build({ machine: "0" }),
+            },
+          }),
+          "ceph-mon-1": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-1/0": unitStatusFactory.build({ machine: "0" }),
+            },
+          }),
+          "ceph-mon-2": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-2/0": unitStatusFactory.build({ machine: "0" }),
+            },
+          }),
+          "ceph-mon-3": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-3/0": unitStatusFactory.build({ machine: "0" }),
+            },
+          }),
+          "ceph-mon-4": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-4/0": unitStatusFactory.build({ machine: "0" }),
+            },
+          }),
+          "ceph-mon-5": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-5/0": unitStatusFactory.build({ machine: "0" }),
+            },
+          }),
+          "ceph-mon-6": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-6/0": unitStatusFactory.build({ machine: "0" }),
+            },
+          }),
+          "ceph-mon-7": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-7/0": unitStatusFactory.build({ machine: "0" }),
+            },
+          }),
+          "ceph-mon-8": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-8/0": unitStatusFactory.build({ machine: "0" }),
+            },
+          }),
+          "ceph-mon-9": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-9/0": unitStatusFactory.build({ machine: "0" }),
+            },
+          }),
         },
         machines: {
           "0": machineStatusFactory.build(),
@@ -745,41 +742,42 @@ describe("Model", () => {
   });
 
   it("should show apps appropriate number of apps on machine in canonical-kubernetes model", () => {
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        model: modelWatcherModelInfoFactory.build({ name: "hadoopspark" }),
-        machines: {
-          "0": machineChangeDeltaFactory.build({ id: "0" }),
-          "1": machineChangeDeltaFactory.build({ id: "1" }),
-        },
-        units: {
-          "0": unitChangeDeltaFactory.build({
-            "machine-id": "0",
-            application: "ceph-mon",
-          }),
-          "1": unitChangeDeltaFactory.build({
-            "machine-id": "0",
-            application: "ceph-mon-0",
-          }),
-          "2": unitChangeDeltaFactory.build({
-            "machine-id": "1",
-            application: "ceph-mon-1",
-          }),
-          "3": unitChangeDeltaFactory.build({
-            "machine-id": "1",
-            application: "ceph-mon-2",
-          }),
-        },
-      }),
-    };
     state.juju.modelData = {
       abc123: modelDataFactory.build({
-        applications: {
-          "ceph-mon": applicationStatusFactory.build(),
-        },
+        model: modelStatusInfoFactory.build({ name: "hadoopspark" }),
         machines: {
           "0": machineStatusFactory.build({ id: "0" }),
           "1": machineStatusFactory.build({ id: "1" }),
+        },
+        applications: {
+          "ceph-mon": applicationStatusFactory.build({
+            units: {
+              "ceph-mon/0": unitStatusFactory.build({
+                machine: "0",
+              }),
+            },
+          }),
+          "ceph-mon-0": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-0/0": unitStatusFactory.build({
+                machine: "0",
+              }),
+            },
+          }),
+          "ceph-mon-1": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-1/0": unitStatusFactory.build({
+                machine: "1",
+              }),
+            },
+          }),
+          "ceph-mon-2": applicationStatusFactory.build({
+            units: {
+              "ceph-mon-2/0": unitStatusFactory.build({
+                machine: "1",
+              }),
+            },
+          }),
         },
       }),
     };
