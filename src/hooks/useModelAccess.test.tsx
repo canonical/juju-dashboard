@@ -26,7 +26,6 @@ import {
   modelListInfoFactory,
   rebacState,
 } from "testing/factories/juju/juju";
-import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderWrappedHook, createStore } from "testing/utils";
 
 import useModelAccess from "./useModelAccess";
@@ -61,9 +60,6 @@ describe("useModelAccess", () => {
             name: "test1",
             wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
-        },
-        modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build(),
         },
       }),
     });

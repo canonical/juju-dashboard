@@ -4,7 +4,6 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 
 import type { Chip } from "components/ChipGroup";
-import type { MachineChangeDelta } from "juju/types";
 import type { ModelData } from "store/juju/types";
 import { getAppMachines, getAppUnits } from "store/juju/utils/units";
 
@@ -81,7 +80,7 @@ export function generateMachineCounts(
     applicationName &&
     applicationName in applications
   ) {
-    const machineIds: MachineChangeDelta["id"][] = Object.keys(
+    const machineIds: string[] = Object.keys(
       getAppMachines(applicationName, applications, machines) ?? {},
     );
     for (const id of machineIds) {

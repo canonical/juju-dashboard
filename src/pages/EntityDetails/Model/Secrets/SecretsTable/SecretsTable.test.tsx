@@ -27,7 +27,6 @@ import {
   modelFeaturesFactory,
   modelDataFactory,
 } from "testing/factories/juju/juju";
-import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -98,9 +97,6 @@ describe("SecretsTable", () => {
             manageSecrets: true,
           }),
         }),
-        modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build(),
-        },
         secrets: secretsStateFactory.build({
           abc123: modelSecretsFactory.build({
             items: [

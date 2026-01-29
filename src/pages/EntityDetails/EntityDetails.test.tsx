@@ -1,5 +1,4 @@
 import { screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import type { JSX } from "react";
 import { vi } from "vitest";
 
@@ -88,7 +87,6 @@ describe("Entity Details Container", () => {
 
   it("should show a spinner if waiting on model list data", () => {
     state.juju.modelsLoaded = false;
-    state.juju.modelWatcherData = {};
     state.juju.modelData = {};
     renderComponent(<EntityDetails />, { path, url, state });
     expect(
@@ -97,7 +95,6 @@ describe("Entity Details Container", () => {
   });
 
   it("should show a spinner if waiting on model data", () => {
-    state.juju.modelWatcherData = {};
     state.juju.modelData = {};
     renderComponent(<EntityDetails />, { path, url, state });
     expect(
@@ -184,39 +181,5 @@ describe("Entity Details Container", () => {
       state,
     });
     expect(document.querySelector(".entity-details__unit")).toBeInTheDocument();
-  });
-
-  it("should show watcher model data timeout error", () => {
-    renderComponent(<EntityDetails modelWatcherError="timeout" />, {
-      path,
-      url,
-      state,
-    });
-    expect(
-      document.querySelector(".p-notification--negative"),
-    ).toHaveTextContent(Label.MODEL_WATCHER_TIMEOUT);
-  });
-
-  it("should show watcher model custom error", () => {
-    renderComponent(<EntityDetails modelWatcherError="custom error" />, {
-      path,
-      url,
-      state,
-    });
-    expect(
-      document.querySelector(".p-notification--negative"),
-    ).toHaveTextContent(`${Label.MODEL_WATCHER_ERROR} custom error`);
-  });
-
-  it("should refresh page when pressing pressing Refresh button within error notification", async () => {
-    const reloadSpy = vi.spyOn(window.location, "reload");
-    renderComponent(<EntityDetails modelWatcherError="timeout" />, {
-      path,
-      url,
-      state,
-    });
-    await userEvent.click(screen.getByRole("button", { name: "Refresh" }));
-    expect(window.location.reload).toHaveBeenCalledTimes(1);
-    reloadSpy.mockReset();
   });
 });

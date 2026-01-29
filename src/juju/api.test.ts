@@ -33,7 +33,6 @@ import {
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { connectionInfoFactory } from "testing/factories/juju/jujulib";
-import { machineChangeDeltaFactory } from "testing/factories/juju/model-watcher";
 
 import {
   CLIENT_VERSION,
@@ -51,12 +50,9 @@ import {
   getCharmsURLFromApplications,
   loginWithBakery,
   setModelSharingPermissions,
-  startModelWatcher,
-  stopModelWatcher,
   connectToModel,
 } from "./api";
-import type { AllWatcherDelta } from "./types";
-import { DeltaChangeTypes, DeltaEntityTypes, Label } from "./types";
+import { Label } from "./types";
 
 describe("Juju API", () => {
   beforeEach(() => {
@@ -1327,161 +1323,6 @@ describe("Juju API", () => {
         CLIENT_VERSION,
       );
       expect(response).toMatchObject(conn);
-    });
-  });
-
-  describe("startModelWatcher", () => {
-    it("handles no connection", async () => {
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: vi.fn(),
-      }));
-      await expect(
-        startModelWatcher("abc123", "wss://example.com/api"),
-      ).rejects.toThrow(Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR);
-    });
-
-    it("handles no response", async () => {
-      const conn = {
-        facades: {
-          client: {
-            watchAll: vi.fn().mockReturnValue(null),
-          },
-          allWatcher: {
-            next: vi.fn().mockReturnValue(new Promise(() => {})),
-          },
-          pinger: {
-            ping: vi.fn(),
-          },
-        },
-      } as unknown as Connection;
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: vi.fn(),
-        conn,
-      }));
-      await expect(
-        startModelWatcher("abc123", "wss://example.com/api"),
-      ).rejects.toThrow(Label.START_MODEL_WATCHER_NO_ID_ERROR);
-    });
-
-    it("handles error response", async () => {
-      const conn = {
-        facades: {
-          client: {
-            watchAll: vi.fn().mockRejectedValue(new Error("Uh oh!")),
-          },
-          allWatcher: {
-            next: vi.fn().mockReturnValue(new Promise(() => {})),
-          },
-          pinger: {
-            ping: vi.fn(),
-          },
-        },
-      } as unknown as Connection;
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: vi.fn(),
-        conn,
-      }));
-      await expect(
-        startModelWatcher("abc123", "wss://example.com/api"),
-      ).rejects.toThrow("Uh oh!");
-    });
-
-    it("starts the model watcher", async () => {
-      const watcherHandle = { "watcher-id": 12345 };
-      const conn = {
-        facades: {
-          client: {
-            watchAll: vi.fn().mockReturnValue(watcherHandle),
-          },
-          allWatcher: {
-            next: vi.fn().mockResolvedValue([]),
-          },
-          pinger: {
-            ping: vi.fn().mockResolvedValue(null),
-          },
-        },
-      } as unknown as Connection;
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: vi.fn(),
-        conn,
-      }));
-      const response = await startModelWatcher(
-        "abc123",
-        "wss://example.com/api",
-      );
-      expect(conn.facades.client.watchAll).toHaveBeenCalled();
-      vi.advanceTimersByTime(PING_TIME);
-      expect(conn.facades.pinger.ping).toHaveBeenCalled();
-      await response.next();
-      expect(conn.facades.allWatcher.next).toHaveBeenCalledWith({ id: 12345 });
-      expect(response).toMatchObject({
-        conn,
-        watcherHandle,
-        // This will be a number, but we're using mocked timers in these tests.
-        pingerIntervalId: expect.any(Object),
-      });
-    });
-
-    it("processes deltas if they're returned", async () => {
-      const watcherHandle = { "watcher-id": 12345 };
-      const deltas: AllWatcherDelta[] = [
-        [
-          DeltaEntityTypes.MACHINE,
-          DeltaChangeTypes.CHANGE,
-          machineChangeDeltaFactory.build(),
-        ],
-      ];
-      const conn = {
-        facades: {
-          client: {
-            watchAll: vi.fn().mockReturnValue(watcherHandle),
-          },
-          allWatcher: {
-            next: vi.fn().mockResolvedValue({ deltas }),
-          },
-          pinger: {
-            ping: vi.fn(),
-          },
-        },
-      } as unknown as Connection;
-      vi.spyOn(jujuLib, "connectAndLogin").mockImplementation(async () => ({
-        logout: vi.fn(),
-        conn,
-      }));
-      const { next } = await startModelWatcher(
-        "abc123",
-        "wss://example.com/api",
-      );
-      await next();
-      expect(conn.facades.allWatcher.next).toHaveBeenCalledExactlyOnceWith({
-        id: 12345,
-      });
-    });
-  });
-
-  describe("stopModelWatcher", () => {
-    it("stops the model watcher", async () => {
-      const clearInterval = vi
-        .spyOn(window, "clearInterval")
-        .mockImplementation(vi.fn());
-      const conn = {
-        facades: {
-          allWatcher: {
-            stop: vi.fn().mockReturnValue(null),
-          },
-        },
-        transport: {
-          close: vi.fn(),
-        },
-      } as unknown as Connection;
-      await stopModelWatcher(conn, "123", 456);
-      expect(conn.facades.allWatcher.stop).toHaveBeenCalledWith({ id: "123" });
-      expect(conn.transport.close).toHaveBeenCalled();
-      vi.advanceTimersByTime(PING_TIME);
-      await waitFor(() => {
-        expect(clearInterval).toHaveBeenCalled();
-      });
-      clearInterval.mockRestore();
     });
   });
 

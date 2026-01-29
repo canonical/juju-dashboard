@@ -25,10 +25,6 @@ import {
   commandHistoryState,
   commandHistoryItem,
 } from "testing/factories/juju/juju";
-import {
-  modelWatcherModelDataFactory,
-  modelWatcherModelInfoFactory,
-} from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 import urls, { externalURLs } from "urls";
 
@@ -170,19 +166,15 @@ describe("JujuCLI", () => {
     });
     state.juju.modelData = {
       abc123: modelDataFactory.build({
+        info: modelInfoFactory.build({
+          name: modelName,
+          "owner-tag": `user-${userName}`,
+          "agent-version": "3.0.7",
+          "controller-uuid": "controller123",
+        }),
         applications: {
           "ceph-mon": applicationStatusFactory.build(),
         },
-      }),
-    };
-    state.juju.modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        model: modelWatcherModelInfoFactory.build({
-          name: modelName,
-          owner: userName,
-          version: "3.0.7",
-          "controller-uuid": "controller123",
-        }),
       }),
     };
     renderComponent(<JujuCLI />, { path, url, state });

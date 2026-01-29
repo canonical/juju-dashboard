@@ -225,13 +225,6 @@ describe("actions", () => {
     });
   });
 
-  it("processAllWatcherDeltas", () => {
-    expect(actions.processAllWatcherDeltas([])).toStrictEqual({
-      type: "juju/processAllWatcherDeltas",
-      payload: [],
-    });
-  });
-
   it("updateCharms", () => {
     const charms = [charmInfoFactory.build()];
     expect(

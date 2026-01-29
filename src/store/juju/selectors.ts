@@ -320,11 +320,6 @@ export const getControllersCount = createSelector([slice], (sliceState) => {
     : 0;
 });
 
-const getModelWatcherData = createSelector(
-  [slice],
-  (sliceState) => sliceState.modelWatcherData,
-);
-
 export const getModelList = createSelector(
   [slice],
   (sliceState) => sliceState.models,
@@ -521,20 +516,6 @@ export const getModelListLoaded = createSelector(
 export const hasModels = createSelector(
   [getModelList],
   (modelList) => Object.keys(modelList).length > 0,
-);
-
-export const getModelWatcherDataByUUID = createSelector(
-  [
-    getModelWatcherData,
-    (_state: RootState, modelUUID: string): string => modelUUID,
-  ],
-  (modelWatcherData, modelUUID) => {
-    if (modelWatcherData?.[modelUUID]) {
-      return modelWatcherData[modelUUID];
-    }
-
-    return null;
-  },
 );
 
 export const getModelInfo = createSelector(

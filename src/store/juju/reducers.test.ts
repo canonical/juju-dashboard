@@ -1,4 +1,3 @@
-import { DeltaChangeTypes, DeltaEntityTypes } from "juju/types";
 import { charmInfoFactory } from "testing/factories/juju/Charms";
 import {
   applicationStatusFactory,
@@ -27,7 +26,6 @@ import {
   commandHistoryState,
   commandHistoryItem,
 } from "testing/factories/juju/juju";
-import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 
 import { actions, reducer } from "./slice";
 
@@ -623,50 +621,6 @@ describe("reducers", () => {
       ...state,
       controllers: {
         "wss://example.com": controllers,
-      },
-    });
-  });
-
-  it("processAllWatcherDeltas", () => {
-    const state = jujuStateFactory.build({
-      modelWatcherData: {
-        abc123: modelWatcherModelDataFactory.build({
-          annotations: {
-            "ceph-mon": {
-              "gui-x": "818",
-              "gui-y": "563",
-            },
-          },
-        }),
-      },
-    });
-    expect(state.modelWatcherData?.abc123.annotations).toStrictEqual({
-      "ceph-mon": {
-        "gui-x": "818",
-        "gui-y": "563",
-      },
-    });
-    const reducedState = reducer(
-      state,
-      actions.processAllWatcherDeltas([
-        [
-          DeltaEntityTypes.ANNOTATION,
-          DeltaChangeTypes.CHANGE,
-          {
-            "model-uuid": "abc123",
-            tag: "application-etcd",
-            annotations: { new: "changed" },
-          },
-        ],
-      ]),
-    );
-    expect(reducedState.modelWatcherData?.abc123.annotations).toStrictEqual({
-      etcd: {
-        new: "changed",
-      },
-      "ceph-mon": {
-        "gui-x": "818",
-        "gui-y": "563",
       },
     });
   });

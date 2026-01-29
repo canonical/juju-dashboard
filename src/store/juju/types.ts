@@ -13,7 +13,7 @@ import type {
   CrossModelQueryResponse,
   RelationshipTuple,
 } from "juju/jimm/JIMMV4";
-import type { FullStatusWithAnnotations, ModelWatcherData } from "juju/types";
+import type { FullStatusWithAnnotations } from "juju/types";
 import type { GenericItemsState, GenericState } from "store/types";
 
 export type ControllerLocation = {
@@ -123,7 +123,6 @@ export type JujuState = {
   modelsLoaded: boolean;
   modelData: ModelDataList;
   modelFeatures: ModelFeaturesState;
-  modelWatcherData?: ModelWatcherData;
   charms: Charm[];
   rebac: ReBACState;
   secrets: SecretsState;

@@ -10,10 +10,6 @@ import {
   modelDataFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
-import {
-  modelWatcherModelDataFactory,
-  modelWatcherModelInfoFactory,
-} from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 
 import InfoPanel from "./InfoPanel";
@@ -46,14 +42,6 @@ describe("Info Panel", () => {
             applications: {
               "ceph-mon": applicationStatusFactory.build(),
             },
-          }),
-        },
-        modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build({
-            model: modelWatcherModelInfoFactory.build({
-              name: "enterprise",
-              owner: "kirk@external",
-            }),
           }),
         },
       }),
