@@ -40,7 +40,6 @@ import {
   commandHistoryState,
   commandHistoryItem,
 } from "testing/factories/juju/juju";
-import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 
 import {
   getActiveUser,
@@ -74,7 +73,6 @@ import {
   getModelStatus,
   getModelUUID,
   getModelUUIDFromList,
-  getModelWatcherDataByUUID,
   getSelectedApplications,
   getSelectedCharm,
   getUserDomains,
@@ -1112,22 +1110,6 @@ describe("selectors", () => {
         ),
       ).toStrictEqual(3);
     });
-  });
-
-  it("getModelWatcherDataByUUID", () => {
-    const modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build(),
-    };
-    expect(
-      getModelWatcherDataByUUID(
-        rootStateFactory.build({
-          juju: jujuStateFactory.build({
-            modelWatcherData,
-          }),
-        }),
-        "abc123",
-      ),
-    ).toStrictEqual(modelWatcherData.abc123);
   });
 
   it("getModelInfo", () => {

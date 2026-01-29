@@ -17,7 +17,6 @@ import {
   modelDataFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
-import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 
 import { ActionsPanelTestId } from "./ActionsPanel";
@@ -114,9 +113,6 @@ describe("Panels", () => {
               name: "test1",
               wsControllerURL: "wss://jimm.jujucharms.com/api",
             }),
-          },
-          modelWatcherData: {
-            abc123: modelWatcherModelDataFactory.build(),
           },
         }),
       });

@@ -9,8 +9,6 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import { Factory } from "fishery";
 
-import type { ApplicationInfo } from "juju/types";
-
 export const charmOptionFactory = Factory.define<CharmOption>(() => ({
   description: "The name of the bucket in Ceph to add these devices into",
   type: "string",
@@ -125,28 +123,6 @@ export const charmInfoFactory = Factory.define<Charm>(() => ({
       },
     ],
   },
-}));
-
-export const charmApplicationFactory = Factory.define<ApplicationInfo>(() => ({
-  "unit-count": 2,
-  "model-uuid": "816d67b1-4942-4420-8be2-07df30f7a1ce",
-  name: "db2",
-  exposed: false,
-  "charm-url": "ch:amd64/focal/postgresql-k8s-20",
-  "owner-tag": "",
-  life: "alive",
-  "min-units": 0,
-  constraints: {
-    arch: "amd64",
-  },
-  subordinate: false,
-  status: {
-    current: "active",
-    message: "",
-    since: "2023-01-26T06:41:05.303171453Z",
-    version: "",
-  },
-  "workload-version": "",
 }));
 
 export const charmActionSpecFactory = Factory.define<CharmActionSpec>(() => ({

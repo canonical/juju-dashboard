@@ -11,7 +11,6 @@ import {
   modelUserInfoFactory,
 } from "testing/factories/juju/ModelManagerV9";
 import { modelDataFactory } from "testing/factories/juju/juju";
-import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { createStore, renderComponent } from "testing/utils";
 
 import LocalAppsTable from "./LocalAppsTable";
@@ -72,19 +71,6 @@ describe("LocalAppsTable", () => {
                 }),
               ],
             }),
-          }),
-        },
-        modelWatcherData: {
-          test123: modelWatcherModelDataFactory.build({
-            charms: {
-              "ch:amd64/focal/postgresql-k8s-20": {
-                "model-uuid": "test123",
-                "charm-url": "ch:amd64/focal/postgresql-k8s-20",
-                "charm-version": "",
-                life: "alive",
-                profile: null,
-              },
-            },
           }),
         },
       }),

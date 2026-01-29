@@ -1,8 +1,3 @@
-import {
-  Button,
-  Notification as ReactNotification,
-  Strip,
-} from "@canonical/react-components";
 import classNames from "classnames";
 import type { FC, ReactNode } from "react";
 import { useParams, Link, Outlet, useOutletContext } from "react-router";
@@ -29,10 +24,6 @@ import urls, { externalURLs } from "urls";
 import ModelTabs from "./Model/ModelTabs";
 import { Label, TestId } from "./types";
 
-type Props = {
-  modelWatcherError?: null | string;
-};
-
 const getEntityType = (params: Partial<EntityDetailsRoute>): string => {
   if (params.unitId) {
     return "unit";
@@ -44,7 +35,7 @@ const getEntityType = (params: Partial<EntityDetailsRoute>): string => {
   return "model";
 };
 
-const EntityDetails: FC<Props> = ({ modelWatcherError }: Props) => {
+const EntityDetails: FC = () => {
   const routeParams = useParams<EntityDetailsRoute>();
   const { userName, modelName } = routeParams;
   const modelsLoaded = useAppSelector(getModelListLoaded);
@@ -116,33 +107,6 @@ const EntityDetails: FC<Props> = ({ modelWatcherError }: Props) => {
       })}
       titleComponent="div"
     >
-      {modelWatcherError ? (
-        <Strip className="u-no-padding--bottom" shallow>
-          <ReactNotification
-            className="u-no-margin--bottom"
-            severity="negative"
-            title="Error"
-          >
-            {modelWatcherError === "timeout" ? (
-              <span>{Label.MODEL_WATCHER_TIMEOUT}</span>
-            ) : (
-              <span>{Label.MODEL_WATCHER_ERROR}</span>
-            )}
-            {modelWatcherError && modelWatcherError !== "timeout" ? (
-              <span>{` ${modelWatcherError}`}</span>
-            ) : null}{" "}
-            <Button
-              appearance="link"
-              onClick={() => {
-                window.location.reload();
-              }}
-            >
-              Refresh
-            </Button>
-            {"."}
-          </ReactNotification>
-        </Strip>
-      ) : null}
       {content}
     </MainContent>
   );

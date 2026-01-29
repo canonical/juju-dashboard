@@ -4,10 +4,8 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
-import { charmApplicationFactory } from "testing/factories/juju/Charms";
 import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
 import { modelDataFactory } from "testing/factories/juju/juju";
-import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { createStore, renderComponent } from "testing/utils";
 
 import SearchResults from "./SearchResults";
@@ -39,33 +37,6 @@ describe("SearchResults", () => {
               "jupyter-controller": applicationStatusFactory.build(),
               "jupyter-ui": applicationStatusFactory.build(),
               redis1: applicationStatusFactory.build(),
-            },
-          }),
-        },
-        modelWatcherData: {
-          test123: modelWatcherModelDataFactory.build({
-            applications: {
-              mysql1: charmApplicationFactory.build({
-                name: "mysql1",
-              }),
-              mysql2: charmApplicationFactory.build({
-                name: "mysql2",
-              }),
-              db2: charmApplicationFactory.build({
-                name: "db2",
-              }),
-              db1: charmApplicationFactory.build({
-                name: "db1",
-              }),
-              "jupyter-controller": charmApplicationFactory.build({
-                name: "jupyter-controller",
-              }),
-              "jupyter-ui": charmApplicationFactory.build({
-                name: "jupyter-ui",
-              }),
-              redis1: charmApplicationFactory.build({
-                name: "redis1",
-              }),
             },
           }),
         },

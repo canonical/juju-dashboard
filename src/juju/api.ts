@@ -1,8 +1,6 @@
 import type { ConnectOptions, Client as JujuClient } from "@canonical/jujulib";
 import { connect, connectAndLogin } from "@canonical/jujulib";
 import Action from "@canonical/jujulib/dist/api/facades/action";
-import AllWatcher from "@canonical/jujulib/dist/api/facades/all-watcher";
-import type { AllWatcherNextResults } from "@canonical/jujulib/dist/api/facades/all-watcher/AllWatcherV3";
 import Annotations from "@canonical/jujulib/dist/api/facades/annotations";
 import Application from "@canonical/jujulib/dist/api/facades/application";
 import Charms from "@canonical/jujulib/dist/api/facades/charms";
@@ -11,7 +9,6 @@ import Client from "@canonical/jujulib/dist/api/facades/client";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
-import type { AllWatcherId } from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
 import type {
   ModelInfoResults,
@@ -80,7 +77,6 @@ export function generateConnectionOptions(
     // The options used when connecting to a Juju controller or model.
     facades: [
       Action,
-      AllWatcher,
       Annotations,
       Application,
       Charms,
@@ -519,44 +515,6 @@ export async function connectAndLoginToModel(
   }
   const credentials = getUserPass(appState, wsControllerURL);
   return connectToModel(modelUUID, wsControllerURL, credentials);
-}
-
-export async function startModelWatcher(
-  modelUUID: string,
-  wsControllerURL: string,
-  credentials?: AuthCredential,
-): Promise<{
-  conn: ConnectionWithFacades;
-  watcherHandle: AllWatcherId | undefined;
-  pingerIntervalId: number;
-  next: () => Promise<AllWatcherNextResults | undefined>;
-}> {
-  const conn = await connectToModel(modelUUID, wsControllerURL, credentials);
-  if (!conn) {
-    throw new Error(Label.START_MODEL_WATCHER_NO_CONNECTION_ERROR);
-  }
-  const watcherHandle = await conn?.facades.client?.watchAll(null);
-  const pingerIntervalId = startPingerLoop(conn);
-  const id = watcherHandle?.["watcher-id"];
-  if (!id) {
-    throw new Error(Label.START_MODEL_WATCHER_NO_ID_ERROR);
-  }
-  return {
-    conn,
-    watcherHandle,
-    pingerIntervalId,
-    next: async () => conn.facades.allWatcher?.next({ id }),
-  };
-}
-
-export async function stopModelWatcher(
-  conn: ConnectionWithFacades,
-  watcherHandleId: string,
-  pingerIntervalId: number,
-): Promise<void> {
-  await conn.facades.allWatcher?.stop({ id: watcherHandleId });
-  stopPingerLoop(pingerIntervalId);
-  conn.transport.close();
 }
 
 /**

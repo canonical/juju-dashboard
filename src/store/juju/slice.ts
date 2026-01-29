@@ -20,8 +20,7 @@ import type {
   CrossModelQueryResponse,
   RelationshipTuple,
 } from "juju/jimm/JIMMV4";
-import type { AllWatcherDelta, FullStatusWithAnnotations } from "juju/types";
-import { processDeltas } from "juju/watchers";
+import type { FullStatusWithAnnotations } from "juju/types";
 
 import type {
   Controllers,
@@ -126,7 +125,6 @@ const slice = createSlice({
     modelsLoaded: false,
     modelData: {},
     modelFeatures: {},
-    modelWatcherData: {},
     charms: [],
     rebac: {
       allowed: [],
@@ -385,15 +383,6 @@ const slice = createSlice({
       const controllers = state.controllers ?? {};
       controllers[action.payload.wsControllerURL] = action.payload.controllers;
       state.controllers = controllers;
-    },
-    processAllWatcherDeltas: (
-      state,
-      action: PayloadAction<AllWatcherDelta[]>,
-    ) => {
-      state.modelWatcherData = processDeltas(
-        state.modelWatcherData,
-        action.payload,
-      );
     },
     updateCharms: (
       state,

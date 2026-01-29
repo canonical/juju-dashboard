@@ -140,7 +140,6 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   modelsError: null,
   modelData: {},
   modelFeatures: {},
-  modelWatcherData: {},
   charms: [],
   rebac: rebacState.build(),
   secrets: {},

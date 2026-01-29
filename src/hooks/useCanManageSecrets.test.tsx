@@ -21,7 +21,6 @@ import {
   modelFeaturesStateFactory,
   modelFeaturesFactory,
 } from "testing/factories/juju/juju";
-import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { createStore } from "testing/utils";
 
 import useCanManageSecrets from "./useCanManageSecrets";
@@ -83,9 +82,6 @@ describe("useCanManageSecrets", () => {
             name: "test1",
             wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
-        },
-        modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build(),
         },
       }),
     });
