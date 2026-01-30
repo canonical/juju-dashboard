@@ -4,6 +4,32 @@ import type {
   UnitStatus,
 } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 
+const isSubordinateApp = (app: ApplicationStatus): boolean =>
+  !!app["subordinate-to"].length;
+
+const getAppIdFromUnitId = (unitId: string): null | string =>
+  unitId.split("/")[0];
+
+/**
+ * Get an application via its id.
+ */
+const getApp = (
+  appId: string,
+  applications: Record<string, ApplicationStatus>,
+): ApplicationStatus | null =>
+  appId in applications ? applications[appId] : null;
+
+/**
+ * Get the application for a unit.
+ */
+export const getUnitApp = (
+  unitId: string,
+  applications: Record<string, ApplicationStatus>,
+): ApplicationStatus | null => {
+  const appId = getAppIdFromUnitId(unitId);
+  return appId ? getApp(appId, applications) : null;
+};
+
 /**
  * Calculate the scale (the number of units) of an application.
  * If it's a subordinate then count the number of parent units.
@@ -12,22 +38,21 @@ export const getAppScale = (
   appId: string,
   applications: Record<string, ApplicationStatus>,
 ): number => {
-  const app = appId in applications ? applications[appId] : null;
+  const app = getApp(appId, applications);
   if (!app) {
     return 0;
   }
-  return app["subordinate-to"].length
-    ? app["subordinate-to"].reduce<number>(
-        (count, parentId) =>
-          count +
-          (parentId in applications
-            ? // A subordinate exists on every parent unit, so just count the parent units rather than
-              // checking for the subordinate id.
-              Object.keys(applications[parentId].units ?? {}).length
-            : 0),
-        0,
-      )
-    : Object.keys(app.units ?? {}).length;
+  if (isSubordinateApp(app)) {
+    return app["subordinate-to"].reduce<number>(
+      (count, parentId) =>
+        count +
+        // A subordinate exists on every parent unit, so just count the parent units rather than
+        // explicitly checking for the subordinates on each unit.
+        (Object.keys(getApp(parentId, applications)?.units ?? {}).length ?? 0),
+      0,
+    );
+  }
+  return Object.keys(app.units ?? {}).length;
 };
 
 /**
@@ -35,119 +60,28 @@ export const getAppScale = (
  */
 export const getScale = (
   applicationIds: string[],
-  applications: null | Record<string, ApplicationStatus>,
+  applications: Record<string, ApplicationStatus>,
 ): number => {
-  if (!applications) {
-    return 0;
-  }
-  const counted: string[] = [];
-  return applicationIds.reduce((count, appId) => {
-    if (!(appId in applications) || counted.includes(appId)) {
-      return count;
+  const appIds = [...applicationIds];
+  let count = 0;
+  for (const appId of appIds) {
+    const app = getApp(appId, applications);
+    if (!app) {
+      continue;
     }
-    counted.push(appId);
-    // If the app is a subordinate and its parent is in the list then
-    // don't count the subordinate units otherwise they will be counted twice.
-    if (applications[appId]["subordinate-to"].length) {
-      return (
-        count +
-        getAppScale(
-          appId,
-          // Only include the parent if its id is not in the applicationIds list.
-          applications[appId]["subordinate-to"].reduce<
-            Record<string, ApplicationStatus>
-          >(
-            (parents, subordinateTo) => {
-              if (
-                applicationIds.includes(subordinateTo) ||
-                counted.includes(subordinateTo)
-              ) {
-                // Ignore it if the parent application will be counted.
-                return parents;
-              }
-              counted.push(subordinateTo);
-              parents[subordinateTo] = applications[subordinateTo];
-              return parents;
-            },
-            { [appId]: applications[appId] },
-          ),
-        )
-      );
-    }
-    return count + getAppScale(appId, applications);
-  }, 0);
-};
-
-/**
- * Get all applications on a machine.
- */
-export const getMachineApps = (
-  machineId: string,
-  applications: null | Record<string, ApplicationStatus>,
-): Record<string, ApplicationStatus> => {
-  const appsOnMachine: Record<string, ApplicationStatus> = {};
-  if (!applications) {
-    return appsOnMachine;
-  }
-  Object.entries(applications).forEach(([appName, app]) => {
-    if (appName in appsOnMachine) {
-      // This application has already been found (e.g. through a subordinate).
-      return;
-    }
-    for (const unitInfo of Object.values(app.units ?? {})) {
-      if (machineId === unitInfo.machine) {
-        appsOnMachine[appName] = app;
-        Object.keys(unitInfo.subordinates ?? {}).forEach((subordinateName) => {
-          const [parentAppName] = subordinateName.split("/");
-          const parentApp =
-            parentAppName in applications ? applications[parentAppName] : null;
-          if (
-            parentApp &&
-            parentAppName in applications &&
-            !(parentAppName in appsOnMachine)
-          ) {
-            appsOnMachine[parentAppName] = parentApp;
-          }
-        });
-        // Only one unit of each application can be on the machine
-        // so exit the loop if a unit was found.
-        break;
-      }
-    }
-  });
-  return appsOnMachine;
-};
-
-/**
- * Get all units on a machine.
- */
-export const getMachineUnits = (
-  machineId: string,
-  applications: null | Record<string, ApplicationStatus>,
-  includeSubordinates = true,
-): Record<string, UnitStatus> => {
-  const unitsOnMachine: Record<string, UnitStatus> = {};
-  if (!applications) {
-    return unitsOnMachine;
-  }
-  Object.values(applications).forEach((app) => {
-    for (const [unitId, unitInfo] of Object.entries(app.units ?? {})) {
-      if (machineId === unitInfo.machine) {
-        unitsOnMachine[unitId] = unitInfo;
-        if (includeSubordinates) {
-          Object.entries(unitInfo.subordinates ?? {}).forEach(
-            ([subordinateId, subordinate]) => {
-              unitsOnMachine[subordinateId] = subordinate;
-            },
-          );
+    if (isSubordinateApp(app)) {
+      // If the application is a subordinate then add the parent to the list of app ids to be
+      // counted (unless it's already in the list).
+      for (const parentId of app["subordinate-to"]) {
+        if (!appIds.includes(parentId)) {
+          appIds.push(parentId);
         }
-        // Only one unit of each application can be on the machine
-        // so exit the loop if a unit was found.
-        break;
       }
+    } else {
+      count += getAppScale(appId, applications);
     }
-  });
-  return unitsOnMachine;
+  }
+  return count;
 };
 
 /**
@@ -155,26 +89,19 @@ export const getMachineUnits = (
  */
 export const getParentUnit = (
   unitId: string,
-  applications: null | Record<string, ApplicationStatus>,
+  applications: Record<string, ApplicationStatus>,
 ): null | UnitStatus => {
-  if (!applications) {
-    return null;
-  }
-  const [appId] = unitId.split("/");
-  const app = appId in applications ? applications[appId] : null;
-  if (!app?.["subordinate-to"].length) {
+  const app = getUnitApp(unitId, applications);
+  if (!app || !isSubordinateApp(app)) {
     return null;
   }
   for (const parentAppId of app["subordinate-to"]) {
-    const parentApp =
-      parentAppId in applications ? applications[parentAppId] : null;
+    const parentApp = getApp(parentAppId, applications);
     if (!parentApp) {
       continue;
     }
     for (const parentUnit of Object.values(parentApp.units ?? {})) {
-      for (const subordinateName of Object.keys(
-        parentUnit.subordinates ?? {},
-      )) {
+      for (const subordinateName in parentUnit.subordinates ?? {}) {
         if (subordinateName === unitId) {
           return parentUnit;
         }
@@ -184,72 +111,65 @@ export const getParentUnit = (
   return null;
 };
 
-/**
- * Get a unit's parent unit if it is a subordinate, or return the unit itself if it's not a subordinate.
- */
-export const getParentOrUnit = (
+const getSubordinateUnit = (
   unitId: string,
-  applications: null | Record<string, ApplicationStatus>,
+  applications: Record<string, ApplicationStatus>,
 ): null | UnitStatus => {
-  if (!applications) {
-    return null;
-  }
-  const [appId] = unitId.split("/");
-  const app = appId in applications ? applications[appId] : null;
-  if (!app?.["subordinate-to"].length) {
-    return app?.units && unitId in app.units ? app.units[unitId] : null;
-  }
-  return getParentUnit(unitId, applications);
-};
-
-/**
- * Get a unit from its parent if it is a subordinate, or else get the unit from the unit's application.
- */
-export const getUnit = (
-  unitId: string,
-  applications: null | Record<string, ApplicationStatus>,
-): null | UnitStatus => {
-  if (!applications) {
-    return null;
-  }
-  const [appId] = unitId.split("/");
-  const app = appId in applications ? applications[appId] : null;
-  if (!app?.["subordinate-to"].length) {
-    return app?.units && unitId in app.units ? app.units[unitId] : null;
-  }
   const parent = getParentUnit(unitId, applications);
   return parent?.subordinates && unitId in parent.subordinates
     ? parent.subordinates[unitId]
     : null;
 };
 
-/**
- * Get the application for a unit.
- */
-export const getUnitApp = (
+const getNonSubordinateUnit = (
   unitId: string,
-  applications: null | Record<string, ApplicationStatus>,
-): ApplicationStatus | null => {
-  if (!applications) {
-    return null;
-  }
-  const [appId] = unitId.split("/");
-  return appId in applications ? applications[appId] : null;
+  applications: Record<string, ApplicationStatus>,
+): null | UnitStatus => {
+  const app = getUnitApp(unitId, applications);
+  return app && !isSubordinateApp(app) && app?.units && unitId in app.units
+    ? app.units[unitId]
+    : null;
 };
+
+/**
+ * Get a unit's parent unit if it is a subordinate, or return the unit itself if it's not a subordinate.
+ */
+export const getParentOrUnit = (
+  unitId: string,
+  applications: Record<string, ApplicationStatus>,
+): null | UnitStatus =>
+  getNonSubordinateUnit(unitId, applications) ??
+  getParentUnit(unitId, applications);
 
 /**
  * Get a unit from its parent if it is a subordinate, or else get the unit from the unit's application.
  */
+export const getUnit = (
+  unitId: string,
+  applications: Record<string, ApplicationStatus>,
+): null | UnitStatus =>
+  getSubordinateUnit(unitId, applications) ??
+  getNonSubordinateUnit(unitId, applications);
+
+/**
+ * Get the machine for a unit.
+ */
+const getUnitDataMachine = (
+  unit: UnitStatus,
+  machines: Record<string, MachineStatus>,
+): MachineStatus | null =>
+  unit.machine in machines ? machines[unit.machine] : null;
+
+/**
+ * Get the machine for a unit id.
+ */
 export const getUnitMachine = (
   unitId: string,
-  applications: null | Record<string, ApplicationStatus>,
-  machines: null | Record<string, MachineStatus>,
+  applications: Record<string, ApplicationStatus>,
+  machines: Record<string, MachineStatus>,
 ): MachineStatus | null => {
-  if (!applications || !machines) {
-    return null;
-  }
   const unit = getParentOrUnit(unitId, applications);
-  return unit && unit.machine in machines ? machines[unit.machine] : null;
+  return unit ? getUnitDataMachine(unit, machines) : null;
 };
 
 /**
@@ -257,32 +177,28 @@ export const getUnitMachine = (
  */
 export const getAppMachines = (
   appId: string,
-  applications: null | Record<string, ApplicationStatus>,
-  machines: null | Record<string, MachineStatus>,
-): Record<string, MachineStatus> => {
-  const machinesForApp: Record<string, MachineStatus> = {};
-  const application =
-    applications && appId in applications ? applications[appId] : null;
-  if (!applications || !machines || !application) {
-    return machinesForApp;
+  applications: Record<string, ApplicationStatus>,
+  machines: Record<string, MachineStatus>,
+): null | Record<string, MachineStatus> => {
+  const application = getApp(appId, applications);
+  if (!application) {
+    return null;
   }
-  if (application["subordinate-to"].length) {
-    application["subordinate-to"].forEach((appName) => {
-      const app = appName in applications ? applications[appName] : null;
-      if (app) {
-        Object.values(app.units ?? {}).forEach((parentUnit) => {
-          if (parentUnit.machine in machines) {
-            machinesForApp[parentUnit.machine] = machines[parentUnit.machine];
-          }
-        });
-      }
-    });
+  let machinesForApp: Record<string, MachineStatus> = {};
+  if (isSubordinateApp(application)) {
+    for (const appName of application["subordinate-to"]) {
+      machinesForApp = {
+        ...machinesForApp,
+        ...getAppMachines(appName, applications, machines),
+      };
+    }
   } else {
-    Object.values(application.units ?? {}).forEach((unitData) => {
-      if (unitData.machine in machines) {
-        machinesForApp[unitData.machine] = machines[unitData.machine];
+    for (const unitData of Object.values(application.units ?? {})) {
+      const machine = getUnitDataMachine(unitData, machines);
+      if (machine) {
+        machinesForApp[unitData.machine] = machine;
       }
-    });
+    }
   }
   return machinesForApp;
 };
@@ -292,30 +208,77 @@ export const getAppMachines = (
  */
 export const getAppUnits = (
   appId: string,
-  applications: null | Record<string, ApplicationStatus>,
-): Record<string, UnitStatus> => {
-  const application =
-    applications && appId in applications ? applications[appId] : null;
-  if (!applications || !application) {
-    return {};
+  applications: Record<string, ApplicationStatus>,
+): null | Record<string, UnitStatus> => {
+  const application = getApp(appId, applications);
+  if (!application) {
+    return null;
   }
-  if (application["subordinate-to"].length) {
+  if (isSubordinateApp(application)) {
     const unitsForApp: Record<string, UnitStatus> = {};
-    application["subordinate-to"].forEach((appName) => {
-      const app = appName in applications ? applications[appName] : null;
+    for (const appName of application["subordinate-to"]) {
+      const app = getApp(appName, applications);
       if (app) {
-        Object.values(app.units ?? {}).forEach((parentUnit) => {
-          Object.entries(parentUnit.subordinates ?? {}).forEach(
-            ([subordinateName, subordinateUnit]) => {
-              if (subordinateName.split("/")[0] === appId) {
-                unitsForApp[subordinateName] = subordinateUnit;
-              }
-            },
-          );
-        });
+        for (const parentUnit of Object.values(app.units ?? {})) {
+          for (const [subordinateName, subordinateUnit] of Object.entries(
+            parentUnit.subordinates ?? {},
+          )) {
+            const subordinateAppId = getAppIdFromUnitId(subordinateName);
+            if (subordinateAppId && subordinateAppId === appId) {
+              unitsForApp[subordinateName] = subordinateUnit;
+            }
+          }
+        }
       }
-    });
+    }
     return unitsForApp;
   }
   return application.units;
+};
+
+/**
+ * Get all units on a machine.
+ */
+export const getMachineUnits = (
+  machineId: string,
+  applications: Record<string, ApplicationStatus>,
+  includeSubordinates = true,
+): Record<string, UnitStatus> => {
+  let unitsOnMachine: Record<string, UnitStatus> = {};
+  for (const app of Object.values(applications)) {
+    for (const [unitId, unitInfo] of Object.entries(app.units ?? {})) {
+      if (machineId === unitInfo.machine) {
+        unitsOnMachine[unitId] = unitInfo;
+        if (includeSubordinates) {
+          unitsOnMachine = {
+            ...unitsOnMachine,
+            ...(unitInfo.subordinates ?? {}),
+          };
+        }
+        // Only one unit of each application can be on the machine
+        // so exit the loop if a unit was found.
+        break;
+      }
+    }
+  }
+  return unitsOnMachine;
+};
+
+/**
+ * Get all applications on a machine.
+ */
+export const getMachineApps = (
+  machineId: string,
+  applications: Record<string, ApplicationStatus>,
+): Record<string, ApplicationStatus> => {
+  const units = getMachineUnits(machineId, applications);
+  const appsOnMachine: Record<string, ApplicationStatus> = {};
+  for (const unitId in units) {
+    const appId = getAppIdFromUnitId(unitId);
+    const app = getUnitApp(unitId, applications);
+    if (appId && app && !(appId in appsOnMachine)) {
+      appsOnMachine[appId] = app;
+    }
+  }
+  return appsOnMachine;
 };

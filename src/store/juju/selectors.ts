@@ -1274,7 +1274,10 @@ export const getMachineApps = createSelector(
   (
     applications: null | Record<string, ApplicationStatus>,
     machineId?: null | string,
-  ) => (machineId ? getMachineAppsUtil(machineId, applications) : null),
+  ) =>
+    machineId && applications
+      ? getMachineAppsUtil(machineId, applications)
+      : null,
 );
 
 export const getMachineUnits = createSelector(
@@ -1283,22 +1286,20 @@ export const getMachineUnits = createSelector(
     _state,
     _modelUUID?: string,
     machineId?: null | string,
+    _includeSubordinates?: boolean,
+  ) => machineId,
+  (
+    _state,
+    _modelUUID?: string,
+    _machineId?: null | string,
     includeSubordinates?: boolean,
-  ): {
-    machineId?: null | string;
-    includeSubordinates?: boolean;
-  } => ({
-    machineId,
-    includeSubordinates,
-  }),
+  ) => includeSubordinates,
   (
     applications: null | Record<string, ApplicationStatus>,
-    {
-      machineId,
-      includeSubordinates,
-    }: { machineId?: null | string; includeSubordinates?: boolean },
+    machineId?: null | string,
+    includeSubordinates?: boolean,
   ) =>
-    machineId
+    machineId && applications
       ? getMachineUnitsUtil(machineId, applications, includeSubordinates)
       : null,
 );
@@ -1315,7 +1316,10 @@ export const getAppMachines = createSelector(
     applications: null | Record<string, ApplicationStatus>,
     machines: null | Record<string, MachineStatus>,
     appId?: null | string,
-  ) => (appId ? getAppMachinesUtil(appId, applications, machines) : null),
+  ) =>
+    appId && applications && machines
+      ? getAppMachinesUtil(appId, applications, machines)
+      : null,
 );
 
 export const getAppUnits = createSelector(
@@ -1328,7 +1332,7 @@ export const getAppUnits = createSelector(
   (
     applications: null | Record<string, ApplicationStatus>,
     appId?: null | string,
-  ) => (appId ? getAppUnitsUtil(appId, applications) : null),
+  ) => (appId && applications ? getAppUnitsUtil(appId, applications) : null),
 );
 
 export const getUnit = createSelector(
@@ -1341,7 +1345,7 @@ export const getUnit = createSelector(
   (
     applications: null | Record<string, ApplicationStatus>,
     unitId?: null | string,
-  ) => (unitId ? getUnitUtil(unitId, applications) : null),
+  ) => (unitId && applications ? getUnitUtil(unitId, applications) : null),
 );
 
 export const getUnitApp = createSelector(
@@ -1354,5 +1358,5 @@ export const getUnitApp = createSelector(
   (
     applications: null | Record<string, ApplicationStatus>,
     unitId?: null | string,
-  ) => (unitId ? getUnitAppUtil(unitId, applications) : null),
+  ) => (unitId && applications ? getUnitAppUtil(unitId, applications) : null),
 );
