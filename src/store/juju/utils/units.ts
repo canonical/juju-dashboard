@@ -187,10 +187,10 @@ export const getAppMachines = (
   let machinesForApp: Record<string, MachineStatus> = {};
   if (isSubordinateApp(application)) {
     for (const appName of application["subordinate-to"]) {
-      machinesForApp = {
-        ...machinesForApp,
-        ...getAppMachines(appName, applications, machines),
-      };
+      machinesForApp = Object.assign(
+        machinesForApp,
+        getAppMachines(appName, applications, machines),
+      );
     }
   } else {
     for (const unitData of Object.values(application.units ?? {})) {
@@ -250,10 +250,7 @@ export const getMachineUnits = (
       if (machineId === unitInfo.machine) {
         unitsOnMachine[unitId] = unitInfo;
         if (includeSubordinates) {
-          unitsOnMachine = {
-            ...unitsOnMachine,
-            ...(unitInfo.subordinates ?? {}),
-          };
+          unitsOnMachine = Object.assign(unitsOnMachine, unitInfo.subordinates);
         }
         // Only one unit of each application can be on the machine
         // so exit the loop if a unit was found.
