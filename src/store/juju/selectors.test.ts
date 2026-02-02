@@ -2599,42 +2599,42 @@ describe("getMachineApps", () => {
   it("gets applications on a machine", () => {
     const applications = {
       // This application should be included as its parent application is on the machine.
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             machine: "0",
           }),
-          "app3/1": modelDataUnitFactory.build({
+          "app3/1": unitStatusFactory.build({
             machine: "1",
           }),
         },
       }),
       // This application should not be included as it has no units on the machine.
-      app4: modelDataApplicationFactory.build({
+      app4: applicationStatusFactory.build({
         units: {
-          "app4/0": modelDataUnitFactory.build({
+          "app4/0": unitStatusFactory.build({
             machine: "1",
           }),
-          "app4/1": modelDataUnitFactory.build({
+          "app4/1": unitStatusFactory.build({
             machine: "2",
           }),
         },
@@ -2661,42 +2661,42 @@ describe("getMachineUnits", () => {
   it("gets units on a machine", () => {
     const applications = {
       // This application should be included as its parent application is on the machine.
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             machine: "0",
           }),
-          "app3/1": modelDataUnitFactory.build({
+          "app3/1": unitStatusFactory.build({
             machine: "1",
           }),
         },
       }),
       // This application should not be included as it has no units on the machine.
-      app4: modelDataApplicationFactory.build({
+      app4: applicationStatusFactory.build({
         units: {
-          "app4/0": modelDataUnitFactory.build({
+          "app4/0": unitStatusFactory.build({
             machine: "1",
           }),
-          "app4/1": modelDataUnitFactory.build({
+          "app4/1": unitStatusFactory.build({
             machine: "2",
           }),
         },
@@ -2722,28 +2722,28 @@ describe("getMachineUnits", () => {
 describe("getUnit", () => {
   it("gets a unit", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build(),
+          "app3/0": unitStatusFactory.build(),
         },
       }),
     };
@@ -2763,38 +2763,38 @@ describe("getUnit", () => {
 
   it("gets a unit for a subordinate application", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2", "app3"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             subordinates: {
-              "app1/2": modelDataUnitFactory.build(),
+              "app1/2": unitStatusFactory.build(),
             },
           }),
         },
       }),
       // This application should not be included.
-      app4: modelDataApplicationFactory.build({
+      app4: applicationStatusFactory.build({
         units: {
-          "app4/0": modelDataUnitFactory.build(),
+          "app4/0": unitStatusFactory.build(),
         },
       }),
     };
@@ -2816,28 +2816,28 @@ describe("getUnit", () => {
 describe("getUnitApp", () => {
   it("gets an application from the unit id", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build(),
+          "app3/0": unitStatusFactory.build(),
         },
       }),
     };
@@ -2859,38 +2859,38 @@ describe("getUnitApp", () => {
 describe("getAppMachines", () => {
   it("gets machines for an application", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
       // This application's machines should not be included.
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             machine: "2",
           }),
         },
       }),
     };
     const machines = {
-      0: modelDataMachineFactory.build({ id: "0" }),
-      1: modelDataMachineFactory.build({ id: "1" }),
-      2: modelDataMachineFactory.build({ id: "2" }),
+      0: machineStatusFactory.build({ id: "0" }),
+      1: machineStatusFactory.build({ id: "1" }),
+      2: machineStatusFactory.build({ id: "2" }),
     };
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
@@ -2910,48 +2910,48 @@ describe("getAppMachines", () => {
 
   it("gets machines for a subordinate application", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2", "app3"],
       }),
       // This application's machines should be included as it is a parent to app1.
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
       // This application's machines should be included as it is a parent to app1.
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             machine: "2",
           }),
         },
       }),
       // This application's machines should not be included.
-      app4: modelDataApplicationFactory.build({
+      app4: applicationStatusFactory.build({
         units: {
-          "app4/0": modelDataUnitFactory.build({
+          "app4/0": unitStatusFactory.build({
             machine: "3",
           }),
         },
       }),
     };
     const machines = {
-      0: modelDataMachineFactory.build({ id: "0" }),
-      1: modelDataMachineFactory.build({ id: "1" }),
-      2: modelDataMachineFactory.build({ id: "2" }),
-      3: modelDataMachineFactory.build({ id: "3" }),
+      0: machineStatusFactory.build({ id: "0" }),
+      1: machineStatusFactory.build({ id: "1" }),
+      2: machineStatusFactory.build({ id: "2" }),
+      3: machineStatusFactory.build({ id: "3" }),
     };
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
@@ -2975,29 +2975,29 @@ describe("getAppUnits", () => {
   it("gets units for an application", () => {
     const applications = {
       // This application's units should not be included.
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
       // This application's units should not be included.
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build(),
+          "app3/0": unitStatusFactory.build(),
         },
       }),
     };
@@ -3018,38 +3018,38 @@ describe("getAppUnits", () => {
 
   it("gets units for a subordinate application", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2", "app3"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             subordinates: {
-              "app1/2": modelDataUnitFactory.build(),
+              "app1/2": unitStatusFactory.build(),
             },
           }),
         },
       }),
       // This application should not be included.
-      app4: modelDataApplicationFactory.build({
+      app4: applicationStatusFactory.build({
         units: {
-          "app4/0": modelDataUnitFactory.build(),
+          "app4/0": unitStatusFactory.build(),
         },
       }),
     };
