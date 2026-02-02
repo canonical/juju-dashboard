@@ -1,9 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
-import {
-  modelDataFactory,
-  modelDataInfoFactory,
-} from "testing/factories/juju/juju";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { modelDataFactory } from "testing/factories/juju/juju";
 
 import CloudCell from "./CloudCell";
 
@@ -23,7 +21,7 @@ describe("CloudCell", () => {
     render(
       <CloudCell
         model={modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "provider-type": "ec2",
           }),
         })}
@@ -36,7 +34,7 @@ describe("CloudCell", () => {
     render(
       <CloudCell
         model={modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "provider-type": "gce",
           }),
         })}
@@ -52,7 +50,7 @@ describe("CloudCell", () => {
     render(
       <CloudCell
         model={modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "provider-type": "azure",
           }),
         })}
@@ -65,7 +63,7 @@ describe("CloudCell", () => {
     render(
       <CloudCell
         model={modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "provider-type": "kubernetes",
           }),
         })}

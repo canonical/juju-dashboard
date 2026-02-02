@@ -1,7 +1,7 @@
 import {
   listSecretResultFactory,
   secretRevisionFactory,
-} from "testing/factories/juju/juju";
+} from "testing/factories/juju/SecretsV2";
 
 import getLatestRevision from "./getLatestRevision";
 

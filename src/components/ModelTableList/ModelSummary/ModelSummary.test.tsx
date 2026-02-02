@@ -1,11 +1,11 @@
 import { screen } from "@testing-library/react";
 
 import {
-  modelDataApplicationFactory,
-  modelDataFactory,
-  modelDataUnitFactory,
-  modelDataMachineFactory,
-} from "testing/factories/juju/juju";
+  applicationStatusFactory,
+  unitStatusFactory,
+  machineStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { modelDataFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import ModelSummary from "./ModelSummary";
@@ -15,17 +15,17 @@ describe("ModelSummary", () => {
   it("displays links", () => {
     const modelData = modelDataFactory.build({
       applications: {
-        easyrsa: modelDataApplicationFactory.build({
+        easyrsa: applicationStatusFactory.build({
           units: {
-            "easyrsa/0": modelDataUnitFactory.build(),
-            "easyrsa/1": modelDataUnitFactory.build(),
-            "easyrsa/3": modelDataUnitFactory.build(),
+            "easyrsa/0": unitStatusFactory.build(),
+            "easyrsa/1": unitStatusFactory.build(),
+            "easyrsa/3": unitStatusFactory.build(),
           },
         }),
       },
       machines: {
-        "0": modelDataMachineFactory.build(),
-        "1": modelDataMachineFactory.build(),
+        "0": machineStatusFactory.build(),
+        "1": machineStatusFactory.build(),
       },
     });
     renderComponent(

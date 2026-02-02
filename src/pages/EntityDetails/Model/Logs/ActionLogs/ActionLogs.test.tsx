@@ -14,12 +14,14 @@ import {
   operationResultFactory,
   operationResultsFactory,
 } from "testing/factories/juju/ActionV7";
-import { detailedStatusFactory } from "testing/factories/juju/ClientV6";
+import {
+  applicationStatusFactory,
+  detailedStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
-  modelDataApplicationFactory,
   modelDataFactory,
-  modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 import { logger } from "utils/logger";
@@ -124,13 +126,13 @@ describe("Action Logs", () => {
         modelData: {
           abc123: modelDataFactory.build({
             applications: {
-              easyrsa: modelDataApplicationFactory.build({
+              easyrsa: applicationStatusFactory.build({
                 status: detailedStatusFactory.build({
                   status: "running",
                 }),
               }),
             },
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               name: "group-test",
             }),
           }),

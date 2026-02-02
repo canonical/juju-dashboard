@@ -12,16 +12,18 @@ import {
   generalStateFactory,
   credentialFactory,
 } from "testing/factories/general";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
+import { listSecretResultFactory } from "testing/factories/juju/SecretsV2";
 import {
   modelListInfoFactory,
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
   modelFeaturesFactory,
   modelFeaturesStateFactory,
   modelDataFactory,
-  modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
@@ -67,7 +69,7 @@ describe("SecretsPicker", () => {
         },
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               uuid: "abc123",
               name: "test-model",
               "controller-uuid": "controller123",

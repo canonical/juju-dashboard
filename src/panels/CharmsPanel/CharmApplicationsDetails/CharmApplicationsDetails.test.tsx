@@ -11,7 +11,7 @@ import {
   charmActionsFactory,
   charmInfoFactory,
 } from "testing/factories/juju/Charms";
-import { modelDataApplicationFactory } from "testing/factories/juju/juju";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
 import { renderComponent } from "testing/utils";
 
 import CharmApplicationsDetails from "./CharmApplicationsDetails";
@@ -40,11 +40,11 @@ describe("CharmApplicationsDetails", () => {
           }),
         ],
         selectedApplications: {
-          app1: modelDataApplicationFactory.build(),
-          app2: modelDataApplicationFactory.build({
+          app1: applicationStatusFactory.build(),
+          app2: applicationStatusFactory.build({
             charm: "ch:amd64/focal/redis-k8s",
           }),
-          app3: modelDataApplicationFactory.build({
+          app3: applicationStatusFactory.build({
             charm: "ch:amd64/focal/redis-k8s",
           }),
         },
@@ -69,7 +69,7 @@ describe("CharmApplicationsDetails", () => {
   it("should show tooltip if more than 5 apps are available", async () => {
     for (let i = 4; i < 10; i++) {
       state.juju.selectedApplications[`mock-app-${i}`] =
-        modelDataApplicationFactory.build({
+        applicationStatusFactory.build({
           charm: "ch:amd64/focal/redis-k8s",
         });
     }

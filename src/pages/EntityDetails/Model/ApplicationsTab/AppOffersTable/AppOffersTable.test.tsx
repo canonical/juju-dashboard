@@ -2,11 +2,9 @@ import { screen, within } from "@testing-library/react";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
-import { applicationOfferStatusFactory } from "testing/factories/juju/ClientV6";
-import {
-  modelDataFactory,
-  modelDataInfoFactory,
-} from "testing/factories/juju/juju";
+import { applicationOfferStatusFactory } from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { modelDataFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import AppOffersTable from "./AppOffersTable";
@@ -32,7 +30,7 @@ describe("ApplicationsTab", () => {
   it("should show application offers", () => {
     state.juju.modelData = {
       test123: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           uuid: "test123",
           name: "test-model",
         }),

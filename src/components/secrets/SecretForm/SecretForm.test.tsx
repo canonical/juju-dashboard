@@ -10,10 +10,10 @@ import {
   generalStateFactory,
   credentialFactory,
 } from "testing/factories/general";
+import { listSecretResultFactory } from "testing/factories/juju/SecretsV2";
 import {
   modelListInfoFactory,
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
   modelSecretsContentFactory,
 } from "testing/factories/juju/juju";

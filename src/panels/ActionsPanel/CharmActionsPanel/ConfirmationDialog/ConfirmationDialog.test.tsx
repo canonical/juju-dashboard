@@ -12,10 +12,10 @@ import {
   charmActionSpecFactory,
 } from "testing/factories/juju/Charms";
 import {
-  jujuStateFactory,
-  modelDataApplicationFactory,
-  modelDataUnitFactory,
-} from "testing/factories/juju/juju";
+  applicationStatusFactory,
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { jujuStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import ConfirmationDialog from "./ConfirmationDialog";
@@ -28,10 +28,10 @@ describe("ConfirmationDialog", () => {
     "/models/user-eggman@external/group-test/app/kubernetes-master?panel=select-charms-and-actions";
 
   const mockSelectedApplications = {
-    ceph: modelDataApplicationFactory.build({
+    ceph: applicationStatusFactory.build({
       units: {
-        0: modelDataUnitFactory.build(),
-        1: modelDataUnitFactory.build(),
+        0: unitStatusFactory.build(),
+        1: unitStatusFactory.build(),
       },
     }),
   };
@@ -96,15 +96,15 @@ describe("ConfirmationDialog", () => {
         confirmType={ConfirmType.SUBMIT}
         selectedAction={"stdout"}
         selectedApplications={{
-          ceph: modelDataApplicationFactory.build({
+          ceph: applicationStatusFactory.build({
             units: {
-              0: modelDataUnitFactory.build(),
-              1: modelDataUnitFactory.build(),
-              2: modelDataUnitFactory.build(),
+              0: unitStatusFactory.build(),
+              1: unitStatusFactory.build(),
+              2: unitStatusFactory.build(),
             },
           }),
-          mysql: modelDataApplicationFactory.build({
-            units: { 0: modelDataUnitFactory.build() },
+          mysql: applicationStatusFactory.build({
+            units: { 0: unitStatusFactory.build() },
           }),
         }}
         setConfirmType={mockSetConfirmType}

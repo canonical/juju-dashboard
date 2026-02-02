@@ -10,11 +10,13 @@ import {
   configFactory,
   credentialFactory,
 } from "testing/factories/general";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
   modelDataFactory,
-  modelDataInfoFactory,
   modelListInfoFactory,
   modelFeaturesStateFactory,
   modelFeaturesFactory,
@@ -90,7 +92,7 @@ describe("useCanManageSecrets", () => {
   });
 
   it("allows secrets to be managed when the user has admin access", () => {
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       uuid: "abc123",
       name: "test1",
       "controller-uuid": "controller123",
@@ -108,7 +110,7 @@ describe("useCanManageSecrets", () => {
   });
 
   it("allows secrets to be managed when the user has write access", () => {
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       uuid: "abc123",
       name: "test1",
       "controller-uuid": "controller123",
@@ -126,7 +128,7 @@ describe("useCanManageSecrets", () => {
   });
 
   it("doesn't allow secrets to be managed when the user has read access", () => {
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       uuid: "abc123",
       name: "test1",
       "controller-uuid": "controller123",
@@ -147,7 +149,7 @@ describe("useCanManageSecrets", () => {
     state.juju.modelFeatures.abc123 = modelFeaturesFactory.build({
       manageSecrets: false,
     });
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       uuid: "abc123",
       name: "test1",
       "controller-uuid": "controller123",

@@ -15,13 +15,15 @@ import {
   controllerFeaturesStateFactory,
   configFactory,
 } from "testing/factories/general";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
+import { rebacAllowedFactory } from "testing/factories/juju/jimm";
 import {
   jujuStateFactory,
   modelDataFactory,
-  modelDataInfoFactory,
   modelListInfoFactory,
-  rebacAllowedFactory,
 } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderWrappedHook, createStore } from "testing/utils";
@@ -88,7 +90,7 @@ describe("useCanConfigureModel", () => {
     if (state.general.config) {
       state.general.config.isJuju = true;
     }
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       uuid: "abc123",
       name: "test1",
       "controller-uuid": "controller123",
@@ -109,7 +111,7 @@ describe("useCanConfigureModel", () => {
     if (state.general.config) {
       state.general.config.isJuju = true;
     }
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       uuid: "abc123",
       name: "test1",
       "controller-uuid": "controller123",
@@ -131,7 +133,7 @@ describe("useCanConfigureModel", () => {
     if (state.general.config) {
       state.general.config.isJuju = true;
     }
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       uuid: "abc123",
       name: "test1",
       "controller-uuid": "controller123",
@@ -152,7 +154,7 @@ describe("useCanConfigureModel", () => {
     if (state.general.config) {
       state.general.config.isJuju = true;
     }
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       uuid: "abc123",
       name: "test1",
       "controller-uuid": "controller123",
@@ -243,7 +245,7 @@ describe("useCanConfigureModel", () => {
     if (state.general.config) {
       state.general.config.isJuju = true;
     }
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       uuid: "abc123",
       name: "test1",
       "controller-uuid": "controller123",

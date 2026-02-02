@@ -7,12 +7,14 @@ import {
   generalStateFactory,
   authUserInfoFactory,
 } from "testing/factories/general";
-import { modelStatusInfoFactory } from "testing/factories/juju/ClientV6";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { modelStatusInfoFactory } from "testing/factories/juju/ClientV7";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
   modelDataFactory,
-  modelDataInfoFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
@@ -28,7 +30,7 @@ describe("CloudGroup", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               name: "test1",
               "controller-uuid": "controller123",
               "cloud-tag": "cloud-aws",
@@ -41,7 +43,7 @@ describe("CloudGroup", () => {
             uuid: "abc123",
           }),
           def456: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               "cloud-tag": "cloud-aws",
             }),
             model: modelStatusInfoFactory.build({
@@ -49,7 +51,7 @@ describe("CloudGroup", () => {
             }),
           }),
           ghi789: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               "cloud-tag": "cloud-google",
             }),
             model: modelStatusInfoFactory.build({
@@ -106,7 +108,7 @@ describe("CloudGroup", () => {
         },
       },
     });
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       "cloud-tag": "cloud-aws",
       "controller-uuid": "controller123",
       name: "test1",

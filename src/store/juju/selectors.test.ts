@@ -3,37 +3,40 @@ import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import { charmInfoFactory } from "testing/factories/juju/Charms";
 import {
+  applicationStatusFactory,
   detailedStatusFactory,
-  modelStatusInfoFactory,
-} from "testing/factories/juju/ClientV6";
-import {
-  relationStatusFactory,
   machineStatusFactory,
+  modelStatusInfoFactory,
+  unitStatusFactory,
 } from "testing/factories/juju/ClientV7";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
-import { auditEventFactory } from "testing/factories/juju/jimm";
+import { relationStatusFactory } from "testing/factories/juju/ClientV7";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
+import {
+  listSecretResultFactory,
+  secretRevisionFactory,
+} from "testing/factories/juju/SecretsV2";
+import {
+  auditEventFactory,
+  rebacAllowedFactory,
+  rebacRelationshipFactory,
+  relationshipTupleFactory,
+} from "testing/factories/juju/jimm";
 import {
   controllerFactory,
   jujuStateFactory,
-  modelDataApplicationFactory,
   modelDataFactory,
-  modelDataInfoFactory,
   modelListInfoFactory,
-  modelDataMachineFactory,
-  modelDataUnitFactory,
   auditEventsStateFactory,
   crossModelQueryStateFactory,
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
   modelFeaturesFactory,
   modelFeaturesStateFactory,
-  rebacAllowedFactory,
-  relationshipTupleFactory,
-  secretRevisionFactory,
   modelSecretsContentFactory,
   rebacState,
-  rebacRelationshipFactory,
   commandHistoryState,
   commandHistoryItem,
 } from "testing/factories/juju/juju";
@@ -1190,7 +1193,7 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelDataInfoFactory.build({
+                info: modelInfoFactory.build({
                   name: "test-model",
                 }),
               }),
@@ -1209,7 +1212,7 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelDataInfoFactory.build({
+                info: modelInfoFactory.build({
                   name: "test-model",
                   "owner-tag": "user-eggman",
                 }),
@@ -1229,7 +1232,7 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelDataInfoFactory.build({
+                info: modelInfoFactory.build({
                   name: "test-model",
                   "owner-tag": "user-admin",
                 }),
@@ -1277,7 +1280,7 @@ describe("selectors", () => {
     const modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          easyrsa: modelDataApplicationFactory.build({
+          easyrsa: applicationStatusFactory.build({
             status: detailedStatusFactory.build({
               status: "pending",
             }),
@@ -1286,7 +1289,7 @@ describe("selectors", () => {
       }),
       def456: modelDataFactory.build({
         applications: {
-          easyrsa: modelDataApplicationFactory.build({
+          easyrsa: applicationStatusFactory.build({
             status: detailedStatusFactory.build({
               status: "blocked",
             }),
@@ -1295,7 +1298,7 @@ describe("selectors", () => {
       }),
       ghi789: modelDataFactory.build({
         applications: {
-          easyrsa: modelDataApplicationFactory.build({
+          easyrsa: applicationStatusFactory.build({
             status: detailedStatusFactory.build({
               status: "unknown",
             }),
@@ -1322,17 +1325,17 @@ describe("selectors", () => {
   it("getGroupedByCloudAndFilteredModelData", () => {
     const modelData = {
       abc123: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           "cloud-tag": "cloud-aws",
         }),
       }),
       def456: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           "cloud-tag": "cloud-gce",
         }),
       }),
       ghi789: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           "cloud-tag": "cloud-azure",
         }),
       }),
@@ -1356,17 +1359,17 @@ describe("selectors", () => {
   it("getGroupedByOwnerAndFilteredModelData", () => {
     const modelData = {
       abc123: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           "owner-tag": "user-eggman",
         }),
       }),
       def456: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           "owner-tag": "user-spaceman",
         }),
       }),
       ghi789: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           "owner-tag": "user-admin",
         }),
       }),
@@ -1391,13 +1394,13 @@ describe("selectors", () => {
     const modelData = {
       abc123: modelDataFactory.build({
         machines: {
-          "0": modelDataMachineFactory.build({
+          "0": machineStatusFactory.build({
             "agent-status": {
               status: "down",
             },
             id: "0",
           }),
-          "1": modelDataMachineFactory.build({
+          "1": machineStatusFactory.build({
             "agent-status": {
               status: "pending",
             },
@@ -1407,13 +1410,13 @@ describe("selectors", () => {
       }),
       def456: modelDataFactory.build({
         machines: {
-          "2": modelDataMachineFactory.build({
+          "2": machineStatusFactory.build({
             "agent-status": {
               status: "running",
             },
             id: "2",
           }),
-          "3": modelDataMachineFactory.build({
+          "3": machineStatusFactory.build({
             "agent-status": {
               status: "down",
             },
@@ -1423,13 +1426,13 @@ describe("selectors", () => {
       }),
       ghi789: modelDataFactory.build({
         machines: {
-          "4": modelDataMachineFactory.build({
+          "4": machineStatusFactory.build({
             "agent-status": {
               status: "down",
             },
             id: "4",
           }),
-          "5": modelDataMachineFactory.build({
+          "5": machineStatusFactory.build({
             "agent-status": {
               status: "error",
             },
@@ -1458,9 +1461,9 @@ describe("selectors", () => {
     const modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          easyrsa: modelDataApplicationFactory.build({
+          easyrsa: applicationStatusFactory.build({
             units: {
-              "easyrsa/0": modelDataUnitFactory.build({
+              "easyrsa/0": unitStatusFactory.build({
                 "agent-status": detailedStatusFactory.build({
                   status: "running",
                 }),
@@ -1472,15 +1475,15 @@ describe("selectors", () => {
       }),
       def456: modelDataFactory.build({
         applications: {
-          etcd: modelDataApplicationFactory.build({
+          etcd: applicationStatusFactory.build({
             units: {
-              "etcd/0": modelDataUnitFactory.build({
+              "etcd/0": unitStatusFactory.build({
                 "agent-status": detailedStatusFactory.build({
                   status: "allocating",
                 }),
                 charm: "ch:etcd",
               }),
-              "etcd/1": modelDataUnitFactory.build({
+              "etcd/1": unitStatusFactory.build({
                 "agent-status": detailedStatusFactory.build({
                   status: "lost",
                 }),
@@ -1488,9 +1491,9 @@ describe("selectors", () => {
               }),
             },
           }),
-          ceph: modelDataApplicationFactory.build({
+          ceph: applicationStatusFactory.build({
             units: {
-              "ceph/0": modelDataUnitFactory.build({
+              "ceph/0": unitStatusFactory.build({
                 "agent-status": detailedStatusFactory.build({
                   status: "lost",
                 }),
@@ -1520,7 +1523,7 @@ describe("selectors", () => {
     const modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          easyrsa: modelDataApplicationFactory.build({
+          easyrsa: applicationStatusFactory.build({
             status: detailedStatusFactory.build({
               status: "pending",
             }),
@@ -1529,7 +1532,7 @@ describe("selectors", () => {
       }),
       def456: modelDataFactory.build({
         applications: {
-          easyrsa: modelDataApplicationFactory.build({
+          easyrsa: applicationStatusFactory.build({
             status: detailedStatusFactory.build({
               status: "blocked",
             }),
@@ -1538,7 +1541,7 @@ describe("selectors", () => {
       }),
       ghi789: modelDataFactory.build({
         applications: {
-          easyrsa: modelDataApplicationFactory.build({
+          easyrsa: applicationStatusFactory.build({
             status: detailedStatusFactory.build({
               status: "unknown",
             }),
@@ -1562,7 +1565,7 @@ describe("selectors", () => {
     const modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          easyrsa: modelDataApplicationFactory.build({
+          easyrsa: applicationStatusFactory.build({
             status: detailedStatusFactory.build({
               status: "pending",
             }),
@@ -1571,7 +1574,7 @@ describe("selectors", () => {
       }),
       def456: modelDataFactory.build({
         applications: {
-          easyrsa: modelDataApplicationFactory.build({
+          easyrsa: applicationStatusFactory.build({
             status: detailedStatusFactory.build({
               status: "unknown",
             }),
@@ -1580,7 +1583,7 @@ describe("selectors", () => {
       }),
       ghi789: modelDataFactory.build({
         applications: {
-          easyrsa: modelDataApplicationFactory.build({
+          easyrsa: applicationStatusFactory.build({
             status: detailedStatusFactory.build({
               status: "unknown",
             }),
@@ -1628,8 +1631,8 @@ describe("selectors", () => {
           }),
         ],
         selectedApplications: {
-          nothing: modelDataApplicationFactory.build({ charm: "ch:nothing" }),
-          redis: modelDataApplicationFactory.build({
+          nothing: applicationStatusFactory.build({ charm: "ch:nothing" }),
+          redis: applicationStatusFactory.build({
             charm: "ch:amd64/focal/redis-k8s",
           }),
         },
@@ -1647,8 +1650,8 @@ describe("selectors", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         selectedApplications: {
-          nothing: modelDataApplicationFactory.build({ charm: "ch:nothing" }),
-          redis: modelDataApplicationFactory.build({
+          nothing: applicationStatusFactory.build({ charm: "ch:nothing" }),
+          redis: applicationStatusFactory.build({
             charm: "ch:amd64/focal/redis-k8s",
           }),
         },
@@ -1663,8 +1666,8 @@ describe("selectors", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         selectedApplications: {
-          nothing: modelDataApplicationFactory.build({ charm: "ch:nothing" }),
-          redis: modelDataApplicationFactory.build({
+          nothing: applicationStatusFactory.build({ charm: "ch:nothing" }),
+          redis: applicationStatusFactory.build({
             charm: "ch:amd64/focal/redis-k8s",
           }),
         },
@@ -1673,7 +1676,7 @@ describe("selectors", () => {
     expect(
       getSelectedApplications(state, "ch:amd64/focal/redis-k8s"),
     ).toStrictEqual({
-      redis: modelDataApplicationFactory.build({
+      redis: applicationStatusFactory.build({
         charm: "ch:amd64/focal/redis-k8s",
       }),
     });
@@ -1746,7 +1749,7 @@ describe("selectors", () => {
     const modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
       }),
     };
@@ -1886,7 +1889,7 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelDataInfoFactory.build({
+                info: modelInfoFactory.build({
                   users: [
                     modelUserInfoFactory.build({
                       user: "eggman@external",
@@ -1927,7 +1930,7 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelDataInfoFactory.build({
+                info: modelInfoFactory.build({
                   users: [],
                 }),
               }),
@@ -1963,7 +1966,7 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelDataInfoFactory.build({
+                info: modelInfoFactory.build({
                   "cloud-credential-tag": "cloudcred-google_eggman_juju",
                 }),
               }),
@@ -2186,7 +2189,7 @@ describe("selectors", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "eggman@external" }),
                 modelUserInfoFactory.build({ user: "spaceman@domain" }),
@@ -2194,7 +2197,7 @@ describe("selectors", () => {
             }),
           }),
           def456: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               users: [modelUserInfoFactory.build({ user: "other3" })],
             }),
           }),
@@ -2252,7 +2255,7 @@ describe("selectors", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "eggman@external" }),
                 modelUserInfoFactory.build({ user: "spaceman@domain" }),
@@ -2261,7 +2264,7 @@ describe("selectors", () => {
             }),
           }),
           def456: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "other@model2" }),
                 modelUserInfoFactory.build({ user: "other2@another-model2" }),
@@ -2285,7 +2288,7 @@ describe("selectors", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "eggman@external" }),
                 modelUserInfoFactory.build({ user: "spaceman@domain" }),
@@ -2294,7 +2297,7 @@ describe("selectors", () => {
             }),
           }),
           def456: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               users: [modelUserInfoFactory.build({ user: "other@model2" })],
             }),
           }),
@@ -2312,7 +2315,7 @@ describe("selectors", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "eggman@external" }),
                 modelUserInfoFactory.build({ user: "spaceman@domain" }),
@@ -2321,7 +2324,7 @@ describe("selectors", () => {
             }),
           }),
           def456: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "other@model2" }),
                 modelUserInfoFactory.build({ user: "other2@external" }),
@@ -2343,7 +2346,7 @@ describe("selectors", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "eggman@external" }),
                 modelUserInfoFactory.build({ user: "spaceman@domain" }),
@@ -2353,7 +2356,7 @@ describe("selectors", () => {
             }),
           }),
           def456: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               users: [modelUserInfoFactory.build({ user: "other@model2" })],
             }),
           }),
@@ -2401,17 +2404,17 @@ describe("selectors", () => {
     it("filters by credential", () => {
       const modelData = {
         abc123: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "cloud-credential-tag": "cloudcred-google_eggman@external_juju",
           }),
         }),
         def456: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "cloud-credential-tag": "cloudcred-google_spaceman@external_juju",
           }),
         }),
         ghi789: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "cloud-credential-tag": "cloudcred-google_eggman_juju",
           }),
         }),
@@ -2465,17 +2468,17 @@ describe("selectors", () => {
     it("filters by owner", () => {
       const modelData = {
         abc123: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "owner-tag": "user-eggman@external",
           }),
         }),
         def456: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "owner-tag": "user-spaceman@external",
           }),
         }),
         ghi789: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "owner-tag": "user-eggman",
           }),
         }),
@@ -2506,7 +2509,7 @@ describe("selectors", () => {
           }),
         }),
         c3: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "cloud-credential-tag": "cloudcred-google_matches_juju",
           }),
         }),
@@ -2516,7 +2519,7 @@ describe("selectors", () => {
           }),
         }),
         e5: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "owner-tag": "user-matches",
           }),
         }),
@@ -2561,7 +2564,7 @@ describe("selectors", () => {
     it("handles kubernetes in model data", () => {
       const modelData = {
         abc123: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "provider-type": "kubernetes",
           }),
         }),
@@ -2596,42 +2599,42 @@ describe("getMachineApps", () => {
   it("gets applications on a machine", () => {
     const applications = {
       // This application should be included as its parent application is on the machine.
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             machine: "0",
           }),
-          "app3/1": modelDataUnitFactory.build({
+          "app3/1": unitStatusFactory.build({
             machine: "1",
           }),
         },
       }),
       // This application should not be included as it has no units on the machine.
-      app4: modelDataApplicationFactory.build({
+      app4: applicationStatusFactory.build({
         units: {
-          "app4/0": modelDataUnitFactory.build({
+          "app4/0": unitStatusFactory.build({
             machine: "1",
           }),
-          "app4/1": modelDataUnitFactory.build({
+          "app4/1": unitStatusFactory.build({
             machine: "2",
           }),
         },
@@ -2658,42 +2661,42 @@ describe("getMachineUnits", () => {
   it("gets units on a machine", () => {
     const applications = {
       // This application should be included as its parent application is on the machine.
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             machine: "0",
           }),
-          "app3/1": modelDataUnitFactory.build({
+          "app3/1": unitStatusFactory.build({
             machine: "1",
           }),
         },
       }),
       // This application should not be included as it has no units on the machine.
-      app4: modelDataApplicationFactory.build({
+      app4: applicationStatusFactory.build({
         units: {
-          "app4/0": modelDataUnitFactory.build({
+          "app4/0": unitStatusFactory.build({
             machine: "1",
           }),
-          "app4/1": modelDataUnitFactory.build({
+          "app4/1": unitStatusFactory.build({
             machine: "2",
           }),
         },
@@ -2719,28 +2722,28 @@ describe("getMachineUnits", () => {
 describe("getUnit", () => {
   it("gets a unit", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build(),
+          "app3/0": unitStatusFactory.build(),
         },
       }),
     };
@@ -2760,38 +2763,38 @@ describe("getUnit", () => {
 
   it("gets a unit for a subordinate application", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2", "app3"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             subordinates: {
-              "app1/2": modelDataUnitFactory.build(),
+              "app1/2": unitStatusFactory.build(),
             },
           }),
         },
       }),
       // This application should not be included.
-      app4: modelDataApplicationFactory.build({
+      app4: applicationStatusFactory.build({
         units: {
-          "app4/0": modelDataUnitFactory.build(),
+          "app4/0": unitStatusFactory.build(),
         },
       }),
     };
@@ -2813,28 +2816,28 @@ describe("getUnit", () => {
 describe("getUnitApp", () => {
   it("gets an application from the unit id", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build(),
+          "app3/0": unitStatusFactory.build(),
         },
       }),
     };
@@ -2856,38 +2859,38 @@ describe("getUnitApp", () => {
 describe("getAppMachines", () => {
   it("gets machines for an application", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
       // This application's machines should not be included.
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             machine: "2",
           }),
         },
       }),
     };
     const machines = {
-      0: modelDataMachineFactory.build({ id: "0" }),
-      1: modelDataMachineFactory.build({ id: "1" }),
-      2: modelDataMachineFactory.build({ id: "2" }),
+      0: machineStatusFactory.build({ id: "0" }),
+      1: machineStatusFactory.build({ id: "1" }),
+      2: machineStatusFactory.build({ id: "2" }),
     };
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
@@ -2907,48 +2910,48 @@ describe("getAppMachines", () => {
 
   it("gets machines for a subordinate application", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2", "app3"],
       }),
       // This application's machines should be included as it is a parent to app1.
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
       // This application's machines should be included as it is a parent to app1.
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             machine: "2",
           }),
         },
       }),
       // This application's machines should not be included.
-      app4: modelDataApplicationFactory.build({
+      app4: applicationStatusFactory.build({
         units: {
-          "app4/0": modelDataUnitFactory.build({
+          "app4/0": unitStatusFactory.build({
             machine: "3",
           }),
         },
       }),
     };
     const machines = {
-      0: modelDataMachineFactory.build({ id: "0" }),
-      1: modelDataMachineFactory.build({ id: "1" }),
-      2: modelDataMachineFactory.build({ id: "2" }),
-      3: modelDataMachineFactory.build({ id: "3" }),
+      0: machineStatusFactory.build({ id: "0" }),
+      1: machineStatusFactory.build({ id: "1" }),
+      2: machineStatusFactory.build({ id: "2" }),
+      3: machineStatusFactory.build({ id: "3" }),
     };
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
@@ -2972,29 +2975,29 @@ describe("getAppUnits", () => {
   it("gets units for an application", () => {
     const applications = {
       // This application's units should not be included.
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
       // This application's units should not be included.
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build(),
+          "app3/0": unitStatusFactory.build(),
         },
       }),
     };
@@ -3015,38 +3018,38 @@ describe("getAppUnits", () => {
 
   it("gets units for a subordinate application", () => {
     const applications = {
-      app1: modelDataApplicationFactory.build({
+      app1: applicationStatusFactory.build({
         "subordinate-to": ["app2", "app3"],
       }),
-      app2: modelDataApplicationFactory.build({
+      app2: applicationStatusFactory.build({
         units: {
-          "app2/0": modelDataUnitFactory.build({
+          "app2/0": unitStatusFactory.build({
             machine: "0",
             subordinates: {
-              "app1/0": modelDataUnitFactory.build(),
+              "app1/0": unitStatusFactory.build(),
             },
           }),
-          "app2/1": modelDataUnitFactory.build({
+          "app2/1": unitStatusFactory.build({
             machine: "1",
             subordinates: {
-              "app1/1": modelDataUnitFactory.build(),
+              "app1/1": unitStatusFactory.build(),
             },
           }),
         },
       }),
-      app3: modelDataApplicationFactory.build({
+      app3: applicationStatusFactory.build({
         units: {
-          "app3/0": modelDataUnitFactory.build({
+          "app3/0": unitStatusFactory.build({
             subordinates: {
-              "app1/2": modelDataUnitFactory.build(),
+              "app1/2": unitStatusFactory.build(),
             },
           }),
         },
       }),
       // This application should not be included.
-      app4: modelDataApplicationFactory.build({
+      app4: applicationStatusFactory.build({
         units: {
-          "app4/0": modelDataUnitFactory.build(),
+          "app4/0": unitStatusFactory.build(),
         },
       }),
     };

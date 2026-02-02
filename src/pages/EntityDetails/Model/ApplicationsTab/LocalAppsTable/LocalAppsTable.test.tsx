@@ -5,12 +5,12 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
 import {
-  modelDataApplicationFactory,
-  modelDataFactory,
-  modelDataInfoFactory,
-} from "testing/factories/juju/juju";
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
+import { modelDataFactory } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { createStore, renderComponent } from "testing/utils";
 
@@ -53,15 +53,15 @@ describe("LocalAppsTable", () => {
         modelData: {
           test123: modelDataFactory.build({
             applications: {
-              mysql1: modelDataApplicationFactory.build(),
-              mysql2: modelDataApplicationFactory.build(),
-              db2: modelDataApplicationFactory.build(),
-              db1: modelDataApplicationFactory.build(),
-              "jupyter-controller": modelDataApplicationFactory.build(),
-              "jupyter-ui": modelDataApplicationFactory.build(),
-              redis1: modelDataApplicationFactory.build(),
+              mysql1: applicationStatusFactory.build(),
+              mysql2: applicationStatusFactory.build(),
+              db2: applicationStatusFactory.build(),
+              db1: applicationStatusFactory.build(),
+              "jupyter-controller": applicationStatusFactory.build(),
+              "jupyter-ui": applicationStatusFactory.build(),
+              redis1: applicationStatusFactory.build(),
             },
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               uuid: "test123",
               name: "test-model",
               "controller-uuid": "controller123",
@@ -146,7 +146,7 @@ describe("LocalAppsTable", () => {
   });
 
   it("does not show the select column when the user only has read permissions", () => {
-    state.juju.modelData.test123.info = modelDataInfoFactory.build({
+    state.juju.modelData.test123.info = modelInfoFactory.build({
       uuid: "test123",
       name: "test-model",
       "controller-uuid": "controller123",
@@ -345,7 +345,7 @@ describe("LocalAppsTable", () => {
   });
 
   it("does not show the run action button when the user only has read permissions", () => {
-    state.juju.modelData.test123.info = modelDataInfoFactory.build({
+    state.juju.modelData.test123.info = modelInfoFactory.build({
       uuid: "test123",
       name: "test-model",
       "controller-uuid": "controller123",
@@ -389,7 +389,7 @@ describe("LocalAppsTable", () => {
 
   it("enables the run action button when there is at least one application selected", () => {
     state.juju.selectedApplications = {
-      app1: modelDataApplicationFactory.build(),
+      app1: applicationStatusFactory.build(),
     };
     renderComponent(
       <LocalAppsTable
@@ -408,7 +408,7 @@ describe("LocalAppsTable", () => {
 
   it("opens the choose-charm panel when clicking the run action button", async () => {
     state.juju.selectedApplications = {
-      app1: modelDataApplicationFactory.build(),
+      app1: applicationStatusFactory.build(),
     };
     const { router } = renderComponent(
       <LocalAppsTable

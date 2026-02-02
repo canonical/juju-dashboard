@@ -5,9 +5,9 @@ import { vi } from "vitest";
 import { InfoPanelTestId } from "components/InfoPanel";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
-  modelDataInfoFactory,
-  modelDataApplicationFactory,
   modelDataFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
@@ -54,7 +54,7 @@ describe("Unit", () => {
         modelData: {
           abc123: modelDataFactory.build({
             applications: {
-              etcd: modelDataApplicationFactory.build(),
+              etcd: applicationStatusFactory.build(),
             },
           }),
         },
@@ -94,7 +94,7 @@ describe("Unit", () => {
 
   it("does not display the machines table for k8s", async () => {
     if (state.juju.modelData?.abc123.model) {
-      state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+      state.juju.modelData.abc123.info = modelInfoFactory.build({
         "provider-type": "kubernetes",
       });
     }

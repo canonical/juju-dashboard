@@ -1,4 +1,4 @@
-import { applicationOfferStatusFactory } from "testing/factories/juju/ClientV6";
+import { applicationOfferStatusFactory } from "testing/factories/juju/ClientV7";
 import {
   detailedStatusFactory,
   machineStatusFactory,

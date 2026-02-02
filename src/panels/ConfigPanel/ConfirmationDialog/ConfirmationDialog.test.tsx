@@ -9,9 +9,9 @@ import * as secretHooks from "juju/api-hooks/secrets";
 import { ConfirmType as DefaultConfirmType } from "panels/types";
 import type { RootState } from "store/store";
 import { configFactory } from "testing/factories/juju/Application";
+import { listSecretResultFactory } from "testing/factories/juju/SecretsV2";
 import {
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";

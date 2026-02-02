@@ -12,10 +12,8 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
-import {
-  modelListInfoFactory,
-  listSecretResultFactory,
-} from "testing/factories/juju/juju";
+import { listSecretResultFactory } from "testing/factories/juju/SecretsV2";
+import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { ComponentProviders, changeURL, createStore } from "testing/utils";
 
 import {

@@ -6,7 +6,7 @@ import createFetchMock from "vitest-fetch-mock";
 
 import { logger } from "utils/logger";
 
-import { listSecretResultFactory } from "./factories/juju/juju";
+import { listSecretResultFactory } from "./factories/juju/SecretsV2";
 
 vi.mock("react-ga4");
 

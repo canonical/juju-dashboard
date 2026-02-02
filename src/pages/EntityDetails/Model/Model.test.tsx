@@ -22,25 +22,29 @@ import {
 } from "testing/factories/juju/ActionV7";
 import {
   applicationOfferStatusFactory,
+  applicationStatusFactory,
   remoteApplicationStatusFactory,
-} from "testing/factories/juju/ClientV6";
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
 import {
   relationStatusFactory,
   machineStatusFactory,
 } from "testing/factories/juju/ClientV7";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
-import { auditEventFactory } from "testing/factories/juju/jimm";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
+import {
+  auditEventFactory,
+  rebacAllowedFactory,
+} from "testing/factories/juju/jimm";
 import {
   auditEventsStateFactory,
   modelDataFactory,
-  modelDataInfoFactory,
   modelListInfoFactory,
   modelFeaturesStateFactory,
   modelFeaturesFactory,
-  rebacAllowedFactory,
   rebacState,
-  modelDataApplicationFactory,
-  modelDataUnitFactory,
 } from "testing/factories/juju/juju";
 import {
   machineChangeDeltaFactory,
@@ -148,7 +152,7 @@ describe("Model", () => {
     }
     state.juju.modelData = {
       abc123: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           users: [
             modelUserInfoFactory.build({
               user: "eggman@external",
@@ -188,7 +192,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
       }),
     };
@@ -209,7 +213,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
         relations: [
           relationStatusFactory.build({
@@ -251,7 +255,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
         relations: [
           relationStatusFactory.build({
@@ -290,7 +294,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
         relations: [
           relationStatusFactory.build({
@@ -339,7 +343,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
         relations: [
           relationStatusFactory.build({
@@ -385,7 +389,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
         relations: [
           relationStatusFactory.build({
@@ -434,7 +438,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
         relations: [
           relationStatusFactory.build({
@@ -500,9 +504,9 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           uuid: "abc123",
           name: "test1",
         }),
@@ -535,9 +539,9 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           uuid: "abc123",
           name: "test1",
         }),
@@ -599,7 +603,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
       }),
     };
@@ -631,7 +635,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          cockroachdb: modelDataApplicationFactory.build({
+          cockroachdb: applicationStatusFactory.build({
             charm: "local:cockroachdb-55",
           }),
         },
@@ -654,9 +658,9 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          client: modelDataApplicationFactory.build({
+          client: applicationStatusFactory.build({
             units: {
-              0: modelDataUnitFactory.build(),
+              0: unitStatusFactory.build(),
             },
           }),
         },
@@ -724,7 +728,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
         machines: {
           "0": machineStatusFactory.build(),
@@ -771,7 +775,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
         machines: {
           "0": machineStatusFactory.build({ id: "0" }),
@@ -805,7 +809,7 @@ describe("Model", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
       }),
     };
@@ -816,7 +820,7 @@ describe("Model", () => {
   });
 
   it("should have a link for model access panel", async () => {
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       uuid: "abc123",
       name: "test1",
       "controller-uuid": "controller123",

@@ -5,10 +5,8 @@ import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import { charmApplicationFactory } from "testing/factories/juju/Charms";
-import {
-  modelDataApplicationFactory,
-  modelDataFactory,
-} from "testing/factories/juju/juju";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import { modelDataFactory } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { createStore, renderComponent } from "testing/utils";
 
@@ -34,13 +32,13 @@ describe("SearchResults", () => {
         modelData: {
           test123: modelDataFactory.build({
             applications: {
-              mysql1: modelDataApplicationFactory.build(),
-              mysql2: modelDataApplicationFactory.build(),
-              db2: modelDataApplicationFactory.build(),
-              db1: modelDataApplicationFactory.build(),
-              "jupyter-controller": modelDataApplicationFactory.build(),
-              "jupyter-ui": modelDataApplicationFactory.build(),
-              redis1: modelDataApplicationFactory.build(),
+              mysql1: applicationStatusFactory.build(),
+              mysql2: applicationStatusFactory.build(),
+              db2: applicationStatusFactory.build(),
+              db1: applicationStatusFactory.build(),
+              "jupyter-controller": applicationStatusFactory.build(),
+              "jupyter-ui": applicationStatusFactory.build(),
+              redis1: applicationStatusFactory.build(),
             },
           }),
         },
@@ -95,14 +93,14 @@ describe("SearchResults", () => {
     state.juju.modelData = {
       test123: modelDataFactory.build({
         applications: {
-          mysql1: modelDataApplicationFactory.build({
+          mysql1: applicationStatusFactory.build({
             charm: "ch:mysql",
           }),
-          mysql2: modelDataApplicationFactory.build({
+          mysql2: applicationStatusFactory.build({
             charm: "ch:mysql",
           }),
-          db2: modelDataApplicationFactory.build(),
-          db1: modelDataApplicationFactory.build(),
+          db2: applicationStatusFactory.build(),
+          db1: applicationStatusFactory.build(),
         },
       }),
     };
@@ -123,8 +121,8 @@ describe("SearchResults", () => {
 
   it("cleans up selected applications when unmounting", () => {
     state.juju.selectedApplications = {
-      mysql1: modelDataApplicationFactory.build(),
-      mysql2: modelDataApplicationFactory.build(),
+      mysql1: applicationStatusFactory.build(),
+      mysql2: applicationStatusFactory.build(),
     };
     const [store, actions] = createStore(state, { trackActions: true });
     const { result } = renderComponent(<SearchResults />, {

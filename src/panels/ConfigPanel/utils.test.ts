@@ -1,7 +1,7 @@
 import {
   listSecretResultFactory,
   secretAccessInfoFactory,
-} from "testing/factories/juju/juju";
+} from "testing/factories/juju/SecretsV2";
 
 import type { Config } from "./types";
 import { getRequiredGrants } from "./utils";

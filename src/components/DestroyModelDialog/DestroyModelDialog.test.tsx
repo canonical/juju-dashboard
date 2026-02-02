@@ -4,14 +4,16 @@ import userEvent from "@testing-library/user-event";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
-import { applicationOfferStatusFactory } from "testing/factories/juju/ClientV6";
+import {
+  applicationStatusFactory,
+  unitStatusFactory,
+  machineStatusFactory,
+  applicationOfferStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
-  modelDataApplicationFactory,
   modelDataFactory,
-  modelDataInfoFactory,
-  modelDataMachineFactory,
-  modelDataUnitFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { customWithin } from "testing/queries/within";
@@ -35,7 +37,7 @@ describe("DestroyModelDialog", () => {
         modelData: {
           abc123: modelDataFactory.build({
             uuid: "abc123",
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               name: "test-model",
             }),
             storage: [
@@ -52,14 +54,14 @@ describe("DestroyModelDialog", () => {
               },
             ],
             applications: {
-              easyrsa: modelDataApplicationFactory.build({
+              easyrsa: applicationStatusFactory.build({
                 units: {
-                  "easyrsa/0": modelDataUnitFactory.build(),
+                  "easyrsa/0": unitStatusFactory.build(),
                 },
               }),
             },
             machines: {
-              "0": modelDataMachineFactory.build(),
+              "0": machineStatusFactory.build(),
             },
           }),
         },

@@ -5,13 +5,11 @@ import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import {
   applicationOfferStatusFactory,
+  applicationStatusFactory,
   remoteApplicationStatusFactory,
-} from "testing/factories/juju/ClientV6";
-import {
-  modelDataApplicationFactory,
-  modelDataFactory,
-  modelDataInfoFactory,
-} from "testing/factories/juju/juju";
+} from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { modelDataFactory } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 
@@ -37,13 +35,13 @@ describe("ApplicationsTab", () => {
         modelData: {
           test123: modelDataFactory.build({
             applications: {
-              mysql1: modelDataApplicationFactory.build(),
-              mysql2: modelDataApplicationFactory.build(),
-              db2: modelDataApplicationFactory.build(),
-              db1: modelDataApplicationFactory.build(),
-              "jupyter-controller": modelDataApplicationFactory.build(),
-              "jupyter-ui": modelDataApplicationFactory.build(),
-              redis1: modelDataApplicationFactory.build(),
+              mysql1: applicationStatusFactory.build(),
+              mysql2: applicationStatusFactory.build(),
+              db2: applicationStatusFactory.build(),
+              db1: applicationStatusFactory.build(),
+              "jupyter-controller": applicationStatusFactory.build(),
+              "jupyter-ui": applicationStatusFactory.build(),
+              redis1: applicationStatusFactory.build(),
             },
           }),
         },
@@ -87,7 +85,7 @@ describe("ApplicationsTab", () => {
   it("can show the offers table", () => {
     state.juju.modelData = {
       test123: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           uuid: "test123",
           name: "test-model",
         }),
@@ -105,7 +103,7 @@ describe("ApplicationsTab", () => {
   it("can show the remote apps table", () => {
     state.juju.modelData = {
       test123: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           uuid: "test123",
           name: "test-model",
         }),

@@ -7,15 +7,15 @@ import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
   applicationOfferStatusFactory,
+  applicationStatusFactory,
+  machineStatusFactory,
   remoteApplicationStatusFactory,
-} from "testing/factories/juju/ClientV6";
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
-  modelDataApplicationFactory,
   modelDataFactory,
-  modelDataInfoFactory,
-  modelDataMachineFactory,
-  modelDataUnitFactory,
 } from "testing/factories/juju/juju";
 import { createStore } from "testing/utils";
 
@@ -61,21 +61,21 @@ describe("useModelDestructionData", () => {
   it("should correctly count applications and machines and set showInfoTable to true", () => {
     const modelData = modelDataFactory.build({
       uuid: "abc123",
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         name: "test-model",
       }),
       applications: {
-        easyrsa: modelDataApplicationFactory.build({
+        easyrsa: applicationStatusFactory.build({
           units: {
-            "easyrsa/0": modelDataUnitFactory.build(),
-            "easyrsa/1": modelDataUnitFactory.build(),
-            "easyrsa/3": modelDataUnitFactory.build(),
+            "easyrsa/0": unitStatusFactory.build(),
+            "easyrsa/1": unitStatusFactory.build(),
+            "easyrsa/3": unitStatusFactory.build(),
           },
         }),
       },
       machines: {
-        "0": modelDataMachineFactory.build(),
-        "1": modelDataMachineFactory.build(),
+        "0": machineStatusFactory.build(),
+        "1": machineStatusFactory.build(),
       },
     });
     const state = rootStateFactory.build({
@@ -98,7 +98,7 @@ describe("useModelDestructionData", () => {
   it("should correctly extract storage IDs and set hasStorage to true", () => {
     const modelData = modelDataFactory.build({
       uuid: "abc123",
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         name: "test-model",
       }),
       storage: [
@@ -115,17 +115,17 @@ describe("useModelDestructionData", () => {
         },
       ],
       applications: {
-        easyrsa: modelDataApplicationFactory.build({
+        easyrsa: applicationStatusFactory.build({
           units: {
-            "easyrsa/0": modelDataUnitFactory.build(),
-            "easyrsa/1": modelDataUnitFactory.build(),
-            "easyrsa/3": modelDataUnitFactory.build(),
+            "easyrsa/0": unitStatusFactory.build(),
+            "easyrsa/1": unitStatusFactory.build(),
+            "easyrsa/3": unitStatusFactory.build(),
           },
         }),
       },
       machines: {
-        "0": modelDataMachineFactory.build(),
-        "1": modelDataMachineFactory.build(),
+        "0": machineStatusFactory.build(),
+        "1": machineStatusFactory.build(),
       },
     });
     const state = rootStateFactory.build({
@@ -148,7 +148,7 @@ describe("useModelDestructionData", () => {
   it("should correctly aggregate cross model relations from offers and remote applications", () => {
     const modelData = modelDataFactory.build({
       uuid: "abc123",
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         name: "test-model",
       }),
       offers: {
@@ -163,14 +163,14 @@ describe("useModelDestructionData", () => {
         mysql: remoteApplicationStatusFactory.build(),
       },
       applications: {
-        easyrsa: modelDataApplicationFactory.build({
+        easyrsa: applicationStatusFactory.build({
           units: {
-            "easyrsa/0": modelDataUnitFactory.build(),
+            "easyrsa/0": unitStatusFactory.build(),
           },
         }),
       },
       machines: {
-        "0": modelDataMachineFactory.build(),
+        "0": machineStatusFactory.build(),
       },
     });
     const state = rootStateFactory.build({
@@ -211,7 +211,7 @@ describe("useModelDestructionData", () => {
   it("should generate connectedOffers list", () => {
     const modelData = modelDataFactory.build({
       uuid: "abc123",
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         name: "test-model",
       }),
       offers: {

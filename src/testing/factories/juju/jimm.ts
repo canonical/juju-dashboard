@@ -1,6 +1,9 @@
 import { Factory } from "fishery";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
+import type { RelationshipTuple } from "juju/jimm/JIMMV4";
+import { JIMMRelation } from "juju/jimm/JIMMV4";
+import type { ReBACAllowed, ReBACRelationship } from "store/juju/types";
 
 import type {
   CrossModelQueryEndpoint,
@@ -165,3 +168,27 @@ class CrossModelQueryFactory extends Factory<CrossModelQuery> {
 }
 
 export const crossModelQueryFactory = CrossModelQueryFactory.define(() => ({}));
+
+export const relationshipTupleFactory = Factory.define<RelationshipTuple>(
+  () => ({
+    object: "user-eggman@external",
+    relation: JIMMRelation.MEMBER,
+    target_object: "admins",
+  }),
+);
+
+export const rebacAllowedFactory = Factory.define<ReBACAllowed>(() => ({
+  errors: null,
+  loaded: false,
+  loading: false,
+  tuple: relationshipTupleFactory.build(),
+}));
+
+export const rebacRelationshipFactory = Factory.define<ReBACRelationship>(
+  () => ({
+    errors: null,
+    loaded: false,
+    loading: false,
+    requestId: "rel123",
+  }),
+);

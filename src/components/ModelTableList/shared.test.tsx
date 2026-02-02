@@ -1,11 +1,11 @@
 import {
   detailedStatusFactory,
   modelStatusInfoFactory,
-} from "testing/factories/juju/ClientV6";
+} from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   controllerFactory,
   modelDataFactory,
-  modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 
 import {
@@ -40,7 +40,7 @@ describe("shared", () => {
 
   it("getCredential", () => {
     const modelData = modelDataFactory.build({
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         "cloud-credential-tag": "cloudcred-amazon_eggman@external_juju",
       }),
     });
@@ -49,7 +49,7 @@ describe("shared", () => {
 
   it("getControllerUUID", () => {
     const modelData = modelDataFactory.build({
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         "controller-uuid": "controller123",
       }),
     });
@@ -66,7 +66,7 @@ describe("shared", () => {
       ],
     };
     const modelData = modelDataFactory.build({
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         "controller-uuid": "controller123",
       }),
     });
@@ -85,7 +85,7 @@ describe("shared", () => {
       ],
     };
     const modelData = modelDataFactory.build({
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         "controller-uuid": "controller123",
       }),
     });
@@ -103,7 +103,7 @@ describe("shared", () => {
       ],
     };
     const modelData = modelDataFactory.build({
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         "controller-uuid": "controller123",
       }),
     });
@@ -114,7 +114,7 @@ describe("shared", () => {
 
   it("getLastUpdated", () => {
     const modelData = modelDataFactory.build({
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         status: detailedStatusFactory.build({
           since: "2019-11-12T23:49:17.148Z",
         }),

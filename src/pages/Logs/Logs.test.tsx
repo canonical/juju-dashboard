@@ -13,12 +13,12 @@ import {
   controllerFeaturesFactory,
   controllerFeaturesStateFactory,
 } from "testing/factories/general";
-import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
-  auditEventsStateFactory,
+  auditEventFactory,
   rebacAllowedFactory,
   relationshipTupleFactory,
-} from "testing/factories/juju/juju";
+} from "testing/factories/juju/jimm";
+import { auditEventsStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import Logs from "./Logs";

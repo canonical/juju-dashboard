@@ -2,7 +2,7 @@ import type { Connection } from "@canonical/jujulib";
 import { vi } from "vitest";
 
 import type { Config } from "store/general/types";
-import { relationshipTupleFactory } from "testing/factories/juju/juju";
+import { relationshipTupleFactory } from "testing/factories/juju/jimm";
 
 import {
   crossModelQuery,

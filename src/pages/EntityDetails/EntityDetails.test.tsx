@@ -11,10 +11,10 @@ import {
   generalStateFactory,
   configFactory,
 } from "testing/factories/general";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
-  modelDataApplicationFactory,
   modelDataFactory,
-  modelDataInfoFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { controllerFactory } from "testing/factories/juju/juju";
@@ -54,13 +54,13 @@ describe("Entity Details Container", () => {
         },
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               "controller-uuid": "controller123",
               name: "enterprise",
               "owner-tag": "user-kirk@external",
             }),
             applications: {
-              "ceph-mon": modelDataApplicationFactory.build(),
+              "ceph-mon": applicationStatusFactory.build(),
             },
           }),
         },

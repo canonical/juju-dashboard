@@ -12,12 +12,14 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
 import {
   modelListInfoFactory,
   modelDataFactory,
-  modelDataInfoFactory,
-  modelDataApplicationFactory,
 } from "testing/factories/juju/juju";
 import {
   modelWatcherModelDataFactory,
@@ -83,9 +85,9 @@ describe("Entity Details App", () => {
         modelData: {
           test123: modelDataFactory.build({
             applications: {
-              etcd: modelDataApplicationFactory.build(),
+              etcd: applicationStatusFactory.build(),
             },
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               uuid: "test123",
               name: "canonical-kubernetes",
               "controller-uuid": "controller123",
@@ -272,7 +274,7 @@ describe("Entity Details App", () => {
   });
 
   it("should not display the config button if the user only has read permissions", async () => {
-    state.juju.modelData.test123.info = modelDataInfoFactory.build({
+    state.juju.modelData.test123.info = modelInfoFactory.build({
       uuid: "test123",
       name: "canonical-kubernetes",
       "controller-uuid": "controller123",
@@ -291,7 +293,7 @@ describe("Entity Details App", () => {
   });
 
   it("should not display the checkboxes or run action button if the user only has read permissions", async () => {
-    state.juju.modelData.test123.info = modelDataInfoFactory.build({
+    state.juju.modelData.test123.info = modelInfoFactory.build({
       uuid: "test123",
       name: "canonical-kubernetes",
       "controller-uuid": "controller123",
