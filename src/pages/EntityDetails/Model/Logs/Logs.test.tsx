@@ -11,7 +11,7 @@ import {
   controllerFeaturesStateFactory,
   authUserInfoFactory,
 } from "testing/factories/general";
-import { rebacAllowedFactory } from "testing/factories/juju/juju";
+import { rebacAllowedFactory } from "testing/factories/juju/jimm";
 import { renderComponent } from "testing/utils";
 
 import Logs from "./Logs";

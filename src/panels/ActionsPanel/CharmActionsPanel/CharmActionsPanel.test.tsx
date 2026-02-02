@@ -11,11 +11,13 @@ import {
   charmActionSpecFactory,
 } from "testing/factories/juju/Charms";
 import {
+  applicationStatusFactory,
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
   jujuStateFactory,
-  modelDataApplicationFactory,
   modelDataFactory,
-  modelDataInfoFactory,
-  modelDataUnitFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -73,17 +75,17 @@ describe("CharmActionsPanel", () => {
         ],
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               name: "group-test",
             }),
           }),
         },
         selectedApplications: {
-          ceph: modelDataApplicationFactory.build({
+          ceph: applicationStatusFactory.build({
             charm: "ch:ceph",
             units: {
-              0: modelDataUnitFactory.build(),
-              1: modelDataUnitFactory.build(),
+              0: unitStatusFactory.build(),
+              1: unitStatusFactory.build(),
             },
           }),
         },
@@ -122,7 +124,7 @@ describe("CharmActionsPanel", () => {
 
   it("disables the submit button if no units are selected", async () => {
     state.juju.selectedApplications = {
-      ceph: modelDataApplicationFactory.build({
+      ceph: applicationStatusFactory.build({
         charm: "ch:ceph",
         units: {},
       }),

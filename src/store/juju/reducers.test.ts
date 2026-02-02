@@ -1,8 +1,17 @@
 import { DeltaChangeTypes, DeltaEntityTypes } from "juju/types";
 import { charmInfoFactory } from "testing/factories/juju/Charms";
-import { fullStatusFactory } from "testing/factories/juju/ClientV6";
+import {
+  applicationStatusFactory,
+  fullStatusFactory,
+} from "testing/factories/juju/ClientV7";
 import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
-import { auditEventFactory } from "testing/factories/juju/jimm";
+import { listSecretResultFactory } from "testing/factories/juju/SecretsV2";
+import {
+  auditEventFactory,
+  rebacAllowedFactory,
+  rebacRelationshipFactory,
+  relationshipTupleFactory,
+} from "testing/factories/juju/jimm";
 import {
   controllerFactory,
   jujuStateFactory,
@@ -11,17 +20,12 @@ import {
   auditEventsStateFactory,
   crossModelQueryStateFactory,
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
   modelFeaturesStateFactory,
   modelSecretsContentFactory,
-  relationshipTupleFactory,
-  rebacAllowedFactory,
-  rebacRelationshipFactory,
   rebacState,
   commandHistoryState,
   commandHistoryItem,
-  modelDataApplicationFactory,
 } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 
@@ -723,11 +727,11 @@ describe("reducers", () => {
   it("updateSelectedApplications", () => {
     const state = jujuStateFactory.build({
       selectedApplications: {
-        mysql: modelDataApplicationFactory.build(),
+        mysql: applicationStatusFactory.build(),
       },
     });
     const selectedApplications = {
-      ceph: modelDataApplicationFactory.build({ charm: "ch:ceph" }),
+      ceph: applicationStatusFactory.build({ charm: "ch:ceph" }),
     };
     expect(
       reducer(

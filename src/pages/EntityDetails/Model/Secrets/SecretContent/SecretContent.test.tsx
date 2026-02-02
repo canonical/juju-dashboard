@@ -14,11 +14,13 @@ import {
   credentialFactory,
 } from "testing/factories/general";
 import {
+  listSecretResultFactory,
+  secretRevisionFactory,
+} from "testing/factories/juju/SecretsV2";
+import {
   modelListInfoFactory,
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
-  secretRevisionFactory,
 } from "testing/factories/juju/juju";
 import { modelSecretsContentFactory } from "testing/factories/juju/juju";
 import { createStore, renderComponent } from "testing/utils";

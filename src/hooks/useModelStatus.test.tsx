@@ -5,10 +5,10 @@ import { BrowserRouter, Route, Routes } from "react-router";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
   modelDataFactory,
-  modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import { createStore, renderWrappedHook } from "testing/utils";
 
@@ -62,7 +62,7 @@ describe("useModelStatus", () => {
   it("can return the model status from the path", () => {
     const modelData = modelDataFactory.build({
       uuid: "abc123",
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         name: "test-model",
       }),
     });
@@ -86,7 +86,7 @@ describe("useModelStatus", () => {
   it("can return the model status from the query string", () => {
     const modelData = modelDataFactory.build({
       uuid: "abc123",
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         name: "test-model",
       }),
     });
@@ -106,7 +106,7 @@ describe("useModelStatus", () => {
   it("can return the model status from a given model UUID", () => {
     const modelData = modelDataFactory.build({
       uuid: "abc123",
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         name: "test-model",
       }),
     });

@@ -11,13 +11,15 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
+import { listSecretResultFactory } from "testing/factories/juju/SecretsV2";
 import {
   modelListInfoFactory,
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
-  modelDataInfoFactory,
   modelFeaturesFactory,
   modelDataFactory,
   modelFeaturesStateFactory,
@@ -147,7 +149,7 @@ describe("Secrets", () => {
   it("can open a panel to add a secret", async () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           uuid: "abc123",
           name: "test-model",
           "controller-uuid": "controller123",

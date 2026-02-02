@@ -1,12 +1,14 @@
 import { charmInfoFactory } from "testing/factories/juju/Charms";
-import { fullStatusFactory } from "testing/factories/juju/ClientV6";
-import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
-  listSecretResultFactory,
+  applicationStatusFactory,
+  fullStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { listSecretResultFactory } from "testing/factories/juju/SecretsV2";
+import {
+  auditEventFactory,
   relationshipTupleFactory,
-  commandHistoryItem,
-  modelDataApplicationFactory,
-} from "testing/factories/juju/juju";
+} from "testing/factories/juju/jimm";
+import { commandHistoryItem } from "testing/factories/juju/juju";
 
 import { actions } from "./slice";
 
@@ -247,7 +249,7 @@ describe("actions", () => {
   });
 
   it("updateSelectedApplications", () => {
-    const selectedApplications = { app1: modelDataApplicationFactory.build() };
+    const selectedApplications = { app1: applicationStatusFactory.build() };
     expect(
       actions.updateSelectedApplications({
         selectedApplications,

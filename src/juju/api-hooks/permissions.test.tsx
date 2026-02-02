@@ -15,9 +15,9 @@ import {
 } from "testing/factories/general";
 import {
   rebacAllowedFactory,
-  rebacRelationshipFactory,
   relationshipTupleFactory,
-} from "testing/factories/juju/juju";
+  rebacRelationshipFactory,
+} from "testing/factories/juju/jimm";
 import { ComponentProviders, createStore } from "testing/utils";
 
 import {

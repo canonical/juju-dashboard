@@ -6,14 +6,14 @@ import { LoadingSpinnerTestId } from "components/LoadingSpinner";
 import { ModelTableListTestId } from "components/ModelTableList";
 import type { RootState } from "store/store";
 import {
+  applicationStatusFactory,
   detailedStatusFactory,
   modelStatusInfoFactory,
-} from "testing/factories/juju/ClientV6";
+} from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
-  modelDataApplicationFactory,
   modelDataFactory,
-  modelDataInfoFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
@@ -39,14 +39,14 @@ describe("Models Index page", () => {
         },
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               "cloud-tag": "cloud-aws",
             }),
             model: modelStatusInfoFactory.build({
               "cloud-tag": "cloud-aws",
             }),
             applications: {
-              easyrsa: modelDataApplicationFactory.build({
+              easyrsa: applicationStatusFactory.build({
                 status: detailedStatusFactory.build({
                   status: "blocked",
                 }),
@@ -54,14 +54,14 @@ describe("Models Index page", () => {
             },
           }),
           def456: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               "cloud-tag": "cloud-gce",
             }),
             model: modelStatusInfoFactory.build({
               "cloud-tag": "cloud-gce",
             }),
             applications: {
-              cockroachdb: modelDataApplicationFactory.build({
+              cockroachdb: applicationStatusFactory.build({
                 status: detailedStatusFactory.build({
                   status: "running",
                 }),
@@ -69,14 +69,14 @@ describe("Models Index page", () => {
             },
           }),
           ghi789: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               "cloud-tag": "cloud-aws",
             }),
             model: modelStatusInfoFactory.build({
               "cloud-tag": "cloud-aws",
             }),
             applications: {
-              elasticsearch: modelDataApplicationFactory.build({
+              elasticsearch: applicationStatusFactory.build({
                 status: detailedStatusFactory.build({
                   status: "unknown",
                 }),

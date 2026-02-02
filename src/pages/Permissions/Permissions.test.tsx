@@ -17,10 +17,10 @@ import {
   authUserInfoFactory,
 } from "testing/factories/general";
 import {
-  jujuStateFactory,
   rebacAllowedFactory,
   relationshipTupleFactory,
-} from "testing/factories/juju/juju";
+} from "testing/factories/juju/jimm";
+import { jujuStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import PermissionsPage from "./Permissions";

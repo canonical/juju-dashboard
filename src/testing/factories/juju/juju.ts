@@ -1,20 +1,5 @@
-import type {
-  ApplicationStatus,
-  Base,
-  MachineStatus,
-  NetworkInterface,
-  UnitStatus,
-} from "@canonical/jujulib/dist/api/facades/client/ClientV6";
-import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
-import type {
-  AccessInfo,
-  ListSecretResult,
-  SecretRevision,
-} from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 import { Factory } from "fishery";
 
-import type { RelationshipTuple } from "juju/jimm/JIMMV4";
-import { JIMMRelation } from "juju/jimm/JIMMV4";
 import { DEFAULT_AUDIT_EVENTS_LIMIT } from "store/juju/slice";
 import type {
   AuditEventsState,
@@ -29,15 +14,13 @@ import type {
   ModelFeaturesState,
   ModelListInfo,
   ModelSecrets,
-  ReBACAllowed,
-  ReBACRelationship,
   ReBACState,
   SecretsState,
 } from "store/juju/types";
 import type { SecretsContent } from "store/juju/types";
 
-import { modelStatusInfoFactory, detailedStatusFactory } from "./ClientV6";
-import { modelSLAInfoFactory } from "./ModelManagerV9";
+import { modelStatusInfoFactory } from "./ClientV7";
+import { modelInfoFactory } from "./ModelManagerV9";
 
 function generateUUID(): string {
   // spell-checker:disable-next-line
@@ -82,96 +65,6 @@ export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({
   wsControllerURL: "wss://example.com/api",
 }));
 
-export const modelDataUnitFactory = Factory.define<UnitStatus>(() => ({
-  "agent-status": detailedStatusFactory.build(),
-  "workload-status": detailedStatusFactory.build(),
-  "workload-version": "3.0.1",
-  machine: "1",
-  "opened-ports": [],
-  "public-address": "35.229.83.62",
-  charm: "",
-  subordinates: {},
-  leader: true,
-}));
-
-export const baseFactory = Factory.define<Base>(() => ({
-  channel: "stable",
-  name: "Stable",
-}));
-
-export const modelDataApplicationFactory = Factory.define<ApplicationStatus>(
-  () => ({
-    base: baseFactory.build(),
-    charm: "cs:~containers/easyrsa-278",
-    "charm-profile": "",
-    series: "bionic",
-    exposed: false,
-    life: "",
-    relations: {},
-    "can-upgrade-to": "",
-    "subordinate-to": [],
-    units: {},
-    "meter-statuses": {},
-    status: detailedStatusFactory.build(),
-    "workload-version": "3.0.1",
-    "charm-version": "7af705f",
-    "endpoint-bindings": {},
-    "public-address": "",
-  }),
-);
-
-export const modelDataMachineNetworkInterfaceFactory =
-  Factory.define<NetworkInterface>(() => ({
-    "ip-addresses": [],
-    "mac-address": "a2:a2:53:31:db:9a",
-    "is-up": true,
-  }));
-
-export const modelDataMachineFactory = Factory.define<MachineStatus>(() => ({
-  "agent-status": detailedStatusFactory.build(),
-  base: baseFactory.build(),
-  "instance-status": detailedStatusFactory.build(),
-  "dns-name": "35.243.128.238",
-  "ip-addresses": [],
-  "instance-id": "juju-9cb18d-0",
-  series: "bionic",
-  id: "0",
-  "network-interfaces": {},
-  containers: {},
-  constraints: "",
-  "display-name": "0",
-  hardware:
-    "arch=amd64 cores=1 cpu-power=138 mem=1700M root-disk=10240M availability-zone=us-east1-b",
-  jobs: [],
-  "has-vote": false,
-  "modification-status": detailedStatusFactory.build(),
-  "wants-vote": false,
-  "lxd-profiles": {},
-}));
-
-export const modelDataInfoFactory = Factory.define<ModelInfo>(() => ({
-  name: "sub-test",
-  type: "iaas",
-  // spell-checker:disable-next-line
-  uuid: "84e872ff-9171-46be-829b-70f0ffake18d",
-  // spell-checker:disable-next-line
-  "controller-uuid": "a030379a-940f-4760-8fcf-3062bfake4e7",
-  "provider-type": "gce",
-  "default-series": "bionic",
-  "cloud-tag": "cloud-google",
-  "cloud-region": "us-east1",
-  "cloud-credential-tag": "cloudcred-google_eggman@external_juju",
-  "owner-tag": "user-eggman@external",
-  life: "alive",
-  "is-controller": false,
-  "secret-backends": [],
-  sla: modelSLAInfoFactory.build(),
-  status: detailedStatusFactory.build(),
-  users: [],
-  machines: [],
-  "agent-version": "2.6.10",
-}));
-
 export const modelDataFactory = Factory.define<ModelData>(() => ({
   applications: {},
   machines: {},
@@ -179,29 +72,8 @@ export const modelDataFactory = Factory.define<ModelData>(() => ({
   offers: {},
   relations: [],
   uuid: generateUUID(),
-  info: modelDataInfoFactory.build(),
+  info: modelInfoFactory.build(),
   "remote-applications": {},
-}));
-
-export const secretRevisionFactory = Factory.define<SecretRevision>(() => ({
-  revision: 1,
-}));
-
-export const secretAccessInfoFactory = Factory.define<AccessInfo>(() => ({
-  role: "view",
-  "scope-tag": "model-abc123",
-  "target-tag": "application-lxd",
-}));
-
-export const listSecretResultFactory = Factory.define<ListSecretResult>(() => ({
-  "create-time": "2024-01-05T05:10:17Z",
-  "latest-revision": 1,
-  "owner-tag": "model-ab02a18f-1ea9-49cb-898d-cad17d330b21",
-  "update-time": "2024-01-05T05:10:17Z",
-  revisions: [],
-  // spell-checker:disable-next-line
-  uri: "secret:amboue9tqlp3g6kgq300",
-  version: 1,
 }));
 
 export const auditEventsStateFactory = Factory.define<AuditEventsState>(() => ({
@@ -243,38 +115,6 @@ export const modelFeaturesFactory = Factory.define<ModelFeatures>(() => ({}));
 
 export const modelFeaturesStateFactory = Factory.define<ModelFeaturesState>(
   () => ({}),
-);
-
-export const relationshipTupleFactory = Factory.define<RelationshipTuple>(
-  () => ({
-    object: "user-eggman@external",
-    relation: JIMMRelation.MEMBER,
-    target_object: "admins",
-  }),
-);
-
-export const partialRelationshipTupleFactory = Factory.define<
-  Partial<RelationshipTuple>
->(() => ({
-  object: "user-eggman@external",
-  relation: JIMMRelation.MEMBER,
-  target_object: "admins",
-}));
-
-export const rebacAllowedFactory = Factory.define<ReBACAllowed>(() => ({
-  errors: null,
-  loaded: false,
-  loading: false,
-  tuple: relationshipTupleFactory.build(),
-}));
-
-export const rebacRelationshipFactory = Factory.define<ReBACRelationship>(
-  () => ({
-    errors: null,
-    loaded: false,
-    loading: false,
-    requestId: "rel123",
-  }),
 );
 
 export const rebacState = Factory.define<ReBACState>(() => ({

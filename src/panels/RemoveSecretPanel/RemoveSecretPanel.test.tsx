@@ -11,11 +11,13 @@ import {
   credentialFactory,
 } from "testing/factories/general";
 import {
+  listSecretResultFactory,
+  secretRevisionFactory,
+} from "testing/factories/juju/SecretsV2";
+import {
   modelListInfoFactory,
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
-  secretRevisionFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 import urls from "urls";

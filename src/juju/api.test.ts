@@ -18,7 +18,10 @@ import {
 } from "testing/factories/general";
 import { errorResultsFactory } from "testing/factories/juju/Application";
 import { charmInfoFactory } from "testing/factories/juju/Charms";
-import { fullStatusFactory } from "testing/factories/juju/ClientV6";
+import {
+  applicationStatusFactory,
+  fullStatusFactory,
+} from "testing/factories/juju/ClientV7";
 import {
   modelInfoFactory,
   modelInfoResultFactory,
@@ -27,7 +30,6 @@ import {
 import {
   controllerFactory,
   controllerInfoFactory,
-  modelDataApplicationFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { connectionInfoFactory } from "testing/factories/juju/jujulib";
@@ -1728,9 +1730,9 @@ describe("Juju API", () => {
         conn,
       }));
       const apps = {
-        etcd1: modelDataApplicationFactory.build({ charm: "cs:etcd" }),
-        mysql: modelDataApplicationFactory.build({ charm: "cs:mysql" }),
-        etcd2: modelDataApplicationFactory.build({ charm: "cs:etcd" }),
+        etcd1: applicationStatusFactory.build({ charm: "cs:etcd" }),
+        mysql: applicationStatusFactory.build({ charm: "cs:mysql" }),
+        etcd2: applicationStatusFactory.build({ charm: "cs:etcd" }),
       };
       await getCharmsURLFromApplications(apps, "abc123", state, dispatch);
       expect(dispatch).toHaveBeenCalledWith(

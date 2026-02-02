@@ -12,14 +12,18 @@ import {
   controllerFeaturesFactory,
   controllerFeaturesStateFactory,
 } from "testing/factories/general";
-import { detailedStatusFactory } from "testing/factories/juju/ClientV6";
+import {
+  applicationStatusFactory,
+  detailedStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import {
+  rebacAllowedFactory,
+  relationshipTupleFactory,
+} from "testing/factories/juju/jimm";
 import {
   controllerFactory,
   jujuStateFactory,
-  modelDataApplicationFactory,
   modelDataFactory,
-  rebacAllowedFactory,
-  relationshipTupleFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -45,7 +49,7 @@ describe("PrimaryNav", () => {
         modelData: {
           abc123: modelDataFactory.build({
             applications: {
-              easyrsa: modelDataApplicationFactory.build({
+              easyrsa: applicationStatusFactory.build({
                 status: detailedStatusFactory.build({
                   status: "blocked",
                 }),
@@ -54,7 +58,7 @@ describe("PrimaryNav", () => {
           }),
           def456: modelDataFactory.build({
             applications: {
-              cockroachdb: modelDataApplicationFactory.build({
+              cockroachdb: applicationStatusFactory.build({
                 status: detailedStatusFactory.build({
                   status: "blocked",
                 }),

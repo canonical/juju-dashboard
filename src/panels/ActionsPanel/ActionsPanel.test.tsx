@@ -11,10 +11,10 @@ import {
   applicationsCharmActionsResultsFactory,
 } from "testing/factories/juju/ActionV7";
 import { charmActionSpecFactory } from "testing/factories/juju/Charms";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
   modelDataFactory,
-  modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -98,7 +98,7 @@ describe("ActionsPanel", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               name: "group-test",
             }),
           }),

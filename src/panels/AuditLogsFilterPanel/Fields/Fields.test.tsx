@@ -4,13 +4,15 @@ import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { rootStateFactory, jujuStateFactory } from "testing/factories";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
   auditEventsStateFactory,
   modelListInfoFactory,
   modelDataFactory,
-  modelDataInfoFactory,
   controllerFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
@@ -51,7 +53,7 @@ describe("Fields", () => {
     ];
     state.juju.modelData = {
       abc123: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           users: [
             modelUserInfoFactory.build({
               user: "eggman",

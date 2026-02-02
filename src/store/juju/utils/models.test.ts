@@ -1,13 +1,11 @@
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import {
+  applicationStatusFactory,
   detailedStatusFactory,
   modelStatusInfoFactory,
-} from "testing/factories/juju/ClientV6";
-import {
-  modelDataFactory,
-  modelDataApplicationFactory,
-  modelDataUnitFactory,
-} from "testing/factories/juju/juju";
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { modelDataFactory } from "testing/factories/juju/juju";
 
 import {
   canAdministerModel,
@@ -129,7 +127,7 @@ describe("getModelStatusGroupData", () => {
   it("should handle 'running' as the highest status", () => {
     const modelData = modelDataFactory.build({
       applications: {
-        easyrsa: modelDataApplicationFactory.build({
+        easyrsa: applicationStatusFactory.build({
           status: detailedStatusFactory.build({ status: "running" }),
         }),
       },
@@ -142,10 +140,10 @@ describe("getModelStatusGroupData", () => {
   it("should handle 'alert' as the highest status", () => {
     const modelData = modelDataFactory.build({
       applications: {
-        easyrsa: modelDataApplicationFactory.build({
+        easyrsa: applicationStatusFactory.build({
           status: detailedStatusFactory.build({ status: "running" }),
         }),
-        etcd: modelDataApplicationFactory.build({
+        etcd: applicationStatusFactory.build({
           status: detailedStatusFactory.build({ status: "unknown" }),
         }),
       },
@@ -157,13 +155,13 @@ describe("getModelStatusGroupData", () => {
   it("should handle 'blocked' as the highest status", () => {
     const modelData = modelDataFactory.build({
       applications: {
-        easyrsa: modelDataApplicationFactory.build({
+        easyrsa: applicationStatusFactory.build({
           status: detailedStatusFactory.build({ status: "running" }),
         }),
-        etcd: modelDataApplicationFactory.build({
+        etcd: applicationStatusFactory.build({
           status: detailedStatusFactory.build({ status: "unknown" }),
         }),
-        calico: modelDataApplicationFactory.build({
+        calico: applicationStatusFactory.build({
           status: detailedStatusFactory.build({ status: "blocked" }),
         }),
       },
@@ -175,19 +173,19 @@ describe("getModelStatusGroupData", () => {
   it("should add messages for 'blocked' apps and units", () => {
     const modelData = modelDataFactory.build({
       applications: {
-        easyrsa: modelDataApplicationFactory.build({
+        easyrsa: applicationStatusFactory.build({
           status: detailedStatusFactory.build({
             info: "This app's running message should not be included.",
             status: "running",
           }),
         }),
-        etcd: modelDataApplicationFactory.build({
+        etcd: applicationStatusFactory.build({
           status: detailedStatusFactory.build({
             info: "This app's alert app message should not be included.",
             status: "unknown",
           }),
           units: {
-            "etcd/2": modelDataUnitFactory.build({
+            "etcd/2": unitStatusFactory.build({
               "agent-status": detailedStatusFactory.build({
                 info: "This unit's blocked message should be included!",
                 status: "lost",
@@ -195,25 +193,25 @@ describe("getModelStatusGroupData", () => {
             }),
           },
         }),
-        calico: modelDataApplicationFactory.build({
+        calico: applicationStatusFactory.build({
           status: detailedStatusFactory.build({
             info: "This app's blocked message should be included!",
             status: "blocked",
           }),
           units: {
-            "calico/0": modelDataUnitFactory.build({
+            "calico/0": unitStatusFactory.build({
               "agent-status": detailedStatusFactory.build({
                 info: "This unit's running message should not be included.",
                 status: "available",
               }),
             }),
-            "calico/1": modelDataUnitFactory.build({
+            "calico/1": unitStatusFactory.build({
               "agent-status": detailedStatusFactory.build({
                 info: "This unit's alert message should not be included.",
                 status: "allocating",
               }),
             }),
-            "calico/2": modelDataUnitFactory.build({
+            "calico/2": unitStatusFactory.build({
               "agent-status": detailedStatusFactory.build({
                 info: "This unit's blocked message should not be included.",
                 status: "lost",

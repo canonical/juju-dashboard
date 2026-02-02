@@ -1,9 +1,7 @@
 import { renderHook } from "@testing-library/react";
 
-import {
-  modelDataFactory,
-  modelDataInfoFactory,
-} from "testing/factories/juju/juju";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { modelDataFactory } from "testing/factories/juju/juju";
 
 import useModelAttributes from "./useModelAttributes";
 
@@ -36,7 +34,7 @@ describe("useModelAttributes", () => {
     const { result } = renderHook(() =>
       useModelAttributes({
         abc123: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "cloud-tag": "cloud-aws",
             "cloud-region": "au-east",
             "owner-tag": "user-eggman",
@@ -44,7 +42,7 @@ describe("useModelAttributes", () => {
           }),
         }),
         def456: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "cloud-tag": "cloud-gce",
             "cloud-region": "au-west",
             "owner-tag": "user-spaceman",
@@ -65,7 +63,7 @@ describe("useModelAttributes", () => {
     const { result } = renderHook(() =>
       useModelAttributes({
         abc123: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "cloud-tag": "cloud-aws",
             "cloud-region": "au-east",
             "owner-tag": "user-eggman",
@@ -73,7 +71,7 @@ describe("useModelAttributes", () => {
           }),
         }),
         def456: modelDataFactory.build({
-          info: modelDataInfoFactory.build({
+          info: modelInfoFactory.build({
             "cloud-tag": "cloud-aws",
             "cloud-region": "au-east",
             "owner-tag": "user-eggman",

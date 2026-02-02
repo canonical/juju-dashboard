@@ -16,12 +16,14 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
-import { auditEventFactory } from "testing/factories/juju/jimm";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  auditEventFactory,
+  relationshipTupleFactory,
+} from "testing/factories/juju/jimm";
 import {
   controllerFactory,
   jujuStateFactory,
-  modelDataInfoFactory,
-  relationshipTupleFactory,
 } from "testing/factories/juju/juju";
 
 import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
@@ -1178,7 +1180,7 @@ describe("model poller", () => {
       .mockResolvedValueOnce({
         results: [
           { result: undefined },
-          { result: modelDataInfoFactory.build({ life: "dying" }) },
+          { result: modelInfoFactory.build({ life: "dying" }) },
         ],
       })
       .mockResolvedValue({

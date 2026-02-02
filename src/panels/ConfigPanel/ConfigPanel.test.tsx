@@ -14,22 +14,24 @@ import {
   applicationGetFactory,
   configFactory,
 } from "testing/factories/juju/Application";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
+import {
+  listSecretResultFactory,
+  secretAccessInfoFactory,
+} from "testing/factories/juju/SecretsV2";
 import {
   controllerFactory,
   jujuStateFactory,
   modelDataFactory,
-  modelDataInfoFactory,
   modelFeaturesStateFactory,
   modelFeaturesFactory,
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
 } from "testing/factories/juju/juju";
-import {
-  secretAccessInfoFactory,
-  modelListInfoFactory,
-} from "testing/factories/juju/juju";
+import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
@@ -86,7 +88,7 @@ describe("ConfigPanel", () => {
         },
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               "controller-uuid": "123",
               name: "hadoopspark",
               users: [

@@ -5,8 +5,8 @@ import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
 import {
-  modelDataApplicationFactory,
   modelDataFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
@@ -44,7 +44,7 @@ describe("Info Panel", () => {
         modelData: {
           abc123: modelDataFactory.build({
             applications: {
-              "ceph-mon": modelDataApplicationFactory.build(),
+              "ceph-mon": applicationStatusFactory.build(),
             },
           }),
         },

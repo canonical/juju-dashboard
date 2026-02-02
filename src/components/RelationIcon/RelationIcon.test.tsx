@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { modelDataApplicationFactory } from "testing/factories/juju/juju";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
 
 import RelationIcon from "./RelationIcon";
 
@@ -10,7 +10,7 @@ describe("RelationIcon", () => {
       <RelationIcon
         applicationName="etcd"
         applications={{
-          etcd: modelDataApplicationFactory.build({
+          etcd: applicationStatusFactory.build({
             charm: "cs:etcd-charm-1",
           }),
         }}

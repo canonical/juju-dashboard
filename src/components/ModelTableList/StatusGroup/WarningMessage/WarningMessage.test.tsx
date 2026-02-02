@@ -3,12 +3,12 @@ import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { detailedStatusFactory } from "testing/factories/juju/ClientV6";
 import {
-  modelDataApplicationFactory,
-  modelDataFactory,
-  modelDataUnitFactory,
-} from "testing/factories/juju/juju";
+  applicationStatusFactory,
+  detailedStatusFactory,
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { modelDataFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import WarningMessage from "./WarningMessage";
@@ -36,15 +36,15 @@ describe("WarningMessage", () => {
   it("should display links to blocked apps and units", async () => {
     const model = modelDataFactory.build({
       applications: {
-        calico: modelDataApplicationFactory.build({
+        calico: applicationStatusFactory.build({
           status: detailedStatusFactory.build({
             info: "app blocked",
             status: "blocked",
           }),
         }),
-        etcd: modelDataApplicationFactory.build({
+        etcd: applicationStatusFactory.build({
           units: {
-            "etcd/0": modelDataUnitFactory.build({
+            "etcd/0": unitStatusFactory.build({
               "agent-status": detailedStatusFactory.build({
                 info: "unit blocked",
                 status: "lost",
@@ -84,7 +84,7 @@ describe("WarningMessage", () => {
       applications: [1, 2, 3, 4, 5, 6].reduce(
         (applications, index) => ({
           ...applications,
-          [`app${index}`]: modelDataApplicationFactory.build({
+          [`app${index}`]: applicationStatusFactory.build({
             status: detailedStatusFactory.build({
               info: `app${index} blocked`,
               status: "blocked",

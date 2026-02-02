@@ -3,10 +3,10 @@ import { screen } from "@testing-library/react";
 import { rootStateFactory } from "testing/factories";
 import { charmInfoFactory } from "testing/factories/juju/Charms";
 import {
-  jujuStateFactory,
-  modelDataApplicationFactory,
-  modelDataUnitFactory,
-} from "testing/factories/juju/juju";
+  applicationStatusFactory,
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { jujuStateFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import CharmActionsPanelTitle from "./CharmActionsPanelTitle";
@@ -33,7 +33,7 @@ describe("CharmActionsPanelTitle", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         selectedApplications: {
-          ceph: modelDataApplicationFactory.build({ charm: "ch:ceph" }),
+          ceph: applicationStatusFactory.build({ charm: "ch:ceph" }),
         },
       }),
     });
@@ -47,7 +47,7 @@ describe("CharmActionsPanelTitle", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         selectedApplications: {
-          ceph: modelDataApplicationFactory.build({ charm: "ch:ceph" }),
+          ceph: applicationStatusFactory.build({ charm: "ch:ceph" }),
         },
         charms: [
           charmInfoFactory.build({
@@ -69,11 +69,11 @@ describe("CharmActionsPanelTitle", () => {
       juju: jujuStateFactory.build({
         charms: [{ url: "ch:ceph", config: {}, revision: 0 }],
         selectedApplications: {
-          ceph: modelDataApplicationFactory.build({
+          ceph: applicationStatusFactory.build({
             charm: "ch:ceph",
             units: {
-              0: modelDataUnitFactory.build(),
-              1: modelDataUnitFactory.build(),
+              0: unitStatusFactory.build(),
+              1: unitStatusFactory.build(),
             },
           }),
         },
@@ -99,7 +99,7 @@ describe("CharmActionsPanelTitle", () => {
           }),
         ],
         selectedApplications: {
-          ceph: modelDataApplicationFactory.build({
+          ceph: applicationStatusFactory.build({
             charm: "ch:ceph",
             units: {},
           }),
@@ -121,11 +121,11 @@ describe("CharmActionsPanelTitle", () => {
           }),
         ],
         selectedApplications: {
-          ceph: modelDataApplicationFactory.build({
+          ceph: applicationStatusFactory.build({
             charm: "ch:ceph",
             units: {
-              0: modelDataUnitFactory.build(),
-              1: modelDataUnitFactory.build(),
+              0: unitStatusFactory.build(),
+              1: unitStatusFactory.build(),
             },
           }),
         },

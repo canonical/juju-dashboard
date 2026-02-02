@@ -1,6 +1,6 @@
 import type { ConnectionInfo, Transport } from "@canonical/jujulib";
 
-import { relationshipTupleFactory } from "testing/factories/juju/juju";
+import { relationshipTupleFactory } from "testing/factories/juju/jimm";
 import { connectionInfoFactory } from "testing/factories/juju/jujulib";
 
 import JIMMV4, { JIMMRelation } from "./JIMMV4";

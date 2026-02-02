@@ -10,15 +10,17 @@ import {
   generalStateFactory,
   credentialFactory,
 } from "testing/factories/general";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import {
+  listSecretResultFactory,
+  secretAccessInfoFactory,
+} from "testing/factories/juju/SecretsV2";
 import {
   modelListInfoFactory,
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
-  modelDataApplicationFactory,
   modelDataFactory,
 } from "testing/factories/juju/juju";
-import { secretAccessInfoFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -61,9 +63,9 @@ describe("GrantSecretPanel", () => {
         modelData: {
           abc123: modelDataFactory.build({
             applications: {
-              lxd: modelDataApplicationFactory.build(),
-              etcd: modelDataApplicationFactory.build(),
-              nginx: modelDataApplicationFactory.build(),
+              lxd: applicationStatusFactory.build(),
+              etcd: applicationStatusFactory.build(),
+              nginx: applicationStatusFactory.build(),
             },
           }),
         },

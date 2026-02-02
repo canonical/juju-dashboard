@@ -1,4 +1,4 @@
-import { listSecretResultFactory } from "testing/factories/juju/juju";
+import { listSecretResultFactory } from "testing/factories/juju/SecretsV2";
 import { renderComponent } from "testing/utils";
 
 import SecretLabel from "./SecretLabel";

@@ -11,17 +11,21 @@ import {
   generalStateFactory,
   credentialFactory,
 } from "testing/factories/general";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
+import {
+  listSecretResultFactory,
+  secretAccessInfoFactory,
+} from "testing/factories/juju/SecretsV2";
 import {
   modelListInfoFactory,
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
   modelFeaturesStateFactory,
   modelFeaturesFactory,
   modelDataFactory,
-  modelDataInfoFactory,
-  secretAccessInfoFactory,
 } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
@@ -76,7 +80,7 @@ describe("SecretsTable", () => {
         },
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               uuid: "abc123",
               name: "test-model",
               "controller-uuid": "controller123",

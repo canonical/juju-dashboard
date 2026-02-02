@@ -6,13 +6,15 @@ import { vi } from "vitest";
 import type { RootState } from "store/store";
 import { generalStateFactory } from "testing/factories/general";
 import {
+  machineStatusFactory,
+  applicationStatusFactory,
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
   controllerFactory,
   jujuStateFactory,
-  modelDataApplicationFactory,
   modelDataFactory,
-  modelDataInfoFactory,
-  modelDataUnitFactory,
-  modelDataMachineFactory,
   controllerInfoFactory,
 } from "testing/factories/juju/juju";
 import { connectionInfoFactory } from "testing/factories/juju/jujulib";
@@ -62,35 +64,43 @@ describe("Controllers table", () => {
     };
     state.juju = jujuStateFactory.build({
       controllers: {
-        "wss://jimm.jujucharms.com/api": [controllerFactory.build()],
+        "wss://jimm.jujucharms.com/api": [
+          controllerFactory.build({
+            uuid: "controller123",
+          }),
+        ],
       },
       modelData: {
         abc123: modelDataFactory.build({
-          info: modelDataInfoFactory.build(),
+          info: modelInfoFactory.build({
+            "controller-uuid": "controller123",
+          }),
           machines: {
-            "0": modelDataMachineFactory.build(),
-            "1": modelDataMachineFactory.build(),
+            "0": machineStatusFactory.build(),
+            "1": machineStatusFactory.build(),
           },
           applications: {
-            easyrsa: modelDataApplicationFactory.build({
+            easyrsa: applicationStatusFactory.build({
               units: {
-                "easyrsa/0": modelDataUnitFactory.build(),
-                "easyrsa/1": modelDataUnitFactory.build(),
+                "easyrsa/0": unitStatusFactory.build(),
+                "easyrsa/1": unitStatusFactory.build(),
               },
             }),
           },
         }),
         def456: modelDataFactory.build({
-          info: modelDataInfoFactory.build(),
+          info: modelInfoFactory.build({
+            "controller-uuid": "controller123",
+          }),
           machines: {
-            "0": modelDataMachineFactory.build(),
-            "1": modelDataMachineFactory.build(),
-            "2": modelDataMachineFactory.build(),
+            "0": machineStatusFactory.build(),
+            "1": machineStatusFactory.build(),
+            "2": machineStatusFactory.build(),
           },
           applications: {
-            ceph: modelDataApplicationFactory.build({
+            ceph: applicationStatusFactory.build({
               units: {
-                "ceph/0": modelDataUnitFactory.build(),
+                "ceph/0": unitStatusFactory.build(),
               },
             }),
           },

@@ -11,15 +11,17 @@ import {
   credentialFactory,
 } from "testing/factories/general";
 import {
+  listSecretResultFactory,
+  secretRevisionFactory,
+} from "testing/factories/juju/SecretsV2";
+import {
   modelListInfoFactory,
   secretsStateFactory,
-  listSecretResultFactory,
   modelSecretsFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
-import { secretRevisionFactory } from "../../../testing/factories/juju/juju";
 import type { FormFields } from "../types";
 
 import Fields from "./Fields";

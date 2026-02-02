@@ -12,14 +12,18 @@ import {
   controllerFeaturesStateFactory,
   configFactory,
 } from "testing/factories/general";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
+import {
+  relationshipTupleFactory,
+  rebacAllowedFactory,
+} from "testing/factories/juju/jimm";
 import {
   jujuStateFactory,
   modelDataFactory,
-  modelDataInfoFactory,
   modelListInfoFactory,
-  relationshipTupleFactory,
-  rebacAllowedFactory,
   rebacState,
 } from "testing/factories/juju/juju";
 import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
@@ -71,7 +75,7 @@ describe("useModelAccess", () => {
     }
     state.juju.modelData = {
       abc123: modelDataFactory.build({
-        info: modelDataInfoFactory.build({
+        info: modelInfoFactory.build({
           users: [
             modelUserInfoFactory.build({
               user: "eggman@external",

@@ -1,4 +1,4 @@
-import { listSecretResultFactory } from "testing/factories/juju/juju";
+import { listSecretResultFactory } from "testing/factories/juju/SecretsV2";
 import { secretIsAppOwned } from "utils";
 
 describe("secretIsAppOwned", () => {

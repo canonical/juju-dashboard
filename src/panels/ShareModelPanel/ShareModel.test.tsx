@@ -7,12 +7,14 @@ import { actions as appActions } from "store/app";
 import type { RootState } from "store/store";
 import * as storeModule from "store/store";
 import { rootStateFactory } from "testing/factories";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import {
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
 import {
   controllerFactory,
   jujuStateFactory,
   modelDataFactory,
-  modelDataInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -34,7 +36,7 @@ describe("Share Model Panel", () => {
         },
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               "controller-uuid": "123",
               name: "hadoopspark",
               users: [
@@ -62,7 +64,7 @@ describe("Share Model Panel", () => {
 
   it("displays domain suggestions", async () => {
     state.juju.modelData.def456 = modelDataFactory.build({
-      info: modelDataInfoFactory.build({
+      info: modelInfoFactory.build({
         users: [
           modelUserInfoFactory.build({ user: "eggman@external" }),
           modelUserInfoFactory.build({ user: "another@external" }),

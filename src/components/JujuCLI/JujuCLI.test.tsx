@@ -14,10 +14,10 @@ import {
   configFactory,
   authUserInfoFactory,
 } from "testing/factories/general";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
-  modelDataApplicationFactory,
   modelDataFactory,
-  modelDataInfoFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import {
@@ -82,7 +82,7 @@ describe("JujuCLI", () => {
         },
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               "controller-uuid": "controller123",
               name: modelName,
               "owner-tag": `user-${userName}`,
@@ -171,7 +171,7 @@ describe("JujuCLI", () => {
     state.juju.modelData = {
       abc123: modelDataFactory.build({
         applications: {
-          "ceph-mon": modelDataApplicationFactory.build(),
+          "ceph-mon": applicationStatusFactory.build(),
         },
       }),
     };

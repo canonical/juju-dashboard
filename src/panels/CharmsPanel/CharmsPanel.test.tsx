@@ -12,9 +12,9 @@ import {
   charmInfoFactory,
 } from "testing/factories/juju/Charms";
 import {
-  modelDataApplicationFactory,
-  modelDataUnitFactory,
-} from "testing/factories/juju/juju";
+  applicationStatusFactory,
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
 import { renderComponent } from "testing/utils";
 
 import CharmsPanel from "./CharmsPanel";
@@ -47,14 +47,14 @@ describe("CharmsPanel", () => {
           }),
         ],
         selectedApplications: {
-          "mock-app-1": modelDataApplicationFactory.build({
+          "mock-app-1": applicationStatusFactory.build({
             charm: "ch:amd64/focal/postgresql-k8s-20",
           }),
-          redis: modelDataApplicationFactory.build({
+          redis: applicationStatusFactory.build({
             charm: "ch:amd64/focal/redis-k8s",
             units: {
-              0: modelDataUnitFactory.build(),
-              1: modelDataUnitFactory.build(),
+              0: unitStatusFactory.build(),
+              1: unitStatusFactory.build(),
             },
           }),
         },
@@ -179,7 +179,7 @@ describe("CharmsPanel", () => {
     state.juju.selectedApplications = {};
     for (let i = 2; i < 10; i++) {
       state.juju.selectedApplications[`mock-app-${i}`] =
-        modelDataApplicationFactory.build({
+        applicationStatusFactory.build({
           charm: "ch:amd64/focal/redis-k8s",
         });
     }

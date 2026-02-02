@@ -7,9 +7,11 @@ import {
   generalStateFactory,
   authUserInfoFactory,
 } from "testing/factories/general";
-import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
-  modelDataInfoFactory,
+  modelInfoFactory,
+  modelUserInfoFactory,
+} from "testing/factories/juju/ModelManagerV9";
+import {
   jujuStateFactory,
   modelDataFactory,
   modelListInfoFactory,
@@ -47,7 +49,7 @@ describe("ModelActions", () => {
         },
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               "is-controller": false,
               uuid: "abc123",
               name: "test1",
@@ -131,7 +133,7 @@ describe("ModelActions", () => {
   });
 
   it("disables the option to destroy a model if the user does not have permission", async () => {
-    state.juju.modelData.abc123.info = modelDataInfoFactory.build({
+    state.juju.modelData.abc123.info = modelInfoFactory.build({
       "is-controller": false,
       uuid: "abc123",
       name: "test1",
@@ -179,7 +181,7 @@ describe("ModelActions", () => {
         },
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelDataInfoFactory.build({
+            info: modelInfoFactory.build({
               "is-controller": true,
               uuid: "abc123",
               name: "test1",
