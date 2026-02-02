@@ -177,14 +177,6 @@ export const relationshipTupleFactory = Factory.define<RelationshipTuple>(
   }),
 );
 
-export const partialRelationshipTupleFactory = Factory.define<
-  Partial<RelationshipTuple>
->(() => ({
-  object: "user-eggman@external",
-  relation: JIMMRelation.MEMBER,
-  target_object: "admins",
-}));
-
 export const rebacAllowedFactory = Factory.define<ReBACAllowed>(() => ({
   errors: null,
   loaded: false,
