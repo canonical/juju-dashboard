@@ -1,8 +1,3 @@
-import type {
-  ApplicationStatus,
-  MachineStatus,
-  UnitStatus,
-} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { MainTable } from "@canonical/react-components";
 import type { JSX } from "react";
 import { useMemo } from "react";
@@ -15,10 +10,9 @@ import type { EntityDetailsRoute } from "components/Routes";
 import {
   getAllModelApplicationStatus,
   getModelApplications,
-  getModelMachines,
   getModelUUIDFromList,
   getUnit,
-  getUnitApp,
+  getUnitMachine,
   isKubernetesModel,
 } from "store/juju/selectors";
 import { extractRevisionNumber } from "store/juju/utils/models";
@@ -52,55 +46,13 @@ export default function Unit(): JSX.Element {
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
   );
-  const machines = useAppSelector((state) =>
-    getModelMachines(state, modelUUID),
-  );
   const isK8s = useAppSelector((state) => isKubernetesModel(state, modelUUID));
   const unit = useAppSelector((state) =>
     getUnit(state, modelUUID, unitIdentifier),
   );
-  const unitApp = useAppSelector((state) =>
-    getUnitApp(state, modelUUID, unitIdentifier),
+  const unitMachine = useAppSelector((state) =>
+    getUnitMachine(state, modelUUID, unitIdentifier),
   );
-
-  const filteredApplicationList = useMemo(() => {
-    const unitAppId = unitIdentifier?.split("/")[0];
-    return unitApp && unitAppId ? { [unitAppId]: unitApp } : null;
-  }, [unitApp, unitIdentifier]);
-
-  const { filteredMachines: filteredMachineList } = useMemo(() => {
-    const apps: Record<string, ApplicationStatus> = {};
-    let appUnit: null | UnitStatus = null;
-    const filteredMachines: Record<string, MachineStatus> = {};
-    if (applications && machines) {
-      const unitAppId = unitIdentifier?.split("/")[0];
-      if (unitAppId && unitAppId in applications) {
-        apps[unitAppId] = applications[unitAppId];
-      }
-      for (const appId in applications) {
-        const app = applications[appId];
-        if (unitIdentifier && app.units) {
-          if (unitIdentifier in app.units) {
-            appUnit = app.units[unitIdentifier];
-            const machineId = app.units[unitIdentifier].machine;
-            filteredMachines[machineId] = machines[machineId];
-          } else {
-            Object.values(app.units).forEach((currentAppUnit) => {
-              if (
-                currentAppUnit.subordinates &&
-                unitIdentifier in currentAppUnit.subordinates
-              ) {
-                appUnit = currentAppUnit.subordinates[unitIdentifier];
-                filteredMachines[currentAppUnit.machine] =
-                  machines[currentAppUnit.machine];
-              }
-            });
-          }
-        }
-      }
-    }
-    return { apps, unit: appUnit, filteredMachines };
-  }, [applications, machines, unitIdentifier]);
 
   const applicationStatuses = useAppSelector((state) =>
     getAllModelApplicationStatus(state, modelUUID),
@@ -108,33 +60,26 @@ export default function Unit(): JSX.Element {
 
   const machineRows = useMemo(
     () =>
-      modelName && userName
-        ? generateMachineRows(filteredMachineList, applications, {
+      modelName && userName && unitMachine
+        ? generateMachineRows({ [unitMachine.id]: unitMachine }, applications, {
             modelName,
             userName,
           })
         : [],
-    [modelName, userName, filteredMachineList, applications],
+    [modelName, userName, unitMachine, applications],
   );
 
-  const applicationRows = useMemo(
-    () =>
-      modelName && userName
-        ? generateLocalApplicationRows(
-            Object.keys(filteredApplicationList ?? {}),
-            applications,
-            applicationStatuses,
-            { modelName, userName },
-          )
-        : [],
-    [
-      modelName,
-      userName,
-      filteredApplicationList,
-      applications,
-      applicationStatuses,
-    ],
-  );
+  const applicationRows = useMemo(() => {
+    const appId = unitIdentifier?.split("/")[0];
+    return modelName && userName
+      ? generateLocalApplicationRows(
+          appId ? [appId] : [],
+          applications,
+          applicationStatuses,
+          { modelName, userName },
+        )
+      : [];
+  }, [unitIdentifier, modelName, userName, applications, applicationStatuses]);
 
   if (!unit) {
     return (

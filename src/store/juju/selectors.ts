@@ -26,6 +26,7 @@ import {
   getMachineUnits as getMachineUnitsUtil,
   getUnit as getUnitUtil,
   getUnitApp as getUnitAppUtil,
+  getUnitMachine as getUnitMachineUtil,
 } from "store/juju/utils/units";
 import type { RootState } from "store/store";
 import { getLatestRevision, getUserName } from "utils";
@@ -653,8 +654,8 @@ export const getAllModelApplicationStatus = createSelector(
     const applicationStatuses: StatusData = {};
     // Convert the various unit statuses into our three current
     // status types "blocked", "alert", "running".
-    Object.entries(applications).forEach(([appName, app]) => {
-      Object.entries(app.units ?? {}).forEach(([_unitId, unitData]) => {
+    for (const [appName, app] of Object.entries(applications)) {
+      for (const unitData of Object.values(app.units ?? {})) {
         let workloadStatus = Statuses.running;
         switch (unitData["workload-status"].status) {
           case "maintenance":
@@ -691,8 +692,8 @@ export const getAllModelApplicationStatus = createSelector(
         applicationStatuses[appName] = Statuses[
           worstStatusIndex
         ] as keyof typeof Statuses;
-      });
-    });
+      }
+    }
 
     return applicationStatuses;
   },
@@ -1354,4 +1355,22 @@ export const getUnitApp = createSelector(
     applications: null | Record<string, ApplicationStatus>,
     unitId?: null | string,
   ) => (unitId && applications ? getUnitAppUtil(unitId, applications) : null),
+);
+
+export const getUnitMachine = createSelector(
+  getModelApplications,
+  getModelMachines,
+  (
+    _state,
+    _modelUUID?: string,
+    unitId?: null | string,
+  ): null | string | undefined => unitId,
+  (
+    applications: null | Record<string, ApplicationStatus>,
+    machines: null | Record<string, MachineStatus>,
+    unitId?: null | string,
+  ) =>
+    unitId && applications && machines
+      ? getUnitMachineUtil(unitId, applications, machines)
+      : null,
 );

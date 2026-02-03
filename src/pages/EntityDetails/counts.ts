@@ -28,12 +28,12 @@ const generateOfferCounts = (
   modelStatusData: ModelData,
 ): { joined: number } => {
   let offerCount = 0;
-  Object.entries(modelStatusData["offers"]).forEach((offer) => {
+  for (const offer of Object.entries(modelStatusData["offers"])) {
     const totalConnectedCount = offer[1]["total-connected-count"];
     if (totalConnectedCount > 0) {
       offerCount = offerCount + totalConnectedCount;
     }
-  });
+  }
   return { joined: offerCount };
 };
 
@@ -57,14 +57,14 @@ export function generateUnitCounts(
 ): Counts {
   const counts: Counts = {};
   if (applications && applicationName) {
-    Object.values(getAppUnits(applicationName, applications) ?? {}).forEach(
-      (unitData): void => {
-        const { status } = unitData["agent-status"];
-        if (status) {
-          incrementCounts(status, counts);
-        }
-      },
-    );
+    for (const unitData of Object.values(
+      getAppUnits(applicationName, applications) ?? {},
+    )) {
+      const { status } = unitData["agent-status"];
+      if (status) {
+        incrementCounts(status, counts);
+      }
+    }
   }
   return counts;
 }
@@ -84,12 +84,12 @@ export function generateMachineCounts(
     const machineIds: MachineChangeDelta["id"][] = Object.keys(
       getAppMachines(applicationName, applications, machines) ?? {},
     );
-    machineIds.forEach((id) => {
+    for (const id of machineIds) {
       const status = machines[id]?.["agent-status"]?.status;
       if (status) {
         incrementCounts(status, counts);
       }
-    });
+    }
   }
   return counts;
 }

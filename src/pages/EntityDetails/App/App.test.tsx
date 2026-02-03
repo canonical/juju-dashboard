@@ -277,7 +277,7 @@ describe("Entity Details App", () => {
     await userEvent.click(secondInput);
 
     expect(router.state.location.search).toEqual(
-      // eslint-disable-next-line @cspell/spellchecker
+      // spell-checker:disable-next-line
       "?panel=execute-action&units=etcd%2F0%2Cetcd%2F1",
     );
   });

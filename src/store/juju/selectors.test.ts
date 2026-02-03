@@ -136,6 +136,7 @@ import {
   getAppUnits,
   getUnit,
   getUnitApp,
+  getUnitMachine,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3064,5 +3065,113 @@ describe("getAppUnits", () => {
       "app1/1": applications.app2.units["app2/1"].subordinates["app1/1"],
       "app1/2": applications.app3.units["app3/0"].subordinates["app1/2"],
     });
+  });
+});
+
+describe("getUnitMachine", () => {
+  it("gets a unit's machine", () => {
+    const applications = {
+      app1: applicationStatusFactory.build({
+        "subordinate-to": ["app2"],
+      }),
+      app2: applicationStatusFactory.build({
+        units: {
+          "app2/0": unitStatusFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": unitStatusFactory.build(),
+            },
+          }),
+          "app2/1": unitStatusFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": unitStatusFactory.build(),
+            },
+          }),
+        },
+      }),
+      app3: applicationStatusFactory.build({
+        units: {
+          "app3/0": unitStatusFactory.build({
+            machine: "2",
+          }),
+        },
+      }),
+    };
+    const machines = {
+      0: machineStatusFactory.build({ id: "0" }),
+      1: machineStatusFactory.build({ id: "1" }),
+      2: machineStatusFactory.build({ id: "2" }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+            machines,
+          }),
+        },
+      }),
+    });
+    expect(getUnitMachine(state, "abc123", "app2/1")).toStrictEqual(
+      machines["1"],
+    );
+  });
+
+  it("gets a subordinate unit's machine", () => {
+    const applications = {
+      app1: applicationStatusFactory.build({
+        "subordinate-to": ["app2", "app3"],
+      }),
+      app2: applicationStatusFactory.build({
+        units: {
+          "app2/0": unitStatusFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": unitStatusFactory.build(),
+            },
+          }),
+          "app2/1": unitStatusFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": unitStatusFactory.build(),
+            },
+          }),
+        },
+      }),
+      app3: applicationStatusFactory.build({
+        units: {
+          "app3/0": unitStatusFactory.build({
+            machine: "2",
+          }),
+        },
+      }),
+      app4: applicationStatusFactory.build({
+        units: {
+          "app4/0": unitStatusFactory.build({
+            machine: "3",
+          }),
+        },
+      }),
+    };
+    const machines = {
+      0: machineStatusFactory.build({ id: "0" }),
+      1: machineStatusFactory.build({ id: "1" }),
+      2: machineStatusFactory.build({ id: "2" }),
+      3: machineStatusFactory.build({ id: "3" }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+            machines,
+          }),
+        },
+      }),
+    });
+    expect(getUnitMachine(state, "abc123", "app1/1")).toStrictEqual(
+      machines["1"],
+    );
   });
 });

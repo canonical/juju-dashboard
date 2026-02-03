@@ -280,7 +280,7 @@ export function generateUnitRows(
   }
 
   const unitRows: UnitRow[] = [];
-  Object.entries(units).forEach(([unitId, unit]) => {
+  for (const [unitId, unit] of Object.entries(units)) {
     const app = applications?.[unitId.split("/")[0]];
     const workload = unit["workload-status"].status || "-";
     const agent = unit["agent-status"].status || "-";
@@ -448,7 +448,7 @@ export function generateUnitRows(
         });
       }
     }
-  });
+  }
 
   return unitRows;
 }
