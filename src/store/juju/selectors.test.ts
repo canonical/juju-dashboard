@@ -40,12 +40,7 @@ import {
   commandHistoryState,
   commandHistoryItem,
 } from "testing/factories/juju/juju";
-import {
-  modelWatcherModelDataFactory,
-  unitAgentStatusFactory,
-  unitChangeDeltaFactory,
-  workloadStatusFactory,
-} from "testing/factories/juju/model-watcher";
+import { modelWatcherModelDataFactory } from "testing/factories/juju/model-watcher";
 
 import {
   getActiveUser,
@@ -141,7 +136,7 @@ import {
   getAppUnits,
   getUnit,
   getUnitApp,
-  getModelUnits,
+  getUnitMachine,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -2015,26 +2010,6 @@ describe("selectors", () => {
     ).toBe(true);
   });
 
-  it("getModelUnits", () => {
-    const modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        units: {
-          "ceph-mon/0": unitChangeDeltaFactory.build(),
-        },
-      }),
-    };
-    expect(
-      getModelUnits(
-        rootStateFactory.build({
-          juju: jujuStateFactory.build({
-            modelWatcherData,
-          }),
-        }),
-        "abc123",
-      ),
-    ).toStrictEqual(modelWatcherData.abc123.units);
-  });
-
   it("getModelRelations", () => {
     const modelData = {
       abc123: modelDataFactory.build({
@@ -2076,53 +2051,76 @@ describe("selectors", () => {
   });
 
   it("getAllModelApplicationStatus", () => {
-    const modelWatcherData = {
-      abc123: modelWatcherModelDataFactory.build({
-        units: {
-          "ceph-mon/0": unitChangeDeltaFactory.build({
-            "agent-status": unitAgentStatusFactory.build({
-              current: "idle",
-            }),
-            "workload-status": workloadStatusFactory.build({
-              current: "blocked",
-            }),
-            application: "ceph-mon",
+    const modelData = {
+      abc123: modelDataFactory.build({
+        applications: {
+          "ceph-mon": applicationStatusFactory.build({
+            units: {
+              "ceph-mon/0": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "idle",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "blocked",
+                }),
+              }),
+            },
           }),
-          "postgres/0": unitChangeDeltaFactory.build({
-            "agent-status": unitAgentStatusFactory.build({
-              current: "rebooting",
-            }),
-            "workload-status": workloadStatusFactory.build({
-              current: "waiting",
-            }),
-            application: "postgres",
+          postgres: applicationStatusFactory.build({
+            units: {
+              "postgres/0": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "rebooting",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "waiting",
+                }),
+              }),
+            },
           }),
-          "etcd/0": unitChangeDeltaFactory.build({
-            "agent-status": unitAgentStatusFactory.build({
-              current: "failed",
-            }),
-            "workload-status": workloadStatusFactory.build({
-              current: "maintenance",
-            }),
-            application: "etcd",
+          etcd: applicationStatusFactory.build({
+            units: {
+              "etcd/0": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "failed",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "maintenance",
+                }),
+              }),
+            },
           }),
-          "wordpress/0": unitChangeDeltaFactory.build({
-            "agent-status": unitAgentStatusFactory.build({
-              current: "allocating",
-            }),
-            "workload-status": workloadStatusFactory.build({
-              current: "maintenance",
-            }),
-            application: "wordpress",
+          wordpress: applicationStatusFactory.build({
+            units: {
+              "wordpress/0": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "allocating",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "maintenance",
+                }),
+              }),
+            },
           }),
-          "dashboard/0": unitChangeDeltaFactory.build({
-            "agent-status": unitAgentStatusFactory.build({
-              current: "executing",
-            }),
-            "workload-status": workloadStatusFactory.build({
-              current: "maintenance",
-            }),
-            application: "dashboard",
+          dashboard: applicationStatusFactory.build({
+            units: {
+              "dashboard/0": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "executing",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "maintenance",
+                }),
+              }),
+              "dashboard/1": unitStatusFactory.build({
+                "agent-status": detailedStatusFactory.build({
+                  status: "idle",
+                }),
+                "workload-status": detailedStatusFactory.build({
+                  status: "unknown",
+                }),
+              }),
+            },
           }),
         },
       }),
@@ -2131,7 +2129,7 @@ describe("selectors", () => {
       getAllModelApplicationStatus(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
-            modelWatcherData,
+            modelData,
           }),
         }),
         "abc123",
@@ -3067,5 +3065,113 @@ describe("getAppUnits", () => {
       "app1/1": applications.app2.units["app2/1"].subordinates["app1/1"],
       "app1/2": applications.app3.units["app3/0"].subordinates["app1/2"],
     });
+  });
+});
+
+describe("getUnitMachine", () => {
+  it("gets a unit's machine", () => {
+    const applications = {
+      app1: applicationStatusFactory.build({
+        "subordinate-to": ["app2"],
+      }),
+      app2: applicationStatusFactory.build({
+        units: {
+          "app2/0": unitStatusFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": unitStatusFactory.build(),
+            },
+          }),
+          "app2/1": unitStatusFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": unitStatusFactory.build(),
+            },
+          }),
+        },
+      }),
+      app3: applicationStatusFactory.build({
+        units: {
+          "app3/0": unitStatusFactory.build({
+            machine: "2",
+          }),
+        },
+      }),
+    };
+    const machines = {
+      0: machineStatusFactory.build({ id: "0" }),
+      1: machineStatusFactory.build({ id: "1" }),
+      2: machineStatusFactory.build({ id: "2" }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+            machines,
+          }),
+        },
+      }),
+    });
+    expect(getUnitMachine(state, "abc123", "app2/1")).toStrictEqual(
+      machines["1"],
+    );
+  });
+
+  it("gets a subordinate unit's machine", () => {
+    const applications = {
+      app1: applicationStatusFactory.build({
+        "subordinate-to": ["app2", "app3"],
+      }),
+      app2: applicationStatusFactory.build({
+        units: {
+          "app2/0": unitStatusFactory.build({
+            machine: "0",
+            subordinates: {
+              "app1/0": unitStatusFactory.build(),
+            },
+          }),
+          "app2/1": unitStatusFactory.build({
+            machine: "1",
+            subordinates: {
+              "app1/1": unitStatusFactory.build(),
+            },
+          }),
+        },
+      }),
+      app3: applicationStatusFactory.build({
+        units: {
+          "app3/0": unitStatusFactory.build({
+            machine: "2",
+          }),
+        },
+      }),
+      app4: applicationStatusFactory.build({
+        units: {
+          "app4/0": unitStatusFactory.build({
+            machine: "3",
+          }),
+        },
+      }),
+    };
+    const machines = {
+      0: machineStatusFactory.build({ id: "0" }),
+      1: machineStatusFactory.build({ id: "1" }),
+      2: machineStatusFactory.build({ id: "2" }),
+      3: machineStatusFactory.build({ id: "3" }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            applications,
+            machines,
+          }),
+        },
+      }),
+    });
+    expect(getUnitMachine(state, "abc123", "app1/1")).toStrictEqual(
+      machines["1"],
+    );
   });
 });

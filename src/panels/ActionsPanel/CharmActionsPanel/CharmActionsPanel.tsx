@@ -1,15 +1,20 @@
 import { Button } from "@canonical/react-components";
 import { useMemo, useRef, useState, type JSX } from "react";
+import { useParams } from "react-router";
 
 import LoadingHandler from "components/LoadingHandler";
 import Panel from "components/Panel";
+import type { EntityDetailsRoute } from "components/Routes";
 import { CharmsAndActionsPanelTestId } from "panels/CharmsAndActionsPanel";
 import CharmActionsPanelTitle from "panels/CharmsAndActionsPanel/CharmActionsPanelTitle";
 import { ConfirmType, type ConfirmTypes } from "panels/types";
 import {
+  getModelApplications,
+  getModelUUIDFromList,
   getSelectedApplications,
   getSelectedCharm,
 } from "store/juju/selectors";
+import { getScale } from "store/juju/utils/units";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 
@@ -32,6 +37,13 @@ export default function CharmActionsPanel({
   const selectedApplications = useAppSelector((state) =>
     getSelectedApplications(state, charmURL),
   );
+  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
+  const applications = useAppSelector((state) =>
+    getModelApplications(state, modelUUID),
+  );
   const selectedCharm = useAppSelector((state) =>
     getSelectedCharm(state, charmURL),
   );
@@ -39,10 +51,9 @@ export default function CharmActionsPanel({
     () => selectedCharm?.actions?.specs ?? {},
     [selectedCharm],
   );
-  const unitCount = Object.values(selectedApplications).reduce(
-    (total, app) => total + (Object.keys(app.units ?? {}).length ?? 0),
-    0,
-  );
+  const unitCount = applications
+    ? getScale(Object.keys(selectedApplications), applications)
+    : 0;
 
   const [validAction, setValidAction] = useState(false);
   const [pendingAction, setPendingAction] = useState<{

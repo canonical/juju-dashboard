@@ -5,17 +5,16 @@ import { vi } from "vitest";
 import { InfoPanelTestId } from "components/InfoPanel";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
-import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import {
+  applicationStatusFactory,
+  machineStatusFactory,
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
 import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   modelDataFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
-import {
-  machineChangeDeltaFactory,
-  modelWatcherModelDataFactory,
-  unitChangeDeltaFactory,
-} from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -54,21 +53,16 @@ describe("Unit", () => {
         modelData: {
           abc123: modelDataFactory.build({
             applications: {
-              etcd: applicationStatusFactory.build(),
-            },
-          }),
-        },
-        modelWatcherData: {
-          abc123: modelWatcherModelDataFactory.build({
-            machines: {
-              "0": machineChangeDeltaFactory.build({ id: "0" }),
-            },
-            units: {
-              "etcd/0": unitChangeDeltaFactory.build({
-                application: "etcd",
-                name: "etcd/0",
-                "charm-url": "cs:etcd-50",
+              etcd: applicationStatusFactory.build({
+                units: {
+                  "etcd/0": unitStatusFactory.build({
+                    charm: "cs:etcd-50",
+                  }),
+                },
               }),
+            },
+            machines: {
+              "0": machineStatusFactory.build({ id: "0" }),
             },
           }),
         },

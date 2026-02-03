@@ -7,6 +7,7 @@ import type {
   ApplicationStatus,
   MachineStatus,
   RelationStatus,
+  UnitStatus,
 } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { Button, Icon } from "@canonical/react-components";
 import type {
@@ -25,13 +26,17 @@ import RelationIcon from "components/RelationIcon";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { copyToClipboard } from "components/utils";
-import type { UnitData } from "juju/types";
 import type { StatusData } from "store/juju/selectors";
 import type { ModelData } from "store/juju/types";
 import {
   extractRevisionNumber,
   extractRelationEndpoints,
 } from "store/juju/utils/models";
+import {
+  getAppScale,
+  getMachineApps,
+  getParentOrUnit,
+} from "store/juju/utils/units";
 import { testId } from "testing/utils";
 import urls from "urls";
 import { parseMachineHardware } from "utils/parseMachineHardware";
@@ -81,6 +86,7 @@ const generateAddress = (address: null | string = null): ReactNode =>
   );
 
 export function generateLocalApplicationRows(
+  applicationIds: string[],
   applications: null | Record<string, ApplicationStatus>,
   applicationStatuses: null | StatusData,
   modelParams: ModelParams,
@@ -97,7 +103,7 @@ export function generateLocalApplicationRows(
     return "";
   }
 
-  return Object.keys(applications).map((key) => {
+  return applicationIds.map((key) => {
     const app = applications[key];
     const rev = extractRevisionNumber(app.charm) ?? "-";
     const store = getStore(app.charm);
@@ -115,7 +121,7 @@ export function generateLocalApplicationRows(
           {app.status.info}
         </Anchorme>
       ) : null;
-    const scale = Object.keys(app.units ?? {}).length;
+    const scale = getAppScale(key, applications);
     return {
       columns: [
         {
@@ -256,7 +262,8 @@ const generateUnitURL = (modelParams: ModelParams, unitId: string): string => {
 };
 
 export function generateUnitRows(
-  units: null | UnitData,
+  applications: null | Record<string, ApplicationStatus>,
+  units: null | Record<string, UnitStatus>,
   modelParams: ModelParams,
   showCheckbox = false,
   hideMachines = false,
@@ -265,54 +272,38 @@ export function generateUnitRows(
     return [];
   }
 
-  function generatePortsList(ports: UnitData[0]["ports"]): string {
+  function generatePortsList(ports: UnitStatus["opened-ports"]): string {
     if (!ports || ports.length === 0) {
       return "-";
     }
-    return ports.map((portData) => portData.number).join(", ");
+    return ports.join(", ");
   }
 
-  const clonedUnits: {
-    [unitName: string]: {
-      subordinates?: { [unitId: string]: UnitData[0] };
-    } & UnitData[0];
-  } = cloneDeep(units);
-
-  // Restructure the unit list data to allow for the proper subordinate
-  // rendering with the current table setup.
-  Object.entries(clonedUnits).forEach(([unitId, unitData]) => {
-    // The unit list may not have the principal in it because this code is
-    // used to generate the table for the application unit list as well
-    // in which case it'll be the only units in the list.
-    if (unitData.subordinate && clonedUnits[unitData.principal]) {
-      clonedUnits[unitData.principal].subordinates ??= {};
-      const { subordinates } = clonedUnits[unitData.principal];
-      if (subordinates) {
-        subordinates[unitId] = unitData;
-      }
-      delete clonedUnits[unitId];
-    }
-  });
-
   const unitRows: UnitRow[] = [];
-  Object.keys(clonedUnits).forEach((unitId) => {
-    const unit = clonedUnits[unitId];
-    const workload = unit["workload-status"].current || "-";
-    const agent = unit["agent-status"].current || "-";
+  for (const [unitId, unit] of Object.entries(units)) {
+    const app = applications?.[unitId.split("/")[0]];
+    const workload = unit["workload-status"].status || "-";
+    const agent = unit["agent-status"].status || "-";
     const publicAddress = unit["public-address"];
-    const ports = generatePortsList(unit.ports);
-    const message = unit["workload-status"].message || "-";
+    const ports = generatePortsList(unit["opened-ports"]);
+    const message = unit["workload-status"].info || "-";
     const messageWithLinks = (
       <Anchorme target="_blank" rel="noreferrer noopener" truncate={20}>
         {message}
       </Anchorme>
     );
-    const charm = unit["charm-url"];
+    const parentUnit = applications
+      ? getParentOrUnit(unitId, applications)
+      : null;
+    const machine = parentUnit?.machine;
     let columns: MainTableCell[] = [
       {
         content: (
           <Link to={generateUnitURL(modelParams, unitId)}>
-            <EntityIdentifier charmId={charm} name={unitId} />
+            <EntityIdentifier
+              charmId={unit.charm || app?.charm}
+              name={unitId}
+            />
           </Link>
         ),
       },
@@ -322,7 +313,7 @@ export function generateUnitRows(
       },
       { content: agent },
       {
-        content: unit["machine-id"],
+        content: machine,
         className: "u-align--right",
         key: "machine",
       },
@@ -379,7 +370,7 @@ export function generateUnitRows(
         unit: unitId,
         workload,
         agent,
-        machine: unit["machine-id"],
+        machine,
         publicAddress,
         ports,
         message,
@@ -393,13 +384,16 @@ export function generateUnitRows(
       for (const [key] of Object.entries(subordinates)) {
         const subordinate = subordinates[key];
         const address = subordinate["public-address"];
-        const workloadStatus = subordinate["workload-status"].current;
+        const workloadStatus = subordinate["workload-status"].status;
         const subordinateColumns: MainTableCell[] = [
           {
             content: (
-              <Link to={generateUnitURL(modelParams, unitId)}>
+              <Link to={generateUnitURL(modelParams, key)}>
                 <EntityIdentifier
-                  charmId={subordinate["charm-url"]}
+                  charmId={
+                    subordinate.charm ||
+                    applications?.[key.split("/")[0]]?.charm
+                  }
                   name={key}
                   subordinate
                 />
@@ -409,12 +403,12 @@ export function generateUnitRows(
           },
           {
             content: (
-              <Status status={subordinate["workload-status"].current} inline />
+              <Status status={subordinate["workload-status"].status} inline />
             ),
             className: "u-capitalise u-truncate",
           },
-          { content: subordinate["agent-status"].current },
-          { content: subordinate["machine-id"], className: "u-align--right" },
+          { content: subordinate["agent-status"].status },
+          { content: subordinate.machine, className: "u-align--right" },
           { content: generateAddress(address), className: "has-hover" },
           {
             content: subordinate["public-address"].split(":")[-1] || "-",
@@ -445,7 +439,7 @@ export function generateUnitRows(
             unit: unitId,
             workload,
             agent,
-            machine: unit["machine-id"],
+            machine: unit.machine,
             publicAddress,
             ports,
             message,
@@ -454,14 +448,14 @@ export function generateUnitRows(
         });
       }
     }
-  });
+  }
 
   return unitRows;
 }
 
 export function generateMachineRows(
   machines: null | Record<string, MachineStatus>,
-  units: null | UnitData,
+  applications: null | Record<string, ApplicationStatus>,
   modelParams: ModelParams,
   selectedEntity?: null | string,
 ): MainTableRow[] {
@@ -471,16 +465,11 @@ export function generateMachineRows(
 
   const generateMachineApps = (
     machineId: string,
-    machineUnits: null | UnitData,
+    modelApps: null | Record<string, ApplicationStatus>,
   ): ReactNode => {
-    const appsOnMachine: [string, string][] = [];
-    if (machineUnits) {
-      Object.values(machineUnits).forEach((unitInfo) => {
-        if (machineId === unitInfo["machine-id"]) {
-          appsOnMachine.push([unitInfo.application, unitInfo["charm-url"]]);
-        }
-      });
-    }
+    const appsOnMachine: [string, string][] = Object.entries(
+      modelApps ? getMachineApps(machineId, modelApps) : {},
+    ).map(([appId, { charm }]) => [appId, charm]);
     const apps = appsOnMachine.length
       ? appsOnMachine.map((app) => (
           <CharmIcon
@@ -521,7 +510,7 @@ export function generateMachineRows(
             ),
           },
           {
-            content: generateMachineApps(machineId, units),
+            content: generateMachineApps(machineId, applications),
             className: "machine-app-icons",
           },
           {

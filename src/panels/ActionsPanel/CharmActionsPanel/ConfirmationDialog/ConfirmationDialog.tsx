@@ -9,7 +9,13 @@ import useAnalytics from "hooks/useAnalytics";
 import { useExecuteActionOnUnits } from "juju/api-hooks";
 import type { ActionOptionValue } from "panels/ActionsPanel/types";
 import { ConfirmType, type ConfirmTypes } from "panels/types";
+import {
+  getModelApplications,
+  getModelUUIDFromList,
+} from "store/juju/selectors";
 import type { JujuState } from "store/juju/types";
+import { getScale } from "store/juju/utils/units";
+import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 
 import { Label, TestId } from "./types";
@@ -79,14 +85,19 @@ const ConfirmationDialog = ({
 }: Props): JSX.Element | null => {
   const { Portal } = usePortal();
   const { userName, modelName } = useParams();
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, userName),
+  );
+  const applications = useAppSelector((state) =>
+    getModelApplications(state, modelUUID),
+  );
   const sendAnalytics = useAnalytics();
   const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
 
   if (confirmType === ConfirmType.SUBMIT) {
-    const unitCount = Object.values(selectedApplications).reduce(
-      (total, app) => total + (Object.keys(app.units ?? {}).length ?? 0),
-      0,
-    );
+    const unitCount = applications
+      ? getScale(Object.keys(selectedApplications), applications)
+      : 0;
     // Render the submit confirmation modal.
     return (
       <Portal>

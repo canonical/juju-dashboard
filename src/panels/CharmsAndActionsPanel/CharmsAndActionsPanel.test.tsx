@@ -16,8 +16,10 @@ import {
   applicationStatusFactory,
   unitStatusFactory,
 } from "testing/factories/juju/ClientV7";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
 import {
   jujuStateFactory,
+  modelDataFactory,
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
@@ -45,6 +47,24 @@ describe("CharmsAndActionsPanel", () => {
           test123: modelListInfoFactory.build({
             ownerTag: "test@external",
             name: "test-model",
+            uuid: "test123",
+          }),
+        },
+        modelData: {
+          test123: modelDataFactory.build({
+            applications: {
+              ceph: applicationStatusFactory.build({
+                charm: "ch:ceph",
+                units: {
+                  0: unitStatusFactory.build(),
+                  1: unitStatusFactory.build(),
+                },
+              }),
+            },
+            info: modelInfoFactory.build({
+              name: "test-model",
+            }),
+            uuid: "test123",
           }),
         },
         charms: [
@@ -118,9 +138,10 @@ describe("CharmsAndActionsPanel", () => {
     vi.spyOn(juju, "getCharmsURLFromApplications").mockImplementation(
       vi.fn().mockResolvedValue(["ch:ceph", "ch:ceph2"]),
     );
-    state.juju.selectedApplications.ceph2 = applicationStatusFactory.build({
-      charm: "ch:ceph2",
-    });
+    state.juju.modelData.test123.applications.ceph2 =
+      state.juju.selectedApplications.ceph2 = applicationStatusFactory.build({
+        charm: "ch:ceph2",
+      });
     state.juju.charms = [
       ...state.juju.charms,
       charmInfoFactory.build({

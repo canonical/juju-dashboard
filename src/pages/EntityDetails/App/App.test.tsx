@@ -12,7 +12,11 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
-import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import {
+  applicationStatusFactory,
+  machineStatusFactory,
+  unitStatusFactory,
+} from "testing/factories/juju/ClientV7";
 import {
   modelInfoFactory,
   modelUserInfoFactory,
@@ -21,10 +25,6 @@ import {
   modelListInfoFactory,
   modelDataFactory,
 } from "testing/factories/juju/juju";
-import {
-  modelWatcherModelDataFactory,
-  unitChangeDeltaFactory,
-} from "testing/factories/juju/model-watcher";
 import { renderComponent } from "testing/utils";
 
 import App from "./App";
@@ -85,7 +85,32 @@ describe("Entity Details App", () => {
         modelData: {
           test123: modelDataFactory.build({
             applications: {
-              etcd: applicationStatusFactory.build(),
+              etcd: applicationStatusFactory.build({
+                units: {
+                  "etcd/0": unitStatusFactory.build({
+                    charm: "cs:etcd-50",
+                    "public-address": "54.162.156.160",
+                    machine: "0",
+                  }),
+                  "etcd/1": unitStatusFactory.build({
+                    charm: "cs:etcd-51",
+                    machine: "1",
+                  }),
+                },
+              }),
+              mysql: applicationStatusFactory.build({
+                units: {
+                  "mysql/0": unitStatusFactory.build({
+                    charm: "cs:mysql-50",
+                    "public-address": "54.162.156.160",
+                    machine: "0",
+                  }),
+                  "mysql/1": unitStatusFactory.build({
+                    charm: "cs:mysql-51",
+                    machine: "3",
+                  }),
+                },
+              }),
             },
             info: modelInfoFactory.build({
               uuid: "test123",
@@ -98,21 +123,11 @@ describe("Entity Details App", () => {
                 }),
               ],
             }),
-          }),
-        },
-        modelWatcherData: {
-          test123: modelWatcherModelDataFactory.build({
-            units: {
-              "0": unitChangeDeltaFactory.build({
-                application: "etcd",
-                name: "etcd/0",
-                "charm-url": "cs:etcd-50",
-              }),
-              "1": unitChangeDeltaFactory.build({
-                application: "etcd",
-                name: "etcd/1",
-                "charm-url": "cs:etcd-51",
-              }),
+            machines: {
+              0: machineStatusFactory.build(),
+              1: machineStatusFactory.build(),
+              2: machineStatusFactory.build(),
+              3: machineStatusFactory.build(),
             },
           }),
         },
@@ -132,6 +147,26 @@ describe("Entity Details App", () => {
     await userEvent.click(screen.getByRole("tab", { name: "Machines" }));
     expect(screen.queryByTestId(TestId.UNITS_TABLE)).not.toBeInTheDocument();
     expect(screen.getByTestId(TestId.MACHINES_TABLE)).toBeInTheDocument();
+  });
+
+  it("displays units", async () => {
+    renderComponent(<App />, { path, url, state });
+    const table = screen.getByTestId(TestId.UNITS_TABLE);
+    const rows = within(table).getAllByRole("row");
+    // The table should only contain the units from the selected app.
+    expect(rows).toHaveLength(
+      Object.keys(state.juju.modelData.test123.applications.etcd.units).length +
+        1,
+    );
+  });
+
+  it("displays machines", async () => {
+    renderComponent(<App />, { path, url, state });
+    await userEvent.click(screen.getByRole("tab", { name: "Machines" }));
+    const table = screen.getByTestId(TestId.MACHINES_TABLE);
+    const rows = within(table).getAllByRole("row");
+    // The table should only contain the units from the selected app.
+    expect(rows).toHaveLength(3);
   });
 
   it("displays machine column in the unit table", async () => {
@@ -164,8 +199,8 @@ describe("Entity Details App", () => {
 
     const selectAll = screen.getByTestId(TestId.SELECT_ALL);
     const selectedUnits = [
-      screen.getByTestId("table-checkbox-0"),
-      screen.getByTestId("table-checkbox-1"),
+      screen.getByTestId("table-checkbox-etcd/0"),
+      screen.getByTestId("table-checkbox-etcd/1"),
     ];
     await userEvent.click(selectAll);
     const unitsListChecked = (value: boolean): void => {
@@ -217,7 +252,7 @@ describe("Entity Details App", () => {
     expect(screen.getByTestId(TestId.RUN_ACTION_BUTTON)).toHaveAttribute(
       "aria-disabled",
     );
-    const firstInput = screen.getByTestId("table-checkbox-0");
+    const firstInput = screen.getByTestId("table-checkbox-etcd/0");
     await userEvent.click(firstInput);
     expect(screen.getByTestId(TestId.RUN_ACTION_BUTTON)).not.toHaveAttribute(
       "aria-disabled",
@@ -228,21 +263,22 @@ describe("Entity Details App", () => {
     const { router } = renderComponent(<App />, { path, url, state });
 
     // Select a single unit.
-    const firstInput = screen.getByTestId("table-checkbox-0");
+    const firstInput = screen.getByTestId("table-checkbox-etcd/0");
     await userEvent.click(firstInput);
 
     // Trigger the action panel to open to enable the auto url pushing.
     await userEvent.click(screen.getByTestId(TestId.RUN_ACTION_BUTTON));
     expect(router.state.location.search).toEqual(
-      "?panel=execute-action&units=0",
+      "?panel=execute-action&units=etcd%2F0",
     );
 
     // Select another unit and it should update the url.
-    const secondInput = screen.getByTestId("table-checkbox-1");
+    const secondInput = screen.getByTestId("table-checkbox-etcd/1");
     await userEvent.click(secondInput);
 
     expect(router.state.location.search).toEqual(
-      "?panel=execute-action&units=0%2C1",
+      // spell-checker:disable-next-line
+      "?panel=execute-action&units=etcd%2F0%2Cetcd%2F1",
     );
   });
 
@@ -253,9 +289,14 @@ describe("Entity Details App", () => {
   });
 
   it("does not fail if a subordinate is not related to another application", async () => {
-    const { modelWatcherData } = state.juju;
-    if (modelWatcherData && "test123" in modelWatcherData) {
-      modelWatcherData["test123"].units = {};
+    const { modelData } = state.juju;
+    if (modelData && "test123" in modelData) {
+      modelData["test123"].applications = {
+        etcd: {
+          ...modelData["test123"].applications.etcd,
+          units: {},
+        },
+      };
     }
     renderComponent(<App />, { path, url, state });
     expect(screen.getByText(Label.NO_UNITS)).toBeInTheDocument();

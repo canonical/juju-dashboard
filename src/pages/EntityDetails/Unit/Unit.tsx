@@ -1,7 +1,3 @@
-import type {
-  ApplicationStatus,
-  MachineStatus,
-} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
 import { MainTable } from "@canonical/react-components";
 import type { JSX } from "react";
 import { useMemo } from "react";
@@ -14,9 +10,9 @@ import type { EntityDetailsRoute } from "components/Routes";
 import {
   getAllModelApplicationStatus,
   getModelApplications,
-  getModelMachines,
-  getModelUnits,
   getModelUUIDFromList,
+  getUnit,
+  getUnitMachine,
   isKubernetesModel,
 } from "store/juju/selectors";
 import { extractRevisionNumber } from "store/juju/utils/models";
@@ -50,31 +46,13 @@ export default function Unit(): JSX.Element {
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
   );
-  const units = useAppSelector((state) => getModelUnits(state, modelUUID));
-  const machines = useAppSelector((state) =>
-    getModelMachines(state, modelUUID),
-  );
   const isK8s = useAppSelector((state) => isKubernetesModel(state, modelUUID));
-
-  const unit = unitIdentifier && units?.[unitIdentifier];
-
-  const filteredMachineList = useMemo(() => {
-    const filteredMachines: Record<string, MachineStatus> = {};
-    if (machines && unit) {
-      const machineId = unit["machine-id"];
-      filteredMachines[machineId] = machines[machineId];
-    }
-    return filteredMachines;
-  }, [machines, unit]);
-
-  const filteredApplicationList = useMemo(() => {
-    const filteredApps: Record<string, ApplicationStatus> = {};
-    if (applications && unit) {
-      const name = unit.application;
-      filteredApps[name] = applications[name];
-    }
-    return filteredApps;
-  }, [applications, unit]);
+  const unit = useAppSelector((state) =>
+    getUnit(state, modelUUID, unitIdentifier),
+  );
+  const unitMachine = useAppSelector((state) =>
+    getUnitMachine(state, modelUUID, unitIdentifier),
+  );
 
   const applicationStatuses = useAppSelector((state) =>
     getAllModelApplicationStatus(state, modelUUID),
@@ -82,26 +60,26 @@ export default function Unit(): JSX.Element {
 
   const machineRows = useMemo(
     () =>
-      modelName && userName
-        ? generateMachineRows(filteredMachineList, units, {
+      modelName && userName && unitMachine
+        ? generateMachineRows({ [unitMachine.id]: unitMachine }, applications, {
             modelName,
             userName,
           })
         : [],
-    [filteredMachineList, units, modelName, userName],
+    [modelName, userName, unitMachine, applications],
   );
 
-  const applicationRows = useMemo(
-    () =>
-      modelName && userName
-        ? generateLocalApplicationRows(
-            filteredApplicationList,
-            applicationStatuses,
-            { modelName, userName },
-          )
-        : [],
-    [filteredApplicationList, applicationStatuses, modelName, userName],
-  );
+  const applicationRows = useMemo(() => {
+    const appId = unitIdentifier?.split("/")[0];
+    return modelName && userName
+      ? generateLocalApplicationRows(
+          appId ? [appId] : [],
+          applications,
+          applicationStatuses,
+          { modelName, userName },
+        )
+      : [];
+  }, [unitIdentifier, modelName, userName, applications, applicationStatuses]);
 
   if (!unit) {
     return (
@@ -131,13 +109,13 @@ export default function Unit(): JSX.Element {
     );
   }
 
-  const charm = unit?.["charm-url"] || "-";
+  const charm = unit?.charm || "-";
   const unitEntityData = {
     charm,
     os: "-",
     revision: extractRevisionNumber(charm) || "-",
     version: unit?.["workload-status"].version || "-",
-    message: unit?.["workload-status"].message || "-",
+    message: unit?.["workload-status"].info || "-",
   };
 
   return (
