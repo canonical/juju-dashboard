@@ -357,6 +357,16 @@ export async function fetchAllModelStatuses(
             }),
           );
         }
+        if (modelInfo?.results[0].result?.life === "dying") {
+          dispatch(
+            jujuActions.destroyModels({
+              models: [
+                { modelUUID, modelName: modelInfo.results[0].result.name },
+              ],
+              wsControllerURL,
+            }),
+          );
+        }
         if (!isLoggedIn(getState(), wsControllerURL)) {
           // The user may have logged out while the previous call was in
           // progress.
