@@ -29,25 +29,11 @@ jobs:
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action
-      - name: Set up Juju Dashboard Docker image
-        id: docker-dashboard
-        uses: ./.github/actions/setup-docker-dashboard
-        with:
-          dashboard-ref: ${{ github.ref }} # Use the dashboard version from this branch.
-          run: true
-          is-juju: false
-          controller-ws-address: ws://jimm.localhost:17070
       - name: Checkout JIMM repo
         uses: actions/checkout@v6
         with:
           repository: canonical/jimm
           path: jimm
-      - name: Update JIMM with the dashboard address
-        run: |
-          sudo snap install yq
-          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_FINAL_REDIRECT_URL = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
-          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_LOCATION = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
-          yq -i '.services.jimm-base.environment.CORS_ALLOWED_ORIGINS = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
@@ -57,7 +43,7 @@ jobs:
       - name: Start JIMM (pull request)
         uses: ./jimm/.github/actions/test-server
         with:
-          jimm-version: v3.2.2
+          jimm-version: dev
           juju-channel: "3.6/stable"
           ghcr-pat: ${{ secrets.GITHUB_TOKEN }}
           dump-logs: true
@@ -65,8 +51,6 @@ jobs:
         run: |
           juju switch ${{ env.CONTROLLER_NAME }}
           echo '${{ inputs.admin-password }}' | juju change-user-password --no-prompt
-      - name: Restart JIMM
-        run: docker restart jimm-test # Fixes a context cancelled issue when fetching models from the dashboard.
       - name: Wait for JIMM container to be ready
         uses: nick-fields/retry@v3
         with:
@@ -82,13 +66,11 @@ jobs:
         env:
           JIMM_CONTROLLER_NAME: ${{ env.CONTROLLER_NAME }}
           CONTROLLER_NAME: jimm
-          DASHBOARD_ADDRESS: http://${{ steps.docker-dashboard.outputs.address }}
+          DASHBOARD_ADDRESS: https://juju-dashboard.localhost
           AUTH_MODE: oidc
           AUTH_VARIANT: keycloak
           JUJU_ENV: jimm
           PROVIDER: localhost
-          ADMIN_USERNAME: ${{ inputs.admin-username }}
-          ADMIN_PASSWORD: ${{ inputs.admin-password }}
           ADMIN_IDENTITY_USERNAME: jimm-test@canonical.com
           ADMIN_IDENTITY_PASSWORD: password
       - name: Display logs
