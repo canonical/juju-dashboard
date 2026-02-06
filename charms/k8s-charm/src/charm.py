@@ -9,6 +9,7 @@ from pathlib import Path
 
 from charms.juju_dashboard.v0.juju_dashboard import JujuDashData, JujuDashReq
 from charms.nginx_ingress_integrator.v0.nginx_route import require_nginx_route
+from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
 from config import Config, to_bool
 
 from ops.charm import CharmBase, RelationEvent
@@ -65,6 +66,7 @@ class JujuDashboardKubernetesCharm(CharmBase):
             service_name=self.app.name,
             service_port=self.config.get("port"),
         )
+        self.ingress = IngressPerAppRequirer(self, port=self.config.get("port"))
 
     def _on_install(self, _):
         self.unit.status = MaintenanceStatus("Awaiting controller relation.")
@@ -87,6 +89,7 @@ class JujuDashboardKubernetesCharm(CharmBase):
         self._update(event, **requires.data)
 
     def _on_config_changed(self, event):
+        self.ingress.provide_ingress_requirements(port=self.config.get("port"))
         relation = self.model.get_relation("controller")
         if not relation:
             self.unit.status = BlockedStatus("Missing controller integration")

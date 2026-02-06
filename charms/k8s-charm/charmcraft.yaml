@@ -59,6 +59,9 @@ requires:
     interface: juju-dashboard
   nginx-route:
     interface: nginx-route
+  ingress:
+    interface: ingress
+    limit: 1
 parts:
   charm:
     charm-python-packages: [setuptools>80.0]
