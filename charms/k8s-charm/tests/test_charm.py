@@ -4,6 +4,7 @@
 # Learn more about testing at: https://juju.is/docs/sdk/testing
 
 import unittest
+from unittest.mock import patch
 
 from ops.model import ActiveStatus, BlockedStatus
 from ops.testing import Harness
@@ -55,7 +56,10 @@ class TestCharm(unittest.TestCase):
             BlockedStatus("Missing controller integration"),
         )
 
-    def test_config_changed(self):
+    @patch(
+        "charms.traefik_k8s.v2.ingress.IngressPerAppRequirer.provide_ingress_requirements"
+    )
+    def test_config_changed(self, mock_provide_ingress_requirements):
         with self.container.pull("/srv/config.js") as f:
             config = f.read()
         self.assertTrue("analyticsEnabled: true" in config)
@@ -69,6 +73,7 @@ class TestCharm(unittest.TestCase):
         with self.container.pull("/etc/nginx/sites-available/default") as f:
             nginx_config = f.read()
         self.assertTrue("listen 123" in nginx_config)
+        mock_provide_ingress_requirements.assert_called_once_with(port=123)
 
     def test_config_changed_no_relation(self):
         self.harness.remove_relation(self.rel_id)
