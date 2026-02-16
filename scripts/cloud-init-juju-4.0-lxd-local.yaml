@@ -1,0 +1,73 @@
+package_update: true
+package_upgrade: true
+
+packages:
+  - python3-jinja2
+  - avahi-daemon
+  - avahi-autoipd
+
+snap:
+  commands:
+    - snap install node --classic
+    - snap install yq
+    - snap install --classic concierge
+
+write_files:
+  - path: "/etc/update-motd.d/99-welcome"
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+
+      HOSTNAME=$(hostname)
+      echo "======================================================================"
+      echo " View Juju Dashboard at:"
+      echo "   http://$HOSTNAME.local:8036"
+      echo
+      echo " Log in to Juju with:"
+      echo "   Username: admin"
+      echo "   Password: password1"
+      echo
+      echo " The Juju Dashboard dev server can be stopped with:"
+      echo "   sudo systemctl stop juju-dashboard.service"
+      echo " Disable the service with:"
+      echo "   sudo systemctl disable juju-dashboard.service"
+      echo "======================================================================"
+
+runcmd:
+  - |
+    sudo -u ubuntu sudo concierge prepare -p machine --juju-channel 4.0/stable
+
+  - |
+    # Add port forward.
+    sudo -u ubuntu juju switch controller
+    MACHINE_ID=$(sudo -u ubuntu juju show-unit controller/0 | yq ".controller/0.machine")
+    CONTROLLER_INSTANCE=$(sudo -u ubuntu juju show-machine $MACHINE_UD | yq ".machines.0.instance-id")
+    sudo -u ubuntu lxc config device add "$CONTROLLER_INSTANCE" portforward17070 proxy listen=tcp:0.0.0.0:17070 connect=tcp:127.0.0.1:17070
+    # Set the admin user's password:
+    echo password1 | sudo -u ubuntu juju change-user-password --no-prompt
+
+  - |
+    # Set up Juju Dashboard.
+    cd /home/ubuntu/
+    sudo -u ubuntu git clone -o upstream https://github.com/canonical/juju-dashboard.git
+    cd ./juju-dashboard
+    sudo -u ubuntu yarn install
+    sudo -u ubuntu DASHBOARD_CONFIG_NAME=config.local.js HAS_EXTERNAL_CONTROLLER_URL=true DASHBOARD_IS_JUJU=true WRITE_NGINX=false DASHBOARD_CONFIG_DIR=/home/ubuntu/juju-dashboard/charms/k8s-charm/src DASHBOARD_ROOT=/home/ubuntu/juju-dashboard/public DASHBOARD_CONTROLLER_URL="wss://$(hostname).local:17070" DASHBOARD_ANALYTICS_ENABLED=false python3 ./charms/k8s-charm/src/config.py
+
+  - |
+    # Create a service to automatically start Juju Dashboard.
+    tee /lib/systemd/system/juju-dashboard.service <<'EOF'
+    [Unit]
+    Description=Juju Dashboard Dev Server
+
+    [Service]
+    ExecStart=sudo -u ubuntu bash -c "cd /home/ubuntu/juju-dashboard && yarn start"
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+    sudo systemctl daemon-reload
+    sudo systemctl enable juju-dashboard.service
+    sudo systemctl start juju-dashboard.service
+
+final_message: "The system is finally up, after $UPTIME seconds"
