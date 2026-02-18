@@ -87,3 +87,36 @@ jobs:
       github.event_name != 'pull_request' || (
         (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
         (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))
+  juju-4-machine-local:
+    name: Test Juju 4.0, machine-charm and local-auth
+    uses: ./.github/workflows/e2e-juju-machine-charm-local-auth.yml
+    secrets: inherit
+    with:
+      juju-channel: "4.0/stable"
+      send-notification: false
+    if: |
+      github.event_name != 'pull_request' || (
+        (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
+        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))
+  juju-4-k8s-local:
+    name: Test Juju 4.0, k8s-charm and local-auth
+    uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml
+    secrets: inherit
+    with:
+      juju-channel: "4.0/stable"
+      send-notification: false
+    if: |
+      github.event_name != 'pull_request' || (
+        (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
+        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))
+  jimm-juju-4-k8s-oidc:
+    name: Test JIMM with Juju 4.0, k8s-charm and oidc-auth
+    uses: ./.github/workflows/e2e-jimm-k8s-charm-oidc-auth.yml
+    secrets: inherit
+    with:
+      juju-channel: "4.0/stable"
+      send-notification: false
+    if: |
+      github.event_name != 'pull_request' || (
+        (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
+        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))

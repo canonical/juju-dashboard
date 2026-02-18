@@ -8,6 +8,15 @@ on:
         type: string
         description: The password to use when logging in as the admin user.
         default: password1
+      juju-channel:
+        required: false
+        type: string
+        description: Charm channel of Juju to use.
+      send-notification:
+        required: false
+        type: boolean
+        description: Whether to send a notification on failure.
+        default: true
 
 permissions: read-all
 
@@ -29,9 +38,16 @@ jobs:
         with:
           provider: localhost
           controller-name: test
-          juju-channel: ${{ steps.config.outputs.juju-channel }}
+          juju-channel: ${{ inputs.juju-channel || steps.config.outputs.juju-channel }}
       - name: Set up access
         run: echo '${{ inputs.admin-password }}' | juju change-user-password --no-prompt
+      - name: Compute Juju version for test identifier
+        id: juju-version
+        run: |
+          CHANNEL="${{ inputs.juju-channel || steps.config.outputs.juju-channel }}"
+          VERSION=$(echo "$CHANNEL" | cut -d'/' -f1)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        shell: bash
       - name: Set up Juju Dashboard machine charm
         uses: ./.github/actions/setup-machine-charm
         with:
@@ -41,7 +57,7 @@ jobs:
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:
-          test-identifier: e2e-juju-machine-charm-local-auth
+          test-identifier: e2e-juju-${{ steps.juju-version.outputs.version }}-machine-charm-local-auth
         env:
           CONTROLLER_NAME: test
           AUTH_MODE: local
@@ -56,7 +72,7 @@ jobs:
           juju-env: "juju"
           controller: "test"
       - name: Send notification on failure
-        if: steps.config.outputs.send-failure-notification && failure()
+        if: inputs.send-notification && steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification
         with:
           webhook-url: ${{ secrets.WEBBOT_URL }}
