@@ -13,6 +13,15 @@ on:
         type: string
         description: The password to use when logging in as the admin user.
         default: test
+      juju-channel:
+        required: false
+        type: string
+        description: Charm channel of Juju to use.
+      send-notification:
+        required: false
+        type: boolean
+        description: Whether to send a notification on failure.
+        default: true
 
 permissions: read-all
 
@@ -49,6 +58,8 @@ jobs:
       - name: Start JIMM
         id: jimm
         uses: ./.github/actions/setup-jimm
+        with:
+          juju-channel: ${{ inputs.juju-channel || steps.config.outputs.juju-channel }}
       - name: Set up Juju Dashboard k8s charm
         uses: ./.github/actions/setup-k8s-charm
         with:
@@ -72,11 +83,18 @@ jobs:
           command: juju wait-for unit jimm/0 --timeout=1m
       - name: Set the CLI admin's password
         run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
+      - name: Compute Juju version for test identifier
+        id: juju-version
+        run: |
+          CHANNEL="${{ inputs.juju-channel || steps.config.outputs.juju-channel }}"
+          VERSION=$(echo "$CHANNEL" | cut -d'/' -f1)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        shell: bash
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:
           setup: false # Playwright was set up in the setup-jimm action.
-          test-identifier: e2e-jimm-k8s-charm-oidc-auth
+          test-identifier: e2e-jimm-juju-${{ steps.juju-version.outputs.version }}-k8s-charm-oidc-auth
         env:
           JIMM_CONTROLLER_NAME: ${{ steps.jimm.outputs.jimm-controller-name }}
           CONTROLLER_NAME: ${{ steps.jimm.outputs.workloads-controller-name }}
@@ -92,7 +110,7 @@ jobs:
           juju-env: "jimm"
           controller: ${{ steps.jimm.outputs.jimm-controller-name }}
       - name: Send notification on failure
-        if: steps.config.outputs.send-failure-notification && failure()
+        if: inputs.send-notification && steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification
         with:
           webhook-url: ${{ secrets.WEBBOT_URL }}
