@@ -40,7 +40,7 @@ describe("useModelDestructionToaster", () => {
           xyz456: modelListInfoFactory.build({
             uuid: "xyz456",
             name: "enterprise",
-            ownerTag: "user-kirk@external",
+            qualifier: "user-kirk@external",
           }),
         },
         destroyModel: {
@@ -109,7 +109,7 @@ describe("useModelDestructionToaster", () => {
         xyz456: modelListInfoFactory.build({
           uuid: "xyz456",
           name: "enterprise",
-          ownerTag: "user-kirk@external",
+          qualifier: "user-kirk@external",
         }),
       },
       destroyModel: {

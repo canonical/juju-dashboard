@@ -1,5 +1,6 @@
 import { useParams } from "react-router";
 
+import type { EntityDetailsRoute } from "components/Routes";
 import useCanConfigureModel from "hooks/useCanConfigureModel";
 import {
   getModelUUIDFromList,
@@ -8,10 +9,9 @@ import {
 import { useAppSelector } from "store/store";
 
 const useCanManageSecrets = (): boolean => {
-  const routeParams = useParams();
-  const { userName, modelName } = routeParams;
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const canManageSecrets = useAppSelector((state) =>
     getCanManageSecrets(state, modelUUID),

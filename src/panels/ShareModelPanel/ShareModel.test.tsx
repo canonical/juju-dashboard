@@ -23,7 +23,7 @@ import { Label } from "./types";
 
 describe("Share Model Panel", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
   const url = "/models/eggman@external/hadoopspark";
 
   beforeEach(() => {

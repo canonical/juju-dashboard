@@ -43,7 +43,7 @@ import { parseMachineHardware } from "utils/parseMachineHardware";
 
 export type ModelParams = {
   modelName: string;
-  userName: string;
+  qualifier: string;
 };
 
 export type Query = {
@@ -129,7 +129,7 @@ export function generateLocalApplicationRows(
           content: (
             <Link
               to={urls.model.app.index({
-                userName: modelParams.userName,
+                qualifier: modelParams.qualifier,
                 modelName: modelParams.modelName,
                 appName: key.replace("/", "-"),
               })}
@@ -254,7 +254,7 @@ const generateUnitURL = (modelParams: ModelParams, unitId: string): string => {
   const id = unitId.replace("/", "-");
   const appName = id?.split("-").slice(0, -1).join("-");
   return urls.model.unit({
-    userName: modelParams.userName,
+    qualifier: modelParams.qualifier,
     modelName: modelParams.modelName,
     appName,
     unitId: id,
@@ -500,7 +500,7 @@ export function generateMachineRows(
             content: (
               <Link
                 to={urls.model.machine({
-                  userName: modelParams.userName,
+                  qualifier: modelParams.qualifier,
                   modelName: modelParams.modelName,
                   machineId: machineId.replace("/", "-"),
                 })}

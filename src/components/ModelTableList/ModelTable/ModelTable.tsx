@@ -84,7 +84,7 @@ function generateModelTableList(
                   <ModelDetailsLink
                     className={classNames({ "u-text--muted": isDying })}
                     modelName={model.model.name}
-                    ownerTag={model.info?.["owner-tag"]}
+                    qualifier={model.info?.["owner-tag"]}
                   >
                     {model.model.name}
                   </ModelDetailsLink>
@@ -102,7 +102,7 @@ function generateModelTableList(
         content: (
           <ModelSummary
             modelData={model}
-            ownerTag={model.info?.["owner-tag"]}
+            qualifier={model.info?.["owner-tag"]}
           />
         ),
         className: classNames("u-overflow--visible", {

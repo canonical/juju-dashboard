@@ -37,7 +37,8 @@ const infoPanelDimensions = (): number => {
 };
 
 const InfoPanel: FC = () => {
-  const { modelName = null, userName = null } = useParams<EntityDetailsRoute>();
+  const { modelName = null, qualifier = null } =
+    useParams<EntityDetailsRoute>();
 
   const {
     openPortal,
@@ -47,7 +48,7 @@ const InfoPanel: FC = () => {
   } = usePortal();
 
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const annotations = useAppSelector((state) =>
     getModelAnnotations(state, modelUUID),

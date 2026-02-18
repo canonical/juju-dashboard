@@ -37,7 +37,7 @@ describe("TextAreaConfig", () => {
   let state: RootState;
   const path = urls.model.index(null);
   const url = urls.model.index({
-    userName: "eggman@external",
+    qualifier: "eggman@external",
     modelName: "test-model",
   });
 

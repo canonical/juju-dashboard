@@ -84,15 +84,15 @@ const ConfirmationDialog = ({
   onRemovePanelQueryParams,
 }: Props): JSX.Element | null => {
   const { Portal } = usePortal();
-  const { userName, modelName } = useParams();
+  const { qualifier, modelName } = useParams();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
   );
   const sendAnalytics = useAnalytics();
-  const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
+  const executeActionOnUnits = useExecuteActionOnUnits(qualifier, modelName);
 
   if (confirmType === ConfirmType.SUBMIT) {
     const unitCount = applications

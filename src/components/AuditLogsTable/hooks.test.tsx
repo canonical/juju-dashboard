@@ -103,7 +103,7 @@ describe("useFetchAuditEvents", () => {
     const [store, actions] = createStore(state, { trackActions: true });
     changeURL(
       `${urls.model.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "current-model",
         // The model in the query-param should get ignored
       })}?model=ignore-this`,

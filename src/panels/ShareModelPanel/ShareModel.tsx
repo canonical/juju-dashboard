@@ -193,8 +193,8 @@ export default function ShareModel(): JSX.Element {
   }, [users]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isOwner = (user: string): boolean => {
-    const ownerTag = modelStatusData?.info?.["owner-tag"] ?? null;
-    return !!ownerTag && user === getUserName(ownerTag);
+    const qualifier = modelStatusData?.info?.["owner-tag"] ?? null;
+    return !!qualifier && user === getUserName(qualifier);
   };
 
   const handleAccessSelectChange = async (

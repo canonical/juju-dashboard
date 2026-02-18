@@ -48,7 +48,7 @@ describe("ResultsBlock", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test-model",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
           }),
         },
       }),
@@ -173,7 +173,7 @@ describe("ResultsBlock", () => {
     expect(screen.getByRole("link", { name: "applications:" })).toHaveAttribute(
       "href",
       urls.model.tab({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         tab: ModelTab.APPS,
       }),
@@ -189,7 +189,7 @@ describe("ResultsBlock", () => {
     expect(screen.getByRole("link", { name: "offers:" })).toHaveAttribute(
       "href",
       urls.model.tab({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         tab: ModelTab.APPS,
       }),
@@ -205,7 +205,7 @@ describe("ResultsBlock", () => {
     expect(screen.getByRole("link", { name: "machines:" })).toHaveAttribute(
       "href",
       urls.model.tab({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         tab: ModelTab.MACHINES,
       }),
@@ -223,7 +223,7 @@ describe("ResultsBlock", () => {
     expect(screen.getByRole("link", { name: "relations:" })).toHaveAttribute(
       "href",
       urls.model.tab({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         tab: ModelTab.INTEGRATIONS,
       }),
@@ -239,7 +239,7 @@ describe("ResultsBlock", () => {
     expect(screen.getByRole("link", { name: "model:" })).toHaveAttribute(
       "href",
       urls.model.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
       }),
     );

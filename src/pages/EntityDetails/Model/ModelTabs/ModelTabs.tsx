@@ -19,9 +19,10 @@ import { ModelTab } from "urls";
 import { Label } from "./types";
 
 const ModelTabs: FC = () => {
-  const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
+  const { qualifier = null, modelName = null } =
+    useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const isK8s = useAppSelector((state) => isKubernetesModel(state, modelUUID));
   const canListSecrets = useAppSelector((state) =>
@@ -45,7 +46,7 @@ const ModelTabs: FC = () => {
   };
 
   const tabs: TabsProps<LinkProps>["links"] = [];
-  if (userName && modelName) {
+  if (qualifier && modelName) {
     tabs.push(
       {
         active: activeView === ModelTab.APPS,
@@ -53,7 +54,7 @@ const ModelTabs: FC = () => {
         onClick: (ev: React.MouseEvent) => {
           handleNavClick(ev);
         },
-        to: urls.model.tab({ userName, modelName, tab: ModelTab.APPS }),
+        to: urls.model.tab({ qualifier, modelName, tab: ModelTab.APPS }),
         component: Link,
       },
       {
@@ -62,7 +63,11 @@ const ModelTabs: FC = () => {
         onClick: (ev: React.MouseEvent) => {
           handleNavClick(ev);
         },
-        to: urls.model.tab({ userName, modelName, tab: ModelTab.INTEGRATIONS }),
+        to: urls.model.tab({
+          qualifier,
+          modelName,
+          tab: ModelTab.INTEGRATIONS,
+        }),
         component: Link,
       },
       {
@@ -71,7 +76,7 @@ const ModelTabs: FC = () => {
         onClick: (ev: React.MouseEvent) => {
           handleNavClick(ev);
         },
-        to: urls.model.tab({ userName, modelName, tab: ModelTab.LOGS }),
+        to: urls.model.tab({ qualifier, modelName, tab: ModelTab.LOGS }),
         component: Link,
       },
     );
@@ -83,7 +88,7 @@ const ModelTabs: FC = () => {
         onClick: (ev: React.MouseEvent) => {
           handleNavClick(ev);
         },
-        to: urls.model.tab({ userName, modelName, tab: ModelTab.SECRETS }),
+        to: urls.model.tab({ qualifier, modelName, tab: ModelTab.SECRETS }),
         component: Link,
       });
     }
@@ -95,7 +100,7 @@ const ModelTabs: FC = () => {
         onClick: (ev: React.MouseEvent) => {
           handleNavClick(ev);
         },
-        to: urls.model.tab({ userName, modelName, tab: ModelTab.MACHINES }),
+        to: urls.model.tab({ qualifier, modelName, tab: ModelTab.MACHINES }),
         component: Link,
       });
     }

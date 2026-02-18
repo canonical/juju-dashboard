@@ -548,17 +548,20 @@ export const getModelUUIDFromList = createSelector(
     (
       _state: RootState,
       _modelName,
-      ownerName: null | string = null,
-    ): null | string => ownerName,
+      qualifier: null | string = null,
+    ): null | string => qualifier,
   ],
-  (modelList: ModelsList, modelName, ownerName) => {
+  (modelList: ModelsList, modelName, qualifier) => {
     let modelUUID: string = "";
-    if (!modelList || !modelName || !ownerName) {
+    if (!modelList || !modelName || !qualifier) {
       return modelUUID;
     }
-    Object.entries(modelList).some(([_key, { name, ownerTag, uuid }]) => {
-      if (name === modelName && getUserName(ownerTag) === ownerName) {
-        modelUUID = uuid;
+    Object.entries(modelList).some(([_key, model]) => {
+      if (
+        model.name === modelName &&
+        getUserName(model.qualifier) === qualifier
+      ) {
+        modelUUID = model.uuid;
         return true;
       }
       return false;

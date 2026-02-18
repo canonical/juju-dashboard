@@ -12,10 +12,10 @@ type Props = {
 } & PropsWithChildren;
 
 const AppLink = ({ uuid, appName, view, children }: Props): JSX.Element => {
-  const { userName, modelName } = useModelByUUIDDetails({ uuid });
+  const { qualifier, modelName } = useModelByUUIDDetails({ uuid });
 
   // If at least one of the below values is falsy, we can't form a valid Link.
-  if (!userName || !modelName || !appName) {
+  if (!qualifier || !modelName || !appName) {
     return <>{children}</>;
   }
 
@@ -27,8 +27,8 @@ const AppLink = ({ uuid, appName, view, children }: Props): JSX.Element => {
       }}
       to={
         view
-          ? urls.model.app.tab({ userName, modelName, appName, tab: view })
-          : urls.model.app.index({ userName, modelName, appName })
+          ? urls.model.app.tab({ qualifier, modelName, appName, tab: view })
+          : urls.model.app.index({ qualifier, modelName, appName })
       }
     >
       {children}

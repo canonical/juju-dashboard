@@ -146,7 +146,7 @@ const slice = createSlice({
         const { uuid } = model.model;
         modelList[uuid] = {
           name: model.model.name,
-          ownerTag: model.model["owner-tag"],
+          qualifier: model.model["owner-tag"],
           type: model.model.type,
           uuid,
           wsControllerURL: action.payload.wsControllerURL,

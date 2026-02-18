@@ -11,13 +11,14 @@ import { generateRemoteApplicationRows } from "tables/tableRows";
 import { Label } from "./types";
 
 const RemoteAppsTable: FC = () => {
-  const { userName = null, modelName = null } = useParams<EntityDetailsRoute>();
+  const { qualifier = null, modelName = null } =
+    useParams<EntityDetailsRoute>();
   const modelStatusData = useModelStatus();
   const remoteApplicationTableRows = useMemo(() => {
-    return modelName && userName
+    return modelName && qualifier
       ? generateRemoteApplicationRows(modelStatusData)
       : [];
-  }, [modelStatusData, modelName, userName]);
+  }, [modelStatusData, modelName, qualifier]);
 
   return (
     <MainTable

@@ -44,7 +44,7 @@ describe("CodeSnippetBlock", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test-model",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
           }),
         },
       }),
@@ -211,7 +211,7 @@ describe("CodeSnippetBlock", () => {
     expect(screen.getByRole("link", { name: "easyrsa/0:" })).toHaveAttribute(
       "href",
       urls.model.unit({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "easyrsa",
         unitId: "easyrsa-0",
@@ -235,7 +235,7 @@ describe("CodeSnippetBlock", () => {
     expect(screen.getByRole("link", { name: "machine_0:" })).toHaveAttribute(
       "href",
       urls.model.machine({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         machineId: "machine_0",
       }),
@@ -258,7 +258,7 @@ describe("CodeSnippetBlock", () => {
     expect(screen.getByRole("link", { name: "offer_0:" })).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "offer_0",
       }),
@@ -283,7 +283,7 @@ describe("CodeSnippetBlock", () => {
     ).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "application_0",
       }),
@@ -309,7 +309,7 @@ describe("CodeSnippetBlock", () => {
     expect(screen.getByRole("link", { name: '"0/lxd/0"' })).toHaveAttribute(
       "href",
       urls.model.machine({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         machineId: "0/lxd/0",
       }),
@@ -335,7 +335,7 @@ describe("CodeSnippetBlock", () => {
     expect(screen.getByRole("link", { name: '"slurmdbd"' })).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "slurmdbd",
       }),
@@ -362,7 +362,7 @@ describe("CodeSnippetBlock", () => {
     ).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "kubernetes-control-plane",
       }),
@@ -390,7 +390,7 @@ describe("CodeSnippetBlock", () => {
     ).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "appEndpoint_0",
       }),

@@ -29,7 +29,7 @@ describe("ModelSummary", () => {
       },
     });
     renderComponent(
-      <ModelSummary modelData={modelData} ownerTag="user-eggman@external" />,
+      <ModelSummary modelData={modelData} qualifier="user-eggman@external" />,
     );
     expect(screen.getByRole("link", { name: Label.APPS })).toHaveTextContent(
       "1",

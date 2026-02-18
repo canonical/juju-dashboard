@@ -30,7 +30,7 @@ import { Label } from "./types";
 
 describe("ModelTabs", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
   const url = "/models/eggman@external/enterprise";
 
   beforeEach(() => {

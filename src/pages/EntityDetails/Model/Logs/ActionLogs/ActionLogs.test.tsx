@@ -108,7 +108,7 @@ vi.mock("juju/api-hooks/actions", () => {
 
 describe("Action Logs", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
   const url = "/models/eggman@external/group-test?activeView=action-logs";
 
   beforeEach(() => {

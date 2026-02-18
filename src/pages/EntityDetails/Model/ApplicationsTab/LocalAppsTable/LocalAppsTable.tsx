@@ -37,9 +37,9 @@ type Props = {
 
 const LocalAppsTable: FC<Props> = ({ applications }: Props) => {
   const sendAnalytics = useAnalytics();
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const applicationStatuses = useAppSelector((state) =>
     getAllModelApplicationStatus(state, modelUUID),
@@ -66,16 +66,16 @@ const LocalAppsTable: FC<Props> = ({ applications }: Props) => {
   let headers: Header | MainTableCell[] =
     generateLocalApplicationTableHeaders();
   let rows: MainTableRow[] = useMemo(() => {
-    return modelName && userName && applications
+    return modelName && qualifier && applications
       ? generateLocalApplicationRows(
           Object.keys(applications),
           applications,
           applicationStatuses,
-          { modelName, userName },
+          { modelName, qualifier },
           queryParams,
         )
       : [];
-  }, [applications, applicationStatuses, modelName, userName, queryParams]);
+  }, [applications, applicationStatuses, modelName, qualifier, queryParams]);
 
   if (selectable) {
     headers = addSelectAllColumn(headers, selectAll, handleSelectAll);

@@ -38,9 +38,9 @@ const CharmsAndActionsPanel: FC = () => {
   const selectedApplications = useAppSelector(getSelectedApplications);
   const { getState } = useAppStore();
   const dispatch = useDispatch();
-  const { modelName, userName } = useModelIndexParams();
+  const { modelName, qualifier } = useModelIndexParams();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const [inlineErrors, setInlineErrors, hasInlineError] = useInlineErrors({
     [InlineErrors.GET_URL]: (error) => (

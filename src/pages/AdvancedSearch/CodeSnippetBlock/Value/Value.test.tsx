@@ -105,7 +105,7 @@ describe("Value", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test-model",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
           }),
         },
       }),
@@ -123,7 +123,7 @@ describe("Value", () => {
     expect(screen.getByRole("link", { name: '"0"' })).toHaveAttribute(
       "href",
       urls.model.machine({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         machineId: "0",
       }),
@@ -137,7 +137,7 @@ describe("Value", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test-model",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
           }),
         },
       }),
@@ -155,7 +155,7 @@ describe("Value", () => {
     expect(screen.getByRole("link", { name: '"slurmdbd"' })).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "slurmdbd",
       }),
@@ -169,7 +169,7 @@ describe("Value", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test-model",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
           }),
         },
       }),
@@ -187,7 +187,7 @@ describe("Value", () => {
     expect(screen.getByRole("link", { name: '"slurmdbd"' })).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "slurmdbd",
       }),
@@ -201,7 +201,7 @@ describe("Value", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test-model",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
           }),
         },
       }),
@@ -227,7 +227,7 @@ describe("Value", () => {
     ).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "mock-app-key",
       }),

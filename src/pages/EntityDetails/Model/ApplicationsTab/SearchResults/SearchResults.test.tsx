@@ -12,7 +12,7 @@ import SearchResults from "./SearchResults";
 
 describe("SearchResults", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
   const url = "/models/test@external/test-model";
 
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe("SearchResults", () => {
           test123: {
             name: "test-model",
             uuid: "test123",
-            ownerTag: "test@external",
+            qualifier: "test@external",
             type: "iaas",
           },
         },

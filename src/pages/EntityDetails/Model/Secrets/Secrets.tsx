@@ -24,10 +24,10 @@ import SecretsTable from "./SecretsTable";
 import { Label, TestId } from "./types";
 
 const Secrets: FC = () => {
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const wsControllerURL = useAppSelector((state) =>
     getModelByUUID(state, modelUUID),
@@ -43,7 +43,7 @@ const Secrets: FC = () => {
     panel: null,
   });
 
-  const listSecrets = useListSecrets(userName, modelName);
+  const listSecrets = useListSecrets(qualifier, modelName);
 
   useEffect(() => {
     listSecrets();

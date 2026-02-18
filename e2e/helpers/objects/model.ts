@@ -24,14 +24,14 @@ export class Model {
 
   public get url(): string {
     return urls.model.index({
-      userName: this.owner.cliUsername,
+      qualifier: this.owner.cliUsername,
       modelName: this.name,
     });
   }
 
   public tab(tab: ModelTab): string {
     return urls.model.tab({
-      userName: this.owner.cliUsername,
+      qualifier: this.owner.cliUsername,
       modelName: this.name,
       tab,
     });

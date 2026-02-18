@@ -28,7 +28,7 @@ import { Label } from "./types";
 
 describe("ConfirmationDialog", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName/app/:appName";
+  const path = "/models/:qualifier/:modelName/app/:appName";
   const url =
     "/models/eggman@external/test-model/app/kubernetes-master?panel=select-charms-and-actions";
 
@@ -92,7 +92,7 @@ describe("ConfirmationDialog", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test-model",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
           }),
         },
       }),

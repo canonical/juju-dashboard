@@ -74,7 +74,7 @@ const generateCloudAndRegion = (
 const Model: FC = () => {
   const modelStatusData = useModelStatus();
 
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
 
   const [query] = useQueryParams<{
     entity: null | string;
@@ -87,7 +87,7 @@ const Model: FC = () => {
   });
 
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
@@ -105,15 +105,15 @@ const Model: FC = () => {
   const modelAccess = useModelAccess(modelUUID);
 
   const machinesTableRows = useMemo(() => {
-    return modelName && userName
+    return modelName && qualifier
       ? generateMachineRows(
           machines,
           applications,
-          { modelName, userName },
+          { modelName, qualifier },
           query?.entity,
         )
       : [];
-  }, [machines, applications, modelName, userName, query]);
+  }, [machines, applications, modelName, qualifier, query]);
 
   const relationTableRows = useMemo(
     () => generateRelationRows(relations, applications),
@@ -137,11 +137,6 @@ const Model: FC = () => {
   );
   const credential = useAppSelector((state) =>
     getModelCredential(state, modelUUID),
-  );
-  const ownerTag = modelInfoData?.["owner-tag"];
-  const owner = useMemo(
-    () => ownerTag?.replace(/^user-/, "") ?? "",
-    [ownerTag],
   );
   const cloudTag = modelInfoData?.["cloud-tag"];
   const cloud = useMemo(
@@ -173,7 +168,7 @@ const Model: FC = () => {
                 cloud,
                 modelInfoData["cloud-region"],
               ),
-              owner: owner,
+              owner: qualifier,
               credential,
               version: modelStatusInfo.version,
               sla: modelInfoData.sla?.level,

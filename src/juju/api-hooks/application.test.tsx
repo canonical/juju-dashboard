@@ -31,7 +31,7 @@ vi.mock("@canonical/jujulib", () => ({
 
 describe("application", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName/app/:appName";
+  const path = "/models/:qualifier/:modelName/app/:appName";
   const url = "/models/eggman@external/group-test/app/etcd";
 
   beforeEach(() => {

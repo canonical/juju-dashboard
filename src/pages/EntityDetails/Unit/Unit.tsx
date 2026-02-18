@@ -32,7 +32,7 @@ import { Label } from "./types";
 export default function Unit(): JSX.Element {
   const {
     modelName = null,
-    userName = null,
+    qualifier = null,
     unitId = null,
     appName = null,
   } = useParams<EntityDetailsRoute>();
@@ -41,7 +41,7 @@ export default function Unit(): JSX.Element {
   const unitIdentifier = unitId?.replace(/-(\d+)$/, "/$1");
 
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
@@ -60,26 +60,26 @@ export default function Unit(): JSX.Element {
 
   const machineRows = useMemo(
     () =>
-      modelName && userName && unitMachine
+      modelName && qualifier && unitMachine
         ? generateMachineRows({ [unitMachine.id]: unitMachine }, applications, {
             modelName,
-            userName,
+            qualifier,
           })
         : [],
-    [modelName, userName, unitMachine, applications],
+    [modelName, qualifier, unitMachine, applications],
   );
 
   const applicationRows = useMemo(() => {
     const appId = unitIdentifier?.split("/")[0];
-    return modelName && userName
+    return modelName && qualifier
       ? generateLocalApplicationRows(
           appId ? [appId] : [],
           applications,
           applicationStatuses,
-          { modelName, userName },
+          { modelName, qualifier },
         )
       : [];
-  }, [unitIdentifier, modelName, userName, applications, applicationStatuses]);
+  }, [unitIdentifier, modelName, qualifier, applications, applicationStatuses]);
 
   if (!unit) {
     return (
@@ -87,7 +87,7 @@ export default function Unit(): JSX.Element {
         <NotFound message={Label.NOT_FOUND}>
           <>
             <p>
-              Could not find a unit with ID "{unitId}" for the user "{userName}
+              Could not find a unit with ID "{unitId}" for the user "{qualifier}
               ". If this is a model that belongs to another user then check that
               you have been{" "}
               <a href={externalURLs.manageAccess}>granted access</a>.
@@ -95,7 +95,7 @@ export default function Unit(): JSX.Element {
             <p>
               <Link
                 to={urls.model.app.index({
-                  userName: userName ?? "",
+                  qualifier: qualifier ?? "",
                   modelName: modelName ?? "",
                   appName: appName ?? "",
                 })}

@@ -27,7 +27,7 @@ describe("useEntityDetailsParams", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/machine/:machineId"
+          path="/models/:qualifier/:modelName/machine/:machineId"
           store={createStore(rootStateFactory.build())}
         />
       ),
@@ -38,7 +38,7 @@ describe("useEntityDetailsParams", () => {
       machineId: "0",
       modelName: "group-test",
       unitId: null,
-      userName: "eggman@external",
+      qualifier: "eggman@external",
     });
   });
 
@@ -48,7 +48,7 @@ describe("useEntityDetailsParams", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/applications"
+          path="/models/:qualifier/:modelName/applications"
           store={createStore(rootStateFactory.build())}
         />
       ),
@@ -62,7 +62,7 @@ describe("useEntityDetailsParams", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/app/:appName"
+          path="/models/:qualifier/:modelName/app/:appName"
           store={createStore(rootStateFactory.build())}
         />
       ),
@@ -78,13 +78,13 @@ describe("useModelIndexParams", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName"
+          path="/models/:qualifier/:modelName"
           store={createStore(rootStateFactory.build())}
         />
       ),
     });
     expect(result.current).toStrictEqual({
-      userName: "eggman@external",
+      qualifier: "eggman@external",
       modelName: "group-test",
     });
   });
@@ -94,7 +94,7 @@ describe("useModelIndexParams", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/app/:appName"
+          path="/models/:qualifier/:modelName/app/:appName"
           store={createStore(rootStateFactory.build())}
         />
       ),
@@ -110,13 +110,13 @@ describe("useModelAppParams", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/app/:appName"
+          path="/models/:qualifier/:modelName/app/:appName"
           store={createStore(rootStateFactory.build())}
         />
       ),
     });
     expect(result.current).toStrictEqual({
-      userName: "eggman@external",
+      qualifier: "eggman@external",
       modelName: "group-test",
       appName: "etcd",
     });
@@ -127,7 +127,7 @@ describe("useModelAppParams", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName"
+          path="/models/:qualifier/:modelName"
           store={createStore(rootStateFactory.build())}
         />
       ),

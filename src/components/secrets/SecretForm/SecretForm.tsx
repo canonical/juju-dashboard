@@ -70,9 +70,9 @@ const SecretForm: FC<Props> = ({
   secretURI,
   setSaving,
 }: Props) => {
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const scrollArea = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -98,10 +98,10 @@ const SecretForm: FC<Props> = ({
   const contentLoading = useAppSelector((state) =>
     getSecretsContentLoading(state, modelUUID),
   );
-  const listSecrets = useListSecrets(userName, modelName);
-  const createSecrets = useCreateSecrets(userName, modelName);
-  const updateSecrets = useUpdateSecrets(userName, modelName);
-  const getSecretContent = useGetSecretContent(userName, modelName);
+  const listSecrets = useListSecrets(qualifier, modelName);
+  const createSecrets = useCreateSecrets(qualifier, modelName);
+  const updateSecrets = useUpdateSecrets(qualifier, modelName);
+  const getSecretContent = useGetSecretContent(qualifier, modelName);
   const existingPairs = existingContent
     ? Object.entries(existingContent).map(([key, value]) => ({
         key,

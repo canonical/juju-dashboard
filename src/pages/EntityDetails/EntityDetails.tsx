@@ -37,10 +37,10 @@ const getEntityType = (params: Partial<EntityDetailsRoute>): string => {
 
 const EntityDetails: FC = () => {
   const routeParams = useParams<EntityDetailsRoute>();
-  const { userName, modelName } = routeParams;
+  const { qualifier, modelName } = routeParams;
   const modelsLoaded = useAppSelector(getModelListLoaded);
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const modelInfo = useAppSelector((state) => getModelInfo(state, modelUUID));
   const { isNestedEntityPage } = useEntityDetailsParams();
@@ -73,8 +73,7 @@ const EntityDetails: FC = () => {
           <NotFound message={Label.NOT_FOUND}>
             <>
               <p>
-                Could not find a model named "{modelName}" for the user "
-                {userName}
+                Could not find a model named "{modelName}" owned by "{qualifier}
                 ". If this is a model that belongs to another user then check
                 that you have been{" "}
                 <a href={externalURLs.modelAccess}>granted access</a>.

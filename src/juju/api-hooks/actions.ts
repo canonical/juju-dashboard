@@ -19,7 +19,7 @@ export enum Label {
 }
 
 export const useGetActionsForApplication = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((appName: string) => Promise<ApplicationsCharmActionsResults>) => {
   const handler = useCallback(
@@ -33,11 +33,11 @@ export const useGetActionsForApplication = (
     },
     [],
   );
-  return useCallWithConnectionPromise(handler, userName, modelName);
+  return useCallWithConnectionPromise(handler, qualifier, modelName);
 };
 
 export const useExecuteActionOnUnits = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((
   unitList: string[] | undefined,
@@ -68,11 +68,11 @@ export const useExecuteActionOnUnits = (
     },
     [],
   );
-  return useCallWithConnectionPromise(handler, userName, modelName);
+  return useCallWithConnectionPromise(handler, qualifier, modelName);
 };
 
 export const useQueryOperationsList = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((queryArgs: Partial<OperationQueryArgs>) => Promise<OperationResults>) => {
   const handler = useCallback(
@@ -96,11 +96,11 @@ export const useQueryOperationsList = (
     },
     [],
   );
-  return useCallWithConnectionPromise(handler, userName, modelName);
+  return useCallWithConnectionPromise(handler, qualifier, modelName);
 };
 
 export const useQueryActionsList = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((queryArgs: Entities) => Promise<ActionResults>) => {
   const handler = useCallback(
@@ -112,5 +112,5 @@ export const useQueryActionsList = (
     },
     [],
   );
-  return useCallWithConnectionPromise(handler, userName, modelName);
+  return useCallWithConnectionPromise(handler, qualifier, modelName);
 };

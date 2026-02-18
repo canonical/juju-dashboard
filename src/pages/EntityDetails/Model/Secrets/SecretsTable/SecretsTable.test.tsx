@@ -45,7 +45,7 @@ describe("SecretsTable", () => {
   let state: RootState;
   const path = urls.model.index(null);
   const url = urls.model.index({
-    userName: "eggman@external",
+    qualifier: "eggman@external",
     modelName: "test-model",
   });
 
@@ -217,7 +217,7 @@ describe("SecretsTable", () => {
     expect(screen.getByRole("link", { name: "lxd" })).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "lxd",
       }),

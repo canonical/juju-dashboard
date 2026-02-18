@@ -29,7 +29,7 @@ vi.mock("@canonical/jujulib", () => ({
 
 describe("actions", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName/app/:appName";
+  const path = "/models/:qualifier/:modelName/app/:appName";
   const url = "/models/eggman@external/group-test/app/etcd";
 
   beforeEach(() => {
@@ -110,7 +110,7 @@ describe("actions", () => {
           wrapper: (props) => (
             <ComponentProviders
               {...props}
-              path="/models/:userName/:modelName/app/:appName"
+              path="/models/:qualifier/:modelName/app/:appName"
               store={store}
             />
           ),
@@ -176,7 +176,7 @@ describe("actions", () => {
           wrapper: (props) => (
             <ComponentProviders
               {...props}
-              path="/models/:userName/:modelName/app/:appName"
+              path="/models/:qualifier/:modelName/app/:appName"
               store={store}
             />
           ),
@@ -259,7 +259,7 @@ describe("actions", () => {
           wrapper: (props) => (
             <ComponentProviders
               {...props}
-              path="/models/:userName/:modelName/app/:appName"
+              path="/models/:qualifier/:modelName/app/:appName"
               store={store}
             />
           ),
@@ -337,7 +337,7 @@ describe("actions", () => {
           wrapper: (props) => (
             <ComponentProviders
               {...props}
-              path="/models/:userName/:modelName/app/:appName"
+              path="/models/:qualifier/:modelName/app/:appName"
               store={store}
             />
           ),

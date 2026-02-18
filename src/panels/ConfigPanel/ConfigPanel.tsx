@@ -252,7 +252,7 @@ export default function ConfigPanel(): JSX.Element {
     entity: null,
     modelUUID: null,
   };
-  const { modelName, userName } = useModelAppParams();
+  const { modelName, qualifier } = useModelAppParams();
   const [queryParams, , handleRemovePanelQueryParams] =
     usePanelQueryParams<ConfigQueryParams>(defaultQueryParams);
   const { entity: appName, charm, modelUUID } = queryParams;
@@ -261,8 +261,8 @@ export default function ConfigPanel(): JSX.Element {
   const wsControllerURL = useAppSelector((state) =>
     getModelByUUID(state, modelUUID),
   )?.wsControllerURL;
-  const listSecrets = useListSecrets(userName, modelName);
-  const getApplicationConfig = useGetApplicationConfig(userName, modelName);
+  const listSecrets = useListSecrets(qualifier, modelName);
+  const getApplicationConfig = useGetApplicationConfig(qualifier, modelName);
 
   useEffect(() => {
     listSecrets();

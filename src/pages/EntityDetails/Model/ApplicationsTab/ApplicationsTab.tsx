@@ -32,10 +32,10 @@ export default function ApplicationsTab(): JSX.Element {
     activeView: "apps",
     filterQuery: null,
   });
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
   const modelStatusData = useModelStatus();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
@@ -53,7 +53,7 @@ export default function ApplicationsTab(): JSX.Element {
     : 0;
 
   const remoteAppsTableLength =
-    modelName && userName && modelStatusData
+    modelName && qualifier && modelStatusData
       ? Object.keys(modelStatusData["remote-applications"]).length
       : 0;
 

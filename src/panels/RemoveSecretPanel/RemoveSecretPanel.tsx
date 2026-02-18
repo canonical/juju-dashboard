@@ -23,9 +23,9 @@ import Fields from "./Fields";
 import { Label, TestId, type FormFields } from "./types";
 
 const RemoveSecretPanel: FC = () => {
-  const { modelName, userName } = useModelIndexParams();
+  const { modelName, qualifier } = useModelIndexParams();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const scrollArea = useRef<HTMLDivElement>(null);
   const formId = useId();
@@ -46,8 +46,8 @@ const RemoveSecretPanel: FC = () => {
   const [inlineError, setInlineError] = useState<null | string>(null);
   const [saving, setSaving] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const removeSecrets = useRemoveSecrets(userName, modelName);
-  const listSecrets = useListSecrets(userName, modelName);
+  const removeSecrets = useRemoveSecrets(qualifier, modelName);
+  const listSecrets = useListSecrets(qualifier, modelName);
 
   const handleRemoveSecret = useCallback(
     (values: FormFields) => {

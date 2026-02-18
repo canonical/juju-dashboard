@@ -73,7 +73,7 @@ describe("AuditLogsTable", () => {
       state,
       path: urls.model.index(null),
       url: urls.model.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
       }),
     });

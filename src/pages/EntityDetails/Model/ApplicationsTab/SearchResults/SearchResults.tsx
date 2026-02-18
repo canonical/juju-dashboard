@@ -18,9 +18,9 @@ import LocalAppsTable from "../LocalAppsTable";
 
 const SearchResults: FC = () => {
   const dispatch = useDispatch();
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),

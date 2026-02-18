@@ -11,10 +11,10 @@ type Props = {
 } & PropsWithChildren;
 
 const MachineLink = ({ uuid, machineId, children }: Props): JSX.Element => {
-  const { userName, modelName } = useModelByUUIDDetails({ uuid });
+  const { qualifier, modelName } = useModelByUUIDDetails({ uuid });
 
   // If at least one of the bellow values is falsy, we can't form a valid Link.
-  if (!userName || !modelName || !machineId) {
+  if (!qualifier || !modelName || !machineId) {
     return <>{children}</>;
   }
 
@@ -24,7 +24,7 @@ const MachineLink = ({ uuid, machineId, children }: Props): JSX.Element => {
       onClick={(event) => {
         event.stopPropagation();
       }}
-      to={urls.model.machine({ userName, modelName, machineId })}
+      to={urls.model.machine({ qualifier, modelName, machineId })}
     >
       {children}
     </Link>

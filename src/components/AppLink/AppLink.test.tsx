@@ -20,7 +20,7 @@ describe("AppLink", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test-model",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
           }),
         },
       }),
@@ -37,7 +37,7 @@ describe("AppLink", () => {
     expect(screen.queryByRole("link", { name: "abc123" })).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "mockApp",
       }),
@@ -54,7 +54,7 @@ describe("AppLink", () => {
     expect(screen.queryByRole("link", { name: "abc123" })).toHaveAttribute(
       "href",
       urls.model.app.tab({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "mockApp",
         tab: "units",

@@ -18,7 +18,7 @@ import Logs from "./Logs";
 
 describe("Logs", () => {
   const url = "/models/eggman@external/test1";
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
 
   it("can display the action logs tab", async () => {
     renderComponent(<Logs />, {

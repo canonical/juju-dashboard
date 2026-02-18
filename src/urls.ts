@@ -18,36 +18,36 @@ const urls = {
   index: "/",
   controllers: "/controllers",
   model: {
-    index: argPath<{ userName: string; modelName: string }>(
-      "/models/:userName/:modelName",
+    index: argPath<{ qualifier: string; modelName: string }>(
+      "/models/:qualifier/:modelName",
     ),
     tab: argPath<{
-      userName: string;
+      qualifier: string;
       modelName: string;
       tab: ModelTab;
-    }>("/models/:userName/:modelName?activeView=:tab"),
+    }>("/models/:qualifier/:modelName?activeView=:tab"),
     app: {
-      index: argPath<{ userName: string; modelName: string; appName: string }>(
-        "/models/:userName/:modelName/app/:appName",
+      index: argPath<{ qualifier: string; modelName: string; appName: string }>(
+        "/models/:qualifier/:modelName/app/:appName",
       ),
       tab: argPath<{
-        userName: string;
+        qualifier: string;
         modelName: string;
         appName: string;
         tab: AppTab;
-      }>("/models/:userName/:modelName/app/:appName?tableView=:tab"),
+      }>("/models/:qualifier/:modelName/app/:appName?tableView=:tab"),
     },
     machine: argPath<{
-      userName: string;
+      qualifier: string;
       modelName: string;
       machineId: string;
-    }>("/models/:userName/:modelName/machine/:machineId"),
+    }>("/models/:qualifier/:modelName/machine/:machineId"),
     unit: argPath<{
-      userName: string;
+      qualifier: string;
       modelName: string;
       appName: string;
       unitId: string;
-    }>("/models/:userName/:modelName/app/:appName/unit/:unitId"),
+    }>("/models/:qualifier/:modelName/app/:appName/unit/:unitId"),
   },
   models: {
     index: "/models",

@@ -12,10 +12,10 @@ type Props = {
 } & PropsWithChildren;
 
 const UnitLink = ({ uuid, appName, unitId, children }: Props): JSX.Element => {
-  const { userName, modelName } = useModelByUUIDDetails({ uuid });
+  const { qualifier, modelName } = useModelByUUIDDetails({ uuid });
 
   // If at least one of the bellow values is falsy, we can't form a valid Link.
-  if (!userName || !modelName || !appName || !unitId) {
+  if (!qualifier || !modelName || !appName || !unitId) {
     return <>{children}</>;
   }
 
@@ -25,7 +25,7 @@ const UnitLink = ({ uuid, appName, unitId, children }: Props): JSX.Element => {
       onClick={(event) => {
         event.stopPropagation();
       }}
-      to={urls.model.unit({ userName, modelName, appName, unitId })}
+      to={urls.model.unit({ qualifier, modelName, appName, unitId })}
     >
       {children}
     </Link>

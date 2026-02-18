@@ -18,7 +18,7 @@ import { Label, TestId } from "./types";
 
 describe("LocalAppsTable", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
   const url = "/models/test@external/test-model";
   const searchURL = `${url}?filterQuery=db`;
 
@@ -44,7 +44,7 @@ describe("LocalAppsTable", () => {
           test123: {
             name: "test-model",
             uuid: "test123",
-            ownerTag: "test@external",
+            qualifier: "test@external",
             type: "iaas",
             wsControllerURL: "wss://jimm.jujucharms.com/api",
           },

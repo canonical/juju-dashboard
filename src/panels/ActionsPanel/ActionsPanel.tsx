@@ -32,7 +32,7 @@ type ActionsQueryParams = {
 export default function ActionsPanel(): JSX.Element {
   const appStore = useAppStore();
   const appState = appStore.getState();
-  const { appName, modelName, userName } = useModelAppParams();
+  const { appName, modelName, qualifier } = useModelAppParams();
   const modelUUID = useAppSelector((state: RootState) =>
     getModelUUID(state, modelName),
   );
@@ -40,7 +40,7 @@ export default function ActionsPanel(): JSX.Element {
   const [fetchingActionData, setFetchingActionData] = useState(false);
   const [confirmType, setConfirmType] = useState<ConfirmTypes>(null);
   const getActionsForApplication = useGetActionsForApplication(
-    userName,
+    qualifier,
     modelName,
   );
   const [inlineErrors, setInlineErrors, hasInlineError] = useInlineErrors({

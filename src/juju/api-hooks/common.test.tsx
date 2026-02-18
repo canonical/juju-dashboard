@@ -80,7 +80,7 @@ describe("useModelConnectionCallback", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/app/:appName"
+          path="/models/:qualifier/:modelName/app/:appName"
           store={createStore(state)}
         />
       ),
@@ -99,7 +99,7 @@ describe("useModelConnectionCallback", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/app/:appName"
+          path="/models/:qualifier/:modelName/app/:appName"
           store={createStore(rootStateFactory.build())}
         />
       ),
@@ -120,7 +120,7 @@ describe("useModelConnectionCallback", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/app/:appName"
+          path="/models/:qualifier/:modelName/app/:appName"
           store={createStore(state)}
         />
       ),
@@ -146,7 +146,7 @@ describe("useModelConnectionCallback", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/app/:appName"
+          path="/models/:qualifier/:modelName/app/:appName"
           store={createStore(state)}
         />
       ),
@@ -173,7 +173,7 @@ describe("useModelConnectionCallback", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/app/:appName"
+          path="/models/:qualifier/:modelName/app/:appName"
           store={createStore(state)}
         />
       ),
@@ -195,7 +195,7 @@ describe("useModelConnectionCallback", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/app/:appName"
+          path="/models/:qualifier/:modelName/app/:appName"
           store={createStore(state)}
         />
       ),
@@ -226,7 +226,7 @@ describe("useModelConnectionCallback", () => {
       wrapper: (props) => (
         <ComponentProviders
           {...props}
-          path="/models/:userName/:modelName/app/:appName"
+          path="/models/:qualifier/:modelName/app/:appName"
           store={createStore(state)}
         />
       ),
@@ -292,7 +292,7 @@ describe("useCallWithConnectionPromise", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -324,7 +324,7 @@ describe("useCallWithConnectionPromise", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -355,7 +355,7 @@ describe("useCallWithConnectionPromise", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -425,7 +425,7 @@ describe("useCallWithConnection", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -467,7 +467,7 @@ describe("useCallWithConnection", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -509,7 +509,7 @@ describe("useCallWithConnection", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),

@@ -58,7 +58,7 @@ export const controllerInfoFactory = Factory.define<Controller>(() => ({
 
 export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({
   name: "test-model",
-  ownerTag: "user-eggman@external",
+  qualifier: "user-eggman@external",
   type: "iaas",
   // spell-checker:disable-next-line
   uuid: "84e872ff-9171-46be-829b-70f0ffake18d",

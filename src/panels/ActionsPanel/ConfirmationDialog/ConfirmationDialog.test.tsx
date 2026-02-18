@@ -12,7 +12,7 @@ import ConfirmationDialog from "./ConfirmationDialog";
 import { Label } from "./types";
 
 describe("ConfirmationDialog", () => {
-  const path = "/models/:userName/:modelName/app/:appName";
+  const path = "/models/:qualifier/:modelName/app/:appName";
   const url =
     "/models/user-eggman@external/group-test/app/kubernetes-master?panel=execute-action&units=ceph%2F0,ceph%2F1";
 
