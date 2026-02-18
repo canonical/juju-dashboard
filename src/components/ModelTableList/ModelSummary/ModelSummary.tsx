@@ -9,10 +9,10 @@ import { Label } from "./types";
 
 type Props = {
   modelData: ModelData;
-  ownerTag?: string;
+  qualifier?: string;
 };
 
-const ModelSummary: FC<Props> = ({ modelData, ownerTag }: Props) => {
+const ModelSummary: FC<Props> = ({ modelData, qualifier }: Props) => {
   const applicationKeys = Object.keys(modelData.applications);
   const applicationCount = applicationKeys.length;
   const machineCount = Object.keys(modelData.machines).length;
@@ -29,7 +29,7 @@ const ModelSummary: FC<Props> = ({ modelData, ownerTag }: Props) => {
       >
         <ModelDetailsLink
           modelName={modelData.model.name}
-          ownerTag={ownerTag}
+          qualifier={qualifier}
           view={ModelTab.APPS}
           className="p-link--soft"
           aria-label={Label.APPS}
@@ -53,7 +53,7 @@ const ModelSummary: FC<Props> = ({ modelData, ownerTag }: Props) => {
       >
         <ModelDetailsLink
           modelName={modelData.model.name}
-          ownerTag={ownerTag}
+          qualifier={qualifier}
           view={ModelTab.MACHINES}
           className="p-link--soft"
           aria-label={Label.MACHINES}

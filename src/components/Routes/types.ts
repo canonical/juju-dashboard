@@ -1,5 +1,5 @@
 export type EntityDetailsRoute = {
-  userName: string;
+  qualifier: string;
   modelName: string;
   appName: string;
   unitId: string;
@@ -7,15 +7,15 @@ export type EntityDetailsRoute = {
 };
 
 /**
- * Parameters available at `/models/:userName/:modelName` (`urls.model.index`).
+ * Parameters available at `/models/:qualifier/:modelName` (`urls.model.index`).
  */
 export type ModelIndexRoute = {
-  userName: string;
+  qualifier: string;
   modelName: string;
 };
 
 /**
- * Parameters available at `/models/:userName/:modelName/app/:appName` (`urls.model.app.index`).
+ * Parameters available at `/models/:qualifier/:modelName/app/:appName` (`urls.model.app.index`).
  */
 export type ModelAppRoute = {
   appName: string;

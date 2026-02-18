@@ -14,14 +14,14 @@ type BaseProps = {
 
 type NameProps = {
   modelName: string;
-  ownerTag?: null | string;
+  qualifier?: null | string;
   replaceLabel?: never;
   uuid?: never;
 } & BaseProps;
 
 export type UUIDProps = {
   modelName?: never;
-  ownerTag?: never;
+  qualifier?: never;
   replaceLabel?: boolean;
   uuid: string;
 } & BaseProps;
@@ -33,7 +33,7 @@ export type Props = PropsWithSpread<
 
 const ModelDetailsLink: React.FC<Props> = ({
   modelName,
-  ownerTag,
+  qualifier,
   children,
   replaceLabel,
   uuid,
@@ -42,11 +42,11 @@ const ModelDetailsLink: React.FC<Props> = ({
 }: Props) => {
   // This component's props require either uuid or modelName to exist,
   // but this characteristic gets lost when the props are destructured.
-  const { modelName: model, userName: owner } = useModelByUUIDDetails(
+  const { modelName: model, qualifier: owner } = useModelByUUIDDetails(
     uuid
       ? ({ uuid } as UUIDProps)
       : ({
-          ownerTag,
+          qualifier,
           modelName,
         } as NameProps),
   );
@@ -61,15 +61,19 @@ const ModelDetailsLink: React.FC<Props> = ({
   }
   // If the owner isn't the logged in user then we need to use the
   // fully qualified path name.
-  const userName = getUserName(owner);
+  const modelOwner = getUserName(owner);
   const label =
-    replaceLabel && userName && model ? `${userName}/${model}` : children;
+    replaceLabel && modelOwner && model ? `${modelOwner}/${model}` : children;
   return (
     <Link
       to={
         view
-          ? urls.model.tab({ userName, modelName: model, tab: view })
-          : urls.model.index({ userName, modelName: model })
+          ? urls.model.tab({
+              qualifier: modelOwner,
+              modelName: model,
+              tab: view,
+            })
+          : urls.model.index({ qualifier: modelOwner, modelName: model })
       }
       {...props}
     >

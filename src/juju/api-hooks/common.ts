@@ -61,11 +61,11 @@ export const useModelConnectionCallback = (
 
 export const useCallWithConnectionPromise = <R, A extends unknown[]>(
   handler: CallHandler<R, A>,
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((...args: A) => Promise<R>) => {
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const modelConnectionCallback = useModelConnectionCallback(modelUUID);
   return useCallback(
@@ -90,7 +90,7 @@ export const useCallWithConnection = <R, A extends unknown[]>(
   handler: CallHandler<R, A>,
   onSuccess: (response: R) => void,
   onError: (error: string) => void,
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((...args: A) => void) => {
   const callbackHandler = useCallback(
@@ -101,7 +101,7 @@ export const useCallWithConnection = <R, A extends unknown[]>(
   );
   const makeCall = useCallWithConnectionPromise<R, A>(
     callbackHandler,
-    userName,
+    qualifier,
     modelName,
   );
   return useCallback(

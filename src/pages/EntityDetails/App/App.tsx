@@ -48,7 +48,7 @@ type AppFormData = {
 export default function App(): JSX.Element {
   const {
     appName: entity,
-    userName,
+    qualifier,
     modelName,
   } = useParams<EntityDetailsRoute>();
 
@@ -61,7 +61,7 @@ export default function App(): JSX.Element {
   const selectAll = useRef<boolean>(false);
 
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
@@ -88,13 +88,13 @@ export default function App(): JSX.Element {
 
   const machinesPanelRows = useMemo(
     () =>
-      modelName && userName
+      modelName && qualifier
         ? generateMachineRows(filteredMachineList, applications, {
             modelName,
-            userName,
+            qualifier,
           })
         : [],
-    [filteredMachineList, applications, modelName, userName],
+    [filteredMachineList, applications, modelName, qualifier],
   );
 
   const unitTableHeaders = useMemo(() => {
@@ -128,18 +128,18 @@ export default function App(): JSX.Element {
 
   const unitPanelRows = useMemo(
     () =>
-      modelName && userName
+      modelName && qualifier
         ? generateUnitRows(
             applications,
             filteredUnitList,
-            { modelName, userName },
+            { modelName, qualifier },
             canConfigureModel,
             hideMachines,
           )
         : [],
     [
       modelName,
-      userName,
+      qualifier,
       applications,
       filteredUnitList,
       canConfigureModel,
@@ -286,9 +286,9 @@ export default function App(): JSX.Element {
               children: tab,
               key: tab.toLowerCase(),
               to:
-                userName && modelName && entity
+                qualifier && modelName && entity
                   ? urls.model.app.tab({
-                      userName,
+                      qualifier,
                       modelName,
                       appName: entity,
                       tab: tab.toLowerCase() as AppTab,
@@ -331,9 +331,9 @@ export default function App(): JSX.Element {
                   hasIcon={true}
                   {...testId(TestId.SHOW_LOGS)}
                   to={
-                    userName && modelName
+                    qualifier && modelName
                       ? urls.model.tab({
-                          userName,
+                          qualifier,
                           modelName,
                           tab: ModelTab.LOGS,
                         })

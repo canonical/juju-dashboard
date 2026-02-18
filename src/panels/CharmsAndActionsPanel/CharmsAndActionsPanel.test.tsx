@@ -34,7 +34,7 @@ describe("CharmsAndActionsPanel", () => {
   let state: RootState;
   const path = urls.model.index(null);
   const url = urls.model.index({
-    userName: "test@external",
+    qualifier: "test@external",
     modelName: "test-model",
   });
 
@@ -45,7 +45,7 @@ describe("CharmsAndActionsPanel", () => {
       juju: jujuStateFactory.build({
         models: {
           test123: modelListInfoFactory.build({
-            ownerTag: "test@external",
+            qualifier: "test@external",
             name: "test-model",
             uuid: "test123",
           }),

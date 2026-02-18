@@ -25,9 +25,9 @@ const CharmActionsPanelTitle = ({ charmURL }: Props): JSX.Element => {
   const selectedCharm = useAppSelector((state) =>
     getSelectedCharm(state, charmURL),
   );
-  const { userName, modelName } = useParams();
+  const { qualifier, modelName } = useParams();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),

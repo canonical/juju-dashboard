@@ -35,8 +35,8 @@ const ConfirmationDialog = ({
   setInlineErrors,
 }: Props): JSX.Element | null => {
   const { Portal } = usePortal();
-  const { modelName, userName } = useModelAppParams();
-  const executeActionOnUnits = useExecuteActionOnUnits(userName, modelName);
+  const { modelName, qualifier } = useModelAppParams();
+  const executeActionOnUnits = useExecuteActionOnUnits(qualifier, modelName);
 
   if (confirmType === ConfirmType.SUBMIT) {
     const unitNames = selectedUnits.reduce((acc, unitName) => {

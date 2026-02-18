@@ -26,12 +26,12 @@ export enum Label {
 }
 
 export const useListSecrets = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((filter?: SecretsFilter, showSecrets?: boolean) => void) => {
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const onError = useCallback(
@@ -86,18 +86,18 @@ export const useListSecrets = (
     handler,
     onSuccess,
     onError,
-    userName,
+    qualifier,
     modelName,
   );
 };
 
 export const useGetSecretContent = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((secretURI: string, revision?: number) => void) => {
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const wsControllerURL = useAppSelector(getWSControllerURL);
 
@@ -168,13 +168,13 @@ export const useGetSecretContent = (
     handler,
     onSuccess,
     onError,
-    userName,
+    qualifier,
     modelName,
   );
 };
 
 export const useCreateSecrets = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((secrets: CreateSecretArg[]) => Promise<StringResults>) => {
   const handleCreate = useCallback(
@@ -191,11 +191,11 @@ export const useCreateSecrets = (
     },
     [],
   );
-  return useCallWithConnectionPromise(handleCreate, userName, modelName);
+  return useCallWithConnectionPromise(handleCreate, qualifier, modelName);
 };
 
 export const useUpdateSecrets = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((secrets: UpdateUserSecretArg[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
@@ -210,11 +210,11 @@ export const useUpdateSecrets = (
     },
     [],
   );
-  return useCallWithConnectionPromise(handler, userName, modelName);
+  return useCallWithConnectionPromise(handler, qualifier, modelName);
 };
 
 export const useRemoveSecrets = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((secrets: Partial<DeleteSecretArg>[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
@@ -234,11 +234,11 @@ export const useRemoveSecrets = (
     },
     [],
   );
-  return useCallWithConnectionPromise(handler, userName, modelName);
+  return useCallWithConnectionPromise(handler, qualifier, modelName);
 };
 
 export const useGrantSecret = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((secretURI: string, applications: string[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
@@ -262,11 +262,11 @@ export const useGrantSecret = (
     },
     [],
   );
-  return useCallWithConnectionPromise(handler, userName, modelName);
+  return useCallWithConnectionPromise(handler, qualifier, modelName);
 };
 
 export const useRevokeSecret = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((secretURI: string, applications: string[]) => Promise<ErrorResults>) => {
   const handler = useCallback(
@@ -290,5 +290,5 @@ export const useRevokeSecret = (
     },
     [],
   );
-  return useCallWithConnectionPromise(handler, userName, modelName);
+  return useCallWithConnectionPromise(handler, qualifier, modelName);
 };

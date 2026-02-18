@@ -42,7 +42,7 @@ export class Application {
 
   public get url(): string {
     return urls.model.app.index({
-      userName: this.model.owner.dashboardUsername,
+      qualifier: this.model.owner.dashboardUsername,
       modelName: this.model.name,
       appName: this.name,
     });

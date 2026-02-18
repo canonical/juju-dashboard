@@ -50,7 +50,7 @@ export type ModelDataList = Record<string, ModelData>;
 
 export type ModelListInfo = {
   name: string;
-  ownerTag: string;
+  qualifier: string;
   type: string;
   uuid: string;
   wsControllerURL: string;

@@ -100,7 +100,7 @@ describe("reducers", () => {
         abc123: modelListInfoFactory.build({
           uuid: "abc123",
           name: "a model",
-          ownerTag: "user-eggman@external",
+          qualifier: "user-eggman@external",
           type: "model",
           wsControllerURL: "wss://example.com",
         }),
@@ -115,14 +115,14 @@ describe("reducers", () => {
         abc123: modelListInfoFactory.build({
           uuid: "abc123",
           name: "a model",
-          ownerTag: "user-eggman@external",
+          qualifier: "user-eggman@external",
           type: "model",
           wsControllerURL: "wss://example.com",
         }),
         xyz345: modelListInfoFactory.build({
           uuid: "xyz345",
           name: "another model",
-          ownerTag: "user-eggman@external",
+          qualifier: "user-eggman@external",
           type: "model",
           wsControllerURL: "wss://example.com",
         }),
@@ -159,7 +159,7 @@ describe("reducers", () => {
         abc123: modelListInfoFactory.build({
           uuid: "abc123",
           name: "a model",
-          ownerTag: "user-eggman@external",
+          qualifier: "user-eggman@external",
           type: "model",
           wsControllerURL: "wss://example.com",
         }),

@@ -88,7 +88,7 @@ describe("useListSecrets", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -132,7 +132,7 @@ describe("useListSecrets", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -177,7 +177,7 @@ describe("useListSecrets", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -259,7 +259,7 @@ describe("useGetSecretContent", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -316,7 +316,7 @@ describe("useGetSecretContent", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -366,7 +366,7 @@ describe("useGetSecretContent", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -403,7 +403,7 @@ describe("useGetSecretContent", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -448,7 +448,7 @@ describe("useGetSecretContent", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -531,7 +531,7 @@ describe("useCreateSecrets", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -566,7 +566,7 @@ describe("useCreateSecrets", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -643,7 +643,7 @@ describe("useUpdateSecrets", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -680,7 +680,7 @@ describe("useUpdateSecrets", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -753,7 +753,7 @@ describe("useRemoveSecrets", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -786,7 +786,7 @@ describe("useRemoveSecrets", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -854,7 +854,7 @@ describe("useGrantSecret", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -887,7 +887,7 @@ describe("useGrantSecret", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -955,7 +955,7 @@ describe("useRevokeSecret", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),
@@ -988,7 +988,7 @@ describe("useRevokeSecret", () => {
         wrapper: (props) => (
           <ComponentProviders
             {...props}
-            path="/models/:userName/:modelName/app/:appName"
+            path="/models/:qualifier/:modelName/app/:appName"
             store={store}
           />
         ),

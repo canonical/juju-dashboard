@@ -40,7 +40,7 @@ describe("Machine", () => {
   const url = urls.model.machine({
     machineId: "0",
     modelName: "canonical-kubernetes",
-    userName: "eggman@external",
+    qualifier: "eggman@external",
   });
 
   beforeEach(() => {

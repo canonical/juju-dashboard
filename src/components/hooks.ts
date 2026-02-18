@@ -20,13 +20,13 @@ import getUserName from "utils/getUserName";
 
 type NameProps = {
   modelName: string;
-  ownerTag?: null | string;
+  qualifier?: null | string;
   uuid?: never;
 };
 
 type UUIDProps = {
   modelName?: never;
-  ownerTag?: never;
+  qualifier?: never;
   uuid: string;
 };
 
@@ -36,7 +36,7 @@ export const useEntityDetailsParams = (): {
   isNestedEntityPage: boolean;
 } & Nullable<EntityDetailsRoute> => {
   const {
-    userName = null,
+    qualifier = null,
     modelName = null,
     appName = null,
     unitId = null,
@@ -48,7 +48,7 @@ export const useEntityDetailsParams = (): {
     machineId,
     modelName,
     unitId,
-    userName,
+    qualifier,
   };
 };
 
@@ -62,17 +62,19 @@ export const useModelAppParams = (): Partial<ModelAppRoute> => {
 
 export const useModelByUUIDDetails = ({
   uuid,
-  ownerTag,
+  qualifier,
   modelName,
 }: ModelByUUIDDetailsProps): {
   modelName?: null | string;
-  userName: null | string;
+  qualifier: null | string;
 } => {
   const modelDetails = useAppSelector((state) => getModelByUUID(state, uuid));
-  const owner = uuid ? modelDetails?.ownerTag : ownerTag;
+  const owner = uuid ? modelDetails?.qualifier : qualifier;
   const model = uuid ? modelDetails?.name : modelName;
-  const userName = typeof owner === "string" ? getUserName(owner) : null;
-  return { modelName: model, userName };
+  return {
+    modelName: model,
+    qualifier: owner ? getUserName(owner) : null,
+  };
 };
 
 export const useStatusView = (statusView: StatusView): void => {

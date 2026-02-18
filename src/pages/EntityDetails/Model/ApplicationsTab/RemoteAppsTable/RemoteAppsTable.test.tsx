@@ -12,7 +12,7 @@ import { Label } from "./types";
 
 describe("ApplicationsTab", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
   const url = "/models/test@external/test-model";
 
   beforeEach(() => {

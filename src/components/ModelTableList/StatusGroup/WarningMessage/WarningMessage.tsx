@@ -25,11 +25,11 @@ const WarningMessage: FC<Props> = ({ model }: Props) => {
   if (!messages.length) {
     return null;
   }
-  const ownerTag = model?.info?.["owner-tag"] ?? "";
-  const userName = getUserName(ownerTag);
+  const qualifier = model?.info?.["owner-tag"] ?? "";
+  const owner = getUserName(qualifier);
   const modelName = model.model.name;
   const link = (
-    <ModelDetailsLink modelName={modelName} ownerTag={ownerTag}>
+    <ModelDetailsLink modelName={modelName} qualifier={qualifier}>
       {messages[0].message}
     </ModelDetailsLink>
   );
@@ -44,8 +44,13 @@ const WarningMessage: FC<Props> = ({ model }: Props) => {
           <Link
             to={
               unitId
-                ? urls.model.unit({ userName, modelName, appName, unitId })
-                : urls.model.app.index({ userName, modelName, appName })
+                ? urls.model.unit({
+                    qualifier: owner,
+                    modelName,
+                    appName,
+                    unitId,
+                  })
+                : urls.model.app.index({ qualifier: owner, modelName, appName })
             }
           >
             {message.message}

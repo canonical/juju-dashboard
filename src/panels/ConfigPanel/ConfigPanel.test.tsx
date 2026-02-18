@@ -48,7 +48,7 @@ describe("ConfigPanel", () => {
     panel: "config",
   });
   const url = `/models/eggman@external/hadoopspark?${params.toString()}`;
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
   let getApplicationConfig: Mock;
 
   beforeEach(() => {

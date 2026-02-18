@@ -32,9 +32,9 @@ const Fields = ({
   secretURI,
   showConfirm,
 }: Props): JSX.Element => {
-  const { modelName, userName } = useModelIndexParams();
+  const { modelName, qualifier } = useModelIndexParams();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const { values } = useFormikContext<FormFields>();
   const secret = useAppSelector((state) =>

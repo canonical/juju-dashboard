@@ -37,7 +37,7 @@ describe("SecretForm", () => {
   let state: RootState;
   const path = urls.model.index(null);
   const url = urls.model.index({
-    userName: "eggman@external",
+    qualifier: "eggman@external",
     modelName: "test-model",
   });
   const updateURL = `${url}?panel=remove-secret&secret=secret:aabbccdd`;

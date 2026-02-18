@@ -38,16 +38,16 @@ type Props = {
 };
 
 export default function SecretsPicker({ setValue }: Props): JSX.Element {
-  const { modelName, userName } = useModelIndexParams();
+  const { modelName, qualifier } = useModelIndexParams();
   const [saving, setSaving] = useState<boolean>(false);
   const formId = useId();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const secretsErrors = useAppSelector((state) =>
     getSecretsErrors(state, modelUUID),
   );
-  const listSecrets = useListSecrets(userName, modelName);
+  const listSecrets = useListSecrets(qualifier, modelName);
   const secretsLoading = useAppSelector((state) =>
     getSecretsLoading(state, modelUUID),
   );

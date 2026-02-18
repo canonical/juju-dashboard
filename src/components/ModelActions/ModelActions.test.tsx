@@ -43,7 +43,7 @@ describe("ModelActions", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test1",
-            ownerTag: "user-admin@external",
+            qualifier: "user-admin@external",
             wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
         },
@@ -175,7 +175,7 @@ describe("ModelActions", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test1",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
             wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
         },

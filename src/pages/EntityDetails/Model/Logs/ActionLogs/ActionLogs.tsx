@@ -67,17 +67,17 @@ enum InlineErrors {
 function generateAppIcon(
   application: ApplicationData | undefined,
   appName: string,
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ReactNode {
   // If the user has executed actions with an application and then removed
   // that application it'll no longer be in the model data so in this
   // case we need to fail gracefully.
-  if (application && userName && modelName) {
+  if (application && qualifier && modelName) {
     return (
       <>
         <CharmIcon name={appName} charmId={application.charm} />
-        <Link to={urls.model.app.index({ userName, modelName, appName })}>
+        <Link to={urls.model.app.index({ qualifier, modelName, appName })}>
           {appName}
         </Link>
       </>
@@ -102,7 +102,7 @@ const generateApplicationRow = (
   actionData: ActionResult,
   operationData: OperationResult,
   modelStatusData: ModelData | null,
-  userName: string,
+  qualifier: string,
   modelName: string,
 ): null | TableRow => {
   // The action name is being defined like this because the action name is
@@ -128,7 +128,7 @@ const generateApplicationRow = (
     application: generateAppIcon(
       modelStatusData?.applications[appName],
       appName,
-      userName,
+      qualifier,
       modelName,
     ),
     id: `${operationId}/${actionName}`,
@@ -168,12 +168,12 @@ export default function ActionLogs(): JSX.Element {
       </>
     ),
   });
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
   const [selectedOutput, setSelectedOutput] = useState<{
     [key: string]: Output;
   }>({});
-  const queryOperationsList = useQueryOperationsList(userName, modelName);
-  const queryActionsList = useQueryActionsList(userName, modelName);
+  const queryOperationsList = useQueryOperationsList(qualifier, modelName);
+  const queryActionsList = useQueryActionsList(qualifier, modelName);
   const modelUUID = useAppSelector((state) => getModelUUID(state, modelName));
   const modelStatusData = useAppSelector((state) =>
     getModelStatus(state, modelUUID),
@@ -257,7 +257,7 @@ export default function ActionLogs(): JSX.Element {
     );
     const rows: TableRows = [];
     groupedActions.forEach((operationData) => {
-      if (!operationData.actions?.length || !userName || !modelName) {
+      if (!operationData.actions?.length || !qualifier || !modelName) {
         return;
       }
       // Retrieve the application details from the first action:
@@ -265,7 +265,7 @@ export default function ActionLogs(): JSX.Element {
         operationData.actions[0],
         operationData,
         modelStatusData,
-        userName,
+        qualifier,
         modelName,
       );
       if (!applicationRow) {
@@ -410,7 +410,7 @@ export default function ActionLogs(): JSX.Element {
   }, [
     operations,
     modelStatusData,
-    userName,
+    qualifier,
     modelName,
     actions,
     selectedOutput,

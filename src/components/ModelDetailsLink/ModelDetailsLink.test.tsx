@@ -29,7 +29,7 @@ describe("ModelDetailsLink", () => {
       abc123: modelListInfoFactory.build({
         uuid: "abc123",
         name: "test-model",
-        ownerTag: "user-eggman@external",
+        qualifier: "user-eggman@external",
       }),
     };
     renderComponent(
@@ -45,7 +45,7 @@ describe("ModelDetailsLink", () => {
 
   it("can link to a model", () => {
     renderComponent(
-      <ModelDetailsLink modelName="test-model" ownerTag="user-eggman">
+      <ModelDetailsLink modelName="test-model" qualifier="user-eggman">
         Test Model
       </ModelDetailsLink>,
       { state },
@@ -53,7 +53,7 @@ describe("ModelDetailsLink", () => {
     expect(screen.getByRole("link", { name: "Test Model" })).toHaveAttribute(
       "href",
       urls.model.index({
-        userName: "eggman",
+        qualifier: "eggman",
         modelName: "test-model",
       }),
     );
@@ -63,7 +63,7 @@ describe("ModelDetailsLink", () => {
     renderComponent(
       <ModelDetailsLink
         modelName="test-model"
-        ownerTag="user-eggman"
+        qualifier="user-eggman"
         view={ModelTab.APPS}
       >
         Test Model
@@ -73,7 +73,7 @@ describe("ModelDetailsLink", () => {
     expect(screen.getByRole("link", { name: "Test Model" })).toHaveAttribute(
       "href",
       urls.model.tab({
-        userName: "eggman",
+        qualifier: "eggman",
         modelName: "test-model",
         tab: ModelTab.APPS,
       }),

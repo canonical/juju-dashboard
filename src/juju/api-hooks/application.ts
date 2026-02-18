@@ -15,7 +15,7 @@ export enum Label {
 }
 
 export const useGetApplicationConfig = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((appName: string) => Promise<ApplicationGetResults>) => {
   const handler = useCallback(
@@ -30,11 +30,11 @@ export const useGetApplicationConfig = (
     },
     [],
   );
-  return useCallWithConnectionPromise(handler, userName, modelName);
+  return useCallWithConnectionPromise(handler, qualifier, modelName);
 };
 
 export const useSetApplicationConfig = (
-  userName?: null | string,
+  qualifier?: null | string,
   modelName?: null | string,
 ): ((appName: string, config: Config) => Promise<ErrorResults>) => {
   const handler = useCallback(
@@ -66,5 +66,5 @@ export const useSetApplicationConfig = (
     },
     [],
   );
-  return useCallWithConnectionPromise(handler, userName, modelName);
+  return useCallWithConnectionPromise(handler, qualifier, modelName);
 };

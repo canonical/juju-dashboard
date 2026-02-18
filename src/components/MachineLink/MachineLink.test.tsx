@@ -20,7 +20,7 @@ describe("MachineLink", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test-model",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
           }),
         },
       }),
@@ -37,7 +37,7 @@ describe("MachineLink", () => {
     expect(screen.queryByRole("link", { name: "machine0" })).toHaveAttribute(
       "href",
       urls.model.machine({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         machineId: "0",
       }),

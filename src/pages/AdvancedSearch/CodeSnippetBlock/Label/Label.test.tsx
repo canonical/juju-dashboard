@@ -19,7 +19,7 @@ describe("Label", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "test-model",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
           }),
         },
       }),
@@ -40,7 +40,7 @@ describe("Label", () => {
     expect(link).toHaveAttribute(
       "href",
       urls.model.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
       }),
     );
@@ -64,7 +64,7 @@ describe("Label", () => {
     expect(screen.getByRole("link", { name: "easyrsa/0:" })).toHaveAttribute(
       "href",
       urls.model.unit({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "easyrsa",
         unitId: "easyrsa-0",
@@ -89,7 +89,7 @@ describe("Label", () => {
     expect(screen.getByRole("link", { name: "easyrsa/0:" })).toHaveAttribute(
       "href",
       urls.model.unit({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "easyrsa",
         unitId: "easyrsa-0",
@@ -104,7 +104,7 @@ describe("Label", () => {
     expect(screen.getByRole("link", { name: "offer_0:" })).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "offer_0",
       }),
@@ -123,7 +123,7 @@ describe("Label", () => {
     ).toHaveAttribute(
       "href",
       urls.model.app.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         appName: "application_0",
       }),
@@ -137,7 +137,7 @@ describe("Label", () => {
     expect(screen.getByRole("link", { name: "applications:" })).toHaveAttribute(
       "href",
       urls.model.tab({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         tab: getTab("applications"),
       }),
@@ -151,7 +151,7 @@ describe("Label", () => {
     expect(screen.getByRole("link", { name: "machines:" })).toHaveAttribute(
       "href",
       urls.model.tab({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         tab: getTab("machines"),
       }),
@@ -165,7 +165,7 @@ describe("Label", () => {
     expect(screen.getByRole("link", { name: "offers:" })).toHaveAttribute(
       "href",
       urls.model.tab({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         tab: getTab("offers"),
       }),
@@ -179,7 +179,7 @@ describe("Label", () => {
     expect(screen.getByRole("link", { name: "relations:" })).toHaveAttribute(
       "href",
       urls.model.tab({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
         tab: getTab("relations"),
       }),
@@ -193,7 +193,7 @@ describe("Label", () => {
     expect(screen.getByRole("link", { name: "model:" })).toHaveAttribute(
       "href",
       urls.model.index({
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         modelName: "test-model",
       }),
     );

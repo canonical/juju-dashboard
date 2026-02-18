@@ -43,10 +43,10 @@ const ConfirmationDialog = ({
   handleRemovePanelQueryParams,
 }: Props): JSX.Element | null => {
   const { Portal } = usePortal();
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
   const { entity: appName, modelUUID } = queryParams;
-  const grantSecret = useGrantSecret(userName, modelName);
-  const setApplicationConfig = useSetApplicationConfig(userName, modelName);
+  const grantSecret = useGrantSecret(qualifier, modelName);
+  const setApplicationConfig = useSetApplicationConfig(qualifier, modelName);
   const canManageSecrets = useCanManageSecrets();
   const sendAnalytics = useAnalytics();
   const secrets = useAppSelector((state) => getModelSecrets(state, modelUUID));

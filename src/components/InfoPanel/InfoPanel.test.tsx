@@ -24,7 +24,7 @@ vi.mock("components/Topology", () => {
 
 describe("Info Panel", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
   const url = "/models/kirk@external/enterprise";
 
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe("Info Panel", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "enterprise",
-            ownerTag: "user-kirk@external",
+            qualifier: "user-kirk@external",
           }),
         },
         modelData: {

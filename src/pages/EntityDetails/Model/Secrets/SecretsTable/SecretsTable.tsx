@@ -32,9 +32,9 @@ import SecretContent from "../SecretContent";
 import { Label, TestId } from "./types";
 
 const SecretsTable: FC = () => {
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const secrets = useAppSelector((state) => getModelSecrets(state, modelUUID));
   const secretsLoaded = useAppSelector((state) =>

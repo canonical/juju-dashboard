@@ -25,9 +25,9 @@ export const useFetchAuditEvents = (): (() => void) => {
   const hasControllerConnection = useAppSelector((state) =>
     getControllerConnection(state, wsControllerURL),
   );
-  const { modelName, userName } = useParams<EntityDetailsRoute>();
+  const { modelName, qualifier } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const fullModelName = useAppSelector((state) =>
     getFullModelName(state, modelUUID),

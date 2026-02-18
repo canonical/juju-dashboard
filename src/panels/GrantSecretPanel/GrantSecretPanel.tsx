@@ -47,9 +47,9 @@ const handleErrors = (response: ErrorResults): void => {
 };
 
 const GrantSecretPanel: FC = () => {
-  const { modelName, userName } = useModelIndexParams();
+  const { modelName, qualifier } = useModelIndexParams();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
@@ -70,9 +70,9 @@ const GrantSecretPanel: FC = () => {
   );
   const [inlineError, setInlineError] = useState<null | string>(null);
   const [saving, setSaving] = useState(false);
-  const grantSecret = useGrantSecret(userName, modelName);
-  const revokeSecret = useRevokeSecret(userName, modelName);
-  const listSecrets = useListSecrets(userName, modelName);
+  const grantSecret = useGrantSecret(qualifier, modelName);
+  const revokeSecret = useRevokeSecret(qualifier, modelName);
+  const listSecrets = useListSecrets(qualifier, modelName);
   const currentApplications =
     secret?.access?.map((access) =>
       access["target-tag"].replace(/^application-/, ""),

@@ -1688,7 +1688,7 @@ describe("selectors", () => {
               abc123: modelListInfoFactory.build({
                 uuid: "abc123",
                 name: "a model",
-                ownerTag: "user-eggman@external",
+                qualifier: "user-eggman@external",
               }),
             },
           }),

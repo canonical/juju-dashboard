@@ -36,10 +36,10 @@ type Props = {
 };
 
 const SecretContent: FC<Props> = ({ secretURI }: Props) => {
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
   const dispatch = useAppDispatch();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const wsControllerURL = useAppSelector((state) =>
     getModelByUUID(state, modelUUID),
@@ -63,7 +63,7 @@ const SecretContent: FC<Props> = ({ secretURI }: Props) => {
     getSecretsContentLoading(state, modelUUID),
   );
   const { openPortal, closePortal, isOpen, Portal } = usePortal();
-  const getSecretContent = useGetSecretContent(userName, modelName);
+  const getSecretContent = useGetSecretContent(qualifier, modelName);
 
   return (
     <>

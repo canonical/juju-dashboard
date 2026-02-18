@@ -50,7 +50,7 @@ const generateContainer =
 describe("useCanConfigureModel", () => {
   let state: RootState;
   const url = "/models/eggman@external/test1";
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
 
   beforeEach(() => {
     state = rootStateFactory.build({

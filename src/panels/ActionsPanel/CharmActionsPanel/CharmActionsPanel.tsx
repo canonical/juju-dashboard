@@ -37,9 +37,9 @@ export default function CharmActionsPanel({
   const selectedApplications = useAppSelector((state) =>
     getSelectedApplications(state, charmURL),
   );
-  const { userName, modelName } = useParams<EntityDetailsRoute>();
+  const { qualifier, modelName } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),

@@ -102,9 +102,9 @@ const JujuCLI: FC = () => {
   const routeParams = useParams<EntityDetailsRoute>();
   const sendAnalytics = useAnalytics();
   const dispatch = useAppDispatch();
-  const { userName, modelName } = routeParams;
+  const { qualifier, modelName } = routeParams;
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const modelInfo = useAppSelector((state) => getModelInfo(state, modelUUID));
   const isJuju = useAppSelector(getIsJuju);
@@ -131,11 +131,6 @@ const JujuCLI: FC = () => {
     getActiveUserTag(state, primaryControllerData?.[0]),
   );
   const commandHistory = useAppSelector(getCommandHistory);
-  const ownerTag = modelInfo?.["owner-tag"];
-  const owner = useMemo(
-    () => ownerTag?.replace(/^user-/, "") ?? "",
-    [ownerTag],
-  );
 
   function onCommandSent(_command?: string): void {
     sendAnalytics({
@@ -146,7 +141,7 @@ const JujuCLI: FC = () => {
 
   const tableLinks = useMemo<null | TableLinks>(
     () =>
-      modelInfo
+      modelInfo && qualifier
         ? {
             [CLICommand.STATUS]: {
               exact: false,
@@ -154,7 +149,7 @@ const JujuCLI: FC = () => {
                 App: {
                   App: (column): TableLinksLink => ({
                     link: urls.model.app.index({
-                      userName: owner,
+                      qualifier,
                       modelName: modelInfo.name,
                       appName: column.value,
                     }),
@@ -163,7 +158,7 @@ const JujuCLI: FC = () => {
                 Machine: {
                   Machine: (column): TableLinksLink => ({
                     link: urls.model.machine({
-                      userName: owner,
+                      qualifier,
                       modelName: modelInfo.name,
                       machineId: column.value,
                     }),
@@ -178,7 +173,7 @@ const JujuCLI: FC = () => {
                   }),
                   Model: (): TableLinksLink => ({
                     link: urls.model.index({
-                      userName: owner,
+                      qualifier,
                       modelName: modelInfo.name,
                     }),
                   }),
@@ -188,7 +183,7 @@ const JujuCLI: FC = () => {
                     const [appName] = column.value.split("/");
                     return {
                       link: urls.model.unit({
-                        userName: owner,
+                        qualifier,
                         modelName: modelInfo.name,
                         appName,
                         unitId: column.value
@@ -199,7 +194,7 @@ const JujuCLI: FC = () => {
                   },
                   Machine: (column): TableLinksLink => ({
                     link: urls.model.machine({
-                      userName: owner,
+                      qualifier,
                       modelName: modelInfo.name,
                       machineId: column.value,
                     }),
@@ -212,7 +207,7 @@ const JujuCLI: FC = () => {
             },
           }
         : null,
-    [modelInfo, owner],
+    [modelInfo, qualifier],
   );
 
   // Only show CLI on Juju.

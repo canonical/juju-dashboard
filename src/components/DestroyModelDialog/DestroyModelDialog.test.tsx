@@ -206,7 +206,7 @@ describe("DestroyModelDialog", () => {
         state,
         path: urls.model.index(null),
         url: urls.model.index({
-          userName: "user@external",
+          qualifier: "user@external",
           modelName: "test-model",
         }),
       },

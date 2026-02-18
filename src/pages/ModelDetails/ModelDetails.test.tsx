@@ -53,7 +53,7 @@ describe("ModelDetails", () => {
   const path = `${urls.model.index(null)}/*`;
   const url = urls.model.index({
     modelName: "test-model",
-    userName: "eggman@external",
+    qualifier: "eggman@external",
   });
 
   beforeEach(() => {
@@ -102,7 +102,7 @@ describe("ModelDetails", () => {
       state,
       url: urls.model.app.index({
         modelName: "test-model",
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         appName: "ceph",
       }),
     });
@@ -115,7 +115,7 @@ describe("ModelDetails", () => {
       state,
       url: urls.model.unit({
         modelName: "test-model",
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         appName: "ceph",
         unitId: "ceph-0",
       }),
@@ -129,7 +129,7 @@ describe("ModelDetails", () => {
       state,
       url: urls.model.machine({
         modelName: "test-model",
-        userName: "eggman@external",
+        qualifier: "eggman@external",
         machineId: "1",
       }),
     });

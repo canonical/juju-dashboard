@@ -38,7 +38,7 @@ describe("Unit", () => {
     appName: "etcd",
     modelName: "canonical-kubernetes",
     unitId: "etcd-0",
-    userName: "eggman@external",
+    qualifier: "eggman@external",
   });
 
   beforeEach(() => {
@@ -105,7 +105,7 @@ describe("Unit", () => {
         appName: "etcd",
         modelName: "canonical-kubernetes",
         unitId: "0",
-        userName: "eggman@external",
+        qualifier: "eggman@external",
       }),
     });
     expect(
@@ -118,7 +118,7 @@ describe("Unit", () => {
       urls.model.app.index({
         appName: "etcd",
         modelName: "canonical-kubernetes",
-        userName: "eggman@external",
+        qualifier: "eggman@external",
       }),
     );
   });

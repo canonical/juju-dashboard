@@ -37,10 +37,10 @@ describe("JujuCLI", () => {
   let state: RootState;
   const useAnalyticsMock = vi.fn();
   const modelName = "test-model";
-  const userName = "eggman@external";
-  const userTag = `user-${userName}`;
+  const qualifier = "eggman@external";
+  const userTag = `user-${qualifier}`;
   const path = urls.model.index(null);
-  const url = urls.model.index({ userName, modelName });
+  const url = urls.model.index({ qualifier, modelName });
   let server: WS;
 
   beforeEach(() => {
@@ -73,7 +73,7 @@ describe("JujuCLI", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: modelName,
-            ownerTag: userTag,
+            qualifier: userTag,
           }),
         },
         modelData: {
@@ -81,7 +81,7 @@ describe("JujuCLI", () => {
             info: modelInfoFactory.build({
               "controller-uuid": "controller123",
               name: modelName,
-              "owner-tag": `user-${userName}`,
+              "owner-tag": `user-${qualifier}`,
             }),
           }),
         },
@@ -168,7 +168,7 @@ describe("JujuCLI", () => {
       abc123: modelDataFactory.build({
         info: modelInfoFactory.build({
           name: modelName,
-          "owner-tag": `user-${userName}`,
+          "owner-tag": `user-${qualifier}`,
           "agent-version": "3.0.7",
           "controller-uuid": "controller123",
         }),

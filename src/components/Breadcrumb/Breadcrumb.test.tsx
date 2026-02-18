@@ -9,7 +9,7 @@ import { TestId } from "./types";
 describe("Breadcrumb", () => {
   it("displays model actions", () => {
     renderComponent(<Breadcrumb />, {
-      path: "/models/:userName/:modelName",
+      path: "/models/:qualifier/:modelName",
       url: "/models/eggman@external/group-test",
     });
     expect(screen.getByTestId(ModelActionsTestId.MENU)).toBeInTheDocument();
@@ -17,7 +17,7 @@ describe("Breadcrumb", () => {
 
   it("displays correctly on model details", () => {
     renderComponent(<Breadcrumb />, {
-      path: "/models/:userName/:modelName",
+      path: "/models/:qualifier/:modelName",
       url: "/models/eggman@external/group-test",
     });
     expect(screen.queryByTestId(TestId.APPLICATIONS)).not.toBeInTheDocument();
@@ -26,7 +26,7 @@ describe("Breadcrumb", () => {
 
   it("displays correctly on application details", () => {
     renderComponent(<Breadcrumb />, {
-      path: "/models/:userName/:modelName/app/:appName",
+      path: "/models/:qualifier/:modelName/app/:appName",
       url: "/models/eggman@external/group-test/app/easyrsa",
     });
     expect(screen.getByTestId(TestId.ITEMS)).toHaveTextContent(
@@ -43,7 +43,7 @@ describe("Breadcrumb", () => {
 
   it("displays correctly on unit details", () => {
     renderComponent(<Breadcrumb />, {
-      path: "/models/:userName/:modelName/app/:appName/unit/:unitId",
+      path: "/models/:qualifier/:modelName/app/:appName/unit/:unitId",
       url: "/models/eggman@external/group-test/app/logstash/unit/logstash-0",
     });
     expect(screen.getByTestId(TestId.ITEMS)).toHaveTextContent(
@@ -58,7 +58,7 @@ describe("Breadcrumb", () => {
 
   it("displays correctly on machine details", () => {
     renderComponent(<Breadcrumb />, {
-      path: "/models/:userName/:modelName/machine/:machineId",
+      path: "/models/:qualifier/:modelName/machine/:machineId",
       url: "/models/eggman@external/group-test/machine/0",
     });
     expect(screen.getByTestId(TestId.ITEMS)).toHaveTextContent(

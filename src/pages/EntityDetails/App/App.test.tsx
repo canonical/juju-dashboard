@@ -50,7 +50,7 @@ vi.mock("components/utils", async () => {
 
 describe("Entity Details App", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName/app/:appName";
+  const path = "/models/:qualifier/:modelName/app/:appName";
   const url = "/models/eggman@external/canonical-kubernetes/app/etcd";
 
   beforeEach(() => {

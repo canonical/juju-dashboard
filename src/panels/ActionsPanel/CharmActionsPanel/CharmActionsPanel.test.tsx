@@ -36,7 +36,7 @@ vi.mock("juju/api-hooks/actions", () => {
 
 describe("CharmActionsPanel", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName/app/:appName";
+  const path = "/models/:qualifier/:modelName/app/:appName";
   const url =
     "/models/eggman@external/group-test/app/kubernetes-master?panel=select-charms-and-actions";
   const charmURL = "ch:ceph";
@@ -95,7 +95,7 @@ describe("CharmActionsPanel", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "group-test",
-            ownerTag: "user-eggman@external",
+            qualifier: "user-eggman@external",
           }),
         },
         selectedApplications: {

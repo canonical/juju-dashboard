@@ -29,10 +29,10 @@ export default function Machine(): JSX.Element {
   const {
     machineId = null,
     modelName = null,
-    userName = null,
+    qualifier = null,
   } = useParams<EntityDetailsRoute>();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   const applications = useAppSelector((state) =>
     getModelApplications(state, modelUUID),
@@ -53,17 +53,17 @@ export default function Machine(): JSX.Element {
 
   const applicationRows = useMemo(
     () =>
-      modelName && userName
+      modelName && qualifier
         ? generateLocalApplicationRows(
             Object.keys(filteredApplicationList ?? {}),
             applications,
             applicationStatuses,
-            { modelName, userName },
+            { modelName, qualifier },
           )
         : [],
     [
       modelName,
-      userName,
+      qualifier,
       filteredApplicationList,
       applications,
       applicationStatuses,
@@ -72,13 +72,13 @@ export default function Machine(): JSX.Element {
 
   const unitRows = useMemo(
     () =>
-      modelName && userName
+      modelName && qualifier
         ? generateUnitRows(applications, filteredUnitList, {
             modelName,
-            userName,
+            qualifier,
           })
         : [],
-    [applications, filteredUnitList, modelName, userName],
+    [applications, filteredUnitList, modelName, qualifier],
   );
 
   const hardware = parseMachineHardware(machine?.hardware);

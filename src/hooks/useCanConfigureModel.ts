@@ -54,13 +54,13 @@ export const useCanConfigureModelWithUUID = (
 const useCanConfigureModel = (
   cleanup?: boolean,
   modelName?: null | string,
-  userName?: null | string,
+  qualifier?: null | string,
 ): boolean => {
   const params = useParams<EntityDetailsRoute>();
-  userName ||= params.userName;
+  qualifier ||= params.qualifier;
   modelName ||= params.modelName;
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
   return useCanConfigureModelWithUUID(cleanup, modelUUID);
 };

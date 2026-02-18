@@ -30,7 +30,7 @@ vi.mock("components/Topology", () => {
 
 describe("Entity Details Container", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
   const url = "/models/kirk@external/enterprise";
 
   beforeEach(() => {
@@ -67,7 +67,7 @@ describe("Entity Details Container", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             name: "enterprise",
-            ownerTag: "user-kirk@external",
+            qualifier: "user-kirk@external",
           }),
         },
         modelsLoaded: true,
@@ -123,7 +123,7 @@ describe("Entity Details Container", () => {
 
   it("gives the header a class when the header should be a single column", async () => {
     renderComponent(<EntityDetails />, {
-      path: "/models/:userName/:modelName/app/:appName",
+      path: "/models/:qualifier/:modelName/app/:appName",
       url: "/models/eggman@external/group-test/app/etcd",
       state,
     });
@@ -145,7 +145,7 @@ describe("Entity Details Container", () => {
     renderComponent(<EntityDetails />, {
       path: urls.model.app.index(null),
       url: urls.model.app.index({
-        userName: "kirk@external",
+        qualifier: "kirk@external",
         modelName: "enterprise",
         appName: "etcd",
       }),
@@ -158,7 +158,7 @@ describe("Entity Details Container", () => {
     renderComponent(<EntityDetails />, {
       path: urls.model.machine(null),
       url: urls.model.machine({
-        userName: "kirk@external",
+        qualifier: "kirk@external",
         modelName: "enterprise",
         machineId: "1",
       }),
@@ -173,7 +173,7 @@ describe("Entity Details Container", () => {
     renderComponent(<EntityDetails />, {
       path: urls.model.unit(null),
       url: urls.model.unit({
-        userName: "kirk@external",
+        qualifier: "kirk@external",
         modelName: "enterprise",
         appName: "etcd",
         unitId: "etcd-0",

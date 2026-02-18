@@ -13,7 +13,7 @@ import { TestId } from "./types";
 
 export default function Breadcrumb(): JSX.Element {
   const {
-    userName,
+    qualifier,
     modelName,
     appName,
     unitId,
@@ -21,12 +21,12 @@ export default function Breadcrumb(): JSX.Element {
     isNestedEntityPage,
   } = useEntityDetailsParams();
   const modelUUID = useAppSelector((state) =>
-    getModelUUIDFromList(state, modelName, userName),
+    getModelUUIDFromList(state, modelName, qualifier),
   );
 
   const generateBreadcrumbs = function (): ReactNode {
     const view = machineId ? ModelTab.MACHINES : ModelTab.APPS;
-    if (!userName || !modelName) {
+    if (!qualifier || !modelName) {
       return null;
     }
 
@@ -62,7 +62,7 @@ export default function Breadcrumb(): JSX.Element {
             className="p-breadcrumbs__item u-no-padding--top"
             {...testId(TestId.MODEL)}
           >
-            <Link to={urls.model.index({ userName, modelName })}>
+            <Link to={urls.model.index({ qualifier, modelName })}>
               {modelName}
             </Link>
           </li>
@@ -71,7 +71,7 @@ export default function Breadcrumb(): JSX.Element {
               className="p-breadcrumbs__item u-no-padding--top"
               {...testId(TestId.SECTION)}
             >
-              <Link to={urls.model.tab({ userName, modelName, tab: view })}>
+              <Link to={urls.model.tab({ qualifier, modelName, tab: view })}>
                 {entityType.title}
               </Link>
             </li>
@@ -84,7 +84,7 @@ export default function Breadcrumb(): JSX.Element {
               >
                 <Link
                   to={urls.model.tab({
-                    userName,
+                    qualifier,
                     modelName,
                     tab: ModelTab.APPS,
                   })}
@@ -98,7 +98,7 @@ export default function Breadcrumb(): JSX.Element {
               >
                 {appName ? (
                   <Link
-                    to={urls.model.app.index({ userName, modelName, appName })}
+                    to={urls.model.app.index({ qualifier, modelName, appName })}
                   >
                     {appName}
                   </Link>
@@ -122,7 +122,7 @@ export default function Breadcrumb(): JSX.Element {
         title={modelName}
       >
         <Link
-          to={urls.model.index({ userName, modelName })}
+          to={urls.model.index({ qualifier, modelName })}
           className="p-link--soft p-breadcrumbs__model-name"
         >
           <strong>{modelName}</strong>

@@ -57,7 +57,7 @@ describe("Routes", () => {
 
   it("handles model details", async () => {
     const store = createStore(state);
-    changeURL(urls.model.index({ userName: "eggman", modelName: "model1" }));
+    changeURL(urls.model.index({ qualifier: "eggman", modelName: "model1" }));
     render(
       <Provider store={store}>
         <Routes />

@@ -16,7 +16,7 @@ import ApplicationsTab from "./ApplicationsTab";
 
 describe("ApplicationsTab", () => {
   let state: RootState;
-  const path = "/models/:userName/:modelName";
+  const path = "/models/:qualifier/:modelName";
   const url = "/models/test@external/test-model";
 
   beforeEach(() => {
@@ -27,7 +27,7 @@ describe("ApplicationsTab", () => {
           test123: {
             name: "test-model",
             uuid: "test123",
-            ownerTag: "test@external",
+            qualifier: "test@external",
             type: "iaas",
           },
         },
