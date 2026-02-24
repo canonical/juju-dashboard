@@ -1,0 +1,46 @@
+name: Test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+permissions: read-all
+jobs:
+  test:
+    name: Test coverage
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: write
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - name: Install
+        run: yarn install --immutable
+      - run: yarn test --coverage.enabled true
+      - name: "Upload Coverage"
+        uses: actions/upload-artifact@v6
+        with:
+          name: coverage
+          path: coverage
+      - run: |
+          rm -rf coverage
+      - uses: actions/download-artifact@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: coverage
+          path: coverage
+      - run: |
+          ls
+      - name: "Report Coverage"
+        uses: davelosert/vitest-coverage-report-action@v2
