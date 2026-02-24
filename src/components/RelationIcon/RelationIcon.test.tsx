@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV8";
 
 import RelationIcon from "./RelationIcon";
 

@@ -9,7 +9,7 @@ import { Label } from "./types";
 
 type Props = {
   modelData: ModelData;
-  qualifier?: string;
+  qualifier?: null | string;
 };
 
 const ModelSummary: FC<Props> = ({ modelData, qualifier }: Props) => {

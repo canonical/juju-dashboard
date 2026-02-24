@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
-import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
   jujuStateFactory,
   modelDataFactory,

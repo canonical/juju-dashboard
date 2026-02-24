@@ -1,7 +1,7 @@
 import type {
   ApplicationStatus,
   RelationStatus,
-} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+} from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import cloneDeep from "clone-deep";
 import * as d3 from "d3";
 import { useRef, useEffect, memo } from "react";

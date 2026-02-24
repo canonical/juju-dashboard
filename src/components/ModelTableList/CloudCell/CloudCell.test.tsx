@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import { modelDataFactory } from "testing/factories/juju/juju";
 
 import CloudCell from "./CloudCell";

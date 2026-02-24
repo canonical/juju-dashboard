@@ -19,8 +19,8 @@ import type {
 } from "store/juju/types";
 import type { SecretsContent } from "store/juju/types";
 
-import { modelStatusInfoFactory } from "./ClientV7";
-import { modelInfoFactory } from "./ModelManagerV9";
+import { modelStatusInfoFactory } from "./ClientV8";
+import { modelInfoFactory } from "./ModelManagerV11";
 
 function generateUUID(): string {
   // spell-checker:disable-next-line
