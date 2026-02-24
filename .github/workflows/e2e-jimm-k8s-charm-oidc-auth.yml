@@ -55,11 +55,18 @@ jobs:
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action
+      - name: Compute Juju version for test identifier
+        id: juju-version
+        run: |
+          CHANNEL="${{ inputs.juju-channel || steps.config.outputs.juju-channel }}"
+          VERSION=$(echo "$CHANNEL" | cut -d'/' -f1)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - name: Start JIMM
         id: jimm
         uses: ./.github/actions/setup-jimm
         with:
           juju-channel: ${{ inputs.juju-channel || steps.config.outputs.juju-channel }}
+          juju-version: ${{ steps.juju-version.outputs.version }}
       - name: Set up Juju Dashboard k8s charm
         uses: ./.github/actions/setup-k8s-charm
         with:
@@ -68,6 +75,7 @@ jobs:
           controller-model: "${{ steps.jimm.outputs.jimm-controller-name }}:jimm"
           dashboard-ref: ${{ steps.config.outputs.repo-ref }}
           dashboard-resource: ${{ steps.config.outputs.k8s-dashboard-resource }}
+          juju-version: ${{ steps.juju-version.outputs.version }}
       - name: Configure JIMM with dashboard address
         shell: bash
         run: |
@@ -76,19 +84,14 @@ jobs:
           juju config jimm cors-allowed-origins="$DASHBOARD_ADDRESS"
           juju config jimm juju-dashboard-location="$DASHBOARD_ADDRESS"/models
       - name: Wait for JIMM to finish configuring
-        uses: nick-fields/retry@v3
+        uses: ./.github/actions/juju-wait-for
         with:
+          type: unit
+          name: jimm/0
           timeout_minutes: 1
-          max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
-          command: juju wait-for unit jimm/0 --timeout=1m
+          juju-version: ${{ steps.juju-version.outputs.version }}
       - name: Set the CLI admin's password
         run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
-      - name: Compute Juju version for test identifier
-        id: juju-version
-        run: |
-          CHANNEL="${{ inputs.juju-channel || steps.config.outputs.juju-channel }}"
-          VERSION=$(echo "$CHANNEL" | cut -d'/' -f1)
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
         shell: bash
       - name: Run tests
         uses: ./.github/actions/run-playwright

@@ -26,6 +26,9 @@ inputs:
     required: false
     description: The model containing the Juju controller.
     default: controller
+  juju-version:
+    description: The version of Juju.
+    required: true
 
 runs:
   using: "composite"
@@ -65,20 +68,25 @@ runs:
       run: juju deploy ${{ github.workspace }}/charms/machine-charm/juju-dashboard*.charm dashboard
       shell: bash
     - name: Wait for charm to be ready for integration
-      uses: nick-fields/retry@v3
+      uses: ./.github/actions/juju-wait-for
       with:
+        type: application
+        name: dashboard
         timeout_minutes: 1
-        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
-        command: juju wait-for application dashboard --timeout=1m --query='name=="dashboard" && status=="blocked"' # The charm will be blocked when it needs the relation to the controller.
+        status: blocked
+        query: 'name=="dashboard" && status=="blocked"' # The charm will be blocked when it needs the relation to the controller.
+        juju-version: ${{ inputs.juju-version }}
     - name: Integrate charm
       run: juju integrate '${{ inputs.controller-app }}' dashboard
       shell: bash
     - name: Wait for charm to be ready
-      uses: nick-fields/retry@v3
+      uses: ./.github/actions/juju-wait-for
       with:
+        type: application
+        name: dashboard
         timeout_minutes: 1
-        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
-        command: juju wait-for application dashboard --timeout=1m
+        status: active
+        juju-version: ${{ inputs.juju-version }}
     - name: Disable analytics
       run: juju config dashboard analytics-enabled=false
       shell: bash

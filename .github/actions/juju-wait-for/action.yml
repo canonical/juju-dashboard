@@ -1,0 +1,111 @@
+name: Juju Wait For
+description: Wait for a Juju application, unit or model to reach a specific state.
+inputs:
+  type:
+    description: "The type of resource to wait for"
+    required: true
+    type: choice
+    options:
+      - application
+      - unit
+      - model
+  name:
+    description: "The name of the resource to wait for"
+    required: true
+  query:
+    description: "Optional query string for filtering (Juju 3.x only)"
+    required: false
+  timeout_minutes:
+    description: "Timeout duration in minutes"
+    required: false
+    default: "5"
+  status:
+    description: "Expected status for Juju 4.x polling. Comma-separated for multiple statuses."
+    required: false
+    default: "active"
+  juju-version:
+    description: "Juju version to use for determining wait strategy"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Extract major version
+      id: version
+      shell: bash
+      run: |
+        MAJOR=$(echo "${{ inputs.juju-version }}" | cut -d'.' -f1)
+        echo "major=$MAJOR" >> "$GITHUB_OUTPUT"
+        echo "Juju major version: $MAJOR"
+    - name: Wait for Juju resource
+      if: ${{ steps.version.outputs.major < 4 }}
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
+        command: |
+          ARGS=(juju wait-for ${{ inputs.type }} ${{ inputs.name }} --timeout=${{ inputs.timeout_minutes }}m)
+          if [ -n "${{ inputs.query }}" ]; then
+            ARGS+=(--query='${{ inputs.query }}')
+          fi
+          echo "Running: ${ARGS[@]}"
+          "${ARGS[@]}"
+    - name: Wait for Juju resource
+      if: ${{ steps.version.outputs.major >= 4 }}
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        TYPE="${{ inputs.type }}"
+        NAME="${{ inputs.name }}"
+        TIMEOUT_MINUTES="${{ inputs.timeout_minutes }}"
+        EXPECTED_STATUS="${{ inputs.status }}"
+
+        # Convert timeout to seconds for polling
+        TIMEOUT_SECONDS=$(($TIMEOUT_MINUTES * 60))
+        echo "Polling juju status"
+        echo "Waiting for $TYPE: $NAME"
+
+        START_TIME=$(date +%s)
+        while true; do
+          CURRENT_TIME=$(date +%s)
+          ELAPSED=$((CURRENT_TIME - START_TIME))
+          
+          if [ $ELAPSED -ge $TIMEOUT_SECONDS ]; then
+            echo "Timeout waiting for $TYPE $NAME"
+            exit 1
+          fi
+          
+          # Get status - disable exit on error temporarily for this command
+          set +e
+          STATUS=$(juju status "$NAME" --format=json 2>/dev/null | jq -r '.. | .status? // empty' | head -1)
+          STATUS_EXIT_CODE=$?
+          set -e
+          
+          if [ $STATUS_EXIT_CODE -ne 0 ] || [ -z "$STATUS" ]; then
+            echo "Resource not ready yet (elapsed: ${ELAPSED}s)"
+            sleep 5
+            continue
+          fi
+          
+          echo "Current status: $STATUS (elapsed: ${ELAPSED}s)"
+          
+          # Check if status matches any of the expected statuses
+          IFS=',' read -ra STATUS_ARRAY <<< "$EXPECTED_STATUS"
+          for expected in "${STATUS_ARRAY[@]}"; do
+            expected=$(echo "$expected" | xargs) # trim whitespace
+            if [ "$STATUS" == "$expected" ]; then
+              echo "$TYPE $NAME reached status: $STATUS"
+              exit 0
+            fi
+          done
+          
+          # Check for error states
+          if [ "$STATUS" == "error" ]; then
+            echo "ERROR: $TYPE $NAME is in error state"
+            juju status "$NAME" 2>/dev/null || true
+            exit 1
+          fi
+          
+          sleep 5
+        done
