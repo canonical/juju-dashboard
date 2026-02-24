@@ -1,7 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
-import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
-import type { ErrorResult } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
-import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
+import type { ErrorResult } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
   ListSecretResult,
   SecretValueResult,
@@ -13,7 +12,7 @@ import type {
   CrossModelQueryResponse,
   RelationshipTuple,
 } from "juju/jimm/JIMMV4";
-import type { FullStatusWithAnnotations } from "juju/types";
+import type { FullStatusWithAnnotations, ModelInfo } from "juju/types";
 import type { GenericItemsState, GenericState } from "store/types";
 
 export type ControllerLocation = {

@@ -1,5 +1,5 @@
 import type { ConnectionInfo, Transport } from "@canonical/jujulib";
-import type { InitiateMigrationResults } from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
+import type { InitiateMigrationResults } from "@canonical/jujulib/dist/api/facades/controller/ControllerV12";
 import { autoBind } from "@canonical/jujulib/dist/api/utils";
 
 import JIMMV3, { type ControllerInfo } from "./JIMMV3";

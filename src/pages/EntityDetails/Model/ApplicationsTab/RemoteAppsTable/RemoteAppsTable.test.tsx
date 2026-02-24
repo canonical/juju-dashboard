@@ -2,8 +2,8 @@ import { screen, within } from "@testing-library/react";
 
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
-import { remoteApplicationStatusFactory } from "testing/factories/juju/ClientV7";
-import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { remoteApplicationStatusFactory } from "testing/factories/juju/ClientV8";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import { modelDataFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 

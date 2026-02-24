@@ -1,7 +1,7 @@
 import type {
   ApplicationGetResults,
   ErrorResults,
-} from "@canonical/jujulib/dist/api/facades/application/ApplicationV18";
+} from "@canonical/jujulib/dist/api/facades/application/ApplicationV22";
 import { useCallback } from "react";
 
 import { isSet } from "components/utils";

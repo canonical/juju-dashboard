@@ -2,7 +2,7 @@ import type {
   ApplicationStatus,
   MachineStatus,
   UnitStatus,
-} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+} from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 
 const isSubordinateApp = (app: ApplicationStatus): boolean =>
   !!app["subordinate-to"].length;

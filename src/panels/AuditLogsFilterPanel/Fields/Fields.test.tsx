@@ -7,7 +7,7 @@ import { rootStateFactory, jujuStateFactory } from "testing/factories";
 import {
   modelInfoFactory,
   modelUserInfoFactory,
-} from "testing/factories/juju/ModelManagerV9";
+} from "testing/factories/juju/ModelManagerV10";
 import { auditEventFactory } from "testing/factories/juju/jimm";
 import {
   auditEventsStateFactory,

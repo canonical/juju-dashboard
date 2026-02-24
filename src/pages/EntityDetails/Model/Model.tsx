@@ -171,7 +171,6 @@ const Model: FC = () => {
               owner: qualifier,
               credential,
               version: modelStatusInfo.version,
-              sla: modelInfoData.sla?.level,
             }}
           />
         )}

@@ -10,7 +10,7 @@ import {
   generalStateFactory,
   credentialFactory,
 } from "testing/factories/general";
-import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV8";
 import {
   listSecretResultFactory,
   secretAccessInfoFactory,

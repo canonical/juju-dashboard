@@ -1,4 +1,4 @@
-import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import { Button, Icon, Input, RadioInput } from "@canonical/react-components";
 import cloneDeep from "clone-deep";
 import { useFormik } from "formik";
@@ -18,6 +18,7 @@ import {
   getUserDomains,
   getUserDomainsInModel,
 } from "store/juju/selectors";
+import { getModelQualifier } from "store/juju/utils/models";
 import { useAppSelector, usePromiseDispatch } from "store/store";
 import { testId } from "testing/utils";
 import { getUserName } from "utils";
@@ -193,7 +194,9 @@ export default function ShareModel(): JSX.Element {
   }, [users]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isOwner = (user: string): boolean => {
-    const qualifier = modelStatusData?.info?.["owner-tag"] ?? null;
+    const qualifier = modelStatusData?.info
+      ? getModelQualifier(modelStatusData.info)
+      : null;
     return !!qualifier && user === getUserName(qualifier);
   };
 

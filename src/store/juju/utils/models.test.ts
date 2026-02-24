@@ -4,7 +4,9 @@ import {
   detailedStatusFactory,
   modelStatusInfoFactory,
   unitStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
+import { modelInfoFactory as modelManagerV10modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
+import { modelInfoFactory as modelManagerV11modelInfoFactory } from "testing/factories/juju/ModelManagerV11";
 import { modelDataFactory } from "testing/factories/juju/juju";
 
 import {
@@ -12,7 +14,24 @@ import {
   generateIconPath,
   pluralize,
   getModelStatusGroupData,
+  getModelQualifier,
 } from "./models";
+
+describe("getModelQualifier", () => {
+  it("gets the qualifier", () => {
+    const modelInfo = modelManagerV11modelInfoFactory.build({
+      qualifier: "eggman@external",
+    });
+    expect(getModelQualifier(modelInfo)).toBe("eggman@external");
+  });
+
+  it("gets the owner", () => {
+    const modelInfo = modelManagerV10modelInfoFactory.build({
+      "owner-tag": "user-eggman@external",
+    });
+    expect(getModelQualifier(modelInfo)).toBe("eggman@external");
+  });
+});
 
 describe("pluralize", () => {
   it("should correctly handle a single item", () => {

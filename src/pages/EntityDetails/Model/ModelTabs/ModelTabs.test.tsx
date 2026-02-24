@@ -12,7 +12,7 @@ import {
   controllerFeaturesStateFactory,
   authUserInfoFactory,
 } from "testing/factories/general";
-import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import { rebacAllowedFactory } from "testing/factories/juju/jimm";
 import {
   modelDataFactory,

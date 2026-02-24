@@ -8,12 +8,11 @@ import {
   machineStatusFactory,
   modelStatusInfoFactory,
   unitStatusFactory,
-} from "testing/factories/juju/ClientV7";
-import { relationStatusFactory } from "testing/factories/juju/ClientV7";
-import {
-  modelInfoFactory,
-  modelUserInfoFactory,
-} from "testing/factories/juju/ModelManagerV9";
+} from "testing/factories/juju/ClientV8";
+import { relationStatusFactory } from "testing/factories/juju/ClientV8";
+import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV10";
+import { modelInfoFactory as modelManagerV10ModelInfoFactory } from "testing/factories/juju/ModelManagerV10";
+import { modelInfoFactory as modelManagerV11ModelInfoFactory } from "testing/factories/juju/ModelManagerV11";
 import {
   listSecretResultFactory,
   secretRevisionFactory,
@@ -1170,7 +1169,7 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelInfoFactory.build({
+                info: modelManagerV11ModelInfoFactory.build({
                   name: "test-model",
                 }),
               }),
@@ -1182,16 +1181,36 @@ describe("selectors", () => {
     ).toStrictEqual("abc123");
   });
 
-  it("getModelUUID from model and owner names", () => {
+  it("getModelUUID from model and owner names for Juju 3.6", () => {
     expect(
       getModelUUID(
         rootStateFactory.build({
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelInfoFactory.build({
+                info: modelManagerV10ModelInfoFactory.build({
                   name: "test-model",
                   "owner-tag": "user-eggman",
+                }),
+              }),
+            },
+          }),
+        }),
+        "eggman/test-model",
+      ),
+    ).toStrictEqual("abc123");
+  });
+
+  it("getModelUUID from model and owner names for Juju 4.0", () => {
+    expect(
+      getModelUUID(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelData: {
+              abc123: modelDataFactory.build({
+                info: modelManagerV11ModelInfoFactory.build({
+                  name: "test-model",
+                  qualifier: "eggman",
                 }),
               }),
             },
@@ -1209,9 +1228,9 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelInfoFactory.build({
+                info: modelManagerV11ModelInfoFactory.build({
                   name: "test-model",
-                  "owner-tag": "user-admin",
+                  qualifier: "user-admin",
                 }),
               }),
             },
@@ -1302,17 +1321,17 @@ describe("selectors", () => {
   it("getGroupedByCloudAndFilteredModelData", () => {
     const modelData = {
       abc123: modelDataFactory.build({
-        info: modelInfoFactory.build({
+        info: modelManagerV11ModelInfoFactory.build({
           "cloud-tag": "cloud-aws",
         }),
       }),
       def456: modelDataFactory.build({
-        info: modelInfoFactory.build({
+        info: modelManagerV11ModelInfoFactory.build({
           "cloud-tag": "cloud-gce",
         }),
       }),
       ghi789: modelDataFactory.build({
-        info: modelInfoFactory.build({
+        info: modelManagerV11ModelInfoFactory.build({
           "cloud-tag": "cloud-azure",
         }),
       }),
@@ -1333,21 +1352,55 @@ describe("selectors", () => {
     });
   });
 
-  it("getGroupedByOwnerAndFilteredModelData", () => {
+  it("getGroupedByOwnerAndFilteredModelData for Juju 3.6", () => {
     const modelData = {
       abc123: modelDataFactory.build({
-        info: modelInfoFactory.build({
+        info: modelManagerV10ModelInfoFactory.build({
           "owner-tag": "user-eggman",
         }),
       }),
       def456: modelDataFactory.build({
-        info: modelInfoFactory.build({
+        info: modelManagerV10ModelInfoFactory.build({
           "owner-tag": "user-spaceman",
         }),
       }),
       ghi789: modelDataFactory.build({
-        info: modelInfoFactory.build({
+        info: modelManagerV10ModelInfoFactory.build({
           "owner-tag": "user-admin",
+        }),
+      }),
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData,
+      }),
+    });
+    expect(
+      getGroupedByOwnerAndFilteredModelData(state, {
+        cloud: ["aws", "google"],
+      }),
+    ).toStrictEqual({
+      eggman: [modelData.abc123],
+      spaceman: [modelData.def456],
+      admin: [modelData.ghi789],
+    });
+  });
+
+  it("getGroupedByOwnerAndFilteredModelData for Juju 4.0", () => {
+    const modelData = {
+      abc123: modelDataFactory.build({
+        info: modelManagerV11ModelInfoFactory.build({
+          qualifier: "user-eggman",
+        }),
+      }),
+      def456: modelDataFactory.build({
+        info: modelManagerV11ModelInfoFactory.build({
+          qualifier: "user-spaceman",
+        }),
+      }),
+      ghi789: modelDataFactory.build({
+        info: modelManagerV11ModelInfoFactory.build({
+          qualifier: "user-admin",
         }),
       }),
     };
@@ -1866,7 +1919,7 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelInfoFactory.build({
+                info: modelManagerV11ModelInfoFactory.build({
                   users: [
                     modelUserInfoFactory.build({
                       user: "eggman@external",
@@ -1907,7 +1960,7 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelInfoFactory.build({
+                info: modelManagerV11ModelInfoFactory.build({
                   users: [],
                 }),
               }),
@@ -1943,7 +1996,7 @@ describe("selectors", () => {
           juju: jujuStateFactory.build({
             modelData: {
               abc123: modelDataFactory.build({
-                info: modelInfoFactory.build({
+                info: modelManagerV11ModelInfoFactory.build({
                   "cloud-credential-tag": "cloudcred-google_eggman_juju",
                 }),
               }),
@@ -2169,7 +2222,7 @@ describe("selectors", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelInfoFactory.build({
+            info: modelManagerV11ModelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "eggman@external" }),
                 modelUserInfoFactory.build({ user: "spaceman@domain" }),
@@ -2177,7 +2230,7 @@ describe("selectors", () => {
             }),
           }),
           def456: modelDataFactory.build({
-            info: modelInfoFactory.build({
+            info: modelManagerV11ModelInfoFactory.build({
               users: [modelUserInfoFactory.build({ user: "other3" })],
             }),
           }),
@@ -2235,7 +2288,7 @@ describe("selectors", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelInfoFactory.build({
+            info: modelManagerV11ModelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "eggman@external" }),
                 modelUserInfoFactory.build({ user: "spaceman@domain" }),
@@ -2244,7 +2297,7 @@ describe("selectors", () => {
             }),
           }),
           def456: modelDataFactory.build({
-            info: modelInfoFactory.build({
+            info: modelManagerV11ModelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "other@model2" }),
                 modelUserInfoFactory.build({ user: "other2@another-model2" }),
@@ -2268,7 +2321,7 @@ describe("selectors", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelInfoFactory.build({
+            info: modelManagerV11ModelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "eggman@external" }),
                 modelUserInfoFactory.build({ user: "spaceman@domain" }),
@@ -2277,7 +2330,7 @@ describe("selectors", () => {
             }),
           }),
           def456: modelDataFactory.build({
-            info: modelInfoFactory.build({
+            info: modelManagerV11ModelInfoFactory.build({
               users: [modelUserInfoFactory.build({ user: "other@model2" })],
             }),
           }),
@@ -2295,7 +2348,7 @@ describe("selectors", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelInfoFactory.build({
+            info: modelManagerV11ModelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "eggman@external" }),
                 modelUserInfoFactory.build({ user: "spaceman@domain" }),
@@ -2304,7 +2357,7 @@ describe("selectors", () => {
             }),
           }),
           def456: modelDataFactory.build({
-            info: modelInfoFactory.build({
+            info: modelManagerV11ModelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "other@model2" }),
                 modelUserInfoFactory.build({ user: "other2@external" }),
@@ -2326,7 +2379,7 @@ describe("selectors", () => {
       juju: jujuStateFactory.build({
         modelData: {
           abc123: modelDataFactory.build({
-            info: modelInfoFactory.build({
+            info: modelManagerV11ModelInfoFactory.build({
               users: [
                 modelUserInfoFactory.build({ user: "eggman@external" }),
                 modelUserInfoFactory.build({ user: "spaceman@domain" }),
@@ -2336,7 +2389,7 @@ describe("selectors", () => {
             }),
           }),
           def456: modelDataFactory.build({
-            info: modelInfoFactory.build({
+            info: modelManagerV11ModelInfoFactory.build({
               users: [modelUserInfoFactory.build({ user: "other@model2" })],
             }),
           }),
@@ -2384,17 +2437,17 @@ describe("selectors", () => {
     it("filters by credential", () => {
       const modelData = {
         abc123: modelDataFactory.build({
-          info: modelInfoFactory.build({
+          info: modelManagerV11ModelInfoFactory.build({
             "cloud-credential-tag": "cloudcred-google_eggman@external_juju",
           }),
         }),
         def456: modelDataFactory.build({
-          info: modelInfoFactory.build({
+          info: modelManagerV11ModelInfoFactory.build({
             "cloud-credential-tag": "cloudcred-google_spaceman@external_juju",
           }),
         }),
         ghi789: modelDataFactory.build({
-          info: modelInfoFactory.build({
+          info: modelManagerV11ModelInfoFactory.build({
             "cloud-credential-tag": "cloudcred-google_eggman_juju",
           }),
         }),
@@ -2445,21 +2498,52 @@ describe("selectors", () => {
       });
     });
 
-    it("filters by owner", () => {
+    it("filters by owner for Juju 3.6", () => {
       const modelData = {
         abc123: modelDataFactory.build({
-          info: modelInfoFactory.build({
+          info: modelManagerV10ModelInfoFactory.build({
             "owner-tag": "user-eggman@external",
           }),
         }),
         def456: modelDataFactory.build({
-          info: modelInfoFactory.build({
+          info: modelManagerV10ModelInfoFactory.build({
             "owner-tag": "user-spaceman@external",
           }),
         }),
         ghi789: modelDataFactory.build({
-          info: modelInfoFactory.build({
+          info: modelManagerV10ModelInfoFactory.build({
             "owner-tag": "user-eggman",
+          }),
+        }),
+      };
+      const state = rootStateFactory.build({
+        juju: jujuStateFactory.build({
+          modelData,
+        }),
+      });
+      expect(
+        getFilteredModelData(state, { owner: ["eggman", "eggman@external"] }),
+      ).toStrictEqual({
+        abc123: modelData.abc123,
+        ghi789: modelData.ghi789,
+      });
+    });
+
+    it("filters by owner for Juju 4.0", () => {
+      const modelData = {
+        abc123: modelDataFactory.build({
+          info: modelManagerV11ModelInfoFactory.build({
+            qualifier: "user-eggman@external",
+          }),
+        }),
+        def456: modelDataFactory.build({
+          info: modelManagerV11ModelInfoFactory.build({
+            qualifier: "user-spaceman@external",
+          }),
+        }),
+        ghi789: modelDataFactory.build({
+          info: modelManagerV11ModelInfoFactory.build({
+            qualifier: "user-eggman",
           }),
         }),
       };
@@ -2489,7 +2573,7 @@ describe("selectors", () => {
           }),
         }),
         c3: modelDataFactory.build({
-          info: modelInfoFactory.build({
+          info: modelManagerV11ModelInfoFactory.build({
             "cloud-credential-tag": "cloudcred-google_matches_juju",
           }),
         }),
@@ -2499,8 +2583,8 @@ describe("selectors", () => {
           }),
         }),
         e5: modelDataFactory.build({
-          info: modelInfoFactory.build({
-            "owner-tag": "user-matches",
+          info: modelManagerV11ModelInfoFactory.build({
+            qualifier: "user-matches",
           }),
         }),
         f6: modelDataFactory.build({
@@ -2544,7 +2628,7 @@ describe("selectors", () => {
     it("handles kubernetes in model data", () => {
       const modelData = {
         abc123: modelDataFactory.build({
-          info: modelInfoFactory.build({
+          info: modelManagerV11ModelInfoFactory.build({
             "provider-type": "kubernetes",
           }),
         }),

@@ -1,4 +1,4 @@
-import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import type { FC } from "react";
 
 import CharmIcon from "components/CharmIcon/CharmIcon";

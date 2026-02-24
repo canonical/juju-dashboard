@@ -16,11 +16,11 @@ import {
   applicationStatusFactory,
   machineStatusFactory,
   unitStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
 import {
   modelInfoFactory,
   modelUserInfoFactory,
-} from "testing/factories/juju/ModelManagerV9";
+} from "testing/factories/juju/ModelManagerV10";
 import {
   modelListInfoFactory,
   modelDataFactory,

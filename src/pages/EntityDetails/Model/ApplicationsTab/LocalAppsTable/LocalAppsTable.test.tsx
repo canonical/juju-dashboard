@@ -5,11 +5,11 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { generalStateFactory, configFactory } from "testing/factories/general";
-import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV8";
 import {
   modelInfoFactory,
   modelUserInfoFactory,
-} from "testing/factories/juju/ModelManagerV9";
+} from "testing/factories/juju/ModelManagerV10";
 import { modelDataFactory } from "testing/factories/juju/juju";
 import { createStore, renderComponent } from "testing/utils";
 

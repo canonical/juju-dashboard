@@ -10,8 +10,8 @@ import {
   generalStateFactory,
   configFactory,
 } from "testing/factories/general";
-import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
-import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV8";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
   modelDataFactory,
   modelListInfoFactory,

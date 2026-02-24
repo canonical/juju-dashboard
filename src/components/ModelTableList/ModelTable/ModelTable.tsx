@@ -15,6 +15,7 @@ import { getControllerData, getDestructionState } from "store/juju/selectors";
 import type { Controllers, DestroyState, ModelData } from "store/juju/types";
 import {
   extractOwnerName,
+  getModelQualifier,
   getModelStatusGroupData,
 } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
@@ -60,14 +61,14 @@ function generateModelTableList(
   const modelsList: MainTableRow[] = [];
   models.forEach((model) => {
     const { highestStatus } = getModelStatusGroupData(model);
-    const owner = model.info ? extractOwnerName(model.info["owner-tag"]) : null;
+    const qualifier = model.info ? getModelQualifier(model.info) : null;
+    const owner = qualifier ? extractOwnerName(qualifier) : null;
     const region = getRegion(model);
     const cloud = <CloudCell model={model} />;
     const credential = getCredential(model);
     const controller = getControllerName(model, controllers);
     const lastUpdated = getLastUpdated(model);
     const isDying = model.uuid in destructionState;
-
     const columns = [
       {
         ...testId(TestId.COLUMN_NAME),
@@ -84,7 +85,7 @@ function generateModelTableList(
                   <ModelDetailsLink
                     className={classNames({ "u-text--muted": isDying })}
                     modelName={model.model.name}
-                    qualifier={model.info?.["owner-tag"]}
+                    qualifier={qualifier}
                   >
                     {model.model.name}
                   </ModelDetailsLink>
@@ -99,12 +100,7 @@ function generateModelTableList(
       },
       {
         ...testId(TestId.COLUMN_SUMMARY),
-        content: (
-          <ModelSummary
-            modelData={model}
-            qualifier={model.info?.["owner-tag"]}
-          />
-        ),
+        content: <ModelSummary modelData={model} qualifier={qualifier} />,
         className: classNames("u-overflow--visible", {
           "dying-model": isDying,
         }),

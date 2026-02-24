@@ -14,7 +14,7 @@ import {
   applicationStatusFactory,
   machineStatusFactory,
   unitStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
 import {
   modelDataFactory,
   modelListInfoFactory,

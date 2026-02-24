@@ -8,7 +8,7 @@ import type {
   ModelSLAInfo,
   ModelUserInfo,
   Number as ModelNumber,
-} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import { Factory } from "fishery";
 
 export const numberFactory = Factory.define<ModelNumber>(() => ({

@@ -9,7 +9,7 @@ import {
   modelInfoFactory,
   modelInfoResultFactory,
   modelInfoResultsFactory,
-} from "testing/factories/juju/ModelManagerV9";
+} from "testing/factories/juju/ModelManagerV10";
 import {
   controllerFactory,
   jujuStateFactory,
