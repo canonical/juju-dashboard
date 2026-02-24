@@ -4,7 +4,7 @@ import {
   applicationStatusFactory,
   unitStatusFactory,
   machineStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
 import { modelDataFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 

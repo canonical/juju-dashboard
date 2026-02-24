@@ -11,7 +11,7 @@ import {
   applicationsCharmActionsResultsFactory,
 } from "testing/factories/juju/ActionV7";
 import { charmActionSpecFactory } from "testing/factories/juju/Charms";
-import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
   jujuStateFactory,
   modelDataFactory,

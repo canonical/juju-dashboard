@@ -1,7 +1,7 @@
-import type { ModelInfoResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 
+import type { ModelInfoResults } from "juju/types";
 import { actions as jujuActions } from "store/juju";
 import { checkLoggedIn } from "store/middleware/check-auth";
 import type { RootState } from "store/store";

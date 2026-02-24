@@ -16,7 +16,7 @@ import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
-import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
   auditEventFactory,
   relationshipTupleFactory,

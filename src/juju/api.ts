@@ -6,14 +6,11 @@ import Application from "@canonical/jujulib/dist/api/facades/application";
 import Charms from "@canonical/jujulib/dist/api/facades/charms";
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import Client from "@canonical/jujulib/dist/api/facades/client";
-import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
-import type {
-  ModelInfoResults,
-  ErrorResults,
-} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 import Secrets from "@canonical/jujulib/dist/api/facades/secrets";
 import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
@@ -44,6 +41,7 @@ import { logger } from "utils/logger";
 
 import { getModelByUUID } from "../store/juju/selectors";
 
+import type { ModelInfoResults } from "./types";
 import {
   Label,
   type ConnectionWithFacades,
@@ -53,12 +51,7 @@ import {
 
 export const PING_TIME = 20000;
 export const LOGIN_TIMEOUT = 5000;
-// Juju supports a client one major version away from the controller's version,
-// but only when the minor version is `0` so by setting this to exactly `3.0.0`
-// this will allow the dashboard to work with both 2.x.x and 3.x.x controllers.
-// See the API server code for more details:
-// https://github.com/juju/juju/blob/e2c7b4c88e516976666e3d0c9479d0d3c704e643/apiserver/restrict_newer_client.go#L21C1-L29
-export const CLIENT_VERSION = "3.0.0";
+export const CLIENT_VERSION = "4.0.1";
 
 /**
   Return a common connection option config.

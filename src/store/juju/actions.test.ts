@@ -2,7 +2,7 @@ import { charmInfoFactory } from "testing/factories/juju/Charms";
 import {
   applicationStatusFactory,
   fullStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
 import { listSecretResultFactory } from "testing/factories/juju/SecretsV2";
 import {
   auditEventFactory,
@@ -44,7 +44,7 @@ describe("actions", () => {
           model: {
             uuid: "abc123",
             name: "a model",
-            "owner-tag": "user-eggman@external",
+            qualifier: "user-eggman@external",
             type: "model",
           },
           "last-connection": "today",
