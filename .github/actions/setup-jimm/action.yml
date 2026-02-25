@@ -38,7 +38,7 @@ runs:
     - name: Setup operator environment
       uses: charmed-kubernetes/actions-operator@main
       with:
-        channel: 1.32-strict/stable
+        channel: 1.35-strict/stable
         juju-channel: ${{ inputs.juju-channel }}
         provider: microk8s
         microk8s-group: snap_microk8s
@@ -51,13 +51,20 @@ runs:
       shell: bash
       run: |
         sudo snap install yq jaas
+        sudo snap install terraform --classic
     - name: Setup Go
       uses: actions/setup-go@v6
+    - name: Checkout IAM repo
+      uses: actions/checkout@v6
+      with:
+        repository: canonical/iam-bundle-integration
+        path: iam-bundle-integration
     - name: Set up IAM
       shell: bash
       run: |
-        juju add-model iam
-        juju deploy identity-platform --trust --channel latest/edge
+        cd iam-bundle-integration
+        terraform -chdir=examples/tutorial init
+        terraform -chdir=examples/tutorial apply -auto-approve
     - name: Wait for IAM
       uses: nick-fields/retry@v3
       with:
@@ -67,14 +74,11 @@ runs:
           # Wait for everything to be ready except kratos-external-idp-integrator
           # which will remain as blocked as we're not using an external identity provider.
           juju wait-for model iam --timeout=1m --query='forEach(applications, app => (app.name == "kratos-external-idp-integrator" && app.status=="blocked") || (app.name != "kratos-external-idp-integrator" && app.status=="active"))'
-    - name: Create IAM offers for cross-model relations
-      shell: bash
-      run: |
-        juju offer hydra:oauth
-        juju offer self-signed-certificates:send-ca-cert
     - name: Turn off MFA
       shell: bash
-      run: juju config kratos enforce_mfa=False
+      run: |
+        juju switch iam
+        juju config kratos enforce_mfa=False
     - name: Wait for Kratos
       uses: nick-fields/retry@v3
       with:
@@ -136,8 +140,8 @@ runs:
     - name: Add JIMM relations and certs
       shell: bash
       run: |
-        juju relate jimm admin/iam.hydra
-        juju relate jimm admin/iam.self-signed-certificates
+        juju relate jimm admin/iam.oauth-offer
+        juju relate jimm admin/core.send-ca-cert
         juju deploy self-signed-certificates jimm-cert
         juju relate ingress:certificates jimm-cert:certificates
     - name: Configure JIMM

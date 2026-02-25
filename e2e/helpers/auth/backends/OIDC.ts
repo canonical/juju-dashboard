@@ -134,13 +134,9 @@ export class CreateOIDCUser implements Action<OIDCUser> {
     await jujuCLI.loginLocalCLIAdmin();
     await exec(`juju switch iam`);
     // Create the identity in Kratos.
-    const userOutput =
-      await exec(`curl $(juju show-unit kratos/0 | yq '.kratos/0.address'):4434/admin/identities --request POST -sL --header "Content-Type: application/json" --data '{
-      "schema_id": "admin_v0",
-      "traits": {
-        "email": "${this.username}@example.com"
-      }
-    }' | yq .id`);
+    const userOutput = await exec(
+      `juju run --wait=2m --format=json kratos/0 create-admin-account email='${this.username}@example.com' password='${this.password}' username='${this.username}' | yq .kratos/0.results.identity-id`,
+    );
     const secretOutput = await exec(
       `juju add-secret password-secret-${this.username} password=${this.password}`,
     );

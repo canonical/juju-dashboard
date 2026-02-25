@@ -46,6 +46,11 @@ on:
 
 permissions: read-all
 
+# Ensure only one e22 job runs at a time.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   juju-machine-local:
     name: Test Juju, machine-charm and local-auth
