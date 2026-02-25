@@ -4,7 +4,7 @@ import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import {
   applicationStatusFactory,
   relationStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
 
 import Topology from "./Topology";
 

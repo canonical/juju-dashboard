@@ -2,8 +2,8 @@ import { charmInfoFactory } from "testing/factories/juju/Charms";
 import {
   applicationStatusFactory,
   fullStatusFactory,
-} from "testing/factories/juju/ClientV7";
-import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+} from "testing/factories/juju/ClientV8";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import { listSecretResultFactory } from "testing/factories/juju/SecretsV2";
 import {
   auditEventFactory,
@@ -72,7 +72,7 @@ describe("reducers", () => {
     );
   });
 
-  it("updateModelList adds list of models to empty state", () => {
+  it("updateModelList adds list of models to empty state for Juju 3.6 models", () => {
     const state = jujuStateFactory.build({ modelsLoaded: false });
     expect(
       reducer(
@@ -100,7 +100,44 @@ describe("reducers", () => {
         abc123: modelListInfoFactory.build({
           uuid: "abc123",
           name: "a model",
-          qualifier: "user-eggman@external",
+          qualifier: "eggman@external",
+          type: "model",
+          wsControllerURL: "wss://example.com",
+        }),
+      },
+      modelsLoaded: true,
+    });
+  });
+
+  it("updateModelList adds list of models to empty state for Juju 4.0 models", () => {
+    const state = jujuStateFactory.build({ modelsLoaded: false });
+    expect(
+      reducer(
+        state,
+        actions.updateModelList({
+          models: {
+            "user-models": [
+              {
+                model: {
+                  uuid: "abc123",
+                  name: "a model",
+                  qualifier: "eggman@external",
+                  type: "model",
+                },
+                "last-connection": "today",
+              },
+            ],
+          },
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      models: {
+        abc123: modelListInfoFactory.build({
+          uuid: "abc123",
+          name: "a model",
+          qualifier: "eggman@external",
           type: "model",
           wsControllerURL: "wss://example.com",
         }),
@@ -159,7 +196,7 @@ describe("reducers", () => {
         abc123: modelListInfoFactory.build({
           uuid: "abc123",
           name: "a model",
-          qualifier: "user-eggman@external",
+          qualifier: "eggman@external",
           type: "model",
           wsControllerURL: "wss://example.com",
         }),

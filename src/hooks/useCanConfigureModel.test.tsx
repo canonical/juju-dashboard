@@ -18,7 +18,7 @@ import {
 import {
   modelInfoFactory,
   modelUserInfoFactory,
-} from "testing/factories/juju/ModelManagerV9";
+} from "testing/factories/juju/ModelManagerV10";
 import { rebacAllowedFactory } from "testing/factories/juju/jimm";
 import {
   jujuStateFactory,

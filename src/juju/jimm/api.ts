@@ -1,4 +1,4 @@
-import type { InitiateMigrationResults } from "@canonical/jujulib/dist/api/facades/controller/ControllerV9";
+import type { InitiateMigrationResults } from "@canonical/jujulib/dist/api/facades/controller/ControllerV12";
 
 import type { ConnectionWithFacades, Facades } from "juju/types";
 

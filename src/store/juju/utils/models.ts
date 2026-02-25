@@ -1,6 +1,7 @@
-import type { EndpointStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
-import type { ModelUserInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { EndpointStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
+import type { ModelUserInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 
+import type { ModelInfo, UserModelList } from "juju/types";
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import { getUserName } from "utils";
 
@@ -192,6 +193,19 @@ export const getMachineStatusGroup = (
     response.status = Status.ALERT;
   }
   return response;
+};
+
+/**
+  Gets the qualifier or model owner from the model info.
+  @param modelInfo The model info object.
+  @returns The qualifier for the model.
+*/
+export const getModelQualifier = (
+  modelInfo: ModelInfo | UserModelList["user-models"][0]["model"],
+): string => {
+  return "owner-tag" in modelInfo
+    ? modelInfo["owner-tag"].replace(/^user-/, "")
+    : modelInfo.qualifier;
 };
 
 /**

@@ -1,4 +1,4 @@
-import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import Fuse from "fuse.js";
 import type { FC } from "react";
 import { useState, useEffect, useMemo } from "react";

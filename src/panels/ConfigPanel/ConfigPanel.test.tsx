@@ -13,11 +13,11 @@ import {
 import {
   applicationGetFactory,
   configFactory,
-} from "testing/factories/juju/Application";
+} from "testing/factories/juju/Application22";
 import {
   modelInfoFactory,
   modelUserInfoFactory,
-} from "testing/factories/juju/ModelManagerV9";
+} from "testing/factories/juju/ModelManagerV10";
 import {
   listSecretResultFactory,
   secretAccessInfoFactory,

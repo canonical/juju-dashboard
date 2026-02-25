@@ -7,7 +7,9 @@ import {
   applicationStatusFactory,
   detailedStatusFactory,
   unitStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
+import { modelInfoFactory as modelManagerV10ModelInfoFactory } from "testing/factories/juju/ModelManagerV10";
+import { modelInfoFactory as modelManagerV11ModelInfoFactory } from "testing/factories/juju/ModelManagerV11";
 import { modelDataFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -33,7 +35,7 @@ describe("WarningMessage", () => {
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
-  it("should display links to blocked apps and units", async () => {
+  it("should display links to blocked apps and units for Juju 3.6", async () => {
     const model = modelDataFactory.build({
       applications: {
         calico: applicationStatusFactory.build({
@@ -53,6 +55,54 @@ describe("WarningMessage", () => {
           },
         }),
       },
+      info: modelManagerV10ModelInfoFactory.build(),
+    });
+    renderComponent(<WarningMessage model={model} />);
+    const error = screen.getByRole("link", { name: "app blocked" });
+    expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
+    await act(async () => {
+      await userEventWithTimers.hover(error);
+      vi.runAllTimers();
+    });
+    const [tooltip] = screen.getAllByRole("tooltip");
+    expect(error).toHaveAttribute("href", "/models/eggman@external/sub-test");
+    const appError = within(tooltip).getByRole("link", {
+      name: "app blocked",
+    });
+    expect(appError).toHaveAttribute(
+      "href",
+      "/models/eggman@external/sub-test/app/calico",
+    );
+    const unitError = within(tooltip).getByRole("link", {
+      name: "unit blocked",
+    });
+    expect(unitError).toHaveAttribute(
+      "href",
+      "/models/eggman@external/sub-test/app/etcd/unit/etcd-0",
+    );
+  });
+
+  it("should display links to blocked apps and units for Juju 4.0", async () => {
+    const model = modelDataFactory.build({
+      applications: {
+        calico: applicationStatusFactory.build({
+          status: detailedStatusFactory.build({
+            info: "app blocked",
+            status: "blocked",
+          }),
+        }),
+        etcd: applicationStatusFactory.build({
+          units: {
+            "etcd/0": unitStatusFactory.build({
+              "agent-status": detailedStatusFactory.build({
+                info: "unit blocked",
+                status: "lost",
+              }),
+            }),
+          },
+        }),
+      },
+      info: modelManagerV11ModelInfoFactory.build(),
     });
     renderComponent(<WarningMessage model={model} />);
     const error = screen.getByRole("link", { name: "app blocked" });

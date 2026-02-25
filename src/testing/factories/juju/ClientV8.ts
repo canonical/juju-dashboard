@@ -9,7 +9,7 @@ import type {
   Base,
   ApplicationStatus,
   UnitStatus,
-} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+} from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import { Factory } from "fishery";
 
 export const detailedStatusFactory = Factory.define<DetailedStatus>(() => ({

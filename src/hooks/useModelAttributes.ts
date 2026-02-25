@@ -3,6 +3,7 @@ import {
   extractCloudName,
   extractOwnerName,
   extractCredentialName,
+  getModelQualifier,
 } from "store/juju/utils/models";
 
 export default function useModelAttributes(modelData: ModelDataList | null): {
@@ -36,7 +37,7 @@ export default function useModelAttributes(modelData: ModelDataList | null): {
       }
 
       // Extract owner filters
-      const ownerFilter = extractOwnerName(model.info["owner-tag"]);
+      const ownerFilter = extractOwnerName(getModelQualifier(model.info));
       if (!owners.includes(ownerFilter)) {
         owners.push(ownerFilter);
       }

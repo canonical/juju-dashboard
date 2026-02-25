@@ -15,7 +15,7 @@ import {
 import {
   applicationGetFactory,
   errorResultsFactory,
-} from "testing/factories/juju/Application";
+} from "testing/factories/juju/Application22";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { ComponentProviders, changeURL, createStore } from "testing/utils";
 

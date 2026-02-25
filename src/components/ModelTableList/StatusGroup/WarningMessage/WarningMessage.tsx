@@ -5,9 +5,11 @@ import { Link } from "react-router";
 
 import ModelDetailsLink from "components/ModelDetailsLink";
 import type { ModelData } from "store/juju/types";
-import { getModelStatusGroupData } from "store/juju/utils/models";
+import {
+  getModelQualifier,
+  getModelStatusGroupData,
+} from "store/juju/utils/models";
 import urls from "urls";
-import { getUserName } from "utils";
 
 type Props = {
   /**
@@ -25,8 +27,7 @@ const WarningMessage: FC<Props> = ({ model }: Props) => {
   if (!messages.length) {
     return null;
   }
-  const qualifier = model?.info?.["owner-tag"] ?? "";
-  const owner = getUserName(qualifier);
+  const qualifier = model.info ? getModelQualifier(model.info) : null;
   const modelName = model.model.name;
   const link = (
     <ModelDetailsLink modelName={modelName} qualifier={qualifier}>
@@ -38,25 +39,25 @@ const WarningMessage: FC<Props> = ({ model }: Props) => {
     const { appName } = message;
     return {
       className: "u-truncate",
-      content: (
+      content: qualifier ? (
         <>
           {unitId || appName}:{" "}
           <Link
             to={
               unitId
                 ? urls.model.unit({
-                    qualifier: owner,
+                    qualifier,
                     modelName,
                     appName,
                     unitId,
                   })
-                : urls.model.app.index({ qualifier: owner, modelName, appName })
+                : urls.model.app.index({ qualifier, modelName, appName })
             }
           >
             {message.message}
           </Link>
         </>
-      ),
+      ) : null,
     };
   });
   const remainder = messages.slice(5);

@@ -1,7 +1,7 @@
 import type {
   ApplicationStatus,
   MachineStatus,
-} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+} from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 
 import type { Chip } from "components/ChipGroup";
 import type { ModelData } from "store/juju/types";

@@ -9,8 +9,8 @@ import {
   applicationStatusFactory,
   detailedStatusFactory,
   modelStatusInfoFactory,
-} from "testing/factories/juju/ClientV7";
-import { modelInfoFactory } from "testing/factories/juju/ModelManagerV9";
+} from "testing/factories/juju/ClientV8";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
   jujuStateFactory,
   modelDataFactory,
