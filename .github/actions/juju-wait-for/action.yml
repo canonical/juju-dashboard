@@ -78,12 +78,28 @@ runs:
           
           # Get status - disable exit on error temporarily for this command
           set +e
-          STATUS=$(juju status "$NAME" --format=json 2>/dev/null | jq -r '.. | .status? // empty' | head -1)
+          STATUS_OUTPUT=$(juju status --format=json 2>&1)
           STATUS_EXIT_CODE=$?
           set -e
           
-          if [ $STATUS_EXIT_CODE -ne 0 ] || [ -z "$STATUS" ]; then
-            echo "Resource not ready yet (elapsed: ${ELAPSED}s)"
+          if [ $STATUS_EXIT_CODE -ne 0 ]; then
+            echo "juju status command failed (elapsed: ${ELAPSED}s)"
+            echo "Output: $STATUS_OUTPUT"
+            sleep 5
+            continue
+          fi
+          
+          # Extract status based on resource type
+          if [ "$TYPE" == "application" ]; then
+            STATUS=$(echo "$STATUS_OUTPUT" | jq -r ".applications.\"$NAME\".\"application-status\".current // empty")
+          elif [ "$TYPE" == "unit" ]; then
+            STATUS=$(echo "$STATUS_OUTPUT" | jq -r ".applications.\"${NAME%%/*}\".units.\"$NAME\".\"workload-status\".current // empty")
+          elif [ "$TYPE" == "model" ]; then
+            STATUS=$(echo "$STATUS_OUTPUT" | jq -r ".model.\"model-status\".current // empty")
+          fi
+          
+          if [ -z "$STATUS" ]; then
+            echo "No status found for $TYPE $NAME (elapsed: ${ELAPSED}s)"
             sleep 5
             continue
           fi
