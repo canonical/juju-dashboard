@@ -12,15 +12,12 @@ inputs:
   name:
     description: "The name of the resource to wait for"
     required: true
-  query:
-    description: "Optional query string for filtering (Juju 3.x only)"
-    required: false
   timeout_minutes:
     description: "Timeout duration in minutes"
     required: false
     default: "5"
   status:
-    description: "Expected status for Juju 4.x polling. Comma-separated for multiple statuses."
+    description: "Expected status for polling. Comma-separated for multiple statuses."
     required: false
     default: "active"
 
@@ -32,10 +29,10 @@ runs:
       run: |
         set -euo pipefail
 
-        TYPE="${{ inputs.type }}"
-        NAME="${{ inputs.name }}"
-        TIMEOUT_MINUTES="${{ inputs.timeout_minutes }}"
-        EXPECTED_STATUS="${{ inputs.status }}"
+        TYPE='${{ inputs.type }}'
+        NAME='${{ inputs.name }}'
+        TIMEOUT_MINUTES='${{ inputs.timeout_minutes }}'
+        EXPECTED_STATUS='${{ inputs.status }}'
 
         # Convert timeout to seconds for polling
         TIMEOUT_SECONDS=$(($TIMEOUT_MINUTES * 60))

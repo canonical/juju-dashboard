@@ -55,12 +55,6 @@ jobs:
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action
-      - name: Compute Juju version for test identifier
-        id: juju-version
-        run: |
-          CHANNEL="${{ inputs.juju-channel || steps.config.outputs.juju-channel }}"
-          VERSION=$(echo "$CHANNEL" | cut -d'/' -f1)
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - name: Start JIMM
         id: jimm
         uses: ./.github/actions/setup-jimm
@@ -89,6 +83,12 @@ jobs:
           timeout_minutes: 1
       - name: Set the CLI admin's password
         run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
+      - name: Compute Juju version for test identifier
+        id: juju-version
+        run: |
+          CHANNEL="${{ inputs.juju-channel || steps.config.outputs.juju-channel }}"
+          VERSION=$(echo "$CHANNEL" | cut -d'/' -f1)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
         shell: bash
       - name: Run tests
         uses: ./.github/actions/run-playwright

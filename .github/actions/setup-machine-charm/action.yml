@@ -71,7 +71,6 @@ runs:
         name: dashboard
         timeout_minutes: 1
         status: blocked
-        query: 'name=="dashboard" && status=="blocked"' # The charm will be blocked when it needs the relation to the controller.
     - name: Integrate charm
       run: juju integrate '${{ inputs.controller-app }}' dashboard
       shell: bash
