@@ -12,15 +12,12 @@ inputs:
   name:
     description: "The name of the resource to wait for"
     required: true
-  query:
-    description: "Optional query string for filtering (Juju 3.x only)"
-    required: false
   timeout_minutes:
     description: "Timeout duration in minutes"
     required: false
     default: "5"
   status:
-    description: "Expected status for Juju 4.x polling. Comma-separated for multiple statuses."
+    description: "Expected status for polling. Comma-separated for multiple statuses."
     required: false
     default: "active"
 

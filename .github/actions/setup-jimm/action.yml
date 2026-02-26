@@ -64,7 +64,6 @@ runs:
         type: model
         name: iam
         timeout_minutes: 1
-        query: 'forEach(applications, app => (app.name == "kratos-external-idp-integrator" && app.status=="blocked") || (app.name != "kratos-external-idp-integrator" && app.status=="active"))'
     - name: Create IAM offers for cross-model relations
       shell: bash
       run: |
