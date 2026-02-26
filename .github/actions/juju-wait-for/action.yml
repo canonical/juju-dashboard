@@ -1,0 +1,100 @@
+name: Juju Wait For
+description: Wait for a Juju application, unit or model to reach a specific state.
+inputs:
+  type:
+    description: "The type of resource to wait for"
+    required: true
+    type: choice
+    options:
+      - application
+      - unit
+      - model
+  name:
+    description: "The name of the resource to wait for"
+    required: true
+  timeout_minutes:
+    description: "Timeout duration in minutes"
+    required: false
+    default: "5"
+  status:
+    description: "Expected status for polling. Comma-separated for multiple statuses."
+    required: false
+    default: "active"
+
+runs:
+  using: composite
+  steps:
+    - name: Wait for Juju resource
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        TYPE="${{ inputs.type }}"
+        NAME="${{ inputs.name }}"
+        TIMEOUT_MINUTES="${{ inputs.timeout_minutes }}"
+        EXPECTED_STATUS="${{ inputs.status }}"
+
+        # Convert timeout to seconds for polling
+        TIMEOUT_SECONDS=$(($TIMEOUT_MINUTES * 60))
+        echo "Polling juju status"
+        echo "Waiting for $TYPE: $NAME"
+
+        START_TIME=$(date +%s)
+        while true; do
+          CURRENT_TIME=$(date +%s)
+          ELAPSED=$((CURRENT_TIME - START_TIME))
+          
+          if [ $ELAPSED -ge $TIMEOUT_SECONDS ]; then
+            echo "Timeout waiting for $TYPE $NAME"
+            exit 1
+          fi
+          
+          # Get status - disable exit on error temporarily for this command
+          set +e
+          STATUS_OUTPUT=$(juju status --format=json 2>&1)
+          STATUS_EXIT_CODE=$?
+          set -e
+          
+          if [ $STATUS_EXIT_CODE -ne 0 ]; then
+            echo "juju status command failed (elapsed: ${ELAPSED}s)"
+            echo "Output: $STATUS_OUTPUT"
+            sleep 5
+            continue
+          fi
+          
+          # Extract status based on resource type
+          if [ "$TYPE" == "application" ]; then
+            STATUS=$(echo "$STATUS_OUTPUT" | jq -r ".applications.\"$NAME\".\"application-status\".current // empty")
+          elif [ "$TYPE" == "unit" ]; then
+            STATUS=$(echo "$STATUS_OUTPUT" | jq -r ".applications.\"${NAME%%/*}\".units.\"$NAME\".\"workload-status\".current // empty")
+          elif [ "$TYPE" == "model" ]; then
+            STATUS=$(echo "$STATUS_OUTPUT" | jq -r ".model.\"model-status\".current // empty")
+          fi
+          
+          if [ -z "$STATUS" ]; then
+            echo "No status found for $TYPE $NAME (elapsed: ${ELAPSED}s)"
+            sleep 5
+            continue
+          fi
+          
+          echo "Current status: $STATUS (elapsed: ${ELAPSED}s)"
+          
+          # Check if status matches any of the expected statuses
+          IFS=',' read -ra STATUS_ARRAY <<< "$EXPECTED_STATUS"
+          for expected in "${STATUS_ARRAY[@]}"; do
+            expected=$(echo "$expected" | xargs) # trim whitespace
+            if [ "$STATUS" == "$expected" ]; then
+              echo "$TYPE $NAME reached status: $STATUS"
+              exit 0
+            fi
+          done
+          
+          # Check for error states
+          if [ "$STATUS" == "error" ]; then
+            echo "ERROR: $TYPE $NAME is in error state"
+            juju status "$NAME" 2>/dev/null || true
+            exit 1
+          fi
+          
+          sleep 5
+        done
