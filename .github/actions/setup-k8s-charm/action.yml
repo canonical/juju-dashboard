@@ -23,9 +23,6 @@ inputs:
       - latest/stable
       - latest/beta
       - latest/edge
-  juju-version:
-    description: The version of Juju.
-    required: true
 
 runs:
   using: "composite"
@@ -91,7 +88,6 @@ runs:
         type: application
         name: dashboard
         timeout_minutes: 1
-        juju-version: ${{ inputs.juju-version }}
     - name: Disable analytics
       run: juju config dashboard analytics-enabled=false
       shell: bash

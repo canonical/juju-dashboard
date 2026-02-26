@@ -17,9 +17,6 @@ inputs:
     description: Channel of Juju to use.
     required: false
     default: 3/stable
-  juju-version:
-    description: The version of Juju.
-    required: true
 outputs:
   jimm-controller-name:
     description: Name of the JIMM workloads controller
@@ -68,7 +65,6 @@ runs:
         name: iam
         timeout_minutes: 1
         query: 'forEach(applications, app => (app.name == "kratos-external-idp-integrator" && app.status=="blocked") || (app.name != "kratos-external-idp-integrator" && app.status=="active"))'
-        juju-version: ${{ inputs.juju-version }}
     - name: Create IAM offers for cross-model relations
       shell: bash
       run: |
@@ -83,7 +79,6 @@ runs:
         type: unit
         name: kratos/0
         timeout_minutes: 1
-        juju-version: ${{ inputs.juju-version }}
     - name: Create admin user
       shell: bash
       run: |
@@ -106,7 +101,6 @@ runs:
         type: unit
         name: postgresql/0 # Wait for postgres to prevent issues when relating to other apps: https://github.com/canonical/openfga-operator/issues/25.
         timeout_minutes: 1
-        juju-version: ${{ inputs.juju-version }}
     - name: Add JIMM relations
       shell: bash
       run: |
@@ -119,7 +113,6 @@ runs:
         type: unit
         name: postgresql/0 # Wait for postgres to prevent issues when relating to openfga: https://github.com/canonical/openfga-operator/issues/25.
         timeout_minutes: 1
-        juju-version: ${{ inputs.juju-version }}
     - name: Add openfga relation
       shell: bash
       run: juju relate openfga:database postgresql
@@ -140,7 +133,6 @@ runs:
         name: openfga
         timeout_minutes: 1
         status: blocked
-        juju-version: ${{ inputs.juju-version }}
     - name: Re-relate openfga if needed
       if: ${{ success() }}
       shell: bash
@@ -155,7 +147,6 @@ runs:
         type: unit
         name: openfga/0
         timeout_minutes: 1
-        juju-version: ${{ inputs.juju-version }}
     - name: Add JIMM relations and certs
       shell: bash
       run: |
@@ -188,7 +179,6 @@ runs:
         type: unit
         name: ingress/0
         timeout_minutes: 1
-        juju-version: ${{ inputs.juju-version }}
     - name: Set up ingress hostname and certs
       shell: bash
       run: |
@@ -202,7 +192,6 @@ runs:
         type: unit
         name: jimm/0 # Wait for JIMM to be ready if it's still making config changes.
         timeout_minutes: 1
-        juju-version: ${{ inputs.juju-version }}
     - name: Bootstrap workloads controller
       id: workloads-controller
       shell: bash
@@ -242,7 +231,6 @@ runs:
         type: unit
         name: jimm/0
         timeout_minutes: 1
-        juju-version: ${{ inputs.juju-version }}
     - name: Restart JIMM
       shell: bash
       run: sudo microk8s kubectl delete pod jimm-0 -n jimm # Fix ListModels issue:
@@ -264,4 +252,3 @@ runs:
         name: jimm
         timeout_minutes: 1
         status: active,error
-        juju-version: ${{ inputs.juju-version }}

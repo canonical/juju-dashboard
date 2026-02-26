@@ -26,9 +26,6 @@ inputs:
     required: false
     description: The model containing the Juju controller.
     default: controller
-  juju-version:
-    description: The version of Juju.
-    required: true
 
 runs:
   using: "composite"
@@ -75,7 +72,6 @@ runs:
         timeout_minutes: 1
         status: blocked
         query: 'name=="dashboard" && status=="blocked"' # The charm will be blocked when it needs the relation to the controller.
-        juju-version: ${{ inputs.juju-version }}
     - name: Integrate charm
       run: juju integrate '${{ inputs.controller-app }}' dashboard
       shell: bash
@@ -86,7 +82,6 @@ runs:
         name: dashboard
         timeout_minutes: 1
         status: active
-        juju-version: ${{ inputs.juju-version }}
     - name: Disable analytics
       run: juju config dashboard analytics-enabled=false
       shell: bash

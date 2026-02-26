@@ -23,35 +23,11 @@ inputs:
     description: "Expected status for Juju 4.x polling. Comma-separated for multiple statuses."
     required: false
     default: "active"
-  juju-version:
-    description: "Juju version to use for determining wait strategy"
-    required: true
 
 runs:
   using: composite
   steps:
-    - name: Extract major version
-      id: version
-      shell: bash
-      run: |
-        MAJOR=$(echo "${{ inputs.juju-version }}" | cut -d'.' -f1)
-        echo "major=$MAJOR" >> "$GITHUB_OUTPUT"
-        echo "Juju major version: $MAJOR"
     - name: Wait for Juju resource
-      if: ${{ steps.version.outputs.major < 4 }}
-      uses: nick-fields/retry@v3
-      with:
-        timeout_minutes: 1
-        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
-        command: |
-          ARGS=(juju wait-for ${{ inputs.type }} ${{ inputs.name }} --timeout=${{ inputs.timeout_minutes }}m)
-          if [ -n "${{ inputs.query }}" ]; then
-            ARGS+=(--query='${{ inputs.query }}')
-          fi
-          echo "Running: ${ARGS[@]}"
-          "${ARGS[@]}"
-    - name: Wait for Juju resource
-      if: ${{ steps.version.outputs.major >= 4 }}
       shell: bash
       run: |
         set -euo pipefail

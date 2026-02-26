@@ -38,7 +38,7 @@ contribute and what kinds of contributions are welcome.
       - [Vanilla Framework](#vanilla-framework)
       - [Vanilla React Components](#vanilla-react-components)
   - [Deployed JIMM controller](#deployed-jimm-controller)
-      - [Adding users](#adding-users)
+    - [Adding users](#adding-users)
     - [Self signed certificates](#self-signed-certificates)
     - [Juju on M1 Macs](#juju-on-m1-macs)
   - [Building the Docker image](#building-the-docker-image)
@@ -59,14 +59,14 @@ Juju controller.
 
 The following cloud init scripts are available:
 
-| Environment | Juju version | Auth                      | Platform      | Script                                                                                                                                                                                                                                |
-| -----------| ------------- | ------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Juju        | 3.6          | Local (username/password) | Machine (LXD) | `multipass launch --cpus 2 --disk 15G --memory 8G --name juju-lxd-local --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-lxd-local.yaml`      |
-| Juju        | 4.0          | Local (username/password) | Machine (LXD) | `multipass launch --cpus 2 --disk 15G --memory 8G --name juju-4-lxd-local --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-4.0-lxd-local.yaml`      |
-| Juju        | 3.6          | Local (username/password) | K8s           | `multipass launch --cpus 2 --disk 15G --memory 8G --name juju-k8s-local --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-microk8s-local.yaml` |
-| Juju        | 3.6          | Candid                    | Machine (LXD) | `multipass launch --cpus 2 --disk 15G --memory 8G --name juju-lxd-candid --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-lxd-candid.yaml`    |
-| JIMM        | 3.6          | OIDC                      | K8s           | `multipass launch --cpus 2 --disk 25G --memory 12G --name jimm-k8s-oidc --timeout 5000 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-jimm-k8s-oidc.yaml`  |
-| JIMM        | 3.6          | OIDC                      | Machine (LXD) | `multipass launch --cpus 2 --disk 25G --memory 12G --name jimm-lxd-oidc --timeout 5000 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-jimm-lxd-oidc.yaml`      |
+| Environment | Juju version | Auth                      | Platform      | Script                                                                                                                                                                                                                       |
+| ----------- | ------------ | ------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Juju        | 3.6          | Local (username/password) | Machine (LXD) | `multipass launch --cpus 2 --disk 15G --memory 8G --name juju-lxd-local --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-lxd-local.yaml`       |
+| Juju        | 4.0          | Local (username/password) | Machine (LXD) | `multipass launch --cpus 2 --disk 15G --memory 8G --name juju-4-lxd-local --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-4.0-lxd-local.yaml` |
+| Juju        | 3.6          | Local (username/password) | K8s           | `multipass launch --cpus 2 --disk 15G --memory 8G --name juju-k8s-local --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-microk8s-local.yaml`  |
+| Juju        | 3.6          | Candid                    | Machine (LXD) | `multipass launch --cpus 2 --disk 15G --memory 8G --name juju-lxd-candid --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-lxd-candid.yaml`     |
+| JIMM        | 3.6          | OIDC                      | K8s           | `multipass launch --cpus 2 --disk 25G --memory 12G --name jimm-k8s-oidc --timeout 5000 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-jimm-k8s-oidc.yaml`        |
+| JIMM        | 3.6          | OIDC                      | Machine (LXD) | `multipass launch --cpus 2 --disk 25G --memory 12G --name jimm-lxd-oidc --timeout 5000 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-jimm-lxd-oidc.yaml`        |
 
 After you have chosen an environment to work in then launch the multipass container using the command from the above table.
 
@@ -76,10 +76,10 @@ For example, to use Juju, LXD and local auth you could run:
 multipass launch --cpus 2 --disk 15G --memory 8G --name juju-lxd-local --timeout 1800 --cloud-init https://raw.githubusercontent.com/canonical/juju-dashboard/refs/heads/main/scripts/cloud-init-juju-lxd-local.yaml
 ```
 
-__Note: some of these environments can take a long time to launch.__
+**Note: some of these environments can take a long time to launch.**
 
-Once complete you can enter the container e.g. `multipass shell juju-lxd-local` which will display a message with 
-instructions on the address to connect to, the credentials and any additional set up instructions (e.g. for 
+Once complete you can enter the container e.g. `multipass shell juju-lxd-local` which will display a message with
+instructions on the address to connect to, the credentials and any additional set up instructions (e.g. for
 JIMM environments some additional SSH port forwards are required).
 
 If you are developing the dashboard using the codebase inside the Multipass you will probably want to run the dev server manually, in which case you can disable the service with `sudo systemctl stop juju-dashboard.service && sudo systemctl disable juju-dashboard.service`.
@@ -426,9 +426,6 @@ repo.
 
 The Dockerfile is also used by the PR demo service which builds a Docker image
 and deploys it to display a running version of a branch.
-
-If this image needs to be tested in a Kubernetes environment then you can follow
-the [Multipass and Kubernetes](./docs/multipass-microk8s.md) instructions.
 
 To build the charm you first need to install [Docker Engine](https://docs.docker.com/engine/install/ubuntu/).
 

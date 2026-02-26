@@ -31,20 +31,12 @@ jobs:
           merge-config: ./e2e/candid-config.yaml
       - name: Set up access
         run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
-      - name: Compute Juju version for test identifier
-        id: juju-version
-        run: |
-          CHANNEL="${{ steps.config.outputs.juju-channel }}"
-          VERSION=$(echo "$CHANNEL" | cut -d'/' -f1)
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-        shell: bash
       - name: Set up Juju Dashboard machine charm
         uses: ./.github/actions/setup-machine-charm
         with:
           bundled-dashboard: ${{ steps.config.outputs.machine-bundled-dashboard }}
           dashboard-ref: ${{ steps.config.outputs.repo-ref }}
           charm-channel: ${{ steps.config.outputs.dashboard-charm-channel }}
-          juju-version: ${{ steps.juju-version.outputs.version }}
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:
