@@ -7,9 +7,17 @@ import urls from "urls";
 
 import { JujuEnv, test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
-import { AddModel, GiveModelAccess } from "../helpers/actions";
+import {
+  AddModel,
+  GiveControllerAccess,
+  GiveModelAccess,
+} from "../helpers/actions";
 import type { User } from "../helpers/auth";
-import { ModelPermission, type Model } from "../helpers/objects";
+import {
+  ControllerPermission,
+  ModelPermission,
+  type Model,
+} from "../helpers/objects";
 
 test.describe("Models", () => {
   let actions: ActionStack;
@@ -19,7 +27,7 @@ test.describe("Models", () => {
   let sharedModel: Model;
   let user2Model: Model;
 
-  test.beforeAll(async ({ jujuCLI }) => {
+  test.beforeAll(async ({ jujuCLI, testOptions }) => {
     // Give the beforeAll enough time to create the models:
     test.setTimeout(300000);
     actions = new ActionStack(jujuCLI);
@@ -27,7 +35,22 @@ test.describe("Models", () => {
     await actions.prepare((add) => {
       user1 = add(jujuCLI.createUser(true));
       user2 = add(jujuCLI.createUser(true));
-
+      if (testOptions.jujuEnv === JujuEnv.JIMM) {
+        add(
+          new GiveControllerAccess(
+            jujuCLI.controllerInstance,
+            user1,
+            ControllerPermission.ADD_MODEL,
+          ),
+        );
+        add(
+          new GiveControllerAccess(
+            jujuCLI.controllerInstance,
+            user2,
+            ControllerPermission.ADD_MODEL,
+          ),
+        );
+      }
       user1Model = add(new AddModel(jujuCLI, user1, true));
       sharedModel = add(new AddModel(jujuCLI, user1, true));
       user2Model = add(new AddModel(jujuCLI, user2, true));
