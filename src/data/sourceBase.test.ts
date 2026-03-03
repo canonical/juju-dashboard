@@ -1,4 +1,4 @@
-import type { Source } from "./source";
+import { type Source, SourceState } from "./source";
 import { createSource, type SourceHooks, type SourceBase } from "./sourceBase";
 
 const DUMMY_HOOKS = { refetch: (): void => {} } satisfies SourceHooks;
@@ -17,7 +17,7 @@ describe("createSource", () => {
         return DUMMY_HOOKS;
       });
 
-      expect(source.state).toEqual("unknown");
+      expect(source.state).toEqual(SourceState.Unknown);
       expect(source.loading).toEqual(false);
       expect(source.data).toBeNull();
       expect(source.error).toBeNull();
@@ -37,7 +37,7 @@ describe("createSource", () => {
         throw setupError;
       });
 
-      expect(source.state).toEqual("error");
+      expect(source.state).toEqual(SourceState.Error);
       expect(source.loading).toEqual(false);
       expect(source.data).toBeNull();
       expect(source.error?.message).toEqual("setup error");
@@ -76,7 +76,7 @@ describe("createSource", () => {
 
         // Source must complete loading, and update it's state.
         expect(source.loading).toEqual(false);
-        expect(source.state).toEqual("valid");
+        expect(source.state).toEqual(SourceState.Valid);
         expect(source.data).toEqual(outputData);
       });
 
@@ -122,7 +122,7 @@ describe("createSource", () => {
 
           // Ensure data was ignored.
           expect(source.data).toBeNull();
-          expect(source.state).toEqual("unknown");
+          expect(source.state).toEqual(SourceState.Unknown);
         });
 
         it("error is ignored after signal aborts", async () => {
@@ -265,7 +265,7 @@ describe("createSource", () => {
 
           // Source should display the error.
           expect(source.error).not.toEqual(null);
-          expect(source.state).toEqual("error");
+          expect(source.state).toEqual(SourceState.Error);
           expect(source.loading).toEqual(false);
 
           // Then resolve promise 0.
@@ -275,7 +275,7 @@ describe("createSource", () => {
           // Source should use the latest data, but indicate the error still.
           expect(source.data).toEqual(123);
           expect(source.error).not.toEqual(null);
-          expect(source.state).toEqual("error");
+          expect(source.state).toEqual(SourceState.Error);
           expect(source.loading).toEqual(false);
         });
       });
@@ -307,7 +307,7 @@ describe("createSource", () => {
           const source = await runTest(error);
 
           expect(source.loading).toEqual(false);
-          expect(source.state).toEqual("error");
+          expect(source.state).toEqual(SourceState.Error);
           expect(source.error?.source).toEqual(error);
           expect(source.error?.message).toEqual("Something happened");
         });
@@ -317,7 +317,7 @@ describe("createSource", () => {
           const source = await runTest(error);
 
           expect(source.loading).toEqual(false);
-          expect(source.state).toEqual("error");
+          expect(source.state).toEqual(SourceState.Error);
           expect(source.error?.source).toEqual(error);
           expect(source.error?.message).toEqual("An unknown error occurred");
         });
@@ -374,10 +374,10 @@ describe("createSource", () => {
         });
 
         expect(refetch).not.toHaveBeenCalled();
-        expect(source.state).toEqual("unknown");
+        expect(source.state).toEqual(SourceState.Unknown);
         source.invalidate();
         expect(refetch).toHaveBeenCalled();
-        expect(source.state).toEqual("stale");
+        expect(source.state).toEqual(SourceState.Stale);
 
         // Invalidating the source does not mean that it's loading.
         expect(source.loading).toEqual(false);
@@ -394,18 +394,18 @@ describe("createSource", () => {
         });
 
         // Initially unknown.
-        expect(source.state).toEqual("unknown");
+        expect(source.state).toEqual(SourceState.Unknown);
 
         // Invalidate the source to make it stale.
         source.invalidate();
-        expect(source.state).toEqual("stale");
+        expect(source.state).toEqual(SourceState.Stale);
 
         // Perform load.
         hoistedLoad!(Promise.resolve(123)); // eslint-disable-line @typescript-eslint/no-non-null-assertion
         await tick();
 
         // Source should now be valid.
-        expect(source.state).toEqual("valid");
+        expect(source.state).toEqual(SourceState.Valid);
       });
     });
 
@@ -526,7 +526,7 @@ describe("createSource", () => {
         expect(loadHandler).toHaveBeenCalledTimes(1);
 
         // Source should still end in correct state.
-        expect(source.state).toEqual("valid");
+        expect(source.state).toEqual(SourceState.Valid);
 
         // Load more data.
         dataPromises[1].resolve(456);

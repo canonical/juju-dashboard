@@ -1,4 +1,6 @@
-import type { Source, Events } from "./source";
+import { logger } from "utils/logger";
+
+import { type Source, SourceState, type Events } from "./source";
 
 export type SourceBase<T> = {
   /**
@@ -50,12 +52,12 @@ export function createSource<T>(
   const source: Source<T> = {
     invalidate: (): void => {
       hooks?.refetch();
-      source.state = "stale";
+      source.state = SourceState.Stale;
     },
     done: (): void => {
       sourceDone.abort();
     },
-    state: "unknown",
+    state: SourceState.Unknown,
     loading: false,
     data: null,
     error: null,
@@ -66,10 +68,8 @@ export function createSource<T>(
           handler(...args);
         } catch (error) {
           // Ignore any errors thrown by the callback function.
-          if (import.meta.env.DEV) {
-            console.error("Uncaught error thrown by source event handler:");
-            console.error(error);
-          }
+          logger.error("Uncaught error thrown by source event handler:");
+          logger.error(error);
           return;
         }
       };
@@ -191,7 +191,11 @@ export function createSource<T>(
             return;
           }
 
-          modifySource(loadId, { loading: false, data, state: "valid" });
+          modifySource(loadId, {
+            loading: false,
+            data,
+            state: SourceState.Valid,
+          });
 
           // Track this as the last successful load.
           latestSuccessfulLoad = Math.max(loadId, latestSuccessfulLoad);
@@ -206,7 +210,7 @@ export function createSource<T>(
           modifySource(loadId, {
             loading: false,
             error: handleError(error),
-            state: "error",
+            state: SourceState.Error,
           });
 
           return;
@@ -226,7 +230,7 @@ export function createSource<T>(
     // Handle an error that occurs during setup.
     modifySource(Infinity, {
       error: handleError(error),
-      state: "error",
+      state: SourceState.Error,
       loading: false,
     });
   }
