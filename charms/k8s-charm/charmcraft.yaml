@@ -16,7 +16,7 @@ links:
 assumes:
   - k8s-api
   - juju >= 3.6
-  - juju < 4.0
+  - juju < 5.0
 base: ubuntu@24.04
 platforms:
   amd64:
