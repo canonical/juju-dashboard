@@ -25,11 +25,12 @@ export class DeployApplication implements Action<Application> {
     } else {
       await jujuCLI.loginLocalCLIAdmin();
     }
+    await exec(`juju switch '${this.model.name}'`);
     await exec(
-      `juju deploy '${this.application.charm}' '${this.application.name}' -m '${this.model.name}'`,
+      `juju deploy '${this.application.charm}' '${this.application.name}'`,
     );
     await exec(
-      `juju wait-for application '${this.application.name}' --query='name=="${this.application.name}" && (status=="active" || status=="blocked" || status=="error")' || true`,
+      `TYPE=application NAME='${this.application.name}' TIMEOUT_MINUTES=10 EXPECTED_STATUS=active,blocked,error ./scripts/wait-for`,
     );
   }
 

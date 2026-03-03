@@ -69,7 +69,6 @@ runs:
       with:
         type: application
         name: dashboard
-        timeout_minutes: 1
         status: blocked
     - name: Integrate charm
       run: juju integrate '${{ inputs.controller-app }}' dashboard
@@ -79,7 +78,6 @@ runs:
       with:
         type: application
         name: dashboard
-        timeout_minutes: 1
         status: active
     - name: Disable analytics
       run: juju config dashboard analytics-enabled=false
