@@ -38,7 +38,9 @@ export class AddModel implements Action<Model> {
     }
     await this.model.owner.cliLogin(jujuCLI.browser);
     await exec(`juju add-model '${this.model.name}'`);
-    await exec(`juju wait-for model '${this.model.name}'`);
+    await exec(
+      `TYPE=model NAME='${this.model.name}' TIMEOUT_MINUTES=5 EXPECTED_STATUS=available ./scripts/wait-for`,
+    );
     // If the model wasn't created as the admin user, then give the admin access to the model.
     if (!this.asOwner) {
       const giveAccess = new GiveModelAccess(

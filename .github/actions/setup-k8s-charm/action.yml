@@ -73,21 +73,18 @@ runs:
     - name: Integrate charm
       run: juju integrate '${{ inputs.controller-app }}' dashboard
       shell: bash
-    - name: Check and resolve error state
-      shell: bash
-      run: |
-        STATUS=$(juju status --format json | yq .applications.dashboard.application-status.current)
-        if [ "$STATUS" == "error" ]; then
-          # Sometimes the dashboard unit will get into an error state, so resolve and try again.
-          echo "Dashboard is in error state, resolving..."
-          juju resolved dashboard/0
-        fi
     - name: Wait for charm to be ready
-      uses: ./.github/actions/juju-wait-for
+      uses: nick-fields/retry@v3
       with:
-        type: application
-        name: dashboard
         timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
+        command: |
+          STATUS=$(juju status --format json | yq .applications.dashboard.application-status.current)
+          if [ "$STATUS" == "error" ]; then
+            # Sometimes the dashboard unit will get into an error state, so resolve and try again.
+            juju resolved dashboard/0
+          fi
+          TYPE=application NAME=dashboard TIMEOUT_MINUTES=1 EXPECTED_STATUS=active ./scripts/wait-for
     - name: Disable analytics
       run: juju config dashboard analytics-enabled=false
       shell: bash

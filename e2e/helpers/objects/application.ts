@@ -2,14 +2,15 @@ import urls from "urls";
 
 import type { Model } from "../objects";
 
-// spell-checker:ignore kubecon
+// spell-checker:ignore pgbouncer
 
 /**
  * Charm to deploy based on provider.
  */
 export enum CharmName {
+  // spell
   localhost = "anbox-cloud-dashboard",
-  microk8s = "hello-kubecon",
+  microk8s = "pgbouncer-k8s",
 }
 
 /**
@@ -17,7 +18,7 @@ export enum CharmName {
  */
 export enum ActionName {
   "anbox-cloud-dashboard" = "backup",
-  "hello-kubecon" = "pull-site",
+  "pgbouncer-k8s" = "pre-upgrade-check",
 }
 
 /**
@@ -25,7 +26,7 @@ export enum ActionName {
  */
 export enum ConfigName {
   "anbox-cloud-dashboard" = "location",
-  "hello-kubecon" = "redirect-map",
+  "pgbouncer-k8s" = "pool_mode",
 }
 
 export class Application {
