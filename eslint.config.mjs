@@ -79,6 +79,7 @@ export default defineConfig(
     },
     rules: {
       ...vitest.configs.recommended.rules,
+      eqeqeq: "error",
       "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/no-misused-promises": "error",

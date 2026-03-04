@@ -27,7 +27,7 @@ export class Users {
         break;
       case "oidc":
         this.CreateUser =
-          process.env.AUTH_VARIANT == "keycloak"
+          process.env.AUTH_VARIANT === "keycloak"
             ? CreateKeycloakOIDCUser
             : CreateOIDCUser;
         break;

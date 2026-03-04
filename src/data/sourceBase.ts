@@ -108,8 +108,8 @@ export function createSource<T>(
     // This load is the latest one to have completed.
     if (loadId >= latestCompletedLoad) {
       if (
-        modifications.error != undefined &&
-        modifications.error != source.error
+        modifications.error !== undefined &&
+        modifications.error !== source.error
       ) {
         source.error = modifications.error;
         errorChanged = true;
@@ -121,8 +121,8 @@ export function createSource<T>(
     // This load is the latest one to complete successfully.
     if (loadId >= latestSuccessfulLoad) {
       if (
-        modifications.data != undefined &&
-        modifications.data != source.data
+        modifications.data !== undefined &&
+        modifications.data !== source.data
       ) {
         source.data = modifications.data;
         dataChanged = true;
