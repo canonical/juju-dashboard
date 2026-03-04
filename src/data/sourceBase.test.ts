@@ -44,7 +44,7 @@ describe("createSource", () => {
       it("begins loading state when `load` function called", () => {
         const source = createSource(({ load }) => {
           // Immediately call the load function.
-          load(new Promise(() => {}));
+          load(Promise.resolve());
           return DUMMY_HOOKS;
         });
 
@@ -77,10 +77,11 @@ describe("createSource", () => {
       describe("`AbortSignal`", () => {
         it("clears loading state if latest load is cancelled", async () => {
           const controller = new AbortController();
+          const pendingPromise = Promise.withResolvers();
 
           const source = createSource(({ load }) => {
             // Immediately begin loading data, with a signal.
-            load(new Promise(() => {}), controller.signal);
+            load(pendingPromise.promise, controller.signal);
             return DUMMY_HOOKS;
           });
 
@@ -92,6 +93,9 @@ describe("createSource", () => {
 
           // Source should no longer be loading.
           expect(source.loading).toEqual(false);
+
+          // Clean up.
+          pendingPromise.resolve(null);
         });
 
         it("data is ignored after signal aborts", async () => {
@@ -147,10 +151,11 @@ describe("createSource", () => {
         it("allows subsequent loads to succeed after an abort", async () => {
           const controller = new AbortController();
           const dataPromise = Promise.withResolvers();
+          const wontResolve = Promise.withResolvers();
 
           const source = createSource(({ load }) => {
             // Begin a load that will never finish.
-            load(new Promise(() => {}), controller.signal);
+            load(wontResolve.promise);
 
             // Immediately begin a second load.
             load(dataPromise.promise);
@@ -170,6 +175,9 @@ describe("createSource", () => {
           await tick();
 
           expect(source.data).toEqual(123);
+
+          // Clean up.
+          wontResolve.resolve(123);
         });
       });
 
@@ -329,19 +337,16 @@ describe("createSource", () => {
 
     describe("sourceDone", () => {
       it("throws an error if `load` called after `sourceDone` aborts", () => {
-        let hoistedLoad: SourceBase<unknown>["load"];
-
-        const source = createSource(({ load }) => {
-          hoistedLoad = load;
-          return DUMMY_HOOKS;
-        });
+        const setupFn = vi.fn().mockReturnValue(DUMMY_HOOKS);
+        const source = createSource(setupFn);
+        const { load }: SourceBase<unknown> = setupFn.mock.calls[0][0];
 
         // Terminate the source.
         source.done();
 
         // Attempt to load data.
         expect(() => {
-          hoistedLoad!(new Promise(() => {})); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+          load(Promise.resolve(123));
         }).toThrowError("cannot load after source done");
       });
     });
@@ -355,16 +360,13 @@ describe("createSource", () => {
 
     describe("done", () => {
       it("triggers `sourceDone` signal in setup", () => {
-        let hoistedSourceDone: SourceBase<unknown>["sourceDone"];
+        const setupFn = vi.fn().mockReturnValue(DUMMY_HOOKS);
+        const source = createSource(setupFn);
+        const { sourceDone }: SourceBase<unknown> = setupFn.mock.calls[0][0];
 
-        const source = createSource(({ sourceDone }) => {
-          hoistedSourceDone = sourceDone;
-          return DUMMY_HOOKS;
-        });
-
-        expect(hoistedSourceDone!.aborted).toEqual(false); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        expect(sourceDone.aborted).toEqual(false);
         source.done();
-        expect(hoistedSourceDone!.aborted).toEqual(true); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        expect(sourceDone.aborted).toEqual(true);
       });
     });
 
@@ -388,13 +390,9 @@ describe("createSource", () => {
 
       it("clears `stale` state when loading after `refetch`", async () => {
         const refetch = vi.fn();
-        let hoistedLoad;
-
-        const source = createSource(({ load }) => {
-          hoistedLoad = load;
-
-          return { refetch };
-        });
+        const setupFn = vi.fn().mockReturnValue({ refetch });
+        const source = createSource(setupFn);
+        const { load }: SourceBase<unknown> = setupFn.mock.calls[0][0];
 
         // Initially unknown.
         expect(source.state).toEqual(SourceState.Unknown);
@@ -404,7 +402,7 @@ describe("createSource", () => {
         expect(source.state).toEqual(SourceState.Stale);
 
         // Perform load.
-        hoistedLoad!(Promise.resolve(123)); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        load(Promise.resolve(123));
         await tick();
 
         // Source should now be valid.
@@ -542,11 +540,9 @@ describe("createSource", () => {
 
       describe("event: load", () => {
         it("calls on load start", () => {
-          let hoistedLoad;
-          const source = createSource(({ load }) => {
-            hoistedLoad = load;
-            return DUMMY_HOOKS;
-          });
+          const setupFn = vi.fn().mockReturnValue(DUMMY_HOOKS);
+          const source = createSource(setupFn);
+          const { load }: SourceBase<unknown> = setupFn.mock.calls[0][0];
 
           // Subscribe to the event.
           const loadHandler = vi.fn();
@@ -556,19 +552,22 @@ describe("createSource", () => {
           expect(loadHandler).not.toHaveBeenCalled();
 
           // Initiate a load.
-          const loadPromise = new Promise(() => {});
-          hoistedLoad!(loadPromise); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+          const loadPromise = Promise.withResolvers();
+          load(loadPromise.promise);
 
           // Callback should be provided with the same data promise.
-          expect(loadHandler).toHaveBeenCalledExactlyOnceWith(loadPromise);
+          expect(loadHandler).toHaveBeenCalledExactlyOnceWith(
+            loadPromise.promise,
+          );
+
+          // Clean up the promise.
+          loadPromise.resolve(null);
         });
 
         it("calls with multiple concurrent loads", async () => {
-          let hoistedLoad;
-          const source = createSource(({ load }) => {
-            hoistedLoad = load;
-            return DUMMY_HOOKS;
-          });
+          const setupFn = vi.fn().mockReturnValue(DUMMY_HOOKS);
+          const source = createSource(setupFn);
+          const { load }: SourceBase<unknown> = setupFn.mock.calls[0][0];
 
           // Subscribe to the event.
           const loadHandler = vi.fn();
@@ -577,11 +576,11 @@ describe("createSource", () => {
           // Create a collection of data promises.
           const loadPromises = new Array(3)
             .fill(null)
-            .map(async () => new Promise(() => {}));
+            .map(() => Promise.withResolvers());
 
           // Trigger a load for each promise.
           for (const loadPromise of loadPromises) {
-            hoistedLoad!(loadPromise); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+            load(loadPromise.promise);
 
             // Allow time for callbacks to run.
             await tick();
@@ -592,8 +591,13 @@ describe("createSource", () => {
 
           // Each call should contain the corresponding data promise.
           for (let i = 0; i < loadPromises.length; i++) {
-            const loadPromise = loadPromises[i];
+            const loadPromise = loadPromises[i].promise;
             expect(loadHandler).nthCalledWith(i + 1, loadPromise);
+          }
+
+          // Clean up promises.
+          for (const loadPromise of loadPromises) {
+            loadPromise.resolve(null);
           }
         });
       });
