@@ -1,14 +1,8 @@
 import { type Source, SourceState } from "./source";
 import { createSource, type SourceHooks, type SourceBase } from "./sourceBase";
+import { tick } from "./testUtils";
 
 const DUMMY_HOOKS = { refetch: (): void => {} } satisfies SourceHooks;
-
-/**
- * Helper function that will resolve at the next tick.
- */
-async function tick(): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, 0));
-}
 
 describe("createSource", () => {
   describe("setup", () => {

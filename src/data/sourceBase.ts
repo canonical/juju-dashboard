@@ -185,8 +185,10 @@ export function createSource<T>(
         handler(dataPromise);
       }
 
-      void dataPromise
-        .then((data) => {
+      void (async (): Promise<void> => {
+        try {
+          const data = await dataPromise;
+
           if (signal?.aborted) {
             return;
           }
@@ -202,8 +204,7 @@ export function createSource<T>(
           latestSuccessfulLoad = Math.max(loadId, latestSuccessfulLoad);
 
           return;
-        })
-        .catch((error) => {
+        } catch (error) {
           if (signal?.aborted) {
             return;
           }
@@ -215,11 +216,11 @@ export function createSource<T>(
           });
 
           return;
-        })
-        .finally(() => {
+        } finally {
           // Track the latest load to complete, favouring the latest one.
           latestCompletedLoad = Math.max(loadId, latestCompletedLoad);
-        });
+        }
+      })();
     },
     sourceDone: sourceDone.signal,
   };
