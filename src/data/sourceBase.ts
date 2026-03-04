@@ -194,6 +194,7 @@ export function createSource<T>(
           modifySource(loadId, {
             loading: false,
             data,
+            error: null,
             state: SourceState.Valid,
           });
 

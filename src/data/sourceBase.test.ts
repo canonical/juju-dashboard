@@ -280,46 +280,55 @@ describe("createSource", () => {
         });
       });
 
-      describe("handles errors when `data` promise rejects", () => {
-        /**
-         * Create a source which immediately begins loading. The load will reject with the provided
-         * error value.
-         */
-        async function runTest(error: unknown): Promise<Source<unknown>> {
-          const dataPromise = Promise.withResolvers();
+      describe("when `data` promise rejects", () => {
+        it.for([
+          ["an `Error`", new Error("Something happened"), "Something happened"],
+          ["a non-`Error`", 374, "An unknown error occurred"],
+        ] as const)(
+          "handles %s",
+          async ([_, error, expectedMessage], { expect }) => {
+            const dataPromise = Promise.withResolvers();
 
+            const source = createSource(({ load }) => {
+              load(dataPromise.promise);
+              return DUMMY_HOOKS;
+            });
+
+            expect(source.loading).toEqual(true);
+            dataPromise.reject(error);
+            await tick();
+
+            expect(source.loading).toEqual(false);
+            expect(source.state).toEqual(SourceState.Error);
+            expect(source.error?.source).toEqual(error);
+            expect(source.error?.message).toEqual(expectedMessage);
+          },
+        );
+
+        it("clears error after next successful load", async () => {
+          const dataPromises = new Array(2)
+            .fill(null)
+            .map(() => Promise.withResolvers());
           const source = createSource(({ load }) => {
-            load(dataPromise.promise);
+            load(dataPromises[0].promise);
+            load(dataPromises[1].promise);
             return DUMMY_HOOKS;
           });
-
           expect(source.loading).toEqual(true);
 
-          dataPromise.reject(error);
-
+          // Reject the first load.
+          dataPromises[0].reject(new Error());
           await tick();
+          expect(source.state).toBe(SourceState.Error);
+          expect(source.loading).toBe(true);
+          expect(source.error).not.toBe(null);
 
-          return source;
-        }
-
-        it("with an `Error`", async () => {
-          const error = new Error("Something happened");
-          const source = await runTest(error);
-
-          expect(source.loading).toEqual(false);
-          expect(source.state).toEqual(SourceState.Error);
-          expect(source.error?.source).toEqual(error);
-          expect(source.error?.message).toEqual("Something happened");
-        });
-
-        it("with some other error value", async () => {
-          const error = 374;
-          const source = await runTest(error);
-
-          expect(source.loading).toEqual(false);
-          expect(source.state).toEqual(SourceState.Error);
-          expect(source.error?.source).toEqual(error);
-          expect(source.error?.message).toEqual("An unknown error occurred");
+          // Resolve the second load.
+          dataPromises[1].resolve(123);
+          await tick();
+          expect(source.state).toBe(SourceState.Valid);
+          expect(source.loading).toBe(false);
+          expect(source.error).toBe(null);
         });
       });
     });
