@@ -1,4 +1,4 @@
-import { type Source, SourceState } from "./source";
+import { SourceState } from "./source";
 import { createSource, type SourceHooks, type SourceBase } from "./sourceBase";
 import { tick } from "./testUtils";
 

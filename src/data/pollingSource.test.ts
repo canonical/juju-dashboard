@@ -1,6 +1,171 @@
-import { createPollingSource, PollControllerManager } from "./pollingSource";
-import { SourceState } from "./source";
+import type { MockedFunction } from "vitest";
+
+import {
+  createPollingSource,
+  type PollConfig,
+  PollControllerManager,
+  type PollFn,
+} from "./pollingSource";
+import { SourceState, type Source } from "./source";
 import { tick } from "./testUtils";
+
+/**
+ * Function signature for `setup` function in the test harness.
+ */
+type SetupFn = (params?: {
+  /**
+   * Additional configuration to provide to the source upon creation.
+   */
+  config?: Partial<PollConfig>;
+  /**
+   * Seed the source with some pre-configured events. Once no more seeded items are available,
+   * promises will continue to be produced.
+   */
+  seed?: (
+    | { reject: unknown }
+    | { resolve: number }
+    | { return: number }
+    | { throw: unknown }
+  )[];
+}) => Promise<{
+  source: Source<number>;
+  pollFn: MockedFunction<PollFn<number>>;
+}>;
+
+type HarnessParams = {
+  /**
+   * Setup a new source.
+   *
+   * The created source will have a poll function which constantly returns unresolved promises. The
+   * promises can be resolved or rejected using the `resolve` and `reject` helper.
+   */
+  setup: SetupFn;
+  /**
+   * Get the abort signal corresponding with `callNumber`.
+   */
+  getSignal: (callNumber: number) => AbortSignal;
+  /**
+   * Resolve the promise corresponding with `callNumber`.
+   */
+  resolve: (callNumber: number, data: number) => Promise<void>;
+  /**
+   * Reject the promise corresponding with `callNumber`.
+   */
+  reject: (callNumber: number, error: unknown) => Promise<void>;
+};
+
+/**
+ * Test harness for testing `createPollingSource`. This harness ensures that the source is
+ * correctly setup, allows for unlimited polling with controls for determining when a given poll
+ * function is resolved, and correctly cleans up resources to prevent memory leaks.
+ */
+function harness<T extends unknown[]>(
+  cb: (params: HarnessParams, ...args: T) => Promise<void>,
+) {
+  return async (...args: T): Promise<void> => {
+    // Track all created promises, so they can be cleaned up later.
+    const promises: PromiseWithResolvers<number>[] = [];
+    let seedCount = 0;
+
+    // Allow for hoisting `source` and `pollFn` once they're created.
+    let source = null as null | Source<number>;
+    let pollFn = null as Awaited<ReturnType<SetupFn>>["pollFn"] | null;
+
+    // Function which will create a new `source`.
+    const setup: SetupFn = async ({ seed, config } = {}) => {
+      if (source !== null) {
+        throw new Error("setup called multiple times");
+      }
+
+      // Track how many seeded events were provided.
+      seedCount = seed?.length ?? 0;
+
+      // Create the `pollFn` mock.
+      pollFn = vi.fn().mockImplementation(
+        // eslint-disable-next-line @typescript-eslint/promise-function-async
+        () => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const callNumber = pollFn!.mock.calls.length - 1;
+          if (seed && callNumber < seed.length) {
+            // This call corresponds with a provided seed item, so produce it.
+            const item = seed[callNumber];
+            if ("resolve" in item) {
+              return Promise.resolve(item.resolve);
+            } else if ("return" in item) {
+              return item.return;
+            } else if ("throw" in item) {
+              throw item.throw;
+            } else if ("reject" in item) {
+              return Promise.reject(item.reject);
+            }
+          }
+
+          // Create a new promise, save it, and return it.
+          const promise = Promise.withResolvers<number>();
+          promises.push(promise);
+          return promise.promise;
+        },
+      );
+
+      source = createPollingSource(
+        pollFn,
+        Object.assign({ interval: { seconds: 1 } }, config ?? {}),
+      );
+
+      // Allow for the first poll to be called.
+      await tick();
+
+      return { source, pollFn };
+    };
+
+    // Get the signal for a given call. This relies on the call tracking provided by the `pollFn`
+    // mock.
+    const getSignal = (callNumber: number): AbortSignal => {
+      const call = pollFn?.mock.calls[callNumber];
+      if (!call) {
+        throw new Error(`Call ${callNumber} does not exist`);
+      }
+
+      // Abort signal is the first parameter of the `pollFn`.
+      const [abortSignal] = call;
+      return abortSignal;
+    };
+
+    // Fetch the `PromiseWithResolvers` for a given call.
+    const getPromiseResolvers = (
+      callNumber: number,
+    ): PromiseWithResolvers<number> => {
+      const promiseNumber = callNumber - seedCount;
+      const promise = promises[promiseNumber];
+      if (!promise) {
+        throw new Error(`Promise ${promiseNumber} does not exist`);
+      }
+      return promise;
+    };
+
+    // Resolve the promise for a given call.
+    const resolve = async (callNumber: number, data: number): Promise<void> => {
+      getPromiseResolvers(callNumber).resolve(data);
+    };
+
+    // Reject the promise for a given call.
+    const reject = async (
+      callNumber: number,
+      error: unknown,
+    ): Promise<void> => {
+      getPromiseResolvers(callNumber).reject(error);
+    };
+
+    // Run the test.
+    await cb({ setup, getSignal, resolve, reject }, ...args);
+
+    // Clean up.
+    source?.done();
+    for (const promise of promises) {
+      promise.reject();
+    }
+  };
+}
 
 describe("createPollingSource", () => {
   beforeAll(() => {
@@ -12,273 +177,199 @@ describe("createPollingSource", () => {
   });
 
   describe("setup", () => {
-    it("immediately calls poll function", async () => {
-      const pollFn = vi.fn();
-      const source = createPollingSource(pollFn, { interval: { seconds: 1 } });
-      expect(pollFn).toHaveBeenCalledTimes(1);
-      source.done();
-    });
+    it(
+      "immediately calls poll function",
+      harness(async ({ setup }) => {
+        const { pollFn } = await setup();
+        expect(pollFn).toHaveBeenCalledTimes(1);
+      }),
+    );
 
     it.for([
-      ["non-async", (): number => 1],
-      ["async", async (): Promise<number> => 1],
-    ] as const)("handles %s poll function", async ([_, pollFn], { expect }) => {
-      const source = createPollingSource(pollFn, { interval: { seconds: 1 } });
-      await tick();
-      expect(source.data).toBe(1);
-      source.done();
-    });
+      ["non-async", { return: 1 }],
+      ["async", { resolve: 1 }],
+    ] as const)(
+      "handles %s poll function",
+      harness(async ({ setup }, [_, seed], { expect }) => {
+        const { source } = await setup({ seed: [seed] });
+        expect(source.data).toBe(1);
+      }),
+    );
 
-    it("handles poll function which immediately throws an error", async () => {
-      const error = new Error("an error");
-      const pollFn = vi
-        .fn()
-        .mockImplementationOnce(() => {
-          throw error;
-        })
-        .mockReturnValue(123);
-      const source = createPollingSource(pollFn, { interval: { seconds: 1 } });
-      await tick();
-      expect(pollFn).toBeCalledTimes(1);
-      expect(source.state).toBe(SourceState.Error);
-      expect(source.error?.source).toEqual(error);
+    it(
+      "handles poll function which immediately throws an error",
+      harness(async ({ setup }) => {
+        const error = new Error("an error");
+        const { source, pollFn } = await setup({
+          seed: [{ reject: error }, { resolve: 123 }],
+        });
 
-      await vi.advanceTimersByTimeAsync(1000);
-      await tick();
-      expect(pollFn).toBeCalledTimes(2);
-      expect(source.state).toBe(SourceState.Valid);
-      expect(source.data).toBe(123);
-      expect(source.error).toBe(null);
-      source.done();
-    });
+        expect(pollFn).toBeCalledTimes(1);
+        expect(source.state).toBe(SourceState.Error);
+        expect(source.error?.source).toEqual(error);
+
+        await vi.advanceTimersByTimeAsync(1000);
+        expect(pollFn).toBeCalledTimes(2);
+        expect(source.state).toBe(SourceState.Valid);
+        expect(source.data).toBe(123);
+        expect(source.error).toBe(null);
+      }),
+    );
   });
 
   describe("polling", () => {
-    it("continually calls poll function", async () => {
-      let callCount = 0;
-      const pollFn = vi.fn().mockImplementation(() => callCount++);
-      const source = createPollingSource(pollFn, { interval: { seconds: 1 } });
-      await tick();
+    it(
+      "continually calls poll function",
+      harness(async ({ setup }) => {
+        const { pollFn, source } = await setup({
+          seed: new Array(5).fill(null).map((_, i) => ({ resolve: i })),
+        });
 
-      for (let i = 0; i < 5; i++) {
-        expect(pollFn).toBeCalledTimes(i + 1);
-        expect(source.data).toEqual(i);
-        expect(source.loading).toBe(false);
+        for (let i = 0; i < 5; i++) {
+          expect(pollFn).toBeCalledTimes(i + 1);
+          expect(source.data).toEqual(i);
+          expect(source.loading).toBe(false);
 
-        // Partially advance timers.
-        await vi.advanceTimersByTimeAsync(999);
-        expect(pollFn).toBeCalledTimes(i + 1);
-        expect(source.loading).toBe(false);
+          // Partially advance timers.
+          await vi.advanceTimersByTimeAsync(999);
+          expect(pollFn).toBeCalledTimes(i + 1);
+          expect(source.loading).toBe(false);
 
-        // Advance remaining duration, ready for next loop.
-        await vi.advanceTimersByTimeAsync(1);
-      }
-
-      source.done();
-    });
+          // Advance remaining duration, ready for next loop.
+          await vi.advanceTimersByTimeAsync(1);
+        }
+      }),
+    );
 
     describe("source done", () => {
-      it("stops polling", async () => {
-        const pollFn = vi.fn();
-        const source = createPollingSource(pollFn, {
-          interval: { seconds: 1 },
-        });
-        await tick();
+      it(
+        "stops polling",
+        harness(async ({ setup }) => {
+          const { pollFn, source } = await setup();
 
-        // Source should be polled as normal.
-        expect(pollFn).toBeCalledTimes(1);
-        await vi.advanceTimersByTimeAsync(1000);
-        expect(pollFn).toBeCalledTimes(2);
+          // Source should be polled as normal.
+          expect(pollFn).toBeCalledTimes(1);
+          await vi.advanceTimersByTimeAsync(1000);
+          expect(pollFn).toBeCalledTimes(2);
 
-        // Source marked as done.
-        source.done();
+          // Source marked as done.
+          source.done();
 
-        // Poll function should never be called again, no matter how long is waited.
-        await vi.advanceTimersByTimeAsync(5000);
-        expect(pollFn).toBeCalledTimes(2);
-      });
+          // Poll function should never be called again, no matter how long is waited.
+          await vi.advanceTimersByTimeAsync(5000);
+          expect(pollFn).toBeCalledTimes(2);
+        }),
+      );
 
-      it("aborts in progress polls", async () => {
-        const inProgress = Promise.withResolvers();
-        const pollFn = vi.fn().mockReturnValueOnce(inProgress.promise);
-        const source = createPollingSource(pollFn, {
-          interval: { seconds: 1 },
-        });
-        await tick();
+      it(
+        "aborts in progress polls",
+        harness(async ({ setup, getSignal }) => {
+          const { pollFn, source } = await setup();
 
-        const firstPollSignal: AbortSignal = pollFn.mock.calls[0][0];
+          // Source should be polled.
+          expect(pollFn).toBeCalledTimes(1);
+          expect(getSignal(0).aborted).toBe(false);
 
-        // Source should be polled.
-        expect(pollFn).toBeCalledTimes(1);
-        expect(firstPollSignal.aborted).toBe(false);
+          // Source marked as done.
+          source.done();
 
-        // Source marked as done.
-        source.done();
-
-        expect(firstPollSignal.aborted).toBe(true);
-
-        // Clean up promise to prevent leak.
-        inProgress.resolve(null);
-      });
+          expect(getSignal(0).aborted).toBe(true);
+        }),
+      );
     });
 
     describe("slow poll function", () => {
-      it("calls next poll function while waiting", async () => {
-        const wontResolve = Promise.withResolvers();
-        const pollFn = vi
-          .fn()
-          // Initially returns a promise that won't resolve.
-          .mockReturnValueOnce(wontResolve.promise)
-          // Then returns a promise that will resolve to a value.
-          .mockResolvedValueOnce(123);
-        const source = createPollingSource(pollFn, {
-          interval: { seconds: 1 },
-        });
-        await tick();
+      it(
+        "calls next poll function while waiting",
+        harness(async ({ setup, resolve }) => {
+          const { pollFn, source } = await setup();
 
-        // Initially, poll function should be called and source should be loading.
-        expect(pollFn).toHaveBeenCalledTimes(1);
-        expect(source.loading).toBe(true);
-        expect(source.data).toBe(null);
+          // Initially, poll function should be called and source should be loading.
+          expect(pollFn).toHaveBeenCalledTimes(1);
+          expect(source.loading).toBe(true);
+          expect(source.data).toBe(null);
 
-        // Even though poll hasn't completed, next poll function should be called.
-        await vi.advanceTimersByTimeAsync(1000);
-        expect(pollFn).toHaveBeenCalledTimes(2);
-        // Since second poll function has resolved, source should reflect that data.
-        expect(source.loading).toBe(false);
-        expect(source.data).toBe(123);
+          // Even though poll hasn't completed, next poll function should be called.
+          await vi.advanceTimersByTimeAsync(1000);
+          expect(pollFn).toHaveBeenCalledTimes(2);
 
-        // Clean up resources.
-        source.done();
-        wontResolve.resolve(123);
-      });
+          // Immediately resolve second promise.
+          await resolve(1, 123);
 
-      it("ignores if it succeeds", async () => {
-        const slowPollPromise = Promise.withResolvers();
-        const pollFn = vi
-          .fn()
-          // Initially returns a promise that won't resolve.
-          .mockReturnValueOnce(slowPollPromise.promise)
-          // Then returns a promise that will resolve to a value.
-          .mockResolvedValueOnce(123);
-        const source = createPollingSource(pollFn, {
-          interval: { seconds: 1 },
-        });
-        await tick();
+          // Since second poll function has resolved, source should reflect that data.
+          expect(source.loading).toBe(false);
+          expect(source.data).toBe(123);
+        }),
+      );
 
-        // Initially, poll function should be called and source should be loading.
-        expect(pollFn).toHaveBeenCalledTimes(1);
-        expect(source.loading).toBe(true);
-        expect(source.data).toBe(null);
+      it(
+        "ignores if it succeeds",
+        harness(async ({ setup, resolve }) => {
+          const { pollFn, source } = await setup();
 
-        // Allow second poll to succeed.
-        await vi.advanceTimersByTimeAsync(1000);
-        expect(pollFn).toHaveBeenCalledTimes(2);
-        expect(source.loading).toBe(false);
-        expect(source.data).toBe(123);
+          // Initially, poll function should be called and source should be loading.
+          expect(pollFn).toHaveBeenCalledTimes(1);
+          expect(source.loading).toBe(true);
+          expect(source.data).toBe(null);
 
-        // Resolve first poll, and ensure it's data was ignored.
-        slowPollPromise.resolve(456);
-        await tick();
-        expect(source.data).toBe(123);
+          // Trigger the second poll.
+          await vi.advanceTimersByTimeAsync(1000);
+          expect(pollFn).toHaveBeenCalledTimes(2);
+          // Resolve it.
+          await resolve(1, 123);
+          expect(source.loading).toBe(false);
+          expect(source.data).toBe(123);
 
-        source.done();
-      });
+          // Resolve first poll, and ensure it's data was ignored.
+          await resolve(0, 456);
+          expect(source.data).toBe(123);
+        }),
+      );
 
-      it("aborts slow poll function if newer one succeeds", async () => {
-        const slowPollPromise = Promise.withResolvers();
-        const pollFn = vi
-          .fn()
-          // Initially returns a promise that won't resolve.
-          .mockReturnValueOnce(slowPollPromise.promise)
-          // Then returns a promise that will resolve to a value.
-          .mockResolvedValueOnce(123);
-        const source = createPollingSource(pollFn, {
-          interval: { seconds: 1 },
-        });
-        await tick();
+      it(
+        "aborts slow poll function if newer one succeeds",
+        harness(async ({ setup, resolve, getSignal }) => {
+          const { pollFn } = await setup();
 
-        // Extract the signal given to the first call.
-        const firstPollSignal: AbortSignal = pollFn.mock.calls[0][0];
-        expect(firstPollSignal.aborted).toBe(false);
+          // Extract the signal given to the first call.
+          expect(getSignal(0).aborted).toBe(false);
 
-        // Allow the second poll to succeed.
-        await vi.advanceTimersByTimeAsync(1000);
-        expect(pollFn).toHaveBeenCalledTimes(2);
+          // Allow the second poll to succeed.
+          await vi.advanceTimersByTimeAsync(1000);
+          expect(pollFn).toHaveBeenCalledTimes(2);
+          await resolve(1, 123);
 
-        // First poll should've been aborted.
-        expect(firstPollSignal.aborted).toBe(true);
+          // First poll should've been aborted.
+          expect(getSignal(0).aborted).toBe(true);
+        }),
+      );
 
-        // Clean up.
-        source.done();
-        slowPollPromise.resolve(123);
-      });
+      it(
+        "immediately aborts incomplete request when `tailRequests` = 0",
+        harness(async ({ setup, getSignal }) => {
+          const { pollFn } = await setup({ config: { tailRequests: 0 } });
 
-      it("immediately aborts incomplete request when `tailRequests` = 0", async () => {
-        const requests = new Array(3)
-          .fill(null)
-          .map(() => Promise.withResolvers());
-        let nextRequest = 0;
-        const pollFn = vi.fn().mockImplementation(async () => {
-          if (nextRequest >= requests.length) {
-            throw new Error("no more requests");
-          }
+          await vi.advanceTimersByTimeAsync(1000);
+          expect(pollFn).toBeCalledTimes(2);
+          expect(getSignal(0).aborted).toBe(true);
+          expect(getSignal(1).aborted).toBe(false);
 
-          const { promise } = requests[nextRequest];
-          nextRequest += 1;
-          return promise;
-        });
-        const source = createPollingSource(pollFn, {
-          interval: { seconds: 1 },
-          tailRequests: 0,
-        });
+          await vi.advanceTimersByTimeAsync(1000);
+          expect(pollFn).toBeCalledTimes(3);
+          expect(getSignal(1).aborted).toBe(true);
+          expect(getSignal(2).aborted).toBe(false);
 
-        await vi.advanceTimersByTimeAsync(1000);
-        expect(pollFn).toBeCalledTimes(2);
-        const firstSignal: AbortSignal = pollFn.mock.calls[0][0];
-        const secondSignal: AbortSignal = pollFn.mock.calls[1][0];
-        expect(firstSignal.aborted).toBe(true);
-        expect(secondSignal.aborted).toBe(false);
-
-        await vi.advanceTimersByTimeAsync(1000);
-        expect(pollFn).toBeCalledTimes(3);
-        const thirdSignal: AbortSignal = pollFn.mock.calls[2][0];
-        expect(secondSignal.aborted).toBe(true);
-        expect(thirdSignal.aborted).toBe(false);
-
-        await vi.advanceTimersByTimeAsync(1000);
-        expect(pollFn).toBeCalledTimes(4);
-        const fourthSignal: AbortSignal = pollFn.mock.calls[3][0];
-        expect(thirdSignal.aborted).toBe(true);
-        expect(fourthSignal.aborted).toBe(false);
-
-        // Clean up.
-        source.done();
-        for (const request of requests) {
-          request.resolve(null);
-        }
-      });
+          await vi.advanceTimersByTimeAsync(1000);
+          expect(pollFn).toBeCalledTimes(4);
+          expect(getSignal(2).aborted).toBe(true);
+          expect(getSignal(3).aborted).toBe(false);
+        }),
+      );
 
       it.for([[3], [5], [1]] as const)(
         "retains incomplete requests when `tailRequests` = %i",
-        async ([tailRequests], { expect }) => {
-          const requests = new Array(tailRequests + 2)
-            .fill(null)
-            .map(() => Promise.withResolvers());
-          let nextRequest = 0;
-          const pollFn = vi.fn().mockImplementation(async () => {
-            if (nextRequest >= requests.length) {
-              throw new Error("no more requests");
-            }
-
-            const { promise } = requests[nextRequest];
-            nextRequest += 1;
-            return promise;
-          });
-          const source = createPollingSource(pollFn, {
-            interval: { seconds: 1 },
-            tailRequests,
-          });
+        harness(async ({ setup, getSignal }, [tailRequests], { expect }) => {
+          const { pollFn } = await setup({ config: { tailRequests } });
 
           // Advance to start `tailRequests + 1` requests
           await vi.advanceTimersByTimeAsync(1000 * tailRequests);
@@ -286,8 +377,7 @@ describe("createPollingSource", () => {
 
           // Nothing should be aborted yet.
           for (let i = 0; i <= tailRequests; i++) {
-            const signal: AbortSignal = pollFn.mock.calls[i][0];
-            expect(signal.aborted).toBe(false);
+            expect(getSignal(i).aborted).toBe(false);
           }
 
           // Advance by 1 second to start one more poll.
@@ -295,85 +385,66 @@ describe("createPollingSource", () => {
           expect(pollFn).toBeCalledTimes(tailRequests + 2);
 
           // First signal should be aborted.
-          const firstSignal: AbortSignal = pollFn.mock.calls[0][0];
-          expect(firstSignal.aborted).toBe(true);
+          expect(getSignal(0).aborted).toBe(true);
 
           // Next `tailRequests + 1` signals should be active.
           for (let i = 1; i <= tailRequests + 1; i++) {
-            const signal: AbortSignal = pollFn.mock.calls[i][0];
-            expect(signal.aborted).toBe(false);
+            expect(getSignal(i).aborted).toBe(false);
           }
-
-          // Clean up.
-          source.done();
-          for (const request of requests) {
-            request.resolve(null);
-          }
-        },
+        }),
       );
     });
 
     describe("fallback data", () => {
-      it("uses older data if newer poll fails", async () => {
-        const pollFn = vi
-          .fn()
-          .mockResolvedValueOnce(123)
-          .mockRejectedValueOnce(new Error());
-        const source = createPollingSource(pollFn, {
-          interval: { seconds: 1 },
-        });
-        await tick();
+      it(
+        "uses older data if newer poll fails",
+        harness(async ({ setup }) => {
+          const { source } = await setup({
+            seed: [{ resolve: 123 }, { reject: new Error() }],
+          });
 
-        // Should have initial data.
-        expect(source.state).toEqual(SourceState.Valid);
-        expect(source.data).toEqual(123);
-        expect(source.loading).toBe(false);
+          // Should have initial data.
+          expect(source.state).toEqual(SourceState.Valid);
+          expect(source.data).toEqual(123);
+          expect(source.loading).toBe(false);
 
-        await vi.advanceTimersByTimeAsync(1000);
+          await vi.advanceTimersByTimeAsync(1000);
 
-        // Should show error.
-        expect(source.state).toEqual(SourceState.Error);
-        expect(source.error).not.toBe(null);
-        // Should retain initial data.
-        expect(source.data).toEqual(123);
-        expect(source.loading).toBe(false);
+          // Should show error.
+          expect(source.state).toEqual(SourceState.Error);
+          expect(source.error).not.toBe(null);
+          // Should retain initial data.
+          expect(source.data).toEqual(123);
+          expect(source.loading).toBe(false);
+        }),
+      );
 
-        source.done();
-      });
+      it(
+        "waits for older data if newer poll fails",
+        harness(async ({ setup, resolve, reject }) => {
+          const { pollFn, source } = await setup();
 
-      it("waits for older data if newer poll fails", async () => {
-        const dataPromise = Promise.withResolvers();
-        const pollFn = vi
-          .fn()
-          .mockReturnValueOnce(dataPromise.promise)
-          .mockRejectedValueOnce(new Error());
-        const source = createPollingSource(pollFn, {
-          interval: { seconds: 1 },
-        });
-        await tick();
+          // Poll function should've been called, and source should be loading.
+          expect(pollFn).toHaveBeenCalledTimes(1);
+          expect(source.loading).toBe(true);
 
-        // Poll function should've been called, and source should be loading.
-        expect(pollFn).toHaveBeenCalledTimes(1);
-        expect(source.loading).toBe(true);
+          // Advance to when the next poll is due.
+          await vi.advanceTimersByTimeAsync(1000);
+          expect(pollFn).toHaveBeenCalledTimes(2);
+          // Source should show error.
+          await reject(1, new Error());
+          expect(source.data).toBe(null);
+          expect(source.loading).toBe(false);
+          expect(source.state).toBe(SourceState.Error);
 
-        // Advance to when the next poll is due.
-        await vi.advanceTimersByTimeAsync(1000);
-        expect(pollFn).toHaveBeenCalledTimes(2);
-        // Source should show error.
-        expect(source.data).toBe(null);
-        expect(source.loading).toBe(false);
-        expect(source.state).toBe(SourceState.Error);
-
-        // Resolve the old poll function.
-        dataPromise.resolve(123);
-        await tick();
-        // Source should include data, while showing error.
-        expect(source.data).toEqual(123);
-        expect(source.loading).toBe(false);
-        expect(source.state).toBe(SourceState.Error);
-
-        source.done();
-      });
+          // Resolve the old poll function.
+          await resolve(0, 123);
+          // Source should include data, while showing error.
+          expect(source.data).toEqual(123);
+          expect(source.loading).toBe(false);
+          expect(source.state).toBe(SourceState.Error);
+        }),
+      );
     });
   });
 });
