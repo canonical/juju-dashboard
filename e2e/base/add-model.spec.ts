@@ -8,9 +8,9 @@ import urls from "urls";
 
 import { JujuEnv, test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
-import { AddModel } from "../helpers/actions";
+import { AddModel, GiveControllerAccess } from "../helpers/actions";
 import type { User } from "../helpers/auth";
-import { Model } from "../helpers/objects";
+import { ControllerPermission, Model } from "../helpers/objects";
 import { exec, execIfModelExists, generateRandomName } from "../utils";
 
 test.describe("Add model", () => {
@@ -25,6 +25,15 @@ test.describe("Add model", () => {
     await actions.prepare((add) => {
       owner = add(jujuCLI.createUser(true));
       sharedUser = add(jujuCLI.createUser());
+      if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
+        add(
+          new GiveControllerAccess(
+            jujuCLI.controllerInstance,
+            owner,
+            ControllerPermission.ADD_MODEL,
+          ),
+        );
+      }
     });
   });
 

@@ -97,8 +97,10 @@ jobs:
           test-identifier: e2e-jimm-juju-${{ steps.juju-version.outputs.version }}-k8s-charm-oidc-auth
         env:
           JIMM_CONTROLLER_NAME: ${{ steps.jimm.outputs.jimm-controller-name }}
-          CONTROLLER_NAME: ${{ steps.jimm.outputs.workloads-controller-name }}
+          CONTROLLER_NAME: ${{ steps.jimm.outputs.workloads-controller-public-name }}
+          WORKLOAD_CONTROLLER_NAME: ${{ steps.jimm.outputs.workloads-controller-private-name }}
           AUTH_MODE: oidc
+          AUTH_VARIANT: iam
           JUJU_ENV: jimm
           PROVIDER: microk8s
           ADMIN_USERNAME: ${{ inputs.admin-username }}
