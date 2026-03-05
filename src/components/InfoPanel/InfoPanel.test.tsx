@@ -5,7 +5,7 @@ import { vi } from "vitest";
 
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
-import { applicationStatusFactory } from "testing/factories/juju/ClientV7";
+import { applicationStatusFactory } from "testing/factories/juju/ClientV8";
 import {
   modelDataFactory,
   modelListInfoFactory,

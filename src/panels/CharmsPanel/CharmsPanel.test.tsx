@@ -14,7 +14,7 @@ import {
 import {
   applicationStatusFactory,
   unitStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
 import { renderComponent } from "testing/utils";
 
 import CharmsPanel from "./CharmsPanel";

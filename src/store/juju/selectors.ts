@@ -2,19 +2,18 @@ import type {
   ApplicationStatus,
   MachineStatus,
   UnitStatus,
-} from "@canonical/jujulib/dist/api/facades/client/ClientV6";
+} from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import type {
   ModelStatusInfo,
   RelationStatus,
-} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
-import type { ModelInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+} from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import { createSelector } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 import fastDeepEqual from "fast-deep-equal/es6";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type { RelationshipTuple } from "juju/jimm/JIMMV4";
-import type { FullStatusAnnotations } from "juju/types";
+import type { FullStatusAnnotations, ModelInfo } from "juju/types";
 import {
   getActiveUserTag,
   getActiveUserControllerAccess,
@@ -47,6 +46,7 @@ import {
   extractOwnerName,
   getApplicationStatusGroup,
   getMachineStatusGroup,
+  getModelQualifier,
   getUnitStatusGroup,
   groupModelsByStatus,
 } from "./utils/models";
@@ -714,7 +714,9 @@ export const getFilteredModelData = createSelector(
           ? extractCredentialName(data.info?.["cloud-credential-tag"])
           : null;
       const region = "model" in data ? data.model.region : null;
-      const owner = data.info ? extractOwnerName(data.info["owner-tag"]) : null;
+      const owner = data.info
+        ? extractOwnerName(getModelQualifier(data.info))
+        : null;
       // Combine all of the above to create string for fuzzy custom search
       const combinedModelAttributes = [
         modelName,
@@ -784,10 +786,10 @@ export const getModelUUID = createSelector(
     (_state: RootState, name: null | string = null): null | string => name,
   ],
   (modelData, name) => {
-    let owner = null;
+    let qualifier = null;
     let modelName = null;
     if (name?.includes("/")) {
-      [owner, modelName] = name.split("/");
+      [qualifier, modelName] = name.split("/");
     } else {
       modelName = name;
     }
@@ -795,8 +797,8 @@ export const getModelUUID = createSelector(
       for (const uuid in modelData) {
         const model = modelData[uuid].info;
         if (model?.name === modelName) {
-          if (owner) {
-            if (model["owner-tag"] === `user-${owner}`) {
+          if (qualifier) {
+            if (getModelQualifier(model) === qualifier) {
               // If this is a shared model then we'll also have an owner name
               return uuid;
             }
@@ -880,7 +882,7 @@ export const getGroupedByOwnerAndFilteredModelData = createSelector(
     for (const modelUUID in modelData) {
       const model = modelData[modelUUID];
       if (model.info) {
-        const owner = extractOwnerName(model.info["owner-tag"]);
+        const owner = extractOwnerName(getModelQualifier(model.info));
         if (!grouped[owner]) {
           grouped[owner] = [];
         }

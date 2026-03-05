@@ -2,11 +2,11 @@ import {
   applicationOfferStatusFactory,
   applicationStatusFactory,
   unitStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
 import {
   detailedStatusFactory,
   machineStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
 import { modelDataFactory } from "testing/factories/juju/juju";
 
 import {

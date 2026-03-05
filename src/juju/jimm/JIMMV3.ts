@@ -1,5 +1,5 @@
 import type { ConnectionInfo, Transport } from "@canonical/jujulib";
-import type { EntityStatus } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { EntityStatus } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import { autoBind } from "@canonical/jujulib/dist/api/utils";
 
 // As typed in JIMM:

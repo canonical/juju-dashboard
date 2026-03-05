@@ -15,7 +15,7 @@ import {
 import {
   applicationStatusFactory,
   detailedStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
 import {
   rebacAllowedFactory,
   relationshipTupleFactory,

@@ -1,9 +1,9 @@
-import type { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/application/ApplicationV19";
+import type { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/application/ApplicationV22";
 import type {
   ApplicationOfferStatus,
   RemoteApplicationStatus,
   StorageDetails,
-} from "@canonical/jujulib/dist/api/facades/client/ClientV7";
+} from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 
 import useModelStatus from "hooks/useModelStatus";
 

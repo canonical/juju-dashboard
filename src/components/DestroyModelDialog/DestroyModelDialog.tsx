@@ -1,4 +1,4 @@
-import type { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/application/ApplicationV19";
+import type { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/application/ApplicationV22";
 import {
   ConfirmationModal,
   Icon,

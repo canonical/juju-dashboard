@@ -1,12 +1,12 @@
 import type { Client, Connection } from "@canonical/jujulib";
 import * as jujuLib from "@canonical/jujulib";
-import type { ModelInfoResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
 import * as jujuLibVersions from "@canonical/jujulib/dist/api/versions";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { Auth, CandidAuth, LocalAuth, OIDCAuth } from "auth";
+import type { ModelInfoResults } from "juju/types";
 import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
@@ -16,17 +16,17 @@ import {
   credentialFactory,
   generalStateFactory,
 } from "testing/factories/general";
-import { errorResultsFactory } from "testing/factories/juju/Application";
+import { errorResultsFactory } from "testing/factories/juju/Application22";
 import { charmInfoFactory } from "testing/factories/juju/Charms";
 import {
   applicationStatusFactory,
   fullStatusFactory,
-} from "testing/factories/juju/ClientV7";
+} from "testing/factories/juju/ClientV8";
 import {
   modelInfoFactory,
   modelInfoResultFactory,
   modelInfoResultsFactory,
-} from "testing/factories/juju/ModelManagerV9";
+} from "testing/factories/juju/ModelManagerV10";
 import {
   controllerFactory,
   controllerInfoFactory,

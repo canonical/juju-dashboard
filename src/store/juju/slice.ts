@@ -1,10 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
-import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV7";
-import type {
-  DestroyModelParams,
-  ModelInfoResults,
-  UserModelList,
-} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV9";
+import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
+import type { DestroyModelParams } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
   ListSecretResult,
   SecretValueResult,
@@ -20,7 +16,11 @@ import type {
   CrossModelQueryResponse,
   RelationshipTuple,
 } from "juju/jimm/JIMMV4";
-import type { FullStatusWithAnnotations } from "juju/types";
+import type {
+  FullStatusWithAnnotations,
+  ModelInfoResults,
+  UserModelList,
+} from "juju/types";
 
 import type {
   Controllers,
@@ -31,6 +31,7 @@ import type {
   ReBACAllowed,
   HistoryItem,
 } from "./types";
+import { getModelQualifier } from "./utils/models";
 
 export const DEFAULT_AUDIT_EVENTS_LIMIT = 50;
 
@@ -146,7 +147,7 @@ const slice = createSlice({
         const { uuid } = model.model;
         modelList[uuid] = {
           name: model.model.name,
-          qualifier: model.model["owner-tag"],
+          qualifier: getModelQualifier(model.model),
           type: model.model.type,
           uuid,
           wsControllerURL: action.payload.wsControllerURL,
