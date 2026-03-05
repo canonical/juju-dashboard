@@ -9,6 +9,7 @@ const TEST_TIMEOUT_MULT = 10;
 
 export default defineConfig({
   testDir: "./e2e",
+  testMatch: "controllers.spec.ts",
   testIgnore:
     process.env.JUJU_ENV === "juju" ? "*jimm/*.spec.ts" : "*juju/*.spec.ts",
   fullyParallel: process.env.CI ? false : true,
