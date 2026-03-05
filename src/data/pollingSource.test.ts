@@ -446,6 +446,81 @@ describe("createPollingSource", () => {
         }),
       );
     });
+
+    describe("refetch", () => {
+      it(
+        "immediately triggers a poll when invalidated",
+        harness(async ({ setup, resolve }) => {
+          const { source, pollFn } = await setup({
+            config: { ignoreRefetch: false },
+          });
+
+          await resolve(0, 123);
+
+          expect(pollFn).toBeCalledTimes(1);
+
+          // Partially advance.
+          await vi.advanceTimersByTimeAsync(500);
+          expect(pollFn).toBeCalledTimes(1);
+
+          source.invalidate();
+          // Signal propagating.
+          await tick();
+          // Trigger next poll.
+          await tick();
+          expect(pollFn).toBeCalledTimes(2);
+
+          expect(source.state).toBe(SourceState.Stale);
+          expect(source.loading).toBe(true);
+
+          await resolve(1, 456);
+
+          // Advance to 1s total, which shouldn't have an additional poll.
+          await vi.advanceTimersByTimeAsync(500);
+          expect(pollFn).toBeCalledTimes(2);
+
+          expect(source.state).toBe(SourceState.Valid);
+          expect(source.loading).toBe(false);
+
+          // Additional poll should take place at 1.5s
+          await vi.advanceTimersByTimeAsync(500);
+          expect(pollFn).toBeCalledTimes(3);
+        }),
+      );
+
+      it(
+        "does not trigger a poll if `ignoreRefetch` is set",
+        harness(async ({ setup, resolve }) => {
+          const { source, pollFn } = await setup({
+            config: { ignoreRefetch: true },
+          });
+
+          await resolve(0, 123);
+
+          expect(pollFn).toBeCalledTimes(1);
+
+          // Advance before invalidating.
+          await vi.advanceTimersByTimeAsync(500);
+
+          source.invalidate();
+          // Signal propagating.
+          await tick();
+          // Trigger next poll.
+          await tick();
+
+          expect(source.state).toBe(SourceState.Stale);
+          expect(source.loading).toBe(false);
+
+          // Invalidation should be ignored.
+          expect(pollFn).toBeCalledTimes(1);
+
+          // Timer should continue as usual.
+          await vi.advanceTimersByTimeAsync(500);
+          expect(pollFn).toBeCalledTimes(2);
+        }),
+      );
+    });
+  });
   });
 });
 

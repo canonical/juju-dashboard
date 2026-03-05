@@ -105,6 +105,7 @@ export function createPollingSource<T>(
 
   return createSource(({ load, sourceDone }) => {
     const pollControllers = new PollControllerManager();
+    let iterationController = new AbortController();
 
     // If the source is done, abort all controllers.
     sourceDone.addEventListener(
@@ -129,7 +130,12 @@ export function createPollingSource<T>(
           // eslint-disable-next-line @typescript-eslint/promise-function-async
           () => pollFn(controller.signal),
         );
-        const nextTick = waitFor(fullConfig.interval, sourceDone);
+
+        const timeoutSignal = AbortSignal.any([
+          sourceDone,
+          iterationController.signal,
+        ]);
+        const pollTimeout = waitFor(fullConfig.interval, timeoutSignal);
 
         // Indicate that the data is loading.
         load(dataPromise, controller.signal);
@@ -147,7 +153,7 @@ export function createPollingSource<T>(
 
         try {
           // Wait for either the tick to complete, or the source to be completed.
-          await nextTick;
+          await pollTimeout;
         } catch (error) {
           if (!(error instanceof AbortError)) {
             // Some other error occurred, re-throw the error.
@@ -162,6 +168,10 @@ export function createPollingSource<T>(
         if (fullConfig.ignoreRefetch) {
           return;
         }
+
+        const controller = iterationController;
+        iterationController = new AbortController();
+        controller.abort();
       },
     };
   });
