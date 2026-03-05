@@ -3,8 +3,9 @@ import { exec, execIfModelExists, generateRandomName } from "../../utils";
 import type { Action } from "../action";
 import type { User } from "../auth";
 import type { JujuCLI } from "../juju-cli";
-import { Model, ModelPermission } from "../objects";
+import { ControllerPermission, Model, ModelPermission } from "../objects";
 
+import { GiveControllerAccess } from "./giveControllerAccess";
 import { GiveModelAccess } from "./giveModelAccess";
 
 /**
@@ -35,6 +36,23 @@ export class AddModel implements Action<Model> {
     if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
       // In JIMM models need to be added to the workloads controller.
       await exec(`juju switch '${jujuCLI.controller}'`);
+      // If the admin user will create the model then they need add-model permissions on the controller.
+      if (this.asOwner) {
+        const giveAccess = new GiveControllerAccess(
+          jujuCLI.controllerInstance,
+          this.admin,
+          ControllerPermission.ADD_MODEL,
+        );
+        try {
+          await giveAccess.run(jujuCLI);
+        } catch (error) {
+          // This will receive an error if the user already has permission on the controller.
+          console.log(
+            `Didn't give ${this.admin} add-model permissions on the controller, got the error:`,
+            error,
+          );
+        }
+      }
     }
     await this.model.owner.cliLogin(jujuCLI.browser);
     await exec(`juju add-model '${this.model.name}'`);

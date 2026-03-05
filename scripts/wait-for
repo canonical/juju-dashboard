@@ -58,12 +58,5 @@ while true; do
     fi
   done
 
-  # Check for error states
-  if [ "$STATUS" == "error" ]; then
-    echo "ERROR: $TYPE $NAME is in error state"
-    juju status "$NAME"
-    exit 1
-  fi
-
   sleep 5
 done

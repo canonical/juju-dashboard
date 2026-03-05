@@ -51,6 +51,10 @@ runs:
         echo "-------------------------------------"
         juju status -m iam || true
         echo "-------------------------------------"
+        echo "IAM core status"
+        echo "-------------------------------------"
+        juju status -m core || true
+        echo "-------------------------------------"
         echo "JIMM status"
         echo "-------------------------------------"
         juju status -m ${{ inputs.controller }}:jimm || true

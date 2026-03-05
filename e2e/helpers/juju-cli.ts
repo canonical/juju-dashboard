@@ -53,12 +53,10 @@ class BootstrapAction implements Action<User> {
       await jujuCLI.loginLocalCLIAdmin();
     }
 
-    if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
-      // Grant access to the cloud.
-      await exec(
-        `juju grant-cloud '${user.cliUsername}' ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
-      );
-    }
+    // Grant access to the cloud.
+    await exec(
+      `juju grant-cloud '${user.cliUsername}' ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
+    );
 
     // Login as the user.
     await user.cliLogin(jujuCLI.browser);
@@ -122,6 +120,7 @@ export class JujuCLI {
   public localAdmin: User;
   public identityAdmin: User;
   public controllerInstance: Controller;
+  public jimmControllerInstance: Controller | undefined;
 
   constructor(
     public jujuEnv: JujuEnv,
@@ -144,10 +143,17 @@ export class JujuCLI {
       identityPassword,
     );
     this.controllerInstance = new Controller(
-      // In JIMM the controller name given to Juju is "jimm".
-      this.jujuEnv === JujuEnv.JIMM ? "jimm" : this.controller,
+      this.jujuEnv === JujuEnv.JIMM &&
+        process.env.AUTH_VARIANT === "iam" &&
+        process.env.WORKLOAD_CONTROLLER_NAME
+        ? process.env.WORKLOAD_CONTROLLER_NAME
+        : this.controller,
       this.identityAdmin,
     );
+    // In JIMM there is a special "jimm" controller for giving "jimm admin" privileges.
+    if (this.jujuEnv === JujuEnv.JIMM) {
+      this.jimmControllerInstance = new Controller("jimm", this.identityAdmin);
+    }
   }
 
   /**

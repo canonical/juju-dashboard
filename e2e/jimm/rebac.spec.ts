@@ -25,11 +25,16 @@ test.describe("ReBAC Admin", () => {
   });
 
   test("can be accessed", async ({ jujuCLI, page }) => {
+    const jimmController = jujuCLI.jimmControllerInstance;
+    if (!jimmController) {
+      test.fail(true, "JIMM controller not defined");
+      return;
+    }
     const user = await actions.prepare((add) => {
       const newUser = add(jujuCLI.createUser());
       add(
         new GiveControllerAccess(
-          jujuCLI.controllerInstance,
+          jimmController,
           newUser,
           ControllerPermission.SUPERUSER,
         ),
