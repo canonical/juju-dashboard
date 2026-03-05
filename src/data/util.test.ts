@@ -1,5 +1,5 @@
 import { wrapPromise, tick } from "./testUtils";
-import { promisify, signalAsPromise, waitFor } from "./util";
+import { AbortError, promisify, waitFor } from "./util";
 
 describe("promisify", () => {
   it.for([
@@ -57,15 +57,11 @@ describe("waitFor", () => {
       expect(promise.done).toBe(true);
     },
   );
-});
 
-describe("signalAsPromise", () => {
-  it("immediately resolves when signal aborts", async () => {
+  it("will cancel if signal aborts", async () => {
     const controller = new AbortController();
-    const promise = wrapPromise(signalAsPromise(controller.signal));
-    expect(promise.done).toBe(false);
+    const promise = waitFor({ minutes: 60 }, controller.signal);
     controller.abort();
-    await tick();
-    expect(promise.done).toBe(true);
+    await expect(promise).rejects.toThrow(AbortError);
   });
 });

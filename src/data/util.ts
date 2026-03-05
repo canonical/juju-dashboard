@@ -53,10 +53,19 @@ export function promisify<T>(
   }
 }
 
+export class AbortError extends Error {
+  constructor() {
+    super("Operation aborted");
+  }
+}
+
 /**
  * Create a promise that will resolve after the specified duration.
  */
-export async function waitFor(duration: Duration): Promise<void> {
+export async function waitFor(
+  duration: Duration,
+  signal?: AbortSignal,
+): Promise<void> {
   let timeout = Infinity;
   if ("milliseconds" in duration) {
     timeout = duration.milliseconds;
@@ -70,19 +79,15 @@ export async function waitFor(duration: Duration): Promise<void> {
     return;
   }
 
-  return new Promise((resolve) => setTimeout(resolve, timeout));
-}
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(resolve, timeout);
 
-/**
- * Return a promise that will resolve when the provided signal aborts.
- */
-// NOTE: Adding `async` to this function signature leads to an extra tick in order to resolve to
-// the once the signal aborts.
-// eslint-disable-next-line @typescript-eslint/promise-function-async
-export function signalAsPromise(signal: AbortSignal): Promise<void> {
-  return new Promise((resolve) => {
-    signal.addEventListener("abort", () => {
-      resolve();
-    });
+    // If the signal is aborted, immediately reject the promise.
+    if (signal) {
+      signal.addEventListener("abort", () => {
+        clearTimeout(timeoutId);
+        reject(new AbortError());
+      });
+    }
   });
 }
