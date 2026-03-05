@@ -521,6 +521,75 @@ describe("createPollingSource", () => {
       );
     });
   });
+
+  describe("`Source` interface", () => {
+    it(
+      "sets loading state aligned with poll functions",
+      harness(async ({ setup, resolve }) => {
+        const { source } = await setup();
+
+        expect(source.loading).toBe(true);
+
+        await resolve(0, 123);
+        expect(source.loading).toBe(false);
+
+        await vi.advanceTimersByTimeAsync(1000);
+        expect(source.loading).toBe(true);
+      }),
+    );
+
+    it(
+      "updates `data` with latest available data",
+      harness(async ({ setup, resolve }) => {
+        const { source } = await setup();
+
+        expect(source.data).toBe(null);
+        await resolve(0, 123);
+        expect(source.data).toBe(123);
+
+        await vi.advanceTimersByTimeAsync(1000);
+        await resolve(1, 456);
+        expect(source.data).toBe(456);
+      }),
+    );
+
+    describe("error", () => {
+      it(
+        "displays error",
+        harness(async ({ setup, reject }) => {
+          const { source } = await setup();
+
+          expect(source.error).toBe(null);
+
+          const error = new Error("An error.");
+          await reject(0, error);
+          expect(source.error?.source).toBe(error);
+
+          // Error should still be present while next poll is pending.
+          await vi.advanceTimersByTimeAsync(1000);
+          expect(source.state).toBe(SourceState.Error);
+          expect(source.loading).toBe(true);
+          expect(source.error?.source).toBe(error);
+        }),
+      );
+
+      it(
+        "clears error after successful load",
+        harness(async ({ setup, resolve, reject }) => {
+          const { source } = await setup();
+
+          const error = new Error("An error.");
+          await reject(0, error);
+          await vi.advanceTimersByTimeAsync(1000);
+          expect(source.state).toBe(SourceState.Error);
+          expect(source.error?.source).toBe(error);
+
+          await resolve(1, 123);
+          expect(source.state).toBe(SourceState.Valid);
+          expect(source.error).toBe(null);
+        }),
+      );
+    });
   });
 });
 
