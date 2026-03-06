@@ -35,6 +35,22 @@ export class PollControllerManager {
   private controllers: AbortController[] = [];
 
   /**
+   * Return the number of controllers currently in the manager.
+   */
+  get length(): number {
+    return this.controllers.length;
+  }
+
+  /**
+   * Produce a signal that will abort when any of the contained controllers abort.
+   */
+  get signal(): AbortSignal {
+    return AbortSignal.any(
+      this.controllers.map((controller) => controller.signal),
+    );
+  }
+
+  /**
    * Abort all controllers.
    */
   abortAll(): void {
@@ -61,22 +77,22 @@ export class PollControllerManager {
    * Abort all but the last `count` controllers.
    */
   tail(count: number): void {
-    this.tailUntilIndex(this.controllers.length - count);
+    this.tailToIndex(this.controllers.length - count - 1);
   }
 
   /**
-   * Tail all controllers which occur before the provided controller.
+   * Tail all controllers up to and including the provided controller.
    */
-  tailUntil(controller: AbortController): void {
+  tailTo(controller: AbortController): void {
     const i = this.controllers.indexOf(controller);
-    this.tailUntilIndex(i);
+    this.tailToIndex(i);
   }
 
   /**
-   * Tail all controllers up until the provided index.
+   * Tail all controllers up to and including the provided index.
    */
-  tailUntilIndex(i: number): void {
-    const old = this.controllers.splice(0, i);
+  tailToIndex(i: number): void {
+    const old = this.controllers.splice(0, i + 1);
     for (const controller of old) {
       controller.abort();
     }
@@ -118,8 +134,13 @@ export function createPollingSource<T>(
 
     void (async (): Promise<void> => {
       while (!sourceDone.aborted) {
-        // Terminate old requests.
-        pollControllers.tail(fullConfig.tailRequests);
+        // If `tailRequests` is full, then wait for one of the requests to finish.
+        if (pollControllers.length > fullConfig.tailRequests) {
+          await new Promise((resolve) => {
+            pollControllers.signal.addEventListener("abort", resolve);
+          });
+          continue;
+        }
 
         // Create a fresh abort controller for this request.
         const controller = pollControllers.create();
@@ -143,7 +164,7 @@ export function createPollingSource<T>(
         // Clear old controllers once this poll is complete.
         void dataPromise
           .then(() => {
-            pollControllers.tailUntil(controller);
+            pollControllers.tailTo(controller);
             return;
           })
           // Ignore any errors that are thrown.

@@ -345,53 +345,128 @@ describe("createPollingSource", () => {
       );
 
       it(
-        "immediately aborts incomplete request when `tailRequests` = 0",
-        harness(async ({ setup, getSignal }) => {
-          const { pollFn } = await setup({ config: { tailRequests: 0 } });
+        "waits for incomplete request when `tailRequests` = 0",
+        harness(async ({ setup, getSignal, resolve }) => {
+          const { source, pollFn } = await setup({
+            config: { tailRequests: 0 },
+          });
 
+          expect(pollFn).toBeCalledTimes(1);
+
+          // Advance to the next poll point, but function shouldn't be called as it's still
+          // pending.
           await vi.advanceTimersByTimeAsync(1000);
+          expect(getSignal(0).aborted).toBe(false);
+          expect(pollFn).toBeCalledTimes(1);
+
+          // Still should be waiting at 2 seconds.
+          await vi.advanceTimersByTimeAsync(1000);
+          expect(getSignal(0).aborted).toBe(false);
+          expect(pollFn).toBeCalledTimes(1);
+
+          // Advance to the middle of the timeout, and then resolve.
+          await vi.advanceTimersByTimeAsync(500);
+          await resolve(0, 123);
+
+          // Extra tick for blocking promise to resolve.
+          await tick();
+
+          expect(source.data).toBe(123);
+
+          // Next poll should immediately be called, since it's been over 1s since the last request.
           expect(pollFn).toBeCalledTimes(2);
-          expect(getSignal(0).aborted).toBe(true);
-          expect(getSignal(1).aborted).toBe(false);
-
-          await vi.advanceTimersByTimeAsync(1000);
-          expect(pollFn).toBeCalledTimes(3);
-          expect(getSignal(1).aborted).toBe(true);
-          expect(getSignal(2).aborted).toBe(false);
-
-          await vi.advanceTimersByTimeAsync(1000);
-          expect(pollFn).toBeCalledTimes(4);
-          expect(getSignal(2).aborted).toBe(true);
-          expect(getSignal(3).aborted).toBe(false);
         }),
       );
 
-      it.for([[3], [5], [1]] as const)(
-        "retains incomplete requests when `tailRequests` = %i",
-        harness(async ({ setup, getSignal }, [tailRequests], { expect }) => {
-          const { pollFn } = await setup({ config: { tailRequests } });
+      describe.for([[3], [5], [1]] as const)(
+        "when `tailRequests` = %i",
+        ([tailRequests]) => {
+          it(
+            "stops creating new requests once `tailRequests` reached",
+            harness(async ({ setup, getSignal }) => {
+              const { pollFn } = await setup({ config: { tailRequests } });
 
-          // Advance to start `tailRequests + 1` requests
-          await vi.advanceTimersByTimeAsync(1000 * tailRequests);
-          expect(pollFn).toBeCalledTimes(tailRequests + 1);
+              // Advance to start `tailRequests + 1` requests
+              await vi.advanceTimersByTimeAsync(1000 * tailRequests);
+              expect(pollFn).toBeCalledTimes(tailRequests + 1);
 
-          // Nothing should be aborted yet.
-          for (let i = 0; i <= tailRequests; i++) {
-            expect(getSignal(i).aborted).toBe(false);
-          }
+              // Nothing should be aborted yet.
+              for (let i = 0; i <= tailRequests; i++) {
+                expect(getSignal(i).aborted).toBe(false);
+              }
 
-          // Advance by 1 second to start one more poll.
-          await vi.advanceTimersByTimeAsync(1000);
-          expect(pollFn).toBeCalledTimes(tailRequests + 2);
+              // Advance by 1 second, but new poll shouldn't start since there's one pending.
+              await vi.advanceTimersByTimeAsync(1000);
+              expect(pollFn).toBeCalledTimes(tailRequests + 1);
 
-          // First signal should be aborted.
-          expect(getSignal(0).aborted).toBe(true);
+              // No requests should be aborted.
+              for (let i = 0; i <= tailRequests; i++) {
+                expect(getSignal(i).aborted).toBe(false);
+              }
+            }),
+          );
 
-          // Next `tailRequests + 1` signals should be active.
-          for (let i = 1; i <= tailRequests + 1; i++) {
-            expect(getSignal(i).aborted).toBe(false);
-          }
-        }),
+          it(
+            "starts new poll as soon as one request finishes",
+            harness(async ({ setup, resolve }) => {
+              const { pollFn } = await setup({ config: { tailRequests } });
+
+              // Max out on requests.
+              await vi.advanceTimersByTimeAsync(1000 * tailRequests);
+              expect(pollFn).toBeCalledTimes(tailRequests + 1);
+
+              // Advance another second, expect no more requests;
+              await vi.advanceTimersByTimeAsync(1000);
+              expect(pollFn).toBeCalledTimes(tailRequests + 1);
+
+              // Resolve the oldest request.
+              await resolve(0, 123);
+
+              // Allow loop promise to resolve.
+              await tick();
+
+              // Poll function should be immediately called.
+              expect(pollFn).toBeCalledTimes(tailRequests + 2);
+            }),
+          );
+
+          it(
+            "cancels old requests if middle one finishes",
+            harness(async ({ setup, getSignal, resolve }) => {
+              const { pollFn } = await setup({ config: { tailRequests } });
+
+              // Max out on requests.
+              await vi.advanceTimersByTimeAsync(1000 * tailRequests);
+              expect(pollFn).toBeCalledTimes(tailRequests + 1);
+
+              // Advance another second, expect no more requests;
+              await vi.advanceTimersByTimeAsync(1000);
+              expect(pollFn).toBeCalledTimes(tailRequests + 1);
+
+              // Pick a middle request to resolve.
+              const target = Math.floor(tailRequests / 2);
+
+              // Resolve the oldest request.
+              await resolve(target, 123);
+
+              // Allow loop promise to resolve.
+              await tick();
+
+              // Everything before should be aborted.
+              for (let i = 0; i <= target; i++) {
+                expect(getSignal(i).aborted).toBe(true);
+              }
+
+              // Everything after should be not aborted.
+              for (let i = target + 1; i <= tailRequests; i++) {
+                expect(getSignal(i).aborted).toBe(false);
+              }
+
+              // Poll function should be immediately called.
+              expect(pollFn).toBeCalledTimes(tailRequests + 2);
+            }),
+          );
+        },
       );
     });
 
@@ -594,15 +669,15 @@ describe("createPollingSource", () => {
 });
 
 describe("PollControllerManager", () => {
-  describe("tailUntilIndex", () => {
+  describe("tailToIndex", () => {
     it.for([
       [-1, 10],
-      [0, 10],
-      [1, 9],
-      [3, 7],
-      [5, 5],
+      [0, 9],
+      [1, 8],
+      [3, 6],
+      [5, 4],
+      [9, 0],
       [10, 0],
-      [11, 0],
     ] as const)(
       "index %i tails %i items",
       ([i, expectedRemaining], { expect }) => {
@@ -611,15 +686,17 @@ describe("PollControllerManager", () => {
           .fill(null)
           .map(() => manager.create());
 
-        manager.tailUntilIndex(i);
+        const pivot = 10 - expectedRemaining;
+
+        manager.tailToIndex(i);
         expect(
           controllers
-            .slice(0, 10 - expectedRemaining)
+            .slice(0, pivot)
             .every((controller) => controller.signal.aborted),
         ).toBe(true);
         expect(
           controllers
-            .slice(10 - expectedRemaining)
+            .slice(pivot)
             .every((controller) => !controller.signal.aborted),
         ).toBe(true);
       },
@@ -643,36 +720,39 @@ describe("PollControllerManager", () => {
           .fill(null)
           .map(() => manager.create());
 
+        const pivot = 10 - expectedRemaining;
+
         manager.tail(count);
         expect(
           controllers
-            .slice(0, 10 - expectedRemaining)
+            .slice(0, pivot)
             .every((controller) => controller.signal.aborted),
         ).toBe(true);
         expect(
           controllers
-            .slice(10 - expectedRemaining)
+            .slice(pivot)
             .every((controller) => !controller.signal.aborted),
         ).toBe(true);
       },
     );
 
-    describe("tailUntil", () => {
+    describe("tailTo", () => {
       it("aborts everything before controller", () => {
         const manager = new PollControllerManager();
         const controllers = new Array(10)
           .fill(null)
           .map(() => manager.create());
 
-        manager.tailUntil(controllers[7]);
+        manager.tailTo(controllers[7]);
+        expect(controllers[7].signal.aborted).toBe(true);
         expect(
           controllers
-            .slice(0, 7)
+            .slice(0, 8)
             .every((controller) => controller.signal.aborted),
         ).toBe(true);
         expect(
           controllers
-            .slice(7)
+            .slice(8)
             .every((controller) => !controller.signal.aborted),
         ).toBe(true);
       });
@@ -683,7 +763,7 @@ describe("PollControllerManager", () => {
           .fill(null)
           .map(() => manager.create());
 
-        manager.tailUntil(new AbortController());
+        manager.tailTo(new AbortController());
         expect(
           controllers.every((controller) => !controller.signal.aborted),
         ).toBe(true);
