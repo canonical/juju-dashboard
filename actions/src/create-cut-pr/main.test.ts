@@ -167,7 +167,7 @@ describe("create-cut-pr", () => {
       });
     });
 
-    it.skipIf(branches.length == 0)(
+    it.skipIf(branches.length === 0)(
       "upgrade existing cut pr",
       async ({ expect }) => {
         ctx.pr = mockPr({

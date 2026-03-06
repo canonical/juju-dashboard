@@ -1,3 +1,10 @@
+export enum SourceState {
+  Error = "error",
+  Stale = "stale",
+  Unknown = "unknown",
+  Valid = "valid",
+}
+
 /**
  * Interface of a data source for type `T`.
  */
@@ -12,17 +19,13 @@ export type Source<T> = {
   done: () => void;
   /**
    * Current state of the data.
-   *
    * - `unknown`: State of data is not currently known.
-   *
    * - `error`: An error occurred while fetching the data.
-   *
    * - `valid`: The data is up-to-date.
-   *
    * - `stale`: The data has been invalidated, and is waiting to be
    *   re-fetched.
    */
-  state: "error" | "stale" | "unknown" | "valid";
+  state: SourceState;
   /**
    * Loading state of the source.
    */

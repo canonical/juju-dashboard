@@ -26,7 +26,7 @@ export class GiveAccess<Entity extends Controller | Model>
     jimmCommand: string,
     isRollback?: boolean,
   ): Promise<void> {
-    if (jujuCLI.jujuEnv == JujuEnv.JUJU) {
+    if (jujuCLI.jujuEnv === JujuEnv.JUJU) {
       const entityName =
         this.tag === "controller" ? "" : `'${this.entityName}'`;
       await jujuCLI.loginLocalCLIAdmin();
