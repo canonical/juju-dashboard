@@ -1,4 +1,5 @@
-import { wrapPromise, tick } from "./testUtils";
+import { wrapPromise, tick } from "../testing/tsUtils";
+
 import { AbortError, promisify, waitFor } from "./util";
 
 describe("promisify", () => {

@@ -14,9 +14,8 @@ export type WrappedPromise<T> = { done: boolean } & Promise<T>;
 export function wrapPromise<T>(promise: Promise<T>): WrappedPromise<T> {
   const wrapped = promise as WrappedPromise<T>;
   wrapped.done = false;
-  void wrapped.then(() => {
+  void wrapped.finally(() => {
     wrapped.done = true;
-    return;
   });
   return wrapped;
 }

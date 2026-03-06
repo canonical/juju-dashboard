@@ -1,6 +1,7 @@
+import { tick } from "../testing/tsUtils";
+
 import { SourceState } from "./source";
 import { createSource, type SourceHooks, type SourceBase } from "./sourceBase";
-import { tick } from "./testUtils";
 
 const DUMMY_HOOKS = { refetch: (): void => {} } satisfies SourceHooks;
 

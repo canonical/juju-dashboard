@@ -173,7 +173,10 @@ export function createPollingSource<T>(
           });
 
         try {
-          // Wait for either the tick to complete, or the source to be completed.
+          // Wait for either:
+          // - the tick to complete (`pollTimeout` promise)
+          // - the source to be completed (`sourceDone` signal passed to `timeoutSignal`)
+          // - the iteration to be completed (`iterationController` signal passed to `timeoutSignal`)
           await pollTimeout;
         } catch (error) {
           if (!(error instanceof AbortError)) {
@@ -190,6 +193,10 @@ export function createPollingSource<T>(
           return;
         }
 
+        // Abort `iterationController`, which will:
+        // - cause `timeoutSignal` to abort
+        // - cause `pollTimeout` to reject with `AbortError`
+        // - cause the loop to restart
         const controller = iterationController;
         iterationController = new AbortController();
         controller.abort();

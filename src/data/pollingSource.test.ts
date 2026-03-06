@@ -1,5 +1,7 @@
 import type { MockedFunction } from "vitest";
 
+import { tick } from "../testing/tsUtils";
+
 import {
   createPollingSource,
   type PollConfig,
@@ -7,7 +9,6 @@ import {
   type PollFn,
 } from "./pollingSource";
 import { SourceState, type Source } from "./source";
-import { tick } from "./testUtils";
 
 /**
  * Function signature for `setup` function in the test harness.
@@ -320,7 +321,7 @@ describe("createPollingSource", () => {
           expect(source.loading).toBe(false);
           expect(source.data).toBe(123);
 
-          // Resolve first poll, and ensure it's data was ignored.
+          // Resolve first poll, and ensure its data was ignored.
           await resolve(0, 456);
           expect(source.data).toBe(123);
         }),
