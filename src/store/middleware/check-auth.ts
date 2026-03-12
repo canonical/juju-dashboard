@@ -64,6 +64,8 @@ export const checkAuthMiddleware: Middleware<
     // These lists need to be generated at run time to prevent circular imports.
     const actionAllowlist = [
       appActions.connectAndPollControllers.type,
+      appActions.beginPollingModelList.type,
+      appActions.updateModelStatuses.type,
       generalActions.cleanupLoginErrors.type,
       generalActions.clearVisitURLs.type,
       generalActions.logOut.type,
