@@ -19,6 +19,7 @@ import {
 } from "juju/jimm/api";
 import type { ConnectionWithFacades, DestroyModelErrors } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
+import { updateModelStatuses } from "store/app/actions";
 import { actions as generalActions } from "store/general";
 import {
   getAnalyticsEnabled,
@@ -196,59 +197,7 @@ export const modelPollerMiddleware: Middleware<
 
         let pollCount = 0;
         do {
-          const identity = conn?.info?.user?.identity;
-          if (identity) {
-            try {
-              const models = await conn.facades.modelManager?.listModels({
-                tag: identity,
-              });
-              if (models) {
-                reduxStore.dispatch(
-                  jujuActions.updateModelList({ models, wsControllerURL }),
-                );
-              }
-              const modelUUIDList =
-                models?.["user-models"]?.map((item) => item.model.uuid) ?? [];
-              await fetchAllModelStatuses(
-                wsControllerURL,
-                modelUUIDList,
-                conn,
-                reduxStore.dispatch,
-                reduxStore.getState,
-              );
-              // If the code execution arrives here, then the model statuses
-              // have been successfully updated. Models error should be removed.
-              const { modelsError } = reduxStore.getState().juju;
-              if (modelsError) {
-                reduxStore.dispatch(
-                  jujuActions.updateModelsError({
-                    modelsError: null,
-                    wsControllerURL,
-                  }),
-                );
-              }
-            } catch (listError) {
-              let errorMessage: null | string = null;
-              if (
-                listError instanceof Error &&
-                (listError.message === ModelsError.LOAD_ALL_MODELS ||
-                  listError.message === ModelsError.LOAD_SOME_MODELS)
-              ) {
-                errorMessage = pollCount
-                  ? ModelsError.LOAD_LATEST_MODELS
-                  : listError.message;
-              } else {
-                errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
-              }
-              logger.error(errorMessage, listError);
-              reduxStore.dispatch(
-                jujuActions.updateModelsError({
-                  modelsError: errorMessage,
-                  wsControllerURL,
-                }),
-              );
-            }
-          }
+          reduxStore.dispatch(updateModelStatuses({ wsControllerURL }));
 
           // Allow the polling to run a certain number of times in tests.
           if (import.meta.env.NODE_ENV === "test") {
@@ -266,6 +215,66 @@ export const modelPollerMiddleware: Middleware<
         } while (isLoggedIn(reduxStore.getState(), wsControllerURL));
       }
       return;
+    } else if (
+      isSpecificAction<ReturnType<typeof appActions.updateModelStatuses>>(
+        action,
+        appActions.updateModelStatuses.type,
+      )
+    ) {
+      const { wsControllerURL } = action.payload;
+      const conn = controllers.get(wsControllerURL);
+
+      const identity = conn?.info?.user?.identity;
+      if (identity) {
+        try {
+          const models = await conn.facades.modelManager?.listModels({
+            tag: identity,
+          });
+          if (models) {
+            reduxStore.dispatch(
+              jujuActions.updateModelList({ models, wsControllerURL }),
+            );
+          }
+          const modelUUIDList =
+            models?.["user-models"]?.map((item) => item.model.uuid) ?? [];
+          await fetchAllModelStatuses(
+            wsControllerURL,
+            modelUUIDList,
+            conn,
+            reduxStore.dispatch,
+            reduxStore.getState,
+          );
+          // If the code execution arrives here, then the model statuses
+          // have been successfully updated. Models error should be removed.
+          const { modelsError } = reduxStore.getState().juju;
+          if (modelsError) {
+            reduxStore.dispatch(
+              jujuActions.updateModelsError({
+                modelsError: null,
+                wsControllerURL,
+              }),
+            );
+          }
+        } catch (listError) {
+          let errorMessage: null | string = null;
+          if (
+            listError instanceof Error &&
+            (listError.message === ModelsError.LOAD_ALL_MODELS ||
+              listError.message === ModelsError.LOAD_SOME_MODELS)
+          ) {
+            errorMessage = listError.message;
+          } else {
+            errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
+          }
+          logger.error(errorMessage, listError);
+          reduxStore.dispatch(
+            jujuActions.updateModelsError({
+              modelsError: errorMessage,
+              wsControllerURL,
+            }),
+          );
+        }
+      }
     } else if (action.type === appThunks.logOut.pending.type) {
       jujus.forEach((juju) => {
         juju.logout();

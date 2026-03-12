@@ -1,5 +1,6 @@
 import { createAction } from "@reduxjs/toolkit";
 
+import type { ConnectionWithFacades } from "juju/types";
 import type { AuthCredential } from "store/general/types";
 
 export const updatePermissions = createAction<{
@@ -26,3 +27,7 @@ export const connectAndPollControllers = createAction<{
   // This arg is intended to prevent polling from starting in a testing scenario.
   poll?: number;
 }>("app/connectAndPollControllers");
+
+export const updateModelStatuses = createAction<{
+  wsControllerURL: string;
+}>("app/updateModelStatuses");
