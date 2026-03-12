@@ -17,7 +17,6 @@ import type {
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 import Secrets from "@canonical/jujulib/dist/api/facades/secrets";
 import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
-import { unwrapResult } from "@reduxjs/toolkit";
 import type { Dispatch } from "redux";
 
 import { Auth } from "auth";
@@ -32,12 +31,10 @@ import {
 } from "store/general/selectors";
 import type { AuthCredential } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
-import { addControllerCloudRegion } from "store/juju/thunks";
 import type {
   Controller as JujuController,
   ModelFeatures,
 } from "store/juju/types";
-import { ModelsError } from "store/middleware/model-poller";
 import type { RootState, Store } from "store/store";
 import { toErrorString } from "utils";
 import { logger } from "utils/logger";
@@ -308,89 +305,6 @@ export async function fetchModelInfo(
   }));
   const modelInfo = await conn.facades.modelManager?.modelInfo({ entities });
   return modelInfo;
-}
-
-/**
-  Loops through each model UUID to fetch the status. Upon receiving the status
-  dispatches to store that status data.
-  @param conn The connection to the controller.
-  @param modelUUIDList A list of the model uuid's to connect to.
-  @param reduxStore The applications reduxStore.
-  @returns Resolves when the queue fetching the model statuses has
-    completed. Does not reject.
-*/
-export async function fetchAllModelStatuses(
-  wsControllerURL: string,
-  modelUUIDList: string[],
-  conn: ConnectionWithFacades,
-  dispatch: Store["dispatch"],
-  getState: () => RootState,
-): Promise<void> {
-  let modelErrorCount = 0;
-  // Use for/of so that the awaits are blocking so only one model gets polled at a time.
-  for (const modelUUID of modelUUIDList) {
-    if (isLoggedIn(getState(), wsControllerURL)) {
-      try {
-        const modelWsControllerURL = getModelByUUID(
-          getState(),
-          modelUUID,
-        )?.wsControllerURL;
-        if (modelWsControllerURL) {
-          await fetchAndStoreModelStatus(
-            modelUUID,
-            modelWsControllerURL,
-            dispatch,
-            getState,
-          );
-        }
-        if (!isLoggedIn(getState(), wsControllerURL)) {
-          // The user may have logged out while the previous call was in
-          // progress.
-          return;
-        }
-        const modelInfo = await fetchModelInfo(conn, [modelUUID]);
-        if (modelInfo) {
-          dispatch(
-            jujuActions.updateModelInfo({
-              modelInfo,
-              wsControllerURL,
-            }),
-          );
-        }
-        if (!isLoggedIn(getState(), wsControllerURL)) {
-          // The user may have logged out while the previous call was in
-          // progress.
-          return;
-        }
-        if (modelInfo?.results[0].result?.["is-controller"]) {
-          // If this is a controller model then update the
-          // controller data with this model data.
-          dispatch(addControllerCloudRegion({ wsControllerURL, modelInfo }))
-            .then(unwrapResult)
-            .catch((error) =>
-              // Not shown in UI. Logged for debugging purposes.
-              {
-                logger.error(
-                  "Error when trying to add controller cloud and region data.",
-                  error,
-                );
-              },
-            );
-        }
-      } catch (error) {
-        modelErrorCount++;
-      }
-    }
-  }
-  // If errors exist and appear in more than 10% of models, the promise is
-  // rejected and the error further handled in modelPollerMiddleware().
-  if (modelErrorCount && modelErrorCount >= 0.1 * modelUUIDList.length) {
-    throw new Error(
-      modelErrorCount === modelUUIDList.length
-        ? ModelsError.LOAD_ALL_MODELS
-        : ModelsError.LOAD_SOME_MODELS,
-    );
-  }
 }
 
 /**

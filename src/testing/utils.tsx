@@ -23,7 +23,6 @@ import {
 
 import { initialiseAuthFromConfig } from "auth";
 import generalReducer from "store/general";
-import { GeneralState } from "store/general/types";
 import jujuReducer from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
