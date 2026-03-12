@@ -111,7 +111,7 @@ export const getHeaders = (row: string): Header[] => {
     };
     // If this is the last item then don't include the end as the columns in the
     // content rows can have more characters than the header column.
-    if (remainder.length != 0) {
+    if (remainder.length !== 0) {
       header.end = end;
     }
     columns.push(header);
