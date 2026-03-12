@@ -23,6 +23,7 @@ import {
 
 import { initialiseAuthFromConfig } from "auth";
 import generalReducer from "store/general";
+import { GeneralState } from "store/general/types";
 import jujuReducer from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -92,22 +93,27 @@ export const ComponentProviders = ({
 
 export function createStore(
   state: RootState,
-  options: { trackActions: true },
+  options: { trackActions: true; middleware?: Middleware<RootState>[] },
 ): [EnhancedStore<RootState>, UnknownAction[]];
 export function createStore(
   state: RootState,
-  options?: { trackActions: false },
+  options?: { trackActions: false; middleware?: Middleware<RootState>[] },
 ): EnhancedStore<RootState>;
 export function createStore(
   state: RootState,
-  options: { trackActions: boolean } = { trackActions: false },
+  options: { trackActions: boolean; middleware?: Middleware<RootState>[] } = {
+    trackActions: false,
+  },
 ): [EnhancedStore<RootState>, UnknownAction[]] | EnhancedStore<RootState> {
   const actions: UnknownAction[] = [];
   const store = configureStore({
     middleware: (getDefaultMiddleware) => {
       const middleware = getDefaultMiddleware();
+      if (options?.middleware) {
+        middleware.push(...options.middleware);
+      }
       if (options.trackActions) {
-        middleware.push(((_store) =>
+        middleware.unshift(((_store) =>
           (next) =>
           (action): unknown => {
             actions.push(action as UnknownAction);

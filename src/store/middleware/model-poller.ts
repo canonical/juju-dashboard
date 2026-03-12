@@ -199,10 +199,16 @@ export const modelPollerMiddleware: Middleware<
         }
       }
 
-      reduxStore.dispatch(beginPollingModelList());
+      reduxStore.dispatch(beginPollingModelList({ poll: action.payload.poll }));
       return;
-    } else if (action.type === appActions.beginPollingModelList.type) {
+    } else if (
+      isSpecificAction<ReturnType<typeof beginPollingModelList>>(
+        action,
+        beginPollingModelList.type,
+      )
+    ) {
       let successes = 0;
+      let count = 0;
       do {
         for (const [wsControllerURL, conn] of controllers.entries()) {
           if (!conn.info.user?.identity) {
@@ -223,16 +229,7 @@ export const modelPollerMiddleware: Middleware<
               jujuActions.updateModelList({ models, wsControllerURL }),
             );
           } catch (listError) {
-            let errorMessage: null | string = null;
-            if (
-              listError instanceof Error &&
-              (listError.message === ModelsError.LOAD_ALL_MODELS ||
-                listError.message === ModelsError.LOAD_SOME_MODELS)
-            ) {
-              errorMessage = listError.message;
-            } else {
-              errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
-            }
+            const errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
             logger.error(errorMessage, listError);
             reduxStore.dispatch(
               jujuActions.updateModelsError({
@@ -246,14 +243,21 @@ export const modelPollerMiddleware: Middleware<
           successes += 1;
         }
         // Model list updated, trigger loading of model status.
-        reduxStore.dispatch(updateModelStatuses());
+        reduxStore.dispatch(updateModelStatuses({ pollIteration: count }));
         // Wait 30s before polling again.
         await new Promise((resolve) => setTimeout(resolve, 30000));
-      } while (successes > 0);
+        count += 1;
+      } while (successes > 0 && count < (action.payload.poll ?? Infinity));
       return;
-    } else if (action.type === appActions.updateModelStatuses.type) {
+    } else if (
+      isSpecificAction<ReturnType<typeof updateModelStatuses>>(
+        action,
+        updateModelStatuses.type,
+      )
+    ) {
       const modelList = Object.entries(getModelList(reduxStore.getState()));
       let errorCount = 0;
+      let lastErrorWSController = null;
       for (const [modelUUID, { wsControllerURL }] of modelList) {
         const conn = controllers.get(wsControllerURL);
         if (!conn || !isLoggedIn(reduxStore.getState(), wsControllerURL)) {
@@ -306,15 +310,45 @@ export const modelPollerMiddleware: Middleware<
           }
         } catch (error) {
           errorCount += 1;
+          lastErrorWSController = wsControllerURL;
         }
       }
 
-      if (errorCount && errorCount >= 0.1 * modelList.length) {
-        throw new Error(
+      if (lastErrorWSController && errorCount >= 0.1 * modelList.length) {
+        let modelsError =
           errorCount === modelList.length
             ? ModelsError.LOAD_ALL_MODELS
-            : ModelsError.LOAD_SOME_MODELS,
+            : ModelsError.LOAD_SOME_MODELS;
+
+        if (action.payload.pollIteration > 0) {
+          modelsError = ModelsError.LOAD_LATEST_MODELS;
+        }
+
+        reduxStore.dispatch(
+          jujuActions.updateModelsError({
+            modelsError,
+            wsControllerURL: lastErrorWSController,
+          }),
         );
+      } else {
+        // Clear errors for all controllers.
+        const allControllers = modelList.reduce(
+          (controllerURLs, [_, { wsControllerURL }]) => {
+            if (!controllerURLs.includes(wsControllerURL)) {
+              controllerURLs.push(wsControllerURL);
+            }
+            return controllerURLs;
+          },
+          [] as string[],
+        );
+        for (const wsControllerURL of allControllers) {
+          reduxStore.dispatch(
+            jujuActions.updateModelsError({
+              modelsError: null,
+              wsControllerURL,
+            }),
+          );
+        }
       }
       return;
     } else if (action.type === appThunks.logOut.pending.type) {

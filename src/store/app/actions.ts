@@ -34,12 +34,12 @@ export const connectAndPollControllers = createAction<{
  * For each connected controller, fetch a list of models, and store them in Redux. Once the models
  * have been added, trigger `updateModelStatuses`.
  */
-export const beginPollingModelList = createAction<void>(
+export const beginPollingModelList = createAction<{ poll?: number }>(
   "app/beginPollingModelList",
 );
 /**
  * For each model present within Redux, fetch and store the model status.
  */
-export const updateModelStatuses = createAction<void>(
+export const updateModelStatuses = createAction<{ pollIteration: number }>(
   "app/updateModelStatuses",
 );
