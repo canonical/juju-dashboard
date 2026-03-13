@@ -1,11 +1,12 @@
 import type { Client } from "@canonical/jujulib";
+import { unwrapResult } from "@reduxjs/toolkit";
 import * as Sentry from "@sentry/react";
 import { isAction, type Middleware } from "redux";
 
 import { Auth } from "auth";
 import {
   disableControllerUUIDMasking,
-  fetchAllModelStatuses,
+  fetchAndStoreModelStatus,
   fetchControllerList,
   fetchModelInfo,
   loginWithBakery,
@@ -19,6 +20,7 @@ import {
 } from "juju/jimm/api";
 import type { ConnectionWithFacades, DestroyModelErrors } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
+import { beginPollingModelList, updateModelStatuses } from "store/app/actions";
 import { actions as generalActions } from "store/general";
 import {
   getAnalyticsEnabled,
@@ -27,6 +29,8 @@ import {
   isLoggedIn,
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
+import { getModelList } from "store/juju/selectors";
+import { addControllerCloudRegion } from "store/juju/thunks";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 import { toErrorString } from "utils";
@@ -193,77 +197,158 @@ export const modelPollerMiddleware: Middleware<
             // to perform the action.
           }
         }
+      }
 
-        let pollCount = 0;
-        do {
-          const identity = conn?.info?.user?.identity;
-          if (identity) {
-            try {
-              const models = await conn.facades.modelManager?.listModels({
-                tag: identity,
-              });
-              if (models) {
-                reduxStore.dispatch(
-                  jujuActions.updateModelList({ models, wsControllerURL }),
-                );
-              }
-              const modelUUIDList =
-                models?.["user-models"]?.map((item) => item.model.uuid) ?? [];
-              await fetchAllModelStatuses(
+      reduxStore.dispatch(beginPollingModelList({ poll: action.payload.poll }));
+      return;
+    } else if (
+      isSpecificAction<ReturnType<typeof beginPollingModelList>>(
+        action,
+        beginPollingModelList.type,
+      )
+    ) {
+      let successes = 0;
+      let count = 0;
+      do {
+        for (const [wsControllerURL, conn] of controllers.entries()) {
+          if (!conn.info.user?.identity) {
+            continue;
+          }
+
+          try {
+            // Fetch the models from the current connection.
+            const models = await conn.facades.modelManager?.listModels({
+              tag: conn.info.user.identity,
+            });
+            if (!models) {
+              continue;
+            }
+
+            // Save the model list into redux.
+            reduxStore.dispatch(
+              jujuActions.updateModelList({ models, wsControllerURL }),
+            );
+          } catch (listError) {
+            const errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
+            logger.error(errorMessage, listError);
+            reduxStore.dispatch(
+              jujuActions.updateModelsError({
+                modelsError: errorMessage,
                 wsControllerURL,
-                modelUUIDList,
-                conn,
-                reduxStore.dispatch,
-                reduxStore.getState,
-              );
-              // If the code execution arrives here, then the model statuses
-              // have been successfully updated. Models error should be removed.
-              const { modelsError } = reduxStore.getState().juju;
-              if (modelsError) {
-                reduxStore.dispatch(
-                  jujuActions.updateModelsError({
-                    modelsError: null,
-                    wsControllerURL,
-                  }),
-                );
-              }
-            } catch (listError) {
-              let errorMessage: null | string = null;
-              if (
-                listError instanceof Error &&
-                (listError.message === ModelsError.LOAD_ALL_MODELS ||
-                  listError.message === ModelsError.LOAD_SOME_MODELS)
-              ) {
-                errorMessage = pollCount
-                  ? ModelsError.LOAD_LATEST_MODELS
-                  : listError.message;
-              } else {
-                errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
-              }
-              logger.error(errorMessage, listError);
-              reduxStore.dispatch(
-                jujuActions.updateModelsError({
-                  modelsError: errorMessage,
-                  wsControllerURL,
-                }),
-              );
-            }
+              }),
+            );
+            continue;
           }
 
-          // Allow the polling to run a certain number of times in tests.
-          if (import.meta.env.NODE_ENV === "test") {
-            if (pollCount === action.payload.poll) {
-              break;
-            }
+          successes += 1;
+        }
+        // Model list updated, trigger loading of model status.
+        reduxStore.dispatch(updateModelStatuses({ pollIteration: count }));
+        // Wait 30s before polling again.
+        await new Promise((resolve) => setTimeout(resolve, 30000));
+        count += 1;
+      } while (successes > 0 && count < (action.payload.poll ?? Infinity));
+      return;
+    } else if (
+      isSpecificAction<ReturnType<typeof updateModelStatuses>>(
+        action,
+        updateModelStatuses.type,
+      )
+    ) {
+      const modelList = Object.entries(getModelList(reduxStore.getState()));
+      let errorCount = 0;
+      let lastErrorWSController = null;
+      for (const [modelUUID, { wsControllerURL }] of modelList) {
+        const conn = controllers.get(wsControllerURL);
+        if (!conn || !isLoggedIn(reduxStore.getState(), wsControllerURL)) {
+          continue;
+        }
+        try {
+          await fetchAndStoreModelStatus(
+            modelUUID,
+            wsControllerURL,
+            reduxStore.dispatch,
+            reduxStore.getState,
+          );
+          if (!isLoggedIn(reduxStore.getState(), wsControllerURL)) {
+            // The user may have logged out while the previous call was in
+            // progress.
+            continue;
           }
-          pollCount++;
-          // Wait 30s then start again.
-          await new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(true);
-            }, 30000);
-          });
-        } while (isLoggedIn(reduxStore.getState(), wsControllerURL));
+          const modelInfo = await fetchModelInfo(conn, [modelUUID]);
+          if (!modelInfo) {
+            continue;
+          }
+          reduxStore.dispatch(
+            jujuActions.updateModelInfo({
+              modelInfo,
+              wsControllerURL,
+            }),
+          );
+          if (!isLoggedIn(reduxStore.getState(), wsControllerURL)) {
+            // The user may have logged out while the previous call was in
+            // progress.
+            continue;
+          }
+          if (modelInfo?.results[0].result?.["is-controller"]) {
+            // If this is a controller model then update the
+            // controller data with this model data.
+            reduxStore
+              .dispatch(
+                addControllerCloudRegion({ wsControllerURL, modelInfo }),
+              )
+              .then(unwrapResult)
+              .catch((error) =>
+                // Not shown in UI. Logged for debugging purposes.
+                {
+                  logger.error(
+                    "Error when trying to add controller cloud and region data.",
+                    error,
+                  );
+                },
+              );
+          }
+        } catch (error) {
+          errorCount += 1;
+          lastErrorWSController = wsControllerURL;
+        }
+      }
+
+      if (lastErrorWSController && errorCount >= 0.1 * modelList.length) {
+        let modelsError =
+          errorCount === modelList.length
+            ? ModelsError.LOAD_ALL_MODELS
+            : ModelsError.LOAD_SOME_MODELS;
+
+        if (action.payload.pollIteration > 0) {
+          modelsError = ModelsError.LOAD_LATEST_MODELS;
+        }
+
+        reduxStore.dispatch(
+          jujuActions.updateModelsError({
+            modelsError,
+            wsControllerURL: lastErrorWSController,
+          }),
+        );
+      } else {
+        // Clear errors for all controllers.
+        const allControllers = modelList.reduce<string[]>(
+          (controllerURLs, [_, { wsControllerURL }]) => {
+            if (!controllerURLs.includes(wsControllerURL)) {
+              controllerURLs.push(wsControllerURL);
+            }
+            return controllerURLs;
+          },
+          [],
+        );
+        for (const wsControllerURL of allControllers) {
+          reduxStore.dispatch(
+            jujuActions.updateModelsError({
+              modelsError: null,
+              wsControllerURL,
+            }),
+          );
+        }
       }
       return;
     } else if (action.type === appThunks.logOut.pending.type) {

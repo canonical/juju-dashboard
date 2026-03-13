@@ -10,7 +10,11 @@ import * as jimmModule from "juju/jimm/api";
 import { pollWhoamiStart } from "juju/jimm/listeners";
 import { Label } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
-import type { ControllerArgs } from "store/app/actions";
+import {
+  beginPollingModelList,
+  updateModelStatuses,
+  type ControllerArgs,
+} from "store/app/actions";
 import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
@@ -25,6 +29,7 @@ import {
   controllerFactory,
   jujuStateFactory,
 } from "testing/factories/juju/juju";
+import { createStore } from "testing/utils";
 
 import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
 import type { MockMiddlewareResult } from "./types";
@@ -33,7 +38,7 @@ vi.mock("juju/api", () => ({
   disableControllerUUIDMasking: vi.fn(),
   fetchControllerList: vi.fn(),
   loginWithBakery: vi.fn(),
-  fetchAllModelStatuses: vi.fn(),
+  fetchAndStoreModelStatus: vi.fn(),
   fetchModelInfo: vi.fn(),
   setModelSharingPermissions: vi.fn(),
 }));
@@ -124,6 +129,7 @@ describe("model poller", () => {
 
   const runMiddleware = async (
     actionOverrides?: Partial<UnknownAction>,
+    store?: typeof fakeStore,
   ): MockMiddlewareResult => {
     const action = {
       ...appActions.connectAndPollControllers({
@@ -134,7 +140,7 @@ describe("model poller", () => {
       }),
       ...(actionOverrides ?? {}),
     };
-    const middleware = modelPollerMiddleware(fakeStore);
+    const middleware = modelPollerMiddleware(store ?? fakeStore);
     await middleware(next)(action);
     return middleware;
   };
@@ -436,118 +442,184 @@ describe("model poller", () => {
   });
 
   it("fetches and updates models if logged in to controller", async () => {
-    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
-    const fetchAllModelStatuses = vi.spyOn(jujuModule, "fetchAllModelStatuses");
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    await runMiddleware();
-    expect(next).not.toHaveBeenCalled();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateModelList({
-        models: { "user-models": models },
-        wsControllerURL,
-      }),
-    );
-    expect(fetchAllModelStatuses).toHaveBeenCalledWith(
-      wsControllerURL,
-      ["abc123"],
-      conn,
-      fakeStore.dispatch,
-      fakeStore.getState,
-    );
-  });
-
-  it("should remove models error from state if no error occurs", async () => {
-    vi.spyOn(fakeStore, "getState").mockReturnValue({
-      ...storeState,
-      juju: jujuStateFactory.build({
-        controllers: {
-          [wsControllerURL]: [controllerFactory.build()],
-        },
-        modelsError: "Oops!",
-      }),
+    const [store, actions] = createStore(storeState, {
+      trackActions: true,
+      middleware: [modelPollerMiddleware],
     });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    await runMiddleware();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateModelsError({
-        modelsError: null,
-        wsControllerURL,
+    const fetchAndStoreModelStatus = vi.spyOn(
+      jujuModule,
+      "fetchAndStoreModelStatus",
+    );
+    store.dispatch(
+      appActions.connectAndPollControllers({
+        controllers,
+        isJuju: true,
+        poll: 1,
       }),
+    );
+    await vi.runAllTimersAsync();
+    expect(actions).toEqual(
+      expect.arrayContaining([
+        jujuActions.updateModelList({
+          models: { "user-models": models },
+          wsControllerURL,
+        }),
+      ]),
+    );
+    expect(fetchAndStoreModelStatus).toHaveBeenCalledWith(
+      "abc123",
+      wsControllerURL,
+      expect.any(Function),
+      store.getState,
+    );
+  });
+
+  it("should remove models error from state if no error occurs", async () => {
+    const [store, actions] = createStore(
+      {
+        ...storeState,
+        juju: jujuStateFactory.build({
+          controllers: {
+            [wsControllerURL]: [controllerFactory.build()],
+          },
+          modelsError: "Oops!",
+        }),
+      },
+      {
+        trackActions: true,
+        middleware: [modelPollerMiddleware],
+      },
+    );
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    store.dispatch(
+      appActions.connectAndPollControllers({
+        controllers,
+        isJuju: true,
+        poll: 2,
+      }),
+    );
+    await vi.runAllTimersAsync();
+    expect(actions).toEqual(
+      expect.arrayContaining([
+        jujuActions.updateModelsError({
+          modelsError: null,
+          wsControllerURL,
+        }),
+      ]),
     );
   });
 
   it("should display error when unable to load all models", async () => {
-    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    const [store, actions] = createStore(storeState, {
+      trackActions: true,
+      middleware: [modelPollerMiddleware],
+    });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "fetchAllModelStatuses").mockRejectedValue(
-      new Error(ModelsError.LOAD_ALL_MODELS),
+    vi.spyOn(jujuModule, "fetchModelInfo").mockRejectedValue(
+      new Error("some error"),
     );
-    await runMiddleware();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateModelsError({
-        modelsError: ModelsError.LOAD_ALL_MODELS,
-        wsControllerURL,
+    store.dispatch(
+      appActions.connectAndPollControllers({
+        controllers,
+        isJuju: true,
+        poll: 1,
       }),
+    );
+    await vi.runAllTimersAsync();
+    expect(actions).toEqual(
+      expect.arrayContaining([
+        jujuActions.updateModelsError({
+          modelsError: ModelsError.LOAD_ALL_MODELS,
+          wsControllerURL,
+        }),
+      ]),
     );
   });
 
   it("should display error when unable to load some models", async () => {
-    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    const [store, actions] = createStore(storeState, {
+      trackActions: true,
+      middleware: [modelPollerMiddleware],
+    });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "fetchAllModelStatuses").mockRejectedValue(
-      new Error(ModelsError.LOAD_SOME_MODELS),
+    vi.spyOn(jujuModule, "fetchModelInfo").mockRejectedValue(
+      new Error("some error"),
     );
-    await runMiddleware();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateModelsError({
-        modelsError: ModelsError.LOAD_SOME_MODELS,
-        wsControllerURL,
+    store.dispatch(
+      appActions.connectAndPollControllers({
+        controllers,
+        isJuju: true,
+        poll: 2,
       }),
+    );
+    vi.advanceTimersByTime(30000);
+    // Resolve the async calls again.
+    await vi.runAllTimersAsync();
+    expect(actions).toEqual(
+      expect.arrayContaining([
+        jujuActions.updateModelsError({
+          modelsError: ModelsError.LOAD_ALL_MODELS,
+          wsControllerURL,
+        }),
+      ]),
     );
   });
 
   it("should display error when unable to load latest models", async () => {
-    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    const [store, actions] = createStore(storeState, {
+      trackActions: true,
+      middleware: [modelPollerMiddleware],
+    });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "fetchAllModelStatuses")
+    vi.spyOn(jujuModule, "fetchModelInfo")
       .mockImplementationOnce(vi.fn())
-      .mockRejectedValueOnce(new Error(ModelsError.LOAD_SOME_MODELS));
-    runMiddleware({
-      payload: { controllers, isJuju: true, poll: 1 },
-    }).catch(() => vi.fn());
+      .mockRejectedValue(new Error("some error"));
+    store.dispatch(
+      appActions.connectAndPollControllers({
+        controllers,
+        isJuju: true,
+        poll: 2,
+      }),
+    );
     vi.advanceTimersByTime(30000);
     // Resolve the async calls again.
     await vi.runAllTimersAsync();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateModelsError({
-        modelsError: ModelsError.LOAD_LATEST_MODELS,
-        wsControllerURL,
-      }),
+    expect(actions).toEqual(
+      expect.arrayContaining([
+        jujuActions.updateModelsError({
+          modelsError: ModelsError.LOAD_LATEST_MODELS,
+          wsControllerURL,
+        }),
+      ]),
     );
   });
 
   it("should display error when unable to update model list", async () => {
-    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
+    const [store, actions] = createStore(storeState, {
+      trackActions: true,
+      middleware: [modelPollerMiddleware],
+    });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
@@ -558,55 +630,90 @@ describe("model poller", () => {
         throw new Error(ModelsError.LIST_OR_UPDATE_MODELS);
       }),
     );
-    await runMiddleware();
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateModelsError({
-        modelsError: ModelsError.LIST_OR_UPDATE_MODELS,
-        wsControllerURL,
+    store.dispatch(
+      appActions.connectAndPollControllers({
+        controllers,
+        isJuju: true,
+        // Disable polling
+        poll: 0,
       }),
+    );
+    vi.advanceTimersByTime(30000);
+    // Resolve the async calls again.
+    await vi.runAllTimersAsync();
+    expect(actions).toEqual(
+      expect.arrayContaining([
+        jujuActions.updateModelsError({
+          modelsError: ModelsError.LIST_OR_UPDATE_MODELS,
+          wsControllerURL,
+        }),
+      ]),
     );
   });
 
   it("updates models every 30 seconds", async () => {
-    vi.spyOn(fakeStore, "getState").mockReturnValue(storeState);
-    const fetchAllModelStatuses = vi.spyOn(jujuModule, "fetchAllModelStatuses");
+    const [store, actions] = createStore(storeState, {
+      trackActions: true,
+      middleware: [modelPollerMiddleware],
+    });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    runMiddleware({ payload: { controllers, isJuju: true, poll: 1 } }).catch(
-      () => vi.fn(),
+    store.dispatch(
+      appActions.connectAndPollControllers({
+        controllers,
+        isJuju: true,
+        // Only allow polling twice
+        poll: 2,
+      }),
+    );
+    vi.advanceTimersByTime(30000);
+    // Resolve the async calls again.
+    await vi.runAllTimersAsync();
+    expect(
+      actions.filter((action) => action.type === beginPollingModelList.type),
+    ).toHaveLength(1);
+    expect(
+      actions.filter((action) => action.type === updateModelStatuses.type),
+    ).toHaveLength(2);
+  });
+
+  it("does not update models if the user logs out", async () => {
+    const [store, actions] = createStore(
+      {
+        ...storeState,
+        general: generalStateFactory.build({
+          controllerConnections: {
+            [wsControllerURL]: {
+              user: {},
+            },
+          },
+        }),
+      },
+      { trackActions: true, middleware: [modelPollerMiddleware] },
+    );
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    store.dispatch(
+      appActions.connectAndPollControllers({
+        controllers,
+        isJuju: true,
+        // Disable polling
+        poll: 0,
+      }),
     );
     vi.advanceTimersByTime(30000);
     // Resolve the async calls again.
     await vi.runAllTimersAsync();
     expect(next).not.toHaveBeenCalled();
-    expect(fetchAllModelStatuses).toHaveBeenCalledTimes(2);
-  });
-
-  it("does not update models if the user logs out", async () => {
-    vi.spyOn(fakeStore, "getState").mockReturnValue({
-      ...storeState,
-      general: generalStateFactory.build({
-        controllerConnections: {
-          [wsControllerURL]: {
-            user: {},
-          },
-        },
-      }),
-    });
-    const fetchAllModelStatuses = vi.spyOn(jujuModule, "fetchAllModelStatuses");
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    await runMiddleware();
-    vi.advanceTimersByTime(30000);
-    // Resolve the async calls again.
-    expect(next).not.toHaveBeenCalled();
-    expect(fetchAllModelStatuses).toHaveBeenCalledTimes(1);
+    expect(
+      actions.filter((action) => action.type === updateModelStatuses.type),
+    ).toHaveLength(1);
   });
 
   it("handles logging out of models", async () => {

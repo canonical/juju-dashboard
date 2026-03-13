@@ -92,22 +92,29 @@ export const ComponentProviders = ({
 
 export function createStore(
   state: RootState,
-  options: { trackActions: true },
+  options: { trackActions: true; middleware?: Middleware<RootState>[] },
 ): [EnhancedStore<RootState>, UnknownAction[]];
 export function createStore(
   state: RootState,
-  options?: { trackActions: false },
+  options?: { trackActions: false; middleware?: Middleware<RootState>[] },
 ): EnhancedStore<RootState>;
 export function createStore(
   state: RootState,
-  options: { trackActions: boolean } = { trackActions: false },
+  options: { trackActions: boolean; middleware?: Middleware<RootState>[] } = {
+    trackActions: false,
+  },
 ): [EnhancedStore<RootState>, UnknownAction[]] | EnhancedStore<RootState> {
   const actions: UnknownAction[] = [];
   const store = configureStore({
     middleware: (getDefaultMiddleware) => {
       const middleware = getDefaultMiddleware();
+      if (options?.middleware) {
+        middleware.push(...options.middleware);
+      }
       if (options.trackActions) {
-        middleware.push(((_store) =>
+        // Track actions middleware should always be added to the beginning of the middleware
+        // chain, to ensure that it always runs.
+        middleware.unshift(((_store) =>
           (next) =>
           (action): unknown => {
             actions.push(action as UnknownAction);
