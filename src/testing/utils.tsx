@@ -112,6 +112,8 @@ export function createStore(
         middleware.push(...options.middleware);
       }
       if (options.trackActions) {
+        // Track actions middleware should always be added to the beginning of the middleware
+        // chain, to ensure that it always runs.
         middleware.unshift(((_store) =>
           (next) =>
           (action): unknown => {

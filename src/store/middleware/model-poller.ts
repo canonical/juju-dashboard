@@ -332,14 +332,14 @@ export const modelPollerMiddleware: Middleware<
         );
       } else {
         // Clear errors for all controllers.
-        const allControllers = modelList.reduce(
+        const allControllers = modelList.reduce<string[]>(
           (controllerURLs, [_, { wsControllerURL }]) => {
             if (!controllerURLs.includes(wsControllerURL)) {
               controllerURLs.push(wsControllerURL);
             }
             return controllerURLs;
           },
-          [] as string[],
+          [],
         );
         for (const wsControllerURL of allControllers) {
           reduxStore.dispatch(
