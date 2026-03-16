@@ -7,6 +7,7 @@ import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
 import SecretFormPanel from "panels/SecretFormPanel";
 import ShareModel from "panels/ShareModelPanel/ShareModel";
 
+import AddModel from "./AddModelPanel";
 import AuditLogsFilterPanel from "./AuditLogsFilterPanel";
 import CharmsAndActionsPanel from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import ConfigPanel from "./ConfigPanel/ConfigPanel";
@@ -23,6 +24,8 @@ export default function Panels(): JSX.Element {
     switch (panelQs.panel) {
       case "execute-action":
         return <ActionsPanel />;
+      case "add-model":
+        return <AddModel />;
       case "share-model":
         return <ShareModel />;
       case "select-charms-and-actions":

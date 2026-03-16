@@ -1,5 +1,6 @@
 import {
   Button,
+  Icon,
   Notification as ReactNotification,
   SearchAndFilter,
 } from "@canonical/react-components";
@@ -12,6 +13,7 @@ import ChipGroup from "components/ChipGroup";
 import LoadingSpinner from "components/LoadingSpinner";
 import ModelTableList from "components/ModelTableList";
 import SegmentedControl from "components/SegmentedControl";
+import useCanAddModel from "hooks/useCanAddModel";
 import useModelAttributes from "hooks/useModelAttributes";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
@@ -47,6 +49,7 @@ export default function Models(): JSX.Element {
     region: string[];
     credential: string[];
     custom: string[];
+    panel: null | string;
   }>({
     groupedby: "status",
     cloud: [],
@@ -54,6 +57,7 @@ export default function Models(): JSX.Element {
     region: [],
     credential: [],
     custom: [],
+    panel: null,
   });
   const filters = {
     cloud: queryParams.cloud,
@@ -84,6 +88,7 @@ export default function Models(): JSX.Element {
         }))
       : null;
   useCheckRelations(requestId, relations, true);
+  const canCreateModels = useCanAddModel();
 
   // Generate chips from available model data
   const generateChips = (
@@ -136,37 +141,7 @@ export default function Models(): JSX.Element {
       );
     } else {
       content = (
-        <div className="models">
-          <ChipGroup chips={{ blocked, alert, running }} />
-          <ModelTableList groupedBy={queryParams.groupedby} filters={filters} />
-        </div>
-      );
-    }
-  }
-
-  return (
-    <MainContent
-      {...testId(TestId.COMPONENT)}
-      title={
-        <div className="models__header" data-disabled={modelCount === 0}>
-          <span className="u-hide u-show--large">
-            {modelCount} {pluralize(modelCount, "model")}
-          </span>
-          <span className="models__header-controls">
-            <span className="p-text--default">Group by: </span>
-            <SegmentedControl
-              className="u-display--inline-block"
-              activeButton={queryParams.groupedby}
-              buttons={["Status", "Cloud", "Owner"].map((group) => ({
-                children: group,
-                key: group.toLowerCase(),
-                to: urls.models.group({
-                  groupedby: group.toLowerCase() as ModelsGroupedBy,
-                }),
-              }))}
-              buttonComponent={Link}
-            />
-          </span>
+        <>
           <SearchAndFilter
             filterPanelData={[
               {
@@ -216,6 +191,56 @@ export default function Models(): JSX.Element {
               }
             }}
           />
+          <div className="models">
+            <ChipGroup chips={{ blocked, alert, running }} />
+            <ModelTableList
+              groupedBy={queryParams.groupedby}
+              filters={filters}
+            />
+          </div>
+        </>
+      );
+    }
+  }
+
+  return (
+    <MainContent
+      {...testId(TestId.COMPONENT)}
+      title={
+        <div className="models__header">
+          <span className="u-hide u-show--large">
+            {modelCount} {pluralize(modelCount, "model")}
+          </span>
+          <span
+            className="models__header-controls"
+            data-disabled={modelCount === 0}
+          >
+            <span className="p-text--default">Group by: </span>
+            <SegmentedControl
+              className="u-display--inline-block"
+              activeButton={queryParams.groupedby}
+              buttons={["Status", "Cloud", "Owner"].map((group) => ({
+                children: group,
+                key: group.toLowerCase(),
+                to: urls.models.group({
+                  groupedby: group.toLowerCase() as ModelsGroupedBy,
+                }),
+              }))}
+              buttonComponent={Link}
+            />
+          </span>
+          <Button
+            appearance="positive"
+            className="u-no-margin--bottom"
+            hasIcon
+            disabled={!canCreateModels}
+            onClick={() => {
+              setQueryParams({ panel: "add-model" }, { replace: true });
+            }}
+          >
+            <Icon name="plus" className="is-light" />
+            <span>Add model</span>
+          </Button>
         </div>
       }
       titleComponent="div"

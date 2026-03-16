@@ -1,5 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
+import type { ListCloudInfoResults } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 import type { DestroyModelParams } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
   ListSecretResult,
@@ -61,6 +62,20 @@ const getOrSetContentState = (
   let { content } = modelSecrets;
   content ??= modelSecrets.content = { ...DEFAULT_MODEL_SECRETS_CONTENT };
   return content;
+};
+
+const getOrSetCloudInfoState = (
+  state: JujuState,
+  qualifier: string,
+): JujuState["cloudInfo"][string] => {
+  let cloudInfo = state.cloudInfo[qualifier];
+  cloudInfo ??= state.cloudInfo[qualifier] = {
+    clouds: null,
+    errors: null,
+    loaded: false,
+    loading: false,
+  };
+  return cloudInfo;
 };
 
 const defaultRelationState: Omit<ReBACAllowed, "tuple"> = {
@@ -132,6 +147,7 @@ const slice = createSlice({
       relationships: [],
     },
     secrets: {},
+    cloudInfo: {},
     selectedApplications: {},
   } as JujuState,
   reducers: {
@@ -403,6 +419,41 @@ const slice = createSlice({
       }>,
     ) => {
       state.selectedApplications = action.payload.selectedApplications;
+    },
+    setCloudInfoErrors: (
+      state,
+      action: PayloadAction<
+        { qualifier: string; errors: string } & WsControllerURLParam
+      >,
+    ) => {
+      const cloudInfo = getOrSetCloudInfoState(state, action.payload.qualifier);
+      cloudInfo.errors = action.payload.errors;
+      cloudInfo.loading = false;
+      cloudInfo.loaded = true;
+    },
+    updateCloudInfo: (
+      state,
+      action: PayloadAction<
+        {
+          qualifier: string;
+          cloudInfo: ListCloudInfoResults["results"];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      const cloudInfo = getOrSetCloudInfoState(state, action.payload.qualifier);
+      cloudInfo.clouds = action.payload.cloudInfo;
+      cloudInfo.loading = false;
+      cloudInfo.loaded = true;
+      cloudInfo.errors = null;
+    },
+    cloudInfoLoading: (
+      state,
+      action: PayloadAction<{ qualifier: string } & WsControllerURLParam>,
+    ) => {
+      const cloudInfo = getOrSetCloudInfoState(state, action.payload.qualifier);
+      cloudInfo.loading = true;
+      cloudInfo.loaded = false;
+      cloudInfo.errors = null;
     },
     secretsLoading: (
       state,

@@ -1,5 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
+import type { ListCloudInfoResults } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 import type { ErrorResult } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
   ListSecretResult,
@@ -83,6 +84,16 @@ export type ModelSecrets = {
 
 export type SecretsState = Record<string, ModelSecrets>;
 
+export type CloudState = Record<
+  string,
+  {
+    errors: null | string;
+    loading: boolean;
+    loaded: boolean;
+    clouds: ListCloudInfoResults["results"] | null;
+  }
+>;
+
 export type ModelFeatures = {
   listSecrets?: boolean;
   manageSecrets?: boolean;
@@ -125,5 +136,6 @@ export type JujuState = {
   charms: Charm[];
   rebac: ReBACState;
   secrets: SecretsState;
+  cloudInfo: CloudState;
   selectedApplications: Record<string, ApplicationStatus>;
 };

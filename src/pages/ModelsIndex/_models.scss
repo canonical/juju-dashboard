@@ -13,11 +13,11 @@
       .p-segmented-control {
         display: inline-block;
       }
-    }
 
-    &[data-disabled="true"] {
-      opacity: 0.5;
-      pointer-events: none;
+      &[data-disabled="true"] {
+        opacity: 0.5;
+        pointer-events: none;
+      }
     }
 
     @include desktop {
@@ -27,6 +27,11 @@
     @media (min-width: $breakpoint-large) {
       // Account for the 1.5rem padding applied to the header.
       grid-template-columns: calc(150px - 1.5rem) 1fr calc(280px - 1.5rem);
+    }
+
+    > button {
+      justify-self: end;
+      white-space: nowrap;
     }
 
     .search-and-filter {
@@ -45,4 +50,8 @@
     left: calc(50% - 0.875rem);
     margin-bottom: -0.5rem;
   }
+}
+
+.p-panel__content {
+  padding-top: 0;
 }
