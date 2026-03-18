@@ -1,7 +1,4 @@
-import type {
-  ListCloudInfoResults,
-  ListCloudsRequest,
-} from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
+import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 import { useCallback } from "react";
 
 import type { ConnectionWithFacades } from "juju/types";
@@ -35,12 +32,12 @@ export const useListCloudInfo = (
     [dispatch, qualifier, wsControllerURL],
   );
   const onSuccess = useCallback(
-    (response: ListCloudInfoResults) => {
+    (response: CloudsResult) => {
       if (wsControllerURL) {
         dispatch(
           jujuActions.updateCloudInfo({
             qualifier,
-            cloudInfo: response?.results ?? [],
+            cloudInfo: response.clouds ?? undefined,
             wsControllerURL,
           }),
         );
@@ -56,9 +53,9 @@ export const useListCloudInfo = (
       if (wsControllerURL) {
         dispatch(jujuActions.cloudInfoLoading({ qualifier, wsControllerURL }));
       }
-      return connection.facades.cloud.listCloudInfo({
-        "user-tag": qualifier ?? "",
-      } as ListCloudsRequest);
+      return connection.facades.cloud.clouds({
+        "user-tag": qualifier,
+      } as CloudsResult);
     },
     [dispatch, qualifier, wsControllerURL],
   );

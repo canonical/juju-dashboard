@@ -15,11 +15,8 @@ const useCanAddModel = (): boolean => {
     }
   }, [activeUser, listCloudInfo]);
 
-  const clouds = cloudInfo[activeUser]?.clouds ?? [];
-  return clouds.some((cloud) => {
-    const access = cloud?.result?.["user-access"];
-    return access === "add-model" || access === "admin";
-  });
+  const clouds = cloudInfo[activeUser]?.clouds ?? null;
+  return !!clouds && Object.keys(clouds).length > 0;
 };
 
 export default useCanAddModel;

@@ -129,7 +129,7 @@ export const commandHistoryItem = Factory.define<HistoryItem>(() => ({
 
 export const commandHistoryState = Factory.define<CommandHistory>(() => ({}));
 
-export const jujuStateFactory = Factory.define<JujuState>(() => ({
+export const jujuStateFactory = new Factory<JujuState>(() => ({
   auditEvents: auditEventsStateFactory.build(),
   crossModelQuery: crossModelQueryStateFactory.build(),
   commandHistory: commandHistoryState.build(),
@@ -143,5 +143,6 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   charms: [],
   rebac: rebacState.build(),
   secrets: {},
+  cloudInfo: {},
   selectedApplications: {},
 }));
