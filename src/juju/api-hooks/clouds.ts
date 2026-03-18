@@ -12,9 +12,7 @@ export enum Label {
   NO_CLOUD_ACCESS = "User does not have access to clouds",
 }
 
-export const useListCloudInfo = (
-  qualifier: string,
-): ((qualifier: string) => void) => {
+export const useClouds = (qualifier: string): (() => void) => {
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const onError = useCallback(
@@ -22,36 +20,34 @@ export const useListCloudInfo = (
       if (wsControllerURL) {
         dispatch(
           jujuActions.setCloudInfoErrors({
-            qualifier,
             errors: error,
             wsControllerURL,
           }),
         );
       }
     },
-    [dispatch, qualifier, wsControllerURL],
+    [dispatch, wsControllerURL],
   );
   const onSuccess = useCallback(
     (response: CloudsResult) => {
       if (wsControllerURL) {
         dispatch(
           jujuActions.updateCloudInfo({
-            qualifier,
             cloudInfo: response.clouds ?? undefined,
             wsControllerURL,
           }),
         );
       }
     },
-    [dispatch, qualifier, wsControllerURL],
+    [dispatch, wsControllerURL],
   );
   const handler = useCallback(
-    async (connection: ConnectionWithFacades, _qualifier: string) => {
+    async (connection: ConnectionWithFacades) => {
       if (!connection.facades.cloud) {
         throw new Error(Label.NO_CLOUD_ACCESS);
       }
       if (wsControllerURL) {
-        dispatch(jujuActions.cloudInfoLoading({ qualifier, wsControllerURL }));
+        dispatch(jujuActions.cloudInfoLoading({ wsControllerURL }));
       }
       return connection.facades.cloud.clouds({
         "user-tag": qualifier,

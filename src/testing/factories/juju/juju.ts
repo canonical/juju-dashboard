@@ -143,6 +143,11 @@ export const jujuStateFactory = new Factory<JujuState>(() => ({
   charms: [],
   rebac: rebacState.build(),
   secrets: {},
-  cloudInfo: {},
+  cloudInfo: {
+    clouds: null,
+    errors: null,
+    loaded: false,
+    loading: false,
+  },
   selectedApplications: {},
 }));

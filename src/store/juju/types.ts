@@ -84,15 +84,12 @@ export type ModelSecrets = {
 
 export type SecretsState = Record<string, ModelSecrets>;
 
-export type CloudState = Record<
-  string,
-  {
-    errors: null | string;
-    loading: boolean;
-    loaded: boolean;
-    clouds: CloudsResult["clouds"] | null;
-  }
->;
+export type CloudState = {
+  errors: null | string;
+  loading: boolean;
+  loaded: boolean;
+  clouds: CloudsResult["clouds"] | null;
+};
 
 export type ModelFeatures = {
   listSecrets?: boolean;
