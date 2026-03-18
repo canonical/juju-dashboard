@@ -7,7 +7,7 @@ import {
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import type { JSX, ReactNode } from "react";
 import { useId } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
 import LoadingSpinner from "components/LoadingSpinner";
@@ -41,6 +41,7 @@ import { Label, TestId } from "./types";
 
 export default function Models(): JSX.Element {
   useWindowTitle("Models");
+  const navigate = useNavigate();
 
   const [queryParams, setQueryParams] = useQueryParams<{
     groupedby: string;
@@ -234,9 +235,9 @@ export default function Models(): JSX.Element {
             className="u-no-margin--bottom"
             hasIcon
             disabled={!canCreateModels}
-            onClick={() => {
-              setQueryParams({ panel: "add-model" }, { replace: true });
-            }}
+            onClick={() =>
+              void navigate(urls.models.tab({ step: "mandatory-details" }))
+            }
           >
             <Icon name="plus" className="is-light" />
             <span>Add model</span>

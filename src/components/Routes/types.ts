@@ -7,6 +7,13 @@ export type EntityDetailsRoute = {
 };
 
 /**
+ * Parameters available at `/models/add-model` (`urls.model.addModel`).
+ */
+export type AddModelRoute = {
+  step: string;
+};
+
+/**
  * Parameters available at `/models/:qualifier/:modelName` (`urls.model.index`).
  */
 export type ModelIndexRoute = {

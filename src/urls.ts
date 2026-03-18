@@ -51,9 +51,13 @@ const urls = {
   },
   models: {
     index: "/models",
+    addModel: "/models/add-model",
     group: argPath<{
       groupedby: ModelsGroupedBy;
     }>("/models?groupedby=:groupedby"),
+    tab: argPath<{
+      step: string;
+    }>("/models/add-model?step=:step"),
   },
   logs: "/logs",
   permissions: "/permissions",
