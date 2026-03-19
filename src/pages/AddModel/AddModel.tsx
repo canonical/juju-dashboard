@@ -15,21 +15,37 @@ import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
 
-import { TestId } from "./types";
+import { TestId, StepType } from "./types";
 
-const steps = [
-  "mandatory-details",
-  "configuration-constraints",
-  "access-management",
-] as const;
+const stepDefinitions: { key: StepType; title: string; ctaLabel?: string }[] = [
+  {
+    key: StepType.MANDATORY_DETAILS,
+    title: "Mandatory details",
+    ctaLabel: "Next",
+  },
+  {
+    key: StepType.CONFIGURATION_CONSTRAINTS,
+    title: "Configuration & Constraints (optional)",
+    ctaLabel: "Next",
+  },
+  {
+    key: StepType.ACCESS_MANAGEMENT,
+    title: "Access management (optional)",
+    ctaLabel: "Create model",
+  },
+];
 
-type StepType = (typeof steps)[number];
+const steps: StepType[] = [
+  StepType.MANDATORY_DETAILS,
+  StepType.CONFIGURATION_CONSTRAINTS,
+  StepType.ACCESS_MANAGEMENT,
+];
 
 const getStepType = (step: null | string): StepType => {
   if (step && steps.includes(step as StepType)) {
     return step as StepType;
   }
-  return "mandatory-details";
+  return StepType.MANDATORY_DETAILS;
 };
 
 const AddModel: FC = () => {
@@ -38,24 +54,19 @@ const AddModel: FC = () => {
   const [queryParams, setQueryParams] = useQueryParams<{
     step: null | string;
   }>({
-    step: "mandatory-details",
+    step: StepType.MANDATORY_DETAILS,
   });
   const stepType = getStepType(queryParams.step);
 
   const canCreateModel = !!cloudInfo && Object.keys(cloudInfo).length > 0;
+  const currentStepIndex = steps.findIndex((step) => step === stepType);
 
   const stepContent: Record<StepType, JSX.Element> = {
-    "mandatory-details": (
-      <div className="mandatory-details">Mandatory details form goes here.</div>
+    [StepType.MANDATORY_DETAILS]: <div>Mandatory details form goes here.</div>,
+    [StepType.CONFIGURATION_CONSTRAINTS]: (
+      <div>Configuration and constraints form goes here.</div>
     ),
-    "configuration-constraints": (
-      <div className="configuration-constraints">
-        Configuration and constraints form goes here.
-      </div>
-    ),
-    "access-management": (
-      <div className="access-management">Access management form goes here.</div>
-    ),
+    [StepType.ACCESS_MANAGEMENT]: <div>Access management form goes here.</div>,
   };
 
   return (
@@ -68,41 +79,23 @@ const AddModel: FC = () => {
       >
         <Stepper
           variant="horizontal"
-          steps={[
-            <Step
-              key="Step 1"
-              title="Mandatory details"
-              index={1}
-              enabled
-              hasProgressLine
-              iconName="number"
-              handleClick={() => {
-                setQueryParams({ step: "mandatory-details" });
-              }}
-            />,
-            <Step
-              key="Step 2"
-              title="Configuration & Constraints (optional)"
-              index={2}
-              enabled
-              hasProgressLine={false}
-              iconName="number"
-              handleClick={() => {
-                setQueryParams({ step: "configuration-constraints" });
-              }}
-            />,
-            <Step
-              key="Step 3"
-              title="Access management (optional)"
-              index={3}
-              enabled
-              hasProgressLine={false}
-              iconName="number"
-              handleClick={() => {
-                setQueryParams({ step: "access-management" });
-              }}
-            />,
-          ]}
+          steps={stepDefinitions.map(({ key, title }, index) => {
+            const isPrevious = index < currentStepIndex;
+            const isCurrent = index === currentStepIndex;
+            return (
+              <Step
+                key={key}
+                title={title}
+                index={index + 1}
+                enabled
+                hasProgressLine={isPrevious || isCurrent}
+                iconName={isPrevious ? "success" : "number"}
+                handleClick={() => {
+                  setQueryParams({ step: key });
+                }}
+              />
+            );
+          })}
         />
         <div className="add-model__step">{stepContent[stepType]}</div>
         <div className="add-model__footer">
@@ -112,8 +105,32 @@ const AddModel: FC = () => {
           >
             Cancel
           </Button>
-          <ActionButton appearance="positive" onClick={() => {}}>
-            Next
+          {currentStepIndex > 0 ? (
+            <Button
+              onClick={() => {
+                if (currentStepIndex > 0) {
+                  setQueryParams({
+                    step: steps[currentStepIndex - 1],
+                  });
+                }
+              }}
+              appearance="secondary"
+            >
+              Back
+            </Button>
+          ) : null}
+          <ActionButton
+            appearance="positive"
+            disabled={currentStepIndex === steps.length - 1}
+            onClick={() => {
+              if (currentStepIndex < steps.length - 1) {
+                setQueryParams({
+                  step: steps[currentStepIndex + 1],
+                });
+              }
+            }}
+          >
+            {stepDefinitions[currentStepIndex].ctaLabel}
           </ActionButton>
         </div>
       </VanillaPanel>
