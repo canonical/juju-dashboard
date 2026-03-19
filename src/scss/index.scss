@@ -84,6 +84,7 @@ $color-navigation-background: $color-brand;
 @import "../components/UserMenu/user-menu";
 @import "../components/WebCLI/webcli";
 @import "../layout/MainContent/main-content";
+@import "../pages//AddModel/add-model";
 @import "../pages/AdvancedSearch/ErrorsBlock/errors-block";
 @import "../pages/AdvancedSearch/ResultsBlock/results-block";
 @import "../pages/AdvancedSearch/SearchForm/search-form";

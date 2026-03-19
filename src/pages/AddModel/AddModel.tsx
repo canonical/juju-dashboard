@@ -4,13 +4,12 @@ import {
   Step,
   Stepper,
 } from "@canonical/react-components";
-import classNames from "classnames";
+import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import type { FC, JSX } from "react";
 import { useNavigate } from "react-router";
 
 import CheckPermissions from "components/CheckPermissions";
 import { useQueryParams } from "hooks/useQueryParams";
-import MainContent from "layout/MainContent";
 import { getCloudInfoState } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
@@ -61,11 +60,11 @@ const AddModel: FC = () => {
 
   return (
     <CheckPermissions allowed={canCreateModel} {...testId(TestId.COMPONENT)}>
-      <MainContent
-        {...testId(TestId.COMPONENT)}
+      <VanillaPanel
+        className="add-model"
+        contentClassName="add-model__content"
         title="Add Model"
-        titleClassName={classNames("add-model__header")}
-        titleComponent="div"
+        stickyHeader
       >
         <Stepper
           variant="horizontal"
@@ -105,11 +104,8 @@ const AddModel: FC = () => {
             />,
           ]}
         />
-        <div className={`add-model add-model__${stepType}`}>
-          {stepContent[stepType]}
-        </div>
-        <div className="u-align--right">
-          <hr />
+        <div className="add-model__step">{stepContent[stepType]}</div>
+        <div className="add-model__footer">
           <Button
             onClick={() => void navigate(urls.models.index)}
             appearance="base"
@@ -120,7 +116,7 @@ const AddModel: FC = () => {
             Next
           </ActionButton>
         </div>
-      </MainContent>
+      </VanillaPanel>
     </CheckPermissions>
   );
 };
