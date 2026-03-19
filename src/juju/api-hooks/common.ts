@@ -1,18 +1,17 @@
 import { useCallback } from "react";
 
-import { connectToModel, loginWithBakery } from "juju/api";
+import { connectToModel } from "juju/api";
 import type { ConnectionWithFacades } from "juju/types";
-import { getUserPass, getWSControllerURL } from "store/general/selectors";
+import { getUserPass } from "store/general/selectors";
 import { getModelByUUID, getModelUUIDFromList } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { toErrorString } from "utils";
 
 export enum Label {
   NO_CONNECTION_ERROR = "Unable to connect to model",
-  NO_CONTROLLER_CONNECTION_ERROR = "Unable to connect to controller",
 }
 
-type ConnectionCallback = (
+type ModelConnectionCallback = (
   result:
     | {
         connection: ConnectionWithFacades;
@@ -28,7 +27,7 @@ type CallHandler<R, A extends unknown[]> =
 
 export const useModelConnectionCallback = (
   modelUUID?: null | string,
-): ((response: ConnectionCallback) => void) => {
+): ((response: ModelConnectionCallback) => void) => {
   const wsControllerURL =
     useAppSelector((state) => getModelByUUID(state, modelUUID))
       ?.wsControllerURL ?? null;
@@ -37,7 +36,7 @@ export const useModelConnectionCallback = (
   );
 
   return useCallback(
-    (response: ConnectionCallback) => {
+    (response: ModelConnectionCallback) => {
       if (!wsControllerURL || !modelUUID) {
         // Don't attempt to make the call until the model and controller details
         // are available.
@@ -57,37 +56,6 @@ export const useModelConnectionCallback = (
         });
     },
     [credentials, modelUUID, wsControllerURL],
-  );
-};
-
-export const useControllerConnectionCallback = (): ((
-  response: ConnectionCallback,
-) => void) => {
-  const wsControllerURL = useAppSelector(getWSControllerURL) ?? null;
-  const credentials = useAppSelector((state) =>
-    getUserPass(state, wsControllerURL),
-  );
-
-  return useCallback(
-    (response: ConnectionCallback) => {
-      if (!wsControllerURL) {
-        response({ error: Label.NO_CONTROLLER_CONNECTION_ERROR });
-        return;
-      }
-      loginWithBakery(wsControllerURL, credentials)
-        .then(({ conn }) => {
-          if (!conn) {
-            response({ error: Label.NO_CONTROLLER_CONNECTION_ERROR });
-            return null;
-          }
-          response({ connection: conn });
-          return null;
-        })
-        .catch((error) => {
-          response({ error: toErrorString(error) });
-        });
-    },
-    [credentials, wsControllerURL],
   );
 };
 
@@ -135,54 +103,6 @@ export const useCallWithConnection = <R, A extends unknown[]>(
     callbackHandler,
     qualifier,
     modelName,
-  );
-  return useCallback(
-    (...args: A) => {
-      makeCall(...(args ?? []))
-        .then(onSuccess)
-        .catch((error) => {
-          onError(toErrorString(error));
-        });
-    },
-    [makeCall, onError, onSuccess],
-  );
-};
-
-export const useCallWithControllerConnectionPromise = <R, A extends unknown[]>(
-  handler: CallHandler<R, A>,
-): ((...args: A) => Promise<R>) => {
-  const controllerConnectionCallback = useControllerConnectionCallback();
-  return useCallback(
-    async (...args: A) => {
-      return new Promise<R>((resolve, reject) => {
-        controllerConnectionCallback((result) => {
-          if ("error" in result) {
-            reject(result.error);
-            return;
-          }
-          handler(result.connection, ...args)
-            .then(resolve)
-            .catch(reject);
-        });
-      });
-    },
-    [controllerConnectionCallback, handler],
-  );
-};
-
-export const useCallWithControllerConnection = <R, A extends unknown[]>(
-  handler: CallHandler<R, A>,
-  onSuccess: (response: R) => void,
-  onError: (error: string) => void,
-): ((...args: A) => void) => {
-  const callbackHandler = useCallback(
-    async (connection: ConnectionWithFacades, ...args: A) => {
-      return handler(connection, ...(args ?? []));
-    },
-    [handler],
-  );
-  const makeCall = useCallWithControllerConnectionPromise<R, A>(
-    callbackHandler,
   );
   return useCallback(
     (...args: A) => {

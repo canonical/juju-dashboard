@@ -181,6 +181,7 @@ export const modelPollerMiddleware: Middleware<
           );
         }
 
+        reduxStore.dispatch(jujuActions.fetchClouds({ wsControllerURL }));
         await fetchControllerList(
           wsControllerURL,
           conn,
@@ -630,6 +631,52 @@ export const modelPollerMiddleware: Middleware<
             }, 10000);
           });
         } while (remainingModels.length > 0 && !isDestructionComplete);
+      }
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
+    } else if (
+      isSpecificAction<ReturnType<typeof jujuActions.fetchClouds>>(
+        action,
+        jujuActions.fetchClouds.type,
+      )
+    ) {
+      // Intercept fetchClouds actions and fetch and store
+      // the cloud information via the controller connection.
+      const { wsControllerURL } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+      next(action);
+      const conn = controllers.get(wsControllerURL);
+      if (!conn) {
+        return;
+      }
+      try {
+        const response = await conn.facades.cloud?.clouds({});
+        if (response) {
+          reduxStore.dispatch(
+            "error" in response
+              ? jujuActions.setCloudInfoErrors({
+                  wsControllerURL,
+                  errors: response.error,
+                })
+              : jujuActions.updateCloudInfo({
+                  cloudInfo: response.clouds ?? undefined,
+                  wsControllerURL,
+                }),
+          );
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Could not fetch cloud information.";
+        reduxStore.dispatch(
+          jujuActions.setCloudInfoErrors({
+            wsControllerURL,
+            errors: errorMessage,
+          }),
+        );
       }
       // The action has already been passed to the next middleware
       // at the top of this handler.

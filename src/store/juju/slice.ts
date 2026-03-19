@@ -411,32 +411,6 @@ const slice = createSlice({
     ) => {
       state.selectedApplications = action.payload.selectedApplications;
     },
-    setCloudInfoErrors: (
-      state,
-      action: PayloadAction<{ errors: string } & WsControllerURLParam>,
-    ) => {
-      state.cloudInfo.errors = action.payload.errors;
-      state.cloudInfo.loading = false;
-      state.cloudInfo.loaded = true;
-    },
-    updateCloudInfo: (
-      state,
-      action: PayloadAction<
-        {
-          cloudInfo: CloudsResult["clouds"];
-        } & WsControllerURLParam
-      >,
-    ) => {
-      state.cloudInfo.clouds = action.payload.cloudInfo;
-      state.cloudInfo.loading = false;
-      state.cloudInfo.loaded = true;
-      state.cloudInfo.errors = null;
-    },
-    cloudInfoLoading: (state, _action: PayloadAction<WsControllerURLParam>) => {
-      state.cloudInfo.loading = true;
-      state.cloudInfo.loaded = false;
-      state.cloudInfo.errors = null;
-    },
     secretsLoading: (
       state,
       action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
@@ -523,6 +497,34 @@ const slice = createSlice({
       if (secrets) {
         delete secrets.content;
       }
+    },
+    fetchClouds: (state, _action: PayloadAction<WsControllerURLParam>) => {
+      state.cloudInfo.loading = true;
+      state.cloudInfo.loaded = false;
+      state.cloudInfo.errors = null;
+    },
+    setCloudInfoErrors: (
+      state,
+      action: PayloadAction<
+        { errors: string | unknown } & WsControllerURLParam
+      >,
+    ) => {
+      state.cloudInfo.errors = action.payload.errors;
+      state.cloudInfo.loading = false;
+      state.cloudInfo.loaded = true;
+    },
+    updateCloudInfo: (
+      state,
+      action: PayloadAction<
+        {
+          cloudInfo: CloudsResult["clouds"];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.cloudInfo.clouds = action.payload.cloudInfo;
+      state.cloudInfo.loading = false;
+      state.cloudInfo.loaded = true;
+      state.cloudInfo.errors = null;
     },
     checkRelation: (
       state,
