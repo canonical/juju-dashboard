@@ -13,6 +13,7 @@ import ChipGroup from "components/ChipGroup";
 import LoadingSpinner from "components/LoadingSpinner";
 import ModelTableList from "components/ModelTableList";
 import SegmentedControl from "components/SegmentedControl";
+import { useCanAddModel } from "hooks/useCanAddModel";
 import useModelAttributes from "hooks/useModelAttributes";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
@@ -21,7 +22,6 @@ import { JIMMRelation } from "juju/jimm/JIMMV4";
 import MainContent from "layout/MainContent";
 import { getControllerUserTag } from "store/general/selectors";
 import {
-  getCloudInfoState,
   getGroupedModelStatusCounts,
   getModelData,
   getModelListLoaded,
@@ -87,9 +87,7 @@ export default function Models(): JSX.Element {
         }))
       : null;
   useCheckRelations(requestId, relations, true);
-  const cloudInfo = useAppSelector(getCloudInfoState);
-  const userClouds = cloudInfo.clouds;
-  const canCreateModels = !!userClouds && Object.keys(userClouds).length > 0;
+  const canCreateModels = useCanAddModel();
 
   // Generate chips from available model data
   const generateChips = (

@@ -5,6 +5,7 @@ import { vi } from "vitest";
 import { LoadingSpinnerTestId } from "components/LoadingSpinner";
 import { ModelTableListTestId } from "components/ModelTableList";
 import type { RootState } from "store/store";
+import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
   applicationStatusFactory,
   detailedStatusFactory,
@@ -36,6 +37,15 @@ describe("Models Index page", () => {
             uuid: "abc123",
             wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
+        },
+        cloudInfo: {
+          clouds: {
+            "cloud-aws": { type: "ec2" },
+            "cloud-gce": { type: "gce" },
+          },
+          errors: null,
+          loaded: true,
+          loading: false,
         },
         modelData: {
           abc123: modelDataFactory.build({
@@ -85,6 +95,11 @@ describe("Models Index page", () => {
           }),
         },
         modelsLoaded: true,
+      }),
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          isJuju: true,
+        }),
       }),
     });
   });
@@ -221,5 +236,14 @@ describe("Models Index page", () => {
     Object.defineProperty(window, "location", {
       value: location,
     });
+  });
+
+  it("should navigate to AddModel page when Add Model button is clicked", async () => {
+    const { router } = renderComponent(<ModelsIndex />, { state });
+    const addButton = screen.getByRole("button", {
+      name: "Add model",
+    });
+    await userEvent.click(addButton);
+    expect(router.state.location.pathname).toEqual(urls.models.addModel);
   });
 });

@@ -9,29 +9,36 @@ import type { FC, JSX } from "react";
 import { useNavigate } from "react-router";
 
 import CheckPermissions from "components/CheckPermissions";
+import { useCanAddModel } from "hooks/useCanAddModel";
 import { useQueryParams } from "hooks/useQueryParams";
-import { getCloudInfoState } from "store/juju/selectors";
-import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
 
-import { TestId, StepType } from "./types";
+import { TestId, StepType, Label } from "./types";
 
-const stepDefinitions: { key: StepType; title: string; ctaLabel?: string }[] = [
+const stepDefinitions: {
+  key: StepType;
+  title: string;
+  ctaLabel?: string;
+  content: JSX.Element;
+}[] = [
   {
     key: StepType.MANDATORY_DETAILS,
     title: "Mandatory details",
-    ctaLabel: "Next",
+    ctaLabel: Label.NEXT_BUTTON,
+    content: <div>Mandatory details form goes here.</div>,
   },
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
     title: "Configuration & Constraints (optional)",
-    ctaLabel: "Next",
+    ctaLabel: Label.NEXT_BUTTON,
+    content: <div>Configuration and constraints form goes here.</div>,
   },
   {
     key: StepType.ACCESS_MANAGEMENT,
     title: "Access management (optional)",
-    ctaLabel: "Create model",
+    ctaLabel: Label.CREATE_BUTTON,
+    content: <div>Access management form goes here.</div>,
   },
 ];
 
@@ -50,31 +57,22 @@ const getStepType = (step: null | string): StepType => {
 
 const AddModel: FC = () => {
   const navigate = useNavigate();
-  const cloudInfo = useAppSelector(getCloudInfoState).clouds;
+  const canCreateModel = useCanAddModel();
   const [queryParams, setQueryParams] = useQueryParams<{
     step: null | string;
   }>({
     step: StepType.MANDATORY_DETAILS,
   });
   const stepType = getStepType(queryParams.step);
-
-  const canCreateModel = !!cloudInfo && Object.keys(cloudInfo).length > 0;
   const currentStepIndex = steps.findIndex((step) => step === stepType);
-
-  const stepContent: Record<StepType, JSX.Element> = {
-    [StepType.MANDATORY_DETAILS]: <div>Mandatory details form goes here.</div>,
-    [StepType.CONFIGURATION_CONSTRAINTS]: (
-      <div>Configuration and constraints form goes here.</div>
-    ),
-    [StepType.ACCESS_MANAGEMENT]: <div>Access management form goes here.</div>,
-  };
 
   return (
     <CheckPermissions allowed={canCreateModel} {...testId(TestId.COMPONENT)}>
       <VanillaPanel
         className="add-model"
         contentClassName="add-model__content"
-        title="Add Model"
+        title={Label.TITLE}
+        {...testId(TestId.COMPONENT)}
         stickyHeader
       >
         <Stepper
@@ -97,13 +95,15 @@ const AddModel: FC = () => {
             );
           })}
         />
-        <div className="add-model__step">{stepContent[stepType]}</div>
+        <div className="add-model__step" {...testId(TestId.ADD_MODEL_CONTENT)}>
+          {stepDefinitions[currentStepIndex].content}
+        </div>
         <div className="add-model__footer">
           <Button
             onClick={() => void navigate(urls.models.index)}
             appearance="base"
           >
-            Cancel
+            {Label.CANCEL_BUTTON}
           </Button>
           {currentStepIndex > 0 ? (
             <Button
@@ -116,7 +116,7 @@ const AddModel: FC = () => {
               }}
               appearance="secondary"
             >
-              Back
+              {Label.BACK_BUTTON}
             </Button>
           ) : null}
           <ActionButton
