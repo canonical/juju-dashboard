@@ -8,17 +8,18 @@ import { forwardRef, useId } from "react";
 import Aside from "components/Aside";
 import type { AsideProps } from "components/Aside";
 
-type Props = PropsWithSpread<
-  {
-    checkCanClose?: (e: React.KeyboardEvent | React.MouseEvent) => boolean;
-    drawer?: ReactNode;
-    panelClassName?: string;
-    splitContent?: ReactNode;
-    title: ReactNode;
-    onRemovePanelQueryParams: () => void;
-  },
-  AsideProps
->;
+export type PanelProps = {
+  checkCanClose?: (e: React.KeyboardEvent | React.MouseEvent) => boolean;
+  drawer?: ReactNode;
+  panelClassName?: string;
+  splitContent?: ReactNode;
+  title?: ReactNode;
+  titleId?: string;
+  header?: ReactNode;
+  onRemovePanelQueryParams: () => void;
+};
+
+type Props = PropsWithSpread<PanelProps, AsideProps>;
 
 const close = {
   // Close panel if Escape key is pressed when panel active
@@ -58,6 +59,8 @@ const Panel = forwardRef<HTMLDivElement, Props>(
       panelClassName,
       splitContent,
       title,
+      titleId,
+      header,
       onRemovePanelQueryParams,
       ...props
     }: Props,
@@ -78,18 +81,17 @@ const Panel = forwardRef<HTMLDivElement, Props>(
       "click",
     );
 
-    const titleId = useId();
+    const defaultTitleId = useId();
     const content = (
       <>
         <div className="side-panel__content-scrolling">{children}</div>
         {drawer ? <div className="side-panel__drawer">{drawer}</div> : null}
       </>
     );
-    return (
-      <Aside {...props} aria-labelledby={titleId} role="dialog">
-        <VanillaPanel
-          className={classNames("side-panel", panelClassName)}
-          controls={
+    const headerProps = title
+      ? {
+          title: <span id={titleId ?? defaultTitleId}>{title}</span>,
+          controls: (
             <Button
               appearance="base"
               className="u-no-margin--bottom"
@@ -98,10 +100,20 @@ const Panel = forwardRef<HTMLDivElement, Props>(
             >
               <Icon name="close">Close</Icon>
             </Button>
-          }
+          ),
+        }
+      : { header };
+    return (
+      <Aside
+        {...props}
+        aria-labelledby={titleId ?? defaultTitleId}
+        role="dialog"
+      >
+        <VanillaPanel
+          className={classNames("side-panel", panelClassName)}
           contentClassName={props.isSplit ? "aside-split-wrapper" : null}
           forwardRef={ref}
-          title={<span id={titleId}>{title}</span>}
+          {...headerProps}
         >
           {props.isSplit ? (
             <div className="aside-split-col aside-split-col--left">

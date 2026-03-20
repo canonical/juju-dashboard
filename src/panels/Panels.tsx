@@ -3,21 +3,27 @@ import type { JSX, ReactNode } from "react";
 
 import useCanManageSecrets from "hooks/useCanManageSecrets";
 import { useQueryParams } from "hooks/useQueryParams";
+import { useIsJIMMAdmin } from "juju/api-hooks/permissions";
 import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
 import SecretFormPanel from "panels/SecretFormPanel";
 import ShareModel from "panels/ShareModelPanel/ShareModel";
+import { getIsJIMM } from "store/general/selectors";
+import { useAppSelector } from "store/store";
 
 import AuditLogsFilterPanel from "./AuditLogsFilterPanel";
 import CharmsAndActionsPanel from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import ConfigPanel from "./ConfigPanel/ConfigPanel";
 import GrantSecretPanel from "./GrantSecretPanel";
 import RemoveSecretPanel from "./RemoveSecretPanel";
+import UpgradeModelPanel from "./UpgradeModelPanel";
 
 export default function Panels(): JSX.Element {
   const [panelQs] = useQueryParams<{ panel: null | string }>({
     panel: null,
   });
   const canManageSecrets = useCanManageSecrets();
+  const isJIMM = useAppSelector(getIsJIMM);
+  const { permitted: isJIMMControllerAdmin } = useIsJIMMAdmin();
 
   const generatePanel = (): ReactNode => {
     switch (panelQs.panel) {
@@ -39,6 +45,8 @@ export default function Panels(): JSX.Element {
         return canManageSecrets ? <GrantSecretPanel /> : null;
       case "remove-secret":
         return canManageSecrets ? <RemoveSecretPanel /> : null;
+      case "upgrade-model":
+        return isJIMM && isJIMMControllerAdmin ? <UpgradeModelPanel /> : null;
       default:
         return null;
     }
