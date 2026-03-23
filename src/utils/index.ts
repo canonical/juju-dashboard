@@ -5,3 +5,4 @@ export { default as getUserName } from "./getUserName";
 export { default as secretIsAppOwned } from "./secretIsAppOwned";
 export { default as toErrorString } from "./toErrorString";
 export { default as getLatestRevision } from "./getLatestRevision";
+export { hash } from "./hash";
