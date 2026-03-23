@@ -45,13 +45,13 @@
     }
   }
 
+  .p-panel__content {
+    padding-top: 0;
+  }
+
   // Tooltips override
   .p-tooltip--top-center .p-tooltip__message {
     left: calc(50% - 0.875rem);
     margin-bottom: -0.5rem;
   }
-}
-
-.p-panel__content {
-  padding-top: 0;
 }

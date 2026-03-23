@@ -7,6 +7,7 @@ import { generalStateFactory, configFactory } from "testing/factories/general";
 import {
   jujuStateFactory,
   controllerFactory,
+  cloudInfoStateFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -26,15 +27,12 @@ describe("AddModel page", () => {
         }),
       }),
       juju: jujuStateFactory.build({
-        cloudInfo: {
+        cloudInfo: cloudInfoStateFactory.build({
           clouds: {
             "cloud-aws": { type: "ec2" },
             "cloud-gce": { type: "gce" },
           },
-          errors: null,
-          loaded: true,
-          loading: false,
-        },
+        }),
         controllers: {
           "wss://controller.example.com": [
             controllerFactory.build({

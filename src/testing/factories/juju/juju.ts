@@ -3,6 +3,7 @@ import { Factory } from "fishery";
 import { DEFAULT_AUDIT_EVENTS_LIMIT } from "store/juju/slice";
 import type {
   AuditEventsState,
+  CloudState,
   CommandHistory,
   Controller,
   ControllerLocation,
@@ -111,6 +112,13 @@ export const modelSecretsFactory = Factory.define<ModelSecrets>(() => ({
 
 export const secretsStateFactory = Factory.define<SecretsState>(() => ({}));
 
+export const cloudInfoStateFactory = Factory.define<CloudState>(() => ({
+  clouds: null,
+  errors: null,
+  loaded: false,
+  loading: false,
+}));
+
 export const modelFeaturesFactory = Factory.define<ModelFeatures>(() => ({}));
 
 export const modelFeaturesStateFactory = Factory.define<ModelFeaturesState>(
@@ -143,11 +151,6 @@ export const jujuStateFactory = new Factory<JujuState>(() => ({
   charms: [],
   rebac: rebacState.build(),
   secrets: {},
-  cloudInfo: {
-    clouds: null,
-    errors: null,
-    loaded: false,
-    loading: false,
-  },
+  cloudInfo: cloudInfoStateFactory.build(),
   selectedApplications: {},
 }));

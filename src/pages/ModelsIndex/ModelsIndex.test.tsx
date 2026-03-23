@@ -13,6 +13,7 @@ import {
 } from "testing/factories/juju/ClientV8";
 import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
+  cloudInfoStateFactory,
   jujuStateFactory,
   modelDataFactory,
   modelListInfoFactory,
@@ -38,15 +39,12 @@ describe("Models Index page", () => {
             wsControllerURL: "wss://jimm.jujucharms.com/api",
           }),
         },
-        cloudInfo: {
+        cloudInfo: cloudInfoStateFactory.build({
           clouds: {
             "cloud-aws": { type: "ec2" },
             "cloud-gce": { type: "gce" },
           },
-          errors: null,
-          loaded: true,
-          loading: false,
-        },
+        }),
         modelData: {
           abc123: modelDataFactory.build({
             info: modelInfoFactory.build({

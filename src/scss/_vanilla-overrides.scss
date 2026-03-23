@@ -7,35 +7,30 @@
 .stepper-horizontal {
   justify-content: space-between;
 
-  .step-number,
-  .step-disabled {
-    color: #000;
-  }
-
-  .step-content {
-    max-width: 100%;
-  }
-
   .p-inline-list__item {
     width: 100%;
-  }
 
-  .step {
-    border-top: 1px solid $color-mid-x-light;
-    width: revert;
-  }
-
-  .progress-line {
-    border-top: 1px solid $color-dark;
-
-    .step-number {
-      background-color: $color-dark;
-      color: $color-light;
+    .step-content {
+      max-width: 100%;
     }
 
-    .step-status-icon {
-      height: 1.6rem;
-      width: 1.6rem;
+    .step {
+      border-top: 1px solid $colors--theme--border-low-contrast;
+      width: revert;
+    }
+
+    .progress-line {
+      border-top: 1px solid $colors--theme--border-high-contrast;
+
+      .step-number {
+        background-color: $color-dark;
+        color: $color-light;
+      }
+
+      .step-status-icon {
+        height: 1.6rem;
+        width: 1.6rem;
+      }
     }
   }
 }
