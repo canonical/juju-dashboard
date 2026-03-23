@@ -58,9 +58,13 @@ export type Source<T> = {
    *
    * - `error`: called when an error has occurred.
    *
+   * - `errorCleared`: called when an error is cleared.
+   *
    * - `load`: called when a load begins, and is provided promise
    *   which will resolve with the loaded data, or reject with an
    *   error.
+   *
+   * - `loadEnd`: called when the source has stopped loading.
    */
   on: <Name extends keyof Events<T>>(
     event: Name,
@@ -74,7 +78,9 @@ export type Source<T> = {
 export type Events<T> = {
   data: [data: T];
   error: [message: string, source: unknown];
+  errorCleared: [];
   load: [result: Promise<T>];
+  loadEnd: [];
 };
 
 /**

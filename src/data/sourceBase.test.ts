@@ -603,6 +603,56 @@ describe("createSource", () => {
         });
       });
 
+      describe("event: loadEnd", () => {
+        it("triggers after single data load", async () => {
+          const dataPromise = Promise.withResolvers();
+
+          const source = createSource(({ load }) => {
+            load(dataPromise.promise);
+            return DUMMY_HOOKS;
+          });
+
+          const loadEndHandler = vi.fn();
+          source.on("loadEnd", loadEndHandler);
+
+          // Shouldn't be called initially.
+          expect(loadEndHandler).not.toHaveBeenCalled();
+
+          // Resolve the load.
+          dataPromise.resolve(123);
+          await tick();
+          expect(loadEndHandler).toHaveBeenCalledTimes(1);
+        });
+
+        it("triggers after final overlapping loads", async () => {
+          const dataPromises = [
+            Promise.withResolvers(),
+            Promise.withResolvers(),
+          ];
+
+          const source = createSource(({ load }) => {
+            load(dataPromises[0].promise);
+            load(dataPromises[1].promise);
+            return DUMMY_HOOKS;
+          });
+
+          const loadEndHandler = vi.fn();
+          source.on("loadEnd", loadEndHandler);
+
+          expect(loadEndHandler).not.toHaveBeenCalled();
+
+          // Resolve the last data promise, which should be passed through.
+          dataPromises[0].resolve(123);
+          await tick();
+          expect(loadEndHandler).not.toHaveBeenCalled();
+
+          // Resolve the first data promise, which should be ignored.
+          dataPromises[1].resolve(456);
+          await tick();
+          expect(loadEndHandler).toHaveBeenCalledTimes(1);
+        });
+      });
+
       describe("event: data", () => {
         it("calls callback after data load", async () => {
           const dataPromise = Promise.withResolvers();
@@ -775,6 +825,39 @@ describe("createSource", () => {
           errorPromises[0].reject(errors[0]);
           await tick();
           expect(errorHandler).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      describe("event: errorCleared", () => {
+        it("triggers after successful load", async () => {
+          const loadPromises = [
+            Promise.withResolvers(),
+            Promise.withResolvers(),
+          ];
+
+          const source = createSource(({ load }) => {
+            load(loadPromises[0].promise);
+            load(loadPromises[1].promise);
+            return DUMMY_HOOKS;
+          });
+
+          const errorClearedHandler = vi.fn();
+          source.on("errorCleared", errorClearedHandler);
+
+          // Shouldn't be called initially.
+          expect(errorClearedHandler).not.toHaveBeenCalled();
+
+          const loadError = new Error("load error");
+
+          // Reject with error.
+          loadPromises[0].reject(loadError);
+          await tick();
+          expect(errorClearedHandler).not.toHaveBeenCalled();
+
+          // Successful load.
+          loadPromises[1].resolve(123);
+          await tick();
+          expect(errorClearedHandler).toHaveBeenCalledTimes(1);
         });
       });
     });
