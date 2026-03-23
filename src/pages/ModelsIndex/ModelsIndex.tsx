@@ -141,55 +141,72 @@ export default function Models(): JSX.Element {
     } else {
       content = (
         <>
-          <SearchAndFilter
-            filterPanelData={[
-              {
-                id: 0,
-                heading: "Cloud",
-                chips: generateChips("Cloud", clouds),
-              },
-              {
-                id: 1,
-                heading: "Region",
-                chips: generateChips("Region", regions),
-              },
-              {
-                id: 2,
-                heading: "Owner",
-                chips: generateChips("Owner", owners),
-              },
-              {
-                id: 3,
-                heading: "Credential",
-                chips: generateChips("Credential", credentials),
-              },
-            ]}
-            existingSearchData={existingSearchData}
-            returnSearchData={(searchData) => {
-              // Reset active filters
-              activeFilters = {
-                cloud: [],
-                owner: [],
-                region: [],
-                credential: [],
-                custom: [],
-              };
+          <span className="models__controls" data-disabled={modelCount === 0}>
+            <SearchAndFilter
+              filterPanelData={[
+                {
+                  id: 0,
+                  heading: "Cloud",
+                  chips: generateChips("Cloud", clouds),
+                },
+                {
+                  id: 1,
+                  heading: "Region",
+                  chips: generateChips("Region", regions),
+                },
+                {
+                  id: 2,
+                  heading: "Owner",
+                  chips: generateChips("Owner", owners),
+                },
+                {
+                  id: 3,
+                  heading: "Credential",
+                  chips: generateChips("Credential", credentials),
+                },
+              ]}
+              existingSearchData={existingSearchData}
+              returnSearchData={(searchData) => {
+                // Reset active filters
+                activeFilters = {
+                  cloud: [],
+                  owner: [],
+                  region: [],
+                  credential: [],
+                  custom: [],
+                };
 
-              // Loop search data and pull out each filter
-              if (searchData.length) {
-                searchData.forEach(({ lead, value }) => {
-                  const chipLead = lead ? lead.toLowerCase() : "custom";
-                  if (!(chipLead in activeFilters)) {
-                    activeFilters[chipLead] = [];
-                  }
-                  activeFilters[chipLead].push(value);
-                });
-              }
-              if (!isObjectsEqual(activeFilters, filters)) {
-                setQueryParams(activeFilters);
-              }
-            }}
-          />
+                // Loop search data and pull out each filter
+                if (searchData.length) {
+                  searchData.forEach(({ lead, value }) => {
+                    const chipLead = lead ? lead.toLowerCase() : "custom";
+                    if (!(chipLead in activeFilters)) {
+                      activeFilters[chipLead] = [];
+                    }
+                    activeFilters[chipLead].push(value);
+                  });
+                }
+                if (!isObjectsEqual(activeFilters, filters)) {
+                  setQueryParams(activeFilters);
+                }
+              }}
+            />
+            <span>
+              <span className="p-text--default">Group by: </span>
+              <SegmentedControl
+                className="u-display--inline-block"
+                activeButton={queryParams.groupedby}
+                buttons={["Status", "Cloud", "Owner"].map((group) => ({
+                  children: group,
+                  key: group.toLowerCase(),
+                  to: urls.models.group({
+                    groupedby: group.toLowerCase() as ModelsGroupedBy,
+                  }),
+                }))}
+                buttonComponent={Link}
+              />
+            </span>
+          </span>
           <div className="models">
             <ChipGroup chips={{ blocked, alert, running }} />
             <ModelTableList
@@ -205,28 +222,11 @@ export default function Models(): JSX.Element {
   return (
     <MainContent
       {...testId(TestId.COMPONENT)}
+      contentClassName="models__content"
       title={
         <div className="models__header">
-          <span className="u-hide u-show--large">
+          <span className="u-show--large">
             {modelCount} {pluralize(modelCount, "model")}
-          </span>
-          <span
-            className="models__header-controls"
-            data-disabled={modelCount === 0}
-          >
-            <span className="p-text--default">Group by: </span>
-            <SegmentedControl
-              className="u-display--inline-block"
-              activeButton={queryParams.groupedby}
-              buttons={["Status", "Cloud", "Owner"].map((group) => ({
-                children: group,
-                key: group.toLowerCase(),
-                to: urls.models.group({
-                  groupedby: group.toLowerCase() as ModelsGroupedBy,
-                }),
-              }))}
-              buttonComponent={Link}
-            />
           </span>
           <Button
             appearance="positive"
