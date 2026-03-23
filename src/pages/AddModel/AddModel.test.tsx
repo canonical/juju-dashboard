@@ -14,7 +14,7 @@ import { renderComponent } from "testing/utils";
 import urls from "urls";
 
 import AddModel from "./AddModel";
-import { Label, StepType, TestId as AddModelTestId } from "./types";
+import { Label, TestId as AddModelTestId } from "./types";
 
 describe("AddModel page", () => {
   let state: RootState;
@@ -50,18 +50,8 @@ describe("AddModel page", () => {
     expect(screen.getByText(Label.TITLE)).toBeInTheDocument();
   });
 
-  it("displays the correct step when URL has step parameter", () => {
-    renderComponent(<AddModel />, {
-      state,
-      url: `?step=${StepType.ACCESS_MANAGEMENT}`,
-    });
-    expect(
-      screen.getByText("Access management form goes here."),
-    ).toBeInTheDocument();
-  });
-
   it("navigates to next step when Next button is clicked", async () => {
-    const { router } = renderComponent(<AddModel />, { state });
+    renderComponent(<AddModel />, { state });
     expect(
       screen.getByText("Mandatory details form goes here."),
     ).toBeInTheDocument();
@@ -69,31 +59,27 @@ describe("AddModel page", () => {
       screen.queryByText("Configuration and constraints form goes here."),
     ).toBeNull();
 
-    const nextButton = screen.getByRole("button", { name: Label.NEXT_BUTTON });
-    await userEvent.click(nextButton);
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
 
     expect(screen.queryByText("Mandatory details form goes here.")).toBeNull();
     expect(
       screen.getByText("Configuration and constraints form goes here."),
     ).toBeInTheDocument();
-    expect(router.state.location.search).toContain(
-      `step=${StepType.CONFIGURATION_CONSTRAINTS}`,
-    );
   });
 
   it("navigates to previous step when Back button is clicked", async () => {
-    const { router } = renderComponent(<AddModel />, {
-      state,
-      url: `?step=${StepType.CONFIGURATION_CONSTRAINTS}`,
-    });
-    const backButton = screen.getByRole("button", { name: Label.BACK_BUTTON });
-    await userEvent.click(backButton);
+    renderComponent(<AddModel />, { state });
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.BACK_BUTTON }),
+    );
     expect(
       screen.getByText("Mandatory details form goes here."),
     ).toBeInTheDocument();
-    expect(router.state.location.search).toContain(
-      `step=${StepType.MANDATORY_DETAILS}`,
-    );
   });
 
   it("does not show Back button on first step", () => {
@@ -103,62 +89,58 @@ describe("AddModel page", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("shows Back button on subsequent steps", () => {
-    renderComponent(<AddModel />, {
-      state,
-      url: `?step=${StepType.CONFIGURATION_CONSTRAINTS}`,
-    });
+  it("shows Back button on subsequent steps", async () => {
+    renderComponent(<AddModel />, { state });
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
     expect(
       screen.getByRole("button", { name: Label.BACK_BUTTON }),
     ).toBeInTheDocument();
   });
 
-  it("displays Next button on first two steps", () => {
+  it("displays Next button on first two steps", async () => {
     renderComponent(<AddModel />, { state });
     expect(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     ).toBeInTheDocument();
 
-    renderComponent(<AddModel />, {
-      state,
-      url: `?step=${StepType.CONFIGURATION_CONSTRAINTS}`,
-    });
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
     expect(
-      screen.getAllByRole("button", { name: Label.NEXT_BUTTON }),
-    ).toHaveLength(2);
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    ).toBeInTheDocument();
 
-    renderComponent(<AddModel />, {
-      state,
-      url: `?step=${StepType.ACCESS_MANAGEMENT}`,
-    });
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
     expect(
-      screen.getAllByRole("button", { name: Label.NEXT_BUTTON }),
-    ).toHaveLength(2);
+      screen.queryByRole("button", { name: Label.NEXT_BUTTON }),
+    ).not.toBeInTheDocument();
   });
 
-  it("disables Create button on final step", () => {
-    renderComponent(<AddModel />, {
-      state,
-      url: `?step=${StepType.ACCESS_MANAGEMENT}`,
-    });
-    const createButton = screen.getByRole("button", {
-      name: Label.CREATE_BUTTON,
-    });
-    expect(createButton).toHaveAttribute("disabled");
+  it("disables Create button on final step", async () => {
+    renderComponent(<AddModel />, { state });
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
+    expect(
+      screen.getByRole("button", { name: Label.CREATE_BUTTON }),
+    ).toHaveAttribute("disabled");
   });
 
   it("navigates to steps when clicking step titles", async () => {
-    const { router } = renderComponent(<AddModel />, { state });
-    const configStep = screen.getByText(
-      "Configuration & Constraints (optional)",
+    renderComponent(<AddModel />, { state });
+    await userEvent.click(
+      screen.getByText("Configuration & Constraints (optional)"),
     );
-    await userEvent.click(configStep);
     expect(
       screen.getByText("Configuration and constraints form goes here."),
     ).toBeInTheDocument();
-    expect(router.state.location.search).toContain(
-      `step=${StepType.CONFIGURATION_CONSTRAINTS}`,
-    );
   });
 
   it("navigates back to models page when Cancel is clicked", async () => {
@@ -258,22 +240,10 @@ describe("AddModel page", () => {
     });
   });
 
-  describe("invalid step parameter handling", () => {
-    it("defaults to first step when invalid step is in URL", () => {
-      renderComponent(<AddModel />, {
-        state,
-        url: "?step=invalid-step",
-      });
-      expect(
-        screen.getByText("Mandatory details form goes here."),
-      ).toBeInTheDocument();
-    });
-
-    it("defaults to first step when step parameter is missing", () => {
-      renderComponent(<AddModel />, { state });
-      expect(
-        screen.getByText("Mandatory details form goes here."),
-      ).toBeInTheDocument();
-    });
+  it("starts on the first step by default", () => {
+    renderComponent(<AddModel />, { state });
+    expect(
+      screen.getByText("Mandatory details form goes here."),
+    ).toBeInTheDocument();
   });
 });

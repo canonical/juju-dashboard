@@ -6,11 +6,11 @@ import {
 } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import type { FC, JSX } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 
 import CheckPermissions from "components/CheckPermissions";
 import { useCanAddModel } from "hooks/useCanAddModel";
-import { useQueryParams } from "hooks/useQueryParams";
 import { testId } from "testing/utils";
 import urls from "urls";
 
@@ -42,29 +42,10 @@ const stepDefinitions: {
   },
 ];
 
-const steps: StepType[] = [
-  StepType.MANDATORY_DETAILS,
-  StepType.CONFIGURATION_CONSTRAINTS,
-  StepType.ACCESS_MANAGEMENT,
-];
-
-const getStepType = (step: null | string): StepType => {
-  if (step && steps.includes(step as StepType)) {
-    return step as StepType;
-  }
-  return StepType.MANDATORY_DETAILS;
-};
-
 const AddModel: FC = () => {
   const navigate = useNavigate();
   const canCreateModel = useCanAddModel();
-  const [queryParams, setQueryParams] = useQueryParams<{
-    step: null | string;
-  }>({
-    step: StepType.MANDATORY_DETAILS,
-  });
-  const stepType = getStepType(queryParams.step);
-  const currentStepIndex = steps.findIndex((step) => step === stepType);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   return (
     <CheckPermissions allowed={canCreateModel} {...testId(TestId.COMPONENT)}>
@@ -89,7 +70,7 @@ const AddModel: FC = () => {
                 hasProgressLine={isPrevious || isCurrent}
                 iconName={isPrevious ? "success" : "number"}
                 handleClick={() => {
-                  setQueryParams({ step: key });
+                  setCurrentStepIndex(index);
                 }}
               />
             );
@@ -108,11 +89,7 @@ const AddModel: FC = () => {
           {currentStepIndex > 0 ? (
             <Button
               onClick={() => {
-                if (currentStepIndex > 0) {
-                  setQueryParams({
-                    step: steps[currentStepIndex - 1],
-                  });
-                }
+                setCurrentStepIndex(currentStepIndex - 1);
               }}
               appearance="secondary"
             >
@@ -121,12 +98,10 @@ const AddModel: FC = () => {
           ) : null}
           <ActionButton
             appearance="positive"
-            disabled={currentStepIndex === steps.length - 1}
+            disabled={currentStepIndex === stepDefinitions.length - 1}
             onClick={() => {
-              if (currentStepIndex < steps.length - 1) {
-                setQueryParams({
-                  step: steps[currentStepIndex + 1],
-                });
+              if (currentStepIndex < stepDefinitions.length - 1) {
+                setCurrentStepIndex(currentStepIndex + 1);
               }
             }}
           >
