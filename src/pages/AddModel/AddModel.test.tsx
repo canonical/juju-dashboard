@@ -154,12 +154,10 @@ describe("AddModel page", () => {
 
   describe("permission checks", () => {
     it("does not render when user cannot add models (Juju with no clouds)", () => {
-      state.juju.cloudInfo = {
+      state.juju.cloudInfo = cloudInfoStateFactory.build({
         clouds: {},
-        errors: null,
         loaded: true,
-        loading: false,
-      };
+      });
       renderComponent(<AddModel />, { state });
       expect(
         screen.queryByTestId(AddModelTestId.ADD_MODEL_CONTENT),
@@ -173,12 +171,10 @@ describe("AddModel page", () => {
           isJuju: false,
         }),
       });
-      state.juju.cloudInfo = {
+      state.juju.cloudInfo = cloudInfoStateFactory.build({
         clouds: {},
-        errors: null,
         loaded: true,
-        loading: false,
-      };
+      });
       renderComponent(<AddModel />, { state });
       expect(
         screen.queryByTestId(AddModelTestId.ADD_MODEL_CONTENT),
@@ -206,12 +202,10 @@ describe("AddModel page", () => {
           isJuju: true,
         }),
       });
-      state.juju.cloudInfo = {
+      state.juju.cloudInfo = cloudInfoStateFactory.build({
         clouds: { "cloud-aws": { type: "ec2" } },
-        errors: null,
         loaded: true,
-        loading: false,
-      };
+      });
       renderComponent(<AddModel />, { state });
       expect(screen.getByTestId(AddModelTestId.COMPONENT)).toBeInTheDocument();
     });
@@ -222,12 +216,10 @@ describe("AddModel page", () => {
           isJuju: false,
         }),
       });
-      state.juju.cloudInfo = {
+      state.juju.cloudInfo = cloudInfoStateFactory.build({
         clouds: { "cloud-aws": { type: "ec2" } },
-        errors: null,
         loaded: true,
-        loading: false,
-      };
+      });
       state.juju.controllers = {
         "wss://controller.example.com": [
           controllerFactory.build({

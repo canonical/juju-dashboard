@@ -233,11 +233,9 @@ export default function Models(): JSX.Element {
             className="u-no-margin--bottom"
             hasIcon
             disabled={!canCreateModels}
-            onClick={() =>
-              void navigate(urls.models.tab({ step: "mandatory-details" }))
-            }
+            onClick={() => void navigate(urls.models.addModel)}
           >
-            <Icon name="plus" className="is-light" />
+            <Icon name="plus" light />
             <span>Add model</span>
           </Button>
         </div>

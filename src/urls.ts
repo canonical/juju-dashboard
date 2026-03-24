@@ -55,9 +55,6 @@ const urls = {
     group: argPath<{
       groupedby: ModelsGroupedBy;
     }>("/models?groupedby=:groupedby"),
-    tab: argPath<{
-      step: string;
-    }>("/models/add-model?step=:step"),
   },
   logs: "/logs",
   permissions: "/permissions",

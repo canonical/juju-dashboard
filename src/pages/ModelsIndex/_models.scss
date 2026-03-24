@@ -8,6 +8,7 @@
     display: grid;
     gap: $sp-unit;
     grid-template-columns: 1fr;
+    white-space: nowrap;
 
     @media (min-width: $breakpoint-large) {
       display: flex;
