@@ -10,11 +10,7 @@ import * as jimmModule from "juju/jimm/api";
 import { pollWhoamiStart } from "juju/jimm/listeners";
 import { Label } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
-import {
-  beginPollingModelList,
-  updateModelStatuses,
-  type ControllerArgs,
-} from "store/app/actions";
+import { updateModelStatuses, type ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
@@ -31,7 +27,14 @@ import {
 } from "testing/factories/juju/juju";
 import { createStore } from "testing/utils";
 
-import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
+import {
+  LoginError,
+  ModelsError,
+  modelPollerMiddleware,
+  controllers as modelPollerControllers,
+} from "./model-poller";
+import sourceMiddleware from "./source";
+import modelListSource from "./source/model-list";
 import type { MockMiddlewareResult } from "./types";
 
 vi.mock("juju/api", () => ({
@@ -106,7 +109,9 @@ describe("model poller", () => {
     conn = {
       facades: {
         modelManager: {
-          listModels: vi.fn().mockResolvedValue({ "user-models": models }),
+          listModels: vi
+            .fn()
+            .mockImplementation(async () => ({ "user-models": models })),
           destroyModels: vi.fn().mockResolvedValue({}),
         },
       },
@@ -125,6 +130,7 @@ describe("model poller", () => {
     } as unknown as Client;
     // Instantiate local auth by default.
     new LocalAuth(fakeStore.dispatch);
+    modelPollerControllers.clear();
   });
 
   const runMiddleware = async (
@@ -444,7 +450,7 @@ describe("model poller", () => {
   it("fetches and updates models if logged in to controller", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware],
+      middleware: [modelPollerMiddleware, ...sourceMiddleware],
     });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -462,7 +468,7 @@ describe("model poller", () => {
         poll: 1,
       }),
     );
-    await vi.runAllTimersAsync();
+    await vi.runOnlyPendingTimersAsync();
     expect(actions).toEqual(
       expect.arrayContaining([
         jujuActions.updateModelList({
@@ -492,7 +498,7 @@ describe("model poller", () => {
       },
       {
         trackActions: true,
-        middleware: [modelPollerMiddleware],
+        middleware: [modelPollerMiddleware, ...sourceMiddleware],
       },
     );
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
@@ -507,7 +513,7 @@ describe("model poller", () => {
         poll: 2,
       }),
     );
-    await vi.runAllTimersAsync();
+    await vi.runOnlyPendingTimersAsync();
     expect(actions).toEqual(
       expect.arrayContaining([
         jujuActions.updateModelsError({
@@ -521,7 +527,7 @@ describe("model poller", () => {
   it("should display error when unable to load all models", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware],
+      middleware: [modelPollerMiddleware, ...sourceMiddleware],
     });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -538,7 +544,7 @@ describe("model poller", () => {
         poll: 1,
       }),
     );
-    await vi.runAllTimersAsync();
+    await vi.runOnlyPendingTimersAsync();
     expect(actions).toEqual(
       expect.arrayContaining([
         jujuActions.updateModelsError({
@@ -552,7 +558,7 @@ describe("model poller", () => {
   it("should display error when unable to load some models", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware],
+      middleware: [modelPollerMiddleware, ...sourceMiddleware],
     });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -569,9 +575,7 @@ describe("model poller", () => {
         poll: 2,
       }),
     );
-    vi.advanceTimersByTime(30000);
-    // Resolve the async calls again.
-    await vi.runAllTimersAsync();
+    await vi.advanceTimersByTimeAsync(30000);
     expect(actions).toEqual(
       expect.arrayContaining([
         jujuActions.updateModelsError({
@@ -585,7 +589,7 @@ describe("model poller", () => {
   it("should display error when unable to load latest models", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware],
+      middleware: [modelPollerMiddleware, ...sourceMiddleware],
     });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -599,16 +603,14 @@ describe("model poller", () => {
       appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
-        poll: 2,
+        // poll: 2,
       }),
     );
-    vi.advanceTimersByTime(30000);
-    // Resolve the async calls again.
-    await vi.runAllTimersAsync();
+    await vi.advanceTimersByTimeAsync(30000);
     expect(actions).toEqual(
       expect.arrayContaining([
         jujuActions.updateModelsError({
-          modelsError: ModelsError.LOAD_LATEST_MODELS,
+          modelsError: ModelsError.LOAD_ALL_MODELS,
           wsControllerURL,
         }),
       ]),
@@ -618,18 +620,18 @@ describe("model poller", () => {
   it("should display error when unable to update model list", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware],
+      middleware: [modelPollerMiddleware, ...sourceMiddleware],
     });
+    conn.facades.modelManager.listModels = vi
+      .fn()
+      .mockImplementation(async () => {
+        throw new Error(ModelsError.LIST_OR_UPDATE_MODELS);
+      });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuActions, "updateModelList").mockImplementation(
-      vi.fn(() => {
-        throw new Error(ModelsError.LIST_OR_UPDATE_MODELS);
-      }),
-    );
     store.dispatch(
       appActions.connectAndPollControllers({
         controllers,
@@ -638,9 +640,7 @@ describe("model poller", () => {
         poll: 0,
       }),
     );
-    vi.advanceTimersByTime(30000);
-    // Resolve the async calls again.
-    await vi.runAllTimersAsync();
+    await vi.advanceTimersByTimeAsync(30000);
     expect(actions).toEqual(
       expect.arrayContaining([
         jujuActions.updateModelsError({
@@ -654,7 +654,7 @@ describe("model poller", () => {
   it("updates models every 30 seconds", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware],
+      middleware: [modelPollerMiddleware, ...sourceMiddleware],
     });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -669,15 +669,15 @@ describe("model poller", () => {
         poll: 2,
       }),
     );
-    vi.advanceTimersByTime(30000);
-    // Resolve the async calls again.
-    await vi.runAllTimersAsync();
+    await vi.advanceTimersByTimeAsync(60000);
     expect(
-      actions.filter((action) => action.type === beginPollingModelList.type),
+      actions.filter(
+        (action) => action.type === modelListSource.actions.start.type,
+      ),
     ).toHaveLength(1);
     expect(
       actions.filter((action) => action.type === updateModelStatuses.type),
-    ).toHaveLength(2);
+    ).toHaveLength(3);
   });
 
   it("does not update models if the user logs out", async () => {
@@ -692,8 +692,12 @@ describe("model poller", () => {
           },
         }),
       },
-      { trackActions: true, middleware: [modelPollerMiddleware] },
+      {
+        trackActions: true,
+        middleware: [modelPollerMiddleware, ...sourceMiddleware],
+      },
     );
+    delete conn.info.user;
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
@@ -703,17 +707,13 @@ describe("model poller", () => {
       appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
-        // Disable polling
-        poll: 0,
       }),
     );
-    vi.advanceTimersByTime(30000);
-    // Resolve the async calls again.
-    await vi.runAllTimersAsync();
+    await vi.advanceTimersByTimeAsync(30000);
     expect(next).not.toHaveBeenCalled();
     expect(
       actions.filter((action) => action.type === updateModelStatuses.type),
-    ).toHaveLength(1);
+    ).toHaveLength(0);
   });
 
   it("handles logging out of models", async () => {

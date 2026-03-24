@@ -63,6 +63,18 @@ export class SourceManager<T, P> {
   }
 }
 
+/**
+ * Create a redux middleware for a given source. Sources are tracked by the arguments passed to
+ * the `start` action.
+ *
+ * @param identifier A unique identifier for this source.
+ * @param createSource A callback function to create a new source with the given arguments.
+ * @param sourceActions A collection of actions to propagate the data and source state into the
+ * backing store.
+ * @param hooks A collection of callback function to run at various times when interacting with
+ * the underlying store. **Warning:** This will be removed in the future once there are less
+ * interactions between old and new polling implementations, so try not to rely on it.
+ */
 export function createSourceMiddleware<T, P>(
   identifier: string,
   createSource: (args: P) => Source<T>,
@@ -73,6 +85,9 @@ export function createSourceMiddleware<T, P>(
       args: P,
       error: { message: string; source: unknown } | null,
     ) => PayloadAction<unknown>;
+  },
+  hooks?: {
+    after?: (args: P, store: Pick<Store, "dispatch" | "getState">) => void;
   },
 ): {
   middleware: Middleware<void, RootState, Store["dispatch"]>;
@@ -112,6 +127,7 @@ export function createSourceMiddleware<T, P>(
           sources.start(args, {
             data: (data) => {
               store.dispatch(sourceActions.setData(args, data));
+              hooks?.after?.(args, store);
             },
             load: () => {
               store.dispatch(sourceActions.setLoading(args, true));

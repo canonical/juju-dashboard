@@ -21,8 +21,7 @@ export type ControllerArgs = [
 ];
 
 /**
- * Connect each of the provided controllers, and begin polling them for updates via
- * `app/beginPollingModelList`.
+ * Connect each of the provided controllers.
  */
 export const connectAndPollControllers = createAction<{
   controllers: ControllerArgs[];
@@ -31,15 +30,6 @@ export const connectAndPollControllers = createAction<{
   poll?: number;
 }>("app/connectAndPollControllers");
 /**
- * For each connected controller, fetch a list of models, and store them in Redux. Once the models
- * have been added, trigger `updateModelStatuses`.
- */
-export const beginPollingModelList = createAction<{ poll?: number }>(
-  "app/beginPollingModelList",
-);
-/**
  * For each model present within Redux, fetch and store the model status.
  */
-export const updateModelStatuses = createAction<{ pollIteration: number }>(
-  "app/updateModelStatuses",
-);
+export const updateModelStatuses = createAction("app/updateModelStatuses");
