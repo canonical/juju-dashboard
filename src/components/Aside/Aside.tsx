@@ -12,7 +12,7 @@ import { useEffect, type PropsWithChildren } from "react";
 export type Props = PropsWithSpread<
   {
     className?: string;
-    width?: "narrow" | "wide";
+    width?: "narrow" | "unset" | "wide" | null;
     pinned?: boolean;
     loading?: boolean;
     panelProps?: PanelProps;

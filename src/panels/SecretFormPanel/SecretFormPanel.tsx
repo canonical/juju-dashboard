@@ -45,7 +45,6 @@ const SecretFormPanel: FC<Props> = ({ update = false }: Props) => {
       onRemovePanelQueryParams={handleRemovePanelQueryParams}
       ref={scrollArea}
       title={update ? Label.TITLE_UPDATE : Label.TITLE_ADD}
-      width="narrow"
     >
       <SecretForm
         formId={formId}

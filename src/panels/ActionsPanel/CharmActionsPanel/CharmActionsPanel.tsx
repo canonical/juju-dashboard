@@ -95,7 +95,6 @@ export default function CharmActionsPanel({
           Run action
         </Button>
       }
-      width="narrow"
       {...testId(CharmsAndActionsPanelTestId.PANEL)}
       title={<CharmActionsPanelTitle charmURL={charmURL} />}
       onRemovePanelQueryParams={onRemovePanelQueryParams}

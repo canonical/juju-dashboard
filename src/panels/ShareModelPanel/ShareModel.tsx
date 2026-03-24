@@ -408,6 +408,7 @@ export default function ShareModel(): JSX.Element {
           </form>
         </>
       }
+      width="unset"
     >
       <div className="share-cards">
         <div className="share-cards__heading">

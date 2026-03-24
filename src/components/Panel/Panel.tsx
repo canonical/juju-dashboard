@@ -62,6 +62,7 @@ const Panel = forwardRef<HTMLDivElement, Props>(
       titleId,
       header,
       onRemovePanelQueryParams,
+      width = "narrow",
       ...props
     }: Props,
     ref,
@@ -106,6 +107,7 @@ const Panel = forwardRef<HTMLDivElement, Props>(
     return (
       <Aside
         {...props}
+        width={width}
         aria-labelledby={titleId ?? defaultTitleId}
         role="dialog"
       >

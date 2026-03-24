@@ -45,7 +45,6 @@ export default function CharmsPanel({
           Next
         </Button>
       }
-      width="narrow"
       {...testId(CharmsAndActionsPanelTestId.PANEL)}
       title={Label.PANEL_TITLE}
       onRemovePanelQueryParams={onRemovePanelQueryParams}

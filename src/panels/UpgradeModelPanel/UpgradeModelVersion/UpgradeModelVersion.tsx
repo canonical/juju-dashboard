@@ -36,7 +36,6 @@ const UpgradeModelVersion: FC<Props> = ({
       header={<UpgradeModelPanelHeader titleId={titleId} />}
       onRemovePanelQueryParams={onRemovePanelQueryParams}
       titleId={titleId}
-      width="narrow"
       {...testId(UpgradeModelPanelTestId.PANEL)}
     ></Panel>
   );

@@ -417,6 +417,7 @@ export default function ConfigPanel(): JSX.Element {
           </div>
         ) : null
       }
+      width="unset"
     >
       <>
         {hasConfig && !isLoading ? (

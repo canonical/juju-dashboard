@@ -38,7 +38,6 @@ const UpgradeModelController: FC<Props> = ({
       }
       onRemovePanelQueryParams={onRemovePanelQueryParams}
       titleId={titleId}
-      width="narrow"
       {...testId(CharmsAndActionsPanelTestId.PANEL)}
     ></Panel>
   );
