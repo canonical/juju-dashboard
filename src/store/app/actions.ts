@@ -26,8 +26,6 @@ export type ControllerArgs = [
 export const connectAndPollControllers = createAction<{
   controllers: ControllerArgs[];
   isJuju: boolean;
-  // This arg is intended to prevent polling from starting in a testing scenario.
-  poll?: number;
 }>("app/connectAndPollControllers");
 /**
  * For each model present within Redux, fetch and store the model status.

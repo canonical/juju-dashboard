@@ -141,8 +141,6 @@ describe("model poller", () => {
       ...appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
-        // Turn off polling to prevent the middleware running indefinitely.
-        poll: 0,
       }),
       ...(actionOverrides ?? {}),
     };
@@ -171,7 +169,7 @@ describe("model poller", () => {
 
   it("does not pass through matched actions", async () => {
     await runMiddleware({
-      payload: { controllers: [], isJuju: true, poll: 0 },
+      payload: { controllers: [], isJuju: true },
     });
     expect(next).not.toHaveBeenCalled();
   });
@@ -221,7 +219,6 @@ describe("model poller", () => {
         appActions.connectAndPollControllers({
           controllers: [[wsControllerURL, undefined]],
           isJuju: true,
-          poll: 0,
         }),
       );
       expect(dispatchMock).toHaveBeenCalledWith(
@@ -249,7 +246,6 @@ describe("model poller", () => {
         appActions.connectAndPollControllers({
           controllers: [[wsControllerURL, undefined]],
           isJuju: true,
-          poll: 0,
         }),
       );
       expect(fakeStore.dispatch).toHaveBeenCalledWith(pollWhoamiStart());
@@ -264,7 +260,6 @@ describe("model poller", () => {
         appActions.connectAndPollControllers({
           controllers: [[wsControllerURL, undefined]],
           isJuju: true,
-          poll: 0,
         }),
       );
       expect(dispatchMock).toHaveBeenCalledWith(
@@ -424,7 +419,6 @@ describe("model poller", () => {
       payload: {
         controllers,
         isJuju: false,
-        poll: 0,
       },
     });
     expect(next).not.toHaveBeenCalled();
@@ -465,7 +459,6 @@ describe("model poller", () => {
       appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
-        poll: 1,
       }),
     );
     await vi.runOnlyPendingTimersAsync();
@@ -510,7 +503,6 @@ describe("model poller", () => {
       appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
-        poll: 2,
       }),
     );
     await vi.runOnlyPendingTimersAsync();
@@ -541,7 +533,6 @@ describe("model poller", () => {
       appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
-        poll: 1,
       }),
     );
     await vi.runOnlyPendingTimersAsync();
@@ -572,7 +563,6 @@ describe("model poller", () => {
       appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
-        poll: 2,
       }),
     );
     await vi.advanceTimersByTimeAsync(30000);
@@ -603,7 +593,6 @@ describe("model poller", () => {
       appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
-        // poll: 2,
       }),
     );
     await vi.advanceTimersByTimeAsync(30000);
@@ -636,8 +625,6 @@ describe("model poller", () => {
       appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
-        // Disable polling
-        poll: 0,
       }),
     );
     await vi.advanceTimersByTimeAsync(30000);
@@ -665,8 +652,6 @@ describe("model poller", () => {
       appActions.connectAndPollControllers({
         controllers,
         isJuju: true,
-        // Only allow polling twice
-        poll: 2,
       }),
     );
     await vi.advanceTimersByTimeAsync(60000);
