@@ -6,22 +6,30 @@
 
   &__controls {
     display: grid;
-    gap: $sp-unit;
+    flex-wrap: wrap;
+    gap: 0;
     grid-template-columns: 1fr;
     white-space: nowrap;
 
+    .p-segmented-control {
+      display: inline-block;
+    }
+
     @media (min-width: $breakpoint-large) {
       display: flex;
-      gap: 0;
+      gap: $sp-unit;
       justify-content: space-between;
 
       .p-search-and-filter {
-        min-width: 750px;
+        min-width: 745px;
       }
     }
 
-    .p-segmented-control {
-      display: inline-block;
+    @include mobile-and-medium {
+      .p-segmented-control {
+        display: flex;
+        flex-direction: column;
+      }
     }
   }
 
