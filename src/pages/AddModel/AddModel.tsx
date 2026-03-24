@@ -14,6 +14,7 @@ import { useCanAddModel } from "hooks/useCanAddModel";
 import { testId } from "testing/utils";
 import urls from "urls";
 
+import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
 import { TestId, StepType, Label } from "./types";
 
 const stepDefinitions: {
@@ -26,7 +27,7 @@ const stepDefinitions: {
     key: StepType.MANDATORY_DETAILS,
     title: "Mandatory details",
     ctaLabel: Label.NEXT_BUTTON,
-    content: <div>Mandatory details form goes here.</div>,
+    content: <MandatoryDetails />,
   },
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
