@@ -14,5 +14,5 @@ export enum Label {
   CANCEL_BUTTON = "Cancel",
   NEXT_BUTTON = "Next",
   BACK_BUTTON = "Back",
-  CREATE_BUTTON = "Create model",
+  CREATE_BUTTON = "Add model",
 }
