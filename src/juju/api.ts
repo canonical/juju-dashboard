@@ -319,7 +319,7 @@ export async function fetchControllerList(
       const response = await conn.facades.jimM?.listControllers();
       controllers = response.controllers ?? [];
     } else {
-      // If we're not connected to a JIMM then call to get the controller config
+      // If we're not connected to a JIMM controller then call to get the controller config
       // and generate a fake controller list.
       const controllerConfig =
         await conn.facades.controller?.controllerConfig(null);

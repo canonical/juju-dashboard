@@ -2,3 +2,35 @@
 .p-tooltip__message {
   z-index: z("zelda") + 3;
 }
+
+// All steppers need to follow the same styling, so we override the vanilla styles here.
+.stepper-horizontal {
+  justify-content: space-between;
+
+  .p-inline-list__item {
+    width: 100%;
+
+    .step-content {
+      max-width: 100%;
+    }
+
+    .step {
+      border-top: 1px solid $colors--theme--border-low-contrast;
+      width: revert;
+    }
+
+    .progress-line {
+      border-top: 1px solid $colors--theme--border-high-contrast;
+
+      .step-number {
+        background-color: $color-dark;
+        color: $color-light;
+      }
+
+      .step-status-icon {
+        height: 1.6rem;
+        width: 1.6rem;
+      }
+    }
+  }
+}

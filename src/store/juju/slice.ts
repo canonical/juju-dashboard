@@ -1,5 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
+import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 import type { DestroyModelParams } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
   ListSecretResult,
@@ -132,6 +133,12 @@ const slice = createSlice({
       relationships: [],
     },
     secrets: {},
+    cloudInfo: {
+      clouds: null,
+      errors: null,
+      loaded: false,
+      loading: false,
+    },
     selectedApplications: {},
   } as JujuState,
   reducers: {
@@ -490,6 +497,34 @@ const slice = createSlice({
       if (secrets) {
         delete secrets.content;
       }
+    },
+    fetchClouds: (state, _action: PayloadAction<WsControllerURLParam>) => {
+      state.cloudInfo.loading = true;
+      state.cloudInfo.loaded = false;
+      state.cloudInfo.errors = null;
+    },
+    setCloudInfoErrors: (
+      state,
+      action: PayloadAction<
+        { errors: string | unknown } & WsControllerURLParam
+      >,
+    ) => {
+      state.cloudInfo.errors = action.payload.errors;
+      state.cloudInfo.loading = false;
+      state.cloudInfo.loaded = true;
+    },
+    updateCloudInfo: (
+      state,
+      action: PayloadAction<
+        {
+          cloudInfo: CloudsResult["clouds"];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.cloudInfo.clouds = action.payload.cloudInfo;
+      state.cloudInfo.loading = false;
+      state.cloudInfo.loaded = true;
+      state.cloudInfo.errors = null;
     },
     checkRelation: (
       state,

@@ -17,6 +17,7 @@ const MainContent: FC<Props> = ({
   title,
   titleClassName,
   titleComponent,
+  contentClassName,
   ...props
 }: Props) => {
   const hasSecondaryNav = !!secondaryNav?.items.length;
@@ -42,7 +43,7 @@ const MainContent: FC<Props> = ({
           stickyHeader
           title={title}
         >
-          <div className="l-content" {...props}>
+          <div className={classNames("l-content", contentClassName)} {...props}>
             <FadeIn isActive={true}>
               {loading ? <LoadingSpinner /> : children}
             </FadeIn>

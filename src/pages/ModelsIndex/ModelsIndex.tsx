@@ -1,17 +1,19 @@
 import {
   Button,
+  Icon,
   Notification as ReactNotification,
   SearchAndFilter,
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import type { JSX, ReactNode } from "react";
 import { useId } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
 import LoadingSpinner from "components/LoadingSpinner";
 import ModelTableList from "components/ModelTableList";
 import SegmentedControl from "components/SegmentedControl";
+import { useCanAddModel } from "hooks/useCanAddModel";
 import useModelAttributes from "hooks/useModelAttributes";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
@@ -39,6 +41,7 @@ import { Label, TestId } from "./types";
 
 export default function Models(): JSX.Element {
   useWindowTitle("Models");
+  const navigate = useNavigate();
 
   const [queryParams, setQueryParams] = useQueryParams<{
     groupedby: string;
@@ -84,6 +87,7 @@ export default function Models(): JSX.Element {
         }))
       : null;
   useCheckRelations(requestId, relations, true);
+  const canCreateModels = useCanAddModel();
 
   // Generate chips from available model data
   const generateChips = (
@@ -136,10 +140,81 @@ export default function Models(): JSX.Element {
       );
     } else {
       content = (
-        <div className="models">
-          <ChipGroup chips={{ blocked, alert, running }} />
-          <ModelTableList groupedBy={queryParams.groupedby} filters={filters} />
-        </div>
+        <>
+          <span className="models__controls" data-disabled={modelCount === 0}>
+            <SearchAndFilter
+              filterPanelData={[
+                {
+                  id: 0,
+                  heading: "Cloud",
+                  chips: generateChips("Cloud", clouds),
+                },
+                {
+                  id: 1,
+                  heading: "Region",
+                  chips: generateChips("Region", regions),
+                },
+                {
+                  id: 2,
+                  heading: "Owner",
+                  chips: generateChips("Owner", owners),
+                },
+                {
+                  id: 3,
+                  heading: "Credential",
+                  chips: generateChips("Credential", credentials),
+                },
+              ]}
+              existingSearchData={existingSearchData}
+              returnSearchData={(searchData) => {
+                // Reset active filters
+                activeFilters = {
+                  cloud: [],
+                  owner: [],
+                  region: [],
+                  credential: [],
+                  custom: [],
+                };
+
+                // Loop search data and pull out each filter
+                if (searchData.length) {
+                  searchData.forEach(({ lead, value }) => {
+                    const chipLead = lead ? lead.toLowerCase() : "custom";
+                    if (!(chipLead in activeFilters)) {
+                      activeFilters[chipLead] = [];
+                    }
+                    activeFilters[chipLead].push(value);
+                  });
+                }
+                if (!isObjectsEqual(activeFilters, filters)) {
+                  setQueryParams(activeFilters);
+                }
+              }}
+            />
+            <span>
+              <span className="p-text--default">Group by: </span>
+              <SegmentedControl
+                className="u-display--inline-block"
+                activeButton={queryParams.groupedby}
+                buttons={["Status", "Cloud", "Owner"].map((group) => ({
+                  children: group,
+                  key: group.toLowerCase(),
+                  to: urls.models.group({
+                    groupedby: group.toLowerCase() as ModelsGroupedBy,
+                  }),
+                }))}
+                buttonComponent={Link}
+              />
+            </span>
+          </span>
+          <div className="models">
+            <ChipGroup chips={{ blocked, alert, running }} />
+            <ModelTableList
+              groupedBy={queryParams.groupedby}
+              filters={filters}
+            />
+          </div>
+        </>
       );
     }
   }
@@ -147,75 +222,22 @@ export default function Models(): JSX.Element {
   return (
     <MainContent
       {...testId(TestId.COMPONENT)}
+      contentClassName="models__content"
       title={
-        <div className="models__header" data-disabled={modelCount === 0}>
-          <span className="u-hide u-show--large">
+        <div className="models__header">
+          <span className="u-show--large">
             {modelCount} {pluralize(modelCount, "model")}
           </span>
-          <span className="models__header-controls">
-            <span className="p-text--default">Group by: </span>
-            <SegmentedControl
-              className="u-display--inline-block"
-              activeButton={queryParams.groupedby}
-              buttons={["Status", "Cloud", "Owner"].map((group) => ({
-                children: group,
-                key: group.toLowerCase(),
-                to: urls.models.group({
-                  groupedby: group.toLowerCase() as ModelsGroupedBy,
-                }),
-              }))}
-              buttonComponent={Link}
-            />
-          </span>
-          <SearchAndFilter
-            filterPanelData={[
-              {
-                id: 0,
-                heading: "Cloud",
-                chips: generateChips("Cloud", clouds),
-              },
-              {
-                id: 1,
-                heading: "Region",
-                chips: generateChips("Region", regions),
-              },
-              {
-                id: 2,
-                heading: "Owner",
-                chips: generateChips("Owner", owners),
-              },
-              {
-                id: 3,
-                heading: "Credential",
-                chips: generateChips("Credential", credentials),
-              },
-            ]}
-            existingSearchData={existingSearchData}
-            returnSearchData={(searchData) => {
-              // Reset active filters
-              activeFilters = {
-                cloud: [],
-                owner: [],
-                region: [],
-                credential: [],
-                custom: [],
-              };
-
-              // Loop search data and pull out each filter
-              if (searchData.length) {
-                searchData.forEach(({ lead, value }) => {
-                  const chipLead = lead ? lead.toLowerCase() : "custom";
-                  if (!(chipLead in activeFilters)) {
-                    activeFilters[chipLead] = [];
-                  }
-                  activeFilters[chipLead].push(value);
-                });
-              }
-              if (!isObjectsEqual(activeFilters, filters)) {
-                setQueryParams(activeFilters);
-              }
-            }}
-          />
+          <Button
+            appearance="positive"
+            className="u-no-margin--bottom"
+            hasIcon
+            disabled={!canCreateModels}
+            onClick={() => void navigate(urls.models.addModel)}
+          >
+            <Icon name="plus" light />
+            <span>Add model</span>
+          </Button>
         </div>
       }
       titleComponent="div"

@@ -25,6 +25,7 @@ import {
   rebacState,
   commandHistoryState,
   commandHistoryItem,
+  cloudInfoStateFactory,
 } from "testing/factories/juju/juju";
 
 import { actions, reducer } from "./slice";
@@ -463,6 +464,83 @@ describe("reducers", () => {
           loading: false,
         },
       },
+    });
+  });
+
+  it("fetchClouds", () => {
+    const state = jujuStateFactory.build({
+      cloudInfo: cloudInfoStateFactory.build({ loading: false }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.fetchClouds({
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      cloudInfo: cloudInfoStateFactory.build({ loading: true }),
+    });
+  });
+
+  it("updateCloudInfo", () => {
+    const state = jujuStateFactory.build({
+      cloudInfo: cloudInfoStateFactory.build({
+        clouds: null,
+        errors: null,
+        loaded: false,
+        loading: true,
+      }),
+    });
+    const clouds = {
+      "cloud-aws": { type: "ec2" },
+      "cloud-gce": { type: "gce" },
+    };
+    expect(
+      reducer(
+        state,
+        actions.updateCloudInfo({
+          cloudInfo: clouds,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      cloudInfo: cloudInfoStateFactory.build({
+        clouds,
+        errors: null,
+        loaded: true,
+        loading: false,
+      }),
+    });
+  });
+
+  it("setCloudInfoErrors", () => {
+    const state = jujuStateFactory.build({
+      cloudInfo: cloudInfoStateFactory.build({
+        clouds: null,
+        errors: null,
+        loaded: false,
+        loading: true,
+      }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.setCloudInfoErrors({
+          errors: "Uh oh!",
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      cloudInfo: cloudInfoStateFactory.build({
+        clouds: null,
+        errors: "Uh oh!",
+        loaded: true,
+        loading: false,
+      }),
     });
   });
 

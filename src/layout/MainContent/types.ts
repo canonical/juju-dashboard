@@ -16,4 +16,5 @@ export type Props = {
   title?: ReactNode;
   titleClassName?: PanelProps["titleClassName"];
   titleComponent?: PanelProps["titleComponent"];
+  contentClassName?: string;
 } & PropsWithChildren;

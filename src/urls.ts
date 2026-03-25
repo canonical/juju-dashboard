@@ -51,6 +51,7 @@ const urls = {
   },
   models: {
     index: "/models",
+    addModel: "/models/add-model",
     group: argPath<{
       groupedby: ModelsGroupedBy;
     }>("/models?groupedby=:groupedby"),

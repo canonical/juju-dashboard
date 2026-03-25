@@ -1,43 +1,40 @@
 .models {
   &__header {
-    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__controls {
     display: grid;
-    gap: $sp-unit;
+    flex-wrap: wrap;
+    gap: 0;
     grid-template-columns: 1fr;
-    opacity: 1;
-    transition: opacity 0.25s;
+    white-space: nowrap;
 
-    &-controls {
-      white-space: nowrap;
-
-      .p-segmented-control {
-        display: inline-block;
-      }
-    }
-
-    &[data-disabled="true"] {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    @include desktop {
-      grid-template-columns: 1fr 1fr;
+    .p-segmented-control {
+      display: inline-block;
     }
 
     @media (min-width: $breakpoint-large) {
-      // Account for the 1.5rem padding applied to the header.
-      grid-template-columns: calc(150px - 1.5rem) 1fr calc(280px - 1.5rem);
-    }
+      display: flex;
+      gap: $sp-unit;
+      justify-content: space-between;
 
-    .search-and-filter {
-      @include desktop {
-        max-width: 270px;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.7rem;
-        width: 100%;
+      .p-search-and-filter {
+        min-width: 745px;
       }
     }
+
+    @include mobile-and-medium {
+      .p-segmented-control {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
+  &__content {
+    padding-top: 0 !important;
   }
 
   // Tooltips override
