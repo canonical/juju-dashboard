@@ -9,9 +9,7 @@
     flex-direction: column;
     min-height: 0;
     overflow-y: auto;
-    padding-bottom: 0;
-    padding-left: $sph--large;
-    padding-right: $sph--large;
+    padding: 0 $sph--large;
   }
 
   &__step {
