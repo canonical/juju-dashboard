@@ -20,25 +20,21 @@ import { TestId, StepType, Label } from "./types";
 const stepDefinitions: {
   key: StepType;
   title: string;
-  ctaLabel?: string;
   content: JSX.Element;
 }[] = [
   {
     key: StepType.MANDATORY_DETAILS,
     title: "Mandatory details",
-    ctaLabel: Label.NEXT_BUTTON,
     content: <MandatoryDetails />,
   },
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
     title: "Configuration & Constraints (optional)",
-    ctaLabel: Label.NEXT_BUTTON,
     content: <div>Configuration and constraints form goes here.</div>,
   },
   {
     key: StepType.ACCESS_MANAGEMENT,
     title: "Access management (optional)",
-    ctaLabel: Label.CREATE_BUTTON,
     content: <div>Access management form goes here.</div>,
   },
 ];
@@ -97,16 +93,18 @@ const AddModel: FC = () => {
               {Label.BACK_BUTTON}
             </Button>
           ) : null}
-          <ActionButton
-            appearance="positive"
-            disabled={currentStepIndex === stepDefinitions.length - 1}
-            onClick={() => {
-              if (currentStepIndex < stepDefinitions.length - 1) {
+          {currentStepIndex < stepDefinitions.length - 1 ? (
+            <Button
+              onClick={() => {
                 setCurrentStepIndex(currentStepIndex + 1);
-              }
-            }}
-          >
-            {stepDefinitions[currentStepIndex].ctaLabel}
+              }}
+              appearance="secondary"
+            >
+              {Label.NEXT_BUTTON}
+            </Button>
+          ) : null}
+          <ActionButton appearance="positive" disabled onClick={() => {}}>
+            {Label.CREATE_BUTTON}
           </ActionButton>
         </div>
       </VanillaPanel>
