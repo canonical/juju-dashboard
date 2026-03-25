@@ -35,8 +35,10 @@ export class SourceManager<T, P> {
     const source = this.createSource(args);
     if (listeners) {
       for (const [event, handler] of Object.entries(listeners)) {
-        // @ts-expect-error - `Object.entries` is lossy, and does not retain the correct types.
-        source.on(event, handler);
+        source.on(
+          event as keyof Events<T>,
+          handler as (...data: Events<T>[keyof Events<T>]) => unknown,
+        );
       }
     }
     this.sources.set(sourceHash, source);
