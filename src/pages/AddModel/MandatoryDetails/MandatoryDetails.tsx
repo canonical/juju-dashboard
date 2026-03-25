@@ -11,21 +11,23 @@ const MandatoryDetails = (): JSX.Element => {
     label: cloud,
     value: cloud,
   }));
-  const [regionOptions, setRegionOptions] = useState<
-    { label: string; value: string }[]
-  >([
+  const initialRegions = [
     { label: "", value: "" },
-    {
-      label: cloudInfo[cloudOptions[0].value]?.regions?.[0].name ?? "",
-      value: cloudInfo[cloudOptions[0].value]?.regions?.[0].name ?? "",
-    },
-  ]);
+    ...(cloudInfo[cloudOptions[0]?.value ?? ""]?.regions ?? []).map(
+      (region) => ({
+        label: region.name,
+        value: region.name,
+      }),
+    ),
+  ];
+  const [regionOptions, setRegionOptions] =
+    useState<{ label: string; value: string }[]>(initialRegions);
 
   return (
     <Formik
       initialValues={{
         modelName: "",
-        cloud: "",
+        cloud: cloudOptions[0].value,
         region: "",
         credential: "",
       }}
@@ -40,12 +42,13 @@ const MandatoryDetails = (): JSX.Element => {
           required
           options={cloudOptions}
           onChange={(ev) => {
-            const regions = (cloudInfo[ev.target.value]?.regions ?? []).map(
-              (region) => ({
+            const regions = [
+              { label: "", value: "" },
+              ...(cloudInfo[ev.target.value]?.regions ?? []).map((region) => ({
                 label: region.name,
                 value: region.name,
-              }),
-            );
+              })),
+            ];
             setRegionOptions(regions);
           }}
         />

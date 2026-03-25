@@ -47,7 +47,9 @@ describe("AddModel page", () => {
   it("renders properly", () => {
     renderComponent(<AddModel />, { state });
     expect(screen.getByTestId(AddModelTestId.COMPONENT)).toBeInTheDocument();
-    expect(screen.getByText(Label.TITLE)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: Label.TITLE }),
+    ).toBeInTheDocument();
   });
 
   it("navigates to next step when Next button is clicked", async () => {
