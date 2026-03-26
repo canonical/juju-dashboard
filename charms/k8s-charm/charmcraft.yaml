@@ -16,9 +16,12 @@ links:
 assumes:
   - k8s-api
   - juju >= 3.0
-base: ubuntu@24.04
 platforms:
-  amd64:
+  ubuntu@22.04:arm64:
+  ubuntu@24.04:arm64:
+  ubuntu@22.04:amd64:
+  ubuntu@24.04:amd64:
+
 containers:
   dashboard:
     resource: dashboard-image
@@ -64,3 +67,4 @@ requires:
 parts:
   charm:
     charm-python-packages: [setuptools>80.0]
+    charm-binary-python-packages: [pydantic, pydantic-core, opentelemetry-api]

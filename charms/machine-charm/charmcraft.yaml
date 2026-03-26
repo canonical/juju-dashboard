@@ -15,9 +15,12 @@ links:
   documentation: https://discourse.charmhub.io/t/juju-dashboard-docs-index/10772
 assumes:
   - juju >= 3.0
-base: ubuntu@24.04
 platforms:
-  amd64:
+  ubuntu@22.04:arm64:
+  ubuntu@24.04:arm64:
+  ubuntu@22.04:amd64:
+  ubuntu@24.04:amd64:
+
 config:
   options:
     controller-url:
@@ -53,3 +56,4 @@ requires:
 parts:
   charm:
     charm-python-packages: [setuptools>80.0]
+    charm-binary-python-packages: [pydantic, pydantic-core, opentelemetry-api]
