@@ -43,7 +43,7 @@ require_nginx_route(
 )
 
 ```
-And then add the following to `metadata.yaml`:
+And then add the following to `charmcraft.yaml`:
 ```
 requires:
   nginx-route:

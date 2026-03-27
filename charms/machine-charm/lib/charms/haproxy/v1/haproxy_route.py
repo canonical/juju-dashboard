@@ -10,7 +10,7 @@ cd some-charm
 charmcraft fetch-lib charms.haproxy.v1.haproxy_route
 ```
 
-In the `metadata.yaml` of the charm, add the following:
+In the `charmcraft.yaml` of the charm, add the following:
 
 ```yaml
 requires:
