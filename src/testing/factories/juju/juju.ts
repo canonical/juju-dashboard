@@ -17,6 +17,7 @@ import type {
   ModelSecrets,
   ReBACState,
   SecretsState,
+  UserCredentialsState,
 } from "store/juju/types";
 import type { SecretsContent } from "store/juju/types";
 
@@ -112,6 +113,15 @@ export const modelSecretsFactory = Factory.define<ModelSecrets>(() => ({
 
 export const secretsStateFactory = Factory.define<SecretsState>(() => ({}));
 
+export const userCredentialsStateFactory = Factory.define<UserCredentialsState>(
+  () => ({
+    credentials: [],
+    errors: null,
+    loaded: false,
+    loading: false,
+  }),
+);
+
 export const cloudInfoStateFactory = Factory.define<CloudState>(() => ({
   clouds: null,
   errors: null,
@@ -153,6 +163,7 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   rebac: rebacState.build(),
   secrets: {},
   cloudInfo: cloudInfoStateFactory.build(),
+  userCredentials: userCredentialsStateFactory.build(),
   selectedApplications: {},
   supportedJujuVersions: {},
 }));

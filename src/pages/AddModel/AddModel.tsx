@@ -6,11 +6,14 @@ import {
 } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import type { FC, JSX } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 import CheckPermissions from "components/CheckPermissions";
 import { useCanAddModel } from "hooks/useCanAddModel";
+import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
+import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
 
@@ -42,7 +45,21 @@ const stepDefinitions: {
 const AddModel: FC = () => {
   const navigate = useNavigate();
   const canCreateModel = useCanAddModel();
+  const wsControllerURL = useAppSelector(getWSControllerURL);
+  const activeUser = useAppSelector((state) =>
+    getActiveUserTag(state, wsControllerURL),
+  );
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
+  useEffect(() => {
+    if (canCreateModel && wsControllerURL && activeUser) {
+      jujuActions.fetchUserCredentials({
+        wsControllerURL,
+        userTag: activeUser,
+        cloudTag: "cloud-localhost",
+      });
+    }
+  }, [canCreateModel, wsControllerURL, activeUser]);
 
   return (
     <CheckPermissions allowed={canCreateModel} {...testId(TestId.COMPONENT)}>

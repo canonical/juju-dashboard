@@ -1,6 +1,9 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
-import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
+import type {
+  CloudsResult,
+  StringsResult,
+} from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 import type { DestroyModelParams } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
   ListSecretResult,
@@ -138,6 +141,12 @@ const slice = createSlice({
     secrets: {},
     cloudInfo: {
       clouds: null,
+      errors: null,
+      loaded: false,
+      loading: false,
+    },
+    userCredentials: {
+      credentials: [],
       errors: null,
       loaded: false,
       loading: false,
@@ -536,6 +545,42 @@ const slice = createSlice({
       state.cloudInfo.loading = false;
       state.cloudInfo.loaded = true;
       state.cloudInfo.errors = null;
+    },
+    fetchUserCredentials: (
+      state,
+      _action: PayloadAction<
+        {
+          userTag: string;
+          cloudTag: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.userCredentials.loading = true;
+      state.userCredentials.loaded = false;
+      state.userCredentials.errors = null;
+    },
+    setUserCredentialsErrors: (
+      state,
+      action: PayloadAction<
+        { errors: string | unknown } & WsControllerURLParam
+      >,
+    ) => {
+      state.userCredentials.errors = action.payload.errors;
+      state.userCredentials.loading = false;
+      state.userCredentials.loaded = true;
+    },
+    updateUserCredentials: (
+      state,
+      action: PayloadAction<
+        {
+          userCredentials: StringsResult[];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.userCredentials.credentials = action.payload.userCredentials;
+      state.userCredentials.loading = false;
+      state.userCredentials.loaded = true;
+      state.userCredentials.errors = null;
     },
     checkRelation: (
       state,
