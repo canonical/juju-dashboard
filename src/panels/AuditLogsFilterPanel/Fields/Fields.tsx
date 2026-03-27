@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { Field, useFormikContext } from "formik";
 import type { JSX } from "react";
 
+import AutocompleteField from "components/AutocompleteField";
 import AutocompleteInput from "components/AutocompleteInput";
 import { useModelIndexParams } from "components/hooks";
 import { DATETIME_LOCAL } from "consts";
@@ -14,6 +15,7 @@ import {
   getUsers,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import filterBoolean from "utils/filterBoolean";
 
 import type { FormFields } from "../types";
 
@@ -25,12 +27,16 @@ const Fields = (): JSX.Element => {
   const auditEventUsers = useAppSelector(getAuditEventsUsers);
   const jujuUsers = useAppSelector(getUsers);
   // Get the unique users from the logs and models returned from Juju.
-  const users = Array.from(new Set([...auditEventUsers, ...jujuUsers]));
+  const users = filterBoolean(
+    Array.from(new Set([...auditEventUsers, ...jujuUsers])),
+  );
   const auditEventModels = useAppSelector(getAuditEventsModels);
   const jujuModels = useAppSelector(getFullModelNames);
   // Get the unique model names from the logs and models returned from Juju.
-  const models = Array.from(new Set([...auditEventModels, ...jujuModels]));
-  const methods = useAppSelector(getAuditEventsMethods);
+  const models = filterBoolean(
+    Array.from(new Set([...auditEventModels, ...jujuModels])),
+  );
+  const methods = filterBoolean(useAppSelector(getAuditEventsMethods));
   const { values } = useFormikContext<FormFields>();
 
   return (
@@ -60,38 +66,35 @@ const Fields = (): JSX.Element => {
         name="before"
         as={Input}
       />
-      <Field
-        type="text"
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.USER}
+      <AutocompleteField
         label={Label.USER}
         name="user"
-        as={AutocompleteInput}
-        options={users}
+        component={AutocompleteInput}
+        options={users.map((user) => ({
+          value: user,
+          label: user,
+        }))}
       />
       {showModel ? (
-        <Field
-          type="text"
+        <AutocompleteField
           help='A model name in the format "controller-name/model-name".'
-          // Have to manually set the id until this issue has been fixed:
-          // https://github.com/canonical/react-components/issues/957
-          id={Label.MODEL}
           label={Label.MODEL}
           name="model"
-          as={AutocompleteInput}
-          options={models}
+          component={AutocompleteInput}
+          options={models.map((model) => ({
+            value: model,
+            label: model,
+          }))}
         />
       ) : null}
-      <Field
-        type="text"
-        // Have to manually set the id until this issue has been fixed:
-        // https://github.com/canonical/react-components/issues/957
-        id={Label.METHOD}
+      <AutocompleteField
         label={Label.METHOD}
         name="method"
-        as={AutocompleteInput}
-        options={methods}
+        component={AutocompleteInput}
+        options={methods.map((method) => ({
+          value: method,
+          label: method,
+        }))}
       />
     </>
   );

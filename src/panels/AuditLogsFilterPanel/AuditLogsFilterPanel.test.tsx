@@ -31,14 +31,14 @@ describe("AuditLogsFilterPanel", () => {
     expect(document.querySelector(`input#${FieldsLabel.AFTER}`)).toHaveValue(
       params.before,
     );
+    expect(screen.getByRole("textbox", { name: FieldsLabel.USER })).toHaveValue(
+      params.user,
+    );
     expect(
-      screen.getByRole("combobox", { name: FieldsLabel.USER }),
-    ).toHaveValue(params.user);
-    expect(
-      screen.getByRole("combobox", { name: FieldsLabel.METHOD }),
+      screen.getByRole("textbox", { name: FieldsLabel.METHOD }),
     ).toHaveValue(params.method);
     expect(
-      screen.getByRole("combobox", { name: FieldsLabel.METHOD }),
+      screen.getByRole("textbox", { name: FieldsLabel.METHOD }),
     ).toHaveValue(params.method);
   });
 
@@ -94,15 +94,15 @@ describe("AuditLogsFilterPanel", () => {
       await userEvent.type(before, params.before);
     }
     await userEvent.type(
-      screen.getByRole("combobox", { name: FieldsLabel.USER }),
+      screen.getByRole("textbox", { name: FieldsLabel.USER }),
       params.user,
     );
     await userEvent.type(
-      screen.getByRole("combobox", { name: FieldsLabel.MODEL }),
+      screen.getByRole("textbox", { name: FieldsLabel.MODEL }),
       params.model,
     );
     await userEvent.type(
-      screen.getByRole("combobox", { name: FieldsLabel.METHOD }),
+      screen.getByRole("textbox", { name: FieldsLabel.METHOD }),
       params.method,
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
@@ -115,7 +115,7 @@ describe("AuditLogsFilterPanel", () => {
       url: "/?panel=audit-log-filters",
     });
     await userEvent.type(
-      screen.getByRole("combobox", { name: FieldsLabel.METHOD }),
+      screen.getByRole("textbox", { name: FieldsLabel.METHOD }),
       "Login",
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
@@ -128,7 +128,7 @@ describe("AuditLogsFilterPanel", () => {
       url: "/?panel=audit-log-filters&user-tag=user-eggman@external&method=Login",
     });
     await userEvent.clear(
-      screen.getByRole("combobox", { name: FieldsLabel.METHOD }),
+      screen.getByRole("textbox", { name: FieldsLabel.METHOD }),
     );
     await userEvent.click(screen.getByRole("button", { name: Label.FILTER }));
     // The method value was cleared in the input so it should get removed from
