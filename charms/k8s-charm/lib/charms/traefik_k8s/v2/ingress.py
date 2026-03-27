@@ -16,7 +16,7 @@ cd some-charm
 charmcraft fetch-lib charms.traefik_k8s.v2.ingress
 ```
 
-In the `metadata.yaml` of the charm, add the following:
+In the `charmcraft.yaml` of the charm, add the following:
 
 ```yaml
 requires:
