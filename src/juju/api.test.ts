@@ -5,7 +5,6 @@ import { waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { Auth, CandidAuth, LocalAuth, OIDCAuth } from "auth";
-import type { ModelInfoResults } from "juju/types";
 import { actions as generalActions } from "store/general";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
