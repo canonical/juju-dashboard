@@ -127,6 +127,7 @@ const slice = createSlice({
     modelsLoaded: false,
     modelData: {},
     modelFeatures: {},
+    modelListLoading: {},
     charms: [],
     rebac: {
       allowed: [],
@@ -166,6 +167,13 @@ const slice = createSlice({
       state.models = modelList;
       state.modelData = modelDataList;
       state.modelsLoaded = true;
+    },
+    updateModelListLoading: (
+      state,
+      action: PayloadAction<{ loading: boolean } & WsControllerURLParam>,
+    ) => {
+      state.modelListLoading[action.payload.wsControllerURL] =
+        action.payload.loading;
     },
     updateModelStatus: (
       state,

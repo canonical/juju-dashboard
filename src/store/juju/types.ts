@@ -128,6 +128,7 @@ export type JujuState = {
   models: ModelsList;
   modelsError: null | string;
   modelsLoaded: boolean;
+  modelListLoading: Record<string, boolean>;
   modelData: ModelDataList;
   modelFeatures: ModelFeaturesState;
   charms: Charm[];

@@ -20,7 +20,7 @@ import {
 } from "juju/jimm/api";
 import type { ConnectionWithFacades, DestroyModelErrors } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
-import { beginPollingModelList, updateModelStatuses } from "store/app/actions";
+import { updateModelStatuses } from "store/app/actions";
 import { actions as generalActions } from "store/general";
 import {
   getAnalyticsEnabled,
@@ -37,6 +37,8 @@ import { toErrorString } from "utils";
 import analytics from "utils/analytics";
 import { logger } from "utils/logger";
 
+import modelListMiddleware from "./source/model-list";
+
 export enum LoginError {
   LOG = "Unable to log into controller.",
   NO_INFO = "Unable to retrieve controller details.",
@@ -50,12 +52,13 @@ export enum ModelsError {
   LIST_OR_UPDATE_MODELS = "Unable to list or update models.",
 }
 
+export const controllers = new Map<string, ConnectionWithFacades>();
+
 export const modelPollerMiddleware: Middleware<
   void,
   RootState,
   Store["dispatch"]
 > = (reduxStore) => {
-  const controllers = new Map<string, ConnectionWithFacades>();
   const jujus = new Map<string, Client>();
   return (next) => async (action) => {
     if (!isAction(action)) {
@@ -200,62 +203,14 @@ export const modelPollerMiddleware: Middleware<
         }
       }
 
-      reduxStore.dispatch(beginPollingModelList({ poll: action.payload.poll }));
+      for (const wsControllerURL of controllers.keys()) {
+        reduxStore.dispatch(
+          modelListMiddleware.actions.start({ wsControllerURL }),
+        );
+      }
+
       return;
-    } else if (
-      isSpecificAction<ReturnType<typeof beginPollingModelList>>(
-        action,
-        beginPollingModelList.type,
-      )
-    ) {
-      let successes = 0;
-      let count = 0;
-      do {
-        for (const [wsControllerURL, conn] of controllers.entries()) {
-          if (!conn.info.user?.identity) {
-            continue;
-          }
-
-          try {
-            // Fetch the models from the current connection.
-            const models = await conn.facades.modelManager?.listModels({
-              tag: conn.info.user.identity,
-            });
-            if (!models) {
-              continue;
-            }
-
-            // Save the model list into redux.
-            reduxStore.dispatch(
-              jujuActions.updateModelList({ models, wsControllerURL }),
-            );
-          } catch (listError) {
-            const errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
-            logger.error(errorMessage, listError);
-            reduxStore.dispatch(
-              jujuActions.updateModelsError({
-                modelsError: errorMessage,
-                wsControllerURL,
-              }),
-            );
-            continue;
-          }
-
-          successes += 1;
-        }
-        // Model list updated, trigger loading of model status.
-        reduxStore.dispatch(updateModelStatuses({ pollIteration: count }));
-        // Wait 30s before polling again.
-        await new Promise((resolve) => setTimeout(resolve, 30000));
-        count += 1;
-      } while (successes > 0 && count < (action.payload.poll ?? Infinity));
-      return;
-    } else if (
-      isSpecificAction<ReturnType<typeof updateModelStatuses>>(
-        action,
-        updateModelStatuses.type,
-      )
-    ) {
+    } else if (action.type === updateModelStatuses.type) {
       const modelList = Object.entries(getModelList(reduxStore.getState()));
       let errorCount = 0;
       let lastErrorWSController = null;
@@ -316,14 +271,10 @@ export const modelPollerMiddleware: Middleware<
       }
 
       if (lastErrorWSController && errorCount >= 0.1 * modelList.length) {
-        let modelsError =
+        const modelsError =
           errorCount === modelList.length
             ? ModelsError.LOAD_ALL_MODELS
             : ModelsError.LOAD_SOME_MODELS;
-
-        if (action.payload.pollIteration > 0) {
-          modelsError = ModelsError.LOAD_LATEST_MODELS;
-        }
 
         reduxStore.dispatch(
           jujuActions.updateModelsError({

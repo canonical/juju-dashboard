@@ -46,7 +46,9 @@ export function createSource<T>(
   } = {
     data: [],
     error: [],
+    errorCleared: [],
     load: [],
+    loadEnd: [],
   };
 
   const source: Source<T> = {
@@ -104,6 +106,7 @@ export function createSource<T>(
   ): void {
     let dataChanged = false;
     let errorChanged = false;
+    let loadingChanged = false;
 
     // This load is the latest one to have completed.
     if (loadId >= latestCompletedLoad) {
@@ -131,6 +134,9 @@ export function createSource<T>(
 
     // This load was the last one to begin, so it can change the loading status.
     if (loadId >= nextLoadId - 1) {
+      loadingChanged =
+        modifications.loading !== undefined &&
+        modifications.loading !== source.loading;
       source.loading = modifications.loading ?? source.loading;
     }
 
@@ -142,9 +148,21 @@ export function createSource<T>(
     }
 
     // Run event handlers for error, if required.
-    if (errorChanged && source.error) {
-      for (const handler of events.error) {
-        handler(source.error.message, source.error.source);
+    if (errorChanged) {
+      if (source.error) {
+        for (const handler of events.error) {
+          handler(source.error.message, source.error.source);
+        }
+      } else {
+        for (const handler of events.errorCleared) {
+          handler();
+        }
+      }
+    }
+
+    if (loadingChanged && !source.loading) {
+      for (const handler of events.loadEnd) {
+        handler();
       }
     }
   }
