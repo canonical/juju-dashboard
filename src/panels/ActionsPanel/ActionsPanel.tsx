@@ -170,7 +170,6 @@ export default function ActionsPanel(): JSX.Element {
           Run action
         </ActionButton>
       }
-      width="narrow"
       {...testId(TestId.PANEL)}
       title={generateTitle()}
       onRemovePanelQueryParams={handleRemovePanelQueryParams}

@@ -50,6 +50,14 @@
   &-shrink {
     flex-shrink: 1;
   }
+
+  &-row {
+    flex-direction: row;
+  }
+
+  &-column {
+    flex-direction: column;
+  }
 }
 
 .p-tooltip--constrain-width .p-tooltip__message {

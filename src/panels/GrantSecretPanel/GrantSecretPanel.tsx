@@ -102,7 +102,6 @@ const GrantSecretPanel: FC = () => {
         onRemovePanelQueryParams={handleRemovePanelQueryParams}
         ref={scrollArea}
         title="Grant access"
-        width="narrow"
       >
         <>
           <PanelInlineErrors

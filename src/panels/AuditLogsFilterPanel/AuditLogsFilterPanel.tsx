@@ -59,7 +59,6 @@ const AuditLogsFilterPanel = (): JSX.Element => {
         }
         onRemovePanelQueryParams={handleRemovePanelQueryParams}
         title="Filter audit logs"
-        width="narrow"
       >
         <Formik<FormFields>
           initialValues={{

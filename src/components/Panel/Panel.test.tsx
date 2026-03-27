@@ -7,17 +7,14 @@ import { usePanelQueryParams } from "panels/hooks";
 import type { RenderComponentResult } from "testing/utils";
 import { renderComponent } from "testing/utils";
 
+import type { PanelProps } from "./Panel";
 import Panel from "./Panel";
 
 describe("Panel", () => {
   const mockCheckCanClose = (): boolean => false;
-  const mockRenderComponent = ({
-    checkCanClose,
-  }: {
-    checkCanClose?: (
-      e: React.KeyboardEvent | React.MouseEvent<Element, MouseEvent>,
-    ) => boolean;
-  }): RenderComponentResult => {
+  const mockRenderComponent = (
+    props: Partial<PanelProps>,
+  ): RenderComponentResult => {
     const MockPanelHeader = (): JSX.Element => {
       const [_queryParams, _setQueryParams, handleRemovePanelQueryParams] =
         usePanelQueryParams<{
@@ -26,10 +23,9 @@ describe("Panel", () => {
 
       return (
         <Panel
-          checkCanClose={checkCanClose}
           panelClassName="test-panel"
-          title="Test panel"
           onRemovePanelQueryParams={handleRemovePanelQueryParams}
+          {...props}
         >
           <>Test content</>
         </Panel>
@@ -43,10 +39,19 @@ describe("Panel", () => {
   };
 
   it("should display the title and content", async () => {
-    mockRenderComponent({});
+    mockRenderComponent({ title: "Test panel" });
 
     expect(screen.getByText("Test panel")).toBeInTheDocument();
     expect(screen.getByText("Test content")).toBeInTheDocument();
+  });
+
+  it("can display a header instead of the title", async () => {
+    mockRenderComponent({
+      header: <h4 className="custom">Header</h4>,
+    });
+    const title = screen.getByRole("heading", { name: "Header" });
+    expect(title).toHaveClass("custom");
+    expect(title).not.toHaveClass("side-panel__title");
   });
 
   it("should give the panel a class name", async () => {

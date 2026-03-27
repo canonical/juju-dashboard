@@ -107,7 +107,6 @@ const RemoveSecretPanel: FC = () => {
         onRemovePanelQueryParams={handleRemovePanelQueryParams}
         ref={scrollArea}
         title="Remove secret"
-        width="narrow"
       >
         <>
           <PanelInlineErrors

@@ -1,21 +1,27 @@
 import { screen } from "@testing-library/react";
 
+import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
   generalStateFactory,
   configFactory,
   credentialFactory,
+  authUserInfoFactory,
+  controllerFeaturesFactory,
+  controllerFeaturesStateFactory,
 } from "testing/factories/general";
 import {
   modelInfoFactory,
   modelUserInfoFactory,
 } from "testing/factories/juju/ModelManagerV10";
+import { rebacAllowedFactory } from "testing/factories/juju/jimm";
 import {
   modelFeaturesFactory,
   jujuStateFactory,
   modelDataFactory,
   modelListInfoFactory,
+  rebacState,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -28,6 +34,7 @@ import Panels from "./Panels";
 import { RemoveSecretPanelTestId } from "./RemoveSecretPanel";
 import { SecretFormPanelTestId } from "./SecretFormPanel";
 import { ShareModelTestId } from "./ShareModelPanel";
+import { UpgradeModelPanelTestId } from "./UpgradeModelPanel";
 
 describe("Panels", () => {
   it("can display the actions panel", () => {
@@ -218,6 +225,101 @@ describe("Panels", () => {
       });
       expect(
         screen.queryByTestId(GrantSecretPanelTestId.PANEL),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe("upgrade model panel", () => {
+    let state: RootState;
+    const url = "/models/eggman@external/test1";
+    const path = "/models/:qualifier/:modelName";
+
+    beforeEach(() => {
+      state = rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            isJuju: false,
+            controllerAPIEndpoint: "wss://example.com/api",
+          }),
+          controllerConnections: {
+            "wss://example.com/api": {
+              user: authUserInfoFactory.build(),
+            },
+          },
+          controllerFeatures: controllerFeaturesStateFactory.build({
+            "wss://example.com/api": controllerFeaturesFactory.build({
+              rebac: true,
+            }),
+          }),
+        }),
+        juju: jujuStateFactory.build({
+          modelData: {
+            abc123: modelDataFactory.build({
+              info: modelInfoFactory.build({
+                uuid: "abc123",
+                name: "test1",
+                "controller-uuid": "controller123",
+                users: [
+                  modelUserInfoFactory.build({
+                    user: "eggman@external",
+                    access: "admin",
+                  }),
+                ],
+              }),
+            }),
+          },
+          rebac: rebacState.build({
+            allowed: [
+              rebacAllowedFactory.build({
+                tuple: {
+                  object: "user-eggman@external",
+                  relation: JIMMRelation.ADMINISTRATOR,
+                  target_object: JIMMTarget.JIMM_CONTROLLER,
+                },
+                allowed: true,
+                loading: false,
+                loaded: true,
+              }),
+            ],
+          }),
+        }),
+      });
+    });
+
+    it("displays the upgrade model panel", async () => {
+      renderComponent(<Panels />, {
+        state,
+        path,
+        url: `${url}/?panel=upgrade-model`,
+      });
+      expect(
+        await screen.findByTestId(UpgradeModelPanelTestId.PANEL),
+      ).toBeInTheDocument();
+    });
+
+    it("does not display the panel for Juju", async () => {
+      if (state.general.config) {
+        state.general.config.isJuju = true;
+      }
+      renderComponent(<Panels />, {
+        state,
+        path,
+        url: `${url}/?panel=upgrade-model`,
+      });
+      expect(
+        screen.queryByTestId(UpgradeModelPanelTestId.PANEL),
+      ).not.toBeInTheDocument();
+    });
+
+    it("does not display the panel if the user is not a JIMM admin", async () => {
+      state.juju.rebac.allowed = [];
+      renderComponent(<Panels />, {
+        state,
+        path,
+        url: `${url}/?panel=upgrade-model`,
+      });
+      expect(
+        screen.queryByTestId(UpgradeModelPanelTestId.PANEL),
       ).not.toBeInTheDocument();
     });
   });
