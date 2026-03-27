@@ -47,14 +47,14 @@ describe("AddModel page", () => {
   it("renders properly", () => {
     renderComponent(<AddModel />, { state });
     expect(screen.getByTestId(AddModelTestId.COMPONENT)).toBeInTheDocument();
-    expect(screen.getByText(Label.TITLE)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: Label.TITLE }),
+    ).toBeInTheDocument();
   });
 
   it("navigates to next step when Next button is clicked", async () => {
     renderComponent(<AddModel />, { state });
-    expect(
-      screen.getByText("Mandatory details form goes here."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Model name")).toBeInTheDocument();
     expect(
       screen.queryByText("Configuration and constraints form goes here."),
     ).toBeNull();
@@ -63,7 +63,7 @@ describe("AddModel page", () => {
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
 
-    expect(screen.queryByText("Mandatory details form goes here.")).toBeNull();
+    expect(screen.queryByText("Model name")).toBeNull();
     expect(
       screen.getByText("Configuration and constraints form goes here."),
     ).toBeInTheDocument();
@@ -77,9 +77,7 @@ describe("AddModel page", () => {
     await userEvent.click(
       screen.getByRole("button", { name: Label.BACK_BUTTON }),
     );
-    expect(
-      screen.getByText("Mandatory details form goes here."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Model name")).toBeInTheDocument();
   });
 
   it("does not show Back button on first step", () => {
@@ -234,8 +232,6 @@ describe("AddModel page", () => {
 
   it("starts on the first step by default", () => {
     renderComponent(<AddModel />, { state });
-    expect(
-      screen.getByText("Mandatory details form goes here."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Model name")).toBeInTheDocument();
   });
 });

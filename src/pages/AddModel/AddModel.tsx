@@ -6,38 +6,38 @@ import {
 } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import type { FC, JSX } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 import CheckPermissions from "components/CheckPermissions";
 import { useCanAddModel } from "hooks/useCanAddModel";
+import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
+import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
 
+import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
 import { TestId, StepType, Label } from "./types";
 
 const stepDefinitions: {
   key: StepType;
   title: string;
-  ctaLabel?: string;
   content: JSX.Element;
 }[] = [
   {
     key: StepType.MANDATORY_DETAILS,
     title: "Mandatory details",
-    ctaLabel: Label.NEXT_BUTTON,
-    content: <div>Mandatory details form goes here.</div>,
+    content: <MandatoryDetails />,
   },
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
     title: "Configuration & Constraints (optional)",
-    ctaLabel: Label.NEXT_BUTTON,
     content: <div>Configuration and constraints form goes here.</div>,
   },
   {
     key: StepType.ACCESS_MANAGEMENT,
     title: "Access management (optional)",
-    ctaLabel: Label.CREATE_BUTTON,
     content: <div>Access management form goes here.</div>,
   },
 ];
@@ -45,7 +45,21 @@ const stepDefinitions: {
 const AddModel: FC = () => {
   const navigate = useNavigate();
   const canCreateModel = useCanAddModel();
+  const wsControllerURL = useAppSelector(getWSControllerURL);
+  const activeUser = useAppSelector((state) =>
+    getActiveUserTag(state, wsControllerURL),
+  );
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
+  useEffect(() => {
+    if (canCreateModel && wsControllerURL && activeUser) {
+      jujuActions.fetchUserCredentials({
+        wsControllerURL,
+        userTag: activeUser,
+        cloudTag: "cloud-localhost",
+      });
+    }
+  }, [canCreateModel, wsControllerURL, activeUser]);
 
   return (
     <CheckPermissions allowed={canCreateModel} {...testId(TestId.COMPONENT)}>
@@ -96,16 +110,18 @@ const AddModel: FC = () => {
               {Label.BACK_BUTTON}
             </Button>
           ) : null}
-          <ActionButton
-            appearance="positive"
-            disabled={currentStepIndex === stepDefinitions.length - 1}
-            onClick={() => {
-              if (currentStepIndex < stepDefinitions.length - 1) {
+          {currentStepIndex < stepDefinitions.length - 1 ? (
+            <Button
+              onClick={() => {
                 setCurrentStepIndex(currentStepIndex + 1);
-              }
-            }}
-          >
-            {stepDefinitions[currentStepIndex].ctaLabel}
+              }}
+              appearance="secondary"
+            >
+              {Label.NEXT_BUTTON}
+            </Button>
+          ) : null}
+          <ActionButton appearance="positive" disabled onClick={() => {}}>
+            {Label.CREATE_BUTTON}
           </ActionButton>
         </div>
       </VanillaPanel>
