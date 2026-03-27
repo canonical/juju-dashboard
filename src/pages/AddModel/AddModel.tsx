@@ -14,8 +14,12 @@ import * as Yup from "yup";
 import CheckPermissions from "components/CheckPermissions";
 import FormikFormData from "components/FormikFormData";
 import { useCanAddModel } from "hooks/useCanAddModel";
+import { getWSControllerURL } from "store/general/selectors";
+import { addModel as addModelThunk } from "store/juju/thunks";
+import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
+import { logger } from "utils/logger";
 
 import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
@@ -51,7 +55,9 @@ const stepDefinitions: Array<{
 ];
 
 const AddModel: FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const wsControllerURL = useAppSelector(getWSControllerURL);
   const canCreateModel = useCanAddModel();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isValid, setIsValid] = useState<boolean>(false);
@@ -64,8 +70,27 @@ const AddModel: FC = () => {
     setCurrentStepIndex((index) => index + 1);
   };
 
-  const handleCreateClick = (): void => {
-    // TODO: https://warthogs.atlassian.net/browse/JUJU-9333
+  const handleCreateClick = async (
+    values: AddModelFormState,
+  ): Promise<void> => {
+    if (!wsControllerURL) {
+      return;
+    }
+
+    try {
+      await dispatch(
+        addModelThunk({
+          wsControllerURL,
+          modelName: values.modelName,
+          cloudTag: values.cloud,
+          credential: values.credential,
+          region: values.region || undefined,
+        }),
+      );
+      void navigate(urls.models.index);
+    } catch (error) {
+      logger.error("Unable to create model from Add Model page.", error);
+    }
   };
 
   const isFirstStep = currentStepIndex === 0;
@@ -148,7 +173,7 @@ const AddModel: FC = () => {
             appearance="positive"
             type="submit"
             form={currentStep.key}
-            disabled={!isValid || true}
+            disabled={!isValid}
           >
             {Label.CREATE_BUTTON}
           </ActionButton>
