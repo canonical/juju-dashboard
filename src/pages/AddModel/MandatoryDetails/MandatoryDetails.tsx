@@ -2,32 +2,42 @@ import { FormikField, Select } from "@canonical/react-components";
 import { Formik, Form } from "formik";
 import { useState, type JSX } from "react";
 
-import { getCloudInfoState } from "store/juju/selectors";
+import {
+  getCloudInfoState,
+  // getUserCredentialsState,
+} from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
 const MandatoryDetails = (): JSX.Element => {
   const cloudInfo = useAppSelector(getCloudInfoState).clouds ?? {};
-  const cloudOptions = Object.keys(cloudInfo).map((cloud) => ({
-    label: cloud,
-    value: cloud,
-  }));
-  const initialRegions = [
+  // const userCredentials = useAppSelector(getUserCredentialsState);
+  // console.log(userCredentials);
+
+  const getRegionOptions = (
+    cloudValue: string,
+  ): { label: string; value: string }[] => [
     { label: "", value: "" },
-    ...(cloudInfo[cloudOptions[0]?.value ?? ""]?.regions ?? []).map(
-      (region) => ({
-        label: region.name,
-        value: region.name,
-      }),
-    ),
+    ...(cloudInfo[cloudValue]?.regions ?? []).map((region) => ({
+      label: region.name,
+      value: region.name,
+    })),
   ];
-  const [regionOptions, setRegionOptions] =
-    useState<{ label: string; value: string }[]>(initialRegions);
+
+  const cloudOptions = Object.keys(cloudInfo).map((cloud) => ({
+    label: cloud.split("-")[1], // Display only the cloud name, not the region
+    value: cloud.split("-")[1], // Display only the cloud name, not the region
+  }));
+
+  const defaultCloud = cloudOptions[0]?.value ?? "";
+  const [regionOptions, setRegionOptions] = useState<
+    { label: string; value: string }[]
+  >(getRegionOptions(defaultCloud));
 
   return (
     <Formik
       initialValues={{
         modelName: "",
-        cloud: cloudOptions[0].value,
+        cloud: defaultCloud,
         region: "",
         credential: "",
       }}
@@ -42,14 +52,7 @@ const MandatoryDetails = (): JSX.Element => {
           required
           options={cloudOptions}
           onChange={(ev) => {
-            const regions = [
-              { label: "", value: "" },
-              ...(cloudInfo[ev.target.value]?.regions ?? []).map((region) => ({
-                label: region.name,
-                value: region.name,
-              })),
-            ];
-            setRegionOptions(regions);
+            setRegionOptions(getRegionOptions(ev.target.value));
           }}
         />
         <FormikField
