@@ -36,7 +36,7 @@ const AutocompleteInputDropdown: FC<Props> = ({
           {options.map((item) => (
             <li
               key={item.value}
-              className="autocomplete-input__dropdown-item"
+              className="autocomplete-input__dropdown-item p-contextual-menu__link"
               data-value={item.value}
               onMouseUp={onMouseUp}
               role="option"

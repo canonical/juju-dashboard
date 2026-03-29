@@ -61,9 +61,15 @@ describe("AutocompleteInput", () => {
         ]}
       />,
     );
+    const input = screen.getByRole("textbox", { name: "auto complete" });
+    await userEvent.click(input);
+    expect(
+      screen.getByRole("option", { name: "Option Two" }),
+    ).toBeInTheDocument();
     await userEvent.type(
       screen.getByRole("textbox", { name: "auto complete" }),
       "1",
+      { skipClick: true },
     );
     expect(
       screen.getByRole("option", { name: "Option One" }),
