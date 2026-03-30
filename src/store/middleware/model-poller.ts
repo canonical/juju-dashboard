@@ -570,7 +570,7 @@ function runModelPoller(
                   errors: response.error,
                 })
               : jujuActions.updateUserCredentials({
-                  userCredentials: response.results ?? undefined,
+                  userCredentials: response.results[0].result ?? [],
                   wsControllerURL,
                 }),
           );

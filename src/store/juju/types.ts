@@ -1,9 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
-import type {
-  CloudsResult,
-  StringsResult,
-} from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
+import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 import type { ErrorResult } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
   ListSecretResult,
@@ -102,7 +99,7 @@ export type CloudState = {
 };
 
 export type UserCredentialsState = {
-  credentials: StringsResult[];
+  credentials: string[];
   errors: null | string | unknown;
   loading: boolean;
   loaded: boolean;
@@ -135,6 +132,13 @@ export type HistoryItem = {
 };
 
 export type CommandHistory = Record<string, HistoryItem[]>;
+
+export type AddModelFormState = {
+  modelName: string;
+  cloud: string;
+  region: string;
+  credential: string;
+};
 
 export type JujuState = {
   auditEvents: AuditEventsState;

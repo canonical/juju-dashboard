@@ -1,73 +1,153 @@
 import { FormikField, Select } from "@canonical/react-components";
-import { Formik, Form } from "formik";
-import { useState, type JSX } from "react";
+import { Formik, Form, type FormikProps } from "formik";
+import { useEffect, useMemo, type JSX, type Ref } from "react";
 
+import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
 import {
   getCloudInfoState,
-  // getUserCredentialsState,
+  getUserCredentialsState,
+  getAddModelFormState,
 } from "store/juju/selectors";
-import { useAppSelector } from "store/store";
+import type { AddModelFormState } from "store/juju/types";
+import { useAppDispatch, useAppSelector } from "store/store";
 
-const MandatoryDetails = (): JSX.Element => {
-  const cloudInfo = useAppSelector(getCloudInfoState).clouds ?? {};
-  // const userCredentials = useAppSelector(getUserCredentialsState);
-  // console.log(userCredentials);
+type Props = {
+  formRef?: Ref<FormikProps<AddModelFormState>>;
+};
 
-  const getRegionOptions = (
-    cloudValue: string,
-  ): { label: string; value: string }[] => [
-    { label: "", value: "" },
-    ...(cloudInfo[cloudValue]?.regions ?? []).map((region) => ({
-      label: region.name,
-      value: region.name,
-    })),
-  ];
+type SelectOption = { label: string; value: string };
 
-  const cloudOptions = Object.keys(cloudInfo).map((cloud) => ({
-    label: cloud.split("-")[1], // Display only the cloud name, not the region
-    value: cloud.split("-")[1], // Display only the cloud name, not the region
+const EMPTY_OPTION: SelectOption = { label: "", value: "" };
+
+const stripPrefix = (value: string, prefix: string): string =>
+  value.startsWith(prefix) ? value.slice(prefix.length) : value;
+
+const toCloudOptions = (
+  cloudInfo: Record<string, { regions?: { name: string }[] }>,
+): SelectOption[] =>
+  Object.keys(cloudInfo).map((cloud) => ({
+    label: stripPrefix(cloud, "cloud-"),
+    value: cloud,
   }));
 
+const toRegionOptions = (
+  cloudInfo: Record<string, { regions?: { name: string }[] }>,
+  cloudValue: string,
+): SelectOption[] => [
+  EMPTY_OPTION,
+  ...(cloudInfo[cloudValue]?.regions ?? []).map((region) => ({
+    label: region.name,
+    value: region.name,
+  })),
+];
+
+const toCredentialOptions = (credentials: string[]): SelectOption[] =>
+  credentials.map((credential) => {
+    const credentialName = stripPrefix(credential, "cloudcred-");
+    return {
+      label: credentialName,
+      value: credentialName,
+    };
+  });
+
+const MandatoryDetails = ({ formRef }: Props): JSX.Element => {
+  const dispatch = useAppDispatch();
+  const wsControllerURL = useAppSelector(getWSControllerURL);
+  const activeUser = useAppSelector((state) =>
+    getActiveUserTag(state, wsControllerURL),
+  );
+  const { clouds } = useAppSelector(getCloudInfoState);
+  const cloudInfo = useMemo(() => clouds ?? {}, [clouds]);
+  const userCredentials = useAppSelector(getUserCredentialsState);
+  const savedFormState = useAppSelector(getAddModelFormState);
+
+  const cloudOptions = useMemo(() => toCloudOptions(cloudInfo), [cloudInfo]);
+
   const defaultCloud = cloudOptions[0]?.value ?? "";
-  const [regionOptions, setRegionOptions] = useState<
-    { label: string; value: string }[]
-  >(getRegionOptions(defaultCloud));
+
+  const initialFormValues: AddModelFormState = useMemo(
+    () => ({
+      modelName: savedFormState?.modelName ?? "",
+      cloud: savedFormState?.cloud ?? defaultCloud,
+      region: savedFormState?.region ?? "",
+      credential: savedFormState?.credential ?? "",
+    }),
+    [savedFormState, defaultCloud],
+  );
+
+  useEffect(() => {
+    if (wsControllerURL && activeUser && defaultCloud && !savedFormState) {
+      dispatch(
+        jujuActions.fetchUserCredentials({
+          wsControllerURL,
+          userTag: activeUser,
+          cloudTag: defaultCloud,
+        }),
+      );
+    }
+  }, [dispatch, wsControllerURL, activeUser, defaultCloud, savedFormState]);
+
+  const credentialsOptions = useMemo(
+    () => toCredentialOptions(userCredentials.credentials),
+    [userCredentials.credentials],
+  );
 
   return (
     <Formik
-      initialValues={{
-        modelName: "",
-        cloud: defaultCloud,
-        region: "",
-        credential: "",
-      }}
+      innerRef={formRef}
+      enableReinitialize
+      initialValues={initialFormValues}
       onSubmit={() => {}}
     >
-      <Form className="mandatory-details-form">
-        <FormikField label="Model name" name="modelName" type="text" required />
-        <FormikField
-          component={Select}
-          label="Cloud"
-          name="cloud"
-          required
-          options={cloudOptions}
-          onChange={(ev) => {
-            setRegionOptions(getRegionOptions(ev.target.value));
-          }}
-        />
-        <FormikField
-          component={Select}
-          label="Region (optional)"
-          name="region"
-          options={regionOptions}
-        />
-        <FormikField
-          label="Credential"
-          name="credential"
-          type="text"
-          required
-        />
-      </Form>
+      {({ values, setFieldValue }) => {
+        const selectedCloud = values.cloud || defaultCloud;
+        const regionOptions = toRegionOptions(cloudInfo, selectedCloud);
+        return (
+          <Form className="mandatory-details-form">
+            <FormikField
+              label="Model name"
+              name="modelName"
+              type="text"
+              required
+            />
+            <FormikField
+              component={Select}
+              label="Cloud"
+              name="cloud"
+              required
+              options={cloudOptions}
+              onChange={(ev) => {
+                const nextCloud = ev.target.value;
+                void setFieldValue("cloud", nextCloud);
+                void setFieldValue("region", "");
+                if (wsControllerURL && activeUser) {
+                  dispatch(
+                    jujuActions.fetchUserCredentials({
+                      wsControllerURL,
+                      userTag: activeUser,
+                      cloudTag: nextCloud,
+                    }),
+                  );
+                }
+              }}
+            />
+            <FormikField
+              component={Select}
+              label="Region (optional)"
+              name="region"
+              options={regionOptions}
+            />
+            <FormikField
+              component={Select}
+              label="Credential"
+              name="credential"
+              required
+              options={credentialsOptions}
+            />
+          </Form>
+        );
+      }}
     </Formik>
   );
 };

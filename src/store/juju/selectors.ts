@@ -38,6 +38,7 @@ import type {
   ModelsList,
   ReBACAllowed,
   ReBACRelationship,
+  AddModelFormState,
 } from "./types";
 import type { Filters } from "./utils/models";
 import {

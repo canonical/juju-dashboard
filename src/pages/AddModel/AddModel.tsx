@@ -5,61 +5,80 @@ import {
   Stepper,
 } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
+import type { FormikProps } from "formik";
 import type { FC, JSX } from "react";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 
 import CheckPermissions from "components/CheckPermissions";
 import { useCanAddModel } from "hooks/useCanAddModel";
-import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
+import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
-import { useAppSelector } from "store/store";
+import type { AddModelFormState } from "store/juju/types";
+import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
 
 import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
 import { TestId, StepType, Label } from "./types";
 
-const stepDefinitions: {
-  key: StepType;
-  title: string;
-  content: JSX.Element;
-}[] = [
-  {
-    key: StepType.MANDATORY_DETAILS,
-    title: "Mandatory details",
-    content: <MandatoryDetails />,
-  },
-  {
-    key: StepType.CONFIGURATION_CONSTRAINTS,
-    title: "Configuration & Constraints (optional)",
-    content: <div>Configuration and constraints form goes here.</div>,
-  },
-  {
-    key: StepType.ACCESS_MANAGEMENT,
-    title: "Access management (optional)",
-    content: <div>Access management form goes here.</div>,
-  },
-];
-
 const AddModel: FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const canCreateModel = useCanAddModel();
-  const wsControllerURL = useAppSelector(getWSControllerURL);
-  const activeUser = useAppSelector((state) =>
-    getActiveUserTag(state, wsControllerURL),
-  );
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const mandatoryDetailsFormRef = useRef<FormikProps<AddModelFormState>>(null);
+  const wsControllerURL = useAppSelector(getWSControllerURL);
 
-  useEffect(() => {
-    if (canCreateModel && wsControllerURL && activeUser) {
-      jujuActions.fetchUserCredentials({
-        wsControllerURL,
-        userTag: activeUser,
-        cloudTag: "cloud-localhost",
-      });
+  const saveFormDraft = (): void => {
+    const formValues = mandatoryDetailsFormRef.current?.values;
+    if (!formValues || !wsControllerURL) {
+      return;
     }
-  }, [canCreateModel, wsControllerURL, activeUser]);
+    dispatch(jujuActions.saveAddModelForm({ ...formValues, wsControllerURL }));
+  };
+
+  const handleCancel = (): void => {
+    if (wsControllerURL) {
+      dispatch(jujuActions.clearAddModelForm({ wsControllerURL }));
+    }
+    void navigate(urls.models.index);
+  };
+
+  const handleNextClick = (): void => {
+    saveFormDraft();
+    setCurrentStepIndex((index) => index + 1);
+  };
+
+  const handleCreateClick = (): void => {
+    saveFormDraft();
+    // TODO: Actually create the model here
+  };
+
+  const stepDefinitions: Array<{
+    key: StepType;
+    title: string;
+    content: JSX.Element;
+  }> = [
+    {
+      key: StepType.MANDATORY_DETAILS,
+      title: "Mandatory details",
+      content: <MandatoryDetails formRef={mandatoryDetailsFormRef} />,
+    },
+    {
+      key: StepType.CONFIGURATION_CONSTRAINTS,
+      title: "Configuration & Constraints (optional)",
+      content: <div>Configuration and constraints form goes here.</div>,
+    },
+    {
+      key: StepType.ACCESS_MANAGEMENT,
+      title: "Access management (optional)",
+      content: <div>Access management form goes here.</div>,
+    },
+  ];
+
+  const isFirstStep = currentStepIndex === 0;
+  const isLastStep = currentStepIndex === stepDefinitions.length - 1;
 
   return (
     <CheckPermissions allowed={canCreateModel} {...testId(TestId.COMPONENT)}>
@@ -94,33 +113,29 @@ const AddModel: FC = () => {
           {stepDefinitions[currentStepIndex].content}
         </div>
         <div className="add-model__footer">
-          <Button
-            onClick={() => void navigate(urls.models.index)}
-            appearance="base"
-          >
+          <Button onClick={handleCancel} appearance="base">
             {Label.CANCEL_BUTTON}
           </Button>
-          {currentStepIndex > 0 ? (
+          {!isFirstStep ? (
             <Button
               onClick={() => {
-                setCurrentStepIndex(currentStepIndex - 1);
+                setCurrentStepIndex((index) => index - 1);
               }}
               appearance="secondary"
             >
               {Label.BACK_BUTTON}
             </Button>
           ) : null}
-          {currentStepIndex < stepDefinitions.length - 1 ? (
-            <Button
-              onClick={() => {
-                setCurrentStepIndex(currentStepIndex + 1);
-              }}
-              appearance="secondary"
-            >
+          {!isLastStep ? (
+            <Button onClick={handleNextClick} appearance="secondary">
               {Label.NEXT_BUTTON}
             </Button>
           ) : null}
-          <ActionButton appearance="positive" disabled onClick={() => {}}>
+          <ActionButton
+            appearance="positive"
+            disabled
+            onClick={handleCreateClick}
+          >
             {Label.CREATE_BUTTON}
           </ActionButton>
         </div>

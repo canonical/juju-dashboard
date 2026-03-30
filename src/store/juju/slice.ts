@@ -1,9 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
-import type {
-  CloudsResult,
-  StringsResult,
-} from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
+import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 import type { DestroyModelParams } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
   ListSecretResult,
@@ -573,7 +570,7 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         {
-          userCredentials: StringsResult[];
+          userCredentials: string[];
         } & WsControllerURLParam
       >,
     ) => {
