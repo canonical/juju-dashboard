@@ -116,8 +116,11 @@ describe("ModelActions", () => {
 
     await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
     await userEvent.click(screen.getByRole("button", { name: Label.ACCESS }));
-    expect(router.state.location.search).toEqual(
-      "?model=test1&panel=share-model",
+    expect(new URLSearchParams(router.state.location.search)).toStrictEqual(
+      new URLSearchParams({
+        model: "test1",
+        panel: "share-model",
+      }),
     );
   });
 
@@ -348,15 +351,20 @@ describe("ModelActions", () => {
       await userEvent.click(
         screen.getByRole("button", { name: Label.UPGRADE }),
       );
-      expect(router.state.location.search).toEqual(
-        "?modelName=test1&panel=upgrade-model&qualifier=eggman%40external",
+      expect(new URLSearchParams(router.state.location.search)).toStrictEqual(
+        new URLSearchParams({
+          modelName: "test1",
+          panel: "upgrade-model",
+          qualifier: "eggman@external",
+        }),
       );
     });
 
     it("does not display the option for Juju", async () => {
-      if (state.general.config) {
-        state.general.config.isJuju = true;
+      if (!state.general.config) {
+        assert.fail("config doesn't exist");
       }
+      state.general.config.isJuju = true;
       renderComponent(
         <ModelActions
           qualifier="eggman@external"
