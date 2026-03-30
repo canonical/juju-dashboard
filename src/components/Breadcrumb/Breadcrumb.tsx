@@ -132,6 +132,7 @@ export default function Breadcrumb(): JSX.Element {
           modelName={modelName}
           redirectOnDestroy
           position="left"
+          qualifier={qualifier}
         />
       </li>
     );

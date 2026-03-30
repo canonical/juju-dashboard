@@ -166,9 +166,13 @@ function generateModelTableList(
       },
       {
         ...testId(TestId.COLUMN_ACTIONS),
-        content: (
-          <ModelActions modelUUID={model.uuid} modelName={model.model.name} />
-        ),
+        content: qualifier ? (
+          <ModelActions
+            modelUUID={model.uuid}
+            modelName={model.model.name}
+            qualifier={qualifier}
+          />
+        ) : null,
         className: classNames("u-align--right", {
           "dying-model": isDying,
         }),

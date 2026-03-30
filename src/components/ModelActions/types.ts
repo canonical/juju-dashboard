@@ -9,6 +9,7 @@ export type Props = {
   modelUUID: string;
   position?: ContextualMenuProps<void>["position"];
   redirectOnDestroy?: boolean;
+  qualifier: string;
 } & Partial<ButtonProps> &
   PropsWithChildren;
 
@@ -16,6 +17,7 @@ export enum Label {
   ACCESS = "Manage access",
   DESTROY = "Destroy model",
   TOGGLE = "Toggle model actions menu",
+  UPGRADE = "Upgrade",
 }
 
 export enum TestId {
