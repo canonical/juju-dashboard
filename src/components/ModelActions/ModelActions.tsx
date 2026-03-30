@@ -6,6 +6,7 @@ import DestroyModelDialog from "components/DestroyModelDialog";
 import { useCanConfigureModelWithUUID } from "hooks/useCanConfigureModel";
 import useModelStatus from "hooks/useModelStatus";
 import { useQueryParams } from "hooks/useQueryParams";
+import { useIsJIMMAdmin } from "juju/api-hooks/permissions";
 import { getIsJuju } from "store/general/selectors";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
@@ -18,18 +19,24 @@ const ModelActions: FC<Props> = ({
   modelUUID,
   redirectOnDestroy,
   position,
+  qualifier,
 }: Props) => {
   const [_panelQs, setPanelQs] = useQueryParams<{
     model: null | string;
+    modelName: null | string;
     panel: null | string;
+    qualifier: null | string;
   }>({
     model: null,
+    modelName: null,
     panel: null,
+    qualifier: null,
   });
   const canConfigureModel = useCanConfigureModelWithUUID(false, modelUUID);
   const modelStatusData = useModelStatus(modelUUID);
   const isController = modelStatusData?.info?.["is-controller"];
   const isJuju = useAppSelector(getIsJuju);
+  const { permitted: isJIMMControllerAdmin } = useIsJIMMAdmin();
   const {
     openPortal,
     closePortal,
@@ -64,6 +71,27 @@ const ModelActions: FC<Props> = ({
           "aria-label": Label.TOGGLE,
         }}
         links={[
+          ...(isJuju
+            ? []
+            : [
+                {
+                  children: Label.UPGRADE,
+                  disabled: !isJIMMControllerAdmin,
+                  onClick: (
+                    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                  ): void => {
+                    event.stopPropagation();
+                    setPanelQs(
+                      {
+                        modelName,
+                        panel: "upgrade-model",
+                        qualifier,
+                      },
+                      { replace: true },
+                    );
+                  },
+                },
+              ]),
           {
             children: Label.ACCESS,
             disabled: !canConfigureModel,
