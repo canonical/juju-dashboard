@@ -1,9 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
-import type {
-  CloudsResult,
-  StringsResult,
-} from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
+import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 import type { DestroyModelParams } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
   ListSecretResult,
@@ -34,6 +31,7 @@ import type {
   SecretsContent,
   ReBACAllowed,
   HistoryItem,
+  AddModelFormState,
 } from "./types";
 import { getModelQualifier } from "./utils/models";
 
@@ -150,6 +148,7 @@ const slice = createSlice({
       loading: false,
     },
     selectedApplications: {},
+    addModelForm: null,
   } as JujuState,
   reducers: {
     updateModelList: (
@@ -570,7 +569,7 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         {
-          userCredentials: StringsResult[];
+          userCredentials: string[];
         } & WsControllerURLParam
       >,
     ) => {
@@ -748,6 +747,20 @@ const slice = createSlice({
         state.commandHistory[modelUUID] = [];
       }
       state.commandHistory[modelUUID].push(historyItem);
+    },
+    saveAddModelForm: (
+      state,
+      action: PayloadAction<AddModelFormState & WsControllerURLParam>,
+    ) => {
+      const { wsControllerURL: _wsControllerURL, ...formState } =
+        action.payload;
+      state.addModelForm = formState;
+    },
+    clearAddModelForm: (
+      state,
+      _action: PayloadAction<WsControllerURLParam>,
+    ) => {
+      state.addModelForm = null;
     },
   },
 });

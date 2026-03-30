@@ -666,7 +666,7 @@ export const modelPollerMiddleware: Middleware<
                   errors: response.error,
                 })
               : jujuActions.updateUserCredentials({
-                  userCredentials: response.results ?? undefined,
+                  userCredentials: response.results[0].result ?? [],
                   wsControllerURL,
                 }),
           );
