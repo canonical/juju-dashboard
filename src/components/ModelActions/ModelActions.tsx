@@ -1,10 +1,13 @@
+import type { MenuLink } from "@canonical/react-components";
 import { ContextualMenu, Icon, usePortal } from "@canonical/react-components";
 import type { FC } from "react";
+import type { LinkProps } from "react-router";
 import { Link } from "react-router";
 
 import DestroyModelDialog from "components/DestroyModelDialog";
 import { useCanConfigureModelWithUUID } from "hooks/useCanConfigureModel";
 import useModelStatus from "hooks/useModelStatus";
+import type { SetParams } from "hooks/useQueryParams";
 import { useQueryParams } from "hooks/useQueryParams";
 import { useIsJIMMAdmin } from "juju/api-hooks/permissions";
 import { getIsJuju } from "store/general/selectors";
@@ -14,6 +17,81 @@ import { rebacURLS } from "urls";
 
 import { Label, TestId, type Props } from "./types";
 
+type QueryParams = {
+  model: null | string;
+  modelName: null | string;
+  panel: null | string;
+  qualifier: null | string;
+};
+
+const generateLinks = (
+  canConfigureModel: boolean,
+  isController: boolean | undefined,
+  isJIMMControllerAdmin: boolean,
+  isJuju: boolean | undefined,
+  modelName: null | string,
+  openPortal: (
+    event?: React.SyntheticEvent<HTMLElement, Event> | undefined,
+  ) => void,
+  qualifier: null | string,
+  setPanelQs: SetParams<QueryParams>,
+): MenuLink<LinkProps & React.RefAttributes<HTMLAnchorElement>>[] => {
+  return [
+    ...(isJuju
+      ? []
+      : [
+          {
+            children: Label.UPGRADE,
+            disabled: !isJIMMControllerAdmin,
+            onClick: (
+              event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+            ): void => {
+              event.stopPropagation();
+              setPanelQs(
+                {
+                  modelName,
+                  panel: "upgrade-model",
+                  qualifier,
+                },
+                { replace: true },
+              );
+            },
+          },
+        ]),
+    {
+      children: Label.ACCESS,
+      disabled: !canConfigureModel,
+      ...(isJuju
+        ? {
+            onClick: (
+              event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+            ): void => {
+              event.stopPropagation();
+              setPanelQs(
+                {
+                  model: modelName,
+                  panel: "share-model",
+                },
+                { replace: true },
+              );
+            },
+          }
+        : {
+            element: Link,
+            to: rebacURLS.groups.index,
+          }),
+    },
+    {
+      children: Label.DESTROY,
+      disabled: isController || !canConfigureModel,
+      onClick: (event: React.MouseEvent<HTMLButtonElement>): void => {
+        event.stopPropagation();
+        openPortal(event);
+      },
+    },
+  ];
+};
+
 const ModelActions: FC<Props> = ({
   modelName,
   modelUUID,
@@ -21,12 +99,7 @@ const ModelActions: FC<Props> = ({
   position,
   qualifier,
 }: Props) => {
-  const [_panelQs, setPanelQs] = useQueryParams<{
-    model: null | string;
-    modelName: null | string;
-    panel: null | string;
-    qualifier: null | string;
-  }>({
+  const [_panelQs, setPanelQs] = useQueryParams<QueryParams>({
     model: null,
     modelName: null,
     panel: null,
@@ -70,58 +143,16 @@ const ModelActions: FC<Props> = ({
           hasIcon: true,
           "aria-label": Label.TOGGLE,
         }}
-        links={[
-          ...(isJuju
-            ? []
-            : [
-                {
-                  children: Label.UPGRADE,
-                  disabled: !isJIMMControllerAdmin,
-                  onClick: (
-                    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                  ): void => {
-                    event.stopPropagation();
-                    setPanelQs(
-                      {
-                        modelName,
-                        panel: "upgrade-model",
-                        qualifier,
-                      },
-                      { replace: true },
-                    );
-                  },
-                },
-              ]),
-          {
-            children: Label.ACCESS,
-            disabled: !canConfigureModel,
-            ...(isJuju
-              ? {
-                  onClick: (event): void => {
-                    event.stopPropagation();
-                    setPanelQs(
-                      {
-                        model: modelName,
-                        panel: "share-model",
-                      },
-                      { replace: true },
-                    );
-                  },
-                }
-              : {
-                  element: Link,
-                  to: rebacURLS.groups.index,
-                }),
-          },
-          {
-            children: Label.DESTROY,
-            disabled: isController || !canConfigureModel,
-            onClick: (event: React.MouseEvent<HTMLButtonElement>): void => {
-              event.stopPropagation();
-              openPortal(event);
-            },
-          },
-        ]}
+        links={generateLinks(
+          canConfigureModel,
+          isController,
+          isJIMMControllerAdmin,
+          isJuju,
+          modelName,
+          openPortal,
+          qualifier,
+          setPanelQs,
+        )}
         position={position}
       />
     </>
