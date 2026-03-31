@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 import { vi } from "vitest";
 
@@ -72,15 +73,13 @@ describe("Fields", () => {
       </Formik>,
       { state },
     );
+    await userEvent.click(screen.getByRole("textbox", { name: Label.USER }));
+    expect(screen.getByRole("option", { name: "eggman" })).toBeInTheDocument();
     expect(
-      document.querySelector("option[value='eggman']"),
-    ).toBeInTheDocument();
-    expect(document.querySelectorAll("option[value='eggman']")).toHaveLength(1);
-    expect(
-      document.querySelector("option[value='spaceman']"),
+      screen.getByRole("option", { name: "spaceman" }),
     ).toBeInTheDocument();
     expect(
-      document.querySelector("option[value='policeman']"),
+      screen.getByRole("option", { name: "policeman" }),
     ).toBeInTheDocument();
   });
 
@@ -120,17 +119,15 @@ describe("Fields", () => {
         state,
       },
     );
+    await userEvent.click(screen.getByRole("textbox", { name: Label.MODEL }));
     expect(
-      document.querySelector("option[value='controller1/test-model1']"),
+      screen.getByRole("option", { name: "controller1/test-model1" }),
     ).toBeInTheDocument();
     expect(
-      document.querySelectorAll("option[value='controller1/test-model1']"),
-    ).toHaveLength(1);
-    expect(
-      document.querySelector("option[value='controller2/test-model2']"),
+      screen.getByRole("option", { name: "controller2/test-model2" }),
     ).toBeInTheDocument();
     expect(
-      document.querySelector("option[value='controller3/test-model3']"),
+      screen.getByRole("option", { name: "controller3/test-model3" }),
     ).toBeInTheDocument();
   });
 
@@ -144,7 +141,7 @@ describe("Fields", () => {
       },
     );
     expect(
-      screen.getByRole("combobox", { name: Label.MODEL }),
+      screen.getByRole("textbox", { name: Label.MODEL }),
     ).toBeInTheDocument();
   });
 
@@ -163,7 +160,7 @@ describe("Fields", () => {
       },
     );
     expect(
-      screen.queryByRole("combobox", { name: Label.MODEL }),
+      screen.queryByRole("textbox", { name: Label.MODEL }),
     ).not.toBeInTheDocument();
   });
 
@@ -185,10 +182,10 @@ describe("Fields", () => {
       </Formik>,
       { state },
     );
-    expect(document.querySelector("option[value='Login']")).toBeInTheDocument();
-    expect(document.querySelectorAll("option[value='Login']")).toHaveLength(1);
+    await userEvent.click(screen.getByRole("textbox", { name: Label.METHOD }));
+    expect(screen.getByRole("option", { name: "Login" })).toBeInTheDocument();
     expect(
-      document.querySelector("option[value='AddModel']"),
+      await screen.findByRole("option", { name: "AddModel" }),
     ).toBeInTheDocument();
   });
 });

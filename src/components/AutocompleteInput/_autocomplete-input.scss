@@ -1,0 +1,13 @@
+.autocomplete-input {
+  width: 100%;
+
+  &__dropdown-list {
+    list-style: none;
+    margin: $sph--x-small 0;
+    padding-left: 0;
+  }
+
+  &__dropdown-item {
+    cursor: pointer;
+  }
+}
