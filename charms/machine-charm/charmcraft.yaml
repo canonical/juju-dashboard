@@ -56,4 +56,3 @@ requires:
 parts:
   charm:
     charm-python-packages: [setuptools>80.0]
-    charm-binary-python-packages: [pydantic, pydantic-core, opentelemetry-api]
