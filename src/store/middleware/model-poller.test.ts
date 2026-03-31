@@ -27,12 +27,7 @@ import {
 } from "testing/factories/juju/juju";
 import { createStore } from "testing/utils";
 
-import {
-  LoginError,
-  ModelsError,
-  modelPollerMiddleware,
-  controllers as modelPollerControllers,
-} from "./model-poller";
+import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
 import sourceMiddleware from "./source";
 import modelListSource from "./source/model-list";
 import type { MockMiddlewareResult } from "./types";
@@ -130,7 +125,6 @@ describe("model poller", () => {
     } as unknown as Client;
     // Instantiate local auth by default.
     new LocalAuth(fakeStore.dispatch);
-    modelPollerControllers.clear();
   });
 
   const runMiddleware = async (
@@ -296,9 +290,6 @@ describe("model poller", () => {
         wsControllerURL,
         info: conn.info,
       }),
-    );
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.updatePingerIntervalId({ wsControllerURL, intervalId }),
     );
     expect(fetchControllerList).toHaveBeenCalledWith(
       wsControllerURL,
@@ -724,9 +715,9 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "setModelSharingPermissions").mockImplementation(
-      vi.fn().mockResolvedValue({ results: [] }),
-    );
+    vi.spyOn(jujuModule, "setModelSharingPermissions").mockResolvedValue({
+      results: [],
+    });
     const middleware = await runMiddleware();
     const action = appActions.updatePermissions({
       action: "grant",
@@ -737,6 +728,7 @@ describe("model poller", () => {
       wsControllerURL: "wss://example.com",
     });
     const response = middleware(next)(action);
+    await vi.runOnlyPendingTimersAsync();
     expect(jujuModule.setModelSharingPermissions).toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();
     return expect(response).resolves.toStrictEqual({ results: [] });
@@ -771,7 +763,7 @@ describe("model poller", () => {
   it("handles no controller when fetching audit events", async () => {
     const events = { events: [] };
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));
@@ -836,7 +828,7 @@ describe("model poller", () => {
   it("handles no controller when fetching cross model query results", async () => {
     const crossModelQueryResponse = { results: {}, errors: {} };
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));
@@ -949,7 +941,7 @@ describe("model poller", () => {
     const tuple = relationshipTupleFactory.build();
     const checkRelationResponse = { allowed: true };
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));
@@ -1058,7 +1050,7 @@ describe("model poller", () => {
       results: [],
     };
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));
@@ -1153,7 +1145,7 @@ describe("model poller", () => {
 
   it("handles no controller when destroying models", async () => {
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));

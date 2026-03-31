@@ -3,22 +3,21 @@ import * as appActions from "store/app/actions";
 import { actions as jujuActions } from "store/juju";
 import { logger } from "utils/logger";
 
-import { controllers, ModelsError } from "../model-poller";
+import { ModelsError } from "../model-poller";
 import { createSourceMiddleware } from "../source-middleware";
 
 export default createSourceMiddleware(
   "model-list",
-  ({ wsControllerURL }: { wsControllerURL: string }) => {
+  ({ withConnection: _ }: { withConnection: string }, { connection }) => {
     return createPollingSource(
       async () => {
-        const conn = controllers.get(wsControllerURL);
-        if (!conn?.info.user?.identity) {
+        if (!connection?.info.user?.identity) {
           throw new Error("not authenticated with controller");
         }
 
         try {
-          const models = (await conn.facades.modelManager?.listModels({
-            tag: conn.info.user.identity,
+          const models = (await connection.facades.modelManager?.listModels({
+            tag: connection.info.user.identity,
           })) ?? { "user-models": [] };
           return models;
         } catch (listError) {
@@ -31,18 +30,21 @@ export default createSourceMiddleware(
     );
   },
   {
-    setData: ({ wsControllerURL }, models) =>
+    setData: ({ withConnection }, models) =>
       jujuActions.updateModelList({
         models,
-        wsControllerURL,
+        wsControllerURL: withConnection,
       }),
-    setError: ({ wsControllerURL }, error) =>
+    setError: ({ withConnection }, error) =>
       jujuActions.updateModelsError({
-        wsControllerURL,
+        wsControllerURL: withConnection,
         modelsError: error?.message ?? null,
       }),
-    setLoading: ({ wsControllerURL }, loading) =>
-      jujuActions.updateModelListLoading({ wsControllerURL, loading }),
+    setLoading: ({ withConnection }, loading) =>
+      jujuActions.updateModelListLoading({
+        wsControllerURL: withConnection,
+        loading,
+      }),
   },
   {
     after: (_args, store) => {

@@ -1,24 +1,26 @@
-import type { ActionCreatorWithPayload, PayloadAction } from "@reduxjs/toolkit";
+import type { PayloadAction, PayloadActionCreator } from "@reduxjs/toolkit";
 import { createAction, isAction } from "@reduxjs/toolkit";
 import type { Middleware } from "redux";
 
 import type { Source } from "data";
 import type { Events } from "data/source";
+import type { ConnectionWithFacades } from "juju/types";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 import { hash } from "utils";
 
 export class SourceManager<T, P> {
   private sources: Map<string, Source<T>>;
-  private createSource: (args: P) => Source<T>;
+  private createSource: (args: P, extra: Extra) => Source<T>;
 
-  constructor(createSource: (args: P) => Source<T>) {
+  constructor(createSource: (args: P, extra: Extra) => Source<T>) {
     this.sources = new Map();
     this.createSource = createSource;
   }
 
   public start(
     args: P,
+    extra: Extra,
     listeners?: Partial<{
       [Name in keyof Events<T>]: (...data: Events<T>[Name]) => unknown;
     }>,
@@ -32,7 +34,7 @@ export class SourceManager<T, P> {
     }
 
     // Create the source, and add listeners to it.
-    const source = this.createSource(args);
+    const source = this.createSource(args, extra);
     if (listeners) {
       for (const [event, handler] of Object.entries(listeners)) {
         source.on(
@@ -65,6 +67,10 @@ export class SourceManager<T, P> {
   }
 }
 
+type Extra = {
+  connection?: ConnectionWithFacades;
+};
+
 /**
  * Create a redux middleware for a given source. Sources are tracked by the arguments passed to
  * the `start` action.
@@ -79,7 +85,7 @@ export class SourceManager<T, P> {
  */
 export function createSourceMiddleware<T, P>(
   identifier: string,
-  createSource: (args: P) => Source<T>,
+  createSource: (args: P, extra: Extra) => Source<T>,
   sourceActions: {
     setData: (args: P, data: T) => PayloadAction<unknown>;
     setLoading: (args: P, loading: boolean) => PayloadAction<unknown>;
@@ -95,19 +101,20 @@ export function createSourceMiddleware<T, P>(
   middleware: Middleware<void, RootState, Store["dispatch"]>;
   actions: Record<
     "invalidate" | "start" | "stop",
-    ActionCreatorWithPayload<P, string>
+    PayloadActionCreator<P, string>
   >;
 } {
   const actions = {
     start: createAction<P>(
       `source/${identifier}/start`,
-    ) as ActionCreatorWithPayload<P, "start">,
-    stop: createAction<P>(
-      `source/${identifier}/stop`,
-    ) as ActionCreatorWithPayload<P, "stop">,
+    ) as PayloadActionCreator<P, "start">,
+    stop: createAction<P>(`source/${identifier}/stop`) as PayloadActionCreator<
+      P,
+      "stop"
+    >,
     invalidate: createAction<P>(
       `source/${identifier}/invalidate`,
-    ) as ActionCreatorWithPayload<P, "invalidate">,
+    ) as PayloadActionCreator<P, "invalidate">,
   };
 
   return {
@@ -119,33 +126,40 @@ export function createSourceMiddleware<T, P>(
           return next(action);
         }
 
-        if (
-          isSpecificAction<ReturnType<typeof actions.start>>(
-            action,
-            actions.start.type,
-          )
-        ) {
+        if (actions.start.match(action)) {
           const args = action.payload as P;
-          sources.start(args, {
-            data: (data) => {
-              store.dispatch(sourceActions.setData(args, data));
-              hooks?.after?.(args, store);
+          sources.start(
+            args,
+            {
+              // @ts-expect-error - Redux action types do not carry `meta` field
+              connection: action.meta?.connection as
+                | ConnectionWithFacades
+                | undefined,
             },
-            load: () => {
-              store.dispatch(sourceActions.setLoading(args, true));
+            {
+              data: (data) => {
+                store.dispatch(sourceActions.setData(args, data));
+                hooks?.after?.(args, store);
+              },
+              load: () => {
+                store.dispatch(sourceActions.setLoading(args, true));
+              },
+              loadEnd: () => {
+                store.dispatch(sourceActions.setLoading(args, false));
+              },
+              error: (message, sourceError) => {
+                store.dispatch(
+                  sourceActions.setError(args, {
+                    message,
+                    source: sourceError,
+                  }),
+                );
+              },
+              errorCleared: () => {
+                store.dispatch(sourceActions.setError(args, null));
+              },
             },
-            loadEnd: () => {
-              store.dispatch(sourceActions.setLoading(args, false));
-            },
-            error: (message, sourceError) => {
-              store.dispatch(
-                sourceActions.setError(args, { message, source: sourceError }),
-              );
-            },
-            errorCleared: () => {
-              store.dispatch(sourceActions.setError(args, null));
-            },
-          });
+          );
         } else if (
           isSpecificAction<ReturnType<typeof actions.stop>>(
             action,
