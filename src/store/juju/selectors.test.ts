@@ -38,6 +38,8 @@ import {
   rebacState,
   commandHistoryState,
   commandHistoryItem,
+  cloudInfoStateFactory,
+  userCredentialsStateFactory,
 } from "testing/factories/juju/juju";
 
 import {
@@ -135,6 +137,8 @@ import {
   getUnitApp,
   getUnitMachine,
   getSupportedJujuVersions,
+  getCloudInfoState,
+  getUserCredentialsState,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3268,6 +3272,42 @@ describe("getSupportedJujuVersions", () => {
       loading: false,
       data: null,
       error: null,
+    });
+  });
+});
+
+describe("getCloudInfoState", () => {
+  it("gets the cloud info state", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        cloudInfo: cloudInfoStateFactory.build({
+          clouds: null,
+        }),
+      }),
+    });
+    expect(getCloudInfoState(state)).toStrictEqual({
+      clouds: null,
+      errors: null,
+      loaded: false,
+      loading: false,
+    });
+  });
+});
+
+describe("getUserCredentialsState", () => {
+  it("gets the user credentials state", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: [],
+        }),
+      }),
+    });
+    expect(getUserCredentialsState(state)).toStrictEqual({
+      credentials: [],
+      errors: null,
+      loaded: false,
+      loading: false,
     });
   });
 });
