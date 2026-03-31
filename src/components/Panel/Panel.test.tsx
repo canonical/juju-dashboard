@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { JSX } from "react";
 import { vi } from "vitest";
@@ -22,13 +22,16 @@ describe("Panel", () => {
         }>({ panel: null });
 
       return (
-        <Panel
-          panelClassName="test-panel"
-          onRemovePanelQueryParams={handleRemovePanelQueryParams}
-          {...props}
-        >
-          <>Test content</>
-        </Panel>
+        <>
+          <div id="#outside">Outside</div>
+          <Panel
+            panelClassName="test-panel"
+            onRemovePanelQueryParams={handleRemovePanelQueryParams}
+            {...props}
+          >
+            <>Test content</>
+          </Panel>
+        </>
       );
     };
 
@@ -162,7 +165,7 @@ describe("Panel", () => {
       "?panel=share-model&externalParam=externalValue",
     );
 
-    await userEvent.click(window.document.documentElement);
+    await userEvent.click(screen.getByText("Outside"));
 
     expect(router.state.location.pathname).toBe("/foo");
     expect(router.state.location.search).toBe("?externalParam=externalValue");
@@ -177,6 +180,23 @@ describe("Panel", () => {
     );
 
     await userEvent.click(screen.getByText("Test content"));
+
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
+      "?panel=share-model&externalParam=externalValue",
+    );
+  });
+
+  it("should not clear the search params when clicking inside the panel and then releasing outside the panel", async () => {
+    const { router } = mockRenderComponent({});
+
+    expect(router.state.location.pathname).toBe("/foo");
+    expect(router.state.location.search).toBe(
+      "?panel=share-model&externalParam=externalValue",
+    );
+
+    fireEvent.mouseDown(screen.getByText("Test content"));
+    fireEvent.mouseUp(screen.getByText("Outside"));
 
     expect(router.state.location.pathname).toBe("/foo");
     expect(router.state.location.search).toBe(

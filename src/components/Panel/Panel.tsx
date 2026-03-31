@@ -3,7 +3,7 @@ import { Button, Icon, useListener } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import classNames from "classnames";
 import type { ReactNode } from "react";
-import { forwardRef, useId } from "react";
+import { forwardRef, useId, useRef } from "react";
 
 import Aside from "components/Aside";
 import type { AsideProps } from "components/Aside";
@@ -37,14 +37,20 @@ const close = {
   },
   onClickOutside: (
     ev: React.MouseEvent,
+    panelId: string,
     onRemovePanelQueryParams: () => void,
+    startedInsidePanel: boolean,
     checkCanClose?: Props["checkCanClose"],
   ): void => {
+    if (startedInsidePanel) {
+      // If the click started inside the panel and then was dragged outside the panel then don't close it.
+      return;
+    }
     if (checkCanClose && !checkCanClose?.(ev)) {
       return;
     }
     const target = ev.target as HTMLElement;
-    if (!target.closest(".p-panel")) {
+    if (!target.closest(`#${panelId}`)) {
       onRemovePanelQueryParams();
     }
   },
@@ -67,6 +73,8 @@ const Panel = forwardRef<HTMLDivElement, Props>(
     }: Props,
     ref,
   ) => {
+    const startedInsidePanel = useRef(false);
+    const panelId = useId();
     useListener(
       window,
       (ev: React.KeyboardEvent) => {
@@ -76,8 +84,23 @@ const Panel = forwardRef<HTMLDivElement, Props>(
     );
     useListener(
       window,
+      (event: React.MouseEvent) => {
+        const target = event.target as HTMLElement;
+        startedInsidePanel.current = !!target.closest(`#${panelId}`);
+      },
+      "mousedown",
+    );
+    useListener(
+      window,
       (ev: React.MouseEvent) => {
-        close.onClickOutside(ev, onRemovePanelQueryParams, checkCanClose);
+        close.onClickOutside(
+          ev,
+          panelId,
+          onRemovePanelQueryParams,
+          startedInsidePanel.current,
+          checkCanClose,
+        );
+        startedInsidePanel.current = false;
       },
       "click",
     );
@@ -109,6 +132,7 @@ const Panel = forwardRef<HTMLDivElement, Props>(
         {...props}
         width={width}
         aria-labelledby={titleId ?? defaultTitleId}
+        id={panelId}
         role="dialog"
       >
         <VanillaPanel
