@@ -38,6 +38,8 @@ import {
   rebacState,
   commandHistoryState,
   commandHistoryItem,
+  cloudInfoStateFactory,
+  userCredentialsStateFactory,
 } from "testing/factories/juju/juju";
 
 import {
@@ -134,6 +136,9 @@ import {
   getUnit,
   getUnitApp,
   getUnitMachine,
+  getCloudInfoState,
+  getUserCredentialsState,
+  getAddModelFormState,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3239,5 +3244,62 @@ describe("getUnitMachine", () => {
     expect(getUnitMachine(state, "abc123", "app1/1")).toStrictEqual(
       machines["1"],
     );
+  });
+});
+
+describe("getCloudInfoState", () => {
+  it("gets the cloud info state", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        cloudInfo: cloudInfoStateFactory.build({
+          clouds: null,
+        }),
+      }),
+    });
+    expect(getCloudInfoState(state)).toStrictEqual({
+      clouds: null,
+      errors: null,
+      loaded: false,
+      loading: false,
+    });
+  });
+});
+
+describe("getUserCredentialsState", () => {
+  it("gets the user credentials state", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: [],
+        }),
+      }),
+    });
+    expect(getUserCredentialsState(state)).toStrictEqual({
+      credentials: [],
+      errors: null,
+      loaded: false,
+      loading: false,
+    });
+  });
+});
+
+describe("getAddModelFormState", () => {
+  it("gets the add model form state", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        addModelForm: {
+          modelName: "my-model",
+          cloud: "aws",
+          region: "us-east-1",
+          credential: "my-credential",
+        },
+      }),
+    });
+    expect(getAddModelFormState(state)).toStrictEqual({
+      cloud: "aws",
+      credential: "my-credential",
+      modelName: "my-model",
+      region: "us-east-1",
+    });
   });
 });

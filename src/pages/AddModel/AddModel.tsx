@@ -63,7 +63,12 @@ const AddModel: FC = () => {
     {
       key: StepType.MANDATORY_DETAILS,
       title: "Mandatory details",
-      content: <MandatoryDetails formRef={mandatoryDetailsFormRef} />,
+      content: (
+        <MandatoryDetails
+          formRef={mandatoryDetailsFormRef}
+          onSubmit={saveFormDraft}
+        />
+      ),
     },
     {
       key: StepType.CONFIGURATION_CONSTRAINTS,

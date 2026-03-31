@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "store/store";
 
 type Props = {
   formRef?: Ref<FormikProps<AddModelFormState>>;
+  onSubmit?: () => void;
 };
 
 type SelectOption = { label: string; value: string };
@@ -51,7 +52,7 @@ const toCredentialOptions = (credentials: string[]): SelectOption[] =>
     };
   });
 
-const MandatoryDetails = ({ formRef }: Props): JSX.Element => {
+const MandatoryDetails = ({ formRef, onSubmit }: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const activeUser = useAppSelector((state) =>
@@ -98,7 +99,10 @@ const MandatoryDetails = ({ formRef }: Props): JSX.Element => {
       innerRef={formRef}
       enableReinitialize
       initialValues={initialFormValues}
-      onSubmit={() => {}}
+      onSubmit={(_values, { setSubmitting }) => {
+        onSubmit?.();
+        setSubmitting(false);
+      }}
     >
       {({ values, setFieldValue }) => {
         const selectedCloud = values.cloud || defaultCloud;
@@ -136,12 +140,14 @@ const MandatoryDetails = ({ formRef }: Props): JSX.Element => {
               component={Select}
               label="Region (optional)"
               name="region"
+              disabled={!values.cloud}
               options={regionOptions}
             />
             <FormikField
               component={Select}
               label="Credential"
               name="credential"
+              disabled={!values.cloud}
               required
               options={credentialsOptions}
             />

@@ -26,6 +26,7 @@ import {
   commandHistoryState,
   commandHistoryItem,
   cloudInfoStateFactory,
+  userCredentialsStateFactory,
 } from "testing/factories/juju/juju";
 
 import { actions, reducer } from "./slice";
@@ -537,6 +538,82 @@ describe("reducers", () => {
       ...state,
       cloudInfo: cloudInfoStateFactory.build({
         clouds: null,
+        errors: "Uh oh!",
+        loaded: true,
+        loading: false,
+      }),
+    });
+  });
+
+  it("fetchUserCredentials", () => {
+    const state = jujuStateFactory.build({
+      userCredentials: userCredentialsStateFactory.build({ loading: false }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.fetchUserCredentials({
+          wsControllerURL: "wss://example.com",
+          userTag: "user-eggman@external",
+          cloudTag: "cloud-aws",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      userCredentials: userCredentialsStateFactory.build({ loading: true }),
+    });
+  });
+
+  it("updateUserCredentials", () => {
+    const state = jujuStateFactory.build({
+      userCredentials: userCredentialsStateFactory.build({
+        credentials: [],
+        errors: null,
+        loaded: false,
+        loading: true,
+      }),
+    });
+    const credentials = ["credential-1", "credential-2"];
+    expect(
+      reducer(
+        state,
+        actions.updateUserCredentials({
+          userCredentials: credentials,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      userCredentials: userCredentialsStateFactory.build({
+        credentials,
+        errors: null,
+        loaded: true,
+        loading: false,
+      }),
+    });
+  });
+
+  it("setUserCredentialsErrors", () => {
+    const state = jujuStateFactory.build({
+      userCredentials: userCredentialsStateFactory.build({
+        credentials: [],
+        errors: null,
+        loaded: false,
+        loading: true,
+      }),
+    });
+    expect(
+      reducer(
+        state,
+        actions.setUserCredentialsErrors({
+          errors: "Uh oh!",
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      userCredentials: userCredentialsStateFactory.build({
+        credentials: [],
         errors: "Uh oh!",
         loaded: true,
         loading: false,
@@ -1684,6 +1761,50 @@ describe("reducers", () => {
           commandHistoryItem.build({ command: "status" }),
         ],
       }),
+    });
+  });
+
+  it("saveAddModelForm", () => {
+    const state = jujuStateFactory.build({ addModelForm: null });
+    expect(
+      reducer(
+        state,
+        actions.saveAddModelForm({
+          modelName: "my-model",
+          cloud: "cloud-aws",
+          region: "us-east-1",
+          credential: "user/admin",
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      addModelForm: {
+        modelName: "my-model",
+        cloud: "cloud-aws",
+        region: "us-east-1",
+        credential: "user/admin",
+      },
+    });
+  });
+
+  it("clearAddModelForm", () => {
+    const state = jujuStateFactory.build({
+      addModelForm: {
+        modelName: "my-model",
+        cloud: "cloud-aws",
+        region: "us-east-1",
+        credential: "user/admin",
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.clearAddModelForm({ wsControllerURL: "wss://example.com" }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      addModelForm: null,
     });
   });
 });
