@@ -1,4 +1,4 @@
-import { ThunkDispatch, unwrapResult } from "@reduxjs/toolkit";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { isAction, type Middleware } from "redux";
 
 import {
@@ -26,8 +26,10 @@ import { isSpecificAction } from "types";
 import { toErrorString } from "utils";
 import { logger } from "utils/logger";
 
-import type { ConnectionManager } from "./connection";
-import { createConnectionMiddleware } from "./connection";
+import {
+  createConnectionMiddleware,
+  type ConnectionManager,
+} from "./connection";
 import modelListMiddleware from "./source/model-list";
 
 export enum LoginError {
@@ -93,7 +95,7 @@ function runModelPoller(
 
         reduxStore.dispatch(
           modelListMiddleware.actions.start({
-            withConnection: wsControllerURL,
+            wsControllerURL,
           }),
         );
       }

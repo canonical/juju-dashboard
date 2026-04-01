@@ -1,16 +1,27 @@
 import { createPollingSource } from "data/pollingSource";
+import type { UserModelList } from "juju/types";
 import * as appActions from "store/app/actions";
 import { actions as jujuActions } from "store/juju";
 import { logger } from "utils/logger";
 
+import { hasConnection } from "../connection";
 import { ModelsError } from "../model-poller";
 import { createSourceMiddleware } from "../source-middleware";
 
-export default createSourceMiddleware(
+export default createSourceMiddleware<
+  UserModelList,
+  { wsControllerURL: string }
+>(
   "model-list",
-  ({ withConnection: _ }: { withConnection: string }, { connection }) => {
+  ({ wsControllerURL: _, meta }) => {
     return createPollingSource(
       async () => {
+        if (!hasConnection(meta)) {
+          throw new Error("connection not provided");
+        }
+
+        const { connection } = meta;
+
         if (!connection?.info.user?.identity) {
           throw new Error("not authenticated with controller");
         }
@@ -30,23 +41,25 @@ export default createSourceMiddleware(
     );
   },
   {
-    setData: ({ withConnection }, models) =>
+    setData: ({ wsControllerURL }, models) =>
       jujuActions.updateModelList({
         models,
-        wsControllerURL: withConnection,
+        wsControllerURL,
       }),
-    setError: ({ withConnection }, error) =>
+    setError: ({ wsControllerURL }, error) =>
       jujuActions.updateModelsError({
-        wsControllerURL: withConnection,
+        wsControllerURL,
         modelsError: error?.message ?? null,
       }),
-    setLoading: ({ withConnection }, loading) =>
+    setLoading: ({ wsControllerURL }, loading) =>
       jujuActions.updateModelListLoading({
-        wsControllerURL: withConnection,
+        wsControllerURL,
         loading,
       }),
   },
   {
+    // Add `withConnection` to every action, to ensure that the connection is always provided.
+    addActionMeta: (_payload) => ({ withConnection: true }),
     after: (_args, store) => {
       store.dispatch(appActions.updateModelStatuses());
     },

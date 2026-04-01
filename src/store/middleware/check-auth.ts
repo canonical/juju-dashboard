@@ -137,17 +137,10 @@ export const checkAuthMiddleware: Middleware<
         typeof action.payload.wsControllerURL === "string"
           ? action.payload.wsControllerURL
           : null;
-      const withConnection =
-        isPayloadAction(action) &&
-        "withConnection" in action.payload &&
-        typeof action.payload.withConnection === "string"
-          ? action.payload.withConnection
-          : null;
       if (
         actionAllowlist.includes(action.type) ||
         thunkAllowlist.includes(action.type) ||
-        (wsControllerURL && checkLoggedIn(state, wsControllerURL)) ||
-        (withConnection && checkLoggedIn(state, withConnection))
+        (wsControllerURL && checkLoggedIn(state, wsControllerURL))
       ) {
         return next(action);
       } else {
