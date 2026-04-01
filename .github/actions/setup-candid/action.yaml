@@ -25,6 +25,13 @@ runs:
       uses: ./.github/actions/wait-for-snap
       with:
         snap: candid
+    - name: Wait for Candid config
+      shell: bash
+      run: |
+        until [ -f /var/snap/candid/current/config.yaml ]
+        do
+            sleep 1
+        done
     - name: Configure candid
       shell: bash
       run: |
