@@ -11580,9 +11580,9 @@ __metadata:
   linkType: hard
 
 "sjcl@npm:^1.0.6":
-  version: 1.0.8
-  resolution: "sjcl@npm:1.0.8"
-  checksum: 10c0/deac03b931a26b710a521fc9dd5a10b124fb63970b7f5e22a91460ac46b14dd4ccfc2edbee4d553b8d586da332d9013a9ff40f5adfdb58050b73ebcd90235cba
+  version: 1.0.9
+  resolution: "sjcl@npm:1.0.9"
+  checksum: 10c0/0cc0b93ac1ff0082236a2c6efc73fb6ebb5b1d246b270ba1b6acc0195432f321403e132469e1c8418588385d9083aa434a36d3a5ebbca34193d3a9453362f206
   languageName: node
   linkType: hard
 
