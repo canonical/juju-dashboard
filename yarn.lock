@@ -3678,7 +3678,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"anchorme@npm:^3.0.5":
+"anchorme@npm:^3.0.8":
   version: 3.0.8
   resolution: "anchorme@npm:3.0.8"
   checksum: 10c0/87b0c1cb119a405d6836f48f36ad5447d37f06dbdcd48792be5c34411cda4ce2d5dfa228a47d952f37af1ec7e8836b3d3d52f5ca8e7122cf1f61f674cb765e47
@@ -9001,7 +9001,7 @@ __metadata:
     prism-react-renderer: "npm:2.4.1"
     prismjs: "npm:1.30.0"
     react: "npm:19.2.3"
-    react-anchorme: "npm:4.0.1"
+    react-anchorme: "npm:5.1.0"
     react-dom: "npm:19.2.3"
     react-ga4: "npm:2.1.0"
     react-hot-toast: "npm:2.6.0"
@@ -10476,14 +10476,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-anchorme@npm:4.0.1":
-  version: 4.0.1
-  resolution: "react-anchorme@npm:4.0.1"
+"react-anchorme@npm:5.1.0":
+  version: 5.1.0
+  resolution: "react-anchorme@npm:5.1.0"
   dependencies:
-    anchorme: "npm:^3.0.5"
+    anchorme: "npm:^3.0.8"
   peerDependencies:
-    react: ^16.8.0 || ^17 || ^18
-  checksum: 10c0/0be34f0e76c18ef1eb8225869010639563c0044eacc68b7a6717e11336f14081121ce00c30d7eb4bf2387be5eb9f4419abc48b83b34f93749996240e68b6f645
+    react: ^16.8.0 || ^17 || ^18 || ^19
+  checksum: 10c0/4f3cc598ca5ce95ffa978046bb79a2fe94fc83a226075ca2a9b5988e92502474f99a04b3c02816f52fb1dd0898347a67e4b62881c28b17f11bdd3d3cbf52b932
   languageName: node
   linkType: hard
 
