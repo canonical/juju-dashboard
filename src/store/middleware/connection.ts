@@ -162,6 +162,13 @@ export const logoutAction = createAction<{ wsControllerURL: string }>(
 
 type MiddlewareStore = Middleware<void, RootState, Store["dispatch"]>;
 
+/**
+ * Create a new instance of the connection manager middleware.
+ *
+ * This function returns the middleware, and the underlying connection pool. It is intended for use
+ * within the model-poller middleware for migration, until those actions no longer require direct
+ * access to the connections.
+ */
 export function createConnectionMiddleware(): {
   middleware: MiddlewareStore;
   connections: ConnectionManager;
@@ -272,87 +279,7 @@ export const connectionMiddleware: Middleware<
   void,
   RootState,
   Store["dispatch"]
-> = (store) => (next) => {
-  const connections = new ConnectionManager({
-    getCredentials: (wsControllerURL): AuthCredential | undefined =>
-      getUserPass(store.getState(), wsControllerURL),
-    onConnection: async (wsControllerURL, connection): Promise<void> => {
-      // Allows info to be serialised.
-      delete connection.info.getFacade;
-
-      const analyticsEnabled = getAnalyticsEnabled(store.getState());
-      const isJuju = getIsJuju(store.getState()) ?? false;
-      const dashboardVersion = getAppVersion(store.getState()) ?? "";
-      const controllerVersion = connection.info.serverVersion ?? "";
-      const jimmVersion = connection.facades.jimM?.version ?? 0;
-
-      analytics(
-        !!analyticsEnabled,
-        { dashboardVersion, controllerVersion, isJuju: isJuju.toString() },
-        {
-          category: "Authentication",
-          action: `User Login (${Auth.instance.name})`,
-        },
-      );
-
-      // XXX Now that we can register multiple controllers this needs
-      // to be sent per controller.
-      if (analyticsEnabled) {
-        Sentry.setTag("jujuVersion", controllerVersion);
-      }
-
-      // Store the controller info. The transport and facades are not used
-      // (or available by other means) so no need to store them.
-      store.dispatch(
-        generalActions.updateControllerConnection({
-          wsControllerURL,
-          info: connection.info,
-        }),
-      );
-      store.dispatch(
-        generalActions.updateControllerFeatures({
-          wsControllerURL,
-          features: {
-            auditLogs: jimmVersion >= 4,
-            crossModelQueries: jimmVersion >= 4,
-            rebac: jimmVersion >= 4,
-          },
-        }),
-      );
-
-      if (!isJuju) {
-        // This call will be a noop if the user isn't an administrator
-        // on the JIMM controller we're connected to.
-        try {
-          await disableControllerUUIDMasking(connection);
-        } catch (err) {
-          // Silently fail, if this doesn't work then the user isn't authorized
-          // to perform the action.
-        }
-      }
-    },
-  });
-
-  return async (action) => {
-    if (logoutAction.match(action)) {
-      // Directly respond to logout action, and do not pass it on.
-      await connections.logout(action.payload.wsControllerURL);
-      return;
-    } else if (
-      isAction(action) &&
-      isPayloadAction(action) &&
-      "withConnection" in action.payload &&
-      typeof action.payload.withConnection === "string"
-    ) {
-      // Action has the `withConnection` property, so attach the connection to it.
-      const connection = await connections.get(action.payload.withConnection);
-
-      const metaAction = action as {
-        meta?: Record<string, unknown>;
-      } & typeof action;
-      metaAction.meta = Object.assign(metaAction.meta ?? {}, { connection });
-    }
-
-    return next(action);
-  };
+> = (store) => {
+  const { middleware } = createConnectionMiddleware();
+  return middleware(store);
 };
