@@ -4,7 +4,6 @@ import type { FormikProps } from "formik";
 import { createRef } from "react";
 
 import { actions as jujuActions } from "store/juju";
-import type { AddModelFormState } from "store/juju/types";
 import type { RootState } from "store/store";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import {
@@ -15,18 +14,23 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { createStore, renderComponent } from "testing/utils";
 
+import type { AddModelFormState } from "../types";
+
 import MandatoryDetails from "./MandatoryDetails";
 
 describe("MandatoryDetails", () => {
   let state: RootState;
+  let initialValues: AddModelFormState | null;
   const onSubmit = vi.fn();
   const formRef = createRef<FormikProps<AddModelFormState>>();
   const props = {
     onSubmit,
     formRef,
+    initialValues: null,
   };
 
   beforeEach(() => {
+    initialValues = null;
     state = rootStateFactory.withGeneralConfig().build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -76,14 +80,19 @@ describe("MandatoryDetails", () => {
   });
 
   it("renders saved form values", () => {
-    state.juju.addModelForm = {
+    initialValues = {
       modelName: "my-model",
       cloud: "cloud-gce",
       region: "europe-west1",
       credential: "gce-cred",
     };
 
-    renderComponent(<MandatoryDetails {...props} />, { state });
+    renderComponent(
+      <MandatoryDetails {...props} initialValues={initialValues} />,
+      {
+        state,
+      },
+    );
 
     expect(screen.getByLabelText("Model name")).toHaveValue("my-model");
     expect(screen.getByLabelText("Cloud")).toHaveValue("cloud-gce");
@@ -111,14 +120,19 @@ describe("MandatoryDetails", () => {
   });
 
   it("changes region options and fetches credentials when cloud changes", async () => {
-    const [store, actions] = createStore(state, { trackActions: true });
-    state.juju.addModelForm = {
+    initialValues = {
       modelName: "my-model",
       cloud: "cloud-gce",
       region: "europe-west1",
       credential: "gce-cred",
     };
-    renderComponent(<MandatoryDetails {...props} />, { store });
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(
+      <MandatoryDetails {...props} initialValues={initialValues} />,
+      {
+        store,
+      },
+    );
 
     expect(screen.getByLabelText("Cloud")).toHaveValue("cloud-gce");
     expect(screen.getByLabelText("Region (optional)")).toHaveValue(

@@ -32,7 +32,10 @@ import type {
   SecretsContent,
   ReBACAllowed,
   HistoryItem,
+<<<<<<< HEAD
   SourceData,
+=======
+>>>>>>> 989d9fe3 (chore: extract formik fields and use local state)
 } from "./types";
 import { getModelQualifier } from "./utils/models";
 
@@ -149,7 +152,10 @@ const slice = createSlice({
       loading: false,
     },
     selectedApplications: {},
+<<<<<<< HEAD
     supportedJujuVersions: {},
+=======
+>>>>>>> 989d9fe3 (chore: extract formik fields and use local state)
   } as JujuState,
   reducers: {
     updateModelList: (

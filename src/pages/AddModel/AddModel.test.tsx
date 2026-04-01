@@ -1,9 +1,7 @@
 import { screen } from "@testing-library/react";
-import { waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { PageNotFoundLabel } from "pages/PageNotFound";
-import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import {
@@ -12,7 +10,7 @@ import {
   cloudInfoStateFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
-import { createStore, renderComponent } from "testing/utils";
+import { renderComponent } from "testing/utils";
 import urls from "urls";
 
 import AddModel from "./AddModel";
@@ -166,66 +164,32 @@ describe("AddModel page", () => {
     expect(router.state.location.pathname).toEqual(urls.models.index);
   });
 
-  it("saves mandatory details draft when Next is clicked", async () => {
-    const [store, actions] = createStore(state, { trackActions: true });
-    renderComponent(<AddModel />, { store });
+  it("restores mandatory details draft when navigating back", async () => {
+    renderComponent(<AddModel />, { state });
 
     await userEvent.type(screen.getByLabelText("Model name"), "my-model");
     await userEvent.click(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
 
-    const action = jujuActions.saveAddModelForm({
-      modelName: "my-model",
-      cloud: "cloud-aws",
-      region: "",
-      credential: "",
-      wsControllerURL: "wss://controller.example.com",
-    });
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.BACK_BUTTON }),
+    );
 
-    await waitFor(() => {
-      expect(
-        actions.find((dispatch) => dispatch.type === action.type),
-      ).toMatchObject(action);
-    });
+    expect(screen.getByLabelText("Model name")).toHaveValue("my-model");
   });
 
-  it("clears mandatory details draft when Cancel is clicked", async () => {
-    const [store, actions] = createStore(state, { trackActions: true });
-    renderComponent(<AddModel />, { store });
-
+  it("resets local draft after cancel", async () => {
+    const { router } = renderComponent(<AddModel />, { state });
     await userEvent.type(screen.getByLabelText("Model name"), "my-model");
     await userEvent.click(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
-
-    const saveAction = jujuActions.saveAddModelForm({
-      modelName: "my-model",
-      cloud: "cloud-aws",
-      region: "",
-      credential: "",
-      wsControllerURL: "wss://controller.example.com",
-    });
-
-    await waitFor(() => {
-      expect(
-        actions.find((dispatch) => dispatch.type === saveAction.type),
-      ).toMatchObject(saveAction);
-    });
-
     await userEvent.click(
       screen.getByRole("button", { name: Label.CANCEL_BUTTON }),
     );
 
-    const clearAction = jujuActions.clearAddModelForm({
-      wsControllerURL: "wss://controller.example.com",
-    });
-
-    await waitFor(() => {
-      expect(
-        actions.find((dispatch) => dispatch.type === clearAction.type),
-      ).toMatchObject(clearAction);
-    });
+    expect(router.state.location.pathname).toEqual(urls.models.index);
   });
 
   describe("permission checks", () => {

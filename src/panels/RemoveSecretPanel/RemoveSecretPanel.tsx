@@ -85,64 +85,60 @@ const RemoveSecretPanel: FC = () => {
   );
 
   return (
-    <>
-      <Panel
-        {...testId(TestId.PANEL)}
-        drawer={
-          <>
-            <Button onClick={handleRemovePanelQueryParams}>
-              {Label.CANCEL}
-            </Button>
-            <ActionButton
-              appearance="positive"
-              disabled={saving}
-              form={formId}
-              loading={saving}
-              type="submit"
-            >
-              {Label.SUBMIT}
-            </ActionButton>
-          </>
-        }
-        onRemovePanelQueryParams={handleRemovePanelQueryParams}
-        ref={scrollArea}
-        title="Remove secret"
-      >
+    <Panel
+      {...testId(TestId.PANEL)}
+      drawer={
         <>
-          <PanelInlineErrors
-            inlineErrors={[inlineError]}
-            scrollArea={scrollArea.current}
-          />
-          {secret ? (
-            <Formik<FormFields>
-              initialValues={{
-                removeAll: false,
-                revision: (latestRevision ?? "").toString(),
-              }}
-              onSubmit={() => {
-                setShowConfirm(true);
-              }}
-            >
-              <Form id={formId}>
-                <h5>
-                  Secret: <SecretLabel secret={secret} />
-                </h5>
-                <Fields
-                  handleRemoveSecret={handleRemoveSecret}
-                  hideConfirm={() => {
-                    setShowConfirm(false);
-                  }}
-                  secretURI={secretURI}
-                  showConfirm={showConfirm}
-                />
-              </Form>
-            </Formik>
-          ) : (
-            <Spinner />
-          )}
+          <Button onClick={handleRemovePanelQueryParams}>{Label.CANCEL}</Button>
+          <ActionButton
+            appearance="positive"
+            disabled={saving}
+            form={formId}
+            loading={saving}
+            type="submit"
+          >
+            {Label.SUBMIT}
+          </ActionButton>
         </>
-      </Panel>
-    </>
+      }
+      onRemovePanelQueryParams={handleRemovePanelQueryParams}
+      ref={scrollArea}
+      title="Remove secret"
+    >
+      <>
+        <PanelInlineErrors
+          inlineErrors={[inlineError]}
+          scrollArea={scrollArea.current}
+        />
+        {secret ? (
+          <Formik<FormFields>
+            initialValues={{
+              removeAll: false,
+              revision: (latestRevision ?? "").toString(),
+            }}
+            onSubmit={() => {
+              setShowConfirm(true);
+            }}
+          >
+            <Form id={formId}>
+              <h5>
+                Secret: <SecretLabel secret={secret} />
+              </h5>
+              <Fields
+                handleRemoveSecret={handleRemoveSecret}
+                hideConfirm={() => {
+                  setShowConfirm(false);
+                }}
+                secretURI={secretURI}
+                showConfirm={showConfirm}
+              />
+            </Form>
+          </Formik>
+        ) : (
+          <Spinner />
+        )}
+      </>
+    </Panel>
   );
 };
 

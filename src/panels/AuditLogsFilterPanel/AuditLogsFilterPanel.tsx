@@ -34,71 +34,69 @@ const AuditLogsFilterPanel = (): JSX.Element => {
   const { page: _page, panel: _panel, ...filters } = queryParams;
   const hasFilters = Object.values(filters).some((filter) => !!filter);
   return (
-    <>
-      <Panel
-        {...testId(TestId.PANEL)}
-        drawer={
-          <>
-            <Button
-              disabled={!hasFilters}
-              onClick={() => {
-                setQueryParams({
-                  ...DEFAULT_AUDIT_LOG_FILTERS,
-                  page: null,
-                  panel: undefined,
-                });
-              }}
-              type="button"
-            >
-              {Label.CLEAR}
-            </Button>
-            <Button appearance="positive" type="submit" form={formId}>
-              {Label.FILTER}
-            </Button>
-          </>
-        }
-        onRemovePanelQueryParams={handleRemovePanelQueryParams}
-        title="Filter audit logs"
+    <Panel
+      {...testId(TestId.PANEL)}
+      drawer={
+        <>
+          <Button
+            disabled={!hasFilters}
+            onClick={() => {
+              setQueryParams({
+                ...DEFAULT_AUDIT_LOG_FILTERS,
+                page: null,
+                panel: undefined,
+              });
+            }}
+            type="button"
+          >
+            {Label.CLEAR}
+          </Button>
+          <Button appearance="positive" type="submit" form={formId}>
+            {Label.FILTER}
+          </Button>
+        </>
+      }
+      onRemovePanelQueryParams={handleRemovePanelQueryParams}
+      title="Filter audit logs"
+    >
+      <Formik<FormFields>
+        initialValues={{
+          // Restore the values from the query string.
+          after: queryParams.after ?? "",
+          before: queryParams.before ?? "",
+          user: queryParams.user ?? "",
+          model: queryParams.model ?? "",
+          method: queryParams.method ?? "",
+        }}
+        onSubmit={(values) => {
+          // Replace empty strings with `null` so that the query params get
+          // removed from the URL rather than being set to empty values (the
+          // useQueryParams hook will remove null or undefined values, but
+          // keeps the queryParam if it is an empty string).
+          const filtersWithNull = Object.entries(values).reduce<
+            Record<keyof FormFields, null | string>
+          >(
+            (filterList, [filterName, filterValue]) => {
+              filterList[filterName as keyof FormFields] = filterValue
+                ? filterValue
+                : null;
+              return filterList;
+            },
+            { ...values },
+          );
+          // Set the filters and close the panel.
+          setQueryParams({
+            ...filtersWithNull,
+            page: null,
+            panel: undefined,
+          });
+        }}
       >
-        <Formik<FormFields>
-          initialValues={{
-            // Restore the values from the query string.
-            after: queryParams.after ?? "",
-            before: queryParams.before ?? "",
-            user: queryParams.user ?? "",
-            model: queryParams.model ?? "",
-            method: queryParams.method ?? "",
-          }}
-          onSubmit={(values) => {
-            // Replace empty strings with `null` so that the query params get
-            // removed from the URL rather than being set to empty values (the
-            // useQueryParams hook will remove null or undefined values, but
-            // keeps the queryParam if it is an empty string).
-            const filtersWithNull = Object.entries(values).reduce<
-              Record<keyof FormFields, null | string>
-            >(
-              (filterList, [filterName, filterValue]) => {
-                filterList[filterName as keyof FormFields] = filterValue
-                  ? filterValue
-                  : null;
-                return filterList;
-              },
-              { ...values },
-            );
-            // Set the filters and close the panel.
-            setQueryParams({
-              ...filtersWithNull,
-              page: null,
-              panel: undefined,
-            });
-          }}
-        >
-          <Form id={formId}>
-            <Fields />
-          </Form>
-        </Formik>
-      </Panel>
-    </>
+        <Form id={formId}>
+          <Fields />
+        </Form>
+      </Formik>
+    </Panel>
   );
 };
 

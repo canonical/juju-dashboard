@@ -164,7 +164,6 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   secrets: {},
   cloudInfo: cloudInfoStateFactory.build(),
   userCredentials: userCredentialsStateFactory.build(),
-  addModelForm: null,
   selectedApplications: {},
   supportedJujuVersions: {},
 }));

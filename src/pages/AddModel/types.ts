@@ -9,6 +9,13 @@ export enum StepType {
   ACCESS_MANAGEMENT = "access-management",
 }
 
+export type AddModelFormState = {
+  modelName: string;
+  cloud: string;
+  region: string;
+  credential: string;
+};
+
 export enum Label {
   TITLE = "Add model",
   CANCEL_BUTTON = "Cancel",
