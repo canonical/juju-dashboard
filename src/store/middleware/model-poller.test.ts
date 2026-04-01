@@ -1,4 +1,5 @@
-import type { Client, Connection, Transport } from "@canonical/jujulib";
+import type { Client, Transport } from "@canonical/jujulib";
+import { Connection } from "@canonical/jujulib";
 import { waitFor } from "@testing-library/dom";
 import type { UnknownAction, MiddlewareAPI, Dispatch } from "redux";
 import type { Mock, MockInstance } from "vitest";
@@ -101,25 +102,25 @@ describe("model poller", () => {
       ),
       dispatch: vi.fn(),
     };
-    conn = {
-      facades: {
-        modelManager: {
-          listModels: vi
-            .fn()
-            .mockImplementation(async () => ({ "user-models": models })),
-          destroyModels: vi.fn().mockResolvedValue({}),
-        },
+    // @ts-expect-error - Connection mocked in `src/testing/setup.ts`.
+    conn = new Connection();
+    conn.facades = {
+      modelManager: {
+        listModels: vi
+          .fn()
+          .mockImplementation(async () => ({ "user-models": models })),
+        destroyModels: vi.fn().mockResolvedValue({}),
       },
-      info: {
-        user: {
-          "controller-access": "admin",
-          "model-access": "admin",
-          "display-name": "Eggman",
-          identity: "user-eggman",
-        },
-      },
-      transport: {} as Transport,
     };
+    conn.info = {
+      user: {
+        "controller-access": "admin",
+        "model-access": "admin",
+        "display-name": "Eggman",
+        identity: "user-eggman",
+      },
+    };
+    conn.transport = {} as Transport;
     juju = {
       logout: vi.fn(),
     } as unknown as Client;

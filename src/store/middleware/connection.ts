@@ -1,4 +1,5 @@
-import type { Client } from "@canonical/jujulib";
+import { Connection, type Client } from "@canonical/jujulib";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAction } from "@reduxjs/toolkit";
 import * as Sentry from "@sentry/react";
 import { isAction, type Middleware } from "redux";
@@ -26,6 +27,24 @@ type Hooks = {
     connection: ConnectionWithFacades,
   ) => Promise<void> | void;
 };
+
+/**
+ * Guard to test of an action has `wsControllerURL` in the payload.
+ */
+function hasWsControllerURL<P extends object = Record<string, unknown>>(
+  action: PayloadAction<P>,
+): action is PayloadAction<{ wsControllerURL: string } & P> {
+  return (
+    "wsControllerURL" in action.payload &&
+    typeof action.payload.wsControllerURL === "string"
+  );
+}
+
+export function hasConnection(
+  object: Record<string, unknown>,
+): object is { connection: ConnectionWithFacades } & Record<string, unknown> {
+  return "connection" in object && object.connection instanceof Connection;
+}
 
 export class ConnectionManager {
   private connections = new Map<
@@ -253,19 +272,34 @@ export function createConnectionMiddleware(): {
         // Directly respond to logout action, and do not pass it on.
         await connections.logout(action.payload.wsControllerURL);
         return;
-      } else if (
-        isAction(action) &&
-        isPayloadAction(action) &&
-        "withConnection" in action.payload &&
-        typeof action.payload.withConnection === "string"
-      ) {
-        // Action has the `withConnection` property, so attach the connection to it.
-        const connection = await connections.get(action.payload.withConnection);
+      }
 
-        const metaAction = action as {
-          meta?: Record<string, unknown>;
-        } & typeof action;
-        metaAction.meta = Object.assign(metaAction.meta ?? {}, { connection });
+      if (!isAction(action) || !isPayloadAction(action)) {
+        return next(action);
+      }
+
+      const withConnection =
+        "meta" in action &&
+        typeof action.meta === "object" &&
+        action.meta &&
+        "withConnection" in action.meta &&
+        typeof action.meta.withConnection === "boolean" &&
+        action.meta.withConnection;
+
+      if (withConnection) {
+        if (hasWsControllerURL(action)) {
+          // Action has the `withConnection` property, so attach the connection to it.
+          const connection = await connections.get(
+            action.payload.wsControllerURL,
+          );
+          action.meta = Object.assign(action.meta ?? {}, { connection });
+        } else {
+          // Warn that `withConnection` won't do anything unless there's a `wsControllerURL`.
+          logger.warn(
+            "Action passed to connection middleware with `meta.withConnection: true`, but missing `payload.wsControllerURL`",
+            action,
+          );
+        }
       }
 
       return next(action);

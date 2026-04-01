@@ -1,7 +1,9 @@
+import { logger } from "utils/logger";
+
 /**
  * Create a stable hash for some object, when compared against objects of the same type.
  */
-export function hash(item: unknown): string {
+export function hash(item: unknown, ignoreKeys?: string[]): string {
   switch (typeof item) {
     case "string":
       return btoa(`"${item}"`);
@@ -19,21 +21,22 @@ export function hash(item: unknown): string {
         return hashArray(item);
       } else {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        return hashObject(item);
+        return hashObject(item, ignoreKeys);
       }
     default:
-      console.error("non-hashable item", item);
+      logger.error("non-hashable item", item);
       throw new Error("could not hash item");
   }
 }
 
 function hashArray(array: unknown[]): string {
-  return btoa(array.map(hash).join(";"));
+  return btoa(array.map((item) => hash(item)).join(";"));
 }
 
-function hashObject(object: object): string {
+function hashObject(object: object, ignoreKeys?: string[]): string {
   return btoa(
     Object.entries(object)
+      .filter(([key, _]) => !ignoreKeys?.includes(key))
       // Ensure keys are sorted.
       .sort(([keyA, _valueA], [keyB, _valueB]) =>
         keyA === keyB ? 0 : keyA < keyB ? -1 : 1,

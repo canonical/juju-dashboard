@@ -11,7 +11,7 @@ describe("SourceManager", () => {
       const manager = new SourceManager(fn);
       const args = { something: true, number: 3172 };
       manager.start(args, {});
-      expect(fn).toHaveBeenCalledExactlyOnceWith(args, {});
+      expect(fn).toHaveBeenCalledExactlyOnceWith(args);
     });
 
     it("attaches listeners", () => {
@@ -23,7 +23,7 @@ describe("SourceManager", () => {
         error: vi.fn(),
       };
       const manager = new SourceManager(fn);
-      manager.start({}, {}, cbFns);
+      manager.start({}, cbFns);
       expect(onFn).toHaveBeenNthCalledWith(1, "data", cbFns.data);
       expect(onFn).toHaveBeenNthCalledWith(2, "load", cbFns.load);
       expect(onFn).toHaveBeenNthCalledWith(3, "error", cbFns.error);
@@ -32,8 +32,8 @@ describe("SourceManager", () => {
     it("doesn't start existing source", () => {
       const fn = vi.fn().mockReturnValue({});
       const manager = new SourceManager(fn);
-      const firstSource = manager.start({ id: 100 }, {});
-      const secondSource = manager.start({ id: 100 }, {});
+      const firstSource = manager.start({ id: 100 });
+      const secondSource = manager.start({ id: 100 });
       expect(fn).toHaveBeenCalledTimes(1);
       expect(firstSource).toEqual(secondSource);
     });
@@ -44,7 +44,7 @@ describe("SourceManager", () => {
       const doneFn = vi.fn();
       const fn = vi.fn().mockReturnValue({ done: doneFn });
       const manager = new SourceManager(fn);
-      manager.start({}, {});
+      manager.start({});
       manager.stop({});
       expect(doneFn).toHaveBeenCalledTimes(1);
     });
@@ -63,7 +63,7 @@ describe("SourceManager", () => {
       const invalidateFn = vi.fn();
       const fn = vi.fn().mockReturnValue({ invalidate: invalidateFn });
       const manager = new SourceManager(fn);
-      manager.start({}, {});
+      manager.start({});
       manager.invalidate({});
       expect(invalidateFn).toHaveBeenCalledTimes(1);
     });
@@ -76,8 +76,8 @@ describe("SourceManager", () => {
         .mockReturnValueOnce({ invalidate: invalidateFn1 })
         .mockReturnValueOnce({ invalidate: invalidateFn2 });
       const manager = new SourceManager(fn);
-      manager.start({ id: 1 }, {});
-      manager.start({ id: 2 }, {});
+      manager.start({ id: 1 });
+      manager.start({ id: 2 });
       manager.invalidate({ id: 1 });
       expect(invalidateFn1).toHaveBeenCalledTimes(1);
       expect(invalidateFn2).not.toHaveBeenCalled();

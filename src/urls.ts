@@ -1,7 +1,7 @@
 // spell-checker:words rebacurls groupedby
 import { urls as generateReBACURLS } from "@canonical/rebac-admin";
 
-import { argPath } from "utils";
+import { argPath } from "utils/argPath";
 
 export enum ModelTab {
   APPS = "apps",
