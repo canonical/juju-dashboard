@@ -38,7 +38,6 @@ import type {
   ModelsList,
   ReBACAllowed,
   ReBACRelationship,
-  AddModelFormState,
 } from "./types";
 import type { Filters } from "./utils/models";
 import {
@@ -1370,9 +1369,4 @@ export const getUnitMachine = createSelector(
     unitId && applications && machines
       ? getUnitMachineUtil(unitId, applications, machines)
       : null,
-);
-
-export const getAddModelFormState = createSelector(
-  [slice],
-  (sliceState): AddModelFormState | null => sliceState.addModelForm,
 );

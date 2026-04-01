@@ -138,7 +138,6 @@ import {
   getUnitMachine,
   getCloudInfoState,
   getUserCredentialsState,
-  getAddModelFormState,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3279,27 +3278,6 @@ describe("getUserCredentialsState", () => {
       errors: null,
       loaded: false,
       loading: false,
-    });
-  });
-});
-
-describe("getAddModelFormState", () => {
-  it("gets the add model form state", () => {
-    const state = rootStateFactory.build({
-      juju: jujuStateFactory.build({
-        addModelForm: {
-          modelName: "my-model",
-          cloud: "aws",
-          region: "us-east-1",
-          credential: "my-credential",
-        },
-      }),
-    });
-    expect(getAddModelFormState(state)).toStrictEqual({
-      cloud: "aws",
-      credential: "my-credential",
-      modelName: "my-model",
-      region: "us-east-1",
     });
   });
 });

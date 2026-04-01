@@ -1,4 +1,3 @@
-import { FormikField, Select } from "@canonical/react-components";
 import { Formik, Form } from "formik";
 import { useEffect, useMemo, type OptionHTMLAttributes, type JSX } from "react";
 
@@ -7,9 +6,8 @@ import { actions as jujuActions } from "store/juju";
 import {
   getCloudInfoState,
   getUserCredentialsState,
-  getAddModelFormState,
 } from "store/juju/selectors";
-import type { AddModelFormState, CloudState } from "store/juju/types";
+import type { CloudState } from "store/juju/types";
 import {
   extractCloudName,
   extractCredentialName,
@@ -17,12 +15,10 @@ import {
 import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 
-import { type Props, TestId } from "./types";
+import type { AddModelFormState } from "../types";
 
-const EMPTY_OPTION: OptionHTMLAttributes<HTMLOptionElement> = {
-  label: "",
-  value: "",
-};
+import Fields from "./Fields";
+import { type Props, TestId } from "./types";
 
 const toCloudOptions = (
   cloudInfo: CloudState["clouds"],
@@ -33,17 +29,6 @@ const toCloudOptions = (
         value: cloud,
       }))
     : [];
-
-const toRegionOptions = (
-  cloudInfo: CloudState["clouds"],
-  cloudValue: string,
-): OptionHTMLAttributes<HTMLOptionElement>[] => [
-  EMPTY_OPTION,
-  ...(cloudInfo?.[cloudValue]?.regions ?? []).map((region) => ({
-    label: region.name,
-    value: region.name,
-  })),
-];
 
 const toCredentialOptions = (
   credentials: string[],
@@ -56,7 +41,11 @@ const toCredentialOptions = (
     };
   });
 
-const MandatoryDetails = ({ formRef, onSubmit }: Props): JSX.Element => {
+const MandatoryDetails = ({
+  formRef,
+  initialValues,
+  onSubmit,
+}: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const activeUser = useAppSelector((state) =>
@@ -64,22 +53,22 @@ const MandatoryDetails = ({ formRef, onSubmit }: Props): JSX.Element => {
   );
   const cloudInfo = useAppSelector(getCloudInfoState).clouds;
   const userCredentials = useAppSelector(getUserCredentialsState);
-  const savedFormState = useAppSelector(getAddModelFormState);
   const cloudOptions = useMemo(() => toCloudOptions(cloudInfo), [cloudInfo]);
   const defaultCloud = cloudOptions[0]?.value as string;
+  const draftValues = initialValues;
 
   const initialFormValues: AddModelFormState = useMemo(
     () => ({
-      modelName: savedFormState?.modelName ?? "",
-      cloud: savedFormState?.cloud ?? defaultCloud,
-      region: savedFormState?.region ?? "",
-      credential: savedFormState?.credential ?? "",
+      modelName: draftValues?.modelName ?? "",
+      cloud: draftValues?.cloud ?? defaultCloud,
+      region: draftValues?.region ?? "",
+      credential: draftValues?.credential ?? "",
     }),
-    [savedFormState, defaultCloud],
+    [draftValues, defaultCloud],
   );
 
   useEffect(() => {
-    if (wsControllerURL && activeUser && defaultCloud && !savedFormState) {
+    if (wsControllerURL && activeUser && defaultCloud && !initialValues) {
       dispatch(
         jujuActions.fetchUserCredentials({
           wsControllerURL,
@@ -88,7 +77,7 @@ const MandatoryDetails = ({ formRef, onSubmit }: Props): JSX.Element => {
         }),
       );
     }
-  }, [dispatch, wsControllerURL, activeUser, defaultCloud, savedFormState]);
+  }, [dispatch, wsControllerURL, activeUser, defaultCloud, initialValues]);
 
   const credentialsOptions = useMemo(
     () => toCredentialOptions(userCredentials.credentials),
@@ -105,60 +94,27 @@ const MandatoryDetails = ({ formRef, onSubmit }: Props): JSX.Element => {
         setSubmitting(false);
       }}
     >
-      {({ values, setFieldValue }) => {
-        const selectedCloud = values.cloud || defaultCloud;
-        const regionOptions = toRegionOptions(cloudInfo, selectedCloud);
-        return (
-          <Form
-            className="mandatory-details-form"
-            {...testId(TestId.MANDATORY_DETAILS_FORM)}
-          >
-            <FormikField
-              label="Model name"
-              name="modelName"
-              type="text"
-              required
-            />
-            <FormikField
-              component={Select}
-              label="Cloud"
-              name="cloud"
-              required
-              options={cloudOptions}
-              onChange={(ev) => {
-                const nextCloud = ev.target.value;
-                void setFieldValue("cloud", nextCloud);
-                void setFieldValue("region", "");
-                void setFieldValue("credential", "");
-                if (wsControllerURL && activeUser) {
-                  dispatch(
-                    jujuActions.fetchUserCredentials({
-                      wsControllerURL,
-                      userTag: activeUser,
-                      cloudTag: nextCloud,
-                    }),
-                  );
-                }
-              }}
-            />
-            <FormikField
-              component={Select}
-              label="Region (optional)"
-              name="region"
-              disabled={!values.cloud}
-              options={regionOptions}
-            />
-            <FormikField
-              component={Select}
-              label="Credential"
-              name="credential"
-              disabled={!values.cloud}
-              required
-              options={credentialsOptions}
-            />
-          </Form>
-        );
-      }}
+      <Form
+        className="mandatory-details-form"
+        {...testId(TestId.MANDATORY_DETAILS_FORM)}
+      >
+        <Fields
+          cloudOptions={cloudOptions}
+          credentialsOptions={credentialsOptions}
+          defaultCloud={defaultCloud}
+          onCloudChange={(nextCloud: string) => {
+            if (wsControllerURL && activeUser) {
+              dispatch(
+                jujuActions.fetchUserCredentials({
+                  wsControllerURL,
+                  userTag: activeUser,
+                  cloudTag: nextCloud,
+                }),
+              );
+            }
+          }}
+        />
+      </Form>
     </Formik>
   );
 };

@@ -126,13 +126,6 @@ export type HistoryItem = {
 
 export type CommandHistory = Record<string, HistoryItem[]>;
 
-export type AddModelFormState = {
-  modelName: string;
-  cloud: string;
-  region: string;
-  credential: string;
-};
-
 export type JujuState = {
   auditEvents: AuditEventsState;
   crossModelQuery: CrossModelQueryState;
@@ -151,5 +144,4 @@ export type JujuState = {
   cloudInfo: CloudState;
   userCredentials: UserCredentialsState;
   selectedApplications: Record<string, ApplicationStatus>;
-  addModelForm: AddModelFormState | null;
 };

@@ -1763,48 +1763,4 @@ describe("reducers", () => {
       }),
     });
   });
-
-  it("saveAddModelForm", () => {
-    const state = jujuStateFactory.build({ addModelForm: null });
-    expect(
-      reducer(
-        state,
-        actions.saveAddModelForm({
-          modelName: "my-model",
-          cloud: "cloud-aws",
-          region: "us-east-1",
-          credential: "user/admin",
-          wsControllerURL: "wss://example.com",
-        }),
-      ),
-    ).toStrictEqual({
-      ...state,
-      addModelForm: {
-        modelName: "my-model",
-        cloud: "cloud-aws",
-        region: "us-east-1",
-        credential: "user/admin",
-      },
-    });
-  });
-
-  it("clearAddModelForm", () => {
-    const state = jujuStateFactory.build({
-      addModelForm: {
-        modelName: "my-model",
-        cloud: "cloud-aws",
-        region: "us-east-1",
-        credential: "user/admin",
-      },
-    });
-    expect(
-      reducer(
-        state,
-        actions.clearAddModelForm({ wsControllerURL: "wss://example.com" }),
-      ),
-    ).toStrictEqual({
-      ...state,
-      addModelForm: null,
-    });
-  });
 });

@@ -31,7 +31,6 @@ import type {
   SecretsContent,
   ReBACAllowed,
   HistoryItem,
-  AddModelFormState,
 } from "./types";
 import { getModelQualifier } from "./utils/models";
 
@@ -148,7 +147,6 @@ const slice = createSlice({
       loading: false,
     },
     selectedApplications: {},
-    addModelForm: null,
   } as JujuState,
   reducers: {
     updateModelList: (
@@ -747,20 +745,6 @@ const slice = createSlice({
         state.commandHistory[modelUUID] = [];
       }
       state.commandHistory[modelUUID].push(historyItem);
-    },
-    saveAddModelForm: (
-      state,
-      action: PayloadAction<AddModelFormState & WsControllerURLParam>,
-    ) => {
-      const { wsControllerURL: _wsControllerURL, ...formState } =
-        action.payload;
-      state.addModelForm = formState;
-    },
-    clearAddModelForm: (
-      state,
-      _action: PayloadAction<WsControllerURLParam>,
-    ) => {
-      state.addModelForm = null;
     },
   },
 });

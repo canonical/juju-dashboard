@@ -12,36 +12,30 @@ import { useNavigate } from "react-router";
 
 import CheckPermissions from "components/CheckPermissions";
 import { useCanAddModel } from "hooks/useCanAddModel";
-import { getWSControllerURL } from "store/general/selectors";
-import { actions as jujuActions } from "store/juju";
-import type { AddModelFormState } from "store/juju/types";
-import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
 
 import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
-import { TestId, StepType, Label } from "./types";
+import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
 const AddModel: FC = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const canCreateModel = useCanAddModel();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [mandatoryDetailsDraft, setMandatoryDetailsDraft] =
+    useState<AddModelFormState | null>(null);
   const mandatoryDetailsFormRef = useRef<FormikProps<AddModelFormState>>(null);
-  const wsControllerURL = useAppSelector(getWSControllerURL);
 
   const saveFormDraft = (): void => {
     const formValues = mandatoryDetailsFormRef.current?.values;
-    if (!formValues || !wsControllerURL) {
+    if (!formValues) {
       return;
     }
-    dispatch(jujuActions.saveAddModelForm({ ...formValues, wsControllerURL }));
+    setMandatoryDetailsDraft(formValues);
   };
 
   const handleCancel = (): void => {
-    if (wsControllerURL) {
-      dispatch(jujuActions.clearAddModelForm({ wsControllerURL }));
-    }
+    setMandatoryDetailsDraft(null);
     void navigate(urls.models.index);
   };
 
@@ -66,6 +60,7 @@ const AddModel: FC = () => {
       content: (
         <MandatoryDetails
           formRef={mandatoryDetailsFormRef}
+          initialValues={mandatoryDetailsDraft}
           onSubmit={saveFormDraft}
         />
       ),
