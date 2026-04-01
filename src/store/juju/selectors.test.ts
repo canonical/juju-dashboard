@@ -2015,7 +2015,7 @@ describe("selectors", () => {
         }),
         "abc123",
       ),
-    ).toBe("eggman");
+    ).toBe("juju");
   });
 
   it("getModelControllerDataByUUID", () => {
@@ -2448,7 +2448,7 @@ describe("selectors", () => {
         }),
         def456: modelDataFactory.build({
           info: modelManagerV11ModelInfoFactory.build({
-            "cloud-credential-tag": "cloudcred-google_spaceman@external_juju",
+            "cloud-credential-tag": "cloudcred-google_spaceman@external_jaas",
           }),
         }),
         ghi789: modelDataFactory.build({
@@ -2464,7 +2464,7 @@ describe("selectors", () => {
       });
       expect(
         getFilteredModelData(state, {
-          credential: ["eggman", "eggman@external"],
+          credential: ["juju"],
         }),
       ).toStrictEqual({
         abc123: modelData.abc123,
@@ -2579,7 +2579,7 @@ describe("selectors", () => {
         }),
         c3: modelDataFactory.build({
           info: modelManagerV11ModelInfoFactory.build({
-            "cloud-credential-tag": "cloudcred-google_matches_juju",
+            "cloud-credential-tag": "cloudcred-google_eggman_matches",
           }),
         }),
         d4: modelDataFactory.build({

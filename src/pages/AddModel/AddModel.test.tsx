@@ -16,6 +16,7 @@ import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import AddModel from "./AddModel";
+import { TestId as MandatoryDetailsTestId } from "./MandatoryDetails/types";
 import { Label, TestId as AddModelTestId } from "./types";
 
 describe("AddModel page", () => {
@@ -54,9 +55,18 @@ describe("AddModel page", () => {
     ).toBeInTheDocument();
   });
 
+  it("starts on the first step by default", () => {
+    renderComponent(<AddModel />, { state });
+    expect(
+      screen.getByTestId(MandatoryDetailsTestId.MANDATORY_DETAILS_FORM),
+    ).toBeInTheDocument();
+  });
+
   it("navigates to next step when Next button is clicked", async () => {
     renderComponent(<AddModel />, { state });
-    expect(screen.getByText("Model name")).toBeInTheDocument();
+    expect(
+      screen.getByTestId(MandatoryDetailsTestId.MANDATORY_DETAILS_FORM),
+    ).toBeInTheDocument();
     expect(
       screen.queryByText("Configuration and constraints form goes here."),
     ).toBeNull();
@@ -65,7 +75,9 @@ describe("AddModel page", () => {
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
 
-    expect(screen.queryByText("Model name")).toBeNull();
+    expect(
+      screen.queryByTestId(MandatoryDetailsTestId.MANDATORY_DETAILS_FORM),
+    ).toBeNull();
     expect(
       screen.getByText("Configuration and constraints form goes here."),
     ).toBeInTheDocument();
@@ -79,7 +91,9 @@ describe("AddModel page", () => {
     await userEvent.click(
       screen.getByRole("button", { name: Label.BACK_BUTTON }),
     );
-    expect(screen.getByText("Model name")).toBeInTheDocument();
+    expect(
+      screen.getByTestId(MandatoryDetailsTestId.MANDATORY_DETAILS_FORM),
+    ).toBeInTheDocument();
   });
 
   it("does not show Back button on first step", () => {
@@ -292,10 +306,5 @@ describe("AddModel page", () => {
       renderComponent(<AddModel />, { state });
       expect(screen.getByTestId(AddModelTestId.COMPONENT)).toBeInTheDocument();
     });
-  });
-
-  it("starts on the first step by default", () => {
-    renderComponent(<AddModel />, { state });
-    expect(screen.getByText("Model name")).toBeInTheDocument();
   });
 });
