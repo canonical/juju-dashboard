@@ -2,16 +2,14 @@ import type { PayloadAction, PayloadActionCreator } from "@reduxjs/toolkit";
 
 import type { ConnectionWithFacades } from "juju/types";
 
-type MetaAction<P, M> = { meta: M } & PayloadAction<P>;
-
 /**
  * Guard to ensure that the given action has `meta.connection` populated. This field is provided by
  * `connectionMiddleware`.
  */
-export function actionWithConnection<P>(
-  expectedAction: PayloadActionCreator<P>,
+export function actionWithConnection<P, T extends string>(
+  expectedAction: PayloadActionCreator<P, T>,
   action: unknown,
-): action is MetaAction<P, { connection: ConnectionWithFacades }> {
+): action is PayloadAction<P, T, { connection: ConnectionWithFacades }> {
   return (
     expectedAction.match(action) &&
     "meta" in action &&
