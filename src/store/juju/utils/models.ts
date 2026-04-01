@@ -265,9 +265,9 @@ export const extractCredentialName = (tag: null | string = null): string => {
   }
   const [_tag, cred] = tag.split("cloudcred-");
   if (cred.indexOf("@") > -1) {
-    return cred.split("@")[0].split("_")[1];
+    return cred.split("@")[1].split("_")[1];
   }
-  return cred.split("_")[1];
+  return cred.split("_")[2];
 };
 
 /**

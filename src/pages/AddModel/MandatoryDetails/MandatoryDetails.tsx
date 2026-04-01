@@ -1,6 +1,6 @@
 import { FormikField, Select } from "@canonical/react-components";
-import { Formik, Form, type FormikProps } from "formik";
-import { useEffect, useMemo, type JSX, type Ref } from "react";
+import { Formik, Form } from "formik";
+import { useEffect, useMemo, type OptionHTMLAttributes, type JSX } from "react";
 
 import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
@@ -9,43 +9,47 @@ import {
   getUserCredentialsState,
   getAddModelFormState,
 } from "store/juju/selectors";
-import type { AddModelFormState } from "store/juju/types";
+import type { AddModelFormState, CloudState } from "store/juju/types";
+import {
+  extractCloudName,
+  extractCredentialName,
+} from "store/juju/utils/models";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
-type Props = {
-  formRef?: Ref<FormikProps<AddModelFormState>>;
-  onSubmit?: () => void;
+import { type Props, TestId } from "./types";
+
+const EMPTY_OPTION: OptionHTMLAttributes<HTMLOptionElement> = {
+  label: "",
+  value: "",
 };
 
-type SelectOption = { label: string; value: string };
-
-const EMPTY_OPTION: SelectOption = { label: "", value: "" };
-
-const stripPrefix = (value: string, prefix: string): string =>
-  value.startsWith(prefix) ? value.slice(prefix.length) : value;
-
 const toCloudOptions = (
-  cloudInfo: Record<string, { regions?: { name: string }[] }>,
-): SelectOption[] =>
-  Object.keys(cloudInfo).map((cloud) => ({
-    label: stripPrefix(cloud, "cloud-"),
-    value: cloud,
-  }));
+  cloudInfo: CloudState["clouds"],
+): OptionHTMLAttributes<HTMLOptionElement>[] =>
+  cloudInfo
+    ? Object.keys(cloudInfo).map((cloud) => ({
+        label: extractCloudName(cloud),
+        value: cloud,
+      }))
+    : [];
 
 const toRegionOptions = (
-  cloudInfo: Record<string, { regions?: { name: string }[] }>,
+  cloudInfo: CloudState["clouds"],
   cloudValue: string,
-): SelectOption[] => [
+): OptionHTMLAttributes<HTMLOptionElement>[] => [
   EMPTY_OPTION,
-  ...(cloudInfo[cloudValue]?.regions ?? []).map((region) => ({
+  ...(cloudInfo?.[cloudValue]?.regions ?? []).map((region) => ({
     label: region.name,
     value: region.name,
   })),
 ];
 
-const toCredentialOptions = (credentials: string[]): SelectOption[] =>
+const toCredentialOptions = (
+  credentials: string[],
+): OptionHTMLAttributes<HTMLOptionElement>[] =>
   credentials.map((credential) => {
-    const credentialName = stripPrefix(credential, "cloudcred-");
+    const credentialName = extractCredentialName(credential);
     return {
       label: credentialName,
       value: credentialName,
@@ -58,14 +62,11 @@ const MandatoryDetails = ({ formRef, onSubmit }: Props): JSX.Element => {
   const activeUser = useAppSelector((state) =>
     getActiveUserTag(state, wsControllerURL),
   );
-  const { clouds } = useAppSelector(getCloudInfoState);
-  const cloudInfo = useMemo(() => clouds ?? {}, [clouds]);
+  const cloudInfo = useAppSelector(getCloudInfoState).clouds;
   const userCredentials = useAppSelector(getUserCredentialsState);
   const savedFormState = useAppSelector(getAddModelFormState);
-
   const cloudOptions = useMemo(() => toCloudOptions(cloudInfo), [cloudInfo]);
-
-  const defaultCloud = cloudOptions[0]?.value ?? "";
+  const defaultCloud = cloudOptions[0]?.value as string;
 
   const initialFormValues: AddModelFormState = useMemo(
     () => ({
@@ -100,7 +101,7 @@ const MandatoryDetails = ({ formRef, onSubmit }: Props): JSX.Element => {
       enableReinitialize
       initialValues={initialFormValues}
       onSubmit={(_values, { setSubmitting }) => {
-        onSubmit?.();
+        onSubmit();
         setSubmitting(false);
       }}
     >
@@ -108,7 +109,10 @@ const MandatoryDetails = ({ formRef, onSubmit }: Props): JSX.Element => {
         const selectedCloud = values.cloud || defaultCloud;
         const regionOptions = toRegionOptions(cloudInfo, selectedCloud);
         return (
-          <Form className="mandatory-details-form">
+          <Form
+            className="mandatory-details-form"
+            {...testId(TestId.MANDATORY_DETAILS_FORM)}
+          >
             <FormikField
               label="Model name"
               name="modelName"
@@ -125,6 +129,7 @@ const MandatoryDetails = ({ formRef, onSubmit }: Props): JSX.Element => {
                 const nextCloud = ev.target.value;
                 void setFieldValue("cloud", nextCloud);
                 void setFieldValue("region", "");
+                void setFieldValue("credential", "");
                 if (wsControllerURL && activeUser) {
                   dispatch(
                     jujuActions.fetchUserCredentials({

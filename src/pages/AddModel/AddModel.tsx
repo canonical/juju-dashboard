@@ -62,7 +62,7 @@ const AddModel: FC = () => {
   }> = [
     {
       key: StepType.MANDATORY_DETAILS,
-      title: "Mandatory details",
+      title: "Mandatory Details",
       content: (
         <MandatoryDetails
           formRef={mandatoryDetailsFormRef}
@@ -77,7 +77,7 @@ const AddModel: FC = () => {
     },
     {
       key: StepType.ACCESS_MANAGEMENT,
-      title: "Access management (optional)",
+      title: "Access Management (optional)",
       content: <div>Access management form goes here.</div>,
     },
   ];

@@ -19,6 +19,12 @@ import MandatoryDetails from "./MandatoryDetails";
 
 describe("MandatoryDetails", () => {
   let state: RootState;
+  const onSubmit = vi.fn();
+  const formRef = createRef<FormikProps<AddModelFormState>>();
+  const props = {
+    onSubmit,
+    formRef,
+  };
 
   beforeEach(() => {
     state = rootStateFactory.withGeneralConfig().build({
@@ -50,7 +56,10 @@ describe("MandatoryDetails", () => {
           loaded: true,
         }),
         userCredentials: userCredentialsStateFactory.build({
-          credentials: ["cloudcred-user/admin", "cloudcred-user/dev"],
+          credentials: [
+            "cloudcred-aws_admin_aws-cred",
+            "cloudcred-gce_user_gce-cred",
+          ],
           loaded: true,
         }),
       }),
@@ -58,12 +67,12 @@ describe("MandatoryDetails", () => {
   });
 
   it("renders properly with defaults", () => {
-    renderComponent(<MandatoryDetails />, { state });
+    renderComponent(<MandatoryDetails {...props} />, { state });
 
     expect(screen.getByLabelText("Model name")).toHaveValue("");
     expect(screen.getByLabelText("Cloud")).toHaveValue("cloud-aws");
     expect(screen.getByLabelText("Region (optional)")).toHaveValue("");
-    expect(screen.getByLabelText("Credential")).toHaveValue("user/admin");
+    expect(screen.getByLabelText("Credential")).toHaveValue("aws-cred");
   });
 
   it("renders saved form values", () => {
@@ -71,22 +80,22 @@ describe("MandatoryDetails", () => {
       modelName: "my-model",
       cloud: "cloud-gce",
       region: "europe-west1",
-      credential: "user/dev",
+      credential: "gce-cred",
     };
 
-    renderComponent(<MandatoryDetails />, { state });
+    renderComponent(<MandatoryDetails {...props} />, { state });
 
     expect(screen.getByLabelText("Model name")).toHaveValue("my-model");
     expect(screen.getByLabelText("Cloud")).toHaveValue("cloud-gce");
     expect(screen.getByLabelText("Region (optional)")).toHaveValue(
       "europe-west1",
     );
-    expect(screen.getByLabelText("Credential")).toHaveValue("user/dev");
+    expect(screen.getByLabelText("Credential")).toHaveValue("gce-cred");
   });
 
   it("fetches credentials on initial load when there is no saved draft", async () => {
     const [store, actions] = createStore(state, { trackActions: true });
-    renderComponent(<MandatoryDetails />, { store });
+    renderComponent(<MandatoryDetails {...props} />, { store });
 
     const action = jujuActions.fetchUserCredentials({
       wsControllerURL: "wss://controller.example.com",
@@ -107,9 +116,9 @@ describe("MandatoryDetails", () => {
       modelName: "my-model",
       cloud: "cloud-gce",
       region: "europe-west1",
-      credential: "user/dev",
+      credential: "gce-cred",
     };
-    renderComponent(<MandatoryDetails />, { store });
+    renderComponent(<MandatoryDetails {...props} />, { store });
 
     expect(screen.getByLabelText("Cloud")).toHaveValue("cloud-gce");
     expect(screen.getByLabelText("Region (optional)")).toHaveValue(
@@ -134,20 +143,14 @@ describe("MandatoryDetails", () => {
   });
 
   it("calls onSubmit callback when the form is submitted", async () => {
-    const onSubmit = vi.fn();
-    const formRef = createRef<FormikProps<AddModelFormState>>();
-
-    renderComponent(
-      <MandatoryDetails formRef={formRef} onSubmit={onSubmit} />,
-      {
-        state,
-      },
-    );
+    renderComponent(<MandatoryDetails {...props} />, {
+      state,
+    });
 
     await userEvent.type(screen.getByLabelText("Model name"), "my-model");
     await userEvent.selectOptions(
       screen.getByLabelText("Credential"),
-      "user/admin",
+      "aws-cred",
     );
 
     await act(async () => {
