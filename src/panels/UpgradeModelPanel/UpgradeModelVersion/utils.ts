@@ -37,7 +37,7 @@ export const versions: Version[] = [
 ];
 
 // Filter versions for the latest LTS and the latest stable version.
-// TODO: move this to a filter once the real API data is available in Redux: https://warthogs.atlassian.net/browse/JUJU-9499.
+// TODO: move this to a selector once the real API data is available in Redux: https://warthogs.atlassian.net/browse/JUJU-9499.
 // - This list should be filtered to only display the versions that match existing controllers.
 export const getRecommendedVersions = (allVersions: Version[]): Version[] => {
   let ltsVersion: null | Version = null;

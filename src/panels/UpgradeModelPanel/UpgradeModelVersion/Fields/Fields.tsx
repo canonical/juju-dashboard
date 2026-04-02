@@ -61,7 +61,6 @@ const Fields: FC<Props> = ({ currentVersion }) => {
       {values.upgradeType === UpgradeType.MANUAL ? (
         <NestedFields {...testId(TestId.MANUAL)}>
           <AutocompleteField
-            autoWidth
             label={Label.VERSION}
             name={FieldName.MANUAL_VERSION}
             options={versions.sort(sortReverse).map((version) => ({

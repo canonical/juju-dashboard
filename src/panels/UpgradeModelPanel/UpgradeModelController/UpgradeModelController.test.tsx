@@ -20,6 +20,8 @@ import {
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
+import { versions } from "../UpgradeModelVersion/utils";
+
 import UpgradeModelController from "./UpgradeModelController";
 import { Label } from "./types";
 
@@ -75,7 +77,7 @@ describe("UpgradeModelController", () => {
       <UpgradeModelController
         back={vi.fn}
         onRemovePanelQueryParams={onRemovePanelQueryParams}
-        version="4.5.6"
+        version={versions[0]}
       />,
       { state, url, path },
     );
