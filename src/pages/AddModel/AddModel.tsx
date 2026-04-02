@@ -5,7 +5,6 @@ import {
   Stepper,
 } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
-import type { FormikProps } from "formik";
 import type { FC, JSX } from "react";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
@@ -22,30 +21,27 @@ const AddModel: FC = () => {
   const navigate = useNavigate();
   const canCreateModel = useCanAddModel();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [mandatoryDetailsDraft, setMandatoryDetailsDraft] =
-    useState<AddModelFormState | null>(null);
-  const mandatoryDetailsFormRef = useRef<FormikProps<AddModelFormState>>(null);
-
-  const saveFormDraft = (): void => {
-    const formValues = mandatoryDetailsFormRef.current?.values;
-    if (!formValues) {
-      return;
-    }
-    setMandatoryDetailsDraft(formValues);
-  };
+  const [formDraft, setFormDraft] = useState<AddModelFormState | null>(null);
+  const pendingMandatoryDetailsRef = useRef<AddModelFormState | null>(null);
 
   const handleCancel = (): void => {
-    setMandatoryDetailsDraft(null);
+    setFormDraft(null);
     void navigate(urls.models.index);
   };
 
   const handleNextClick = (): void => {
-    saveFormDraft();
+    if (currentStepIndex === 0 && pendingMandatoryDetailsRef.current) {
+      setFormDraft(pendingMandatoryDetailsRef.current);
+    }
+
     setCurrentStepIndex((index) => index + 1);
   };
 
+  const handleMandatoryDetailsChange = (values: AddModelFormState): void => {
+    pendingMandatoryDetailsRef.current = values;
+  };
+
   const handleCreateClick = (): void => {
-    saveFormDraft();
     // TODO: Actually create the model here
   };
 
@@ -59,9 +55,8 @@ const AddModel: FC = () => {
       title: "Mandatory Details",
       content: (
         <MandatoryDetails
-          formRef={mandatoryDetailsFormRef}
-          initialValues={mandatoryDetailsDraft}
-          onSubmit={saveFormDraft}
+          initialValues={formDraft}
+          onFormChange={handleMandatoryDetailsChange}
         />
       ),
     },
@@ -127,7 +122,11 @@ const AddModel: FC = () => {
             </Button>
           ) : null}
           {!isLastStep ? (
-            <Button onClick={handleNextClick} appearance="secondary">
+            <Button
+              appearance="secondary"
+              type="button"
+              onClick={handleNextClick}
+            >
               {Label.NEXT_BUTTON}
             </Button>
           ) : null}

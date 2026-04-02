@@ -36,7 +36,20 @@ const Fields = ({
 
   return (
     <>
-      <FormikField label="Model name" name="modelName" type="text" required />
+      <FormikField
+        label={
+          <>
+            Model name
+            <div className="model-name-description p-text--small u-no-margin--bottom">
+              Model names may only contain lowercase letters, digits and
+              hyphens, and may not start with a hyphen.
+            </div>
+          </>
+        }
+        name="modelName"
+        type="text"
+        required
+      />
       <FormikField
         component={Select}
         label="Cloud"
