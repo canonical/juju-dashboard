@@ -30,6 +30,7 @@ const sortReverse = (versionA: Version, versionB: Version): number => {
 const Fields: FC<Props> = ({ currentVersion }) => {
   const recommendedVersions = getRecommendedVersions(versions);
   const { values } = useFormikContext<FormFields>();
+  console.log("values", values);
 
   return (
     <>

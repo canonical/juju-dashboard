@@ -189,7 +189,36 @@ describe("UpgradeModelVersion", () => {
     expect(input).toHaveAccessibleErrorMessage(Label.ERROR_OLDER);
   });
 
-  it("updates the version when the form is submitted", async () => {
+  it("returns a recommended version when the form is submitted", async () => {
+    const setVersion = vi.fn();
+    renderComponent(
+      <UpgradeModelVersion
+        firstRender
+        modelName="test1"
+        onRemovePanelQueryParams={vi.fn()}
+        qualifier="eggman@external"
+        setVersion={setVersion}
+      />,
+      { state },
+    );
+    await userEvent.click(
+      screen.getByRole("radio", { name: FieldsLabel.MANUAL }),
+    );
+    await userEvent.click(
+      screen.getByRole("radio", { name: FieldsLabel.RECOMMENDED }),
+    );
+    await userEvent.click(screen.getByRole("radio", { name: "4.0.1" }));
+    await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
+    expect(setVersion).toHaveBeenCalledWith({
+      date: "2006-01-02",
+      lts: false,
+      version: "4.0.1",
+      "link-to-release": "https://github.com/juju/juju/releases/tag/v4.0.1",
+      "requires-migration": true,
+    });
+  });
+
+  it("returns a manual version when the form is submitted", async () => {
     const setVersion = vi.fn();
     renderComponent(
       <UpgradeModelVersion

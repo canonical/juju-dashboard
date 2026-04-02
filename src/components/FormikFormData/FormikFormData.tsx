@@ -9,6 +9,7 @@ type Props<V> = {
   onFormChange?: (data: V) => void;
   onSetup?: (setFieldValue: SetFieldValue<V>) => void;
   onValidate?: (valid: boolean) => void;
+  skipFirstValidation?: boolean;
 } & HTMLProps<HTMLFormElement>;
 
 export default function FormikFormData<V>({
@@ -16,6 +17,7 @@ export default function FormikFormData<V>({
   onFormChange,
   onSetup,
   onValidate,
+  skipFirstValidation = true,
   ...props
 }: Props<V>): JSX.Element {
   const { values, setFieldValue, isValid } = useFormikContext<V>();
@@ -30,7 +32,7 @@ export default function FormikFormData<V>({
 
   // HACK: Formik will always mark the form as valid on first render, even if it's not. This skips
   // the first (incorrect) validation.
-  const initialValidate = useRef(true);
+  const initialValidate = useRef(skipFirstValidation);
   useEffect(() => {
     if (initialValidate.current) {
       initialValidate.current = false;

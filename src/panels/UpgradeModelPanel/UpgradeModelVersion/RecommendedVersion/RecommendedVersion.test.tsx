@@ -55,6 +55,27 @@ describe("RecommendedVersion", () => {
     );
   });
 
+  it("does not display tags for non-LTS versions", async () => {
+    renderComponent(
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
+        <RecommendedVersion
+          name="version"
+          currentVersion="1.2.3"
+          version={{
+            date: "2006-01-02",
+            lts: false,
+            version: "3.5.14",
+            "link-to-release":
+              "https://github.com/juju/juju/releases/tag/v3.6.14",
+            "requires-migration": true,
+          }}
+        />
+      </Formik>,
+    );
+    expect(document.querySelector(".p-chip--information")).toBeNull();
+    expect(document.querySelector(".p-chip--positive")).toBeNull();
+  });
+
   it("displays upgrade path when a migration is required", async () => {
     renderComponent(
       <Formik initialValues={{}} onSubmit={vi.fn()}>

@@ -58,6 +58,13 @@ const UpgradeModelVersion: FC<Props> = ({
   } else {
     const currentVersion = model?.model.version;
     const schema = Yup.object().shape({
+      [FieldName.RECOMMENDED_VERSION]: Yup.string().when(
+        FieldName.UPGRADE_TYPE,
+        {
+          is: (value: string) => value === UpgradeType.RECOMMENDED,
+          then: (fieldSchema) => fieldSchema.required(),
+        },
+      ),
       [FieldName.UPGRADE_TYPE]: Yup.string(),
       [FieldName.MANUAL_VERSION]: Yup.string().when(FieldName.UPGRADE_TYPE, {
         is: (value: string) => value === UpgradeType.MANUAL,
@@ -95,7 +102,7 @@ const UpgradeModelVersion: FC<Props> = ({
           const upgradeVersion = versions.find(
             (versionData) => versionData.version === version,
           );
-          // The form validation schema make sure that there is corresponding version data so
+          // The form validation schema makes sure that there is corresponding version data so
           // this 'if' is purely to satisfy the type checking.
           if (upgradeVersion) {
             setVersion(upgradeVersion);
@@ -103,7 +110,11 @@ const UpgradeModelVersion: FC<Props> = ({
         }}
         validationSchema={schema}
       >
-        <FormikFormData onValidate={setIsValid} id={formId}>
+        <FormikFormData
+          onValidate={setIsValid}
+          id={formId}
+          skipFirstValidation={false}
+        >
           <p>
             Current version{" "}
             <Chip
