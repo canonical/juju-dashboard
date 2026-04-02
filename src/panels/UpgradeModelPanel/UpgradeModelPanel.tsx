@@ -5,18 +5,21 @@ import { usePanelQueryParams } from "panels/hooks";
 
 import UpgradeModelController from "./UpgradeModelController";
 import UpgradeModelVersion from "./UpgradeModelVersion";
-import type { QueryParams } from "./types";
+import type { QueryParams, Version } from "./types";
 
 const UpgradeModelPanel: FC = () => {
   // TODO: this needs to be updated to store the chosen version as an object once the API has been implemented.
-  const [version, setVersion] = useState<null | string>(null);
+  const [version, setVersion] = useState<null | Version>(null);
   const [restarted, setRestarted] = useState(false);
-  const [_queryParams, _setQueryParams, handleRemovePanelQueryParams] =
-    usePanelQueryParams<QueryParams>({
-      panel: null,
-      qualifier: null,
-      modelName: null,
-    });
+  const [
+    { qualifier, modelName },
+    _setQueryParams,
+    handleRemovePanelQueryParams,
+  ] = usePanelQueryParams<QueryParams>({
+    panel: null,
+    qualifier: null,
+    modelName: null,
+  });
 
   return (
     <>
@@ -36,6 +39,8 @@ const UpgradeModelPanel: FC = () => {
           onRemovePanelQueryParams={handleRemovePanelQueryParams}
           setVersion={setVersion}
           firstRender={!restarted}
+          qualifier={qualifier}
+          modelName={modelName}
         />
       )}
     </>

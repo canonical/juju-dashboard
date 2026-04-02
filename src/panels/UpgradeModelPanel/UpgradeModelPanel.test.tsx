@@ -23,6 +23,7 @@ import urls from "urls";
 import UpgradeModelPanel from "./UpgradeModelPanel";
 import { UpgradeModelPanelHeaderLabel } from "./UpgradeModelPanelHeader";
 import { UpgradeModelVersionLabel } from "./UpgradeModelVersion";
+import { FieldsLabel as UpgradeModelVersionFieldsLabel } from "./UpgradeModelVersion/Fields";
 
 describe("UpgradeModelPanel", () => {
   let state: RootState;
@@ -79,6 +80,17 @@ describe("UpgradeModelPanel", () => {
 
   it("can transition to the confirmation panel", async () => {
     renderComponent(<UpgradeModelPanel />, { state, url, path });
+    await userEvent.click(
+      screen.getByRole("radio", {
+        name: UpgradeModelVersionFieldsLabel.MANUAL,
+      }),
+    );
+    await userEvent.type(
+      screen.getByRole("textbox", {
+        name: UpgradeModelVersionFieldsLabel.VERSION,
+      }),
+      "3.6.14",
+    );
     await userEvent.click(
       await screen.findByRole("button", {
         name: UpgradeModelVersionLabel.SUBMIT,
