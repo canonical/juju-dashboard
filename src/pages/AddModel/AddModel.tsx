@@ -5,11 +5,14 @@ import {
   Stepper,
 } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
+import { Formik } from "formik";
 import type { FC, JSX } from "react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
+import * as Yup from "yup";
 
 import CheckPermissions from "components/CheckPermissions";
+import FormikFormData from "components/FormikFormData";
 import { useCanAddModel } from "hooks/useCanAddModel";
 import { testId } from "testing/utils";
 import urls from "urls";
@@ -17,28 +20,32 @@ import urls from "urls";
 import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
+const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
+
+const initialFormValues: AddModelFormState = {
+  modelName: "",
+  cloud: "",
+  region: "",
+  credential: "",
+};
+
+const validationSchema = Yup.object().shape({
+  modelName: Yup.string()
+    .matches(MODEL_NAME_PATTERN, "Incorrect model name format.")
+    .required("Required"),
+});
+
 const AddModel: FC = () => {
   const navigate = useNavigate();
   const canCreateModel = useCanAddModel();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [formDraft, setFormDraft] = useState<AddModelFormState | null>(null);
-  const pendingMandatoryDetailsRef = useRef<AddModelFormState | null>(null);
 
   const handleCancel = (): void => {
-    setFormDraft(null);
     void navigate(urls.models.index);
   };
 
   const handleNextClick = (): void => {
-    if (currentStepIndex === 0 && pendingMandatoryDetailsRef.current) {
-      setFormDraft(pendingMandatoryDetailsRef.current);
-    }
-
     setCurrentStepIndex((index) => index + 1);
-  };
-
-  const handleMandatoryDetailsChange = (values: AddModelFormState): void => {
-    pendingMandatoryDetailsRef.current = values;
   };
 
   const handleCreateClick = (): void => {
@@ -53,12 +60,7 @@ const AddModel: FC = () => {
     {
       key: StepType.MANDATORY_DETAILS,
       title: "Mandatory Details",
-      content: (
-        <MandatoryDetails
-          initialValues={formDraft}
-          onFormChange={handleMandatoryDetailsChange}
-        />
-      ),
+      content: <MandatoryDetails />,
     },
     {
       key: StepType.CONFIGURATION_CONSTRAINTS,
@@ -105,7 +107,15 @@ const AddModel: FC = () => {
           })}
         />
         <div className="add-model__step" {...testId(TestId.ADD_MODEL_CONTENT)}>
-          {stepDefinitions[currentStepIndex].content}
+          <Formik
+            initialValues={initialFormValues}
+            validationSchema={validationSchema}
+            onSubmit={() => {}}
+          >
+            <FormikFormData className={stepDefinitions[currentStepIndex].key}>
+              {stepDefinitions[currentStepIndex].content}
+            </FormikFormData>
+          </Formik>
         </div>
         <div className="add-model__footer">
           <Button onClick={handleCancel} appearance="base">
