@@ -1,8 +1,7 @@
-import { Formik } from "formik";
-import { useEffect, useMemo, type OptionHTMLAttributes, type JSX } from "react";
-import * as Yup from "yup";
+import { FormikField, Select } from "@canonical/react-components";
+import { useFormikContext } from "formik";
+import { useEffect, useMemo, type JSX, type OptionHTMLAttributes } from "react";
 
-import FormikFormData from "components/FormikFormData";
 import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import {
@@ -15,12 +14,8 @@ import {
   extractCredentialName,
 } from "store/juju/utils/models";
 import { useAppDispatch, useAppSelector } from "store/store";
-import { testId } from "testing/utils";
 
 import type { AddModelFormState } from "../types";
-
-import Fields from "./Fields";
-import { type Props, TestId } from "./types";
 
 const toCloudOptions = (
   cloudInfo: CloudState["clouds"],
@@ -43,13 +38,25 @@ const toCredentialOptions = (
     };
   });
 
-const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
+const EMPTY_OPTION: OptionHTMLAttributes<HTMLOptionElement> = {
+  label: "",
+  value: "",
+};
 
-const MandatoryDetails = ({
-  initialValues,
-  onFormChange,
-}: Props): JSX.Element => {
+const toRegionOptions = (
+  cloudInfo: CloudState["clouds"],
+  cloudValue: string,
+): OptionHTMLAttributes<HTMLOptionElement>[] => [
+  EMPTY_OPTION,
+  ...(cloudInfo?.[cloudValue]?.regions ?? []).map((region) => ({
+    label: region.name,
+    value: region.name,
+  })),
+];
+
+const MandatoryDetails = (): JSX.Element => {
   const dispatch = useAppDispatch();
+  const { values, setFieldValue } = useFormikContext<AddModelFormState>();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const activeUser = useAppSelector((state) =>
     getActiveUserTag(state, wsControllerURL),
@@ -58,72 +65,90 @@ const MandatoryDetails = ({
   const userCredentials = useAppSelector(getUserCredentialsState);
   const cloudOptions = useMemo(() => toCloudOptions(cloudInfo), [cloudInfo]);
   const defaultCloud = cloudOptions[0]?.value as string;
-  const draftValues = initialValues;
-
-  const initialFormValues: AddModelFormState = useMemo(
-    () => ({
-      modelName: draftValues?.modelName ?? "",
-      cloud: draftValues?.cloud ?? defaultCloud,
-      region: draftValues?.region ?? "",
-      credential: draftValues?.credential ?? "",
-    }),
-    [draftValues, defaultCloud],
-  );
+  const selectedCloud = values.cloud || defaultCloud;
 
   useEffect(() => {
-    if (wsControllerURL && activeUser && defaultCloud && !initialValues) {
+    if (!values.cloud && defaultCloud) {
+      void setFieldValue("cloud", defaultCloud);
+    }
+  }, [values.cloud, defaultCloud, setFieldValue]);
+
+  useEffect(() => {
+    if (wsControllerURL && activeUser && selectedCloud) {
       dispatch(
         jujuActions.fetchUserCredentials({
           wsControllerURL,
           userTag: activeUser,
-          cloudTag: defaultCloud,
+          cloudTag: selectedCloud,
         }),
       );
     }
-  }, [dispatch, wsControllerURL, activeUser, defaultCloud, initialValues]);
+  }, [dispatch, wsControllerURL, activeUser, selectedCloud]);
 
   const credentialsOptions = useMemo(
     () => toCredentialOptions(userCredentials.credentials),
     [userCredentials.credentials],
   );
 
-  const schema = Yup.object().shape({
-    modelName: Yup.string()
-      .matches(MODEL_NAME_PATTERN, "Incorrect model name format.")
-      .required("Required"),
-  });
+  const handleCloudChange = (nextCloud: string): void => {
+    if (wsControllerURL && activeUser) {
+      dispatch(
+        jujuActions.fetchUserCredentials({
+          wsControllerURL,
+          userTag: activeUser,
+          cloudTag: nextCloud,
+        }),
+      );
+    }
+  };
 
   return (
-    <Formik
-      enableReinitialize
-      validationSchema={schema}
-      initialValues={initialFormValues}
-      onSubmit={() => {}}
-    >
-      <FormikFormData
-        id={TestId.MANDATORY_DETAILS_FORM}
-        className="mandatory-details-form"
-        {...testId(TestId.MANDATORY_DETAILS_FORM)}
-        onFormChange={onFormChange}
-      >
-        <Fields
-          cloudOptions={cloudOptions}
-          credentialsOptions={credentialsOptions}
-          defaultCloud={defaultCloud}
-          onCloudChange={(nextCloud: string) => {
-            if (wsControllerURL && activeUser) {
-              dispatch(
-                jujuActions.fetchUserCredentials({
-                  wsControllerURL,
-                  userTag: activeUser,
-                  cloudTag: nextCloud,
-                }),
-              );
-            }
-          }}
-        />
-      </FormikFormData>
-    </Formik>
+    <>
+      <FormikField
+        autoFocus
+        label={
+          <>
+            Model name
+            <div className="model-name-description p-text--small u-no-margin--bottom">
+              Model names may only contain lowercase letters, digits and
+              hyphens, and may not start with a hyphen.
+            </div>
+          </>
+        }
+        name="modelName"
+        type="text"
+        required
+      />
+      <FormikField
+        component={Select}
+        label="Cloud"
+        name="cloud"
+        required
+        options={cloudOptions}
+        onChange={(ev) => {
+          const nextCloud = String(ev.target.value);
+          void setFieldValue("cloud", nextCloud);
+          void setFieldValue("region", "");
+          void setFieldValue("credential", "");
+          handleCloudChange(nextCloud);
+        }}
+      />
+      <FormikField
+        component={Select}
+        label="Region (optional)"
+        name="region"
+        disabled={!values.cloud}
+        options={toRegionOptions(cloudInfo, values.cloud || defaultCloud)}
+      />
+      <FormikField
+        component={Select}
+        label="Credential"
+        name="credential"
+        disabled={!values.cloud}
+        required
+        options={credentialsOptions}
+      />
+    </>
   );
 };
 

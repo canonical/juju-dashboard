@@ -5,11 +5,14 @@ import {
   Stepper,
 } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
+import { Formik } from "formik";
 import type { FC, JSX } from "react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
+import * as Yup from "yup";
 
 import CheckPermissions from "components/CheckPermissions";
+import FormikFormData from "components/FormikFormData";
 import { useCanAddModel } from "hooks/useCanAddModel";
 import { testId } from "testing/utils";
 import urls from "urls";
@@ -17,63 +20,61 @@ import urls from "urls";
 import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
+const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
+
+const validationSchema = Yup.object().shape({
+  modelName: Yup.string()
+    .matches(MODEL_NAME_PATTERN, Label.INCORRECT_MODEL_NAME_ERROR)
+    .required("Required"),
+});
+
+const stepDefinitions: Array<{
+  key: StepType;
+  title: string;
+  content: JSX.Element;
+  formId: string;
+}> = [
+  {
+    key: StepType.MANDATORY_DETAILS,
+    formId: StepType.MANDATORY_DETAILS,
+    title: "Mandatory Details",
+    content: <MandatoryDetails />,
+  },
+  {
+    key: StepType.CONFIGURATION_CONSTRAINTS,
+    formId: StepType.CONFIGURATION_CONSTRAINTS,
+    title: "Configuration & Constraints (optional)",
+    content: <div>Configuration and constraints form goes here.</div>,
+  },
+  {
+    key: StepType.ACCESS_MANAGEMENT,
+    formId: StepType.ACCESS_MANAGEMENT,
+    title: "Access Management (optional)",
+    content: <div>Access management form goes here.</div>,
+  },
+];
+
 const AddModel: FC = () => {
   const navigate = useNavigate();
   const canCreateModel = useCanAddModel();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [formDraft, setFormDraft] = useState<AddModelFormState | null>(null);
-  const pendingMandatoryDetailsRef = useRef<AddModelFormState | null>(null);
+  const [isValid, setIsValid] = useState<boolean>(false);
 
   const handleCancel = (): void => {
-    setFormDraft(null);
     void navigate(urls.models.index);
   };
 
   const handleNextClick = (): void => {
-    if (currentStepIndex === 0 && pendingMandatoryDetailsRef.current) {
-      setFormDraft(pendingMandatoryDetailsRef.current);
-    }
-
     setCurrentStepIndex((index) => index + 1);
   };
 
-  const handleMandatoryDetailsChange = (values: AddModelFormState): void => {
-    pendingMandatoryDetailsRef.current = values;
-  };
-
   const handleCreateClick = (): void => {
-    // TODO: Actually create the model here
+    // TODO: https://warthogs.atlassian.net/browse/JUJU-9333
   };
-
-  const stepDefinitions: Array<{
-    key: StepType;
-    title: string;
-    content: JSX.Element;
-  }> = [
-    {
-      key: StepType.MANDATORY_DETAILS,
-      title: "Mandatory Details",
-      content: (
-        <MandatoryDetails
-          initialValues={formDraft}
-          onFormChange={handleMandatoryDetailsChange}
-        />
-      ),
-    },
-    {
-      key: StepType.CONFIGURATION_CONSTRAINTS,
-      title: "Configuration & Constraints (optional)",
-      content: <div>Configuration and constraints form goes here.</div>,
-    },
-    {
-      key: StepType.ACCESS_MANAGEMENT,
-      title: "Access Management (optional)",
-      content: <div>Access management form goes here.</div>,
-    },
-  ];
 
   const isFirstStep = currentStepIndex === 0;
   const isLastStep = currentStepIndex === stepDefinitions.length - 1;
+  const currentStep = stepDefinitions[currentStepIndex];
 
   return (
     <CheckPermissions allowed={canCreateModel} {...testId(TestId.COMPONENT)}>
@@ -105,7 +106,24 @@ const AddModel: FC = () => {
           })}
         />
         <div className="add-model__step" {...testId(TestId.ADD_MODEL_CONTENT)}>
-          {stepDefinitions[currentStepIndex].content}
+          <Formik<AddModelFormState>
+            initialValues={{
+              modelName: "",
+              cloud: "",
+              region: "",
+              credential: "",
+            }}
+            validationSchema={validationSchema}
+            onSubmit={handleCreateClick}
+          >
+            <FormikFormData
+              onValidate={setIsValid}
+              id={currentStep.formId}
+              className={currentStep.key}
+            >
+              {currentStep.content}
+            </FormikFormData>
+          </Formik>
         </div>
         <div className="add-model__footer">
           <Button onClick={handleCancel} appearance="base">
@@ -132,8 +150,9 @@ const AddModel: FC = () => {
           ) : null}
           <ActionButton
             appearance="positive"
-            disabled
-            onClick={handleCreateClick}
+            type="submit"
+            form={currentStep.formId}
+            disabled={!isValid || true}
           >
             {Label.CREATE_BUTTON}
           </ActionButton>

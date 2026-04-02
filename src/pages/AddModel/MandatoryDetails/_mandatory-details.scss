@@ -1,7 +1,4 @@
-.mandatory-details-form {
-  max-width: 40%;
-
-  @include mobile {
-    max-width: 100%;
-  }
+.model-name-description {
+  color: $color-mid-dark;
+  margin-top: $spv--small;
 }

@@ -29,4 +29,12 @@
       padding-right: 0;
     }
   }
+
+  .mandatory-details {
+    max-width: 40%;
+
+    @include mobile {
+      max-width: 100%;
+    }
+  }
 }
