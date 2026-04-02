@@ -38,6 +38,8 @@ import {
   rebacState,
   commandHistoryState,
   commandHistoryItem,
+  cloudInfoStateFactory,
+  userCredentialsStateFactory,
 } from "testing/factories/juju/juju";
 
 import {
@@ -134,6 +136,8 @@ import {
   getUnit,
   getUnitApp,
   getUnitMachine,
+  getCloudInfoState,
+  getUserCredentialsState,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -2010,7 +2014,7 @@ describe("selectors", () => {
         }),
         "abc123",
       ),
-    ).toBe("eggman");
+    ).toBe("juju");
   });
 
   it("getModelControllerDataByUUID", () => {
@@ -2443,7 +2447,7 @@ describe("selectors", () => {
         }),
         def456: modelDataFactory.build({
           info: modelManagerV11ModelInfoFactory.build({
-            "cloud-credential-tag": "cloudcred-google_spaceman@external_juju",
+            "cloud-credential-tag": "cloudcred-google_spaceman@external_jaas",
           }),
         }),
         ghi789: modelDataFactory.build({
@@ -2459,7 +2463,7 @@ describe("selectors", () => {
       });
       expect(
         getFilteredModelData(state, {
-          credential: ["eggman", "eggman@external"],
+          credential: ["juju"],
         }),
       ).toStrictEqual({
         abc123: modelData.abc123,
@@ -2574,7 +2578,7 @@ describe("selectors", () => {
         }),
         c3: modelDataFactory.build({
           info: modelManagerV11ModelInfoFactory.build({
-            "cloud-credential-tag": "cloudcred-google_matches_juju",
+            "cloud-credential-tag": "cloudcred-google_eggman_matches",
           }),
         }),
         d4: modelDataFactory.build({
@@ -3239,5 +3243,41 @@ describe("getUnitMachine", () => {
     expect(getUnitMachine(state, "abc123", "app1/1")).toStrictEqual(
       machines["1"],
     );
+  });
+});
+
+describe("getCloudInfoState", () => {
+  it("gets the cloud info state", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        cloudInfo: cloudInfoStateFactory.build({
+          clouds: null,
+        }),
+      }),
+    });
+    expect(getCloudInfoState(state)).toStrictEqual({
+      clouds: null,
+      errors: null,
+      loaded: false,
+      loading: false,
+    });
+  });
+});
+
+describe("getUserCredentialsState", () => {
+  it("gets the user credentials state", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: [],
+        }),
+      }),
+    });
+    expect(getUserCredentialsState(state)).toStrictEqual({
+      credentials: [],
+      errors: null,
+      loaded: false,
+      loading: false,
+    });
   });
 });

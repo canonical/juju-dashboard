@@ -91,6 +91,13 @@ export type CloudState = {
   clouds: CloudsResult["clouds"] | null;
 };
 
+export type UserCredentialsState = {
+  credentials: string[];
+  errors: null | string | unknown;
+  loading: boolean;
+  loaded: boolean;
+};
+
 export type ModelFeatures = {
   listSecrets?: boolean;
   manageSecrets?: boolean;
@@ -135,5 +142,6 @@ export type JujuState = {
   rebac: ReBACState;
   secrets: SecretsState;
   cloudInfo: CloudState;
+  userCredentials: UserCredentialsState;
   selectedApplications: Record<string, ApplicationStatus>;
 };

@@ -47,14 +47,14 @@ describe("useModelAttributes", () => {
             "cloud-tag": "cloud-gce",
             "cloud-region": "au-west",
             qualifier: "user-spaceman",
-            "cloud-credential-tag": "cloudcred-google_spaceman@external_juju",
+            "cloud-credential-tag": "cloudcred-google_spaceman@external_jaas",
           }),
         }),
       }),
     );
     expect(result.current).toMatchObject({
       clouds: ["aws", "gce"],
-      credentials: ["eggman", "spaceman"],
+      credentials: ["juju", "jaas"],
       owners: ["eggman", "spaceman"],
       regions: ["au-east", "au-west"],
     });
@@ -123,7 +123,7 @@ describe("useModelAttributes", () => {
     );
     expect(result.current).toMatchObject({
       clouds: ["aws"],
-      credentials: ["eggman"],
+      credentials: ["juju"],
       owners: ["eggman"],
       regions: ["au-east"],
     });

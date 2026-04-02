@@ -39,52 +39,47 @@ export default {
     }
 
     return (
-      <>
-        <Formik initialValues={{ enabledFlags }} onSubmit={saveFlags}>
-          {({ values }) => (
-            <Form>
-              <FieldArray
-                name="enabledFlags"
-                render={(arrayHelpers) => (
-                  <>
-                    {values.enabledFlags.map((flag, index) => (
-                      <div key={index} className="dev-bar__feature-flags__flag">
-                        <Button
-                          hasIcon
-                          onClick={() => arrayHelpers.remove(index)}
-                          type="button"
-                        >
-                          <Icon name="delete" />
-                        </Button>
-
-                        <FormikField
-                          name={`enabledFlags.${index}`}
-                          type="text"
-                        />
-                      </div>
-                    ))}
-
-                    <div className="dev-bar__form-controls">
+      <Formik initialValues={{ enabledFlags }} onSubmit={saveFlags}>
+        {({ values }) => (
+          <Form>
+            <FieldArray
+              name="enabledFlags"
+              render={(arrayHelpers) => (
+                <>
+                  {values.enabledFlags.map((_, index) => (
+                    <div key={index} className="dev-bar__feature-flags__flag">
                       <Button
                         hasIcon
-                        onClick={() => {
-                          arrayHelpers.push("");
-                        }}
+                        onClick={() => arrayHelpers.remove(index)}
                         type="button"
                       >
-                        <Icon name="plus" />
-                        <span>Add Flag</span>
+                        <Icon name="delete" />
                       </Button>
 
-                      <Button type="submit">Save</Button>
+                      <FormikField name={`enabledFlags.${index}`} type="text" />
                     </div>
-                  </>
-                )}
-              />
-            </Form>
-          )}
-        </Formik>
-      </>
+                  ))}
+
+                  <div className="dev-bar__form-controls">
+                    <Button
+                      hasIcon
+                      onClick={() => {
+                        arrayHelpers.push("");
+                      }}
+                      type="button"
+                    >
+                      <Icon name="plus" />
+                      <span>Add Flag</span>
+                    </Button>
+
+                    <Button type="submit">Save</Button>
+                  </div>
+                </>
+              )}
+            />
+          </Form>
+        )}
+      </Formik>
     );
   },
 } satisfies Widget;

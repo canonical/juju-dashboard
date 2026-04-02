@@ -140,6 +140,12 @@ const slice = createSlice({
       loaded: false,
       loading: false,
     },
+    userCredentials: {
+      credentials: [],
+      errors: null,
+      loaded: false,
+      loading: false,
+    },
     selectedApplications: {},
   } as JujuState,
   reducers: {
@@ -533,6 +539,42 @@ const slice = createSlice({
       state.cloudInfo.loading = false;
       state.cloudInfo.loaded = true;
       state.cloudInfo.errors = null;
+    },
+    fetchUserCredentials: (
+      state,
+      _action: PayloadAction<
+        {
+          userTag: string;
+          cloudTag: string;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.userCredentials.loading = true;
+      state.userCredentials.loaded = false;
+      state.userCredentials.errors = null;
+    },
+    setUserCredentialsErrors: (
+      state,
+      action: PayloadAction<
+        { errors: string | unknown } & WsControllerURLParam
+      >,
+    ) => {
+      state.userCredentials.errors = action.payload.errors;
+      state.userCredentials.loading = false;
+      state.userCredentials.loaded = true;
+    },
+    updateUserCredentials: (
+      state,
+      action: PayloadAction<
+        {
+          userCredentials: string[];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.userCredentials.credentials = action.payload.userCredentials;
+      state.userCredentials.loading = false;
+      state.userCredentials.loaded = true;
+      state.userCredentials.errors = null;
     },
     checkRelation: (
       state,
