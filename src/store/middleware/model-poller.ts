@@ -29,7 +29,7 @@ import { logger } from "utils/logger";
 import {
   createConnectionMiddleware,
   type ConnectionManager,
-} from "./connection";
+} from "./connection/middleware";
 import modelListMiddleware from "./source/model-list";
 
 export enum LoginError {
