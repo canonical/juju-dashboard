@@ -1,6 +1,6 @@
 import type { InputProps, PropsWithSpread } from "@canonical/react-components";
 import { ContextualMenu, Input } from "@canonical/react-components";
-import type { FC } from "react";
+import type { FC, HTMLProps } from "react";
 import { useId, useMemo, useState } from "react";
 
 import AutocompleteInputDropdown from "./AutocompleteInputDropdown";
@@ -12,6 +12,7 @@ type AutocompleteInputItem = {
 
 type Props = PropsWithSpread<
   {
+    autocompleteStyle?: HTMLProps<HTMLSpanElement>["style"];
     options: AutocompleteInputItem[];
     onValueChanged?: (value: string) => void;
   },
@@ -19,6 +20,7 @@ type Props = PropsWithSpread<
 >;
 
 const AutocompleteInput: FC<Props> = ({
+  autocompleteStyle,
   options,
   onValueChanged,
   ...props
@@ -53,6 +55,7 @@ const AutocompleteInput: FC<Props> = ({
 
   return (
     <ContextualMenu
+      style={autocompleteStyle}
       className="autocomplete-input"
       onToggleMenu={(isOpen) => {
         // Handle syncing the state when toggling the menu from within the

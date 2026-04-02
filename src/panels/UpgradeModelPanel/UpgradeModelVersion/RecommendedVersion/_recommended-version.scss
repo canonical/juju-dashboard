@@ -1,0 +1,42 @@
+.recommended-version__radio {
+  display: flex;
+  gap: $sph--small;
+
+  @include mobile {
+    display: block;
+  }
+
+  &-tags,
+  &-details {
+    display: flex;
+    gap: $sph--small;
+  }
+
+  &-details {
+    @include mobile {
+      display: block;
+    }
+  }
+
+  &-column {
+    align-self: baseline;
+  }
+
+  &-date {
+    border-left: 1px solid $colors--theme--border-default;
+    padding-left: $sph--small;
+
+    @include mobile {
+      border: none;
+      padding-left: 0;
+    }
+  }
+
+  &-changelog {
+    text-align: right;
+
+    @include mobile {
+      text-align: left;
+    }
+  }
+}
