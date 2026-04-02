@@ -1,7 +1,6 @@
-import { act, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { FormikProps } from "formik";
-import { createRef } from "react";
+import type { Mock } from "vitest";
 
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
@@ -21,16 +20,11 @@ import MandatoryDetails from "./MandatoryDetails";
 describe("MandatoryDetails", () => {
   let state: RootState;
   let initialValues: AddModelFormState | null;
-  const onSubmit = vi.fn();
-  const formRef = createRef<FormikProps<AddModelFormState>>();
-  const props = {
-    onSubmit,
-    formRef,
-    initialValues: null,
-  };
+  let onSubmit: Mock;
 
   beforeEach(() => {
     initialValues = null;
+    onSubmit = vi.fn();
     state = rootStateFactory.withGeneralConfig().build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -71,7 +65,10 @@ describe("MandatoryDetails", () => {
   });
 
   it("renders properly with defaults", () => {
-    renderComponent(<MandatoryDetails {...props} />, { state });
+    renderComponent(
+      <MandatoryDetails initialValues={null} onSubmit={onSubmit} />,
+      { state },
+    );
 
     expect(screen.getByLabelText("Model name")).toHaveValue("");
     expect(screen.getByLabelText("Cloud")).toHaveValue("cloud-aws");
@@ -88,7 +85,7 @@ describe("MandatoryDetails", () => {
     };
 
     renderComponent(
-      <MandatoryDetails {...props} initialValues={initialValues} />,
+      <MandatoryDetails initialValues={initialValues} onSubmit={onSubmit} />,
       {
         state,
       },
@@ -104,7 +101,10 @@ describe("MandatoryDetails", () => {
 
   it("fetches credentials on initial load when there is no saved draft", async () => {
     const [store, actions] = createStore(state, { trackActions: true });
-    renderComponent(<MandatoryDetails {...props} />, { store });
+    renderComponent(
+      <MandatoryDetails initialValues={null} onSubmit={onSubmit} />,
+      { store },
+    );
 
     const action = jujuActions.fetchUserCredentials({
       wsControllerURL: "wss://controller.example.com",
@@ -128,7 +128,7 @@ describe("MandatoryDetails", () => {
     };
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(
-      <MandatoryDetails {...props} initialValues={initialValues} />,
+      <MandatoryDetails initialValues={initialValues} onSubmit={onSubmit} />,
       {
         store,
       },
@@ -157,9 +157,12 @@ describe("MandatoryDetails", () => {
   });
 
   it("calls onSubmit callback when the form is submitted", async () => {
-    renderComponent(<MandatoryDetails {...props} />, {
-      state,
-    });
+    renderComponent(
+      <MandatoryDetails initialValues={null} onSubmit={onSubmit} />,
+      {
+        state,
+      },
+    );
 
     await userEvent.type(screen.getByLabelText("Model name"), "my-model");
     await userEvent.selectOptions(
@@ -167,12 +170,16 @@ describe("MandatoryDetails", () => {
       "aws-cred",
     );
 
-    await act(async () => {
-      await formRef.current?.submitForm();
-    });
+    fireEvent.submit(screen.getByTestId("mandatory-details-form"));
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledTimes(1);
+      expect(onSubmit).toHaveBeenCalledWith({
+        modelName: "my-model",
+        cloud: "cloud-aws",
+        region: "",
+        credential: "aws-cred",
+      });
     });
   });
 });

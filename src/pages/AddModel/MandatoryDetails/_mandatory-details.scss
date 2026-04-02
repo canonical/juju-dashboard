@@ -1,3 +1,7 @@
 .mandatory-details-form {
-  width: 40%;
+  max-width: 40%;
+
+  @include mobile {
+    max-width: 100%;
+  }
 }

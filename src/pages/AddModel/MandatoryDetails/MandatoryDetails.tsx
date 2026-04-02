@@ -1,6 +1,8 @@
-import { Formik, Form } from "formik";
+import { Formik } from "formik";
 import { useEffect, useMemo, type OptionHTMLAttributes, type JSX } from "react";
+import * as Yup from "yup";
 
+import FormikFormData from "components/FormikFormData";
 import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import {
@@ -41,10 +43,11 @@ const toCredentialOptions = (
     };
   });
 
+const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
+
 const MandatoryDetails = ({
-  formRef,
   initialValues,
-  onSubmit,
+  onFormChange,
 }: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
@@ -84,19 +87,24 @@ const MandatoryDetails = ({
     [userCredentials.credentials],
   );
 
+  const schema = Yup.object().shape({
+    modelName: Yup.string()
+      .matches(MODEL_NAME_PATTERN, "Incorrect model name format.")
+      .required("Required"),
+  });
+
   return (
     <Formik
-      innerRef={formRef}
       enableReinitialize
+      validationSchema={schema}
       initialValues={initialFormValues}
-      onSubmit={(_values, { setSubmitting }) => {
-        onSubmit();
-        setSubmitting(false);
-      }}
+      onSubmit={() => {}}
     >
-      <Form
+      <FormikFormData
+        id={TestId.MANDATORY_DETAILS_FORM}
         className="mandatory-details-form"
         {...testId(TestId.MANDATORY_DETAILS_FORM)}
+        onFormChange={onFormChange}
       >
         <Fields
           cloudOptions={cloudOptions}
@@ -114,7 +122,7 @@ const MandatoryDetails = ({
             }
           }}
         />
-      </Form>
+      </FormikFormData>
     </Formik>
   );
 };
