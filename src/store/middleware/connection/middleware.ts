@@ -22,6 +22,9 @@ import { logger } from "utils/logger";
 
 import { ConnectionManager } from "./connection-manager";
 
+export const MISSING_WS_CONTROLLER_URL_ERROR =
+  "Action passed to connection middleware with `meta.withConnection: true`, but missing `payload.wsControllerURL`";
+
 /**
  * Guard to test of an action has `wsControllerURL` in the payload.
  */
@@ -163,10 +166,7 @@ export function createConnectionMiddleware(): {
           action.meta = Object.assign(action.meta ?? {}, { connection });
         } else {
           // Warn that `withConnection` won't do anything unless there's a `wsControllerURL`.
-          logger.warn(
-            "Action passed to connection middleware with `meta.withConnection: true`, but missing `payload.wsControllerURL`",
-            action,
-          );
+          logger.warn(MISSING_WS_CONTROLLER_URL_ERROR, action);
         }
       }
 

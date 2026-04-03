@@ -10,7 +10,7 @@ describe("SourceManager", () => {
       const fn = vi.fn();
       const manager = new SourceManager(fn);
       const args = { something: true, number: 3172 };
-      manager.start(args, {});
+      manager.start(args);
       expect(fn).toHaveBeenCalledExactlyOnceWith(args);
     });
 
