@@ -1,24 +1,34 @@
 import { createPollingSource } from "data/pollingSource";
+import type { UserModelList } from "juju/types";
 import * as appActions from "store/app/actions";
 import { actions as jujuActions } from "store/juju";
 import { logger } from "utils/logger";
 
-import { controllers, ModelsError } from "../model-poller";
+import { hasConnection } from "../connection/middleware";
+import { ModelsError } from "../model-poller";
 import { createSourceMiddleware } from "../source-middleware";
 
-export default createSourceMiddleware(
+export default createSourceMiddleware<
+  UserModelList,
+  { wsControllerURL: string }
+>(
   "model-list",
-  ({ wsControllerURL }: { wsControllerURL: string }) => {
+  ({ wsControllerURL: _, meta }) => {
     return createPollingSource(
       async () => {
-        const conn = controllers.get(wsControllerURL);
-        if (!conn?.info.user?.identity) {
+        if (!hasConnection(meta)) {
+          throw new Error("connection not provided");
+        }
+
+        const { connection } = meta;
+
+        if (!connection?.info.user?.identity) {
           throw new Error("not authenticated with controller");
         }
 
         try {
-          const models = (await conn.facades.modelManager?.listModels({
-            tag: conn.info.user.identity,
+          const models = (await connection.facades.modelManager?.listModels({
+            tag: connection.info.user.identity,
           })) ?? { "user-models": [] };
           return models;
         } catch (listError) {
@@ -42,9 +52,14 @@ export default createSourceMiddleware(
         modelsError: error?.message ?? null,
       }),
     setLoading: ({ wsControllerURL }, loading) =>
-      jujuActions.updateModelListLoading({ wsControllerURL, loading }),
+      jujuActions.updateModelListLoading({
+        wsControllerURL,
+        loading,
+      }),
   },
   {
+    // Add `withConnection` to every action, to ensure that the connection is always provided.
+    addActionMeta: (_payload) => ({ withConnection: true }),
     after: (_args, store) => {
       store.dispatch(appActions.updateModelStatuses());
     },

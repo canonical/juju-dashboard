@@ -6,6 +6,8 @@ declare global {
   }
 }
 
-window.logger = log.getLogger("JujuDashboard");
+if ("window" in globalThis) {
+  window.logger = log.getLogger("JujuDashboard");
+}
 
 export const logger = log.getLogger("JujuDashboard");

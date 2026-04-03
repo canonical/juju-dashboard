@@ -1,4 +1,4 @@
-import type { ActionCreatorWithPayload, PayloadAction } from "@reduxjs/toolkit";
+import type { PayloadAction, PayloadActionCreator } from "@reduxjs/toolkit";
 import { createAction, isAction } from "@reduxjs/toolkit";
 import type { Middleware } from "redux";
 
@@ -8,7 +8,7 @@ import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 import { hash } from "utils";
 
-export class SourceManager<T, P> {
+export class SourceManager<T, P extends O, O = P> {
   private sources: Map<string, Source<T>>;
   private createSource: (args: P) => Source<T>;
 
@@ -23,7 +23,7 @@ export class SourceManager<T, P> {
       [Name in keyof Events<T>]: (...data: Events<T>[Name]) => unknown;
     }>,
   ): Source<T> {
-    const sourceHash = hash(args);
+    const sourceHash = hash(args, ["meta"]);
 
     // Ensure the source doesn't already exist.
     const existingSource = this.sources.get(sourceHash);
@@ -45,7 +45,7 @@ export class SourceManager<T, P> {
     return source;
   }
 
-  public stop(args: P): void {
+  public stop(args: O): void {
     const sourceHash = hash(args);
     const source = this.sources.get(sourceHash);
     if (!source) {
@@ -55,7 +55,7 @@ export class SourceManager<T, P> {
     this.sources.delete(sourceHash);
   }
 
-  public invalidate(args: P): void {
+  public invalidate(args: O): void {
     const sourceHash = hash(args);
     const source = this.sources.get(sourceHash);
     if (!source) {
@@ -79,7 +79,7 @@ export class SourceManager<T, P> {
  */
 export function createSourceMiddleware<T, P>(
   identifier: string,
-  createSource: (args: P) => Source<T>,
+  createSource: (args: { meta: Record<string, unknown> } & P) => Source<T>,
   sourceActions: {
     setData: (args: P, data: T) => PayloadAction<unknown>;
     setLoading: (args: P, loading: boolean) => PayloadAction<unknown>;
@@ -89,43 +89,63 @@ export function createSourceMiddleware<T, P>(
     ) => PayloadAction<unknown>;
   },
   hooks?: {
+    addActionMeta?: (payload: P) => Record<string, unknown>;
     after?: (args: P, store: Pick<Store, "dispatch" | "getState">) => void;
   },
 ): {
   middleware: Middleware<void, RootState, Store["dispatch"]>;
   actions: Record<
     "invalidate" | "start" | "stop",
-    ActionCreatorWithPayload<P, string>
+    PayloadActionCreator<P, string>
   >;
 } {
   const actions = {
-    start: createAction<P>(
+    // WARN: Redux doesn't export the types needed to make this play nicely (`BaseActionCreator`),
+    // so manually do the casting.
+    start: createAction(
       `source/${identifier}/start`,
-    ) as ActionCreatorWithPayload<P, "start">,
-    stop: createAction<P>(
-      `source/${identifier}/stop`,
-    ) as ActionCreatorWithPayload<P, "stop">,
+      (payload: P): { payload: P; meta?: Record<string, unknown> } =>
+        Object.assign(
+          {
+            payload,
+          },
+          hooks?.addActionMeta
+            ? { meta: hooks.addActionMeta(payload) }
+            : undefined,
+        ),
+    ) as unknown as PayloadActionCreator<P, "start">,
+    stop: createAction<P>(`source/${identifier}/stop`) as PayloadActionCreator<
+      P,
+      "stop"
+    >,
     invalidate: createAction<P>(
       `source/${identifier}/invalidate`,
-    ) as ActionCreatorWithPayload<P, "invalidate">,
+    ) as PayloadActionCreator<P, "invalidate">,
   };
 
   return {
     middleware: (store) => (next) => {
-      const sources = new SourceManager<T, P>(createSource);
+      const sources = new SourceManager<
+        T,
+        { meta: Record<string, unknown> } & P,
+        P
+      >(createSource);
 
       return (action) => {
         if (!isAction(action)) {
           return next(action);
         }
 
-        if (
-          isSpecificAction<ReturnType<typeof actions.start>>(
-            action,
-            actions.start.type,
-          )
-        ) {
-          const args = action.payload as P;
+        if (actions.start.match(action)) {
+          const actionPayload = action.payload as P;
+          const actionMeta = (
+            action as PayloadAction<P, "start", Record<string, unknown>>
+          ).meta as Record<string, unknown> | undefined;
+          const args = Object.assign(
+            {},
+            actionPayload,
+            actionMeta ? { meta: actionMeta } : undefined,
+          );
           sources.start(args, {
             data: (data) => {
               store.dispatch(sourceActions.setData(args, data));
@@ -139,7 +159,10 @@ export function createSourceMiddleware<T, P>(
             },
             error: (message, sourceError) => {
               store.dispatch(
-                sourceActions.setError(args, { message, source: sourceError }),
+                sourceActions.setError(args, {
+                  message,
+                  source: sourceError,
+                }),
               );
             },
             errorCleared: () => {
