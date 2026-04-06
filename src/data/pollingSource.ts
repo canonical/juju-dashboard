@@ -133,6 +133,8 @@ export function createPollingSource<T>(
     );
 
     void (async (): Promise<void> => {
+      // Yield to give listeners a chance to be added.
+      await Promise.resolve();
       while (!sourceDone.aborted) {
         // If `tailRequests` is full, then wait for one of the requests to finish.
         if (pollControllers.length > fullConfig.tailRequests) {
