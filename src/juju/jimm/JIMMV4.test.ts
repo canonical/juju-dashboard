@@ -154,4 +154,27 @@ describe("JIMMV4", () => {
       expect.any(Function),
     );
   });
+
+  it.for([
+    ["with no minimum", undefined],
+    ["with minimum", "3.2.1"],
+  ] as const)(
+    "supportedJujuVersions: %s",
+    async ([_, minVersion], { expect }) => {
+      const jimm = new JIMMV4(transport, connectionInfo);
+      void jimm.supportedJujuVersions(minVersion);
+      expect(transport.write).toHaveBeenCalledWith(
+        {
+          type: "JIMM",
+          request: "SupportedJujuVersions",
+          version: 4,
+          params: {
+            "min-version": minVersion,
+          },
+        },
+        expect.any(Function),
+        expect.any(Function),
+      );
+    },
+  );
 });
