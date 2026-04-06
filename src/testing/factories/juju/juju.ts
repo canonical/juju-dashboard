@@ -154,4 +154,5 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   secrets: {},
   cloudInfo: cloudInfoStateFactory.build(),
   selectedApplications: {},
+  supportedJujuVersions: {},
 }));

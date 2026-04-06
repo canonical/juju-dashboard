@@ -22,6 +22,7 @@ import type {
   ModelInfoResults,
   UserModelList,
 } from "juju/types";
+import type { SupportedVersion } from "store/middleware/source/jimm-supported-versions";
 
 import type {
   Controllers,
@@ -31,6 +32,7 @@ import type {
   SecretsContent,
   ReBACAllowed,
   HistoryItem,
+  SourceData,
 } from "./types";
 import { getModelQualifier } from "./utils/models";
 
@@ -141,6 +143,7 @@ const slice = createSlice({
       loading: false,
     },
     selectedApplications: {},
+    supportedJujuVersions: {},
   } as JujuState,
   reducers: {
     updateModelList: (
@@ -703,6 +706,28 @@ const slice = createSlice({
         state.commandHistory[modelUUID] = [];
       }
       state.commandHistory[modelUUID].push(historyItem);
+    },
+    updateSupportedJujuVersions: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        wsControllerURL: string;
+        update: Partial<SourceData<SupportedVersion[]>>;
+      }>,
+    ) => {
+      let value = state.supportedJujuVersions[payload.wsControllerURL];
+      if (!value) {
+        state.supportedJujuVersions[payload.wsControllerURL] = value = {
+          loading: false,
+          data: null,
+          error: null,
+        };
+      }
+
+      value.loading = payload.update.loading ?? value.loading;
+      value.data = payload.update.data ?? value.data;
+      value.error = payload.update.error ?? value.error;
     },
   },
 });

@@ -29,6 +29,7 @@ import {
 } from "testing/factories/juju/juju";
 
 import { actions, reducer } from "./slice";
+import type { JujuState } from "./types";
 
 const status = fullStatusFactory.build({
   model: {
@@ -1684,6 +1685,120 @@ describe("reducers", () => {
           commandHistoryItem.build({ command: "status" }),
         ],
       }),
+    });
+  });
+
+  describe("updateSupportedJujuVersions", () => {
+    describe("set fields", () => {
+      let state: JujuState;
+
+      beforeEach(() => {
+        state = jujuStateFactory.build({
+          supportedJujuVersions: {
+            "wss://example.com": {
+              data: [],
+              error: null,
+              loading: false,
+            },
+          },
+        });
+      });
+
+      it("updates data", () => {
+        const result = reducer(
+          state,
+          actions.updateSupportedJujuVersions({
+            wsControllerURL: "wss://example.com",
+            update: {
+              data: [
+                {
+                  version: "1.2.3",
+                  date: "2026-01-01T00:00:00Z",
+                  link: "https://example.com",
+                },
+              ],
+            },
+          }),
+        );
+        expect(result.supportedJujuVersions).toStrictEqual({
+          "wss://example.com": {
+            data: [
+              {
+                version: "1.2.3",
+                date: "2026-01-01T00:00:00Z",
+                link: "https://example.com",
+              },
+            ],
+            error: null,
+            loading: false,
+          },
+        });
+      });
+
+      it("updates loading", () => {
+        const result = reducer(
+          state,
+          actions.updateSupportedJujuVersions({
+            wsControllerURL: "wss://example.com",
+            update: {
+              loading: true,
+            },
+          }),
+        );
+        expect(result.supportedJujuVersions).toStrictEqual({
+          "wss://example.com": {
+            data: [],
+            error: null,
+            loading: true,
+          },
+        });
+      });
+
+      it("updates error", () => {
+        const result = reducer(
+          state,
+          actions.updateSupportedJujuVersions({
+            wsControllerURL: "wss://example.com",
+            update: {
+              error: {
+                message: "Something",
+                source: new Error("Something"),
+              },
+            },
+          }),
+        );
+        expect(result.supportedJujuVersions).toStrictEqual({
+          "wss://example.com": {
+            data: [],
+            error: {
+              message: "Something",
+              source: new Error("Something"),
+            },
+            loading: false,
+          },
+        });
+      });
+    });
+
+    it("adds new controller if not existing", () => {
+      const state = jujuStateFactory.build();
+      expect(state.supportedJujuVersions).toStrictEqual({});
+      const result = reducer(
+        state,
+        actions.updateSupportedJujuVersions({
+          wsControllerURL: "wss://example.com",
+          update: {
+            loading: true,
+          },
+        }),
+      );
+      expect(result.supportedJujuVersions).toStrictEqual({
+        "wss://example.com": {
+          data: null,
+          loading: true,
+          error: null,
+        },
+      });
     });
   });
 });

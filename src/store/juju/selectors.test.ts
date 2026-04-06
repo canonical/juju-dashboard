@@ -134,6 +134,7 @@ import {
   getUnit,
   getUnitApp,
   getUnitMachine,
+  getSupportedJujuVersions,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3239,5 +3240,34 @@ describe("getUnitMachine", () => {
     expect(getUnitMachine(state, "abc123", "app1/1")).toStrictEqual(
       machines["1"],
     );
+  });
+});
+
+describe("getSupportedJujuVersions", () => {
+  it("fetches versions for controller", () => {
+    const data = {
+      loading: false,
+      data: [],
+      error: null,
+    };
+    const state = rootStateFactory.build({
+      juju: {
+        supportedJujuVersions: {
+          "wss://example.com": data,
+        },
+      },
+    });
+    expect(getSupportedJujuVersions(state, "wss://example.com")).toStrictEqual(
+      data,
+    );
+  });
+
+  it("returns default for non-existing controller", () => {
+    const state = rootStateFactory.build();
+    expect(getSupportedJujuVersions(state, "wss://example.com")).toStrictEqual({
+      loading: false,
+      data: null,
+      error: null,
+    });
   });
 });
