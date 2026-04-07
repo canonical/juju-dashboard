@@ -14,8 +14,11 @@ import {
   extractCredentialName,
 } from "store/juju/utils/models";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { testId } from "testing/utils";
 
 import type { AddModelFormState } from "../types";
+
+import { TestId } from "./types";
 
 const toCloudOptions = (
   cloudInfo: CloudState["clouds"],
@@ -117,12 +120,14 @@ const MandatoryDetails = (): JSX.Element => {
         }
         name="modelName"
         type="text"
+        {...testId(TestId.MODEL_NAME)}
         required
       />
       <FormikField
         component={Select}
         label="Cloud"
         name="cloud"
+        {...testId(TestId.CLOUD)}
         required
         options={cloudOptions}
         onChange={(ev) => {
@@ -139,12 +144,14 @@ const MandatoryDetails = (): JSX.Element => {
         name="region"
         disabled={!values.cloud}
         options={toRegionOptions(cloudInfo, values.cloud || defaultCloud)}
+        {...testId(TestId.REGION)}
       />
       <FormikField
         component={Select}
         label="Credential"
         name="credential"
-        disabled={!values.cloud}
+        {...testId(TestId.CREDENTIAL)}
+        disabled={userCredentials.loading || !values.cloud}
         required
         options={credentialsOptions}
       />

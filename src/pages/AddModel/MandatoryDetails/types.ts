@@ -1,3 +1,6 @@
 export enum TestId {
-  MANDATORY_DETAILS_FORM = "mandatory-details-form",
+  MODEL_NAME = "model-name",
+  CLOUD = "cloud",
+  REGION = "region",
+  CREDENTIAL = "credential",
 }
