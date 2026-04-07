@@ -68,7 +68,6 @@ const MandatoryDetails = (): JSX.Element => {
   const userCredentials = useAppSelector(getUserCredentialsState);
   const cloudOptions = useMemo(() => toCloudOptions(cloudInfo), [cloudInfo]);
   const defaultCloud = cloudOptions[0]?.value as string;
-  const selectedCloud = values.cloud || defaultCloud;
 
   useEffect(() => {
     if (!values.cloud && defaultCloud) {
@@ -77,16 +76,16 @@ const MandatoryDetails = (): JSX.Element => {
   }, [values.cloud, defaultCloud, setFieldValue]);
 
   useEffect(() => {
-    if (wsControllerURL && activeUser && selectedCloud) {
+    if (wsControllerURL && activeUser && defaultCloud) {
       dispatch(
         jujuActions.fetchUserCredentials({
           wsControllerURL,
           userTag: activeUser,
-          cloudTag: selectedCloud,
+          cloudTag: defaultCloud,
         }),
       );
     }
-  }, [dispatch, wsControllerURL, activeUser, selectedCloud]);
+  }, [dispatch, wsControllerURL, activeUser, defaultCloud]);
 
   const credentialsOptions = useMemo(
     () => toCredentialOptions(userCredentials.credentials),
