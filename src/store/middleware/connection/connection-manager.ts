@@ -14,15 +14,16 @@ type Hooks = {
   ) => Promise<void> | void;
 };
 
+type SavedConnection = {
+  connection: ConnectionWithFacades;
+  intervalId?: number;
+  juju?: Client;
+};
+
 export class ConnectionManager {
   private connections = new Map<
     string,
-    | {
-        connection: ConnectionWithFacades;
-        intervalId?: number;
-        juju?: Client;
-      }
-    | Promise<ConnectionWithFacades>
+    Promise<ConnectionWithFacades> | SavedConnection
   >();
   private hooks: Hooks;
 
@@ -51,7 +52,10 @@ export class ConnectionManager {
    */
   async logout(wsControllerURL: string): Promise<void> {
     // Wait to get the connection;
-    let connection = undefined;
+    let connection:
+      | Promise<ConnectionWithFacades>
+      | SavedConnection
+      | undefined = undefined;
     do {
       connection = this.connections.get(wsControllerURL);
       if (!connection) {
@@ -70,8 +74,7 @@ export class ConnectionManager {
     }
     if (connection.juju) {
       await new Promise<void>((resolve) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        connection.juju!.logout((code, cb) => {
+        connection.juju?.logout((code, cb) => {
           resolve();
           cb(code);
         });
