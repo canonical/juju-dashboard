@@ -158,7 +158,7 @@ describe("DestroyModelDialog", () => {
     ).toBeInTheDocument();
     expect(
       within(destroyModelDialog).getByRole("button", { name: Label.DESTROY }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
   });
 
   it("dispatches destroyModels with 'destroy-storage: true' when destroying a model with storage", async () => {

@@ -772,7 +772,7 @@ describe("ConfigPanel", () => {
     );
     expect(
       screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.clear(input);
     await userEvent.type(input, "secret:aabbccdd");
     expect(
@@ -799,7 +799,7 @@ describe("ConfigPanel", () => {
     );
     expect(
       screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.clear(input);
     await userEvent.type(input, "secret:aabbccdd");
     expect(
@@ -830,6 +830,6 @@ describe("ConfigPanel", () => {
     );
     expect(
       screen.getByRole("button", { name: ConfigPanelLabel.SAVE_BUTTON }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
   });
 });
