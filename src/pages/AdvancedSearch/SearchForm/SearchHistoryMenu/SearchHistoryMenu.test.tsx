@@ -48,7 +48,7 @@ describe("SearchHistoryMenu", () => {
     // Open the menu so that the portal gets rendered.
     await userEvent.click(screen.getByRole("button", { name: Label.HISTORY }));
     expect(
-      screen.getByRole("button", { name: ".applications" }),
+      screen.getByRole("menuitem", { name: ".applications" }),
     ).toHaveAttribute("aria-disabled");
   });
 
@@ -66,10 +66,10 @@ describe("SearchHistoryMenu", () => {
     // Open the menu so that the portal gets rendered.
     await userEvent.click(screen.getByRole("button", { name: Label.HISTORY }));
     expect(
-      screen.getByRole("button", { name: ".applications" }),
+      screen.getByRole("menuitem", { name: ".applications" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: ".machines" }),
+      screen.getByRole("menuitem", { name: ".machines" }),
     ).toBeInTheDocument();
   });
 
@@ -90,7 +90,7 @@ describe("SearchHistoryMenu", () => {
     );
     // Open the menu so that the portal gets rendered.
     await userEvent.click(screen.getByRole("button", { name: Label.HISTORY }));
-    await userEvent.click(screen.getByRole("button", { name: ".machines" }));
+    await userEvent.click(screen.getByRole("menuitem", { name: ".machines" }));
     expect(search).toHaveBeenCalledWith(".machines");
     expect(screen.getByRole("textbox")).toHaveValue(".machines");
   });
@@ -109,7 +109,7 @@ describe("SearchHistoryMenu", () => {
     );
     // Open the menu so that the portal gets rendered.
     await userEvent.click(screen.getByRole("button", { name: Label.HISTORY }));
-    await userEvent.click(screen.getByRole("button", { name: Label.CLEAR }));
+    await userEvent.click(screen.getByRole("menuitem", { name: Label.CLEAR }));
     expect(setQueryHistory).toHaveBeenCalledWith([]);
   });
 });

@@ -276,7 +276,7 @@ describe("SecretsTable", () => {
       screen.getByRole("button", { name: Label.ACTION_MENU }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.REMOVE_BUTTON }),
+      screen.getByRole("menuitem", { name: Label.REMOVE_BUTTON }),
     );
     expect(router.state.location.search).toEqual(
       "?panel=remove-secret&secret=secret%3Aaabbccdd",
@@ -296,7 +296,7 @@ describe("SecretsTable", () => {
       screen.getByRole("button", { name: Label.ACTION_MENU }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.UPDATE_BUTTON }),
+      screen.getByRole("menuitem", { name: Label.UPDATE_BUTTON }),
     );
     expect(router.state.location.search).toEqual(
       "?panel=update-secret&secret=secret%3Aaabbccdd",
@@ -316,7 +316,7 @@ describe("SecretsTable", () => {
       screen.getByRole("button", { name: Label.ACTION_MENU }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.GRANT_BUTTON }),
+      screen.getByRole("menuitem", { name: Label.GRANT_BUTTON }),
     );
     expect(router.state.location.search).toEqual(
       "?panel=grant-secret&secret=secret%3Aaabbccdd",

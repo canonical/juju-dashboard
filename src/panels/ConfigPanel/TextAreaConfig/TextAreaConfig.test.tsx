@@ -122,7 +122,7 @@ describe("TextAreaConfig", () => {
       screen.getByRole("button", { name: SecretsPickerLabel.CHOOSE_SECRET }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: "secret1 (aabbccdd)" }),
+      screen.getByRole("menuitem", { name: "secret1 (aabbccdd)" }),
     );
     expect(setNewValue).toHaveBeenCalledWith("text option", "secret:aabbccdd");
   });
