@@ -1,6 +1,10 @@
 export enum TestId {
-  MODEL_NAME = "model-name",
-  CLOUD = "cloud",
-  REGION = "region",
-  CREDENTIAL = "credential",
+  MANDATORY_DETAILS_FORM = "mandatory-details-form",
+}
+
+export enum Label {
+  MODEL_NAME = "Model name",
+  CLOUD = "Cloud",
+  REGION = "Region (optional)",
+  CREDENTIAL = "Credential",
 }

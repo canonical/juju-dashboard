@@ -32,23 +32,19 @@ const stepDefinitions: Array<{
   key: StepType;
   title: string;
   content: JSX.Element;
-  formId: string;
 }> = [
   {
     key: StepType.MANDATORY_DETAILS,
-    formId: StepType.MANDATORY_DETAILS,
     title: "Mandatory Details",
     content: <MandatoryDetails />,
   },
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
-    formId: StepType.CONFIGURATION_CONSTRAINTS,
     title: "Configuration & Constraints (optional)",
     content: <div>Configuration and constraints form goes here.</div>,
   },
   {
     key: StepType.ACCESS_MANAGEMENT,
-    formId: StepType.ACCESS_MANAGEMENT,
     title: "Access Management (optional)",
     content: <div>Access management form goes here.</div>,
   },
@@ -118,7 +114,7 @@ const AddModel: FC = () => {
           >
             <FormikFormData
               onValidate={setIsValid}
-              id={currentStep.formId}
+              id={currentStep.key}
               className={currentStep.key}
             >
               {currentStep.content}
@@ -151,7 +147,7 @@ const AddModel: FC = () => {
           <ActionButton
             appearance="positive"
             type="submit"
-            form={currentStep.formId}
+            form={currentStep.key}
             disabled={!isValid || true}
           >
             {Label.CREATE_BUTTON}

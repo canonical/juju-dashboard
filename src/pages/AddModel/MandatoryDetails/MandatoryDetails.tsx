@@ -18,7 +18,7 @@ import { testId } from "testing/utils";
 
 import type { AddModelFormState } from "../types";
 
-import { TestId } from "./types";
+import { TestId, Label } from "./types";
 
 const toCloudOptions = (
   cloudInfo: CloudState["clouds"],
@@ -76,7 +76,12 @@ const MandatoryDetails = (): JSX.Element => {
   }, [values.cloud, defaultCloud, setFieldValue]);
 
   useEffect(() => {
-    if (wsControllerURL && activeUser && defaultCloud) {
+    if (
+      wsControllerURL &&
+      activeUser &&
+      typeof defaultCloud === "string" &&
+      defaultCloud.length > 0
+    ) {
       dispatch(
         jujuActions.fetchUserCredentials({
           wsControllerURL,
@@ -93,7 +98,12 @@ const MandatoryDetails = (): JSX.Element => {
   );
 
   const handleCloudChange = (nextCloud: string): void => {
-    if (wsControllerURL && activeUser) {
+    if (
+      wsControllerURL &&
+      activeUser &&
+      typeof nextCloud === "string" &&
+      nextCloud.length > 0
+    ) {
       dispatch(
         jujuActions.fetchUserCredentials({
           wsControllerURL,
@@ -105,28 +115,26 @@ const MandatoryDetails = (): JSX.Element => {
   };
 
   return (
-    <>
+    <div {...testId(TestId.MANDATORY_DETAILS_FORM)}>
       <FormikField
         autoFocus
         label={
           <>
-            Model name
-            <div className="model-name-description p-text--small u-no-margin--bottom">
+            <span className="u-sv1">{Label.MODEL_NAME}</span>
+            <span className="p-form-help-text">
               Model names may only contain lowercase letters, digits and
               hyphens, and may not start with a hyphen.
-            </div>
+            </span>
           </>
         }
         name="modelName"
         type="text"
-        {...testId(TestId.MODEL_NAME)}
         required
       />
       <FormikField
         component={Select}
-        label="Cloud"
+        label={Label.CLOUD}
         name="cloud"
-        {...testId(TestId.CLOUD)}
         required
         options={cloudOptions}
         onChange={(ev) => {
@@ -139,22 +147,20 @@ const MandatoryDetails = (): JSX.Element => {
       />
       <FormikField
         component={Select}
-        label="Region (optional)"
+        label={Label.REGION}
         name="region"
         disabled={!values.cloud}
         options={toRegionOptions(cloudInfo, values.cloud || defaultCloud)}
-        {...testId(TestId.REGION)}
       />
       <FormikField
         component={Select}
-        label="Credential"
+        label={Label.CREDENTIAL}
         name="credential"
-        {...testId(TestId.CREDENTIAL)}
         disabled={userCredentials.loading || !values.cloud}
         required
         options={credentialsOptions}
       />
-    </>
+    </div>
   );
 };
 

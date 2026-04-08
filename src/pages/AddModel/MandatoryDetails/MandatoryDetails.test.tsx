@@ -1,7 +1,6 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
-import * as Yup from "yup";
 
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
@@ -14,9 +13,8 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { createStore, renderComponent } from "testing/utils";
 
-import type { AddModelFormState } from "../types";
-
 import MandatoryDetails from "./MandatoryDetails";
+import { Label } from "./types";
 
 describe("MandatoryDetails", () => {
   let state: RootState;
@@ -61,65 +59,53 @@ describe("MandatoryDetails", () => {
     });
   });
 
-  const renderWithFormik = (initialValues: AddModelFormState): void => {
-    const validationSchema = Yup.object().shape({
-      modelName: Yup.string().required(),
-      cloud: Yup.string().required(),
-      region: Yup.string(),
-      credential: Yup.string().required(),
-    });
-
+  it("renders properly with defaults", () => {
     renderComponent(
       <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
+        initialValues={{
+          modelName: "",
+          cloud: "",
+          region: "",
+          credential: "",
+        }}
         onSubmit={vi.fn()}
       >
         <MandatoryDetails />
       </Formik>,
       { state },
     );
-  };
 
-  it("renders properly with defaults", () => {
-    renderWithFormik({
-      modelName: "",
-      cloud: "",
-      region: "",
-      credential: "",
-    });
-
-    expect(screen.getByLabelText(/Model name/)).toHaveValue("");
-    expect(screen.getByLabelText("Cloud")).toHaveValue("cloud-aws");
-    expect(screen.getByLabelText("Region (optional)")).toHaveValue("");
-    expect(screen.getByLabelText("Credential")).toHaveValue("aws-cred");
+    expect(screen.getByLabelText(new RegExp(Label.MODEL_NAME))).toHaveValue("");
+    expect(screen.getByLabelText(Label.CLOUD)).toHaveValue("cloud-aws");
+    expect(screen.getByLabelText(Label.REGION)).toHaveValue("");
+    expect(screen.getByLabelText(Label.CREDENTIAL)).toHaveValue("aws-cred");
   });
 
   it("renders saved form values", () => {
-    renderWithFormik({
-      modelName: "my-model",
-      cloud: "cloud-gce",
-      region: "europe-west1",
-      credential: "gce-cred",
-    });
-
-    expect(screen.getByLabelText(/Model name/)).toHaveValue("my-model");
-    expect(screen.getByLabelText("Cloud")).toHaveValue("cloud-gce");
-    expect(screen.getByLabelText("Region (optional)")).toHaveValue(
-      "europe-west1",
+    renderComponent(
+      <Formik
+        initialValues={{
+          modelName: "my-model",
+          cloud: "cloud-gce",
+          region: "europe-west1",
+          credential: "gce-cred",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <MandatoryDetails />
+      </Formik>,
+      { state },
     );
-    expect(screen.getByLabelText("Credential")).toHaveValue("gce-cred");
+    expect(screen.getByLabelText(new RegExp(Label.MODEL_NAME))).toHaveValue(
+      "my-model",
+    );
+    expect(screen.getByLabelText(Label.CLOUD)).toHaveValue("cloud-gce");
+    expect(screen.getByLabelText(Label.REGION)).toHaveValue("europe-west1");
+    expect(screen.getByLabelText(Label.CREDENTIAL)).toHaveValue("gce-cred");
   });
 
   it("fetches credentials on initial load when cloud is set", async () => {
     const [store, actions] = createStore(state, { trackActions: true });
-    const validationSchema = Yup.object().shape({
-      modelName: Yup.string().required(),
-      cloud: Yup.string().required(),
-      region: Yup.string(),
-      credential: Yup.string().required(),
-    });
-
     renderComponent(
       <Formik
         initialValues={{
@@ -128,7 +114,6 @@ describe("MandatoryDetails", () => {
           region: "",
           credential: "",
         }}
-        validationSchema={validationSchema}
         onSubmit={vi.fn()}
       >
         <MandatoryDetails />
@@ -151,13 +136,6 @@ describe("MandatoryDetails", () => {
 
   it("changes region options and fetches credentials when cloud changes", async () => {
     const [store, actions] = createStore(state, { trackActions: true });
-    const validationSchema = Yup.object().shape({
-      modelName: Yup.string().required(),
-      cloud: Yup.string().required(),
-      region: Yup.string(),
-      credential: Yup.string().required(),
-    });
-
     renderComponent(
       <Formik
         initialValues={{
@@ -166,7 +144,6 @@ describe("MandatoryDetails", () => {
           region: "europe-west1",
           credential: "gce-cred",
         }}
-        validationSchema={validationSchema}
         onSubmit={vi.fn()}
       >
         <MandatoryDetails />
@@ -174,12 +151,13 @@ describe("MandatoryDetails", () => {
       { store },
     );
 
-    expect(screen.getByLabelText("Cloud")).toHaveValue("cloud-gce");
-    expect(screen.getByLabelText("Region (optional)")).toHaveValue(
-      "europe-west1",
-    );
+    expect(screen.getByLabelText(Label.CLOUD)).toHaveValue("cloud-gce");
+    expect(screen.getByLabelText(Label.REGION)).toHaveValue("europe-west1");
 
-    await userEvent.selectOptions(screen.getByLabelText("Cloud"), "cloud-aws");
+    await userEvent.selectOptions(
+      screen.getByLabelText(Label.CLOUD),
+      "cloud-aws",
+    );
     await waitFor(() => {
       expect(
         actions.find(
@@ -193,6 +171,6 @@ describe("MandatoryDetails", () => {
         }),
       );
     });
-    expect(screen.getByLabelText("Region (optional)")).toHaveValue("");
+    expect(screen.getByLabelText(Label.REGION)).toHaveValue("");
   });
 });
