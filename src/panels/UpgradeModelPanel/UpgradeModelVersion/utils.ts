@@ -23,9 +23,9 @@ export const versions: Version[] = [
   {
     date: "2006-01-02",
     lts: true,
-    version: "3.6.14",
+    version: "3.6.21",
     "link-to-release": "https://github.com/juju/juju/releases/tag/v3.6.14",
-    "requires-migration": true,
+    "requires-migration": false,
   },
   {
     date: "2006-01-02",

@@ -31,8 +31,10 @@ const UpgradeModelPanel: FC = () => {
             setRestarted(true);
             setVersion(null);
           }}
+          modelName={modelName}
           onRemovePanelQueryParams={handleRemovePanelQueryParams}
           version={version}
+          qualifier={qualifier}
         />
       ) : (
         <UpgradeModelVersion
