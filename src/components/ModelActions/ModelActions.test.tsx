@@ -100,7 +100,7 @@ describe("ModelActions", () => {
 
     await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
     expect(
-      screen.queryByRole("button", { name: Label.ACCESS }),
+      screen.queryByRole("menuitem", { name: Label.ACCESS }),
     ).toBeInTheDocument();
   });
 
@@ -115,7 +115,7 @@ describe("ModelActions", () => {
     );
 
     await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
-    await userEvent.click(screen.getByRole("button", { name: Label.ACCESS }));
+    await userEvent.click(screen.getByRole("menuitem", { name: Label.ACCESS }));
     expect(new URLSearchParams(router.state.location.search)).toStrictEqual(
       new URLSearchParams({
         model: "test1",
@@ -134,10 +134,9 @@ describe("ModelActions", () => {
     );
 
     await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
-    expect(screen.getByRole("link", { name: Label.ACCESS })).toHaveAttribute(
-      "aria-disabled",
-      "true",
-    );
+    expect(
+      screen.getByRole("menuitem", { name: Label.ACCESS }),
+    ).toHaveAttribute("aria-disabled", "true");
   });
 
   it("shows option to destroy a model if user has permission", async () => {
@@ -154,7 +153,7 @@ describe("ModelActions", () => {
 
     await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
     expect(
-      screen.queryByRole("button", { name: Label.DESTROY }),
+      screen.queryByRole("menuitem", { name: Label.DESTROY }),
     ).toBeInTheDocument();
   });
 
@@ -171,7 +170,9 @@ describe("ModelActions", () => {
     );
 
     await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
-    await userEvent.click(screen.getByRole("button", { name: Label.DESTROY }));
+    await userEvent.click(
+      screen.getByRole("menuitem", { name: Label.DESTROY }),
+    );
     expect(
       screen.getByRole("dialog", { name: "Destroy model test1" }),
     ).toBeInTheDocument();
@@ -202,10 +203,9 @@ describe("ModelActions", () => {
     );
 
     await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
-    expect(screen.getByRole("button", { name: Label.DESTROY })).toHaveAttribute(
-      "aria-disabled",
-      "true",
-    );
+    expect(
+      screen.getByRole("menuitem", { name: Label.DESTROY }),
+    ).toHaveAttribute("aria-disabled", "true");
   });
 
   it("disables the option to destroy a model if the model is a controller model", async () => {
@@ -260,10 +260,9 @@ describe("ModelActions", () => {
     );
 
     await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
-    expect(screen.getByRole("button", { name: Label.DESTROY })).toHaveAttribute(
-      "aria-disabled",
-      "true",
-    );
+    expect(
+      screen.getByRole("menuitem", { name: Label.DESTROY }),
+    ).toHaveAttribute("aria-disabled", "true");
   });
 
   describe("upgrade model", () => {
@@ -332,7 +331,7 @@ describe("ModelActions", () => {
       );
       await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
       expect(
-        screen.getByRole("button", { name: Label.UPGRADE }),
+        screen.getByRole("menuitem", { name: Label.UPGRADE }),
       ).toBeInTheDocument();
     });
 
@@ -349,7 +348,7 @@ describe("ModelActions", () => {
       );
       await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
       await userEvent.click(
-        screen.getByRole("button", { name: Label.UPGRADE }),
+        screen.getByRole("menuitem", { name: Label.UPGRADE }),
       );
       expect(new URLSearchParams(router.state.location.search)).toStrictEqual(
         new URLSearchParams({
@@ -377,7 +376,7 @@ describe("ModelActions", () => {
       );
       await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
       expect(
-        screen.queryByRole("button", { name: Label.UPGRADE }),
+        screen.queryByRole("menuitem", { name: Label.UPGRADE }),
       ).not.toBeInTheDocument();
     });
 
@@ -395,7 +394,7 @@ describe("ModelActions", () => {
       );
       await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
       expect(
-        screen.getByRole("button", { name: Label.UPGRADE }),
+        screen.getByRole("menuitem", { name: Label.UPGRADE }),
       ).toHaveAttribute("aria-disabled");
     });
   });

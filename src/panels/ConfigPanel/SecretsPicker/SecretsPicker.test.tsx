@@ -123,7 +123,7 @@ describe("SecretsPicker", () => {
       screen.getByRole("alert", { name: Label.LOADING }),
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: "secret1 (aabbccdd)" }),
+      screen.queryByRole("menuitem", { name: "secret1 (aabbccdd)" }),
     ).not.toBeInTheDocument();
   });
 
@@ -139,7 +139,7 @@ describe("SecretsPicker", () => {
       screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
     expect(
-      screen.getByRole("button", { name: "secret1 (aabbccdd)" }),
+      screen.getByRole("menuitem", { name: "secret1 (aabbccdd)" }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("alert", { name: Label.LOADING }),
@@ -169,10 +169,10 @@ describe("SecretsPicker", () => {
       screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
     expect(
-      screen.getByRole("button", { name: "secret1 (aabbccdd)" }),
+      screen.getByRole("menuitem", { name: "secret1 (aabbccdd)" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "eeffgghh" }),
+      screen.getByRole("menuitem", { name: "eeffgghh" }),
     ).toBeInTheDocument();
   });
 
@@ -201,10 +201,10 @@ describe("SecretsPicker", () => {
       screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
     expect(
-      screen.getByRole("button", { name: "secret1 (aabbccdd)" }),
+      screen.getByRole("menuitem", { name: "secret1 (aabbccdd)" }),
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: "eeffgghh" }),
+      screen.queryByRole("menuitem", { name: "eeffgghh" }),
     ).not.toBeInTheDocument();
   });
 
@@ -218,7 +218,7 @@ describe("SecretsPicker", () => {
     await userEvent.click(
       screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
-    await userEvent.click(screen.getByRole("button", { name: "eeffgghh" }));
+    await userEvent.click(screen.getByRole("menuitem", { name: "eeffgghh" }));
     expect(setValue).toHaveBeenCalledWith("secret:eeffgghh");
   });
 
@@ -235,7 +235,7 @@ describe("SecretsPicker", () => {
       screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
     expect(
-      screen.queryByRole("button", { name: Label.BUTTON_ADD }),
+      screen.queryByRole("menuitem", { name: Label.BUTTON_ADD }),
     ).not.toBeInTheDocument();
   });
 
@@ -258,7 +258,7 @@ describe("SecretsPicker", () => {
       screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
     expect(
-      screen.queryByRole("button", { name: Label.BUTTON_ADD }),
+      screen.queryByRole("menuitem", { name: Label.BUTTON_ADD }),
     ).not.toBeInTheDocument();
     expect(screen.getByText(Label.NONE)).toBeInTheDocument();
   });
@@ -282,7 +282,7 @@ describe("SecretsPicker", () => {
       screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
     expect(
-      screen.getByRole("button", { name: Label.BUTTON_ADD }),
+      screen.getByRole("menuitem", { name: Label.BUTTON_ADD }),
     ).toBeInTheDocument();
     expect(screen.queryByText(Label.NONE)).not.toBeInTheDocument();
   });
@@ -300,7 +300,7 @@ describe("SecretsPicker", () => {
       screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.BUTTON_ADD }),
+      screen.getByRole("menuitem", { name: Label.BUTTON_ADD }),
     );
     expect(
       screen.getByRole("dialog", { name: Label.MODAL_TITLE }),
@@ -320,7 +320,7 @@ describe("SecretsPicker", () => {
       screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.BUTTON_ADD }),
+      screen.getByRole("menuitem", { name: Label.BUTTON_ADD }),
     );
     expect(
       screen.getByRole("dialog", { name: Label.MODAL_TITLE }),
@@ -357,7 +357,7 @@ describe("SecretsPicker", () => {
       screen.getByRole("button", { name: Label.CHOOSE_SECRET }),
     );
     await userEvent.click(
-      screen.getByRole("button", { name: Label.BUTTON_ADD }),
+      screen.getByRole("menuitem", { name: Label.BUTTON_ADD }),
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: `${FieldsLabel.KEY} 1` }),
