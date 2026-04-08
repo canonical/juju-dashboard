@@ -196,6 +196,11 @@ function runModelPoller(
       return;
     } else if (action.type === appThunks.logOut.pending.type) {
       for (const wsControllerURL of connections) {
+        reduxStore.dispatch(
+          modelListMiddleware.actions.stop({
+            wsControllerURL,
+          }),
+        );
         void connections.logout(wsControllerURL);
       }
       return next(action);
