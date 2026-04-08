@@ -570,7 +570,9 @@ function runModelPoller(
                   errors: response.error,
                 })
               : jujuActions.updateUserCredentials({
-                  userCredentials: response.results[0].result ?? [],
+                  userCredentials: {
+                    [cloudTag]: response.results[0].result ?? [],
+                  },
                   wsControllerURL,
                 }),
           );

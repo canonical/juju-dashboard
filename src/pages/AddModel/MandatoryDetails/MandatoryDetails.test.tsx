@@ -49,10 +49,10 @@ describe("MandatoryDetails", () => {
           loaded: true,
         }),
         userCredentials: userCredentialsStateFactory.build({
-          credentials: [
-            "cloudcred-aws_admin_aws-cred",
-            "cloudcred-gce_user_gce-cred",
-          ],
+          credentials: {
+            "cloud-aws": ["cloudcred-aws_admin_aws-cred"],
+            "cloud-gce": ["cloudcred-gce_user_gce-cred"],
+          },
           loaded: true,
         }),
       }),
@@ -105,6 +105,7 @@ describe("MandatoryDetails", () => {
   });
 
   it("fetches credentials on initial load when cloud is set", async () => {
+    state.juju.userCredentials = userCredentialsStateFactory.build();
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(
       <Formik
@@ -134,8 +135,7 @@ describe("MandatoryDetails", () => {
     });
   });
 
-  it("changes region options and fetches credentials when cloud changes", async () => {
-    const [store, actions] = createStore(state, { trackActions: true });
+  it("changes region and credential options when cloud changes", async () => {
     renderComponent(
       <Formik
         initialValues={{
@@ -148,7 +148,7 @@ describe("MandatoryDetails", () => {
       >
         <MandatoryDetails />
       </Formik>,
-      { store },
+      { state },
     );
 
     expect(screen.getByLabelText(Label.CLOUD)).toHaveValue("cloud-gce");
@@ -158,19 +158,7 @@ describe("MandatoryDetails", () => {
       screen.getByLabelText(Label.CLOUD),
       "cloud-aws",
     );
-    await waitFor(() => {
-      expect(
-        actions.find(
-          (dispatch) => dispatch.type === jujuActions.fetchUserCredentials.type,
-        ),
-      ).toMatchObject(
-        jujuActions.fetchUserCredentials({
-          wsControllerURL: "wss://controller.example.com",
-          userTag: "user-eggman@external",
-          cloudTag: "cloud-aws",
-        }),
-      );
-    });
     expect(screen.getByLabelText(Label.REGION)).toHaveValue("");
+    expect(screen.getByLabelText(Label.CREDENTIAL)).toHaveValue("aws-cred");
   });
 });

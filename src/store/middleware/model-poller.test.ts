@@ -1491,7 +1491,7 @@ describe("model poller", () => {
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateUserCredentials({
-        userCredentials: ["credential-aws"],
+        userCredentials: { "cloud-aws": ["credential-aws"] },
         wsControllerURL: "wss://example.com",
       }),
     );
@@ -1540,7 +1540,7 @@ describe("model poller", () => {
     );
     expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
       jujuActions.updateUserCredentials({
-        userCredentials: ["credential-aws"],
+        userCredentials: { "cloud-aws": ["credential-aws"] },
         wsControllerURL: "wss://example.com",
       }),
     );

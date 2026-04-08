@@ -59,7 +59,8 @@ const toRegionOptions = (
 
 const MandatoryDetails = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const { values, setFieldValue } = useFormikContext<AddModelFormState>();
+  const { values, setFieldValue, setValues } =
+    useFormikContext<AddModelFormState>();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const activeUser = useAppSelector((state) =>
     getActiveUserTag(state, wsControllerURL),
@@ -76,31 +77,41 @@ const MandatoryDetails = (): JSX.Element => {
   }, [values.cloud, defaultCloud, setFieldValue]);
 
   useEffect(() => {
+    const initialCloud = values.cloud || defaultCloud;
     if (
       wsControllerURL &&
       activeUser &&
-      typeof defaultCloud === "string" &&
-      defaultCloud.length > 0
+      !userCredentials.credentials[initialCloud] &&
+      typeof initialCloud === "string" &&
+      initialCloud.length > 0
     ) {
       dispatch(
         jujuActions.fetchUserCredentials({
           wsControllerURL,
           userTag: activeUser,
-          cloudTag: defaultCloud,
+          cloudTag: initialCloud,
         }),
       );
     }
-  }, [dispatch, wsControllerURL, activeUser, defaultCloud]);
+  }, [
+    dispatch,
+    wsControllerURL,
+    activeUser,
+    defaultCloud,
+    userCredentials.credentials,
+    values.cloud,
+  ]);
 
   const credentialsOptions = useMemo(
-    () => toCredentialOptions(userCredentials.credentials),
-    [userCredentials.credentials],
+    () => toCredentialOptions(userCredentials.credentials[values.cloud] || []),
+    [userCredentials, values.cloud],
   );
 
   const handleCloudChange = (nextCloud: string): void => {
     if (
       wsControllerURL &&
       activeUser &&
+      !userCredentials.credentials[nextCloud] &&
       typeof nextCloud === "string" &&
       nextCloud.length > 0
     ) {
@@ -139,9 +150,12 @@ const MandatoryDetails = (): JSX.Element => {
         options={cloudOptions}
         onChange={(ev) => {
           const nextCloud = String(ev.target.value);
-          void setFieldValue("cloud", nextCloud);
-          void setFieldValue("region", "");
-          void setFieldValue("credential", "");
+          void setValues((prevValues) => ({
+            ...prevValues,
+            cloud: nextCloud,
+            region: "",
+            credential: "",
+          }));
           handleCloudChange(nextCloud);
         }}
       />

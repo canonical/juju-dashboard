@@ -568,13 +568,13 @@ describe("reducers", () => {
   it("updateUserCredentials", () => {
     const state = jujuStateFactory.build({
       userCredentials: userCredentialsStateFactory.build({
-        credentials: [],
+        credentials: {},
         errors: null,
         loaded: false,
         loading: true,
       }),
     });
-    const credentials = ["credential-1", "credential-2"];
+    const credentials = { "cloud-aws": ["credential-1", "credential-2"] };
     expect(
       reducer(
         state,
@@ -597,7 +597,7 @@ describe("reducers", () => {
   it("setUserCredentialsErrors", () => {
     const state = jujuStateFactory.build({
       userCredentials: userCredentialsStateFactory.build({
-        credentials: [],
+        credentials: {},
         errors: null,
         loaded: false,
         loading: true,
@@ -614,7 +614,7 @@ describe("reducers", () => {
     ).toStrictEqual({
       ...state,
       userCredentials: userCredentialsStateFactory.build({
-        credentials: [],
+        credentials: {},
         errors: "Uh oh!",
         loaded: true,
         loading: false,

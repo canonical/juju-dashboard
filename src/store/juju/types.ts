@@ -99,7 +99,7 @@ export type CloudState = {
 };
 
 export type UserCredentialsState = {
-  credentials: string[];
+  credentials: Record<string, string[]>;
   errors: null | string | unknown;
   loading: boolean;
   loaded: boolean;

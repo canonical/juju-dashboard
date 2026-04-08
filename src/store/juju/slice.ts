@@ -146,7 +146,7 @@ const slice = createSlice({
       loading: false,
     },
     userCredentials: {
-      credentials: [],
+      credentials: {},
       errors: null,
       loaded: false,
       loading: false,
@@ -576,7 +576,7 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         {
-          userCredentials: string[];
+          userCredentials: Record<string, string[]>;
         } & WsControllerURLParam
       >,
     ) => {

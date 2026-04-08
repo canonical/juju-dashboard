@@ -115,7 +115,7 @@ export const secretsStateFactory = Factory.define<SecretsState>(() => ({}));
 
 export const userCredentialsStateFactory = Factory.define<UserCredentialsState>(
   () => ({
-    credentials: [],
+    credentials: {},
     errors: null,
     loaded: false,
     loading: false,

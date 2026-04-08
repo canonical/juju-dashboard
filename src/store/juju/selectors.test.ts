@@ -3299,12 +3299,12 @@ describe("getUserCredentialsState", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         userCredentials: userCredentialsStateFactory.build({
-          credentials: [],
+          credentials: {},
         }),
       }),
     });
     expect(getUserCredentialsState(state)).toStrictEqual({
-      credentials: [],
+      credentials: {},
       errors: null,
       loaded: false,
       loading: false,
