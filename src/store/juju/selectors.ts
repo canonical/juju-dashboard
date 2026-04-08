@@ -1369,7 +1369,7 @@ export const getUnitMachine = createSelector(
 export const getSupportedJujuVersions = createSelector(
   [slice, (_state, wsControllerURL: string): string => wsControllerURL],
   (state, wsControllerURL) =>
-    state?.supportedJujuVersions[wsControllerURL] ?? {
+    state.supportedJujuVersions[wsControllerURL] ?? {
       loading: false,
       error: null,
       data: null,

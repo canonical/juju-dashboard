@@ -49,7 +49,7 @@ export default createSourceMiddleware<
         }
         return versions;
       },
-      { interval: { minutes: 10 } },
+      { interval: { minutes: 24 * 60 } },
     );
   },
   {
