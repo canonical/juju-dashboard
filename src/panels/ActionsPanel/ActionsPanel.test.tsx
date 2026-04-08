@@ -121,7 +121,7 @@ describe("ActionsPanel", () => {
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
   });
 
   it("updates the title & unit list based on the number of units selected", async () => {
@@ -154,11 +154,11 @@ describe("ActionsPanel", () => {
     });
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" }),
     );
@@ -171,7 +171,7 @@ describe("ActionsPanel", () => {
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("radio", { name: "add-disk" }),
     );
@@ -196,11 +196,11 @@ describe("ActionsPanel", () => {
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
+    ).not.toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" }),
     );
@@ -224,11 +224,11 @@ describe("ActionsPanel", () => {
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
+    ).not.toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" }),
     );
@@ -261,7 +261,7 @@ describe("ActionsPanel", () => {
     );
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
+    ).not.toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" }),
     );
@@ -327,11 +327,11 @@ describe("ActionsPanel", () => {
     renderComponent(<ActionsPanel />, { path, url, state });
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).toBeDisabled();
+    ).toHaveAttribute("aria-disabled");
     await userEvent.click(await screen.findByRole("radio", { name: "pause" }));
     expect(
       await screen.findByRole("button", { name: "Run action" }),
-    ).not.toBeDisabled();
+    ).not.toHaveAttribute("aria-disabled");
     await userEvent.click(
       await screen.findByRole("button", { name: "Run action" }),
     );

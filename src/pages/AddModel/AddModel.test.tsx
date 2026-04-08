@@ -130,7 +130,7 @@ describe("AddModel page", () => {
     );
     expect(
       screen.getByRole("button", { name: Label.CREATE_BUTTON }),
-    ).toHaveAttribute("disabled");
+    ).toHaveAttribute("aria-disabled");
   });
 
   it("navigates to steps when clicking step titles", async () => {
