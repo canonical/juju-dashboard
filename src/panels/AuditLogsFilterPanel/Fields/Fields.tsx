@@ -4,7 +4,6 @@ import { Field, useFormikContext } from "formik";
 import type { JSX } from "react";
 
 import AutocompleteField from "components/AutocompleteField";
-import AutocompleteInput from "components/AutocompleteInput";
 import { useModelIndexParams } from "components/hooks";
 import { DATETIME_LOCAL } from "consts";
 import {
@@ -69,7 +68,6 @@ const Fields = (): JSX.Element => {
       <AutocompleteField
         label={Label.USER}
         name="user"
-        component={AutocompleteInput}
         options={users.map((user) => ({
           value: user,
           label: user,
@@ -80,7 +78,6 @@ const Fields = (): JSX.Element => {
           help='A model name in the format "controller-name/model-name".'
           label={Label.MODEL}
           name="model"
-          component={AutocompleteInput}
           options={models.map((model) => ({
             value: model,
             label: model,
@@ -90,7 +87,6 @@ const Fields = (): JSX.Element => {
       <AutocompleteField
         label={Label.METHOD}
         name="method"
-        component={AutocompleteInput}
         options={methods.map((method) => ({
           value: method,
           label: method,

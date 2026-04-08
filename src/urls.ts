@@ -79,6 +79,8 @@ export const externalURLs = {
     "https://documentation.ubuntu.com/juju/latest/howto/manage-users/index.html#manage-access-at-the-controller-model-application-or-offer-level",
   modelAccess:
     "https://documentation.ubuntu.com/juju/latest/howto/manage-users/#heading--model-access",
+  modelUpgrade:
+    "https://documentation.ubuntu.com/juju/latest/howto/manage-models/#upgrade-a-model",
   newIssue: "https://github.com/canonical/juju-dashboard/issues/new",
   removingOffers:
     "https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/remove-offer/",

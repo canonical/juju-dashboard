@@ -4,6 +4,7 @@ import type { JSX } from "react";
 import { usePanelQueryParams } from "panels/hooks";
 import { getModelDataByUUID, getModelUUIDFromList } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { externalURLs } from "urls";
 
 import type { QueryParams } from "../types";
 
@@ -31,7 +32,6 @@ const UpgradeModelPanelHeader = ({
   );
   const model = useAppSelector((state) => getModelDataByUUID(state, modelUUID));
 
-  // TODO: set the docs link.
   return (
     <div className="p-panel__header is-sticky u-flex-column">
       {back ? (
@@ -55,7 +55,13 @@ const UpgradeModelPanelHeader = ({
         )}
       </h4>
       <div>
-        <a href="#TODO">Model upgrade docs</a>
+        <a
+          href={externalURLs.modelUpgrade}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn about model upgrades
+        </a>
       </div>
     </div>
   );
