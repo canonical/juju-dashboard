@@ -89,7 +89,7 @@ describe("UpgradeModelPanel", () => {
       screen.getByRole("textbox", {
         name: UpgradeModelVersionFieldsLabel.VERSION,
       }),
-      "3.6.14",
+      "3.6.21",
     );
     await userEvent.click(
       await screen.findByRole("button", {

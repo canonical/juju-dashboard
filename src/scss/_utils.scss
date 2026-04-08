@@ -58,6 +58,14 @@
   &-column {
     flex-direction: column;
   }
+
+  &-content-center {
+    align-content: center;
+  }
+
+  &-content-end {
+    align-content: end;
+  }
 }
 
 .p-tooltip--constrain-width .p-tooltip__message {

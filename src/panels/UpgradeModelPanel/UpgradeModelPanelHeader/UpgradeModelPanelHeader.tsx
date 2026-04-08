@@ -39,7 +39,11 @@ const UpgradeModelPanelHeader = ({
           <Button
             appearance="link"
             className="u-no-margin--bottom"
-            onClick={back}
+            onClick={(event) => {
+              event.stopPropagation();
+              back();
+            }}
+            type="button"
           >
             &lt; {Label.BACK}
           </Button>

@@ -10,8 +10,10 @@ import type { AsideProps } from "components/Aside";
 
 export type PanelProps = {
   checkCanClose?: (e: React.KeyboardEvent | React.MouseEvent) => boolean;
+  contentClassName?: string;
   drawer?: ReactNode;
   panelClassName?: string;
+  scrollingContentClassName?: string;
   splitContent?: ReactNode;
   title?: ReactNode;
   titleId?: string;
@@ -61,8 +63,10 @@ const Panel = forwardRef<HTMLDivElement, Props>(
     {
       checkCanClose,
       children,
+      contentClassName,
       drawer,
       panelClassName,
+      scrollingContentClassName,
       splitContent,
       title,
       titleId,
@@ -108,7 +112,14 @@ const Panel = forwardRef<HTMLDivElement, Props>(
     const defaultTitleId = useId();
     const content = (
       <>
-        <div className="side-panel__content-scrolling">{children}</div>
+        <div
+          className={classNames(
+            "side-panel__content-scrolling",
+            scrollingContentClassName,
+          )}
+        >
+          {children}
+        </div>
         {drawer ? <div className="side-panel__drawer">{drawer}</div> : null}
       </>
     );
@@ -137,7 +148,9 @@ const Panel = forwardRef<HTMLDivElement, Props>(
       >
         <VanillaPanel
           className={classNames("side-panel", panelClassName)}
-          contentClassName={props.isSplit ? "aside-split-wrapper" : null}
+          contentClassName={classNames(contentClassName, {
+            "aside-split-wrapper": props.isSplit,
+          })}
           forwardRef={ref}
           {...headerProps}
         >

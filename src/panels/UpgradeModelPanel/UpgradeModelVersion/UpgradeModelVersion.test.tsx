@@ -235,15 +235,15 @@ describe("UpgradeModelVersion", () => {
     );
     await userEvent.type(
       screen.getByRole("textbox", { name: FieldsLabel.VERSION }),
-      "3.6.14",
+      "3.6.21",
     );
     await userEvent.click(screen.getByRole("button", { name: Label.SUBMIT }));
     expect(setVersion).toHaveBeenCalledWith({
       date: "2006-01-02",
       lts: true,
-      version: "3.6.14",
+      version: "3.6.21",
       "link-to-release": "https://github.com/juju/juju/releases/tag/v3.6.14",
-      "requires-migration": true,
+      "requires-migration": false,
     });
   });
 });
