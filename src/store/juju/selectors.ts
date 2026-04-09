@@ -1365,3 +1365,13 @@ export const getUnitMachine = createSelector(
       ? getUnitMachineUtil(unitId, applications, machines)
       : null,
 );
+
+export const getSupportedJujuVersions = createSelector(
+  [slice, (_state, wsControllerURL: string): string => wsControllerURL],
+  (state, wsControllerURL) =>
+    state.supportedJujuVersions[wsControllerURL] ?? {
+      loading: false,
+      error: null,
+      data: null,
+    },
+);

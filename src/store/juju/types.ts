@@ -7,6 +7,7 @@ import type {
   SecretValueResult,
 } from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 
+import type { Source } from "data";
 import type { ControllerInfo } from "juju/jimm/JIMMV3";
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type {
@@ -14,7 +15,13 @@ import type {
   RelationshipTuple,
 } from "juju/jimm/JIMMV4";
 import type { FullStatusWithAnnotations, ModelInfo } from "juju/types";
+import type { SupportedVersion } from "store/middleware/source/jimm-supported-versions";
 import type { GenericItemsState, GenericState } from "store/types";
+
+/**
+ * Data derived from a `Source`.
+ */
+export type SourceData<T> = Pick<Source<T>, "data" | "error" | "loading">;
 
 export type ControllerLocation = {
   cloud?: string;
@@ -136,4 +143,5 @@ export type JujuState = {
   secrets: SecretsState;
   cloudInfo: CloudState;
   selectedApplications: Record<string, ApplicationStatus>;
+  supportedJujuVersions: Record<string, SourceData<SupportedVersion[]>>;
 };

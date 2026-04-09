@@ -10,6 +10,7 @@ import type {
   ListControllersResponse,
   MigrateModelInfo,
   RelationshipTuple,
+  SupportedJujuVersionsResponse,
 } from "./JIMMV4";
 
 export enum Label {
@@ -110,5 +111,17 @@ export const listMigrationTargets = async (
 ): Promise<ListControllersResponse> => {
   return withJimmCheck(conn, async (jimm) =>
     jimm.listMigrationTargets(modelTag),
+  );
+};
+
+/**
+ * Return the list of Juju versions supported by JIMM for bootstrapping new controllers.
+ */
+export const supportedJujuVersions = async (
+  conn: ConnectionWithFacades,
+  minVersion?: string,
+): Promise<SupportedJujuVersionsResponse> => {
+  return withJimmCheck(conn, async (jimm) =>
+    jimm.supportedJujuVersions(minVersion),
   );
 };

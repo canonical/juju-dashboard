@@ -505,4 +505,15 @@ describe("actions", () => {
       payload,
     });
   });
+
+  it("updateSupportedJujuVersions", () => {
+    const payload = {
+      wsControllerURL: "wss://example.com",
+      update: {},
+    };
+    expect(actions.updateSupportedJujuVersions(payload)).toStrictEqual({
+      type: "juju/updateSupportedJujuVersions",
+      payload,
+    });
+  });
 });

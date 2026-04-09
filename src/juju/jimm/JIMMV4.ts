@@ -69,6 +69,20 @@ export type ListControllersResponse = {
   controllers: ControllerInfo[];
 };
 
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/009a969009c1b7d37f9336837664f0f53af3ea9e/pkg/api/params/params.go#L764
+export type VersionElem = {
+  version: string;
+  date: string;
+  "link-to-release": string;
+};
+
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/009a969009c1b7d37f9336837664f0f53af3ea9e/pkg/api/params/params.go#L774
+export type SupportedJujuVersionsResponse = {
+  versions: VersionElem[];
+};
+
 class JIMMV4 extends JIMMV3 {
   static NAME: string;
   static VERSION: number;
@@ -150,6 +164,30 @@ class JIMMV4 extends JIMMV3 {
         version: 4,
         params: {
           "model-tag": modelTag,
+        },
+      };
+      this._transport.write(req, resolve, reject);
+    });
+  }
+
+  /**
+   * Return the list of Juju versions supported by JIMM for bootstrapping new controllers.
+   *
+   * @param minVersion Optional lower bound version filter, versions less than or equal to
+   * will be excluded.
+   *
+   * @see {@link https://github.com/canonical/jimm/blob/009a969009c1b7d37f9336837664f0f53af3ea9e/internal/jujuapi/jimm.go#L848}
+   */
+  async supportedJujuVersions(
+    minVersion?: string,
+  ): Promise<SupportedJujuVersionsResponse> {
+    return new Promise((resolve, reject) => {
+      const req = {
+        type: "JIMM",
+        request: "SupportedJujuVersions",
+        version: 4,
+        params: {
+          "min-version": minVersion,
         },
       };
       this._transport.write(req, resolve, reject);

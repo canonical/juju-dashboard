@@ -4,6 +4,7 @@ import { vi } from "vitest";
 import type { Config } from "store/general/types";
 import { relationshipTupleFactory } from "testing/factories/juju/jimm";
 
+import type { SupportedJujuVersionsResponse } from "./JIMMV4";
 import {
   crossModelQuery,
   endpoints,
@@ -13,6 +14,7 @@ import {
   migrateModel,
   Label,
   listMigrationTargets,
+  supportedJujuVersions,
 } from "./api";
 
 describe("JIMM API", () => {
@@ -392,6 +394,61 @@ describe("JIMM API", () => {
       await expect(
         listMigrationTargets(conn, "my-model"),
       ).rejects.toMatchObject(new Error("Uh oh!"));
+    });
+  });
+
+  describe("supportedJujuVersions", () => {
+    it.for([
+      ["with minVersion", "3.2.1"],
+      ["without minVersion", undefined],
+    ] as const)("fetches supported versions %s", async ([_, minVersion]) => {
+      const versions = [
+        {
+          version: "3.2.2",
+          date: "2026-01-01T00:00:00",
+          "link-to-release": "https://example.com/",
+        },
+      ];
+      const conn = {
+        facades: {
+          jimM: {
+            supportedJujuVersions: vi.fn().mockResolvedValue({
+              versions,
+            } satisfies SupportedJujuVersionsResponse),
+          },
+        },
+      } as unknown as Connection;
+      const response = await supportedJujuVersions(conn, minVersion);
+      expect(
+        conn.facades.jimM.supportedJujuVersions,
+      ).toHaveBeenCalledExactlyOnceWith(minVersion);
+      expect(response).toStrictEqual({
+        versions,
+      });
+    });
+
+    it("handles no JIMM connection", async () => {
+      const conn = {
+        facades: {},
+      } as unknown as Connection;
+      await expect(supportedJujuVersions(conn)).rejects.toThrow(
+        new Error(Label.NO_JIMM),
+      );
+    });
+
+    it("should handle exceptions", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            supportedJujuVersions: vi
+              .fn()
+              .mockRejectedValue(new Error("Uh oh!")),
+          },
+        },
+      } as unknown as Connection;
+      await expect(supportedJujuVersions(conn)).rejects.toThrow(
+        new Error("Uh oh!"),
+      );
     });
   });
 });
