@@ -505,7 +505,12 @@ function runModelPoller(
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
-      const conn = await connections.get(wsControllerURL);
+      const conn = await connections
+        .get(wsControllerURL)
+        .catch((_err) => undefined);
+      if (!conn) {
+        return;
+      }
       try {
         const response = await conn.facades.cloud?.clouds({});
         if (response) {
@@ -548,7 +553,9 @@ function runModelPoller(
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
-      const conn = controllers.get(wsControllerURL);
+      const conn = await connections
+        .get(wsControllerURL)
+        .catch((_err) => undefined);
       if (!conn) {
         return;
       }

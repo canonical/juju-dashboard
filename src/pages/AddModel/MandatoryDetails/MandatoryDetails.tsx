@@ -48,13 +48,15 @@ const EMPTY_OPTION: OptionHTMLAttributes<HTMLOptionElement> = {
 
 const toRegionOptions = (
   cloudInfo: CloudState["clouds"],
-  cloudValue: string,
+  cloudValue: null | string,
 ): OptionHTMLAttributes<HTMLOptionElement>[] => [
   EMPTY_OPTION,
-  ...(cloudInfo?.[cloudValue]?.regions ?? []).map((region) => ({
-    label: region.name,
-    value: region.name,
-  })),
+  ...(cloudValue ? (cloudInfo?.[cloudValue]?.regions ?? []) : []).map(
+    (region) => ({
+      label: region.name,
+      value: region.name,
+    }),
+  ),
 ];
 
 const MandatoryDetails = (): JSX.Element => {
@@ -68,7 +70,8 @@ const MandatoryDetails = (): JSX.Element => {
   const cloudInfo = useAppSelector(getCloudInfoState).clouds;
   const userCredentials = useAppSelector(getUserCredentialsState);
   const cloudOptions = useMemo(() => toCloudOptions(cloudInfo), [cloudInfo]);
-  const defaultCloud = cloudOptions[0]?.value as string;
+  const defaultCloud =
+    typeof cloudOptions[0]?.value === "string" ? cloudOptions[0]?.value : null;
 
   useEffect(() => {
     if (!values.cloud && defaultCloud) {
@@ -81,9 +84,8 @@ const MandatoryDetails = (): JSX.Element => {
     if (
       wsControllerURL &&
       activeUser &&
-      !userCredentials.credentials[initialCloud] &&
-      typeof initialCloud === "string" &&
-      initialCloud.length > 0
+      initialCloud &&
+      !userCredentials.credentials[initialCloud]
     ) {
       dispatch(
         jujuActions.fetchUserCredentials({

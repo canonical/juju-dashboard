@@ -1412,7 +1412,7 @@ describe("model poller", () => {
 
   it("handles no controller when fetching clouds", async () => {
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));
@@ -1499,7 +1499,7 @@ describe("model poller", () => {
 
   it("handles no controller when fetching user credentials", async () => {
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));
