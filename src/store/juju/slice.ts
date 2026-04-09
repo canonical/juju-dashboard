@@ -132,6 +132,7 @@ const slice = createSlice({
     modelFeatures: {},
     modelListLoading: {},
     modelUpgrade: {},
+    modelMigrationTargets: {},
     charms: [],
     rebac: {
       allowed: [],
@@ -773,8 +774,38 @@ const slice = createSlice({
       }
 
       value.loading = payload.update.loading ?? value.loading;
-      value.data = payload.update.data ?? value.data;
-      value.error = payload.update.error ?? value.error;
+      if (payload.update.data !== undefined) {
+        value.data = payload.update.data;
+      }
+      if (payload.update.error !== undefined) {
+        value.error = payload.update.error;
+      }
+    },
+    updateModelMigrationTargets: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        modelUuid: string;
+        update: Partial<SourceData<string[]>>;
+      }>,
+    ) => {
+      let value = state.modelMigrationTargets[payload.modelUuid];
+      if (!value) {
+        state.modelMigrationTargets[payload.modelUuid] = value = {
+          loading: false,
+          data: null,
+          error: null,
+        };
+      }
+
+      value.loading = payload.update.loading ?? value.loading;
+      if (payload.update.data !== undefined) {
+        value.data = payload.update.data;
+      }
+      if (payload.update.error !== undefined) {
+        value.error = payload.update.error;
+      }
     },
     addModelUpgrade: (
       state,

@@ -1389,3 +1389,13 @@ export const getModelUpgrade = createSelector(
   (state, uuid) =>
     uuid && uuid in state.modelUpgrade ? state.modelUpgrade[uuid] : null,
 );
+
+export const getModelMigrationTargets = createSelector(
+  [slice, (_state, modelUuid: string): string => modelUuid],
+  (state, modelUuid) =>
+    state.modelMigrationTargets[modelUuid] ?? {
+      loading: false,
+      error: null,
+      data: null,
+    },
+);
