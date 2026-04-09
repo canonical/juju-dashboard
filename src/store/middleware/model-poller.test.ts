@@ -1,4 +1,5 @@
-import type { Client, Connection, Transport } from "@canonical/jujulib";
+import type { Client, Transport } from "@canonical/jujulib";
+import { Connection } from "@canonical/jujulib";
 import { waitFor } from "@testing-library/dom";
 import type { UnknownAction, MiddlewareAPI, Dispatch } from "redux";
 import type { Mock, MockInstance } from "vitest";
@@ -27,12 +28,7 @@ import {
 } from "testing/factories/juju/juju";
 import { createStore } from "testing/utils";
 
-import {
-  LoginError,
-  ModelsError,
-  modelPollerMiddleware,
-  controllers as modelPollerControllers,
-} from "./model-poller";
+import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
 import sourceMiddleware from "./source";
 import modelListSource from "./source/model-list";
 import type { MockMiddlewareResult } from "./types";
@@ -106,31 +102,30 @@ describe("model poller", () => {
       ),
       dispatch: vi.fn(),
     };
-    conn = {
-      facades: {
-        modelManager: {
-          listModels: vi
-            .fn()
-            .mockImplementation(async () => ({ "user-models": models })),
-          destroyModels: vi.fn().mockResolvedValue({}),
-        },
+    // @ts-expect-error - Connection mocked in `src/testing/setup.ts`.
+    conn = new Connection();
+    conn.facades = {
+      modelManager: {
+        listModels: vi
+          .fn()
+          .mockImplementation(async () => ({ "user-models": models })),
+        destroyModels: vi.fn().mockResolvedValue({}),
       },
-      info: {
-        user: {
-          "controller-access": "admin",
-          "model-access": "admin",
-          "display-name": "Eggman",
-          identity: "user-eggman",
-        },
-      },
-      transport: {} as Transport,
     };
+    conn.info = {
+      user: {
+        "controller-access": "admin",
+        "model-access": "admin",
+        "display-name": "Eggman",
+        identity: "user-eggman",
+      },
+    };
+    conn.transport = {} as Transport;
     juju = {
       logout: vi.fn(),
     } as unknown as Client;
     // Instantiate local auth by default.
     new LocalAuth(fakeStore.dispatch);
-    modelPollerControllers.clear();
   });
 
   const runMiddleware = async (
@@ -296,9 +291,6 @@ describe("model poller", () => {
         wsControllerURL,
         info: conn.info,
       }),
-    );
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      generalActions.updatePingerIntervalId({ wsControllerURL, intervalId }),
     );
     expect(fetchControllerList).toHaveBeenCalledWith(
       wsControllerURL,
@@ -724,9 +716,9 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "setModelSharingPermissions").mockImplementation(
-      vi.fn().mockResolvedValue({ results: [] }),
-    );
+    vi.spyOn(jujuModule, "setModelSharingPermissions").mockResolvedValue({
+      results: [],
+    });
     const middleware = await runMiddleware();
     const action = appActions.updatePermissions({
       action: "grant",
@@ -737,6 +729,7 @@ describe("model poller", () => {
       wsControllerURL: "wss://example.com",
     });
     const response = middleware(next)(action);
+    await vi.runOnlyPendingTimersAsync();
     expect(jujuModule.setModelSharingPermissions).toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();
     return expect(response).resolves.toStrictEqual({ results: [] });
@@ -771,7 +764,7 @@ describe("model poller", () => {
   it("handles no controller when fetching audit events", async () => {
     const events = { events: [] };
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));
@@ -836,7 +829,7 @@ describe("model poller", () => {
   it("handles no controller when fetching cross model query results", async () => {
     const crossModelQueryResponse = { results: {}, errors: {} };
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));
@@ -949,7 +942,7 @@ describe("model poller", () => {
     const tuple = relationshipTupleFactory.build();
     const checkRelationResponse = { allowed: true };
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));
@@ -1058,7 +1051,7 @@ describe("model poller", () => {
       results: [],
     };
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));
@@ -1153,7 +1146,7 @@ describe("model poller", () => {
 
   it("handles no controller when destroying models", async () => {
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
+      error: Label.CONTROLLER_LOGIN_ERROR,
       intervalId,
       juju,
     }));

@@ -1,5 +1,4 @@
 import "@testing-library/jest-dom/vitest";
-import type { Connection } from "@canonical/jujulib";
 import type { DetachedWindowAPI } from "happy-dom";
 import { vi } from "vitest";
 import createFetchMock from "vitest-fetch-mock";
@@ -48,24 +47,35 @@ if (
   );
 }
 
-const connectResponse = {
-  conn: {
-    facades: {
-      secrets: {
-        listSecrets: vi.fn().mockImplementation(() => ({
-          results: [listSecretResultFactory.build()],
-        })),
-      },
+/**
+ * Mock the class to preserve a prototype.
+ * @see {@link https://v3.vitest.dev/guide/mocking.html#classes}
+ */
+const Connection = vi.fn(function () {
+  // @ts-expect-error - Mocking a class.
+  this.facades = {
+    secrets: {
+      listSecrets: vi.fn().mockImplementation(() => ({
+        results: [listSecretResultFactory.build()],
+      })),
     },
-  } as unknown as Connection,
-  logout: vi.fn(),
-};
+  };
+});
 
-vi.mock("@canonical/jujulib", () => ({
-  connect: vi.fn().mockResolvedValue(connectResponse),
-  connectAndLogin: vi.fn().mockReturnValue(connectResponse),
-  fetchModelStatus: vi.fn(),
-}));
+vi.mock("@canonical/jujulib", () => {
+  return {
+    connect: vi.fn().mockResolvedValue({
+      conn: new Connection(),
+      logout: vi.fn(),
+    }),
+    connectAndLogin: vi.fn().mockResolvedValue({
+      conn: new Connection(),
+      logout: vi.fn(),
+    }),
+    fetchModelStatus: vi.fn(),
+    Connection,
+  };
+});
 
 vi.mock("@canonical/jujulib/dist/api/versions", () => ({
   jujuUpdateAvailable: vi.fn(),

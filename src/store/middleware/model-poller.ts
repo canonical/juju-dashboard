@@ -1,15 +1,10 @@
-import type { Client } from "@canonical/jujulib";
 import { unwrapResult } from "@reduxjs/toolkit";
-import * as Sentry from "@sentry/react";
 import { isAction, type Middleware } from "redux";
 
-import { Auth } from "auth";
 import {
-  disableControllerUUIDMasking,
   fetchAndStoreModelStatus,
   fetchControllerList,
   fetchModelInfo,
-  loginWithBakery,
   setModelSharingPermissions,
 } from "juju/api";
 import {
@@ -18,25 +13,23 @@ import {
   crossModelQuery,
   findAuditEvents,
 } from "juju/jimm/api";
-import type { ConnectionWithFacades, DestroyModelErrors } from "juju/types";
+import type { DestroyModelErrors } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { updateModelStatuses } from "store/app/actions";
 import { actions as generalActions } from "store/general";
-import {
-  getAnalyticsEnabled,
-  getAppVersion,
-  getIsJuju,
-  isLoggedIn,
-} from "store/general/selectors";
+import { isLoggedIn } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { getModelList } from "store/juju/selectors";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 import { toErrorString } from "utils";
-import analytics from "utils/analytics";
 import { logger } from "utils/logger";
 
+import {
+  createConnectionMiddleware,
+  type ConnectionManager,
+} from "./connection";
 import modelListMiddleware from "./source/model-list";
 
 export enum LoginError {
@@ -52,15 +45,12 @@ export enum ModelsError {
   LIST_OR_UPDATE_MODELS = "Unable to list or update models.",
 }
 
-export const controllers = new Map<string, ConnectionWithFacades>();
-
-export const modelPollerMiddleware: Middleware<
-  void,
-  RootState,
-  Store["dispatch"]
-> = (reduxStore) => {
-  const jujus = new Map<string, Client>();
-  return (next) => async (action) => {
+function runModelPoller(
+  reduxStore: Parameters<Middleware<void, RootState, Store["dispatch"]>>[0],
+  connections: ConnectionManager,
+  next: (action: unknown) => unknown,
+) {
+  return async (action: unknown): Promise<unknown> => {
     if (!isAction(action)) {
       return next(action);
     }
@@ -73,115 +63,26 @@ export const modelPollerMiddleware: Middleware<
       // Each time we try to log in to a controller we get new macaroons, so
       // first clean up any old auth requests:
       reduxStore.dispatch(generalActions.clearVisitURLs());
-      for (const controllerData of action.payload.controllers) {
-        const [wsControllerURL, credentials] = controllerData;
-        let conn: ConnectionWithFacades | null | undefined = null;
-        let juju: Client | null | undefined = null;
-        let error: unknown = null;
-        let intervalId: null | number = null;
+      for (const [wsControllerURL, _credentials] of action.payload
+        .controllers) {
         reduxStore.dispatch(generalActions.updateLoginLoading(true));
-        const continueConnection = await Auth.instance.beforeControllerConnect({
-          wsControllerURL,
-          credentials,
-        });
-        if (!continueConnection) {
-          reduxStore.dispatch(generalActions.updateLoginLoading(false));
-          return;
-        }
+        let conn = undefined;
         try {
-          ({
-            conn,
-            error,
-            juju,
-            intervalId = null,
-          } = await loginWithBakery(wsControllerURL, credentials));
-          if (conn) {
-            controllers.set(wsControllerURL, conn);
+          conn = await connections.get(wsControllerURL);
+
+          if (!conn.info || Object.keys(conn.info).length === 0) {
+            throw new Error(LoginError.NO_INFO);
           }
-          if (error) {
-            reduxStore.dispatch(
-              generalActions.storeLoginError({
-                wsControllerURL,
-                error: toErrorString(error),
-              }),
-            );
-            return;
-          }
-        } catch (err) {
+        } catch (error) {
           reduxStore.dispatch(
             generalActions.storeLoginError({
               wsControllerURL,
-              error:
-                "Unable to log into the controller, check that the controller address is correct and that it is online.",
+              error: toErrorString(error),
             }),
           );
-          logger.log(LoginError.LOG, err, controllerData);
-          return;
+          continue;
         } finally {
           reduxStore.dispatch(generalActions.updateLoginLoading(false));
-        }
-
-        if (!conn?.info || !Object.keys(conn.info).length) {
-          reduxStore.dispatch(
-            generalActions.storeLoginError({
-              wsControllerURL,
-              error: LoginError.NO_INFO,
-            }),
-          );
-          return;
-        }
-
-        const analyticsEnabled = getAnalyticsEnabled(reduxStore.getState());
-        const isJuju = !!getIsJuju(reduxStore.getState());
-        const dashboardVersion = getAppVersion(reduxStore.getState()) ?? "";
-        const controllerVersion = conn.info.serverVersion ?? "";
-
-        analytics(
-          !!analyticsEnabled,
-          { dashboardVersion, controllerVersion, isJuju: isJuju.toString() },
-          {
-            category: "Authentication",
-            action: `User Login (${Auth.instance.name})`,
-          },
-        );
-
-        // XXX Now that we can register multiple controllers this needs
-        // to be sent per controller.
-        if (analyticsEnabled) {
-          Sentry.setTag("jujuVersion", conn.info.serverVersion);
-        }
-
-        // Remove the getFacade function as this doesn't need to be stored in Redux.
-        delete conn.info.getFacade;
-        // Store the controller info. The transport and facades are not used
-        // (or available by other means) so no need to store them.
-        reduxStore.dispatch(
-          generalActions.updateControllerConnection({
-            wsControllerURL,
-            info: conn.info,
-          }),
-        );
-        const jimmVersion = conn.facades.jimM?.version ?? 0;
-        reduxStore.dispatch(
-          generalActions.updateControllerFeatures({
-            wsControllerURL,
-            features: {
-              auditLogs: jimmVersion >= 4,
-              crossModelQueries: jimmVersion >= 4,
-              rebac: jimmVersion >= 4,
-            },
-          }),
-        );
-        if (juju) {
-          jujus.set(wsControllerURL, juju);
-        }
-        if (intervalId) {
-          reduxStore.dispatch(
-            generalActions.updatePingerIntervalId({
-              wsControllerURL,
-              intervalId,
-            }),
-          );
         }
 
         reduxStore.dispatch(jujuActions.fetchClouds({ wsControllerURL }));
@@ -191,21 +92,11 @@ export const modelPollerMiddleware: Middleware<
           reduxStore.dispatch,
           reduxStore.getState,
         );
-        if (!isJuju) {
-          // This call will be a noop if the user isn't an administrator
-          // on the JIMM controller we're connected to.
-          try {
-            await disableControllerUUIDMasking(conn);
-          } catch (err) {
-            // Silently fail, if this doesn't work then the user isn't authorized
-            // to perform the action.
-          }
-        }
-      }
 
-      for (const wsControllerURL of controllers.keys()) {
         reduxStore.dispatch(
-          modelListMiddleware.actions.start({ wsControllerURL }),
+          modelListMiddleware.actions.start({
+            wsControllerURL,
+          }),
         );
       }
 
@@ -215,7 +106,7 @@ export const modelPollerMiddleware: Middleware<
       let errorCount = 0;
       let lastErrorWSController = null;
       for (const [modelUUID, { wsControllerURL }] of modelList) {
-        const conn = controllers.get(wsControllerURL);
+        const conn = await connections.get(wsControllerURL);
         if (!conn || !isLoggedIn(reduxStore.getState(), wsControllerURL)) {
           continue;
         }
@@ -304,9 +195,14 @@ export const modelPollerMiddleware: Middleware<
       }
       return;
     } else if (action.type === appThunks.logOut.pending.type) {
-      jujus.forEach((juju) => {
-        juju.logout();
-      });
+      for (const wsControllerURL of connections) {
+        reduxStore.dispatch(
+          modelListMiddleware.actions.stop({
+            wsControllerURL,
+          }),
+        );
+        void connections.logout(wsControllerURL);
+      }
       return next(action);
     } else if (
       isSpecificAction<ReturnType<typeof appActions.updatePermissions>>(
@@ -315,7 +211,7 @@ export const modelPollerMiddleware: Middleware<
       )
     ) {
       const { payload } = action;
-      const conn = controllers.get(payload.wsControllerURL);
+      const conn = await connections.get(payload.wsControllerURL);
       const response = await setModelSharingPermissions(
         payload.wsControllerURL,
         payload.modelUUID,
@@ -339,7 +235,9 @@ export const modelPollerMiddleware: Middleware<
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
-      const conn = controllers.get(wsControllerURL);
+      const conn = await connections
+        .get(wsControllerURL)
+        .catch((_err) => undefined);
       if (!conn) {
         return;
       }
@@ -367,7 +265,10 @@ export const modelPollerMiddleware: Middleware<
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
-      const conn = controllers.get(wsControllerURL);
+      const conn = await connections
+        .get(wsControllerURL)
+        .catch((_err) => undefined);
+
       if (!conn) {
         return;
       }
@@ -407,7 +308,9 @@ export const modelPollerMiddleware: Middleware<
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
-      const conn = controllers.get(wsControllerURL);
+      const conn = await connections
+        .get(wsControllerURL)
+        .catch((_err) => undefined);
       if (!conn) {
         return;
       }
@@ -448,7 +351,9 @@ export const modelPollerMiddleware: Middleware<
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
-      const conn = controllers.get(wsControllerURL);
+      const conn = await connections
+        .get(wsControllerURL)
+        .catch((_err) => undefined);
       if (!conn) {
         return;
       }
@@ -487,7 +392,9 @@ export const modelPollerMiddleware: Middleware<
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
-      const conn = controllers.get(wsControllerURL);
+      const conn = await connections
+        .get(wsControllerURL)
+        .catch((_err) => undefined);
       if (!conn) {
         return;
       }
@@ -598,10 +505,7 @@ export const modelPollerMiddleware: Middleware<
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
-      const conn = controllers.get(wsControllerURL);
-      if (!conn) {
-        return;
-      }
+      const conn = await connections.get(wsControllerURL);
       try {
         const response = await conn.facades.cloud?.clouds({});
         if (response) {
@@ -634,5 +538,22 @@ export const modelPollerMiddleware: Middleware<
       return;
     }
     return next(action);
+  };
+}
+
+export const modelPollerMiddleware: Middleware<
+  void,
+  RootState,
+  Store["dispatch"]
+> = (reduxStore) => {
+  const { connections, middleware: uninitialisedConnectionsMiddleware } =
+    createConnectionMiddleware();
+
+  return (next) => (action) => {
+    const connectionsMiddleware = uninitialisedConnectionsMiddleware(
+      reduxStore,
+    )(runModelPoller(reduxStore, connections, next));
+
+    return connectionsMiddleware(action);
   };
 };
