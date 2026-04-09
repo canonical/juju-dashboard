@@ -135,6 +135,50 @@ describe("MandatoryDetails", () => {
     });
   });
 
+  it("fetches credentials on cloud change if they are not already loaded", async () => {
+    state.juju.userCredentials = userCredentialsStateFactory.build({
+      credentials: {
+        "cloud-gce": ["cloudcred-gce_user_gce-cred"],
+      },
+      loaded: true,
+    });
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(
+      <Formik
+        initialValues={{
+          modelName: "my-model",
+          cloud: "cloud-gce",
+          region: "europe-west1",
+          credential: "gce-cred",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <MandatoryDetails />
+      </Formik>,
+      { store },
+    );
+
+    expect(screen.getByLabelText(Label.CLOUD)).toHaveValue("cloud-gce");
+    expect(screen.getByLabelText(Label.REGION)).toHaveValue("europe-west1");
+
+    await userEvent.selectOptions(
+      screen.getByLabelText(Label.CLOUD),
+      "cloud-aws",
+    );
+
+    const action = jujuActions.fetchUserCredentials({
+      wsControllerURL: "wss://controller.example.com",
+      userTag: "user-eggman@external",
+      cloudTag: "cloud-aws",
+    });
+
+    await waitFor(() => {
+      expect(
+        actions.find((dispatch) => dispatch.type === action.type),
+      ).toMatchObject(action);
+    });
+  });
+
   it("changes region and credential options when cloud changes", async () => {
     renderComponent(
       <Formik
