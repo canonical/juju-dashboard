@@ -9,10 +9,18 @@ export enum StepType {
   ACCESS_MANAGEMENT = "access-management",
 }
 
+export type AddModelFormState = {
+  modelName: string;
+  cloud: string;
+  region: string;
+  credential: string;
+};
+
 export enum Label {
   TITLE = "Add model",
   CANCEL_BUTTON = "Cancel",
   NEXT_BUTTON = "Next",
   BACK_BUTTON = "Back",
-  CREATE_BUTTON = "Create model",
+  CREATE_BUTTON = "Add model",
+  INCORRECT_MODEL_NAME_ERROR = "Incorrect model name format.",
 }

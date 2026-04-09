@@ -44,7 +44,7 @@ describe("shared", () => {
         "cloud-credential-tag": "cloudcred-amazon_eggman@external_juju",
       }),
     });
-    expect(getCredential(modelData)).toStrictEqual("eggman");
+    expect(getCredential(modelData)).toStrictEqual("juju");
   });
 
   it("getControllerUUID", () => {

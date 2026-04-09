@@ -196,6 +196,11 @@ export const getCloudInfoState = createSelector(
   (sliceState) => sliceState.cloudInfo,
 );
 
+export const getUserCredentialsState = createSelector(
+  [slice],
+  (sliceState) => sliceState.userCredentials,
+);
+
 export const getModelSecretsState = createSelector(
   [
     getSecretsState,

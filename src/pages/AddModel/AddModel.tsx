@@ -5,39 +5,47 @@ import {
   Stepper,
 } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
+import { Formik } from "formik";
 import type { FC, JSX } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import * as Yup from "yup";
 
 import CheckPermissions from "components/CheckPermissions";
+import FormikFormData from "components/FormikFormData";
 import { useCanAddModel } from "hooks/useCanAddModel";
 import { testId } from "testing/utils";
 import urls from "urls";
 
-import { TestId, StepType, Label } from "./types";
+import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
+import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
-const stepDefinitions: {
+const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
+
+const validationSchema = Yup.object().shape({
+  modelName: Yup.string()
+    .matches(MODEL_NAME_PATTERN, Label.INCORRECT_MODEL_NAME_ERROR)
+    .required("Required"),
+});
+
+const stepDefinitions: Array<{
   key: StepType;
   title: string;
-  ctaLabel?: string;
   content: JSX.Element;
-}[] = [
+}> = [
   {
     key: StepType.MANDATORY_DETAILS,
-    title: "Mandatory details",
-    ctaLabel: Label.NEXT_BUTTON,
-    content: <div>Mandatory details form goes here.</div>,
+    title: "Mandatory Details",
+    content: <MandatoryDetails />,
   },
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
     title: "Configuration & Constraints (optional)",
-    ctaLabel: Label.NEXT_BUTTON,
     content: <div>Configuration and constraints form goes here.</div>,
   },
   {
     key: StepType.ACCESS_MANAGEMENT,
-    title: "Access management (optional)",
-    ctaLabel: Label.CREATE_BUTTON,
+    title: "Access Management (optional)",
     content: <div>Access management form goes here.</div>,
   },
 ];
@@ -46,6 +54,23 @@ const AddModel: FC = () => {
   const navigate = useNavigate();
   const canCreateModel = useCanAddModel();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isValid, setIsValid] = useState<boolean>(false);
+
+  const handleCancel = (): void => {
+    void navigate(urls.models.index);
+  };
+
+  const handleNextClick = (): void => {
+    setCurrentStepIndex((index) => index + 1);
+  };
+
+  const handleCreateClick = (): void => {
+    // TODO: https://warthogs.atlassian.net/browse/JUJU-9333
+  };
+
+  const isFirstStep = currentStepIndex === 0;
+  const isLastStep = currentStepIndex === stepDefinitions.length - 1;
+  const currentStep = stepDefinitions[currentStepIndex];
 
   return (
     <CheckPermissions allowed={canCreateModel} {...testId(TestId.COMPONENT)}>
@@ -77,35 +102,55 @@ const AddModel: FC = () => {
           })}
         />
         <div className="add-model__step" {...testId(TestId.ADD_MODEL_CONTENT)}>
-          {stepDefinitions[currentStepIndex].content}
+          <Formik<AddModelFormState>
+            initialValues={{
+              modelName: "",
+              cloud: "",
+              region: "",
+              credential: "",
+            }}
+            validationSchema={validationSchema}
+            onSubmit={handleCreateClick}
+          >
+            <FormikFormData
+              onValidate={setIsValid}
+              id={currentStep.key}
+              className={currentStep.key}
+            >
+              {currentStep.content}
+            </FormikFormData>
+          </Formik>
         </div>
         <div className="add-model__footer">
-          <Button
-            onClick={() => void navigate(urls.models.index)}
-            appearance="base"
-          >
+          <Button onClick={handleCancel} appearance="base">
             {Label.CANCEL_BUTTON}
           </Button>
-          {currentStepIndex > 0 ? (
+          {!isFirstStep ? (
             <Button
               onClick={() => {
-                setCurrentStepIndex(currentStepIndex - 1);
+                setCurrentStepIndex((index) => index - 1);
               }}
               appearance="secondary"
             >
               {Label.BACK_BUTTON}
             </Button>
           ) : null}
+          {!isLastStep ? (
+            <Button
+              appearance="secondary"
+              type="button"
+              onClick={handleNextClick}
+            >
+              {Label.NEXT_BUTTON}
+            </Button>
+          ) : null}
           <ActionButton
             appearance="positive"
-            disabled={currentStepIndex === stepDefinitions.length - 1}
-            onClick={() => {
-              if (currentStepIndex < stepDefinitions.length - 1) {
-                setCurrentStepIndex(currentStepIndex + 1);
-              }
-            }}
+            type="submit"
+            form={currentStep.key}
+            disabled={!isValid || true}
           >
-            {stepDefinitions[currentStepIndex].ctaLabel}
+            {Label.CREATE_BUTTON}
           </ActionButton>
         </div>
       </VanillaPanel>
