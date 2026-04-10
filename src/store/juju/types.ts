@@ -153,6 +153,7 @@ export type JujuState = {
   modelData: ModelDataList;
   modelFeatures: ModelFeaturesState;
   modelUpgrade: ModelUpgradeState;
+  modelMigrationTargets: Record<string, SourceData<string[]>>;
   charms: Charm[];
   rebac: ReBACState;
   secrets: SecretsState;

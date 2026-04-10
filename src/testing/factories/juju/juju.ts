@@ -173,4 +173,5 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   userCredentials: userCredentialsStateFactory.build(),
   selectedApplications: {},
   supportedJujuVersions: {},
+  modelMigrationTargets: {},
 }));

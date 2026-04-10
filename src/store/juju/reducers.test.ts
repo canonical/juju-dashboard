@@ -1925,4 +1925,106 @@ describe("reducers", () => {
       });
     });
   });
+
+  describe("updateModelMigrationTargets", () => {
+    describe("set fields", () => {
+      let state: JujuState;
+
+      beforeEach(() => {
+        state = jujuStateFactory.build({
+          modelMigrationTargets: {
+            abc123: {
+              data: [],
+              error: null,
+              loading: false,
+            },
+          },
+        });
+      });
+
+      it("updates data", () => {
+        const result = reducer(
+          state,
+          actions.updateModelMigrationTargets({
+            modelUUID: "abc123",
+            update: {
+              data: ["wss://example.com"],
+            },
+          }),
+        );
+        expect(result.modelMigrationTargets).toStrictEqual({
+          abc123: {
+            data: ["wss://example.com"],
+            error: null,
+            loading: false,
+          },
+        });
+      });
+
+      it("updates loading", () => {
+        const result = reducer(
+          state,
+          actions.updateModelMigrationTargets({
+            modelUUID: "abc123",
+            update: {
+              loading: true,
+            },
+          }),
+        );
+        expect(result.modelMigrationTargets).toStrictEqual({
+          abc123: {
+            data: [],
+            error: null,
+            loading: true,
+          },
+        });
+      });
+
+      it("updates error", () => {
+        const result = reducer(
+          state,
+          actions.updateModelMigrationTargets({
+            modelUUID: "abc123",
+            update: {
+              error: {
+                message: "Something",
+                source: new Error("Something"),
+              },
+            },
+          }),
+        );
+        expect(result.modelMigrationTargets).toStrictEqual({
+          abc123: {
+            data: [],
+            error: {
+              message: "Something",
+              source: new Error("Something"),
+            },
+            loading: false,
+          },
+        });
+      });
+    });
+
+    it("adds new model if not existing", () => {
+      const state = jujuStateFactory.build();
+      expect(state.modelMigrationTargets).toStrictEqual({});
+      const result = reducer(
+        state,
+        actions.updateModelMigrationTargets({
+          modelUUID: "abc123",
+          update: {
+            loading: true,
+          },
+        }),
+      );
+      expect(result.modelMigrationTargets).toStrictEqual({
+        abc123: {
+          data: null,
+          loading: true,
+          error: null,
+        },
+      });
+    });
+  });
 });

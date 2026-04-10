@@ -141,6 +141,7 @@ import {
   getCloudInfoState,
   getUserCredentialsState,
   getModelUpgrade,
+  getModelMigrationTargets,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3325,5 +3326,32 @@ describe("getModelUpgrade", () => {
       }),
     });
     expect(getModelUpgrade(state, "abc123")).toStrictEqual(upgrade);
+  });
+});
+
+describe("getModelMigrationTargets", () => {
+  it("fetches targets for model", () => {
+    const data = {
+      loading: false,
+      data: [],
+      error: null,
+    };
+    const state = rootStateFactory.build({
+      juju: {
+        modelMigrationTargets: {
+          abc123: data,
+        },
+      },
+    });
+    expect(getModelMigrationTargets(state, "abc123")).toStrictEqual(data);
+  });
+
+  it("returns default for non-existing model", () => {
+    const state = rootStateFactory.build();
+    expect(getModelMigrationTargets(state, "abc123")).toStrictEqual({
+      loading: false,
+      data: null,
+      error: null,
+    });
   });
 });
