@@ -142,6 +142,7 @@ import {
   getUserCredentialsState,
   getModelUpgrade,
   getModelMigrationTargets,
+  getControllerByUUID,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -1656,6 +1657,27 @@ describe("selectors", () => {
       "wss://example.com",
       [controller],
     ]);
+  });
+
+  it("getControllerByUUID", () => {
+    const controller = controllerFactory.build({
+      uuid: "controller123",
+    });
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        controllers: {
+          "wss://example.com": [
+            controller,
+            controllerFactory.build({
+              uuid: "controller456",
+            }),
+          ],
+        },
+      }),
+    });
+    expect(getControllerByUUID(state, "controller123")).toStrictEqual(
+      controller,
+    );
   });
 
   it("getCharms", () => {

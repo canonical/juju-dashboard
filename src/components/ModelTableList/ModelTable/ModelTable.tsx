@@ -1,4 +1,4 @@
-import { MainTable } from "@canonical/react-components";
+import { Chip, MainTable } from "@canonical/react-components";
 import type {
   MainTableCell,
   MainTableRow,
@@ -9,10 +9,12 @@ import type { JSX } from "react";
 
 import ModelActions from "components/ModelActions";
 import ModelDetailsLink from "components/ModelDetailsLink";
+import ModelVersion from "components/ModelVersion";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { getControllerData, getDestructionState } from "store/juju/selectors";
 import type { Controllers, DestroyState, ModelData } from "store/juju/types";
+import { getControllerByUUID } from "store/juju/utils/controllers";
 import {
   extractOwnerName,
   getModelQualifier,
@@ -27,7 +29,6 @@ import WarningMessage from "../StatusGroup/WarningMessage";
 import {
   generateCloudAndRegion,
   generateTableHeaders,
-  getControllerName,
   getCredential,
   getLastUpdated,
   getRegion,
@@ -66,7 +67,15 @@ function generateModelTableList(
     const region = getRegion(model);
     const cloud = <CloudCell model={model} />;
     const credential = getCredential(model);
-    const controller = getControllerName(model, controllers);
+    const controllerUUID = model.info?.["controller-uuid"];
+    const controller =
+      controllers && controllerUUID
+        ? getControllerByUUID(controllers, controllerUUID)
+        : null;
+    const controllerName =
+      (controller && "name" in controller
+        ? controller.name
+        : controller?.path) || controllerUUID;
     const lastUpdated = getLastUpdated(model);
     const isDying = model.uuid in destructionState;
     const columns = [
@@ -83,12 +92,19 @@ function generateModelTableList(
               <div className="model-name-column__name">
                 <TruncatedTooltip message={model.model.name}>
                   <ModelDetailsLink
-                    className={classNames({ "u-text--muted": isDying })}
+                    className={classNames({
+                      "u-text--muted": isDying,
+                    })}
                     modelName={model.model.name}
                     qualifier={qualifier}
                   >
                     {model.model.name}
                   </ModelDetailsLink>
+                  <ModelVersion
+                    className="models__version"
+                    modelName={model.model.name}
+                    qualifier={qualifier}
+                  />
                 </TruncatedTooltip>
               </div>
             </div>
@@ -148,7 +164,18 @@ function generateModelTableList(
       {
         ...testId(TestId.COLUMN_CONTROLLER),
         content: (
-          <TruncatedTooltip message={controller}>{controller}</TruncatedTooltip>
+          <TruncatedTooltip message={controllerName}>
+            {controllerName}
+            {controller && "agent-version" in controller ? (
+              <Chip
+                isReadOnly
+                isInline
+                isDense
+                value={controller["agent-version"]}
+                className="models__version"
+              />
+            ) : null}
+          </TruncatedTooltip>
         ),
         className: classNames({ "dying-model": isDying }),
       },
