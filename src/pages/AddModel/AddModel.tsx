@@ -8,18 +8,20 @@ import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import { Formik } from "formik";
 import type { FC, JSX } from "react";
 import { useState } from "react";
+import reactHotToast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import * as Yup from "yup";
 
 import CheckPermissions from "components/CheckPermissions";
 import FormikFormData from "components/FormikFormData";
+import ToastCard, { type ToastInstance } from "components/ToastCard";
 import { useCanAddModel } from "hooks/useCanAddModel";
 import { getWSControllerURL } from "store/general/selectors";
 import { addModel as addModelThunk } from "store/juju/thunks";
 import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
-import { logger } from "utils/logger";
+import { toErrorString } from "utils";
 
 import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
@@ -89,7 +91,13 @@ const AddModel: FC = () => {
       );
       void navigate(urls.models.index);
     } catch (error) {
-      logger.error("Unable to create model from Add Model page.", error);
+      // Handle a failed creation
+      reactHotToast.custom((toast: ToastInstance) => (
+        <ToastCard type="negative" toastInstance={toast}>
+          <b>Adding model "{values.modelName}" failed</b>
+          <div>{toErrorString(error)}</div>
+        </ToastCard>
+      ));
     }
   };
 
@@ -140,6 +148,7 @@ const AddModel: FC = () => {
             <FormikFormData
               onValidate={setIsValid}
               id={currentStep.key}
+              {...testId(TestId.ADD_MODEL_FORM)}
               className={currentStep.key}
             >
               {currentStep.content}

@@ -1,6 +1,7 @@
 export enum TestId {
   COMPONENT = "add-model",
   ADD_MODEL_CONTENT = "add-model-content",
+  ADD_MODEL_FORM = "add-model-form",
 }
 
 export enum StepType {
