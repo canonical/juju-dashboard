@@ -1391,9 +1391,9 @@ export const getModelUpgrade = createSelector(
 );
 
 export const getModelMigrationTargets = createSelector(
-  [slice, (_state, modelUuid: string): string => modelUuid],
-  (state, modelUuid) =>
-    state.modelMigrationTargets[modelUuid] ?? {
+  [slice, (_state, modelUUID: string): string => modelUUID],
+  (state, modelUUID) =>
+    state.modelMigrationTargets[modelUUID] ?? {
       loading: false,
       error: null,
       data: null,

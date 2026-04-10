@@ -1946,7 +1946,7 @@ describe("reducers", () => {
         const result = reducer(
           state,
           actions.updateModelMigrationTargets({
-            modelUuid: "abc123",
+            modelUUID: "abc123",
             update: {
               data: ["wss://example.com"],
             },
@@ -1965,7 +1965,7 @@ describe("reducers", () => {
         const result = reducer(
           state,
           actions.updateModelMigrationTargets({
-            modelUuid: "abc123",
+            modelUUID: "abc123",
             update: {
               loading: true,
             },
@@ -1984,7 +1984,7 @@ describe("reducers", () => {
         const result = reducer(
           state,
           actions.updateModelMigrationTargets({
-            modelUuid: "abc123",
+            modelUUID: "abc123",
             update: {
               error: {
                 message: "Something",
@@ -2012,7 +2012,7 @@ describe("reducers", () => {
       const result = reducer(
         state,
         actions.updateModelMigrationTargets({
-          modelUuid: "abc123",
+          modelUUID: "abc123",
           update: {
             loading: true,
           },

@@ -786,13 +786,13 @@ const slice = createSlice({
       {
         payload,
       }: PayloadAction<{
-        modelUuid: string;
+        modelUUID: string;
         update: Partial<SourceData<string[]>>;
       }>,
     ) => {
-      let value = state.modelMigrationTargets[payload.modelUuid];
+      let value = state.modelMigrationTargets[payload.modelUUID];
       if (!value) {
-        state.modelMigrationTargets[payload.modelUuid] = value = {
+        state.modelMigrationTargets[payload.modelUUID] = value = {
           loading: false,
           data: null,
           error: null,
