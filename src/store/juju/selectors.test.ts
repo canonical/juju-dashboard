@@ -40,6 +40,7 @@ import {
   commandHistoryItem,
   cloudInfoStateFactory,
   userCredentialsStateFactory,
+  modelUpgradeFactory,
 } from "testing/factories/juju/juju";
 
 import {
@@ -139,6 +140,7 @@ import {
   getSupportedJujuVersions,
   getCloudInfoState,
   getUserCredentialsState,
+  getModelUpgrade,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3309,5 +3311,19 @@ describe("getUserCredentialsState", () => {
       loaded: false,
       loading: false,
     });
+  });
+});
+
+describe("getModelUpgrade", () => {
+  it("gets model upgrade state by UUID", () => {
+    const upgrade = modelUpgradeFactory.build();
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelUpgrade: {
+          abc123: upgrade,
+        },
+      }),
+    });
+    expect(getModelUpgrade(state, "abc123")).toStrictEqual(upgrade);
   });
 });

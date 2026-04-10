@@ -27,6 +27,7 @@ import {
   commandHistoryItem,
   cloudInfoStateFactory,
   userCredentialsStateFactory,
+  modelUpgradeFactory,
 } from "testing/factories/juju/juju";
 
 import { actions, reducer } from "./slice";
@@ -1762,6 +1763,52 @@ describe("reducers", () => {
           commandHistoryItem.build({ command: "status" }),
         ],
       }),
+    });
+  });
+
+  it("addModelUpgrade", () => {
+    const state = jujuStateFactory.build({
+      modelUpgrade: {},
+    });
+    expect(
+      reducer(
+        state,
+        actions.addModelUpgrade({
+          modelUUID: "abc123",
+          currentVersion: "1.2.3",
+          upgradeVersion: "3.2.1",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelUpgrade: {
+        abc123: {
+          currentVersion: "1.2.3",
+          upgradeVersion: "3.2.1",
+        },
+      },
+    });
+  });
+
+  it("removeModelUpgrade", () => {
+    const state = jujuStateFactory.build({
+      modelUpgrade: {
+        abc123: modelUpgradeFactory.build(),
+        def456: modelUpgradeFactory.build(),
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.removeModelUpgrade({
+          modelUUID: "abc123",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelUpgrade: {
+        def456: modelUpgradeFactory.build(),
+      },
     });
   });
 

@@ -112,6 +112,13 @@ export type ModelFeatures = {
 
 export type ModelFeaturesState = Record<string, ModelFeatures>;
 
+export type ModelUpgrade = {
+  currentVersion: string;
+  upgradeVersion: string;
+};
+
+export type ModelUpgradeState = Record<string, ModelUpgrade>;
+
 export type ReBACAllowed = {
   tuple: RelationshipTuple;
   allowed?: boolean | null;
@@ -145,6 +152,7 @@ export type JujuState = {
   modelListLoading: Record<string, boolean>;
   modelData: ModelDataList;
   modelFeatures: ModelFeaturesState;
+  modelUpgrade: ModelUpgradeState;
   charms: Charm[];
   rebac: ReBACState;
   secrets: SecretsState;

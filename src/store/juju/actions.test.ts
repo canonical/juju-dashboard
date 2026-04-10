@@ -516,4 +516,26 @@ describe("actions", () => {
       payload,
     });
   });
+
+  it("addModelUpgrade", () => {
+    const payload = {
+      modelUUID: "abc123",
+      currentVersion: "1.2.3",
+      upgradeVersion: "3.2.1",
+    };
+    expect(actions.addModelUpgrade(payload)).toStrictEqual({
+      type: "juju/addModelUpgrade",
+      payload,
+    });
+  });
+
+  it("removeModelUpgrade", () => {
+    const payload = {
+      modelUUID: "abc123",
+    };
+    expect(actions.removeModelUpgrade(payload)).toStrictEqual({
+      type: "juju/removeModelUpgrade",
+      payload,
+    });
+  });
 });

@@ -15,6 +15,7 @@ import type {
   ModelFeaturesState,
   ModelListInfo,
   ModelSecrets,
+  ModelUpgrade,
   ReBACState,
   SecretsState,
   UserCredentialsState,
@@ -135,6 +136,11 @@ export const modelFeaturesStateFactory = Factory.define<ModelFeaturesState>(
   () => ({}),
 );
 
+export const modelUpgradeFactory = Factory.define<ModelUpgrade>(() => ({
+  currentVersion: "1.2.3",
+  upgradeVersion: "3.2.1",
+}));
+
 export const rebacState = Factory.define<ReBACState>(() => ({
   allowed: [],
   relationships: [],
@@ -159,6 +165,7 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   modelData: {},
   modelFeatures: {},
   modelListLoading: {},
+  modelUpgrade: {},
   charms: [],
   rebac: rebacState.build(),
   secrets: {},
