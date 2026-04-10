@@ -1380,3 +1380,12 @@ export const getSupportedJujuVersions = createSelector(
       data: null,
     },
 );
+
+/**
+  Get a model upgrade by UUID.
+*/
+export const getModelUpgrade = createSelector(
+  [slice, (_, uuid: null | string = null): null | string => uuid],
+  (state, uuid) =>
+    uuid && uuid in state.modelUpgrade ? state.modelUpgrade[uuid] : null,
+);

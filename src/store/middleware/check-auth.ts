@@ -104,6 +104,8 @@ export const checkAuthMiddleware: Middleware<
       jujuActions.checkRelations.type,
       jujuActions.removeCheckRelations.type,
       jujuActions.addCommandHistory.type,
+      jujuActions.addModelUpgrade.type,
+      jujuActions.removeModelUpgrade.type,
     ];
 
     const thunkAllowlist = [

@@ -33,6 +33,7 @@ import type {
   ReBACAllowed,
   HistoryItem,
   SourceData,
+  ModelUpgrade,
 } from "./types";
 import { getModelQualifier } from "./utils/models";
 
@@ -130,6 +131,7 @@ const slice = createSlice({
     modelData: {},
     modelFeatures: {},
     modelListLoading: {},
+    modelUpgrade: {},
     charms: [],
     rebac: {
       allowed: [],
@@ -773,6 +775,33 @@ const slice = createSlice({
       value.loading = payload.update.loading ?? value.loading;
       value.data = payload.update.data ?? value.data;
       value.error = payload.update.error ?? value.error;
+    },
+    addModelUpgrade: (
+      state,
+      {
+        payload: { modelUUID, currentVersion, upgradeVersion },
+      }: PayloadAction<
+        {
+          modelUUID: string;
+        } & ModelUpgrade
+      >,
+    ) => {
+      state.modelUpgrade[modelUUID] = {
+        currentVersion,
+        upgradeVersion,
+      };
+    },
+    removeModelUpgrade: (
+      state,
+      {
+        payload: { modelUUID },
+      }: PayloadAction<{
+        modelUUID: string;
+      }>,
+    ) => {
+      if (modelUUID in state.modelUpgrade) {
+        delete state.modelUpgrade[modelUUID];
+      }
     },
   },
 });
