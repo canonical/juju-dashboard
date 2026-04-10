@@ -1,7 +1,7 @@
 import type { MainTableHeader } from "@canonical/react-components/dist/components/MainTable/MainTable";
 
 import Status from "components/Status";
-import type { Controllers, ModelData } from "store/juju/types";
+import type { ModelData } from "store/juju/types";
 import {
   extractCloudName,
   extractCredentialName,
@@ -15,33 +15,6 @@ export const getRegion = (model: ModelData): string | undefined =>
 
 export const getCredential = (model: ModelData): string =>
   extractCredentialName(model.info?.["cloud-credential-tag"]);
-
-export const getControllerUUID = (model: ModelData): string | undefined =>
-  model.info?.["controller-uuid"];
-
-export const getControllerName = (
-  model: ModelData,
-  controllers?: Controllers | null,
-): string | undefined => {
-  const controllerUUID = getControllerUUID(model);
-  let controllerName: null | string = null;
-  Object.entries(controllers ?? {}).some(
-    (controller) =>
-      !!controller[1].some((controllerData) => {
-        if (
-          "uuid" in controllerData &&
-          controllerUUID === controllerData.uuid
-        ) {
-          controllerName =
-            "name" in controllerData
-              ? (controllerData.name ?? null)
-              : controllerData.path;
-        }
-        return !!controllerName;
-      }),
-  );
-  return controllerName ?? controllerUUID;
-};
 
 export const getLastUpdated = (model: ModelData): string | undefined => {
   // .slice(2) here will make the year 2 characters instead of 4

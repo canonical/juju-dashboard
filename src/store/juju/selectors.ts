@@ -39,6 +39,7 @@ import type {
   ReBACAllowed,
   ReBACRelationship,
 } from "./types";
+import { getControllerByUUID as getControllerByUUIDUtil } from "./utils/controllers";
 import type { Filters } from "./utils/models";
 import {
   extractCloudName,
@@ -1038,6 +1039,22 @@ export const getControllerDataByUUID = createSelector(
     });
     return found;
   },
+);
+
+/**
+    Finds a controller by UUID. In the case where there are multiple controllers for the same address
+    i.e. JAAS, only the specific controller with the matching UUID will be returned.
+  */
+export const getControllerByUUID = createSelector(
+  [
+    getControllerData,
+    (_state: RootState, controllerUUID: null | string = null): null | string =>
+      controllerUUID,
+  ],
+  (controllers, controllerUUID) =>
+    controllers && controllerUUID
+      ? getControllerByUUIDUtil(controllers, controllerUUID)
+      : null,
 );
 
 /**

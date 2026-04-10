@@ -3,16 +3,11 @@ import {
   modelStatusInfoFactory,
 } from "testing/factories/juju/ClientV8";
 import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
-import {
-  controllerFactory,
-  modelDataFactory,
-} from "testing/factories/juju/juju";
+import { modelDataFactory } from "testing/factories/juju/juju";
 
 import {
   generateCloudAndRegion,
   getCloudName,
-  getControllerName,
-  getControllerUUID,
   getCredential,
   getLastUpdated,
   getRegion,
@@ -45,71 +40,6 @@ describe("shared", () => {
       }),
     });
     expect(getCredential(modelData)).toStrictEqual("juju");
-  });
-
-  it("getControllerUUID", () => {
-    const modelData = modelDataFactory.build({
-      info: modelInfoFactory.build({
-        "controller-uuid": "controller123",
-      }),
-    });
-    expect(getControllerUUID(modelData)).toStrictEqual("controller123");
-  });
-
-  it("can get a controller name", () => {
-    const controllers = {
-      "wss://test.com/api": [
-        controllerFactory.build({
-          uuid: "controller123",
-          path: "default-controller",
-        }),
-      ],
-    };
-    const modelData = modelDataFactory.build({
-      info: modelInfoFactory.build({
-        "controller-uuid": "controller123",
-      }),
-    });
-    expect(getControllerName(modelData, controllers)).toStrictEqual(
-      "default-controller",
-    );
-  });
-
-  it("can get a controller name from a controller", () => {
-    const controllers = {
-      "wss://test.com/api": [
-        controllerFactory.build({
-          name: "a controller",
-          uuid: "controller123",
-        }),
-      ],
-    };
-    const modelData = modelDataFactory.build({
-      info: modelInfoFactory.build({
-        "controller-uuid": "controller123",
-      }),
-    });
-    expect(getControllerName(modelData, controllers)).toStrictEqual(
-      "a controller",
-    );
-  });
-
-  it("handles an unknown controller name", () => {
-    const controllers = {
-      "wss://test.com/api": [
-        controllerFactory.build({
-          uuid: "something-else",
-        }),
-      ],
-    };
-    const modelData = modelDataFactory.build({
-      info: modelInfoFactory.build({
-        "controller-uuid": "controller123",
-      }),
-    });
-    expect(getControllerName(modelData, controllers)).toStrictEqual(
-      "controller123",
-    );
   });
 
   it("getLastUpdated", () => {
