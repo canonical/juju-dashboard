@@ -1,10 +1,13 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 
-import type { ModelInfoResults } from "juju/types";
+import type { ModelInfo, ModelInfoResults } from "juju/types";
 import { actions as jujuActions } from "store/juju";
 import { checkLoggedIn } from "store/middleware/check-auth";
 import type { RootState } from "store/store";
+import { actionWithConnection } from "store/util";
+import { toErrorString } from "utils";
 import { logger } from "utils/logger";
 
 /**
@@ -66,3 +69,106 @@ export const addControllerCloudRegion = createAsyncThunk<
     },
   },
 );
+
+export type CreateModelPayload = {
+  modelName: string;
+  credential: string;
+  cloudTag: string;
+  region?: string;
+  wsControllerURL: string;
+};
+
+const addModelAction = createAction(
+  "models/add-model",
+  (
+    payload: CreateModelPayload,
+  ): {
+    payload: CreateModelPayload;
+    meta: { withConnection: true };
+  } => ({
+    payload,
+    meta: { withConnection: true },
+  }),
+);
+
+export const createModel = async (
+  dispatch: (
+    action: PayloadAction<CreateModelPayload>,
+  ) => Promise<unknown> | unknown,
+  payload: CreateModelPayload,
+): Promise<ModelInfo> => {
+  const action = await dispatch(addModelAction(payload));
+
+  if (!actionWithConnection(addModelAction, action)) {
+    throw new Error("connection not provided");
+  }
+
+  const { connection } = action.meta;
+  const ownerTag = connection.info.user?.identity;
+
+  if (!ownerTag) {
+    throw new Error("not authenticated with controller");
+  }
+
+  const response = await connection.facades.modelManager?.createModel({
+    // Newer facades require `qualifier`, while older facades use `owner-tag`.
+    qualifier: ownerTag,
+    "owner-tag": ownerTag,
+    name: payload.modelName,
+    "cloud-tag": payload.cloudTag,
+    credential: payload.credential,
+    region: payload.region,
+  });
+
+  if (!response) {
+    throw new Error("unable to create model");
+  }
+
+  return response;
+};
+
+export const addModel =
+  (payload: CreateModelPayload) =>
+  async (
+    dispatch: (action: unknown) => unknown,
+    _getState: () => RootState,
+  ): Promise<ModelInfo> => {
+    dispatch(
+      jujuActions.updateModelListLoading({
+        wsControllerURL: payload.wsControllerURL,
+        loading: true,
+      }),
+    );
+    dispatch(
+      jujuActions.updateModelsError({
+        wsControllerURL: payload.wsControllerURL,
+        modelsError: null,
+      }),
+    );
+
+    try {
+      return await createModel(
+        dispatch as (
+          action: PayloadAction<CreateModelPayload>,
+        ) => Promise<unknown> | unknown,
+        payload,
+      );
+    } catch (error) {
+      const modelsError = toErrorString(error);
+      logger.error("Unable to create model.", error);
+      dispatch(
+        jujuActions.updateModelsError({
+          wsControllerURL: payload.wsControllerURL,
+          modelsError,
+        }),
+      );
+      throw error;
+    } finally {
+      dispatch(
+        jujuActions.updateModelListLoading({
+          wsControllerURL: payload.wsControllerURL,
+          loading: false,
+        }),
+      );
+    }
+  };
