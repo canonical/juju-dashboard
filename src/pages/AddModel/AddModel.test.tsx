@@ -250,6 +250,11 @@ describe("AddModel page", () => {
       });
       expect(router.state.location.pathname).toEqual(urls.models.index);
     });
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
+    expect(card).toHaveAttribute("data-type", "positive");
+    expect(
+      await within(card).findByText('Model "my-model" added successfully'),
+    ).toBeInTheDocument();
   });
 
   it("shows error toast when model creation fails", async () => {

@@ -18,6 +18,7 @@ import ToastCard, { type ToastInstance } from "components/ToastCard";
 import { useCanAddModel } from "hooks/useCanAddModel";
 import { getWSControllerURL } from "store/general/selectors";
 import { addModel as addModelThunk } from "store/juju/thunks";
+import modelListSource from "store/middleware/source/model-list";
 import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
@@ -89,6 +90,13 @@ const AddModel: FC = () => {
           region: values.region || undefined,
         }),
       );
+      dispatch(modelListSource.actions.invalidate({ wsControllerURL }));
+      // Handle a successful creation
+      reactHotToast.custom((toast: ToastInstance) => (
+        <ToastCard type="positive" toastInstance={toast}>
+          <b>Model "{values.modelName}" added successfully</b>
+        </ToastCard>
+      ));
       void navigate(urls.models.index);
     } catch (error) {
       // Handle a failed creation
