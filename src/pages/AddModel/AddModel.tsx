@@ -5,6 +5,7 @@ import {
   Stepper,
 } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { Formik } from "formik";
 import type { FC, JSX } from "react";
 import { useState } from "react";
@@ -89,7 +90,7 @@ const AddModel: FC = () => {
           credential: values.credential,
           region: values.region || undefined,
         }),
-      );
+      ).then(unwrapResult);
       dispatch(modelListSource.actions.invalidate({ wsControllerURL }));
       // Handle a successful creation
       reactHotToast.custom((toast: ToastInstance) => (

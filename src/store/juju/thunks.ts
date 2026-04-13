@@ -102,12 +102,6 @@ export const addModel = createAsyncThunk<
       loading: true,
     }),
   );
-  thunkAPI.dispatch(
-    jujuActions.updateModelsError({
-      wsControllerURL,
-      modelsError: null,
-    }),
-  );
 
   try {
     const action = await Promise.resolve(
@@ -115,14 +109,16 @@ export const addModel = createAsyncThunk<
     );
 
     if (!actionWithConnection(addModelAction, action)) {
-      throw new Error("connection not provided");
+      throw thunkAPI.rejectWithValue(new Error("connection not provided"));
     }
 
     const { connection } = action.meta;
     const ownerTag = connection.info.user?.identity;
 
     if (!ownerTag) {
-      throw new Error("not authenticated with controller");
+      throw thunkAPI.rejectWithValue(
+        new Error("not authenticated with controller"),
+      );
     }
 
     const response = await connection.facades.modelManager?.createModel({
@@ -136,19 +132,12 @@ export const addModel = createAsyncThunk<
     });
 
     if (!response) {
-      throw new Error("unable to create model");
+      throw thunkAPI.rejectWithValue(new Error("unable to create model"));
     }
     return response;
   } catch (error) {
-    const modelsError = toErrorString(error);
     logger.error("Unable to create model.", error);
-    thunkAPI.dispatch(
-      jujuActions.updateModelsError({
-        wsControllerURL,
-        modelsError,
-      }),
-    );
-    throw error;
+    throw thunkAPI.rejectWithValue(toErrorString(error));
   } finally {
     thunkAPI.dispatch(
       jujuActions.updateModelListLoading({

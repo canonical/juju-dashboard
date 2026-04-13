@@ -5,6 +5,7 @@ import { ToastCardTestId } from "components/ToastCard";
 import { PageNotFoundLabel } from "pages/PageNotFound";
 import * as jujuThunks from "store/juju/thunks";
 import type { RootState } from "store/store";
+import * as dashboardStore from "store/store";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
@@ -225,6 +226,13 @@ describe("AddModel page", () => {
   });
 
   it("adds model when valid input is submitted", async () => {
+    const dispatchSpy = vi
+      .spyOn(dashboardStore, "useAppDispatch")
+      .mockReturnValue(
+        vi.fn().mockReturnValue({
+          then: vi.fn().mockReturnValue({ catch: vi.fn() }),
+        }),
+      );
     const addModelMock = vi
       .spyOn(jujuThunks, "addModel")
       .mockImplementation(vi.fn().mockReturnValue(modelInfoFactory.build()));
@@ -252,6 +260,7 @@ describe("AddModel page", () => {
     expect(
       await within(card).findByText('Model "my-model" added successfully'),
     ).toBeInTheDocument();
+    dispatchSpy.mockRestore();
   });
 
   it("shows error toast when model creation fails", async () => {

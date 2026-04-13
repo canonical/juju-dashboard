@@ -206,12 +206,6 @@ describe("thunks", () => {
     const result = await action(dispatch, getState, null);
 
     expect(result.type).toBe("juju/addModel/rejected");
-    expect(dispatch).toHaveBeenCalledWith(
-      actions.updateModelsError({
-        wsControllerURL: "wss://example.com",
-        modelsError: "connection not provided",
-      }),
-    );
   });
 
   it("addModel handles missing authentication", async () => {
@@ -248,11 +242,5 @@ describe("thunks", () => {
     const result = await action(dispatch, getState, null);
 
     expect(result.type).toBe("juju/addModel/rejected");
-    expect(dispatch).toHaveBeenCalledWith(
-      actions.updateModelsError({
-        wsControllerURL: "wss://example.com",
-        modelsError: "not authenticated with controller",
-      }),
-    );
   });
 });
