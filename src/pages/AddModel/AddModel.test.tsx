@@ -2,7 +2,6 @@ import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ToastCardTestId } from "components/ToastCard";
-import type { ModelInfo } from "juju/types";
 import { PageNotFoundLabel } from "pages/PageNotFound";
 import * as jujuThunks from "store/juju/thunks";
 import type { RootState } from "store/store";
@@ -228,9 +227,7 @@ describe("AddModel page", () => {
   it("adds model when valid input is submitted", async () => {
     const addModelMock = vi
       .spyOn(jujuThunks, "addModel")
-      .mockImplementation(
-        () => async (): Promise<ModelInfo> => modelInfoFactory.build(),
-      );
+      .mockImplementation(vi.fn().mockReturnValue(modelInfoFactory.build()));
 
     const { router } = renderComponent(<AddModel />, { state });
     await userEvent.type(
@@ -260,9 +257,9 @@ describe("AddModel page", () => {
   it("shows error toast when model creation fails", async () => {
     const addModelMock = vi
       .spyOn(jujuThunks, "addModel")
-      .mockImplementation(() => async (): Promise<ModelInfo> => {
-        throw new Error("Failed to add model");
-      });
+      .mockImplementation(
+        vi.fn().mockReturnValue(new Error("Failed to add model")),
+      );
 
     renderComponent(<AddModel />, { state });
     await userEvent.type(

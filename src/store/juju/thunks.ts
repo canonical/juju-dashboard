@@ -1,4 +1,3 @@
-import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 
@@ -79,7 +78,7 @@ export type CreateModelPayload = {
 };
 
 const addModelAction = createAction(
-  "models/add-model",
+  "juju/addModel",
   (
     payload: CreateModelPayload,
   ): {
@@ -91,84 +90,71 @@ const addModelAction = createAction(
   }),
 );
 
-export const createModel = async (
-  dispatch: (
-    action: PayloadAction<CreateModelPayload>,
-  ) => Promise<unknown> | unknown,
-  payload: CreateModelPayload,
-): Promise<ModelInfo> => {
-  const action = await dispatch(addModelAction(payload));
+export const addModel = createAsyncThunk<
+  ModelInfo,
+  CreateModelPayload,
+  { state: RootState }
+>("juju/addModel", async (payload, thunkAPI) => {
+  const { wsControllerURL } = payload;
+  thunkAPI.dispatch(
+    jujuActions.updateModelListLoading({
+      wsControllerURL,
+      loading: true,
+    }),
+  );
+  thunkAPI.dispatch(
+    jujuActions.updateModelsError({
+      wsControllerURL,
+      modelsError: null,
+    }),
+  );
 
-  if (!actionWithConnection(addModelAction, action)) {
-    throw new Error("connection not provided");
-  }
-
-  const { connection } = action.meta;
-  const ownerTag = connection.info.user?.identity;
-
-  if (!ownerTag) {
-    throw new Error("not authenticated with controller");
-  }
-
-  const response = await connection.facades.modelManager?.createModel({
-    // Newer facades require `qualifier`, while older facades use `owner-tag`.
-    qualifier: ownerTag,
-    "owner-tag": ownerTag,
-    name: payload.modelName,
-    "cloud-tag": payload.cloudTag,
-    credential: payload.credential,
-    region: payload.region,
-  });
-
-  if (!response) {
-    throw new Error("unable to create model");
-  }
-
-  return response;
-};
-
-export const addModel =
-  (payload: CreateModelPayload) =>
-  async (
-    dispatch: (action: unknown) => unknown,
-    _getState: () => RootState,
-  ): Promise<ModelInfo> => {
-    dispatch(
-      jujuActions.updateModelListLoading({
-        wsControllerURL: payload.wsControllerURL,
-        loading: true,
-      }),
-    );
-    dispatch(
-      jujuActions.updateModelsError({
-        wsControllerURL: payload.wsControllerURL,
-        modelsError: null,
-      }),
+  try {
+    const action = await Promise.resolve(
+      thunkAPI.dispatch(addModelAction(payload)),
     );
 
-    try {
-      return await createModel(
-        dispatch as (
-          action: PayloadAction<CreateModelPayload>,
-        ) => Promise<unknown> | unknown,
-        payload,
-      );
-    } catch (error) {
-      const modelsError = toErrorString(error);
-      logger.error("Unable to create model.", error);
-      dispatch(
-        jujuActions.updateModelsError({
-          wsControllerURL: payload.wsControllerURL,
-          modelsError,
-        }),
-      );
-      throw error;
-    } finally {
-      dispatch(
-        jujuActions.updateModelListLoading({
-          wsControllerURL: payload.wsControllerURL,
-          loading: false,
-        }),
-      );
+    if (!actionWithConnection(addModelAction, action)) {
+      throw new Error("connection not provided");
     }
-  };
+
+    const { connection } = action.meta;
+    const ownerTag = connection.info.user?.identity;
+
+    if (!ownerTag) {
+      throw new Error("not authenticated with controller");
+    }
+
+    const response = await connection.facades.modelManager?.createModel({
+      // Newer facades require `qualifier`, while older facades use `owner-tag`.
+      qualifier: ownerTag,
+      "owner-tag": ownerTag,
+      name: payload.modelName,
+      "cloud-tag": payload.cloudTag,
+      credential: payload.credential,
+      region: payload.region,
+    });
+
+    if (!response) {
+      throw new Error("unable to create model");
+    }
+    return response;
+  } catch (error) {
+    const modelsError = toErrorString(error);
+    logger.error("Unable to create model.", error);
+    thunkAPI.dispatch(
+      jujuActions.updateModelsError({
+        wsControllerURL,
+        modelsError,
+      }),
+    );
+    throw error;
+  } finally {
+    thunkAPI.dispatch(
+      jujuActions.updateModelListLoading({
+        wsControllerURL,
+        loading: false,
+      }),
+    );
+  }
+});
