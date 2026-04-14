@@ -20,3 +20,17 @@ export const getControllerByUUID = (
   }
   return null;
 };
+
+/**
+    Get the Juju version for a controller.
+  */
+export const getControllerVersion = (controller: Controller): null | string => {
+  let version: null | string = null;
+  if ("agent-version" in controller && controller["agent-version"]) {
+    version = controller["agent-version"];
+  }
+  if ("version" in controller && controller.version) {
+    ({ version } = controller);
+  }
+  return version;
+};

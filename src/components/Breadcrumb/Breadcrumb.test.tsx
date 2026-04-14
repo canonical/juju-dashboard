@@ -1,14 +1,33 @@
 import { screen } from "@testing-library/react";
 
 import { ModelActionsTestId } from "components/ModelActions";
+import type { RootState } from "store/store";
+import { rootStateFactory, jujuStateFactory } from "testing/factories";
+import { modelListInfoFactory } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
 import Breadcrumb from "./Breadcrumb";
 import { TestId } from "./types";
 
 describe("Breadcrumb", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            name: "group-test",
+            qualifier: "eggman@external",
+          }),
+        },
+      }),
+    });
+  });
+
   it("displays model actions", () => {
     renderComponent(<Breadcrumb />, {
+      state,
       path: "/models/:qualifier/:modelName",
       url: "/models/eggman@external/group-test",
     });
@@ -17,6 +36,7 @@ describe("Breadcrumb", () => {
 
   it("displays correctly on model details", () => {
     renderComponent(<Breadcrumb />, {
+      state,
       path: "/models/:qualifier/:modelName",
       url: "/models/eggman@external/group-test",
     });
@@ -26,6 +46,7 @@ describe("Breadcrumb", () => {
 
   it("displays correctly on application details", () => {
     renderComponent(<Breadcrumb />, {
+      state,
       path: "/models/:qualifier/:modelName/app/:appName",
       url: "/models/eggman@external/group-test/app/easyrsa",
     });
@@ -43,6 +64,7 @@ describe("Breadcrumb", () => {
 
   it("displays correctly on unit details", () => {
     renderComponent(<Breadcrumb />, {
+      state,
       path: "/models/:qualifier/:modelName/app/:appName/unit/:unitId",
       url: "/models/eggman@external/group-test/app/logstash/unit/logstash-0",
     });
@@ -58,6 +80,7 @@ describe("Breadcrumb", () => {
 
   it("displays correctly on machine details", () => {
     renderComponent(<Breadcrumb />, {
+      state,
       path: "/models/:qualifier/:modelName/machine/:machineId",
       url: "/models/eggman@external/group-test/machine/0",
     });

@@ -1,9 +1,13 @@
 import { Factory } from "fishery";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
-import type { RelationshipTuple } from "juju/jimm/JIMMV4";
+import type { RelationshipTuple, VersionElem } from "juju/jimm/JIMMV4";
 import { JIMMRelation } from "juju/jimm/JIMMV4";
-import type { ReBACAllowed, ReBACRelationship } from "store/juju/types";
+import type {
+  ModelMigrationTargetsState,
+  ReBACAllowed,
+  ReBACRelationship,
+} from "store/juju/types";
 
 import type {
   CrossModelQueryEndpoint,
@@ -192,3 +196,17 @@ export const rebacRelationshipFactory = Factory.define<ReBACRelationship>(
     requestId: "rel123",
   }),
 );
+
+export const versionElemFactory = Factory.define<VersionElem>(() => ({
+  date: "2026-01-01T00:00:00",
+  "link-to-release": "https://example.com/",
+  version: "3.2.2",
+}));
+
+export const modelMigrationTargetFactory = Factory.define<
+  ModelMigrationTargetsState[0]
+>(() => ({
+  data: null,
+  error: null,
+  loading: false,
+}));

@@ -19,9 +19,11 @@ import {
 } from "testing/factories/juju/SecretsV2";
 import {
   auditEventFactory,
+  modelMigrationTargetFactory,
   rebacAllowedFactory,
   rebacRelationshipFactory,
   relationshipTupleFactory,
+  versionElemFactory,
 } from "testing/factories/juju/jimm";
 import {
   controllerFactory,
@@ -41,6 +43,8 @@ import {
   cloudInfoStateFactory,
   userCredentialsStateFactory,
   modelUpgradeFactory,
+  supportedJujuVersionsStateFactory,
+  modelMigrationTargetsStateFactory,
 } from "testing/factories/juju/juju";
 
 import {
@@ -143,6 +147,9 @@ import {
   getModelUpgrade,
   getModelMigrationTargets,
   getControllerByUUID,
+  getModelMigrationControllersByVersion,
+  getModelMigrationTargetVersions,
+  getRecommendedVersions,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3273,31 +3280,14 @@ describe("getUnitMachine", () => {
 });
 
 describe("getSupportedJujuVersions", () => {
-  it("fetches versions for controller", () => {
-    const data = {
-      loading: false,
-      data: [],
-      error: null,
-    };
+  it("fetches versions", () => {
+    const data = supportedJujuVersionsStateFactory.build();
     const state = rootStateFactory.build({
       juju: {
-        supportedJujuVersions: {
-          "wss://example.com": data,
-        },
+        supportedJujuVersions: data,
       },
     });
-    expect(getSupportedJujuVersions(state, "wss://example.com")).toStrictEqual(
-      data,
-    );
-  });
-
-  it("returns default for non-existing controller", () => {
-    const state = rootStateFactory.build();
-    expect(getSupportedJujuVersions(state, "wss://example.com")).toStrictEqual({
-      loading: false,
-      data: null,
-      error: null,
-    });
+    expect(getSupportedJujuVersions(state)).toStrictEqual(data);
   });
 });
 
@@ -3375,5 +3365,167 @@ describe("getModelMigrationTargets", () => {
       data: null,
       error: null,
     });
+  });
+});
+
+describe("getModelMigrationControllersByVersion", () => {
+  it("filters target controllers", () => {
+    const controllers = [
+      controllerFactory.build({
+        uuid: "controller123",
+        version: "1.2.3",
+        name: "controller1",
+      }),
+      controllerFactory.build({
+        uuid: "controller456",
+        version: "1.2.3",
+        name: "controller2",
+      }),
+      // Not included because it has a different version
+      controllerFactory.build({
+        uuid: "controller789",
+        version: "3.2.1",
+        name: "controller3",
+      }),
+      // Not included because it does not have a migration target.
+      controllerFactory.build({
+        uuid: "controller101112",
+        version: "1.2.3",
+        name: "controller4",
+      }),
+    ];
+    const state = rootStateFactory.build({
+      juju: {
+        controllers: {
+          "wss://example.com/api": controllers,
+        },
+        modelMigrationTargets: modelMigrationTargetsStateFactory.build({
+          abc123: modelMigrationTargetFactory.build({
+            data: ["controller123", "controller456", "controller789"],
+          }),
+        }),
+      },
+    });
+    expect(
+      getModelMigrationControllersByVersion(state, "abc123", "1.2.3"),
+    ).toStrictEqual([controllers[0], controllers[1]]);
+  });
+});
+
+describe("getModelMigrationTargetVersions", () => {
+  it("filters target controllers", () => {
+    const versions = [
+      versionElemFactory.build({ version: "1.2.3" }),
+      versionElemFactory.build({ version: "4.5.6" }),
+      // Not included because there is no matching migration target.
+      versionElemFactory.build({ version: "7.8.9" }),
+    ];
+    const state = rootStateFactory.build({
+      juju: {
+        controllers: {
+          "wss://example.com/api": [
+            controllerFactory.build({
+              uuid: "controller123",
+              version: "1.2.3",
+              name: "controller1",
+            }),
+            controllerFactory.build({
+              uuid: "controller456",
+              version: "4.5.6",
+              name: "controller2",
+            }),
+          ],
+        },
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: versions,
+        }),
+        modelMigrationTargets: modelMigrationTargetsStateFactory.build({
+          abc123: modelMigrationTargetFactory.build({
+            data: ["controller123", "controller456"],
+          }),
+        }),
+      },
+    });
+    expect(getModelMigrationTargetVersions(state, "abc123")).toStrictEqual([
+      versions[0],
+      versions[1],
+    ]);
+  });
+});
+
+describe("getRecommendedVersions", () => {
+  it("filters target controllers", () => {
+    const lts = versionElemFactory.build({
+      version: "3.6.14",
+    });
+    const latest = versionElemFactory.build({
+      version: "4.1.0",
+    });
+    const versions = [
+      latest,
+      versionElemFactory.build({
+        // This is also an LTS but has a lower patch version so shouldn't be included.
+        version: "3.6.13",
+      }),
+      lts,
+      // This has the highest version but has no corresponding target controller so shouldn't be included.
+      versionElemFactory.build({
+        version: "99.0.0",
+      }),
+      // Is not the highest non-LTS version so shouldn't be included.
+      versionElemFactory.build({
+        version: "4.0.0",
+      }),
+      versionElemFactory.build({
+        // Is not the highest non-LTS version so shouldn't be included.
+        version: "2.9.1",
+      }),
+    ];
+    const state = rootStateFactory.build({
+      juju: {
+        controllers: {
+          "wss://example.com/api": [
+            controllerFactory.build({
+              uuid: "controller1",
+              version: "3.6.14",
+            }),
+            controllerFactory.build({
+              uuid: "controller2",
+              version: "3.6.13",
+            }),
+            controllerFactory.build({
+              uuid: "controller3",
+              version: "4.1.0",
+            }),
+            controllerFactory.build({
+              uuid: "controller4",
+              version: "4.0.0",
+            }),
+            controllerFactory.build({
+              uuid: "controller5",
+              version: "2.9.1",
+            }),
+          ],
+        },
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: versions,
+        }),
+        modelMigrationTargets: modelMigrationTargetsStateFactory.build({
+          abc123: modelMigrationTargetFactory.build({
+            data: [
+              "controller1",
+              "controller2",
+              "controller3",
+              "controller4",
+              "controller5",
+            ],
+          }),
+        }),
+      },
+    });
+    expect(getRecommendedVersions(state, "abc123")).toStrictEqual([
+      lts,
+      latest,
+    ]);
   });
 });

@@ -13,9 +13,9 @@ import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type {
   CrossModelQueryResponse,
   RelationshipTuple,
+  VersionElem,
 } from "juju/jimm/JIMMV4";
 import type { FullStatusWithAnnotations, ModelInfo } from "juju/types";
-import type { SupportedVersion } from "store/middleware/source/jimm-supported-versions";
 import type { GenericItemsState, GenericState } from "store/types";
 
 /**
@@ -140,6 +140,10 @@ export type HistoryItem = {
 
 export type CommandHistory = Record<string, HistoryItem[]>;
 
+export type SupportedJujuVersionsState = SourceData<VersionElem[]>;
+
+export type ModelMigrationTargetsState = Record<string, SourceData<string[]>>;
+
 export type JujuState = {
   auditEvents: AuditEventsState;
   crossModelQuery: CrossModelQueryState;
@@ -153,12 +157,12 @@ export type JujuState = {
   modelData: ModelDataList;
   modelFeatures: ModelFeaturesState;
   modelUpgrade: ModelUpgradeState;
-  modelMigrationTargets: Record<string, SourceData<string[]>>;
+  modelMigrationTargets: ModelMigrationTargetsState;
   charms: Charm[];
   rebac: ReBACState;
   secrets: SecretsState;
   cloudInfo: CloudState;
   userCredentials: UserCredentialsState;
   selectedApplications: Record<string, ApplicationStatus>;
-  supportedJujuVersions: Record<string, SourceData<SupportedVersion[]>>;
+  supportedJujuVersions: SupportedJujuVersionsState;
 };

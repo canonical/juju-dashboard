@@ -2,7 +2,10 @@ import type { Connection } from "@canonical/jujulib";
 import { vi } from "vitest";
 
 import type { Config } from "store/general/types";
-import { relationshipTupleFactory } from "testing/factories/juju/jimm";
+import {
+  relationshipTupleFactory,
+  versionElemFactory,
+} from "testing/factories/juju/jimm";
 
 import type { SupportedJujuVersionsResponse } from "./JIMMV4";
 import {
@@ -402,13 +405,7 @@ describe("JIMM API", () => {
       ["with minVersion", "3.2.1"],
       ["without minVersion", undefined],
     ] as const)("fetches supported versions %s", async ([_, minVersion]) => {
-      const versions = [
-        {
-          version: "3.2.2",
-          date: "2026-01-01T00:00:00",
-          "link-to-release": "https://example.com/",
-        },
-      ];
+      const versions = [versionElemFactory.build()];
       const conn = {
         facades: {
           jimM: {

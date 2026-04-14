@@ -16,13 +16,13 @@ import type {
   CrossModelQueryRequest,
   CrossModelQueryResponse,
   RelationshipTuple,
+  VersionElem,
 } from "juju/jimm/JIMMV4";
 import type {
   FullStatusWithAnnotations,
   ModelInfoResults,
   UserModelList,
 } from "juju/types";
-import type { SupportedVersion } from "store/middleware/source/jimm-supported-versions";
 
 import type {
   Controllers,
@@ -152,7 +152,11 @@ const slice = createSlice({
       loading: false,
     },
     selectedApplications: {},
-    supportedJujuVersions: {},
+    supportedJujuVersions: {
+      data: null,
+      error: null,
+      loading: false,
+    },
   } as JujuState,
   reducers: {
     updateModelList: (
@@ -761,24 +765,16 @@ const slice = createSlice({
         payload,
       }: PayloadAction<{
         wsControllerURL: string;
-        update: Partial<SourceData<SupportedVersion[]>>;
+        update: Partial<SourceData<VersionElem[]>>;
       }>,
     ) => {
-      let value = state.supportedJujuVersions[payload.wsControllerURL];
-      if (!value) {
-        state.supportedJujuVersions[payload.wsControllerURL] = value = {
-          loading: false,
-          data: null,
-          error: null,
-        };
-      }
-
-      value.loading = payload.update.loading ?? value.loading;
+      state.supportedJujuVersions.loading =
+        payload.update.loading ?? state.supportedJujuVersions.loading;
       if (payload.update.data !== undefined) {
-        value.data = payload.update.data;
+        state.supportedJujuVersions.data = payload.update.data;
       }
       if (payload.update.error !== undefined) {
-        value.error = payload.update.error;
+        state.supportedJujuVersions.error = payload.update.error;
       }
     },
     updateModelMigrationTargets: (
