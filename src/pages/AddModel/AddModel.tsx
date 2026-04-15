@@ -176,28 +176,32 @@ const AddModel: FC = () => {
           </Formik>
         </div>
         <div className="add-model__footer">
-          <Button onClick={handleCancel} appearance="base">
+          <Button
+            onClick={handleCancel}
+            appearance="base"
+            className="u-no-margin--right"
+          >
             {Label.CANCEL_BUTTON}
           </Button>
-          {!isFirstStep ? (
+          <span className="navigation-buttons">
             <Button
               onClick={() => {
                 setCurrentStepIndex((index) => index - 1);
               }}
               appearance="secondary"
+              disabled={isFirstStep}
             >
               {Label.BACK_BUTTON}
             </Button>
-          ) : null}
-          {!isLastStep ? (
             <Button
               appearance="secondary"
               type="button"
               onClick={handleNextClick}
+              disabled={isLastStep}
             >
               {Label.NEXT_BUTTON}
             </Button>
-          ) : null}
+          </span>
           <ActionButton
             appearance="positive"
             type="submit"

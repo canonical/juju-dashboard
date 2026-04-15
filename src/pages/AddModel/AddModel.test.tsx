@@ -109,24 +109,24 @@ describe("AddModel page", () => {
     ).toBeInTheDocument();
   });
 
-  it("does not show Back button on first step", () => {
+  it("disables Back button on first step", () => {
     renderComponent(<AddModel />, { state });
     expect(
-      screen.queryByRole("button", { name: Label.BACK_BUTTON }),
-    ).not.toBeInTheDocument();
+      screen.getByRole("button", { name: Label.BACK_BUTTON }),
+    ).toHaveAttribute("aria-disabled");
   });
 
-  it("shows Back button on subsequent steps", async () => {
+  it("enables Back button on subsequent steps", async () => {
     renderComponent(<AddModel />, { state });
     await userEvent.click(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
     expect(
       screen.getByRole("button", { name: Label.BACK_BUTTON }),
-    ).toBeInTheDocument();
+    ).not.toHaveAttribute("aria-disabled");
   });
 
-  it("displays Next button on first two steps", async () => {
+  it("disables Next button on last step", async () => {
     renderComponent(<AddModel />, { state });
     expect(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
@@ -137,14 +137,14 @@ describe("AddModel page", () => {
     );
     expect(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
-    ).toBeInTheDocument();
+    ).not.toHaveAttribute("aria-disabled");
 
     await userEvent.click(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
     expect(
-      screen.queryByRole("button", { name: Label.NEXT_BUTTON }),
-    ).not.toBeInTheDocument();
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    ).toHaveAttribute("aria-disabled");
   });
 
   it("disables Add model button on invalid input", async () => {
