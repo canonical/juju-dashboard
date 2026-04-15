@@ -24,6 +24,13 @@
     position: sticky;
     text-align: right;
 
+    .navigation-buttons {
+      border-left: 1px solid $color-mid-light;
+      border-right: 1px solid $color-mid-light;
+      padding: $spv--small $sph--large;
+      margin-right: $sph--large;
+    }
+
     @include mobile {
       padding-left: 0;
       padding-right: 0;

@@ -8,15 +8,23 @@ import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import { Formik } from "formik";
 import type { FC, JSX } from "react";
 import { useState } from "react";
+import reactHotToast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import * as Yup from "yup";
 
 import CheckPermissions from "components/CheckPermissions";
 import FormikFormData from "components/FormikFormData";
+import ToastCard, { type ToastInstance } from "components/ToastCard";
 import { useCanAddModel } from "hooks/useCanAddModel";
+import { getWSControllerURL } from "store/general/selectors";
+import { addModel as addModelThunk } from "store/juju/thunks";
+import modelListSource from "store/middleware/source/model-list";
+import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
+import { toErrorString } from "utils";
 
+import AccessManagement from "./AccessManagement/AccessManagement";
 import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
@@ -46,12 +54,14 @@ const stepDefinitions: Array<{
   {
     key: StepType.ACCESS_MANAGEMENT,
     title: "Access Management (optional)",
-    content: <div>Access management form goes here.</div>,
+    content: <AccessManagement />,
   },
 ];
 
 const AddModel: FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const wsControllerURL = useAppSelector(getWSControllerURL);
   const canCreateModel = useCanAddModel();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isValid, setIsValid] = useState<boolean>(false);
@@ -64,8 +74,40 @@ const AddModel: FC = () => {
     setCurrentStepIndex((index) => index + 1);
   };
 
-  const handleCreateClick = (): void => {
-    // TODO: https://warthogs.atlassian.net/browse/JUJU-9333
+  const handleCreateClick = async (
+    values: AddModelFormState,
+  ): Promise<void> => {
+    if (!wsControllerURL) {
+      return;
+    }
+
+    try {
+      await dispatch(
+        addModelThunk({
+          wsControllerURL,
+          modelName: values.modelName,
+          cloudTag: values.cloud,
+          credential: values.credential,
+          region: values.region || undefined,
+        }),
+      );
+      dispatch(modelListSource.actions.invalidate({ wsControllerURL }));
+      // Handle a successful creation
+      reactHotToast.custom((toast: ToastInstance) => (
+        <ToastCard type="positive" toastInstance={toast}>
+          <b>Model "{values.modelName}" added successfully</b>
+        </ToastCard>
+      ));
+      void navigate(urls.models.index);
+    } catch (error) {
+      // Handle a failed creation
+      reactHotToast.custom((toast: ToastInstance) => (
+        <ToastCard type="negative" toastInstance={toast}>
+          <b>Adding model "{values.modelName}" failed</b>
+          <div>{toErrorString(error)}</div>
+        </ToastCard>
+      ));
+    }
   };
 
   const isFirstStep = currentStepIndex === 0;
@@ -115,6 +157,7 @@ const AddModel: FC = () => {
             <FormikFormData
               onValidate={setIsValid}
               id={currentStep.key}
+              {...testId(TestId.ADD_MODEL_FORM)}
               className={currentStep.key}
             >
               {currentStep.content}
@@ -122,33 +165,37 @@ const AddModel: FC = () => {
           </Formik>
         </div>
         <div className="add-model__footer">
-          <Button onClick={handleCancel} appearance="base">
+          <Button
+            onClick={handleCancel}
+            appearance="base"
+            className="u-no-margin--right"
+          >
             {Label.CANCEL_BUTTON}
           </Button>
-          {!isFirstStep ? (
+          <span className="navigation-buttons">
             <Button
               onClick={() => {
                 setCurrentStepIndex((index) => index - 1);
               }}
               appearance="secondary"
+              disabled={isFirstStep}
             >
               {Label.BACK_BUTTON}
             </Button>
-          ) : null}
-          {!isLastStep ? (
             <Button
               appearance="secondary"
               type="button"
               onClick={handleNextClick}
+              disabled={isLastStep}
             >
               {Label.NEXT_BUTTON}
             </Button>
-          ) : null}
+          </span>
           <ActionButton
             appearance="positive"
             type="submit"
             form={currentStep.key}
-            disabled={!isValid || true}
+            disabled={!isValid}
           >
             {Label.CREATE_BUTTON}
           </ActionButton>
