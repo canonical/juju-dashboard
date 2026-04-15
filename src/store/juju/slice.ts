@@ -143,7 +143,6 @@ const slice = createSlice({
     cloudInfo: {
       clouds: null,
       errors: null,
-      loaded: false,
       loading: false,
     },
     userCredentials: {
@@ -526,34 +525,6 @@ const slice = createSlice({
         delete secrets.content;
       }
     },
-    fetchClouds: (state, _action: PayloadAction<WsControllerURLParam>) => {
-      state.cloudInfo.loading = true;
-      state.cloudInfo.loaded = false;
-      state.cloudInfo.errors = null;
-    },
-    setCloudInfoErrors: (
-      state,
-      action: PayloadAction<
-        { errors: string | unknown } & WsControllerURLParam
-      >,
-    ) => {
-      state.cloudInfo.errors = action.payload.errors;
-      state.cloudInfo.loading = false;
-      state.cloudInfo.loaded = true;
-    },
-    updateCloudInfo: (
-      state,
-      action: PayloadAction<
-        {
-          cloudInfo: CloudsResult["clouds"];
-        } & WsControllerURLParam
-      >,
-    ) => {
-      state.cloudInfo.clouds = action.payload.cloudInfo;
-      state.cloudInfo.loading = false;
-      state.cloudInfo.loaded = true;
-      state.cloudInfo.errors = null;
-    },
     checkRelation: (
       state,
       {
@@ -782,6 +753,24 @@ const slice = createSlice({
       value.loading = payload.update.loading ?? value.loading;
       if (payload.update.data !== undefined) {
         value.credentials = { ...value.credentials, ...payload.update.data };
+      }
+      if (payload.update.error !== undefined) {
+        value.errors = payload.update.error;
+      }
+    },
+    updateCloudInfo: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        update: Partial<SourceData<CloudsResult["clouds"]>>;
+      }>,
+    ) => {
+      const value = state.cloudInfo;
+
+      value.loading = payload.update.loading ?? value.loading;
+      if (payload.update.data !== undefined) {
+        value.clouds = payload.update.data;
       }
       if (payload.update.error !== undefined) {
         value.errors = payload.update.error;

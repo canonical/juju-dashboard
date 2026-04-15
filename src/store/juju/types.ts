@@ -94,7 +94,6 @@ export type SecretsState = Record<string, ModelSecrets>;
 export type CloudState = {
   errors: null | string | unknown;
   loading: boolean;
-  loaded: boolean;
   clouds: CloudsResult["clouds"] | null;
 };
 
