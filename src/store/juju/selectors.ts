@@ -1451,13 +1451,29 @@ export const getModelMigrationControllersByVersion = createSelector(
  * Get the version objects filtered by versions that have corresponding
  * model migration targets.
  */
-export const getModelMigrationTargetVersions = createSelector(
-  [getControllerData, getSupportedJujuVersions, getModelMigrationTargets],
-  (controllers, supportedVersions, migrationTargets) => {
+export const getModelUpgradeVersions = createSelector(
+  [
+    getControllerData,
+    getSupportedJujuVersions,
+    getModelMigrationTargets,
+    getModelDataByUUID,
+    (state: RootState, modelUUID?: null | string): Controller | null =>
+      getModelControllerDataByUUID(
+        state,
+        getModelDataByUUID(state, modelUUID)?.info?.["controller-uuid"],
+      ),
+  ],
+  (
+    controllers,
+    supportedVersions,
+    migrationTargets,
+    model,
+    modelController,
+  ) => {
     if (!controllers) {
       return [];
     }
-    return migrationTargets.data?.reduce<VersionElem[]>(
+    const upgradeVersions = (migrationTargets.data ?? []).reduce<VersionElem[]>(
       (versions, controllerUUID) => {
         const controller = getControllerByUUIDUtil(controllers, controllerUUID);
         const controllerVersion = controller
@@ -1482,6 +1498,24 @@ export const getModelMigrationTargetVersions = createSelector(
       },
       [],
     );
+    const controllerVersion = modelController
+      ? getControllerVersion(modelController)
+      : null;
+    const modelVersion = model?.model.version;
+    if (
+      modelVersion &&
+      controllerVersion &&
+      modelVersion !== controllerVersion &&
+      !upgradeVersions.find((version) => version.version === controllerVersion)
+    ) {
+      const controllerUpgradeVersion = supportedVersions.data?.find(
+        (version) => version.version === controllerVersion,
+      );
+      if (controllerUpgradeVersion) {
+        upgradeVersions.push(controllerUpgradeVersion);
+      }
+    }
+    return upgradeVersions;
   },
 );
 
@@ -1489,7 +1523,7 @@ export const getModelMigrationTargetVersions = createSelector(
  * Get available Juju versions for the latest LTS and the latest stable version, if there are controllers available.
  */
 export const getRecommendedVersions = createSelector(
-  [getModelMigrationTargetVersions],
+  [getModelUpgradeVersions],
   (migrationTargetVersions) => {
     let ltsVersion: null | VersionElem = null;
     let stableVersion: null | VersionElem = null;
