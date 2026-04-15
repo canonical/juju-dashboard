@@ -45,7 +45,6 @@ describe("MandatoryDetails", () => {
               type: "gce",
             },
           },
-          loaded: true,
         }),
         userCredentials: userCredentialsStateFactory.build({
           credentials: {

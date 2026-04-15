@@ -128,7 +128,6 @@ export const userCredentialsStateFactory = Factory.define<UserCredentialsState>(
 export const cloudInfoStateFactory = Factory.define<CloudState>(() => ({
   clouds: null,
   errors: null,
-  loaded: false,
   loading: false,
 }));
 
