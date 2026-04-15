@@ -102,7 +102,6 @@ export type UserCredentialsState = {
   credentials: Record<string, string[]>;
   errors: null | string | unknown;
   loading: boolean;
-  loaded: boolean;
 };
 
 export type ModelFeatures = {

@@ -149,7 +149,6 @@ const slice = createSlice({
     userCredentials: {
       credentials: {},
       errors: null,
-      loaded: false,
       loading: false,
     },
     selectedApplications: {},
@@ -555,45 +554,6 @@ const slice = createSlice({
       state.cloudInfo.loaded = true;
       state.cloudInfo.errors = null;
     },
-    fetchUserCredentials: (
-      state,
-      _action: PayloadAction<
-        {
-          userTag: string;
-          cloudTag: string;
-        } & WsControllerURLParam
-      >,
-    ) => {
-      state.userCredentials.loading = true;
-      state.userCredentials.loaded = false;
-      state.userCredentials.errors = null;
-    },
-    setUserCredentialsErrors: (
-      state,
-      action: PayloadAction<
-        { errors: string | unknown } & WsControllerURLParam
-      >,
-    ) => {
-      state.userCredentials.errors = action.payload.errors;
-      state.userCredentials.loading = false;
-      state.userCredentials.loaded = true;
-    },
-    updateUserCredentials: (
-      state,
-      action: PayloadAction<
-        {
-          userCredentials: Record<string, string[]>;
-        } & WsControllerURLParam
-      >,
-    ) => {
-      state.userCredentials.credentials = {
-        ...state.userCredentials.credentials,
-        ...action.payload.userCredentials,
-      };
-      state.userCredentials.loading = false;
-      state.userCredentials.loaded = true;
-      state.userCredentials.errors = null;
-    },
     checkRelation: (
       state,
       {
@@ -806,6 +766,25 @@ const slice = createSlice({
       }
       if (payload.update.error !== undefined) {
         value.error = payload.update.error;
+      }
+    },
+    updateUserCredentials: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        cloudTag: string;
+        update: Partial<SourceData<Record<string, string[]>>>;
+      }>,
+    ) => {
+      const value = state.userCredentials;
+
+      value.loading = payload.update.loading ?? value.loading;
+      if (payload.update.data !== undefined) {
+        value.credentials = { ...value.credentials, ...payload.update.data };
+      }
+      if (payload.update.error !== undefined) {
+        value.errors = payload.update.error;
       }
     },
     addModelUpgrade: (

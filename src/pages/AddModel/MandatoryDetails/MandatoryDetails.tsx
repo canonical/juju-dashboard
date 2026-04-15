@@ -3,7 +3,6 @@ import { useFormikContext } from "formik";
 import { useEffect, useMemo, type JSX, type OptionHTMLAttributes } from "react";
 
 import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
-import { actions as jujuActions } from "store/juju";
 import {
   getCloudInfoState,
   getUserCredentialsState,
@@ -13,6 +12,7 @@ import {
   extractCloudName,
   extractCredentialName,
 } from "store/juju/utils/models";
+import userCredentialsMiddleware from "store/middleware/source/user-credentials";
 import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 
@@ -88,9 +88,8 @@ const MandatoryDetails = (): JSX.Element => {
       !userCredentials.credentials[initialCloud]
     ) {
       dispatch(
-        jujuActions.fetchUserCredentials({
+        userCredentialsMiddleware.actions.start({
           wsControllerURL,
-          userTag: activeUser,
           cloudTag: initialCloud,
         }),
       );
@@ -118,9 +117,8 @@ const MandatoryDetails = (): JSX.Element => {
       nextCloud.length > 0
     ) {
       dispatch(
-        jujuActions.fetchUserCredentials({
+        userCredentialsMiddleware.actions.start({
           wsControllerURL,
-          userTag: activeUser,
           cloudTag: nextCloud,
         }),
       );
