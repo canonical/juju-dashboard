@@ -599,6 +599,78 @@ function runModelPoller(
       // The action has already been passed to the next middleware
       // at the top of this handler.
       return;
+    } else if (
+      isSpecificAction<ReturnType<typeof jujuActions.addModel>>(
+        action,
+        jujuActions.addModel.type,
+      )
+    ) {
+      // Intercept addModel actions and fetch and store
+      // the cloud information via the controller connection.
+      const {
+        wsControllerURL,
+        modelName,
+        cloudTag,
+        credential,
+        region,
+        userTag,
+      } = action.payload;
+      // Immediately pass the action along so that it can be handled by the
+      // reducer to update the loading state.
+
+      next(action);
+      const conn = await connections
+        .get(wsControllerURL)
+        .catch((_err) => undefined);
+      if (!conn) {
+        return;
+      }
+      try {
+        const response = await conn.facades.modelManager?.createModel({
+          // Newer facades require `qualifier`, while older facades use `owner-tag`.
+          qualifier: userTag,
+          "owner-tag": userTag,
+          name: modelName,
+          "cloud-tag": cloudTag,
+          credential,
+          region,
+        });
+
+        if (response) {
+          reduxStore.dispatch(
+            "error" in response
+              ? jujuActions.setAddModelResult({
+                  errors: response.error,
+                  success: false,
+                  wsControllerURL,
+                })
+              : jujuActions.setAddModelResult({
+                  success: true,
+                  wsControllerURL,
+                }),
+          );
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Could not add model.";
+        reduxStore.dispatch(
+          jujuActions.setAddModelResult({
+            errors: errorMessage,
+            success: false,
+            wsControllerURL,
+          }),
+        );
+      } finally {
+        reduxStore.dispatch(
+          jujuActions.updateModelListLoading({
+            wsControllerURL,
+            loading: false,
+          }),
+        );
+      }
+      // The action has already been passed to the next middleware
+      // at the top of this handler.
+      return;
     }
     return next(action);
   };

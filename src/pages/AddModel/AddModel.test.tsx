@@ -3,18 +3,16 @@ import userEvent from "@testing-library/user-event";
 
 import { ToastCardTestId } from "components/ToastCard";
 import { PageNotFoundLabel } from "pages/PageNotFound";
-import * as jujuThunks from "store/juju/thunks";
+import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
-import * as dashboardStore from "store/store";
 import { generalStateFactory, configFactory } from "testing/factories/general";
-import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
   jujuStateFactory,
   controllerFactory,
   cloudInfoStateFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import AddModel from "./AddModel";
@@ -33,6 +31,16 @@ describe("AddModel page", () => {
         config: configFactory.build({
           isJuju: true,
         }),
+        controllerConnections: {
+          "wss://controller.example.com": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
       }),
       juju: jujuStateFactory.build({
         cloudInfo: cloudInfoStateFactory.build({
@@ -226,18 +234,17 @@ describe("AddModel page", () => {
   });
 
   it("adds model when valid input is submitted", async () => {
-    const dispatchSpy = vi
-      .spyOn(dashboardStore, "useAppDispatch")
-      .mockReturnValue(
-        vi.fn().mockReturnValue({
-          then: vi.fn().mockReturnValue({ catch: vi.fn() }),
-        }),
-      );
-    const addModelMock = vi
-      .spyOn(jujuThunks, "addModel")
-      .mockImplementation(vi.fn().mockReturnValue(modelInfoFactory.build()));
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<AddModel />, { store });
 
-    const { router } = renderComponent(<AddModel />, { state });
+    const addModelAction = jujuActions.addModel({
+      cloudTag: "cloud-aws",
+      credential: "",
+      modelName: "my-model",
+      userTag: "user-eggman@external",
+      wsControllerURL: "wss://controller.example.com",
+    });
+
     await userEvent.type(
       screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
       "my-model",
@@ -247,50 +254,41 @@ describe("AddModel page", () => {
     );
 
     await waitFor(() => {
-      expect(addModelMock).toHaveBeenCalledWith({
-        cloudTag: "cloud-aws",
-        credential: "",
-        modelName: "my-model",
-        wsControllerURL: "wss://controller.example.com",
-      });
-      expect(router.state.location.pathname).toEqual(urls.models.index);
+      expect(
+        actions.find((dispatch) => dispatch.type === addModelAction.type),
+      ).toMatchObject(addModelAction);
     });
+  });
+
+  it("shows success toast when model creation succeeds", async () => {
+    state.juju.addModelState = {
+      loading: false,
+      loaded: true,
+      success: true,
+      errors: null,
+    };
+    renderComponent(<AddModel />, { state });
+
     const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
     expect(card).toHaveAttribute("data-type", "positive");
     expect(
-      await within(card).findByText('Model "my-model" added successfully'),
+      await within(card).findByText('Model "" added successfully'),
     ).toBeInTheDocument();
-    dispatchSpy.mockRestore();
   });
 
   it("shows error toast when model creation fails", async () => {
-    const addModelMock = vi
-      .spyOn(jujuThunks, "addModel")
-      .mockImplementation(
-        vi.fn().mockReturnValue(new Error("Failed to add model")),
-      );
-
+    state.juju.addModelState = {
+      loading: false,
+      loaded: true,
+      success: false,
+      errors: "Adding model failed",
+    };
     renderComponent(<AddModel />, { state });
-    await userEvent.type(
-      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
-      "my-model",
-    );
-    await waitFor(() =>
-      fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM)),
-    );
 
-    await waitFor(() => {
-      expect(addModelMock).toHaveBeenCalledWith({
-        cloudTag: "cloud-aws",
-        credential: "",
-        modelName: "my-model",
-        wsControllerURL: "wss://controller.example.com",
-      });
-    });
     const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
     expect(card).toHaveAttribute("data-type", "negative");
     expect(
-      await within(card).findByText('Adding model "my-model" failed'),
+      await within(card).findByText('Adding model "" failed'),
     ).toBeInTheDocument();
   });
 

@@ -1813,6 +1813,60 @@ describe("reducers", () => {
     });
   });
 
+  it("addModel", () => {
+    const state = jujuStateFactory.build({
+      addModelState: {},
+    });
+    expect(
+      reducer(
+        state,
+        actions.addModel({
+          modelName: "abc",
+          cloudTag: "cloud-aws",
+          credential: "credential-aws",
+          userTag: "user-123",
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelListLoading: {
+        "wss://example.com": true,
+      },
+      addModelState: {
+        loaded: false,
+        loading: true,
+      },
+    });
+  });
+
+  it("setAddModelResult", () => {
+    const state = jujuStateFactory.build({
+      addModelState: {
+        loaded: false,
+        loading: true,
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.setAddModelResult({
+          errors: "Adding model failed",
+          success: false,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      addModelState: {
+        errors: "Adding model failed",
+        loaded: true,
+        loading: false,
+        success: false,
+      },
+    });
+  });
+
   describe("updateSupportedJujuVersions", () => {
     describe("set fields", () => {
       let state: JujuState;

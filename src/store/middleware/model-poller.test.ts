@@ -110,6 +110,7 @@ describe("model poller", () => {
           .fn()
           .mockImplementation(async () => ({ "user-models": models })),
         destroyModels: vi.fn().mockResolvedValue({}),
+        createModel: vi.fn().mockResolvedValue({}),
       },
       cloud: {
         clouds: vi.fn().mockResolvedValue({}),
@@ -1541,6 +1542,85 @@ describe("model poller", () => {
     expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
       jujuActions.updateUserCredentials({
         userCredentials: { "cloud-aws": ["credential-aws"] },
+        wsControllerURL: "wss://example.com",
+      }),
+    );
+  });
+
+  it("handles add model action", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    const middleware = await runMiddleware();
+    const action = jujuActions.addModel({
+      wsControllerURL: "wss://example.com",
+      modelName: "model123",
+      userTag: "user-eggman@external",
+      cloudTag: "cloud-aws",
+      credential: "credential-aws",
+    });
+    await middleware(next)(action);
+    expect(conn.facades.modelManager.createModel).toHaveBeenCalledWith({
+      name: "model123",
+      credential: "credential-aws",
+      "cloud-tag": "cloud-aws",
+      "owner-tag": "user-eggman@external",
+      qualifier: "user-eggman@external",
+      region: undefined,
+    });
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.setAddModelResult({
+        success: true,
+        wsControllerURL: "wss://example.com",
+      }),
+    );
+  });
+
+  it("handles no controller when adding model", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      error: Label.CONTROLLER_LOGIN_ERROR,
+      intervalId,
+      juju,
+    }));
+    const middleware = await runMiddleware();
+    const action = jujuActions.addModel({
+      wsControllerURL: "nothing",
+      modelName: "model123",
+      userTag: "user-eggman@external",
+      cloudTag: "cloud-aws",
+      credential: "credential-aws",
+    });
+    await middleware(next)(action);
+    expect(conn.facades.modelManager.createModel).not.toHaveBeenCalled();
+  });
+
+  it("handles errors from response when adding model", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    conn.facades.modelManager.createModel.mockResolvedValue({
+      error: { code: "BOOM", message: "Error" },
+    });
+    const middleware = await runMiddleware();
+    const action = jujuActions.addModel({
+      wsControllerURL: "wss://example.com",
+      modelName: "model123",
+      userTag: "user-eggman@external",
+      cloudTag: "cloud-aws",
+      credential: "credential-aws",
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.setAddModelResult({
+        errors: {
+          code: "BOOM",
+          message: "Error",
+        },
+        success: false,
         wsControllerURL: "wss://example.com",
       }),
     );

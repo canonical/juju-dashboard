@@ -5,10 +5,9 @@ import {
   Stepper,
 } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { Formik } from "formik";
 import type { FC, JSX } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import reactHotToast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import * as Yup from "yup";
@@ -17,8 +16,9 @@ import CheckPermissions from "components/CheckPermissions";
 import FormikFormData from "components/FormikFormData";
 import ToastCard, { type ToastInstance } from "components/ToastCard";
 import { useCanAddModel } from "hooks/useCanAddModel";
-import { getWSControllerURL } from "store/general/selectors";
-import { addModel as addModelThunk } from "store/juju/thunks";
+import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
+import { getAddModelState } from "store/juju/selectors";
 import modelListSource from "store/middleware/source/model-list";
 import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
@@ -62,9 +62,14 @@ const AddModel: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const wsControllerURL = useAppSelector(getWSControllerURL);
+  const userTag = useAppSelector((state) =>
+    getActiveUserTag(state, wsControllerURL),
+  );
   const canCreateModel = useCanAddModel();
+  const addModelState = useAppSelector(getAddModelState);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isValid, setIsValid] = useState<boolean>(false);
+  const [modelName, setModelName] = useState<string>("");
 
   const handleCancel = (): void => {
     void navigate(urls.models.index);
@@ -74,41 +79,47 @@ const AddModel: FC = () => {
     setCurrentStepIndex((index) => index + 1);
   };
 
-  const handleCreateClick = async (
-    values: AddModelFormState,
-  ): Promise<void> => {
-    if (!wsControllerURL) {
+  const handleCreateClick = (values: AddModelFormState): void => {
+    if (!wsControllerURL || !userTag) {
       return;
     }
 
-    try {
-      await dispatch(
-        addModelThunk({
-          wsControllerURL,
-          modelName: values.modelName,
-          cloudTag: values.cloud,
-          credential: values.credential,
-          region: values.region || undefined,
-        }),
-      ).then(unwrapResult);
-      dispatch(modelListSource.actions.invalidate({ wsControllerURL }));
-      // Handle a successful creation
-      reactHotToast.custom((toast: ToastInstance) => (
-        <ToastCard type="positive" toastInstance={toast}>
-          <b>Model "{values.modelName}" added successfully</b>
-        </ToastCard>
-      ));
-      void navigate(urls.models.index);
-    } catch (error) {
-      // Handle a failed creation
-      reactHotToast.custom((toast: ToastInstance) => (
-        <ToastCard type="negative" toastInstance={toast}>
-          <b>Adding model "{values.modelName}" failed</b>
-          <div>{toErrorString(error)}</div>
-        </ToastCard>
-      ));
-    }
+    dispatch(
+      jujuActions.addModel({
+        wsControllerURL,
+        modelName: values.modelName,
+        cloudTag: values.cloud,
+        credential: values.credential,
+        userTag,
+        region: values.region || undefined,
+      }),
+    );
+    setModelName(values.modelName);
   };
+
+  useEffect(() => {
+    if (addModelState.loaded && !addModelState.loading && wsControllerURL) {
+      if (addModelState.success) {
+        // Handle a successful creation
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard type="positive" toastInstance={toast}>
+            <b>Model "{modelName}" added successfully</b>
+          </ToastCard>
+        ));
+        dispatch(modelListSource.actions.invalidate({ wsControllerURL }));
+        void navigate(urls.models.index);
+      } else if (addModelState.errors) {
+        // Handle a failed creation
+        reactHotToast.custom((toast: ToastInstance) => (
+          <ToastCard type="negative" toastInstance={toast}>
+            <b>Adding model "{modelName}" failed</b>
+            <div>{toErrorString(addModelState.errors)}</div>
+          </ToastCard>
+        ));
+      }
+      dispatch(jujuActions.setAddModelResult({ wsControllerURL }));
+    }
+  }, [modelName, addModelState, wsControllerURL, dispatch, navigate]);
 
   const isFirstStep = currentStepIndex === 0;
   const isLastStep = currentStepIndex === stepDefinitions.length - 1;

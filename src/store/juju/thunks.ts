@@ -1,12 +1,10 @@
-import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 
-import type { ModelInfo, ModelInfoResults } from "juju/types";
+import type { ModelInfoResults } from "juju/types";
 import { actions as jujuActions } from "store/juju";
 import { checkLoggedIn } from "store/middleware/check-auth";
 import type { RootState } from "store/store";
-import { actionWithConnection } from "store/util";
-import { toErrorString } from "utils";
 import { logger } from "utils/logger";
 
 /**
@@ -68,82 +66,3 @@ export const addControllerCloudRegion = createAsyncThunk<
     },
   },
 );
-
-export type CreateModelPayload = {
-  modelName: string;
-  credential: string;
-  cloudTag: string;
-  region?: string;
-  wsControllerURL: string;
-};
-
-const addModelAction = createAction(
-  "juju/addModel",
-  (
-    payload: CreateModelPayload,
-  ): {
-    payload: CreateModelPayload;
-    meta: { withConnection: true };
-  } => ({
-    payload,
-    meta: { withConnection: true },
-  }),
-);
-
-export const addModel = createAsyncThunk<
-  ModelInfo,
-  CreateModelPayload,
-  { state: RootState }
->("juju/addModel", async (payload, thunkAPI) => {
-  const { wsControllerURL } = payload;
-  thunkAPI.dispatch(
-    jujuActions.updateModelListLoading({
-      wsControllerURL,
-      loading: true,
-    }),
-  );
-
-  try {
-    const action = await Promise.resolve(
-      thunkAPI.dispatch(addModelAction(payload)),
-    );
-
-    if (!actionWithConnection(addModelAction, action)) {
-      throw thunkAPI.rejectWithValue(new Error("connection not provided"));
-    }
-
-    const { connection } = action.meta;
-    const ownerTag = connection.info.user?.identity;
-
-    if (!ownerTag) {
-      throw thunkAPI.rejectWithValue(
-        new Error("not authenticated with controller"),
-      );
-    }
-
-    const response = await connection.facades.modelManager?.createModel({
-      // Newer facades require `qualifier`, while older facades use `owner-tag`.
-      qualifier: ownerTag,
-      "owner-tag": ownerTag,
-      name: payload.modelName,
-      "cloud-tag": payload.cloudTag,
-      credential: payload.credential,
-      region: payload.region,
-    });
-
-    if (!response) {
-      throw thunkAPI.rejectWithValue(new Error("unable to create model"));
-    }
-    return response;
-  } catch (error) {
-    logger.error("Unable to create model.", error);
-    throw thunkAPI.rejectWithValue(toErrorString(error));
-  } finally {
-    thunkAPI.dispatch(
-      jujuActions.updateModelListLoading({
-        wsControllerURL,
-        loading: false,
-      }),
-    );
-  }
-});
