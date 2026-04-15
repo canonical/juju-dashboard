@@ -121,7 +121,6 @@ export const userCredentialsStateFactory = Factory.define<UserCredentialsState>(
   () => ({
     credentials: {},
     errors: null,
-    loaded: false,
     loading: false,
   }),
 );
