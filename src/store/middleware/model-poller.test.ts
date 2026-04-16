@@ -1596,6 +1596,31 @@ describe("model poller", () => {
     expect(conn.facades.modelManager.createModel).not.toHaveBeenCalled();
   });
 
+  it("handles unsupported facade when adding model", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    conn.facades.modelManager = undefined;
+    const middleware = await runMiddleware();
+    const action = jujuActions.addModel({
+      wsControllerURL: "wss://example.com",
+      modelName: "model123",
+      userTag: "user-eggman@external",
+      cloudTag: "cloud-aws",
+      credential: "credential-aws",
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.setAddModelResult({
+        errors: "Unsupported facade: modelManager",
+        success: false,
+        wsControllerURL: "wss://example.com",
+      }),
+    );
+  });
+
   it("handles errors from response when adding model", async () => {
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -1616,10 +1641,34 @@ describe("model poller", () => {
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.setAddModelResult({
-        errors: {
-          code: "BOOM",
-          message: "Error",
-        },
+        errors: "Could not add model.",
+        success: false,
+        wsControllerURL: "wss://example.com",
+      }),
+    );
+  });
+
+  it("handles other errors when adding model", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    conn.facades.modelManager.createModel.mockRejectedValue({
+      error: { code: "BOOM", message: "Error" },
+    });
+    const middleware = await runMiddleware();
+    const action = jujuActions.addModel({
+      wsControllerURL: "wss://example.com",
+      modelName: "model123",
+      userTag: "user-eggman@external",
+      cloudTag: "cloud-aws",
+      credential: "credential-aws",
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.setAddModelResult({
+        errors: "Could not add model.",
         success: false,
         wsControllerURL: "wss://example.com",
       }),

@@ -626,10 +626,12 @@ function runModelPoller(
         return;
       }
       try {
+        if (!conn.facades.modelManager) {
+          throw new Error("Unsupported facade: modelManager");
+        }
         const response = await conn.facades.modelManager?.createModel({
-          // Newer facades require `qualifier`, while older facades use `owner-tag`.
-          qualifier: userTag,
-          "owner-tag": userTag,
+          qualifier: userTag, // ModelManagerV11 requires `qualifier`.
+          "owner-tag": userTag, // Versions prior to ModelManagerV11 require `owner-tag`.
           name: modelName,
           "cloud-tag": cloudTag,
           credential,
@@ -637,17 +639,14 @@ function runModelPoller(
         });
 
         if (response) {
+          if ("error" in response) {
+            throw response.error;
+          }
           reduxStore.dispatch(
-            "error" in response
-              ? jujuActions.setAddModelResult({
-                  errors: response.error,
-                  success: false,
-                  wsControllerURL,
-                })
-              : jujuActions.setAddModelResult({
-                  success: true,
-                  wsControllerURL,
-                }),
+            jujuActions.setAddModelResult({
+              success: true,
+              wsControllerURL,
+            }),
           );
         }
       } catch (error) {
