@@ -1,6 +1,10 @@
 import { getMajorMinorVersion } from "utils";
 import getPatchVersion from "utils/getPatchVersion";
 
+// See the release notes for the list of LTS releases:
+// https://documentation.ubuntu.com/juju/latest/releasenotes/.
+// Note this list does not include LTS releases older than 3.6 as they are not
+// supported by the dashboard's upgrade features.
 const LTS_RELEASES = [3.6];
 
 /**
@@ -16,6 +20,7 @@ export const isLTS = (version: string): boolean => {
  * to migrate to a new controller if:
  * - the major or minor version has changed, or
  * - the patch version is higher than its current controller's patch version.
+ * See: https://documentation.ubuntu.com/juju/3.6/reference/upgrading-things/
  */
 export const requiresMigration = (
   controllerVersion: string,
@@ -26,10 +31,10 @@ export const requiresMigration = (
   const upgradePatch = getPatchVersion(upgradeVersion);
   const controllerPatch = getPatchVersion(controllerVersion);
   if (
-    !upgradeMajorMinor ||
-    !controllerMajorMinor ||
-    !upgradePatch ||
-    !controllerPatch
+    upgradeMajorMinor === null ||
+    controllerMajorMinor === null ||
+    upgradePatch === null ||
+    controllerPatch === null
   ) {
     return false;
   }

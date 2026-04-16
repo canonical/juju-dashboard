@@ -30,4 +30,10 @@ describe("requiresMigration", () => {
   it("does not requires migration the version is the same", () => {
     expect(requiresMigration("1.2.3", "1.2.3")).toBe(false);
   });
+
+  it("handles values that are 0", () => {
+    expect(requiresMigration("0.0.3", "2.2.3")).toBe(true);
+    expect(requiresMigration("0.0.0", "0.0.1")).toBe(true);
+    expect(requiresMigration("1.2.0", "1.3.0")).toBe(true);
+  });
 });
