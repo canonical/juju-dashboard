@@ -87,6 +87,38 @@ export function createSource<T>(
         events[event].splice(index, 1);
       };
     },
+    async *[Symbol.asyncIterator]() {
+      let promise = Promise.withResolvers<T>();
+      // Capture incoming data, and resolve the current promise.
+      const unsubscribe = this.on("data", (data) => {
+        promise.resolve(data);
+      });
+      // When the source is complete, reject the existing promise.
+      sourceDone.signal.addEventListener(
+        "abort",
+        () => {
+          promise.reject();
+        },
+        { once: true },
+      );
+      try {
+        // Constantly await the next value, and yield it.
+        while (!sourceDone.signal.aborted) {
+          const value = await promise.promise;
+          // Immediately replace the promise to ensure it doesn't get missed.
+          promise = Promise.withResolvers();
+          yield value;
+        }
+      } catch (error) {
+        // Promise should only reject (with no value) when the source is complete.
+        if (error) {
+          throw error;
+        }
+      } finally {
+        // Ensure the event listener is unsubscribed.
+        unsubscribe();
+      }
+    },
   };
 
   // ID of the next load to begin.
