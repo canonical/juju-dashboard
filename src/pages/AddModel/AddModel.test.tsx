@@ -1,7 +1,9 @@
-import { screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { ToastCardTestId } from "components/ToastCard";
 import { PageNotFoundLabel } from "pages/PageNotFound";
+import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import {
@@ -10,12 +12,15 @@ import {
   cloudInfoStateFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import AddModel from "./AddModel";
-import { TestId as MandatoryDetailsTestId } from "./MandatoryDetails/types";
-import { Label, TestId as AddModelTestId } from "./types";
+import {
+  TestId as MandatoryDetailsTestId,
+  Label as MandatoryDetailsLabel,
+} from "./MandatoryDetails/types";
+import { Label, TestId as AddModelTestId, TestId } from "./types";
 
 describe("AddModel page", () => {
   let state: RootState;
@@ -26,6 +31,16 @@ describe("AddModel page", () => {
         config: configFactory.build({
           isJuju: true,
         }),
+        controllerConnections: {
+          "wss://controller.example.com": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+              "controller-access": "",
+              "model-access": "",
+            },
+          },
+        },
       }),
       juju: jujuStateFactory.build({
         cloudInfo: cloudInfoStateFactory.build({
@@ -94,24 +109,24 @@ describe("AddModel page", () => {
     ).toBeInTheDocument();
   });
 
-  it("does not show Back button on first step", () => {
+  it("disables Back button on first step", () => {
     renderComponent(<AddModel />, { state });
     expect(
-      screen.queryByRole("button", { name: Label.BACK_BUTTON }),
-    ).not.toBeInTheDocument();
+      screen.getByRole("button", { name: Label.BACK_BUTTON }),
+    ).toHaveAttribute("aria-disabled");
   });
 
-  it("shows Back button on subsequent steps", async () => {
+  it("enables Back button on subsequent steps", async () => {
     renderComponent(<AddModel />, { state });
     await userEvent.click(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
     expect(
       screen.getByRole("button", { name: Label.BACK_BUTTON }),
-    ).toBeInTheDocument();
+    ).not.toHaveAttribute("aria-disabled");
   });
 
-  it("displays Next button on first two steps", async () => {
+  it("disables Next button on last step", async () => {
     renderComponent(<AddModel />, { state });
     expect(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
@@ -122,18 +137,22 @@ describe("AddModel page", () => {
     );
     expect(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
-    ).toBeInTheDocument();
+    ).not.toHaveAttribute("aria-disabled");
 
     await userEvent.click(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
     expect(
-      screen.queryByRole("button", { name: Label.NEXT_BUTTON }),
-    ).not.toBeInTheDocument();
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    ).toHaveAttribute("aria-disabled");
   });
 
-  it("disables Create button on final step", async () => {
+  it("disables Add model button on invalid input", async () => {
     renderComponent(<AddModel />, { state });
+    await userEvent.type(
+      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
+      "-model",
+    );
     await userEvent.click(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
@@ -143,6 +162,20 @@ describe("AddModel page", () => {
     expect(
       screen.getByRole("button", { name: Label.CREATE_BUTTON }),
     ).toHaveAttribute("aria-disabled");
+  });
+
+  it("enables Add model button on valid input", async () => {
+    renderComponent(<AddModel />, { state });
+    expect(
+      screen.getByRole("button", { name: Label.CREATE_BUTTON }),
+    ).toHaveAttribute("aria-disabled");
+    await userEvent.type(
+      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
+      "my-model",
+    );
+    expect(
+      screen.getByRole("button", { name: Label.CREATE_BUTTON }),
+    ).not.toHaveAttribute("aria-disabled");
   });
 
   it("navigates to steps when clicking step titles", async () => {
@@ -167,7 +200,10 @@ describe("AddModel page", () => {
   it("restores mandatory details draft when navigating back", async () => {
     renderComponent(<AddModel />, { state });
 
-    await userEvent.type(screen.getByLabelText(/Model name/), "my-model");
+    await userEvent.type(
+      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
+      "my-model",
+    );
     await userEvent.click(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
@@ -176,12 +212,17 @@ describe("AddModel page", () => {
       screen.getByRole("button", { name: Label.BACK_BUTTON }),
     );
 
-    expect(screen.getByLabelText(/Model name/)).toHaveValue("my-model");
+    expect(
+      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
+    ).toHaveValue("my-model");
   });
 
   it("resets local draft after cancel", async () => {
     const { router } = renderComponent(<AddModel />, { state });
-    await userEvent.type(screen.getByLabelText(/Model name/), "my-model");
+    await userEvent.type(
+      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
+      "my-model",
+    );
     await userEvent.click(
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
@@ -190,6 +231,65 @@ describe("AddModel page", () => {
     );
 
     expect(router.state.location.pathname).toEqual(urls.models.index);
+  });
+
+  it("adds model when valid input is submitted", async () => {
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<AddModel />, { store });
+
+    const addModelAction = jujuActions.addModel({
+      cloudTag: "cloud-aws",
+      credential: "",
+      modelName: "my-model",
+      userTag: "user-eggman@external",
+      wsControllerURL: "wss://controller.example.com",
+    });
+
+    await userEvent.type(
+      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
+      "my-model",
+    );
+    await waitFor(() =>
+      fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM)),
+    );
+
+    await waitFor(() => {
+      expect(
+        actions.find((dispatch) => dispatch.type === addModelAction.type),
+      ).toMatchObject(addModelAction);
+    });
+  });
+
+  it("shows success toast when model creation succeeds", async () => {
+    state.juju.addModelState = {
+      loading: false,
+      loaded: true,
+      success: true,
+      errors: null,
+    };
+    renderComponent(<AddModel />, { state });
+
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
+    expect(card).toHaveAttribute("data-type", "positive");
+    expect(
+      await within(card).findByText('Model "" added successfully'),
+    ).toBeInTheDocument();
+  });
+
+  it("shows error toast when model creation fails", async () => {
+    state.juju.addModelState = {
+      loading: false,
+      loaded: true,
+      success: false,
+      errors: "Adding model failed",
+    };
+    renderComponent(<AddModel />, { state });
+
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
+    expect(card).toHaveAttribute("data-type", "negative");
+    expect(
+      await within(card).findByText('Adding model "" failed'),
+    ).toBeInTheDocument();
   });
 
   describe("permission checks", () => {

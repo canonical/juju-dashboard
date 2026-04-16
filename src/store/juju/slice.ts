@@ -34,6 +34,7 @@ import type {
   HistoryItem,
   SourceData,
   ModelUpgrade,
+  AddModel,
 } from "./types";
 import { getModelQualifier } from "./utils/models";
 
@@ -156,6 +157,10 @@ const slice = createSlice({
       data: null,
       error: null,
       loading: false,
+    },
+    addModelState: {
+      loading: false,
+      loaded: false,
     },
   } as JujuState,
   reducers: {
@@ -829,6 +834,28 @@ const slice = createSlice({
       if (modelUUID in state.modelUpgrade) {
         delete state.modelUpgrade[modelUUID];
       }
+    },
+    addModel: (
+      state,
+      action: PayloadAction<AddModel & WsControllerURLParam>,
+    ) => {
+      state.addModelState.loading = true;
+      state.addModelState.loaded = false;
+      state.modelListLoading[action.payload.wsControllerURL] = true;
+    },
+    setAddModelResult: (
+      state,
+      action: PayloadAction<
+        {
+          errors?: string | unknown;
+          success?: boolean;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.addModelState.errors = action.payload.errors;
+      state.addModelState.success = action.payload.success;
+      state.addModelState.loading = false;
+      state.addModelState.loaded = true;
     },
   },
 });

@@ -1545,3 +1545,11 @@ export const getRecommendedVersions = createSelector(
     return filterBoolean([ltsVersion, stableVersion]);
   },
 );
+
+/**
+Fetches the add model state.
+*/
+export const getAddModelState = createSelector(
+  [slice],
+  (sliceState) => sliceState.addModelState,
+);

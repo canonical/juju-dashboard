@@ -144,6 +144,21 @@ export type SupportedJujuVersionsState = SourceData<VersionElem[]>;
 
 export type ModelMigrationTargetsState = Record<string, SourceData<string[]>>;
 
+export type AddModel = {
+  modelName: string;
+  credential: string;
+  cloudTag: string;
+  userTag: string;
+  region?: string;
+};
+
+export type AddModelState = {
+  loading: boolean;
+  loaded: boolean;
+  errors?: string | unknown;
+  success?: boolean;
+};
+
 export type JujuState = {
   auditEvents: AuditEventsState;
   crossModelQuery: CrossModelQueryState;
@@ -165,4 +180,5 @@ export type JujuState = {
   userCredentials: UserCredentialsState;
   selectedApplications: Record<string, ApplicationStatus>;
   supportedJujuVersions: SupportedJujuVersionsState;
+  addModelState: AddModelState;
 };

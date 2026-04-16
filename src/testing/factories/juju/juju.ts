@@ -2,6 +2,7 @@ import { Factory } from "fishery";
 
 import { DEFAULT_AUDIT_EVENTS_LIMIT } from "store/juju/slice";
 import type {
+  AddModelState,
   AuditEventsState,
   CloudState,
   CommandHistory,
@@ -132,6 +133,11 @@ export const cloudInfoStateFactory = Factory.define<CloudState>(() => ({
   loading: false,
 }));
 
+export const addModelStateFactory = Factory.define<AddModelState>(() => ({
+  loaded: false,
+  loading: false,
+}));
+
 export const modelFeaturesFactory = Factory.define<ModelFeatures>(() => ({}));
 
 export const modelFeaturesStateFactory = Factory.define<ModelFeaturesState>(
@@ -186,4 +192,5 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   selectedApplications: {},
   supportedJujuVersions: supportedJujuVersionsStateFactory.build(),
   modelMigrationTargets: modelMigrationTargetsStateFactory.build(),
+  addModelState: addModelStateFactory.build(),
 }));
