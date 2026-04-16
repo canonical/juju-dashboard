@@ -29,6 +29,17 @@ export const isPayloadAction = (
   !!action.payload &&
   typeof action.payload === "object";
 
+/**
+ * Guard to ensure action has `meta` key.
+ */
+export const isMetaAction = <P, T extends string>(
+  action: PayloadAction<P, T>,
+): action is PayloadAction<P, T, Record<string, unknown>> => {
+  return (
+    "meta" in action && typeof action.meta === "object" && action.meta !== null
+  );
+};
+
 export const isSpecificAction = <A extends Action>(
   action: UnknownAction,
   actionType: string,

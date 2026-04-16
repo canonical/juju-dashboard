@@ -2,7 +2,7 @@ import { createPollingSource } from "data/pollingSource";
 import { supportedJujuVersions } from "juju/jimm/api";
 import { actions as jujuActions } from "store/juju";
 
-import { hasConnection } from "../connection/middleware";
+import { hasConnections } from "../connection/middleware";
 import { createSourceMiddleware } from "../source-middleware";
 
 /**
@@ -29,11 +29,11 @@ export default createSourceMiddleware<
 >(
   "jimm-supported-versions",
   ({ wsControllerURL: _, meta }) => {
-    if (!hasConnection(meta)) {
+    if (!hasConnections(meta, ["wsControllerURL"] as const)) {
       throw new Error("connection not provided");
     }
 
-    const { connection } = meta;
+    const connection = meta.connections.wsControllerURL;
 
     return createPollingSource(
       async () => {
