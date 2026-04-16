@@ -1,30 +1,13 @@
 import { createPollingSource } from "data/pollingSource";
+import type { VersionElem } from "juju/jimm/JIMMV4";
 import { supportedJujuVersions } from "juju/jimm/api";
 import { actions as jujuActions } from "store/juju";
 
 import { hasConnection } from "../connection/middleware";
 import { createSourceMiddleware } from "../source-middleware";
 
-/**
- * Information of a version supported by JIMM.
- */
-export type SupportedVersion = {
-  /**
-   * Version string.
-   */
-  version: string;
-  /**
-   * Date of version release.
-   */
-  date: string;
-  /**
-   * URL to release information.
-   */
-  link: string;
-};
-
 export default createSourceMiddleware<
-  SupportedVersion[],
+  VersionElem[],
   { wsControllerURL: string }
 >(
   "jimm-supported-versions",
@@ -38,16 +21,7 @@ export default createSourceMiddleware<
     return createPollingSource(
       async () => {
         const response = await supportedJujuVersions(connection);
-
-        const versions = [];
-        for (const version of response.versions) {
-          versions.push({
-            version: version.version,
-            date: version.date,
-            link: version["link-to-release"],
-          });
-        }
-        return versions;
+        return response.versions;
       },
       { interval: { minutes: 24 * 60 } },
     );

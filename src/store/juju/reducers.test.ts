@@ -10,6 +10,7 @@ import {
   rebacAllowedFactory,
   rebacRelationshipFactory,
   relationshipTupleFactory,
+  versionElemFactory,
 } from "testing/factories/juju/jimm";
 import {
   controllerFactory,
@@ -1819,11 +1820,9 @@ describe("reducers", () => {
       beforeEach(() => {
         state = jujuStateFactory.build({
           supportedJujuVersions: {
-            "wss://example.com": {
-              data: [],
-              error: null,
-              loading: false,
-            },
+            data: [],
+            error: null,
+            loading: false,
           },
         });
       });
@@ -1834,28 +1833,14 @@ describe("reducers", () => {
           actions.updateSupportedJujuVersions({
             wsControllerURL: "wss://example.com",
             update: {
-              data: [
-                {
-                  version: "1.2.3",
-                  date: "2026-01-01T00:00:00Z",
-                  link: "https://example.com",
-                },
-              ],
+              data: [versionElemFactory.build()],
             },
           }),
         );
         expect(result.supportedJujuVersions).toStrictEqual({
-          "wss://example.com": {
-            data: [
-              {
-                version: "1.2.3",
-                date: "2026-01-01T00:00:00Z",
-                link: "https://example.com",
-              },
-            ],
-            error: null,
-            loading: false,
-          },
+          data: [versionElemFactory.build()],
+          error: null,
+          loading: false,
         });
       });
 
@@ -1870,11 +1855,9 @@ describe("reducers", () => {
           }),
         );
         expect(result.supportedJujuVersions).toStrictEqual({
-          "wss://example.com": {
-            data: [],
-            error: null,
-            loading: true,
-          },
+          data: [],
+          error: null,
+          loading: true,
         });
       });
 
@@ -1892,36 +1875,13 @@ describe("reducers", () => {
           }),
         );
         expect(result.supportedJujuVersions).toStrictEqual({
-          "wss://example.com": {
-            data: [],
-            error: {
-              message: "Something",
-              source: new Error("Something"),
-            },
-            loading: false,
+          data: [],
+          error: {
+            message: "Something",
+            source: new Error("Something"),
           },
+          loading: false,
         });
-      });
-    });
-
-    it("adds new controller if not existing", () => {
-      const state = jujuStateFactory.build();
-      expect(state.supportedJujuVersions).toStrictEqual({});
-      const result = reducer(
-        state,
-        actions.updateSupportedJujuVersions({
-          wsControllerURL: "wss://example.com",
-          update: {
-            loading: true,
-          },
-        }),
-      );
-      expect(result.supportedJujuVersions).toStrictEqual({
-        "wss://example.com": {
-          data: null,
-          loading: true,
-          error: null,
-        },
       });
     });
   });

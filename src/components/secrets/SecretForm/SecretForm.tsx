@@ -119,7 +119,7 @@ const SecretForm: FC<Props> = ({
 
   useEffect(
     () => (): void => {
-      if (wsControllerURL) {
+      if (wsControllerURL && modelUUID) {
         dispatch(
           jujuActions.clearSecretsContent({
             modelUUID,

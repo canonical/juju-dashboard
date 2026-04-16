@@ -12,7 +12,7 @@ import cloneDeep from "clone-deep";
 import fastDeepEqual from "fast-deep-equal/es6";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
-import type { RelationshipTuple } from "juju/jimm/JIMMV4";
+import type { RelationshipTuple, VersionElem } from "juju/jimm/JIMMV4";
 import type { FullStatusAnnotations, ModelInfo } from "juju/types";
 import {
   getActiveUserTag,
@@ -29,8 +29,11 @@ import {
 } from "store/juju/utils/units";
 import type { RootState } from "store/store";
 import { getLatestRevision, getUserName } from "utils";
+import filterBoolean from "utils/filterBoolean";
+import isHigherSemver from "utils/isHigherSemver";
 
 import type {
+  Controller,
   Controllers,
   JujuState,
   ModelData,
@@ -39,7 +42,10 @@ import type {
   ReBACAllowed,
   ReBACRelationship,
 } from "./types";
-import { getControllerByUUID as getControllerByUUIDUtil } from "./utils/controllers";
+import {
+  getControllerByUUID as getControllerByUUIDUtil,
+  getControllerVersion,
+} from "./utils/controllers";
 import type { Filters } from "./utils/models";
 import {
   extractCloudName,
@@ -51,6 +57,7 @@ import {
   getUnitStatusGroup,
   groupModelsByStatus,
 } from "./utils/models";
+import { isLTS } from "./utils/upgrades";
 
 const slice = (state: RootState): JujuState => state.juju;
 
@@ -235,7 +242,7 @@ export const getSecretByURI = createSelector(
     getModelSecrets,
     (
       _state: RootState,
-      _modelUUID: string,
+      _modelUUID: null | string,
       secretURI: null | string = null,
     ): null | string => secretURI,
   ],
@@ -281,9 +288,9 @@ export const getModelFeaturesState = createSelector(
 export const getModelFeatures = createSelector(
   [
     getModelFeaturesState,
-    (_state: RootState, modelUUID: string): string => modelUUID,
+    (_state: RootState, modelUUID: null | string): null | string => modelUUID,
   ],
-  (modelFeatures, modelUUID) => modelFeatures[modelUUID],
+  (modelFeatures, modelUUID) => (modelUUID ? modelFeatures[modelUUID] : null),
 );
 
 export const getCanListSecrets = createSelector(
@@ -563,7 +570,7 @@ export const getModelUUIDFromList = createSelector(
     ): null | string => qualifier,
   ],
   (modelList: ModelsList, modelName, qualifier) => {
-    let modelUUID: string = "";
+    let modelUUID: null | string = null;
     if (!modelList || !modelName || !qualifier) {
       return modelUUID;
     }
@@ -1277,7 +1284,7 @@ export const getMachineApps = createSelector(
   getModelApplications,
   (
     _state,
-    _modelUUID?: string,
+    _modelUUID?: null | string,
     machineId?: null | string,
   ): null | string | undefined => machineId,
   (
@@ -1293,13 +1300,13 @@ export const getMachineUnits = createSelector(
   getModelApplications,
   (
     _state,
-    _modelUUID?: string,
+    _modelUUID?: null | string,
     machineId?: null | string,
     _includeSubordinates?: boolean,
   ) => machineId,
   (
     _state,
-    _modelUUID?: string,
+    _modelUUID?: null | string,
     _machineId?: null | string,
     includeSubordinates?: boolean,
   ) => includeSubordinates,
@@ -1318,7 +1325,7 @@ export const getAppMachines = createSelector(
   getModelMachines,
   (
     _state,
-    _modelUUID?: string,
+    _modelUUID?: null | string,
     appId?: null | string,
   ): null | string | undefined => appId,
   (
@@ -1335,7 +1342,7 @@ export const getAppUnits = createSelector(
   getModelApplications,
   (
     _state,
-    _modelUUID?: string,
+    _modelUUID?: null | string,
     appId?: null | string,
   ): null | string | undefined => appId,
   (
@@ -1348,7 +1355,7 @@ export const getUnit = createSelector(
   getModelApplications,
   (
     _state,
-    _modelUUID?: string,
+    _modelUUID?: null | string,
     unitId?: null | string,
   ): null | string | undefined => unitId,
   (
@@ -1375,7 +1382,7 @@ export const getUnitMachine = createSelector(
   getModelMachines,
   (
     _state,
-    _modelUUID?: string,
+    _modelUUID?: null | string,
     unitId?: null | string,
   ): null | string | undefined => unitId,
   (
@@ -1389,13 +1396,8 @@ export const getUnitMachine = createSelector(
 );
 
 export const getSupportedJujuVersions = createSelector(
-  [slice, (_state, wsControllerURL: string): string => wsControllerURL],
-  (state, wsControllerURL) =>
-    state.supportedJujuVersions[wsControllerURL] ?? {
-      loading: false,
-      error: null,
-      data: null,
-    },
+  [slice],
+  (state) => state.supportedJujuVersions,
 );
 
 /**
@@ -1415,4 +1417,131 @@ export const getModelMigrationTargets = createSelector(
       error: null,
       data: null,
     },
+);
+
+/**
+ * Get the controller objects for model migration targets that have a specific version.
+ */
+export const getModelMigrationControllersByVersion = createSelector(
+  [
+    getControllerData,
+    getModelMigrationTargets,
+    (_state, _modelUUID: string, version: string): string => version,
+  ],
+  (controllers, migrationTargets, version) => {
+    return migrationTargets.data?.reduce<Controller[]>(
+      (controllerList, controllerUUID) => {
+        const controller = controllers
+          ? getControllerByUUIDUtil(controllers, controllerUUID)
+          : null;
+        const controllerVersion = controller
+          ? getControllerVersion(controller)
+          : null;
+        if (controller && controllerVersion && controllerVersion === version) {
+          controllerList.push(controller);
+        }
+        return controllerList;
+      },
+      [],
+    );
+  },
+);
+
+/**
+ * Get the version objects filtered by versions that have corresponding
+ * model migration targets.
+ */
+export const getModelUpgradeVersions = createSelector(
+  [
+    getControllerData,
+    getSupportedJujuVersions,
+    getModelMigrationTargets,
+    getModelDataByUUID,
+    (state: RootState, modelUUID?: null | string): Controller | null =>
+      getModelControllerDataByUUID(
+        state,
+        getModelDataByUUID(state, modelUUID)?.info?.["controller-uuid"],
+      ),
+  ],
+  (
+    controllers,
+    supportedVersions,
+    migrationTargets,
+    model,
+    modelController,
+  ) => {
+    if (!controllers) {
+      return [];
+    }
+    const upgradeVersions = (migrationTargets.data ?? []).reduce<VersionElem[]>(
+      (versions, controllerUUID) => {
+        const controller = getControllerByUUIDUtil(controllers, controllerUUID);
+        const controllerVersion = controller
+          ? getControllerVersion(controller)
+          : null;
+        if (controllerVersion) {
+          const version = supportedVersions.data?.find(
+            (supportedVersion) =>
+              supportedVersion.version === controllerVersion,
+          );
+          if (
+            version &&
+            !versions?.find(
+              (existingVersion) =>
+                existingVersion.version === controllerVersion,
+            )
+          ) {
+            versions.push(version);
+          }
+        }
+        return versions;
+      },
+      [],
+    );
+    const controllerVersion = modelController
+      ? getControllerVersion(modelController)
+      : null;
+    const modelVersion = model?.model.version;
+    if (
+      modelVersion &&
+      controllerVersion &&
+      modelVersion !== controllerVersion &&
+      !upgradeVersions.find((version) => version.version === controllerVersion)
+    ) {
+      const controllerUpgradeVersion = supportedVersions.data?.find(
+        (version) => version.version === controllerVersion,
+      );
+      if (controllerUpgradeVersion) {
+        upgradeVersions.push(controllerUpgradeVersion);
+      }
+    }
+    return upgradeVersions;
+  },
+);
+
+/**
+ * Get available Juju versions for the latest LTS and the latest stable version, if there are controllers available.
+ */
+export const getRecommendedVersions = createSelector(
+  [getModelUpgradeVersions],
+  (migrationTargetVersions) => {
+    let ltsVersion: null | VersionElem = null;
+    let stableVersion: null | VersionElem = null;
+    for (const version of migrationTargetVersions ?? []) {
+      if (isLTS(version.version)) {
+        if (
+          !ltsVersion ||
+          isHigherSemver(version.version, ltsVersion.version)
+        ) {
+          ltsVersion = version;
+        }
+      } else if (
+        !stableVersion ||
+        isHigherSemver(version.version, stableVersion.version)
+      ) {
+        stableVersion = version;
+      }
+    }
+    return filterBoolean([ltsVersion, stableVersion]);
+  },
 );

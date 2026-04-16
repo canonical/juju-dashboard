@@ -211,7 +211,7 @@ const JujuCLI: FC = () => {
   );
 
   // Only show CLI on Juju.
-  if (!isJuju || !controllerWSHost || !modelInfo) {
+  if (!isJuju || !controllerWSHost || !modelInfo || !modelUUID) {
     return null;
   }
   return (

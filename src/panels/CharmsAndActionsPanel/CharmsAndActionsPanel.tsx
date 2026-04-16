@@ -68,6 +68,9 @@ const CharmsAndActionsPanel: FC = () => {
   const isPanelLoading = !isSet(charmURL);
 
   const getCharmsURL = useCallback(() => {
+    if (!modelUUID) {
+      return;
+    }
     getCharmsURLFromApplications(
       selectedApplications,
       modelUUID,

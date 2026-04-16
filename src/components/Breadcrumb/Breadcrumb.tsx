@@ -127,13 +127,15 @@ export default function Breadcrumb(): JSX.Element {
         >
           <strong>{modelName}</strong>
         </Link>
-        <ModelActions
-          modelUUID={modelUUID}
-          modelName={modelName}
-          redirectOnDestroy
-          position="left"
-          qualifier={qualifier}
-        />
+        {modelUUID ? (
+          <ModelActions
+            modelUUID={modelUUID}
+            modelName={modelName}
+            redirectOnDestroy
+            position="left"
+            qualifier={qualifier}
+          />
+        ) : null}
       </li>
     );
   };

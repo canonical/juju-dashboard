@@ -28,6 +28,7 @@ import {
   getModelData,
 } from "store/juju/selectors";
 import type { Controller } from "store/juju/types";
+import { getControllerVersion } from "store/juju/utils/controllers";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls, { externalURLs } from "urls";
@@ -207,13 +208,7 @@ const ControllersIndex: FC = () => {
       { content: controller.units },
       { content: "" },
     ];
-    let version: null | string = null;
-    if ("agent-version" in controller && controller["agent-version"]) {
-      version = controller["agent-version"];
-    }
-    if ("version" in controller && controller.version) {
-      ({ version } = controller);
-    }
+    const version = getControllerVersion(controller);
     if (version) {
       columns[columns.length - 1] = {
         content: (

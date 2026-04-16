@@ -84,7 +84,7 @@ const SecretContent: FC<Props> = ({ secretURI }: Props) => {
             className="info-panel__modal"
             close={() => {
               closePortal();
-              if (wsControllerURL) {
+              if (wsControllerURL && modelUUID) {
                 dispatch(
                   jujuActions.clearSecretsContent({
                     modelUUID,
@@ -95,7 +95,7 @@ const SecretContent: FC<Props> = ({ secretURI }: Props) => {
             }}
             title={Label.MODAL_TITLE}
           >
-            {secret ? (
+            {secret && modelUUID ? (
               <Formik<{ revision: string }>
                 initialValues={{ revision: (latestRevision ?? "").toString() }}
                 onSubmit={(values) => {

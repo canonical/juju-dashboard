@@ -32,6 +32,7 @@ import type {
   Controller as JujuController,
   ModelFeatures,
 } from "store/juju/types";
+import { getControllerVersion } from "store/juju/utils/controllers";
 import type { RootState, Store } from "store/store";
 import { toErrorString } from "utils";
 import { logger } from "utils/logger";
@@ -347,13 +348,10 @@ export async function fetchControllerList(
     await Promise.all(
       controllers.map(async (controller) => {
         let updateAvailable = false;
+        const version = getControllerVersion(controller);
         try {
           updateAvailable =
-            (await jujuUpdateAvailable(
-              "agent-version" in controller
-                ? controller["agent-version"]
-                : (controller.version ?? ""),
-            )) ?? false;
+            (version ? await jujuUpdateAvailable(version) : false) ?? false;
         } catch (error) {
           updateAvailable = false;
         }

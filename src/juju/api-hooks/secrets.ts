@@ -36,7 +36,7 @@ export const useListSecrets = (
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const onError = useCallback(
     (error: string) => {
-      if (wsControllerURL) {
+      if (wsControllerURL && modelUUID) {
         dispatch(
           jujuActions.setSecretsErrors({
             modelUUID,
@@ -50,7 +50,7 @@ export const useListSecrets = (
   );
   const onSuccess = useCallback(
     (response: ListSecretResults) => {
-      if (wsControllerURL) {
+      if (wsControllerURL && modelUUID) {
         dispatch(
           jujuActions.updateSecrets({
             modelUUID,
@@ -71,7 +71,7 @@ export const useListSecrets = (
       if (!connection.facades.secrets) {
         throw new Error(Label.NO_SECRETS_FACADE_ERROR);
       }
-      if (wsControllerURL) {
+      if (wsControllerURL && modelUUID) {
         dispatch(jujuActions.secretsLoading({ modelUUID, wsControllerURL }));
       }
       return connection.facades.secrets.listSecrets({
@@ -103,7 +103,7 @@ export const useGetSecretContent = (
 
   const onError = useCallback(
     (error: string) => {
-      if (wsControllerURL) {
+      if (wsControllerURL && modelUUID) {
         dispatch(
           jujuActions.setSecretsContentErrors({
             modelUUID,
@@ -117,7 +117,7 @@ export const useGetSecretContent = (
   );
   const onSuccess = useCallback(
     (response: ListSecretResults) => {
-      if (wsControllerURL) {
+      if (wsControllerURL && modelUUID) {
         const content = response?.results[0]?.value;
         if (content?.error || !content?.data) {
           dispatch(
@@ -149,7 +149,7 @@ export const useGetSecretContent = (
       if (!connection.facades.secrets) {
         throw new Error(Label.NO_SECRETS_FACADE_ERROR);
       }
-      if (wsControllerURL) {
+      if (wsControllerURL && modelUUID) {
         dispatch(
           jujuActions.secretsContentLoading({ modelUUID, wsControllerURL }),
         );

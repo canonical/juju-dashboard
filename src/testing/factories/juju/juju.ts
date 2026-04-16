@@ -14,10 +14,12 @@ import type {
   ModelFeatures,
   ModelFeaturesState,
   ModelListInfo,
+  ModelMigrationTargetsState,
   ModelSecrets,
   ModelUpgrade,
   ReBACState,
   SecretsState,
+  SupportedJujuVersionsState,
   UserCredentialsState,
 } from "store/juju/types";
 import type { SecretsContent } from "store/juju/types";
@@ -153,6 +155,16 @@ export const commandHistoryItem = Factory.define<HistoryItem>(() => ({
 
 export const commandHistoryState = Factory.define<CommandHistory>(() => ({}));
 
+export const supportedJujuVersionsStateFactory =
+  Factory.define<SupportedJujuVersionsState>(() => ({
+    data: null,
+    error: null,
+    loading: false,
+  }));
+
+export const modelMigrationTargetsStateFactory =
+  Factory.define<ModelMigrationTargetsState>(() => ({}));
+
 export const jujuStateFactory = Factory.define<JujuState>(() => ({
   auditEvents: auditEventsStateFactory.build(),
   crossModelQuery: crossModelQueryStateFactory.build(),
@@ -172,6 +184,6 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   cloudInfo: cloudInfoStateFactory.build(),
   userCredentials: userCredentialsStateFactory.build(),
   selectedApplications: {},
-  supportedJujuVersions: {},
-  modelMigrationTargets: {},
+  supportedJujuVersions: supportedJujuVersionsStateFactory.build(),
+  modelMigrationTargets: modelMigrationTargetsStateFactory.build(),
 }));

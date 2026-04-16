@@ -62,7 +62,7 @@ const SecretsTable: FC = () => {
       let owner: ReactNode = secret["owner-tag"];
       if (secret["owner-tag"]?.startsWith("model-")) {
         owner = "Model";
-      } else if (secret["owner-tag"]?.startsWith("application-")) {
+      } else if (modelUUID && secret["owner-tag"]?.startsWith("application-")) {
         const name = secret["owner-tag"].replace(/^application-/, "");
         owner = (
           <AppLink uuid={modelUUID} appName={name}>

@@ -47,7 +47,7 @@ const Fields = ({
 
   return (
     <>
-      {(secret?.revisions.length ?? 0) > 1 && secretURI ? (
+      {(secret?.revisions.length ?? 0) > 1 && secretURI && modelUUID ? (
         <>
           <FormikField
             id={Label.REMOVE_ALL}
