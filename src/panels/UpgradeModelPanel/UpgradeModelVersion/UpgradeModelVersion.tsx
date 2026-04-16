@@ -11,26 +11,33 @@ import * as Yup from "yup";
 
 import FormikFormData from "components/FormikFormData";
 import Panel from "components/Panel";
-import { getModelUUIDFromList, getModelDataByUUID } from "store/juju/selectors";
+import type { VersionElem } from "juju/jimm/JIMMV4";
+import {
+  getModelUUIDFromList,
+  getModelUpgradeVersions,
+  getSupportedJujuVersions,
+  getRecommendedVersions,
+  getModelListLoaded,
+  getModelMigrationTargets,
+  getModelDataByUUID,
+} from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import isHigherSemver from "utils/isHigherSemver";
 
 import UpgradeModelPanelHeader from "../UpgradeModelPanelHeader";
 import { UpgradeModelPanelTestId } from "../index";
-import type { Version } from "../types";
 
 import Fields from "./Fields";
 import type { FormFields } from "./types";
 import { FieldName, Label, UpgradeType } from "./types";
-import { getRecommendedVersions, versions } from "./utils";
 
 type Props = {
   firstRender: boolean;
   modelName: null | string;
   onRemovePanelQueryParams: () => void;
   qualifier: null | string;
-  setVersion: (version: Version) => void;
+  setVersion: (version: VersionElem) => void;
 };
 
 const UpgradeModelVersion: FC<Props> = ({
@@ -40,7 +47,6 @@ const UpgradeModelVersion: FC<Props> = ({
   qualifier,
   setVersion,
 }) => {
-  const recommendedVersions = getRecommendedVersions(versions);
   const titleId = useId();
   const formId = useId();
   const [isValid, setIsValid] = useState(false);
@@ -48,6 +54,17 @@ const UpgradeModelVersion: FC<Props> = ({
     getModelUUIDFromList(state, modelName, qualifier),
   );
   const model = useAppSelector((state) => getModelDataByUUID(state, modelUUID));
+  const supportedJujuVersions = useAppSelector(getSupportedJujuVersions);
+  const modelMigrationTargets = useAppSelector((state) =>
+    getModelMigrationTargets(state, modelUUID),
+  );
+  const recommendedVersions = useAppSelector((state) =>
+    getRecommendedVersions(state, modelUUID),
+  );
+  const availableVersions = useAppSelector((state) =>
+    getModelUpgradeVersions(state, modelUUID),
+  );
+  const modelsLoaded = useAppSelector(getModelListLoaded);
   let content: ReactNode = null;
   if (!model) {
     content = (
@@ -70,51 +87,31 @@ const UpgradeModelVersion: FC<Props> = ({
         is: (value: string) => value === UpgradeType.MANUAL,
         then: (fieldSchema) =>
           fieldSchema
+            .required(Label.ERROR_FORMAT)
             .matches(/^\d+\.\d+\.\d+$/, Label.ERROR_FORMAT)
             .test({
               message: Label.ERROR_SAME,
-              test: (value) => value !== currentVersion,
+              test: (value) => !currentVersion || value !== currentVersion,
             })
             .test({
               message: Label.ERROR_NO_CONTROLLERS,
               test: (value) =>
-                // TODO: this should check against the list of controller versions: https://warthogs.atlassian.net/browse/JUJU-9499
-                !!versions.find((versionData) => versionData.version === value),
+                !!availableVersions?.find(
+                  (versionData) => !value || versionData.version === value,
+                ),
             })
             .test({
               message: Label.ERROR_OLDER,
-              test: (value) => !value || isHigherSemver(value, currentVersion),
+              test: (value) =>
+                !currentVersion ||
+                !value ||
+                isHigherSemver(value, currentVersion),
             }),
       }),
     });
     content = (
-      <Formik<FormFields>
-        initialValues={{
-          [FieldName.MANUAL_VERSION]: "",
-          [FieldName.RECOMMENDED_VERSION]: recommendedVersions[0].version,
-          [FieldName.UPGRADE_TYPE]: UpgradeType.RECOMMENDED,
-        }}
-        onSubmit={(values) => {
-          const version =
-            values[FieldName.UPGRADE_TYPE] === UpgradeType.RECOMMENDED
-              ? values[FieldName.RECOMMENDED_VERSION]
-              : values[FieldName.MANUAL_VERSION];
-          const upgradeVersion = versions.find(
-            (versionData) => versionData.version === version,
-          );
-          // The form validation schema makes sure that there is corresponding version data so
-          // this 'if' is purely to satisfy the type checking.
-          if (upgradeVersion) {
-            setVersion(upgradeVersion);
-          }
-        }}
-        validationSchema={schema}
-      >
-        <FormikFormData
-          onValidate={setIsValid}
-          id={formId}
-          skipFirstValidation={false}
-        >
+      <>
+        {currentVersion ? (
           <p>
             Current version{" "}
             <Chip
@@ -124,14 +121,50 @@ const UpgradeModelVersion: FC<Props> = ({
               value={currentVersion}
             />
           </p>
-          <Fields currentVersion={currentVersion} />
-        </FormikFormData>
-      </Formik>
+        ) : null}
+        <Formik<FormFields>
+          initialValues={{
+            [FieldName.MANUAL_VERSION]: "",
+            [FieldName.RECOMMENDED_VERSION]: recommendedVersions[0]?.version,
+            [FieldName.UPGRADE_TYPE]: UpgradeType.RECOMMENDED,
+          }}
+          onSubmit={(values) => {
+            const version =
+              values[FieldName.UPGRADE_TYPE] === UpgradeType.RECOMMENDED
+                ? values[FieldName.RECOMMENDED_VERSION]
+                : values[FieldName.MANUAL_VERSION];
+            const upgradeVersion = availableVersions?.find(
+              (versionData) => versionData.version === version,
+            );
+            // The form validation schema makes sure that there is corresponding version data so
+            // this 'if' is purely to satisfy the type checking.
+            if (upgradeVersion) {
+              setVersion(upgradeVersion);
+            }
+          }}
+          validationSchema={schema}
+        >
+          <FormikFormData
+            onValidate={setIsValid}
+            id={formId}
+            skipFirstValidation={false}
+          >
+            <Fields modelName={modelName} qualifier={qualifier} />
+          </FormikFormData>
+        </Formik>
+      </>
     );
   }
   return (
     <Panel
       animateMount={firstRender}
+      loading={
+        !modelsLoaded ||
+        // This checks the existence of the data instead of using the loading state otherwise,
+        // each time it fetches data in the background the form would be replaced with the spinner.
+        !supportedJujuVersions.data ||
+        (!!model && !modelMigrationTargets.data)
+      }
       drawer={
         <>
           <Button

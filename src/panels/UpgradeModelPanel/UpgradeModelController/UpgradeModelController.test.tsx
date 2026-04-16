@@ -1,5 +1,5 @@
 import { NotificationSeverity } from "@canonical/react-components";
-import { screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
@@ -14,10 +14,16 @@ import {
   modelUserInfoFactory,
 } from "testing/factories/juju/ModelManagerV10";
 import {
+  modelMigrationTargetFactory,
+  versionElemFactory,
+} from "testing/factories/juju/jimm";
+import {
   controllerFactory,
   jujuStateFactory,
   modelDataFactory,
   modelListInfoFactory,
+  modelMigrationTargetsStateFactory,
+  supportedJujuVersionsStateFactory,
 } from "testing/factories/juju/juju";
 import { customWithin } from "testing/queries/within";
 import { renderComponent } from "testing/utils";
@@ -51,8 +57,13 @@ describe("UpgradeModelController", () => {
           "wss://example.com/api": [
             controllerFactory.build({
               uuid: "controller123",
-              "agent-version": "1.2.3",
+              version: "1.2.3",
               name: "controller1",
+            }),
+            controllerFactory.build({
+              uuid: "controller456",
+              version: "4.6.14",
+              name: "controller2",
             }),
           ],
         },
@@ -78,6 +89,17 @@ describe("UpgradeModelController", () => {
             }),
           }),
         },
+        modelMigrationTargets: modelMigrationTargetsStateFactory.build({
+          abc123: modelMigrationTargetFactory.build({
+            data: ["controller123", "controller456"],
+          }),
+        }),
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: [
+            versionElemFactory.build({ version: "1.2.3" }),
+            versionElemFactory.build({ version: "4.6.14" }),
+          ],
+        }),
       }),
     });
   });
@@ -88,14 +110,7 @@ describe("UpgradeModelController", () => {
       <UpgradeModelController
         back={vi.fn}
         onRemovePanelQueryParams={onRemovePanelQueryParams}
-        version={{
-          date: "2006-01-02",
-          lts: true,
-          version: "3.6.14",
-          "link-to-release":
-            "https://github.com/juju/juju/releases/tag/v3.6.14",
-          "requires-migration": false,
-        }}
+        version={versionElemFactory.build({ version: "1.2.3" })}
         modelName="test1"
         qualifier="eggman@external"
       />,
@@ -119,14 +134,7 @@ describe("UpgradeModelController", () => {
       <UpgradeModelController
         back={vi.fn}
         onRemovePanelQueryParams={vi.fn()}
-        version={{
-          date: "2006-01-02",
-          lts: true,
-          version: "3.6.14",
-          "link-to-release":
-            "https://github.com/juju/juju/releases/tag/v3.6.14",
-          "requires-migration": true,
-        }}
+        version={versionElemFactory.build({ version: "4.6.14" })}
         modelName="test1"
         qualifier="eggman@external"
       />,
@@ -153,14 +161,7 @@ describe("UpgradeModelController", () => {
       <UpgradeModelController
         back={vi.fn}
         onRemovePanelQueryParams={vi.fn()}
-        version={{
-          date: "2006-01-02",
-          lts: true,
-          version: "3.6.14",
-          "link-to-release":
-            "https://github.com/juju/juju/releases/tag/v3.6.14",
-          "requires-migration": true,
-        }}
+        version={versionElemFactory.build({ version: "4.6.14" })}
         modelName="test1"
         qualifier="eggman@external"
       />,
@@ -170,12 +171,13 @@ describe("UpgradeModelController", () => {
     expect(submit).toHaveAttribute("aria-disabled");
     await userEvent.selectOptions(
       screen.getByRole("combobox", { name: FieldsLabel.TARGET_CONTROLLER }),
-      "controller_1",
+      "controller2",
     );
     expect(submit).toHaveAttribute("aria-disabled");
-    await userEvent.click(
-      screen.getByRole("checkbox", { name: FieldsLabel.CONFIRM }),
-    );
+    const confirm = screen.getByRole("checkbox", { name: FieldsLabel.CONFIRM });
+    await userEvent.click(confirm);
+    // Vanilla doesn't display validation until the field loses focus.
+    await act(() => fireEvent.blur(confirm));
     expect(submit).not.toHaveAttribute("aria-disabled");
   });
 
@@ -186,14 +188,7 @@ describe("UpgradeModelController", () => {
       <UpgradeModelController
         back={vi.fn}
         onRemovePanelQueryParams={vi.fn()}
-        version={{
-          date: "2006-01-02",
-          lts: true,
-          version: "3.6.14",
-          "link-to-release":
-            "https://github.com/juju/juju/releases/tag/v3.6.14",
-          "requires-migration": false,
-        }}
+        version={versionElemFactory.build({ version: "1.2.2" })}
         modelName="test1"
         qualifier="eggman@external"
       />,
@@ -210,19 +205,13 @@ describe("UpgradeModelController", () => {
     });
   });
 
-  it("requires the confirmation when a migration is required", async () => {
+  it("requires the confirmation when a migration is not required", async () => {
+    state.juju.modelData.abc123.model.version = "1.2.0";
     renderComponent(
       <UpgradeModelController
         back={vi.fn}
         onRemovePanelQueryParams={vi.fn()}
-        version={{
-          date: "2006-01-02",
-          lts: true,
-          version: "3.6.14",
-          "link-to-release":
-            "https://github.com/juju/juju/releases/tag/v3.6.14",
-          "requires-migration": false,
-        }}
+        version={versionElemFactory.build({ version: "1.2.3" })}
         modelName="test1"
         qualifier="eggman@external"
       />,
@@ -230,9 +219,10 @@ describe("UpgradeModelController", () => {
     );
     const submit = screen.queryByRole("button", { name: Label.SUBMIT });
     expect(submit).toHaveAttribute("aria-disabled");
-    await userEvent.click(
-      screen.getByRole("checkbox", { name: FieldsLabel.CONFIRM }),
-    );
+    const confirm = screen.getByRole("checkbox", { name: FieldsLabel.CONFIRM });
+    await userEvent.click(confirm);
+    // Vanilla doesn't display validation until the field loses focus.
+    await act(() => fireEvent.blur(confirm));
     expect(submit).not.toHaveAttribute("aria-disabled");
   });
 });

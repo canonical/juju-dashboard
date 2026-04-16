@@ -1410,9 +1410,9 @@ export const getModelUpgrade = createSelector(
 );
 
 export const getModelMigrationTargets = createSelector(
-  [slice, (_state, modelUUID: string): string => modelUUID],
+  [slice, (_state, modelUUID: null | string): null | string => modelUUID],
   (state, modelUUID) =>
-    state.modelMigrationTargets[modelUUID] ?? {
+    (modelUUID ? state.modelMigrationTargets[modelUUID] : null) ?? {
       loading: false,
       error: null,
       data: null,
@@ -1426,7 +1426,7 @@ export const getModelMigrationControllersByVersion = createSelector(
   [
     getControllerData,
     getModelMigrationTargets,
-    (_state, _modelUUID: string, version: string): string => version,
+    (_state, _modelUUID: null | string, version: string): string => version,
   ],
   (controllers, migrationTargets, version) => {
     return migrationTargets.data?.reduce<Controller[]>(

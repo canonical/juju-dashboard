@@ -4,31 +4,45 @@ import type { FC } from "react";
 
 import AutocompleteField from "components/AutocompleteField";
 import NestedFields from "components/NestedFields";
-import type { Version } from "panels/UpgradeModelPanel/types";
+import type { VersionElem } from "juju/jimm/JIMMV4";
+import {
+  getModelUpgradeVersions,
+  getModelUUIDFromList,
+  getRecommendedVersions,
+} from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import isHigherSemver from "utils/isHigherSemver";
 
 import RecommendedVersion from "../RecommendedVersion";
 import type { FormFields } from "../types";
 import { FieldName, UpgradeType } from "../types";
-import { getRecommendedVersions, versions } from "../utils";
 
 import { Label, TestId } from "./types";
 
 type Props = {
-  currentVersion: string;
+  modelName: null | string;
+  qualifier: null | string;
 };
 
 // Sort by semver so that the highest version comes first.
-const sortReverse = (versionA: Version, versionB: Version): number => {
+const sortReverse = (versionA: VersionElem, versionB: VersionElem): number => {
   if (versionA.version === versionB.version) {
     return 0;
   }
   return isHigherSemver(versionA.version, versionB.version) ? -1 : 1;
 };
 
-const Fields: FC<Props> = ({ currentVersion }) => {
-  const recommendedVersions = getRecommendedVersions(versions);
+const Fields: FC<Props> = ({ modelName, qualifier }) => {
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, qualifier),
+  );
+  const availableVersions = useAppSelector((state) =>
+    getModelUpgradeVersions(state, modelUUID),
+  );
+  const recommendedVersions = useAppSelector((state) =>
+    getRecommendedVersions(state, modelUUID),
+  );
   const { values } = useFormikContext<FormFields>();
 
   return (
@@ -43,9 +57,10 @@ const Fields: FC<Props> = ({ currentVersion }) => {
         <NestedFields {...testId(TestId.RECOMMENDED)}>
           {recommendedVersions.map((version) => (
             <RecommendedVersion
-              currentVersion={currentVersion}
               key={version.version}
+              modelName={modelName}
               name={FieldName.RECOMMENDED_VERSION}
+              qualifier={qualifier}
               value={version.version}
               version={version}
             />
@@ -63,10 +78,12 @@ const Fields: FC<Props> = ({ currentVersion }) => {
           <AutocompleteField
             label={Label.VERSION}
             name={FieldName.MANUAL_VERSION}
-            options={versions.sort(sortReverse).map((version) => ({
-              label: version.version,
-              value: version.version,
-            }))}
+            options={[...(availableVersions ?? [])]
+              .sort(sortReverse)
+              .map((version) => ({
+                label: version.version,
+                value: version.version,
+              }))}
             style={{ width: "6rem" }}
           />
         </NestedFields>
