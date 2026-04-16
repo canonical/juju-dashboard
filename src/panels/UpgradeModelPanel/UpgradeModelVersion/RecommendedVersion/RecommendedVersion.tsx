@@ -2,26 +2,49 @@ import type { InputProps, PropsWithSpread } from "@canonical/react-components";
 import { Chip, FormikField } from "@canonical/react-components";
 import type { FC } from "react";
 
-import type { Version } from "panels/UpgradeModelPanel/types";
+import type { VersionElem } from "juju/jimm/JIMMV4";
+import {
+  getModelUUIDFromList,
+  getModelDataByUUID,
+  getControllerByUUID,
+} from "store/juju/selectors";
+import { getControllerVersion } from "store/juju/utils/controllers";
+import { isLTS, requiresMigration } from "store/juju/utils/upgrades";
+import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 
 import { Label, TestId } from "./types";
 
 type Props = PropsWithSpread<
   {
-    currentVersion: string;
+    modelName: null | string;
     name: string;
-    version: Version;
+    qualifier: null | string;
+    version: VersionElem;
   },
   InputProps
 >;
 
 const RecommendedVersion: FC<Props> = ({
-  currentVersion,
+  modelName,
   name,
+  qualifier,
   version,
   ...props
 }) => {
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, qualifier),
+  );
+  const model = useAppSelector((state) => getModelDataByUUID(state, modelUUID));
+  const controller = useAppSelector((state) =>
+    getControllerByUUID(state, model?.info?.["controller-uuid"]),
+  );
+  const controllerVersion = controller
+    ? getControllerVersion(controller)
+    : null;
+  const currentVersion = model?.model.version;
+  const needsMigration =
+    controllerVersion && requiresMigration(controllerVersion, version.version);
   const date = new Date(version.date);
   return (
     <>
@@ -35,7 +58,7 @@ const RecommendedVersion: FC<Props> = ({
           />
         </span>
         <span className="recommended-version__radio-details">
-          {version.lts ? (
+          {isLTS(version.version) ? (
             <span className="recommended-version__radio-column recommended-version__radio-tags">
               <Chip
                 isReadOnly
@@ -73,8 +96,7 @@ const RecommendedVersion: FC<Props> = ({
       </div>
       <p className="p-text--small" {...testId(TestId.UPGRADE_PATH)}>
         Upgrade path: {currentVersion} &rarr;{" "}
-        {version["requires-migration"] ? <>Migrate &rarr;</> : null}{" "}
-        {version.version}
+        {needsMigration ? <>Migrate &rarr;</> : null} {version.version}
       </p>
     </>
   );

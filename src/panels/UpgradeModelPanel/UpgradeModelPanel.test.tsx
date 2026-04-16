@@ -13,11 +13,18 @@ import {
   modelUserInfoFactory,
 } from "testing/factories/juju/ModelManagerV10";
 import {
+  modelMigrationTargetFactory,
+  versionElemFactory,
+} from "testing/factories/juju/jimm";
+import {
+  controllerFactory,
   jujuStateFactory,
   modelDataFactory,
   modelListInfoFactory,
+  modelMigrationTargetsStateFactory,
+  supportedJujuVersionsStateFactory,
 } from "testing/factories/juju/juju";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import UpgradeModelPanel from "./UpgradeModelPanel";
@@ -45,6 +52,20 @@ describe("UpgradeModelPanel", () => {
         },
       }),
       juju: jujuStateFactory.build({
+        controllers: {
+          "wss://example.com/api": [
+            controllerFactory.build({
+              uuid: "controller123",
+              version: "3.6.21",
+              name: "controller1",
+            }),
+            controllerFactory.build({
+              uuid: "controller456",
+              version: "4.6.14",
+              name: "controller2",
+            }),
+          ],
+        },
         models: {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
@@ -67,6 +88,18 @@ describe("UpgradeModelPanel", () => {
             }),
           }),
         },
+        modelsLoaded: true,
+        modelMigrationTargets: modelMigrationTargetsStateFactory.build({
+          abc123: modelMigrationTargetFactory.build({
+            data: ["controller123", "controller456"],
+          }),
+        }),
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: [
+            versionElemFactory.build({ version: "3.6.21" }),
+            versionElemFactory.build({ version: "4.6.14" }),
+          ],
+        }),
       }),
     });
   });
@@ -76,6 +109,63 @@ describe("UpgradeModelPanel", () => {
     expect(
       screen.getByRole("dialog", { name: UpgradeModelPanelHeaderLabel.TITLE }),
     ).toBeVisible();
+  });
+
+  it("starts the pollers for versions and targets on mount", async () => {
+    const [store, actions] = createStore(state, {
+      trackActions: true,
+    });
+    renderComponent(<UpgradeModelPanel />, { store, url, path });
+    const supportedVersionsStart = {
+      type: "source/jimm-supported-versions/start",
+      payload: { wsControllerURL: "wss://example.com/api" },
+      meta: { withConnection: true },
+    };
+    expect(
+      actions.find((dispatch) => dispatch.type === supportedVersionsStart.type),
+    ).toMatchObject(supportedVersionsStart);
+    const modelMigrationTargetsStart = {
+      type: "source/migration-targets/start",
+      payload: {
+        modelUUID: "abc123",
+        wsControllerURL: "wss://example.com/api",
+      },
+      meta: { withConnection: true },
+    };
+    expect(
+      actions.find(
+        (dispatch) => dispatch.type === modelMigrationTargetsStart.type,
+      ),
+    ).toMatchObject(modelMigrationTargetsStart);
+  });
+
+  it("stops the pollers for versions and targets when unmounted", async () => {
+    const [store, actions] = createStore(state, {
+      trackActions: true,
+    });
+    const {
+      result: { unmount },
+    } = renderComponent(<UpgradeModelPanel />, { store, url, path });
+    unmount();
+    const supportedVersionsStop = {
+      type: "source/jimm-supported-versions/stop",
+      payload: { wsControllerURL: "wss://example.com/api" },
+    };
+    expect(
+      actions.find((dispatch) => dispatch.type === supportedVersionsStop.type),
+    ).toMatchObject(supportedVersionsStop);
+    const modelMigrationTargetsStop = {
+      type: "source/migration-targets/stop",
+      payload: {
+        modelUUID: "abc123",
+        wsControllerURL: "wss://example.com/api",
+      },
+    };
+    expect(
+      actions.find(
+        (dispatch) => dispatch.type === modelMigrationTargetsStop.type,
+      ),
+    ).toMatchObject(modelMigrationTargetsStop);
   });
 
   it("can transition to the confirmation panel", async () => {

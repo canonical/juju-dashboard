@@ -7,7 +7,12 @@ import {
 import { useFormikContext } from "formik";
 import type { FC } from "react";
 
-import type { Version } from "panels/UpgradeModelPanel/types";
+import type { VersionElem } from "juju/jimm/JIMMV4";
+import {
+  getModelMigrationControllersByVersion,
+  getModelUUIDFromList,
+} from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 import type { FormFields } from "../types";
 import { FieldName } from "../types";
@@ -15,18 +20,32 @@ import { FieldName } from "../types";
 import { Label } from "./types";
 
 type Props = {
-  version: Version;
+  modelName: null | string;
+  needsMigration: boolean;
+  qualifier: null | string;
+  version: VersionElem;
 };
 
-const Fields: FC<Props> = ({ version }) => {
+const Fields: FC<Props> = ({
+  modelName,
+  needsMigration,
+  qualifier,
+  version,
+}) => {
+  const modelUUID = useAppSelector((state) =>
+    getModelUUIDFromList(state, modelName, qualifier),
+  );
+  const targetControllers = useAppSelector((state) =>
+    getModelMigrationControllersByVersion(state, modelUUID, version.version),
+  );
   const { values } = useFormikContext<FormFields>();
-  const showConfirm = version["requires-migration"]
+  const showConfirm = needsMigration
     ? !!values[FieldName.TARGET_CONTROLLER]
     : true;
 
   return (
     <>
-      {version["requires-migration"] ? (
+      {needsMigration ? (
         <FormikField
           component={Select}
           label={Label.TARGET_CONTROLLER}
@@ -36,13 +55,10 @@ const Fields: FC<Props> = ({ version }) => {
               label: "",
               value: "",
             },
-            // TODO populate the options with a list of target controllers that have been
-            // filtered by the chosen version once the API support has been added:
-            // https://warthogs.atlassian.net/browse/JUJU-9577.
-            {
-              label: "controller_1 | 4.0.1 | na-east-1",
-              value: "controller_1",
-            },
+            ...(targetControllers?.map((controller) => ({
+              label: controller.name,
+              value: controller.uuid,
+            })) ?? []),
           ]}
         />
       ) : null}

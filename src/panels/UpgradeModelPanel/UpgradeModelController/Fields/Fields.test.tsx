@@ -13,9 +13,14 @@ import {
 import { modelUserInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import { modelInfoFactory } from "testing/factories/juju/ModelManagerV11";
 import {
+  modelMigrationTargetFactory,
+  versionElemFactory,
+} from "testing/factories/juju/jimm";
+import {
   modelListInfoFactory,
   modelDataFactory,
   controllerFactory,
+  modelMigrationTargetsStateFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -44,8 +49,13 @@ beforeEach(() => {
         "wss://example.com/api": [
           controllerFactory.build({
             uuid: "controller123",
-            version: "1.2.3",
+            version: "4.6.14",
             name: "controller1",
+          }),
+          controllerFactory.build({
+            uuid: "controller456",
+            version: "4.6.14",
+            name: "controller2",
           }),
         ],
       },
@@ -71,6 +81,11 @@ beforeEach(() => {
           }),
         }),
       },
+      modelMigrationTargets: modelMigrationTargetsStateFactory.build({
+        abc123: modelMigrationTargetFactory.build({
+          data: ["controller123", "controller456"],
+        }),
+      }),
     }),
   });
 });
@@ -87,14 +102,10 @@ it("displays correctly when a migration is required", async () => {
       onSubmit={vi.fn()}
     >
       <Fields
-        version={{
-          date: "2006-01-02",
-          lts: true,
-          version: "3.6.14",
-          "link-to-release":
-            "https://github.com/juju/juju/releases/tag/v3.6.14",
-          "requires-migration": true,
-        }}
+        needsMigration
+        modelName="test1"
+        qualifier="eggman@external"
+        version={versionElemFactory.build({ version: "4.6.14" })}
       />
     </Formik>,
     { state },
@@ -122,21 +133,17 @@ it("displays confirmation when a migration is required", async () => {
       onSubmit={vi.fn()}
     >
       <Fields
-        version={{
-          date: "2006-01-02",
-          lts: true,
-          version: "3.6.14",
-          "link-to-release":
-            "https://github.com/juju/juju/releases/tag/v3.6.14",
-          "requires-migration": true,
-        }}
+        needsMigration
+        modelName="test1"
+        qualifier="eggman@external"
+        version={versionElemFactory.build({ version: "4.6.14" })}
       />
     </Formik>,
     { state },
   );
   await userEvent.selectOptions(
     screen.getByRole("combobox", { name: Label.TARGET_CONTROLLER }),
-    "controller_1",
+    "controller1",
   );
   expect(
     queryNotificationByText(Label.REVIEW_RISKS, {
@@ -160,14 +167,10 @@ it("displays correctly when a migration is not required", async () => {
       onSubmit={vi.fn()}
     >
       <Fields
-        version={{
-          date: "2006-01-02",
-          lts: true,
-          version: "3.6.14",
-          "link-to-release":
-            "https://github.com/juju/juju/releases/tag/v3.6.14",
-          "requires-migration": false,
-        }}
+        needsMigration={false}
+        modelName="test1"
+        qualifier="eggman@external"
+        version={versionElemFactory.build({ version: "4.6.14" })}
       />
     </Formik>,
     { state },
