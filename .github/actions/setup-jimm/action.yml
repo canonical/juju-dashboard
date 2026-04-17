@@ -21,9 +21,12 @@ outputs:
   jimm-controller-name:
     description: Name of the JIMM workloads controller
     value: ${{ steps.jimm-controller.outputs.name }}
-  workloads-controller-name:
+  workloads-controller-public-name:
     description: Name of the JIMM workloads controller
     value: ${{ steps.workloads-controller.outputs.public }}
+  workloads-controller-private-name:
+    description: Name of the JIMM workloads controller
+    value: ${{ steps.workloads-controller.outputs.name }}
 
 runs:
   using: composite
@@ -51,13 +54,31 @@ runs:
       shell: bash
       run: |
         sudo snap install yq jaas
+        sudo snap install terraform --classic
     - name: Setup Go
       uses: actions/setup-go@v6
+    - name: Checkout IAM repo
+      uses: actions/checkout@v6
+      with:
+        repository: canonical/iam-bundle-integration
+        path: iam-bundle-integration
     - name: Set up IAM
       shell: bash
       run: |
-        juju add-model iam
-        juju deploy identity-platform --trust --channel latest/edge
+        cd iam-bundle-integration
+        terraform -chdir=examples/tutorial init
+        terraform -chdir=examples/tutorial apply -auto-approve
+    - name: downgrade IAM core model
+      shell: bash
+      run: |
+        juju switch core
+        juju refresh postgresql-k8s --revision=774
+        juju refresh self-signed-certificates --revision=317
+        juju refresh traefik-public --revision=270
+    - name: Switch to IAM model
+      shell: bash
+      run: |
+        juju switch iam
     - name: Wait for IAM - hydra
       uses: ./.github/actions/juju-wait-for
       with:
@@ -69,24 +90,26 @@ runs:
       with:
         type: application
         name: kratos
+    - name: Switch to IAM core model
+      shell: bash
+      run: |
+        juju switch core
     - name: Wait for IAM - postgresql-k8s
       uses: ./.github/actions/juju-wait-for
       with:
         type: application
         name: postgresql-k8s
+        timeout_minutes: 10 # Postgres needs a longer timeout.
     - name: Wait for IAM - self-signed-certificates
       uses: ./.github/actions/juju-wait-for
       with:
         type: application
         name: self-signed-certificates
-    - name: Create IAM offers for cross-model relations
-      shell: bash
-      run: |
-        juju offer hydra:oauth
-        juju offer self-signed-certificates:send-ca-cert
     - name: Turn off MFA
       shell: bash
-      run: juju config kratos enforce_mfa=False
+      run: |
+        juju switch iam
+        juju config kratos enforce_mfa=False
     - name: Wait for Kratos
       uses: ./.github/actions/juju-wait-for
       with:
@@ -103,9 +126,9 @@ runs:
       shell: bash
       run: |
         juju add-model jimm
-        juju deploy juju-jimm-k8s --channel=${{ inputs.jimm-channel }} jimm --config postgres-secret-storage=true
+        juju deploy juju-jimm-k8s --channel=${{ inputs.jimm-channel }} jimm --config postgres-secret-storage=true --revision=102
         juju deploy openfga-k8s --channel=edge openfga
-        juju deploy postgresql-k8s --channel=16/edge postgresql
+        juju deploy postgresql-k8s --channel=16/edge postgresql --revision 770
         juju deploy nginx-ingress-integrator --channel=latest/stable --trust ingress
         juju trust postgresql --scope=cluster
     - name: Wait for Postgres
@@ -113,6 +136,7 @@ runs:
       with:
         type: unit
         name: postgresql/0 # Wait for postgres to prevent issues when relating to other apps: https://github.com/canonical/openfga-operator/issues/25.
+        timeout_minutes: 10 # Postgres needs a longer timeout.
     - name: Add JIMM relations
       shell: bash
       run: |
@@ -130,11 +154,11 @@ runs:
     - name: Wait for openfga
       uses: nick-fields/retry@v3
       with:
-        timeout_minutes: 1
+        timeout_minutes: 5
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
         command: |
           STATUS=$(juju status --format json | yq .applications.openfga.application-status.current)
-          if [ "$STATUS" == "error" ]; then
+          if [ "$STATUS" == "waiting" ]; then
             # Sometimes the postgresql unit has a PrematureDataAccessError error so remove the relation and try again.
             juju remove-relation openfga:database postgresql
             # The unit will be blocked when it is waiting for the relation
@@ -142,13 +166,13 @@ runs:
             TYPE=application NAME=openfga TIMEOUT_MINUTES=1 EXPECTED_STATUS=blocked ./scripts/wait-for
             juju relate openfga:database postgresql
           fi
-          TYPE=application NAME=openfga TIMEOUT_MINUTES=1 EXPECTED_STATUS=active ./scripts/wait-for
+          TYPE=application NAME=openfga TIMEOUT_MINUTES=5 EXPECTED_STATUS=active ./scripts/wait-for
     - name: Add JIMM relations and certs
       shell: bash
       run: |
-        juju relate jimm admin/iam.hydra
-        juju relate jimm admin/iam.self-signed-certificates
-        juju deploy self-signed-certificates jimm-cert
+        juju relate jimm admin/iam.oauth-offer
+        juju relate jimm admin/core.send-ca-cert
+        juju deploy self-signed-certificates jimm-cert --channel 1/stable --revision 317
         juju relate ingress:certificates jimm-cert:certificates
     - name: Configure JIMM
       shell: bash
@@ -184,6 +208,28 @@ runs:
       with:
         type: unit
         name: jimm/0 # Wait for JIMM to be ready if it's still making config changes.
+    - name: Wait for JIMM
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
+        command: |
+          STATUS=$(juju status --format json | yq .applications.jimm.application-status.current)
+          if [ "$STATUS" == "blocked" | "$STATUS" == "error" ]; then
+            if [ "$STATUS" == "error" ]; then
+              juju resolve jimm
+            fi
+
+            juju remove-relation jimm:openfga openfga
+            # The unit will be blocked when it is waiting for the relation
+            TYPE=application NAME=jimm TIMEOUT_MINUTES=1 EXPECTED_STATUS=blocked ./scripts/wait-for
+            juju relate jimm:openfga openfga
+
+            if [ "$STATUS" == "error" ]; then
+              juju resolve jimm
+            fi
+          fi
+          TYPE=application NAME=jimm TIMEOUT_MINUTES=1 EXPECTED_STATUS=active ./scripts/wait-for
     - name: Bootstrap workloads controller
       id: workloads-controller
       shell: bash
