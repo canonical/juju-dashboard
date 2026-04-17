@@ -1,10 +1,7 @@
 import { ConfirmationModal, usePortal } from "@canonical/react-components";
 import type { JSX } from "react";
-import reactHotToast from "react-hot-toast";
 import { useParams } from "react-router";
 
-import ToastCard from "components/ToastCard";
-import type { ToastInstance } from "components/ToastCard";
 import useAnalytics from "hooks/useAnalytics";
 import { useExecuteActionOnUnits } from "juju/api-hooks";
 import type { ActionOptionValue } from "panels/ActionsPanel/types";
@@ -17,6 +14,7 @@ import type { JujuState } from "store/juju/types";
 import { getScale } from "store/juju/utils/units";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
+import { toastNotification } from "utils/toastNotification";
 
 import { Label, TestId } from "./types";
 
@@ -59,19 +57,11 @@ const executeAction = (
       if (error) {
         throw error;
       }
-      reactHotToast.custom((toast: ToastInstance) => (
-        <ToastCard toastInstance={toast} type="positive">
-          {Label.ACTION_SUCCESS}
-        </ToastCard>
-      ));
+      toastNotification(Label.ACTION_SUCCESS, "positive");
       return;
     })
     .catch(() => {
-      reactHotToast.custom((toast: ToastInstance) => (
-        <ToastCard toastInstance={toast} type="negative">
-          {Label.ACTION_ERROR}
-        </ToastCard>
-      ));
+      toastNotification(Label.ACTION_ERROR, "negative");
     });
 };
 

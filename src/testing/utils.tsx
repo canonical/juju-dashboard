@@ -22,6 +22,7 @@ import {
 } from "react-router";
 
 import { initialiseAuthFromConfig } from "auth";
+import ToastNotification from "components/ToastNotification";
 import generalReducer from "store/general";
 import jujuReducer from "store/juju";
 import type { RootState } from "store/store";
@@ -181,7 +182,11 @@ export const wrapComponent = (
       );
       return (
         <Provider store={store}>
-          <Toaster toastOptions={{ duration: 0 }} />
+          <Toaster toastOptions={{ duration: 0 }}>
+            {(toastInstance) => (
+              <ToastNotification toastInstance={toastInstance} />
+            )}
+          </Toaster>
           {children}
         </Provider>
       );

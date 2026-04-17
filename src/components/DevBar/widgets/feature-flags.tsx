@@ -4,10 +4,10 @@ import type { JSX } from "react";
 
 import { ENABLED_FLAGS } from "consts";
 import useLocalStorage from "hooks/useLocalStorage";
+import { toastNotification } from "utils/toastNotification";
 
 import { StatusTitle } from "./StatusTitle";
 import type { Widget } from "./types";
-import { sendToast } from "./utils";
 
 export default {
   Title: (): JSX.Element => {
@@ -35,7 +35,7 @@ export default {
       enabledFlags: string[];
     }): void {
       setEnabledFlags(flags);
-      sendToast("Feature flags saved to local storage.");
+      toastNotification("Feature flags saved to local storage.");
     }
 
     return (

@@ -1,24 +1,15 @@
 import type { JSX, PropsWithChildren } from "react";
-import type { Renderable, Toast, ValueOrFunction } from "react-hot-toast";
+import type { Toast } from "react-hot-toast";
 import reactHotToast from "react-hot-toast";
 
 import { testId } from "testing/utils";
+import type { NotificationSeverity } from "utils/toastNotification";
 
 import { TestId } from "./types";
 
-export type ToastInstance = {
-  createdAt: number;
-  duration?: number | undefined;
-  id: string;
-  message: ValueOrFunction<Renderable, Toast>;
-  pauseDuration: number;
-  type: string;
-  visible: boolean;
-};
-
 type Props = {
-  toastInstance: ToastInstance;
-  type: "caution" | "info" | "negative" | "positive";
+  toastInstance: Toast;
+  type: NotificationSeverity;
   undo?: () => void;
 } & PropsWithChildren;
 
@@ -39,7 +30,7 @@ export default function ToastCard({
     case "negative":
       iconName = "error";
       break;
-    case "info":
+    case "information":
       iconName = "information";
       break;
     default:

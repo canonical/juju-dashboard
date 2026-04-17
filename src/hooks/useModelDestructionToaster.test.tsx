@@ -69,7 +69,7 @@ describe("useModelDestructionToaster", () => {
     renderComponent(<TestComponent />, { state });
 
     const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
-    expect(card).toHaveAttribute("data-type", "info");
+    expect(card).toHaveAttribute("data-type", "information");
     expect(
       await within(card).findByText('Destroying model "enterprise"...'),
     ).toBeInTheDocument();

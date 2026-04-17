@@ -1,14 +1,13 @@
 import { useEffect } from "react";
-import reactHotToast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router";
 
-import ToastCard, { type ToastInstance } from "components/ToastCard";
 import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { getDestructionState, getModelList } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { externalURLs } from "urls";
+import { toastNotification } from "utils/toastNotification";
 
 export default function useModelDestructionToaster(): void {
   const destructionState = useAppSelector(getDestructionState);
@@ -23,11 +22,10 @@ export default function useModelDestructionToaster(): void {
         // Check if the destruction is in a loading state.
         if (destructionStatus.loading) {
           // Handle an initiated destruction
-          reactHotToast.custom((toast: ToastInstance) => (
-            <ToastCard type="info" toastInstance={toast}>
-              <b>Destroying model "{destructionStatus.modelName}"...</b>
-            </ToastCard>
-          ));
+          toastNotification(
+            <b>Destroying model "{destructionStatus.modelName}"...</b>,
+            "information",
+          );
         } else if (
           wsControllerURL &&
           destructionStatus.loaded &&
@@ -35,13 +33,10 @@ export default function useModelDestructionToaster(): void {
           !Object.keys(modelsList).includes(modelUUID)
         ) {
           // Handle a successful destruction (model is no longer in modelsList)
-          reactHotToast.custom((toast: ToastInstance) => (
-            <ToastCard type="positive" toastInstance={toast}>
-              <b>
-                Model "{destructionStatus.modelName}" destroyed successfully
-              </b>
-            </ToastCard>
-          ));
+          toastNotification(
+            <b>Model "{destructionStatus.modelName}" destroyed successfully</b>,
+            "positive",
+          );
 
           // Dispatch the clear action to remove this entry from the state.
           dispatch(
@@ -54,8 +49,8 @@ export default function useModelDestructionToaster(): void {
 
         if (wsControllerURL && destructionStatus.errors) {
           // Handle a failed destruction
-          reactHotToast.custom((toast: ToastInstance) => (
-            <ToastCard type="negative" toastInstance={toast}>
+          toastNotification(
+            <>
               <b>Destroying model "{destructionStatus.modelName}" failed</b>
               <div>
                 Retry or consult{" "}
@@ -63,8 +58,9 @@ export default function useModelDestructionToaster(): void {
                   documentation
                 </Link>
               </div>
-            </ToastCard>
-          ));
+            </>,
+            "negative",
+          );
 
           // Dispatch the clear action to remove this entry from the state.
           dispatch(
