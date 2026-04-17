@@ -1,12 +1,10 @@
 import { Button } from "@canonical/react-components";
 import { unwrapResult } from "@reduxjs/toolkit";
-import reactHotToast from "react-hot-toast";
 
-import ToastCard from "components/ToastCard";
-import type { ToastInstance } from "components/ToastCard";
 import { thunks as appThunks } from "store/app";
 import { useAppDispatch } from "store/store";
 import { logger } from "utils/logger";
+import { toastNotification } from "utils/toastNotification";
 
 export enum Label {
   LOGOUT_ERROR = "Error when trying to logout.",
@@ -18,22 +16,21 @@ const useLogout = () => {
     dispatch(appThunks.logOut())
       .then(unwrapResult)
       .catch((error) => {
-        reactHotToast.custom((toast: ToastInstance) => (
-          <ToastCard toastInstance={toast} type="negative">
-            <>
-              {Label.LOGOUT_ERROR} Try{" "}
-              <Button
-                appearance="link"
-                onClick={() => {
-                  window.location.reload();
-                }}
-              >
-                refreshing
-              </Button>{" "}
-              the page.
-            </>
-          </ToastCard>
-        ));
+        toastNotification(
+          <>
+            {Label.LOGOUT_ERROR} Try{" "}
+            <Button
+              appearance="link"
+              onClick={() => {
+                window.location.reload();
+              }}
+            >
+              refreshing
+            </Button>{" "}
+            the page.
+          </>,
+          "negative",
+        );
         logger.error(Label.LOGOUT_ERROR, error);
       });
   };

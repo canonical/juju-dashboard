@@ -11,10 +11,10 @@ import {
   isLoggedIn,
 } from "store/general/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { toastNotification } from "utils/toastNotification";
 
 import { StatusTitle } from "./StatusTitle";
 import type { Widget } from "./types";
-import { sendToast } from "./utils";
 
 const USER_CREDENTIALS_KEY = "DEV__user-credentials";
 const AUTO_LOGIN_KEY = "DEV__auto-login";
@@ -40,7 +40,7 @@ function useAutoLogin(
     if (enabled && !attempted && !userIsLoggedIn) {
       setAttempted(true);
       login(dispatch, wsControllerURL, credential);
-      sendToast("Automatically logged in.");
+      toastNotification("Automatically logged in.");
     }
   }, [
     enabled,
@@ -84,7 +84,7 @@ export default {
       password: string;
     }): void {
       setCredential(userCredential);
-      sendToast("Saved user credentials");
+      toastNotification("Saved user credentials");
     }
 
     if (!isJuju) {
