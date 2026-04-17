@@ -3,7 +3,6 @@ import { unwrapResult } from "@reduxjs/toolkit";
 
 import * as jimmListeners from "juju/jimm/listeners";
 import * as jimmThunks from "juju/jimm/thunks";
-import { actions as generalActions } from "store/general";
 import { listenerMiddleware } from "store/listenerMiddleware";
 import type { AppDispatch } from "store/store";
 
@@ -29,7 +28,7 @@ export class OIDCAuth extends pollingMixin(Auth) {
   }
 
   override async beforeControllerConnect({
-    wsControllerURL,
+    wsControllerURL: _,
   }: ControllerData): Promise<boolean> {
     try {
       const whoamiResponse = await this.dispatch(jimmThunks.whoami());
@@ -44,14 +43,7 @@ export class OIDCAuth extends pollingMixin(Auth) {
         return false;
       }
     } catch (error) {
-      this.dispatch(
-        generalActions.storeLoginError({
-          wsControllerURL,
-          error: OIDCAuthLabel.WHOAMI,
-        }),
-      );
-      // Halt the connection attempt.
-      return false;
+      throw new Error(OIDCAuthLabel.WHOAMI);
     }
 
     return true;
