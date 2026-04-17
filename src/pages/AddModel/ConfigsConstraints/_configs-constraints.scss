@@ -1,0 +1,23 @@
+.configs-constraints__table {
+  .configs-constraints__category {
+    width: 25%;
+  }
+  .configs-constraints__config {
+    padding-bottom: 0;
+    padding-top: 0;
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+  }
+  .configs-constraints__input {
+    padding-bottom: 3px;
+    padding-top: 3px;
+
+    .p-form-validation__input {
+      margin-bottom: 0;
+    }
+  }
+}
