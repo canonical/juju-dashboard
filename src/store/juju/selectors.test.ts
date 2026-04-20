@@ -3306,7 +3306,6 @@ describe("getCloudInfoState", () => {
     expect(getCloudInfoState(state)).toStrictEqual({
       clouds: null,
       errors: null,
-      loaded: false,
       loading: false,
     });
   });
@@ -3324,7 +3323,6 @@ describe("getUserCredentialsState", () => {
     expect(getUserCredentialsState(state)).toStrictEqual({
       credentials: {},
       errors: null,
-      loaded: false,
       loading: false,
     });
   });
