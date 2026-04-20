@@ -9,7 +9,6 @@ import reactHotToast from "react-hot-toast";
 import Panel from "components/Panel";
 import ShareCard from "components/ShareCard";
 import ToastCard from "components/ToastCard";
-import type { ToastInstance } from "components/ToastCard";
 import useModelStatus from "hooks/useModelStatus";
 import { usePanelQueryParams } from "panels/hooks";
 import { actions as appActions } from "store/app";
@@ -22,6 +21,7 @@ import { getModelQualifier } from "store/juju/utils/models";
 import { useAppSelector, usePromiseDispatch } from "store/store";
 import { testId } from "testing/utils";
 import { getUserName } from "utils";
+import { toastNotification } from "utils/toastNotification";
 
 import { Label, TestId } from "./types";
 
@@ -115,13 +115,12 @@ export default function ShareModel(): JSX.Element {
         }),
       );
     } catch (error) {
-      reactHotToast.custom((toast: ToastInstance) => (
-        <ToastCard toastInstance={toast} type="negative">
-          {typeof error === "string"
-            ? error
-            : "Unable to update model permissions"}
-        </ToastCard>
-      ));
+      toastNotification(
+        typeof error === "string"
+          ? error
+          : "Unable to update model permissions",
+        "negative",
+      );
       response = null;
     }
     return response;
@@ -132,11 +131,12 @@ export default function ShareModel(): JSX.Element {
     resetForm: () => void,
   ): Promise<void> => {
     if (userAlreadyHasAccess(values.username, users)) {
-      reactHotToast.custom((toast: ToastInstance) => (
-        <ToastCard toastInstance={toast} type="negative">
+      toastNotification(
+        <>
           <strong>{values.username}</strong> already has access to this model.
-        </ToastCard>
-      ));
+        </>,
+        "negative",
+      );
     } else {
       const newUserName = values.username;
       const newUserPermission = values.access;
@@ -152,18 +152,15 @@ export default function ShareModel(): JSX.Element {
 
       const error = response?.results?.[0]?.error?.message;
       if (error) {
-        reactHotToast.custom((toast: ToastInstance) => (
-          <ToastCard toastInstance={toast} type="negative">
-            {error}
-          </ToastCard>
-        ));
+        toastNotification(error, "negative");
       } else if (response) {
         resetForm();
-        reactHotToast.custom((toast: ToastInstance) => (
-          <ToastCard toastInstance={toast} type="positive">
+        toastNotification(
+          <>
             <strong>{values.username}</strong> now has access to this model.
-          </ToastCard>
-        ));
+          </>,
+          "positive",
+        );
       }
     }
   };
@@ -222,16 +219,15 @@ export default function ShareModel(): JSX.Element {
       error = null;
     }
 
-    reactHotToast.custom((toast: ToastInstance) => (
-      <ToastCard toastInstance={toast} type={error ? "negative" : "positive"}>
-        {error ?? (
-          <>
-            Permissions for <strong>{username}</strong> have been changed to{" "}
-            <em>{permissionTo}.</em>
-          </>
-        )}
-      </ToastCard>
-    ));
+    toastNotification(
+      error ?? (
+        <>
+          Permissions for <strong>{username}</strong> have been changed to{" "}
+          <em>{permissionTo}.</em>
+        </>
+      ),
+      error ? "negative" : "positive",
+    );
     return response ?? null;
   };
 
@@ -247,7 +243,7 @@ export default function ShareModel(): JSX.Element {
       "read",
     );
 
-    reactHotToast.custom((toast: ToastInstance) => (
+    reactHotToast.custom((toast) => (
       <ToastCard
         toastInstance={toast}
         type="positive"

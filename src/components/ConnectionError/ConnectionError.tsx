@@ -5,13 +5,11 @@ import {
 } from "@canonical/react-components";
 import type { FC, ReactNode } from "react";
 import { useEffect, type PropsWithChildren } from "react";
-import reactHotToast from "react-hot-toast";
 
-import ToastCard from "components/ToastCard";
-import type { ToastInstance } from "components/ToastCard";
 import { getConnectionError } from "store/general/selectors";
 import { getAuditEventsErrors } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
+import { toastNotification } from "utils/toastNotification";
 
 const ConnectionError: FC<PropsWithChildren> = ({
   children,
@@ -36,11 +34,10 @@ const ConnectionError: FC<PropsWithChildren> = ({
 
   useEffect(() => {
     if (auditLogsErrors) {
-      reactHotToast.custom((toast: ToastInstance) => (
-        <ToastCard type="negative" toastInstance={toast}>
-          {generateErrorContent(auditLogsErrors)}
-        </ToastCard>
-      ));
+      toastNotification(
+        <>{generateErrorContent(auditLogsErrors)}</>,
+        "negative",
+      );
     }
   }, [auditLogsErrors]);
 

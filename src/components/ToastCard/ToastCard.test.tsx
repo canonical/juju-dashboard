@@ -1,16 +1,15 @@
 import { act, render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import cloneDeep from "clone-deep";
+import type { Toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import reactHotToast from "react-hot-toast";
 import { vi } from "vitest";
 
-import type { ToastInstance } from "components/ToastCard";
-
 import ToastCard from "./ToastCard";
 
 describe("Toast Card", () => {
-  const toastInstanceExample = {
+  const toastInstanceExample: Toast = {
     createdAt: 1623162274616,
     duration: 5000,
     id: "2",
@@ -19,6 +18,11 @@ describe("Toast Card", () => {
     style: {},
     type: "custom",
     visible: true,
+    ariaProps: {
+      role: "status",
+      "aria-live": "assertive",
+    },
+    dismissed: false,
   };
 
   it("should display message", () => {
@@ -76,7 +80,7 @@ describe("Toast Card", () => {
   it("should display correct information icon", () => {
     const toast = cloneDeep(toastInstanceExample);
     render(
-      <ToastCard type="info" toastInstance={toast}>
+      <ToastCard type="information" toastInstance={toast}>
         I am a toast message
       </ToastCard>,
     );
@@ -124,7 +128,7 @@ describe("Toast Card", () => {
   it("should remove the card when close is clicked", async () => {
     render(<Toaster />);
     await act(async () => {
-      reactHotToast.custom((toast: ToastInstance) => (
+      reactHotToast.custom((toast) => (
         <ToastCard type="negative" toastInstance={toast}>
           I am a toast message
         </ToastCard>
@@ -140,7 +144,7 @@ describe("Toast Card", () => {
   it("should close the card using the keyboard", async () => {
     render(<Toaster />);
     await act(async () => {
-      reactHotToast.custom((toast: ToastInstance) => (
+      reactHotToast.custom((toast) => (
         <ToastCard type="negative" toastInstance={toast}>
           I am a toast message
         </ToastCard>

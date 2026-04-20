@@ -9,7 +9,7 @@ import type { RenderHookResult, RenderResult } from "@testing-library/react";
 import { render, renderHook } from "@testing-library/react";
 import type { FC, JSX } from "react";
 import { useEffect, type PropsWithChildren, type ReactNode } from "react";
-import reactHotToast, { Toaster } from "react-hot-toast";
+import reactHotToast from "react-hot-toast";
 import { Provider } from "react-redux";
 import type { RouteObject } from "react-router";
 import {
@@ -22,6 +22,7 @@ import {
 } from "react-router";
 
 import { initialiseAuthFromConfig } from "auth";
+import ToastNotifications from "components/ToastNotifications";
 import generalReducer from "store/general";
 import jujuReducer from "store/juju";
 import type { RootState } from "store/store";
@@ -181,7 +182,7 @@ export const wrapComponent = (
       );
       return (
         <Provider store={store}>
-          <Toaster toastOptions={{ duration: 0 }} />
+          <ToastNotifications toastOptions={{ duration: 0 }} />
           {children}
         </Provider>
       );

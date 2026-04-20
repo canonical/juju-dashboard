@@ -8,13 +8,11 @@ import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import { Formik } from "formik";
 import type { FC, JSX } from "react";
 import { useEffect, useState } from "react";
-import reactHotToast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import * as Yup from "yup";
 
 import CheckPermissions from "components/CheckPermissions";
 import FormikFormData from "components/FormikFormData";
-import ToastCard, { type ToastInstance } from "components/ToastCard";
 import { useCanAddModel } from "hooks/useCanAddModel";
 import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
@@ -24,6 +22,7 @@ import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls from "urls";
 import { toErrorString } from "utils";
+import { toastNotification } from "utils/toastNotification";
 
 import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
@@ -101,21 +100,21 @@ const AddModel: FC = () => {
     if (addModelState.loaded && !addModelState.loading && wsControllerURL) {
       if (addModelState.success) {
         // Handle a successful creation
-        reactHotToast.custom((toast: ToastInstance) => (
-          <ToastCard type="positive" toastInstance={toast}>
-            <b>Model "{modelName}" added successfully</b>
-          </ToastCard>
-        ));
+        toastNotification(
+          <b>Model "{modelName}" added successfully</b>,
+          "positive",
+        );
         dispatch(modelListSource.actions.invalidate({ wsControllerURL }));
         void navigate(urls.models.index);
       } else if (addModelState.errors) {
         // Handle a failed creation
-        reactHotToast.custom((toast: ToastInstance) => (
-          <ToastCard type="negative" toastInstance={toast}>
+        toastNotification(
+          <>
             <b>Adding model "{modelName}" failed</b>
             <div>{toErrorString(addModelState.errors)}</div>
-          </ToastCard>
-        ));
+          </>,
+          "negative",
+        );
       }
       dispatch(jujuActions.setAddModelResult({ wsControllerURL }));
     }
