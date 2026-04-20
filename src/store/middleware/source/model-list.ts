@@ -16,7 +16,7 @@ export default createSourceMiddleware<
   ({ wsControllerURL: _, meta }) => {
     return createPollingSource(
       async () => {
-        if (!hasConnections(meta, ["wsControllerURL"] as const)) {
+        if (!hasConnections(meta, ["wsControllerURL"])) {
           throw new Error("connection not provided");
         }
 

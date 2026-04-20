@@ -12,7 +12,7 @@ export default createSourceMiddleware<
 >(
   "jimm-supported-versions",
   ({ wsControllerURL: _, meta }) => {
-    if (!hasConnections(meta, ["wsControllerURL"] as const)) {
+    if (!hasConnections(meta, ["wsControllerURL"])) {
       throw new Error("connection not provided");
     }
 

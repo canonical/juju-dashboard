@@ -38,24 +38,25 @@ function hasConnectionURL<P extends Record<string, unknown>>(
 /**
  * Guard to ensure that the given object has a `connections` key with provided connection keys.
  */
-export function hasConnections<K extends readonly string[]>(
-  object: Record<string, unknown>,
-  connectionKeys: K,
-): object is { connections: Record<K[number], ConnectionWithFacades> } & Record<
+export function hasConnections<K extends string>(
+  meta: Record<string, unknown>,
+  connectionKeys: K[],
+): meta is { connections: Record<K, ConnectionWithFacades> } & Record<
   string,
   unknown
 > {
-  return (
-    "connections" in object &&
-    typeof object.connections === "object" &&
-    object.connections !== null &&
-    connectionKeys.every(
-      (key) =>
-        // @ts-expect-error - Doesn't pick up check due to closure
-        key in object.connections &&
-        // @ts-expect-error - Doesn't pick up check due to closure
-        object.connections[key] instanceof Connection,
+  if (
+    !(
+      "connections" in meta &&
+      typeof meta.connections === "object" &&
+      meta.connections !== null
     )
+  ) {
+    return false;
+  }
+  const connections = meta.connections as Record<string, unknown>;
+  return connectionKeys.every(
+    (key) => key in connections && connections[key] instanceof Connection,
   );
 }
 

@@ -9,21 +9,14 @@ import { hasConnections } from "./middleware/connection/middleware";
  * Guard to ensure that the given action has `meta.connections` populated with expected connection
  * keys. This field is provided by `connectionMiddleware`.
  */
-export function actionWithConnections<
-  P,
-  T extends string,
-  K extends readonly string[],
->(
+export function actionWithConnections<P, T extends string, K extends string>(
   expectedAction: PayloadActionCreator<P, T>,
   action: unknown,
-  connectionKeys: K,
+  connectionKeys: K[],
 ): action is PayloadAction<
   P,
   T,
-  { connections: Record<K[number], ConnectionWithFacades> } & Record<
-    string,
-    unknown
-  >
+  { connections: Record<K, ConnectionWithFacades> } & Record<string, unknown>
 > {
   return (
     expectedAction.match(action) &&

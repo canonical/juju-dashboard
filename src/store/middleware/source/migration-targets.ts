@@ -11,7 +11,7 @@ export default createSourceMiddleware<
 >(
   "migration-targets",
   ({ wsControllerURL: _, modelUUID: modelUUID, meta }) => {
-    if (!hasConnections(meta, ["wsControllerURL"] as const)) {
+    if (!hasConnections(meta, ["wsControllerURL"])) {
       throw new Error("connection not provided");
     }
 
