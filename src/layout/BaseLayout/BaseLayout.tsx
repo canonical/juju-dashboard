@@ -1,14 +1,13 @@
 import { ApplicationLayout } from "@canonical/react-components";
 import type { FC } from "react";
 import { useState, useEffect } from "react";
-import { Toaster } from "react-hot-toast";
 import { Link, Outlet, useLocation } from "react-router";
 
 import Banner from "components/Banner";
 import DevBar from "components/DevBar";
 import Logo from "components/Logo";
 import PrimaryNav from "components/PrimaryNav";
-import ToastNotification from "components/ToastNotification";
+import ToastNotifications from "components/ToastNotifications";
 import { DARK_THEME } from "consts";
 import useAnalytics from "hooks/useAnalytics";
 import useFeatureFlags from "hooks/useFeatureFlags";
@@ -76,17 +75,7 @@ const BaseLayout: FC = () => {
       >
         <Outlet context={{ setStatus }} />
       </ApplicationLayout>
-      <Toaster
-        position="bottom-right"
-        containerClassName="toast-container"
-        toastOptions={{
-          duration: 5000,
-        }}
-        reverseOrder={true}
-      >
-        {(toastInstance) => <ToastNotification toastInstance={toastInstance} />}
-      </Toaster>
-      ){import.meta.env.DEV && <DevBar />}
+      <ToastNotifications />){import.meta.env.DEV && <DevBar />}
     </>
   );
 };
