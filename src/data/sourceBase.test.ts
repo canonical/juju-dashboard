@@ -1,5 +1,8 @@
+import type { Mock, MockInstance } from "vitest";
+
 import { tick } from "../testing/tsUtils";
 
+import type { Source } from "./source";
 import { SourceState } from "./source";
 import { createSource, type SourceHooks, type SourceBase } from "./sourceBase";
 
@@ -858,6 +861,105 @@ describe("createSource", () => {
           loadPromises[1].resolve(123);
           await tick();
           expect(errorClearedHandler).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
+
+    describe("async iterator", () => {
+      it("yields for every new value", async () => {
+        const loadPromises = [Promise.withResolvers(), Promise.withResolvers()];
+        const source = createSource(({ load }) => {
+          load(loadPromises[0].promise);
+          load(loadPromises[1].promise);
+          return DUMMY_HOOKS;
+        });
+
+        const iterator = source[Symbol.asyncIterator]();
+
+        const first = iterator.next();
+        loadPromises[0].resolve(1);
+        expect(await first).toStrictEqual({ value: 1, done: false });
+
+        const second = iterator.next();
+        loadPromises[1].resolve(2);
+        expect(await second).toStrictEqual({ value: 2, done: false });
+      });
+
+      it("independently yields different iterators", async () => {
+        const loadPromises = [Promise.withResolvers(), Promise.withResolvers()];
+        const source = createSource(({ load }) => {
+          load(loadPromises[0].promise);
+          load(loadPromises[1].promise);
+          return DUMMY_HOOKS;
+        });
+
+        const iterator1 = source[Symbol.asyncIterator]();
+        const iterator2 = source[Symbol.asyncIterator]();
+
+        const first1 = iterator1.next();
+        const first2 = iterator2.next();
+        loadPromises[0].resolve(1);
+        expect(await first1).toStrictEqual({ value: 1, done: false });
+        expect(await first2).toStrictEqual({ value: 1, done: false });
+
+        const second1 = iterator1.next();
+        const second2 = iterator2.next();
+        loadPromises[1].resolve(2);
+        expect(await second1).toStrictEqual({ value: 2, done: false });
+        expect(await second2).toStrictEqual({ value: 2, done: false });
+      });
+
+      it("terminates when source complete", async () => {
+        const source = createSource(() => DUMMY_HOOKS);
+        const iterator = source[Symbol.asyncIterator]();
+
+        const next = iterator.next();
+        source.done();
+        expect(await next).toStrictEqual({ value: undefined, done: true });
+      });
+
+      describe("cleans up listener", () => {
+        let promise: PromiseWithResolvers<number>;
+        let source: Source<number>;
+        let unsubscribe: Mock;
+        let spy: MockInstance;
+
+        beforeEach(() => {
+          promise = Promise.withResolvers();
+          source = createSource(({ load }) => {
+            load(promise.promise);
+            return DUMMY_HOOKS;
+          });
+          const { on } = source;
+          spy = vi.spyOn(source, "on").mockImplementation((...args) => {
+            unsubscribe = vi.fn(on(...args));
+            return unsubscribe;
+          });
+        });
+
+        it("after source done", async ({ expect }) => {
+          const iterator = source[Symbol.asyncIterator]();
+          const next = iterator.next();
+
+          expect(spy).toHaveBeenCalledTimes(1);
+          expect(unsubscribe).toHaveBeenCalledTimes(0);
+
+          source.done();
+          await next;
+          expect(unsubscribe).toHaveBeenCalledTimes(1);
+        });
+
+        it("with for..of loop", async ({ expect }) => {
+          const check = (async (): Promise<void> => {
+            for await (const _item of source) {
+              expect(spy).toHaveBeenCalledTimes(1);
+              break;
+            }
+          })();
+          promise.resolve(123);
+          await check;
+
+          expect(unsubscribe).toHaveBeenCalledTimes(1);
         });
       });
     });

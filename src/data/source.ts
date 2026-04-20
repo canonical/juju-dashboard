@@ -70,6 +70,10 @@ export type Source<T> = {
     event: Name,
     cb: (...data: Events<T>[Name]) => void,
   ) => UnsubscribeCallback;
+  /**
+   * An async iterator which will produce the latest value whenever new data is available.
+   */
+  [Symbol.asyncIterator]: () => AsyncIterator<T, void, void>;
 };
 
 /**
