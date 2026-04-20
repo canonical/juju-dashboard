@@ -25,6 +25,8 @@ import { testId } from "testing/utils";
 import urls from "urls";
 import { toErrorString } from "utils";
 
+import ConfigsConstraints from "./ConfigsConstraints/ConfigsConstraints";
+import { getInitialConfigurationValues } from "./ConfigsConstraints/configCatalog";
 import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
@@ -49,7 +51,7 @@ const stepDefinitions: Array<{
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
     title: "Configuration & Constraints (optional)",
-    content: <div>Configuration and constraints form goes here.</div>,
+    content: <ConfigsConstraints />,
   },
   {
     key: StepType.ACCESS_MANAGEMENT,
@@ -161,6 +163,7 @@ const AddModel: FC = () => {
               cloud: "",
               region: "",
               credential: "",
+              configurations: getInitialConfigurationValues(),
             }}
             validationSchema={validationSchema}
             onSubmit={handleCreateClick}
