@@ -12,18 +12,19 @@ import * as Yup from "yup";
 
 import FormikFormData from "components/FormikFormData";
 import Panel from "components/Panel";
+import type { VersionElem } from "juju/jimm/JIMMV4";
 import { CharmsAndActionsPanelTestId } from "panels/CharmsAndActionsPanel";
 import {
-  getControllerDataByUUID,
+  getControllerByUUID,
   getModelDataByUUID,
   getModelUUIDFromList,
 } from "store/juju/selectors";
-import type { Controller } from "store/juju/types";
+import { getControllerVersion } from "store/juju/utils/controllers";
+import { requiresMigration } from "store/juju/utils/upgrades";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 
 import UpgradeModelPanelHeader from "../UpgradeModelPanelHeader";
-import type { Version } from "../types";
 
 import Fields from "./Fields";
 import type { FormFields } from "./types";
@@ -33,25 +34,8 @@ export type Props = {
   back: () => void;
   modelName: null | string;
   onRemovePanelQueryParams: () => void;
-  version: Version;
+  version: VersionElem;
   qualifier: null | string;
-};
-
-const getModelController = (
-  controllerData: [string, Controller[]] | null | undefined,
-  controllerUUID?: string,
-): Controller | null => {
-  let modelController: Controller | null = null;
-  if (controllerData) {
-    const [_wsAddress, controllers] = controllerData;
-    for (const controller of controllers) {
-      if (controller.uuid === controllerUUID) {
-        modelController = controller;
-        break;
-      }
-    }
-  }
-  return modelController;
 };
 
 const UpgradeModelController: FC<Props> = ({
@@ -67,18 +51,22 @@ const UpgradeModelController: FC<Props> = ({
     getModelUUIDFromList(state, modelName, qualifier),
   );
   const model = useAppSelector((state) => getModelDataByUUID(state, modelUUID));
-  const controllerUUID = model?.info?.["controller-uuid"];
-  const controllerData = useAppSelector((state) =>
-    getControllerDataByUUID(state, controllerUUID),
-  );
-  // TODO: fetch the real list of controller targets once implemented: https://warthogs.atlassian.net/browse/JUJU-9577.
-  const modelController = getModelController(controllerData, controllerUUID);
   const titleId = useId();
+  const modelController = useAppSelector((state) =>
+    getControllerByUUID(state, model?.info?.["controller-uuid"]),
+  );
+  const controllerVersion = modelController
+    ? getControllerVersion(modelController)
+    : null;
   const currentVersion = model?.model.version;
+  const needsMigration =
+    (controllerVersion &&
+      requiresMigration(controllerVersion, version.version)) ||
+    false;
   const schema = Yup.object().shape({
     [FieldName.TARGET_CONTROLLER]: Yup.string().test({
       name: "required",
-      test: (value) => (version["requires-migration"] ? !!value : true),
+      test: (value) => (needsMigration ? !!value : true),
       message: "You must select a target controller.",
     }),
     [FieldName.CONFIRM]: Yup.boolean().test({
@@ -155,7 +143,7 @@ const UpgradeModelController: FC<Props> = ({
                 <Chip isReadOnly isDense isInline value={version.version} />
               </td>
             </tr>
-            {version["requires-migration"] ? (
+            {needsMigration ? (
               <tr>
                 <th></th>
                 <td className="u-flex">
@@ -163,12 +151,12 @@ const UpgradeModelController: FC<Props> = ({
                     <p className="u-no-padding--top u-no-margin--bottom">
                       {modelController?.name}
                     </p>
-                    {modelController && "agent-version" in modelController ? (
+                    {controllerVersion ? (
                       <Chip
                         isReadOnly
                         isDense
                         isInline
-                        value={modelController["agent-version"]}
+                        value={controllerVersion}
                       />
                     ) : null}
                   </div>
@@ -198,12 +186,17 @@ const UpgradeModelController: FC<Props> = ({
             onValidate={setIsValid}
             id={formId}
           >
-            {version["requires-migration"] ? (
+            {needsMigration ? (
               <VanillaNotification severity={NotificationSeverity.INFORMATION}>
                 {Label.REQUIRES_MIGRATION}
               </VanillaNotification>
             ) : null}
-            <Fields version={version} />
+            <Fields
+              modelName={modelName}
+              needsMigration={needsMigration}
+              qualifier={qualifier}
+              version={version}
+            />
           </FormikFormData>
         </Formik>
       </div>
