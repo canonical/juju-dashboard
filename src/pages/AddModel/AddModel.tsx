@@ -25,7 +25,6 @@ import { toErrorString } from "utils";
 import { toastNotification } from "utils/toastNotification";
 
 import ConfigsConstraints from "./ConfigsConstraints/ConfigsConstraints";
-import { getInitialConfigurationValues } from "./ConfigsConstraints/configCatalog";
 import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
@@ -162,7 +161,6 @@ const AddModel: FC = () => {
               cloud: "",
               region: "",
               credential: "",
-              configurations: getInitialConfigurationValues(),
             }}
             validationSchema={validationSchema}
             onSubmit={handleCreateClick}

@@ -56,6 +56,7 @@ $color-navigation-background: $color-brand;
 @include vf-p-icon-topic;
 @include vf-p-icon-get-link;
 @include vf-p-icon-contextual-menu;
+@include vf-p-icon-status-in-progress-small;
 
 // Overrides for Vanilla. This needs to be after the Vanilla includes.
 @import "vanilla-overrides";

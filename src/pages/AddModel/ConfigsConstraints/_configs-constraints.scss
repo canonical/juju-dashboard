@@ -1,8 +1,39 @@
-.configs-constraints__table {
-  .configs-constraints__category {
+.configs__section-heading {
+  line-height: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.configs__link {
+  font-size: #{map-get($font-sizes, small)}rem;
+}
+
+.configs__table-scroll {
+  margin-bottom: 1rem;
+  max-height: min(40rem, calc(100dvh - 24rem));
+  min-height: 10rem;
+  overflow-y: auto;
+
+  @media (min-height >= 900px) {
+    .configs__table-scroll {
+      max-height: min(40rem, calc(100dvh - 24rem));
+    }
+  }
+
+  @media (min-height >= 1100px) {
+    .configs__table-scroll {
+      max-height: min(40rem, calc(100dvh - 21rem));
+    }
+  }
+}
+
+.configs__table {
+  .configs__category {
+    padding-left: 0;
+    padding-top: 0;
     width: 25%;
   }
-  .configs-constraints__config {
+
+  .configs__config {
     padding-bottom: 0;
     padding-top: 0;
 
@@ -12,7 +43,8 @@
       gap: 5px;
     }
   }
-  .configs-constraints__input {
+
+  .configs__input {
     padding-bottom: 3px;
     padding-top: 3px;
 
