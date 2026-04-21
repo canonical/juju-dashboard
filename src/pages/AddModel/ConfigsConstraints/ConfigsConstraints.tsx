@@ -1,49 +1,38 @@
 import {
   FormikField,
   MainTable,
-  RadioInput,
   Select,
   Switch,
+  Textarea,
 } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { useFormikContext } from "formik";
-import { useState } from "react";
-import type { JSX } from "react";
-import type React from "react";
+import { useState, type ChangeEvent, type JSX } from "react";
 
 import { testId } from "testing/utils";
+import { externalURLs } from "urls";
 
+import ContentSwitcher from "./ContentSwitcher/ContentSwitcher";
 import { type CategoryDefinition, CONFIG_CATEGORIES } from "./configCatalog";
-import { CONSTRAINTS_CATEGORIES } from "./constraintsCatalog";
-import { TestId } from "./types";
+import { Label, TestId } from "./types";
+import { buildConfigYAML, getChangedFields, isConfigChanged } from "./utils";
 
 const ConfigsConstraints = (): JSX.Element => {
+  const { values, setFieldValue } = useFormikContext<Record<string, unknown>>();
+  const [isConfigListMode, setIsConfigListMode] = useState(
+    values.configInputMode !== "yaml",
+  );
   const [changedOnly, setChangedOnly] = useState(false);
-  const { values } = useFormikContext<Record<string, unknown>>();
-
-  const isConfigChanged = (label: string, defaultValue: unknown): boolean => {
-    const currentValue = values[label];
-    if (currentValue === undefined || currentValue === null) {
-      return false;
-    }
-    if (defaultValue !== undefined) {
-      return String(currentValue) !== String(defaultValue);
-    }
-    return String(currentValue).length > 0;
-  };
 
   const buildRows = (categories: CategoryDefinition[]): MainTableRow[] =>
     categories.flatMap((category) => {
-      const visibleConfigs = changedOnly
-        ? category.fields.filter((config) =>
-            isConfigChanged(config.label, config.input.defaultValue),
-          )
-        : category.fields;
+      const visibleConfigs = getChangedFields(category, changedOnly, values);
 
       return visibleConfigs.map((config, visibleIndex) => {
         const changed = isConfigChanged(
           config.label,
           config.input.defaultValue,
+          values,
         );
 
         return {
@@ -90,53 +79,55 @@ const ConfigsConstraints = (): JSX.Element => {
       });
     });
 
+  const handleConfigModeChange = (isListMode: boolean): void => {
+    const existingConfigYAML =
+      typeof values.configYAML === "string" ? values.configYAML.trim() : "";
+
+    if (!isListMode && !existingConfigYAML) {
+      void setFieldValue(
+        "configYAML",
+        buildConfigYAML(CONFIG_CATEGORIES, values),
+      );
+    }
+
+    void setFieldValue("configInputMode", isListMode ? "list" : "yaml");
+    setIsConfigListMode(isListMode);
+  };
+
   return (
     <div {...testId(TestId.CONFIGS_CONSTRAINTS_FORM)}>
-      <h5 className="configs__section-heading u-no-margin--bottom">
-        Configuration (optional)
-      </h5>
-      <a href="#" className="configs__link">
-        Learn about model configuration
-      </a>
-      <div className="u-flex u-flex--gap">
-        <div>
-          <RadioInput label="List" value="list" checked />
-        </div>
-        <div>
-          <RadioInput label="YAML" value="yaml" />
-        </div>
-      </div>
-      <Switch
-        label="Changed configs only"
-        checked={changedOnly}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          setChangedOnly(event.target.checked);
-        }}
-      />
-      <div className="configs__table-scroll">
-        <MainTable
-          className="p-main-table configs__table"
-          rows={buildRows(CONFIG_CATEGORIES)}
-        />
-      </div>
-      <h5 className="configs__section-heading u-no-margin--bottom">
-        Constraints (optional)
-      </h5>
-      <a href="#" className="configs__link">
-        Learn about model constraints
-      </a>
-      <div className="u-flex u-flex--gap">
-        <div>
-          <RadioInput label="List" value="list" checked />
-        </div>
-        <div>
-          <RadioInput label="YAML" value="yaml" />
-        </div>
-      </div>
-      <Switch label="Changed constraints only" />
-      <MainTable
-        className="p-main-table configs__table"
-        rows={buildRows(CONSTRAINTS_CATEGORIES)}
+      <ContentSwitcher
+        showPrimary={isConfigListMode}
+        docsLabel={Label.MODEL_CONFIG_DOCS}
+        docsLink={externalURLs.configureModel}
+        name="config-input-mode"
+        primaryContent={
+          <>
+            <Switch
+              label={Label.CHANGED_CONFIGS_ONLY}
+              checked={changedOnly}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setChangedOnly(event.target.checked);
+              }}
+            />
+            <div className="configs__table-scroll">
+              <MainTable
+                className="p-main-table configs__table"
+                rows={buildRows(CONFIG_CATEGORIES)}
+              />
+            </div>
+          </>
+        }
+        secondaryContent={
+          <FormikField
+            className="configs__yaml-input"
+            component={Textarea}
+            name="configYAML"
+            placeholder={Label.MODEL_CONFIG_PLACEHOLDER}
+          />
+        }
+        onModeChange={handleConfigModeChange}
+        title="Configuration (optional)"
       />
     </div>
   );
