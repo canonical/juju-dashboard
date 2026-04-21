@@ -153,6 +153,7 @@ import {
   getModelMigrationControllersByVersion,
   getModelUpgradeVersions,
   getRecommendedVersions,
+  getModelUpgrades,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3327,6 +3328,19 @@ describe("getUserCredentialsState", () => {
       loaded: false,
       loading: false,
     });
+  });
+});
+
+describe("getModelUpgrades", () => {
+  it("gets model upgrade state", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelUpgrade: {
+          abc123: modelUpgradeFactory.build(),
+        },
+      }),
+    });
+    expect(getModelUpgrades(state)).toStrictEqual(state.juju.modelUpgrade);
   });
 });
 

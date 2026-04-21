@@ -7,8 +7,10 @@ import {
   controllerFactory,
   jujuStateFactory,
   modelDataFactory,
+  modelUpgradeFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
+import { customWithin } from "testing/queries/within";
 import { renderComponent } from "testing/utils";
 
 import { CloudGroupTestId } from "./CloudGroup";
@@ -121,5 +123,24 @@ describe("ModelTableList", () => {
     expect(within(row).getByTestId(TestId.COLUMN_CONTROLLER)).toHaveTextContent(
       "admins/1-eu-west-1-aws-jaas",
     );
+  });
+
+  it("displays when a model is being upgraded", () => {
+    const testModelUUID = "abc123";
+    state.juju.modelUpgrade = {
+      [testModelUUID]: modelUpgradeFactory.build({
+        currentVersion: "1.2.3",
+        upgradeVersion: "2.3.4",
+      }),
+    };
+    renderComponent(<ModelTableList filters={{}} groupedBy="" />, {
+      state,
+    });
+    const row = screen.getByTestId(`model-uuid-${testModelUUID}`);
+    const [nameCell] = customWithin(row).getAllByRole("gridcell");
+    expect(
+      customWithin(nameCell).getSpinnerByLabel("Loading"),
+    ).toBeInTheDocument();
+    expect(nameCell).toHaveTextContent(/1.2.3→2.3.4/);
   });
 });

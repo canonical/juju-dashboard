@@ -17,11 +17,18 @@ export type Props = PropsWithSpread<
   {
     modelName?: null | string;
     qualifier?: null | string;
+    // A version that will be displayed instead of the model's current version.
+    version?: null | string;
   },
   Partial<ChipProps>
 >;
 
-const ModelVersion: FC<Props> = ({ modelName, qualifier, ...props }: Props) => {
+const ModelVersion: FC<Props> = ({
+  modelName,
+  qualifier,
+  version,
+  ...props
+}: Props) => {
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, qualifier),
   );
@@ -29,7 +36,7 @@ const ModelVersion: FC<Props> = ({ modelName, qualifier, ...props }: Props) => {
   const controller = useAppSelector((state) =>
     getControllerByUUID(state, model?.info?.["controller-uuid"]),
   );
-  const currentVersion = model?.model.version;
+  const currentVersion = version ?? model?.model.version;
   const higherControllerVersion =
     currentVersion &&
     controller &&

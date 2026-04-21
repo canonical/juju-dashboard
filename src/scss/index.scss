@@ -26,6 +26,7 @@ $color-link-visited: $color-link;
 @import "custom/status_icons";
 @import "custom/tables";
 @import "custom/icons";
+@import "custom/utilities_horizontal-spacing";
 
 // Settings
 $grid-max-width: 100%;
@@ -33,6 +34,7 @@ $color-navigation-background: $color-brand;
 
 @include vanilla;
 @include vf-p-icon-settings;
+@include vf-u-horizontal-spacing;
 
 // Include additional icons
 @include vf-p-icon-applications;

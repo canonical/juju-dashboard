@@ -1,0 +1,20 @@
+@mixin vf-u-horizontal-spacing($start: -3, $end: 3) {
+  @for $i from $start through $end {
+    @if $i != 0 {
+      // Mimic the sv spacing utils for horizontal spacing.
+      .u-sh#{$i} {
+        margin-left: calc($sp-unit * $i);
+      }
+
+      // Support spacing on the right side of elements.
+      .u-sh#{$i}--right {
+        margin-right: calc($sp-unit * $i);
+      }
+
+      // Support spacing on the above elements.
+      .u-sv#{$i}--top {
+        margin-top: calc($sp-unit * $i);
+      }
+    }
+  }
+}
