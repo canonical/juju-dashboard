@@ -75,7 +75,8 @@ const BaseLayout: FC = () => {
       >
         <Outlet context={{ setStatus }} />
       </ApplicationLayout>
-      <ToastNotifications />){import.meta.env.DEV && <DevBar />}
+      <ToastNotifications />
+      {import.meta.env.DEV && <DevBar />}
     </>
   );
 };

@@ -8,7 +8,7 @@ import { createToast } from "store/app/actions";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 
-import notificationsMiddleware from "./notifications";
+import { notificationsMiddleware } from "./notifications";
 import type { MockMiddlewareResult } from "./types";
 
 vi.mock("react-hot-toast", () => {
