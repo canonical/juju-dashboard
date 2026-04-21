@@ -3,8 +3,7 @@ export enum TestId {
 }
 
 export enum Label {
-  MODEL_NAME = "Model name",
-  CLOUD = "Cloud",
-  REGION = "Region (optional)",
-  CREDENTIAL = "Credential",
+  MODEL_CONFIG_DOCS = "Learn about model configuration",
+  CHANGED_CONFIGS_ONLY = "Changed configs only",
+  MODEL_CONFIG_PLACEHOLDER = "Set model configurations",
 }

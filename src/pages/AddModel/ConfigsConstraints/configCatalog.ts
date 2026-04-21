@@ -270,4 +270,39 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
       },
     ],
   },
+  {
+    category: "Cloud-specific configurations",
+    fields: [
+      {
+        label: "base-image-path",
+        description: "Base path to look for machine disk images",
+        input: { type: "text" },
+      },
+      {
+        label: "vpc-id",
+        description: "Use a specific VPC network",
+        input: {
+          type: "select",
+          defaultValue: "false",
+          options: [
+            { label: "True", value: "true" },
+            { label: "False", value: "false" },
+          ],
+        },
+      },
+      {
+        label: "vpc-id-force",
+        description:
+          "Force Juju to use the GCE VPC ID specified with vpc-id, when it fails the minimum validation criteria",
+        input: {
+          type: "select",
+          defaultValue: "false",
+          options: [
+            { label: "True", value: "true" },
+            { label: "False", value: "false" },
+          ],
+        },
+      },
+    ],
+  },
 ];
