@@ -30,6 +30,7 @@ import { createStore } from "testing/utils";
 
 import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
 import sourceMiddleware from "./source";
+import cloudInfoSource from "./source/cloud-info";
 import modelListSource from "./source/model-list";
 import type { MockMiddlewareResult } from "./types";
 
@@ -304,6 +305,22 @@ describe("model poller", () => {
       fakeStore.getState,
     );
     expect(beforeControllerConnect).toHaveBeenCalledOnce();
+  });
+
+  it("starts cloud-info source after successful login", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+
+    await runMiddleware();
+
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      cloudInfoSource.actions.start({
+        wsControllerURL,
+      }),
+    );
   });
 
   it("disables the controller features if JIMM < 4", async () => {

@@ -177,6 +177,39 @@ describe("MandatoryDetails", () => {
     });
   });
 
+  it("stops credential updates on unmount", async () => {
+    const [store, actions] = createStore(state, { trackActions: true });
+    const { result } = renderComponent(
+      <Formik
+        initialValues={{
+          modelName: "my-model",
+          cloud: "cloud-gce",
+          region: "europe-west1",
+          credential: "gce-cred",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <MandatoryDetails />
+      </Formik>,
+      { store },
+    );
+
+    result.unmount();
+
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === "source/user-credentials/stop",
+        ),
+      ).toMatchObject({
+        payload: {
+          wsControllerURL: "wss://controller.example.com",
+          cloudTag: "cloud-gce",
+        },
+      });
+    });
+  });
+
   it("changes region and credential options when cloud changes", async () => {
     renderComponent(
       <Formik
