@@ -17,7 +17,7 @@ type ConnectionManager = (typeof connectionManagerModule)["ConnectionManager"];
 type ConnectionManagerInstance = InstanceType<ConnectionManager>;
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function createAction(withConnection?: boolean) {
+function createAction(withConnection?: boolean, connectionList?: string[]) {
   return {
     type: "some-action",
     payload: {
@@ -25,6 +25,7 @@ function createAction(withConnection?: boolean) {
     },
     meta: {
       withConnection,
+      connectionList,
     },
   };
 }
@@ -75,7 +76,9 @@ describe("connectionMiddleware", () => {
       action = createAction(true);
     });
 
-    it("fetches connection from `wsControllerURL`", async ({ expect }) => {
+    it("fetches connection from `wsControllerURL` by default", async ({
+      expect,
+    }) => {
       middleware(action);
       await vi.runOnlyPendingTimersAsync();
       expect(getMock).toHaveBeenCalledExactlyOnceWith("wss://example.com/");
@@ -98,7 +101,9 @@ describe("connectionMiddleware", () => {
       expect(next).toHaveBeenCalledExactlyOnceWith(
         expect.objectContaining({
           meta: expect.objectContaining({
-            connection,
+            connections: {
+              wsControllerURL: connection,
+            },
           }),
         }),
       );
@@ -118,6 +123,40 @@ describe("connectionMiddleware", () => {
         action,
       );
     });
+  });
+
+  it("fetches connections from `connections` key", async ({ expect }) => {
+    const connection1 = {} as ConnectionWithFacades;
+    const connection2 = {} as ConnectionWithFacades;
+    getMock
+      .mockResolvedValueOnce(connection1)
+      .mockResolvedValueOnce(connection2);
+
+    const action = {
+      type: "some-action",
+      payload: {
+        modelUrl: "wss://model.com",
+        controllerUrl: "wss://controller.com",
+        otherKey: "something",
+      },
+      meta: {
+        withConnection: true,
+        connectionList: ["modelUrl", "controllerUrl"],
+      },
+    };
+    middleware(action);
+    await vi.runOnlyPendingTimersAsync();
+    expect(getMock).toHaveBeenCalledTimes(2);
+    expect(next).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        meta: expect.objectContaining({
+          connections: {
+            modelUrl: connection1,
+            controllerUrl: connection2,
+          },
+        }),
+      }),
+    );
   });
 
   it.for([

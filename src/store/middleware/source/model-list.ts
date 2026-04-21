@@ -4,7 +4,7 @@ import * as appActions from "store/app/actions";
 import { actions as jujuActions } from "store/juju";
 import { logger } from "utils/logger";
 
-import { hasConnection } from "../connection/middleware";
+import { hasConnections } from "../connection/middleware";
 import { ModelsError } from "../model-poller";
 import { createSourceMiddleware } from "../source-middleware";
 
@@ -16,11 +16,11 @@ export default createSourceMiddleware<
   ({ wsControllerURL: _, meta }) => {
     return createPollingSource(
       async () => {
-        if (!hasConnection(meta)) {
+        if (!hasConnections(meta, ["wsControllerURL"])) {
           throw new Error("connection not provided");
         }
 
-        const { connection } = meta;
+        const connection = meta.connections.wsControllerURL;
 
         if (!connection?.info.user?.identity) {
           throw new Error("not authenticated with controller");

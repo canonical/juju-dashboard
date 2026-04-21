@@ -38,7 +38,7 @@ const store = configureStore({
     // https://redux-toolkit.js.org/usage/usage-with-typescript#correct-typings-for-the-dispatch-type
     const middleware = getDefaultMiddleware({
       serializableCheck: {
-        ignoredActionPaths: ["meta.connection"],
+        ignoredActionPaths: ["meta.connections"],
       },
     });
     // The checkAuth middleware must be first.

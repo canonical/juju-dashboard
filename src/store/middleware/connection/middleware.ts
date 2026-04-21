@@ -16,7 +16,7 @@ import {
 } from "store/general/selectors";
 import type { AuthCredential } from "store/general/types";
 import type { RootState, Store } from "store/store";
-import { isPayloadAction } from "types";
+import { isMetaAction, isPayloadAction } from "types";
 import analytics from "utils/analytics";
 import { logger } from "utils/logger";
 
@@ -26,21 +26,38 @@ export const MISSING_WS_CONTROLLER_URL_ERROR =
   "Action passed to connection middleware with `meta.withConnection: true`, but missing `payload.wsControllerURL`";
 
 /**
- * Guard to test of an action has `wsControllerURL` in the payload.
+ * Guard to test of an action has a connection URL in the payload.
  */
-function hasWsControllerURL<P extends object = Record<string, unknown>>(
+function hasConnectionURL<P extends Record<string, unknown>>(
   action: PayloadAction<P>,
-): action is PayloadAction<{ wsControllerURL: string } & P> {
-  return (
-    "wsControllerURL" in action.payload &&
-    typeof action.payload.wsControllerURL === "string"
-  );
+  key: string,
+): action is PayloadAction<{ [key]: string } & P> {
+  return key in action.payload && typeof action.payload[key] === "string";
 }
 
-export function hasConnection(
-  object: Record<string, unknown>,
-): object is { connection: ConnectionWithFacades } & Record<string, unknown> {
-  return "connection" in object && object.connection instanceof Connection;
+/**
+ * Guard to ensure that the given object has a `connections` key with provided connection keys.
+ */
+export function hasConnections<K extends string>(
+  meta: Record<string, unknown>,
+  connectionKeys: K[],
+): meta is { connections: Record<K, ConnectionWithFacades> } & Record<
+  string,
+  unknown
+> {
+  if (
+    !(
+      "connections" in meta &&
+      typeof meta.connections === "object" &&
+      meta.connections !== null
+    )
+  ) {
+    return false;
+  }
+  const connections = meta.connections as Record<string, unknown>;
+  return connectionKeys.every(
+    (key) => key in connections && connections[key] instanceof Connection,
+  );
 }
 
 /**
@@ -145,29 +162,48 @@ export function createConnectionMiddleware(): {
         return;
       }
 
-      if (!isAction(action) || !isPayloadAction(action)) {
+      if (
+        !isAction(action) ||
+        !isPayloadAction(action) ||
+        !isMetaAction(action)
+      ) {
         return next(action);
       }
 
       const withConnection =
-        "meta" in action &&
-        typeof action.meta === "object" &&
-        action.meta &&
         "withConnection" in action.meta &&
         typeof action.meta.withConnection === "boolean" &&
         action.meta.withConnection;
 
       if (withConnection) {
-        if (hasWsControllerURL(action)) {
-          // Action has the `withConnection` property, so attach the connection to it.
-          const connection = await connections.get(
-            action.payload.wsControllerURL,
-          );
-          action.meta = Object.assign(action.meta ?? {}, { connection });
-        } else {
-          // Warn that `withConnection` won't do anything unless there's a `wsControllerURL`.
-          logger.warn(MISSING_WS_CONTROLLER_URL_ERROR, action);
+        const connectionList = Array.isArray(action.meta.connectionList)
+          ? action.meta.connectionList
+          : ["wsControllerURL"];
+        const actionConnections: Record<
+          (typeof connectionList)[number],
+          ConnectionWithFacades
+        > = {};
+
+        for (const connectionKey of connectionList) {
+          if (typeof connectionKey !== "string") {
+            continue;
+          }
+
+          if (hasConnectionURL(action, connectionKey)) {
+            // Action has the `withConnection` property, so attach the connection to it.
+            const connection = await connections.get(
+              action.payload[connectionKey],
+            );
+            actionConnections[connectionKey] = connection;
+          } else {
+            // Warn that `withConnection` won't do anything unless there's a matching connection key.
+            logger.warn(MISSING_WS_CONTROLLER_URL_ERROR, action);
+          }
         }
+
+        action.meta = Object.assign(action.meta ?? {}, {
+          connections: actionConnections,
+        });
       }
 
       return next(action);
