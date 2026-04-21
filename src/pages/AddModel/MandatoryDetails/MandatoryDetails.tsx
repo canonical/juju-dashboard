@@ -1,8 +1,14 @@
 import { FormikField, Select } from "@canonical/react-components";
 import { useFormikContext } from "formik";
-import { useEffect, useMemo, type JSX, type OptionHTMLAttributes } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type JSX,
+  type OptionHTMLAttributes,
+} from "react";
 
-import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
+import { getWSControllerURL } from "store/general/selectors";
 import {
   getCloudInfoState,
   getUserCredentialsState,
@@ -64,14 +70,14 @@ const MandatoryDetails = (): JSX.Element => {
   const { values, setFieldValue, setValues } =
     useFormikContext<AddModelFormState>();
   const wsControllerURL = useAppSelector(getWSControllerURL);
-  const activeUser = useAppSelector((state) =>
-    getActiveUserTag(state, wsControllerURL),
-  );
   const cloudInfo = useAppSelector(getCloudInfoState).clouds;
   const userCredentials = useAppSelector(getUserCredentialsState);
   const cloudOptions = useMemo(() => toCloudOptions(cloudInfo), [cloudInfo]);
   const defaultCloud =
     typeof cloudOptions[0]?.value === "string" ? cloudOptions[0]?.value : null;
+  const [selectedCloud, setSelectedCloud] = useState(
+    values.cloud || defaultCloud,
+  );
 
   useEffect(() => {
     if (!values.cloud && defaultCloud) {
@@ -80,50 +86,34 @@ const MandatoryDetails = (): JSX.Element => {
   }, [values.cloud, defaultCloud, setFieldValue]);
 
   useEffect(() => {
-    const initialCloud = values.cloud || defaultCloud;
     if (
       wsControllerURL &&
-      activeUser &&
-      initialCloud &&
-      !userCredentials.credentials[initialCloud]
+      selectedCloud &&
+      !userCredentials.credentials[selectedCloud]
     ) {
       dispatch(
         userCredentialsMiddleware.actions.start({
           wsControllerURL,
-          cloudTag: initialCloud,
+          cloudTag: selectedCloud,
         }),
       );
     }
-  }, [
-    dispatch,
-    wsControllerURL,
-    activeUser,
-    defaultCloud,
-    userCredentials.credentials,
-    values.cloud,
-  ]);
+    return (): void => {
+      if (wsControllerURL && selectedCloud) {
+        dispatch(
+          userCredentialsMiddleware.actions.stop({
+            wsControllerURL,
+            cloudTag: selectedCloud,
+          }),
+        );
+      }
+    };
+  }, [dispatch, wsControllerURL, selectedCloud, userCredentials.credentials]);
 
   const credentialsOptions = useMemo(
     () => toCredentialOptions(userCredentials.credentials[values.cloud] || []),
     [userCredentials, values.cloud],
   );
-
-  const handleCloudChange = (nextCloud: string): void => {
-    if (
-      wsControllerURL &&
-      activeUser &&
-      !userCredentials.credentials[nextCloud] &&
-      typeof nextCloud === "string" &&
-      nextCloud.length > 0
-    ) {
-      dispatch(
-        userCredentialsMiddleware.actions.start({
-          wsControllerURL,
-          cloudTag: nextCloud,
-        }),
-      );
-    }
-  };
 
   return (
     <div {...testId(TestId.MANDATORY_DETAILS_FORM)}>
@@ -156,7 +146,7 @@ const MandatoryDetails = (): JSX.Element => {
             region: "",
             credential: "",
           }));
-          handleCloudChange(nextCloud);
+          setSelectedCloud(nextCloud);
         }}
       />
       <FormikField

@@ -263,6 +263,16 @@ const slice = createSlice({
       state.modelFeatures = {};
       state.modelsError = null;
       state.modelsLoaded = false;
+      state.cloudInfo = {
+        clouds: null,
+        errors: null,
+        loading: false,
+      };
+      state.userCredentials = {
+        credentials: {},
+        errors: null,
+        loading: false,
+      };
     },
     clearControllerData: (state) => {
       state.controllers = {};

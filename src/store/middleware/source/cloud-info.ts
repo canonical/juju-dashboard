@@ -3,7 +3,7 @@ import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/Clo
 import { createPollingSource } from "data/pollingSource";
 import { actions as jujuActions } from "store/juju";
 
-import { hasConnection } from "../connection/middleware";
+import { hasConnections } from "../connection/middleware";
 import { createSourceMiddleware } from "../source-middleware";
 
 export default createSourceMiddleware<
@@ -14,11 +14,11 @@ export default createSourceMiddleware<
   ({ wsControllerURL: _, meta }) => {
     return createPollingSource(
       async () => {
-        if (!hasConnection(meta)) {
+        if (!hasConnections(meta, ["wsControllerURL"])) {
           throw new Error("connection not provided");
         }
 
-        const { connection } = meta;
+        const connection = meta.connections.wsControllerURL;
 
         if (!connection?.info.user?.identity) {
           throw new Error("not authenticated with controller");
