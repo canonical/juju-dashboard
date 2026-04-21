@@ -11,6 +11,7 @@ import { modelPollerMiddleware } from "store/middleware/model-poller";
 import { logger } from "utils/logger";
 
 import { listenerMiddleware } from "./listenerMiddleware";
+import processMiddleware from "./middleware/process";
 import sourceMiddleware from "./middleware/source";
 
 type PreloadedState = Record<string, unknown>;
@@ -46,6 +47,7 @@ const store = configureStore({
     middleware.push(listenerMiddleware.middleware);
     middleware.push(modelPollerMiddleware);
     middleware.push(...sourceMiddleware);
+    middleware.push(processMiddleware);
     return middleware;
   },
   preloadedState,
