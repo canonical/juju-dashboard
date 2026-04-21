@@ -16,7 +16,7 @@ import {
 import { checkAuthMiddleware } from "./check-auth";
 import type { MockMiddlewareResult } from "./types";
 
-describe("model poller", () => {
+describe("check auth", () => {
   let fakeStore: MiddlewareAPI<Dispatch<UnknownAction>, RootState>;
   let next: Mock;
   const wsControllerURL = "wss://example.com";

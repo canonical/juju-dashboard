@@ -8,6 +8,7 @@ import generalReducer from "store/general";
 import jujuReducer from "store/juju";
 import checkAuth from "store/middleware/check-auth";
 import { modelPollerMiddleware } from "store/middleware/model-poller";
+import { notificationsMiddleware } from "store/middleware/notifications";
 import { logger } from "utils/logger";
 
 import { listenerMiddleware } from "./listenerMiddleware";
@@ -44,6 +45,7 @@ const store = configureStore({
     // The checkAuth middleware must be first.
     middleware.unshift(checkAuth);
     middleware.push(listenerMiddleware.middleware);
+    middleware.push(notificationsMiddleware);
     middleware.push(modelPollerMiddleware);
     middleware.push(...sourceMiddleware);
     return middleware;

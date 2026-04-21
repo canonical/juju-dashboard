@@ -1,5 +1,11 @@
+import { NotificationSeverity } from "@canonical/react-components";
+
 import type { ControllerArgs } from "./actions";
-import { updatePermissions, connectAndPollControllers } from "./actions";
+import {
+  updatePermissions,
+  connectAndPollControllers,
+  createToast,
+} from "./actions";
 
 describe("actions", () => {
   it("updatePermissions", () => {
@@ -28,6 +34,17 @@ describe("actions", () => {
     };
     expect(connectAndPollControllers(args)).toStrictEqual({
       type: "app/connectAndPollControllers",
+      payload: args,
+    });
+  });
+
+  it("createToast", () => {
+    const args = {
+      message: "Boo!",
+      severity: NotificationSeverity.CAUTION,
+    };
+    expect(createToast(args)).toStrictEqual({
+      type: "app/createToast",
       payload: args,
     });
   });
