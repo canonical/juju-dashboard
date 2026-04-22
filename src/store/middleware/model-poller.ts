@@ -30,6 +30,7 @@ import {
   createConnectionMiddleware,
   type ConnectionManager,
 } from "./connection";
+import cloudInfoMiddleware from "./source/cloud-info";
 import modelListMiddleware from "./source/model-list";
 
 export enum LoginError {
@@ -85,7 +86,11 @@ function runModelPoller(
           reduxStore.dispatch(generalActions.updateLoginLoading(false));
         }
 
-        reduxStore.dispatch(jujuActions.fetchClouds({ wsControllerURL }));
+        reduxStore.dispatch(
+          cloudInfoMiddleware.actions.start({
+            wsControllerURL,
+          }),
+        );
         await fetchControllerList(
           wsControllerURL,
           conn,
@@ -489,112 +494,6 @@ function runModelPoller(
             }, 10000);
           });
         } while (remainingModels.length > 0 && !isDestructionComplete);
-      }
-      // The action has already been passed to the next middleware
-      // at the top of this handler.
-      return;
-    } else if (
-      isSpecificAction<ReturnType<typeof jujuActions.fetchClouds>>(
-        action,
-        jujuActions.fetchClouds.type,
-      )
-    ) {
-      // Intercept fetchClouds actions and fetch and store
-      // the cloud information via the controller connection.
-      const { wsControllerURL } = action.payload;
-      // Immediately pass the action along so that it can be handled by the
-      // reducer to update the loading state.
-      next(action);
-      const conn = await connections
-        .get(wsControllerURL)
-        .catch((_err) => undefined);
-      if (!conn) {
-        return;
-      }
-      try {
-        const response = await conn.facades.cloud?.clouds({});
-        if (response) {
-          reduxStore.dispatch(
-            "error" in response
-              ? jujuActions.setCloudInfoErrors({
-                  wsControllerURL,
-                  errors: response.error,
-                })
-              : jujuActions.updateCloudInfo({
-                  cloudInfo: response.clouds ?? undefined,
-                  wsControllerURL,
-                }),
-          );
-        }
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "Could not fetch cloud information.";
-        reduxStore.dispatch(
-          jujuActions.setCloudInfoErrors({
-            wsControllerURL,
-            errors: errorMessage,
-          }),
-        );
-      }
-      // The action has already been passed to the next middleware
-      // at the top of this handler.
-      return;
-    } else if (
-      isSpecificAction<ReturnType<typeof jujuActions.fetchUserCredentials>>(
-        action,
-        jujuActions.fetchUserCredentials.type,
-      )
-    ) {
-      // Intercept fetchUserCredentials actions and fetch and store
-      // the cloud information via the controller connection.
-      const { wsControllerURL, cloudTag, userTag } = action.payload;
-      // Immediately pass the action along so that it can be handled by the
-      // reducer to update the loading state.
-      next(action);
-      const conn = await connections
-        .get(wsControllerURL)
-        .catch((_err) => undefined);
-      if (!conn) {
-        return;
-      }
-      try {
-        const response = await conn.facades.cloud?.userCredentials({
-          "user-clouds": [
-            {
-              "cloud-tag": cloudTag,
-              "user-tag": userTag,
-            },
-          ],
-        });
-
-        if (response) {
-          reduxStore.dispatch(
-            "error" in response
-              ? jujuActions.setUserCredentialsErrors({
-                  wsControllerURL,
-                  errors: response.error,
-                })
-              : jujuActions.updateUserCredentials({
-                  userCredentials: {
-                    [cloudTag]: response.results[0].result ?? [],
-                  },
-                  wsControllerURL,
-                }),
-          );
-        }
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "Could not fetch user credentials.";
-        reduxStore.dispatch(
-          jujuActions.setUserCredentialsErrors({
-            wsControllerURL,
-            errors: errorMessage,
-          }),
-        );
       }
       // The action has already been passed to the next middleware
       // at the top of this handler.

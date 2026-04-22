@@ -12,6 +12,7 @@ import {
   getWSControllerURL,
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
+import cloudInfoMiddleware from "store/middleware/source/cloud-info";
 import type { RootState } from "store/store";
 import { logger } from "utils/logger";
 
@@ -26,10 +27,18 @@ export const logOut = createAsyncThunk<
 >("app/logout", async (_, thunkAPI) => {
   const state = thunkAPI.getState();
   const pingerIntervalIds = getPingerIntervalIds(state);
+  const wsControllerURL = getWSControllerURL(state);
   bakery.storage.clear();
   Object.entries(pingerIntervalIds ?? {}).forEach((pingerIntervalId) => {
     clearInterval(pingerIntervalId[1]);
   });
+  if (wsControllerURL) {
+    thunkAPI.dispatch(
+      cloudInfoMiddleware.actions.stop({
+        wsControllerURL,
+      }),
+    );
+  }
   thunkAPI.dispatch(jujuActions.clearModelData());
   thunkAPI.dispatch(jujuActions.clearControllerData());
   thunkAPI.dispatch(generalActions.logOut());

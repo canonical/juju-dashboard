@@ -4,7 +4,7 @@ import * as appActions from "store/app/actions";
 import { actions as jujuActions } from "store/juju";
 import { logger } from "utils/logger";
 
-import { hasConnections } from "../connection/middleware";
+import { hasConnections } from "../connection/util";
 import { ModelsError } from "../model-poller";
 import { createSourceMiddleware } from "../source-middleware";
 

@@ -7,6 +7,7 @@ import { actions as appActions } from "store/app";
 import { actions as generalActions } from "store/general";
 import type { Config } from "store/general/types";
 import { actions as jujuActions } from "store/juju";
+import cloudInfoMiddleware from "store/middleware/source/cloud-info";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -81,6 +82,19 @@ describe("thunks", () => {
     )) as UnknownAction;
     expect(dispatchedThunk.type).toBe("app/connectAndStartPolling/fulfilled");
     expect(logoutSpy).toHaveBeenCalledOnce();
+  });
+
+  it("logOut with connection", async () => {
+    const action = logOut();
+    const dispatch = vi.fn();
+    const getState = vi.fn(() => state);
+    new CandidAuth(dispatch);
+    await action(dispatch, getState, null);
+    expect(dispatch).toHaveBeenCalledWith(
+      cloudInfoMiddleware.actions.stop({
+        wsControllerURL: "wss://controller.example.com",
+      }),
+    );
   });
 
   it("logOut from OIDC", async () => {

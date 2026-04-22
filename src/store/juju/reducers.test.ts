@@ -26,7 +26,6 @@ import {
   rebacState,
   commandHistoryState,
   commandHistoryItem,
-  cloudInfoStateFactory,
   userCredentialsStateFactory,
   modelUpgradeFactory,
 } from "testing/factories/juju/juju";
@@ -468,159 +467,6 @@ describe("reducers", () => {
           loading: false,
         },
       },
-    });
-  });
-
-  it("fetchClouds", () => {
-    const state = jujuStateFactory.build({
-      cloudInfo: cloudInfoStateFactory.build({ loading: false }),
-    });
-    expect(
-      reducer(
-        state,
-        actions.fetchClouds({
-          wsControllerURL: "wss://example.com",
-        }),
-      ),
-    ).toStrictEqual({
-      ...state,
-      cloudInfo: cloudInfoStateFactory.build({ loading: true }),
-    });
-  });
-
-  it("updateCloudInfo", () => {
-    const state = jujuStateFactory.build({
-      cloudInfo: cloudInfoStateFactory.build({
-        clouds: null,
-        errors: null,
-        loaded: false,
-        loading: true,
-      }),
-    });
-    const clouds = {
-      "cloud-aws": { type: "ec2" },
-      "cloud-gce": { type: "gce" },
-    };
-    expect(
-      reducer(
-        state,
-        actions.updateCloudInfo({
-          cloudInfo: clouds,
-          wsControllerURL: "wss://example.com",
-        }),
-      ),
-    ).toStrictEqual({
-      ...state,
-      cloudInfo: cloudInfoStateFactory.build({
-        clouds,
-        errors: null,
-        loaded: true,
-        loading: false,
-      }),
-    });
-  });
-
-  it("setCloudInfoErrors", () => {
-    const state = jujuStateFactory.build({
-      cloudInfo: cloudInfoStateFactory.build({
-        clouds: null,
-        errors: null,
-        loaded: false,
-        loading: true,
-      }),
-    });
-    expect(
-      reducer(
-        state,
-        actions.setCloudInfoErrors({
-          errors: "Uh oh!",
-          wsControllerURL: "wss://example.com",
-        }),
-      ),
-    ).toStrictEqual({
-      ...state,
-      cloudInfo: cloudInfoStateFactory.build({
-        clouds: null,
-        errors: "Uh oh!",
-        loaded: true,
-        loading: false,
-      }),
-    });
-  });
-
-  it("fetchUserCredentials", () => {
-    const state = jujuStateFactory.build({
-      userCredentials: userCredentialsStateFactory.build({ loading: false }),
-    });
-    expect(
-      reducer(
-        state,
-        actions.fetchUserCredentials({
-          wsControllerURL: "wss://example.com",
-          userTag: "user-eggman@external",
-          cloudTag: "cloud-aws",
-        }),
-      ),
-    ).toStrictEqual({
-      ...state,
-      userCredentials: userCredentialsStateFactory.build({ loading: true }),
-    });
-  });
-
-  it("updateUserCredentials", () => {
-    const state = jujuStateFactory.build({
-      userCredentials: userCredentialsStateFactory.build({
-        credentials: {},
-        errors: null,
-        loaded: false,
-        loading: true,
-      }),
-    });
-    const credentials = { "cloud-aws": ["credential-1", "credential-2"] };
-    expect(
-      reducer(
-        state,
-        actions.updateUserCredentials({
-          userCredentials: credentials,
-          wsControllerURL: "wss://example.com",
-        }),
-      ),
-    ).toStrictEqual({
-      ...state,
-      userCredentials: userCredentialsStateFactory.build({
-        credentials,
-        errors: null,
-        loaded: true,
-        loading: false,
-      }),
-    });
-  });
-
-  it("setUserCredentialsErrors", () => {
-    const state = jujuStateFactory.build({
-      userCredentials: userCredentialsStateFactory.build({
-        credentials: {},
-        errors: null,
-        loaded: false,
-        loading: true,
-      }),
-    });
-    expect(
-      reducer(
-        state,
-        actions.setUserCredentialsErrors({
-          errors: "Uh oh!",
-          wsControllerURL: "wss://example.com",
-        }),
-      ),
-    ).toStrictEqual({
-      ...state,
-      userCredentials: userCredentialsStateFactory.build({
-        credentials: {},
-        errors: "Uh oh!",
-        loaded: true,
-        loading: false,
-      }),
     });
   });
 
@@ -2038,6 +1884,182 @@ describe("reducers", () => {
           loading: true,
           error: null,
         },
+      });
+    });
+  });
+
+  describe("updateUserCredentials", () => {
+    describe("set fields", () => {
+      let state: JujuState;
+
+      beforeEach(() => {
+        state = jujuStateFactory.build({
+          userCredentials: {
+            credentials: {},
+            errors: null,
+            loading: false,
+          },
+        });
+      });
+
+      it("updates data", () => {
+        const result = reducer(
+          state,
+          actions.updateUserCredentials({
+            cloudTag: "cloud-aws",
+            update: {
+              data: { "cloud-aws": ["credential-1", "credential-2"] },
+            },
+          }),
+        );
+        expect(result.userCredentials).toStrictEqual({
+          credentials: { "cloud-aws": ["credential-1", "credential-2"] },
+          errors: null,
+          loading: false,
+        });
+      });
+
+      it("updates loading", () => {
+        const result = reducer(
+          state,
+          actions.updateUserCredentials({
+            cloudTag: "cloud-aws",
+            update: {
+              loading: true,
+            },
+          }),
+        );
+        expect(result.userCredentials).toStrictEqual({
+          credentials: {},
+          errors: null,
+          loading: true,
+        });
+      });
+
+      it("updates error", () => {
+        const result = reducer(
+          state,
+          actions.updateUserCredentials({
+            cloudTag: "cloud-aws",
+            update: {
+              error: {
+                message: "Something went wrong",
+                source: new Error("Something went wrong"),
+              },
+            },
+          }),
+        );
+        expect(result.userCredentials).toStrictEqual({
+          credentials: {},
+          errors: {
+            message: "Something went wrong",
+            source: new Error("Something went wrong"),
+          },
+          loading: false,
+        });
+      });
+    });
+
+    it("adds credentials for new cloud if not existing", () => {
+      const state = jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: { "cloud-aws": ["credential-1", "credential-2"] },
+          errors: null,
+          loading: false,
+        }),
+      });
+      const result = reducer(
+        state,
+        actions.updateUserCredentials({
+          cloudTag: "cloud-gce",
+          update: {
+            data: { "cloud-gce": ["credential-a", "credential-b"] },
+          },
+        }),
+      );
+      expect(result.userCredentials).toStrictEqual({
+        credentials: {
+          "cloud-aws": ["credential-1", "credential-2"],
+          "cloud-gce": ["credential-a", "credential-b"],
+        },
+        errors: null,
+        loading: false,
+      });
+    });
+  });
+
+  describe("updateCloudInfo", () => {
+    describe("set fields", () => {
+      let state: JujuState;
+
+      beforeEach(() => {
+        state = jujuStateFactory.build({
+          cloudInfo: {
+            clouds: null,
+            errors: null,
+            loading: false,
+          },
+        });
+      });
+
+      it("updates data", () => {
+        const result = reducer(
+          state,
+          actions.updateCloudInfo({
+            update: {
+              data: {
+                "cloud-aws": { type: "ec2" },
+                "cloud-gce": { type: "gce" },
+              },
+            },
+          }),
+        );
+        expect(result.cloudInfo).toStrictEqual({
+          clouds: {
+            "cloud-aws": { type: "ec2" },
+            "cloud-gce": { type: "gce" },
+          },
+          errors: null,
+          loading: false,
+        });
+      });
+
+      it("updates loading", () => {
+        const result = reducer(
+          state,
+          actions.updateCloudInfo({
+            update: {
+              loading: true,
+            },
+          }),
+        );
+        expect(result.cloudInfo).toStrictEqual({
+          clouds: null,
+          errors: null,
+          loading: true,
+        });
+      });
+
+      it("updates error", () => {
+        const result = reducer(
+          state,
+          actions.updateCloudInfo({
+            update: {
+              error: {
+                message: "Something went wrong",
+                source: new Error("Something went wrong"),
+              },
+            },
+          }),
+        );
+        expect(result.cloudInfo).toStrictEqual({
+          clouds: null,
+          errors: {
+            message: "Something went wrong",
+            source: new Error("Something went wrong"),
+          },
+          loading: false,
+        });
       });
     });
   });

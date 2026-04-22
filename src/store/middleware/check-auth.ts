@@ -108,6 +108,8 @@ export const checkAuthMiddleware: Middleware<
       jujuActions.addModelUpgrade.type,
       jujuActions.removeModelUpgrade.type,
       jujuActions.updateModelMigrationTargets.type,
+      jujuActions.updateUserCredentials.type,
+      jujuActions.updateCloudInfo.type,
     ];
 
     const thunkAllowlist = [

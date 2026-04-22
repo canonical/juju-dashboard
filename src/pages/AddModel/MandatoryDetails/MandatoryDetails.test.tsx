@@ -2,7 +2,6 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 
-import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import {
@@ -46,14 +45,12 @@ describe("MandatoryDetails", () => {
               type: "gce",
             },
           },
-          loaded: true,
         }),
         userCredentials: userCredentialsStateFactory.build({
           credentials: {
             "cloud-aws": ["cloudcred-aws_admin_aws-cred"],
             "cloud-gce": ["cloudcred-gce_user_gce-cred"],
           },
-          loaded: true,
         }),
       }),
     });
@@ -122,16 +119,17 @@ describe("MandatoryDetails", () => {
       { store },
     );
 
-    const action = jujuActions.fetchUserCredentials({
-      wsControllerURL: "wss://controller.example.com",
-      userTag: "user-eggman@external",
-      cloudTag: "cloud-aws",
-    });
-
     await waitFor(() => {
       expect(
-        actions.find((dispatch) => dispatch.type === action.type),
-      ).toMatchObject(action);
+        actions.find(
+          (dispatch) => dispatch.type === "source/user-credentials/start",
+        ),
+      ).toMatchObject({
+        payload: {
+          wsControllerURL: "wss://controller.example.com",
+          cloudTag: "cloud-aws",
+        },
+      });
     });
   });
 
@@ -140,7 +138,6 @@ describe("MandatoryDetails", () => {
       credentials: {
         "cloud-gce": ["cloudcred-gce_user_gce-cred"],
       },
-      loaded: true,
     });
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(
@@ -166,16 +163,50 @@ describe("MandatoryDetails", () => {
       "cloud-aws",
     );
 
-    const action = jujuActions.fetchUserCredentials({
-      wsControllerURL: "wss://controller.example.com",
-      userTag: "user-eggman@external",
-      cloudTag: "cloud-aws",
+    await waitFor(() => {
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === "source/user-credentials/start",
+        ),
+      ).toMatchObject({
+        payload: {
+          wsControllerURL: "wss://controller.example.com",
+          cloudTag: "cloud-aws",
+        },
+      });
     });
+  });
+
+  it("stops credential updates on unmount", async () => {
+    const [store, actions] = createStore(state, { trackActions: true });
+    const { result } = renderComponent(
+      <Formik
+        initialValues={{
+          modelName: "my-model",
+          cloud: "cloud-gce",
+          region: "europe-west1",
+          credential: "gce-cred",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <MandatoryDetails />
+      </Formik>,
+      { store },
+    );
+
+    result.unmount();
 
     await waitFor(() => {
       expect(
-        actions.find((dispatch) => dispatch.type === action.type),
-      ).toMatchObject(action);
+        actions.find(
+          (dispatch) => dispatch.type === "source/user-credentials/stop",
+        ),
+      ).toMatchObject({
+        payload: {
+          wsControllerURL: "wss://controller.example.com",
+          cloudTag: "cloud-gce",
+        },
+      });
     });
   });
 

@@ -296,7 +296,6 @@ describe("AddModel page", () => {
     it("does not render when user cannot add models (Juju with no clouds)", () => {
       state.juju.cloudInfo = cloudInfoStateFactory.build({
         clouds: {},
-        loaded: true,
       });
       renderComponent(<AddModel />, { state });
       expect(
@@ -313,7 +312,6 @@ describe("AddModel page", () => {
       });
       state.juju.cloudInfo = cloudInfoStateFactory.build({
         clouds: {},
-        loaded: true,
       });
       renderComponent(<AddModel />, { state });
       expect(
@@ -344,7 +342,6 @@ describe("AddModel page", () => {
       });
       state.juju.cloudInfo = cloudInfoStateFactory.build({
         clouds: { "cloud-aws": { type: "ec2" } },
-        loaded: true,
       });
       renderComponent(<AddModel />, { state });
       expect(screen.getByTestId(AddModelTestId.COMPONENT)).toBeInTheDocument();
@@ -358,7 +355,6 @@ describe("AddModel page", () => {
       });
       state.juju.cloudInfo = cloudInfoStateFactory.build({
         clouds: { "cloud-aws": { type: "ec2" } },
-        loaded: true,
       });
       state.juju.controllers = {
         "wss://controller.example.com": [

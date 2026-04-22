@@ -3,7 +3,7 @@ import type { PayloadAction, PayloadActionCreator } from "@reduxjs/toolkit";
 import type { ConnectionWithFacades } from "juju/types";
 import { isMetaAction } from "types";
 
-import { hasConnections } from "./middleware/connection/middleware";
+import { hasConnections } from "./middleware/connection/util";
 
 /**
  * Guard to ensure that the given action has `meta.connections` populated with expected connection

@@ -1,5 +1,3 @@
-import { Connection } from "@canonical/jujulib";
-import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAction } from "@reduxjs/toolkit";
 import * as Sentry from "@sentry/react";
 import { isAction, type Middleware } from "redux";
@@ -21,44 +19,10 @@ import analytics from "utils/analytics";
 import { logger } from "utils/logger";
 
 import { ConnectionManager } from "./connection-manager";
+import { hasConnectionURL } from "./util";
 
 export const MISSING_WS_CONTROLLER_URL_ERROR =
   "Action passed to connection middleware with `meta.withConnection: true`, but missing `payload.wsControllerURL`";
-
-/**
- * Guard to test of an action has a connection URL in the payload.
- */
-function hasConnectionURL<P extends Record<string, unknown>>(
-  action: PayloadAction<P>,
-  key: string,
-): action is PayloadAction<{ [key]: string } & P> {
-  return key in action.payload && typeof action.payload[key] === "string";
-}
-
-/**
- * Guard to ensure that the given object has a `connections` key with provided connection keys.
- */
-export function hasConnections<K extends string>(
-  meta: Record<string, unknown>,
-  connectionKeys: K[],
-): meta is { connections: Record<K, ConnectionWithFacades> } & Record<
-  string,
-  unknown
-> {
-  if (
-    !(
-      "connections" in meta &&
-      typeof meta.connections === "object" &&
-      meta.connections !== null
-    )
-  ) {
-    return false;
-  }
-  const connections = meta.connections as Record<string, unknown>;
-  return connectionKeys.every(
-    (key) => key in connections && connections[key] instanceof Connection,
-  );
-}
 
 /**
  * Action to logout from the given controller.

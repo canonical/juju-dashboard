@@ -30,6 +30,7 @@ import { createStore } from "testing/utils";
 
 import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
 import sourceMiddleware from "./source";
+import cloudInfoSource from "./source/cloud-info";
 import modelListSource from "./source/model-list";
 import type { MockMiddlewareResult } from "./types";
 
@@ -304,6 +305,22 @@ describe("model poller", () => {
       fakeStore.getState,
     );
     expect(beforeControllerConnect).toHaveBeenCalledOnce();
+  });
+
+  it("starts cloud-info source after successful login", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+
+    await runMiddleware();
+
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      cloudInfoSource.actions.start({
+        wsControllerURL,
+      }),
+    );
   });
 
   it("disables the controller features if JIMM < 4", async () => {
@@ -1372,177 +1389,6 @@ describe("model poller", () => {
             "Something went wrong during the model destruction process",
           ],
         ],
-      }),
-    );
-  });
-
-  it("handles fetch clouds action", async () => {
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    conn.facades.cloud.clouds.mockResolvedValue({
-      clouds: {
-        "cloud-aws": { type: "ec2" },
-        "cloud-gce": { type: "gce" },
-      },
-    });
-    const middleware = await runMiddleware();
-    const action = jujuActions.fetchClouds({
-      wsControllerURL: "wss://example.com",
-    });
-    await middleware(next)(action);
-    expect(conn.facades.cloud.clouds).toHaveBeenCalledWith({});
-    expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
-      jujuActions.setCloudInfoErrors({
-        errors: [["clouds", "Error"]],
-        wsControllerURL: "wss://example.com",
-      }),
-    );
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateCloudInfo({
-        cloudInfo: {
-          "cloud-aws": { type: "ec2" },
-          "cloud-gce": { type: "gce" },
-        },
-        wsControllerURL: "wss://example.com",
-      }),
-    );
-  });
-
-  it("handles no controller when fetching clouds", async () => {
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      error: Label.CONTROLLER_LOGIN_ERROR,
-      intervalId,
-      juju,
-    }));
-    const middleware = await runMiddleware();
-    const action = jujuActions.fetchClouds({
-      wsControllerURL: "nothing",
-    });
-    await middleware(next)(action);
-    expect(conn.facades.cloud.clouds).not.toHaveBeenCalled();
-  });
-
-  it("handles errors from response when fetching clouds", async () => {
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    conn.facades.cloud.clouds.mockResolvedValue({
-      error: { code: "BOOM", message: "Error" },
-    });
-    const middleware = await runMiddleware();
-    const action = jujuActions.fetchClouds({
-      wsControllerURL: "wss://example.com",
-    });
-    await middleware(next)(action);
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.setCloudInfoErrors({
-        errors: {
-          code: "BOOM",
-          message: "Error",
-        },
-        wsControllerURL: "wss://example.com",
-      }),
-    );
-    expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
-      jujuActions.updateCloudInfo({
-        cloudInfo: {
-          "cloud-aws": { type: "ec2" },
-          "cloud-gce": { type: "gce" },
-        },
-        wsControllerURL: "wss://example.com",
-      }),
-    );
-  });
-
-  it("handles fetch user credentials action", async () => {
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    conn.facades.cloud.userCredentials.mockResolvedValue({
-      results: [
-        {
-          result: ["credential-aws"],
-        },
-      ],
-    });
-    const middleware = await runMiddleware();
-    const action = jujuActions.fetchUserCredentials({
-      wsControllerURL: "wss://example.com",
-      userTag: "user-eggman@external",
-      cloudTag: "cloud-aws",
-    });
-    await middleware(next)(action);
-    expect(conn.facades.cloud.userCredentials).toHaveBeenCalledWith({
-      "user-clouds": [
-        { "user-tag": "user-eggman@external", "cloud-tag": "cloud-aws" },
-      ],
-    });
-    expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
-      jujuActions.setUserCredentialsErrors({
-        errors: [["clouds", "Error"]],
-        wsControllerURL: "wss://example.com",
-      }),
-    );
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateUserCredentials({
-        userCredentials: { "cloud-aws": ["credential-aws"] },
-        wsControllerURL: "wss://example.com",
-      }),
-    );
-  });
-
-  it("handles no controller when fetching user credentials", async () => {
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      error: Label.CONTROLLER_LOGIN_ERROR,
-      intervalId,
-      juju,
-    }));
-    const middleware = await runMiddleware();
-    const action = jujuActions.fetchUserCredentials({
-      wsControllerURL: "nothing",
-      userTag: "user-eggman@external",
-      cloudTag: "cloud-aws",
-    });
-    await middleware(next)(action);
-    expect(conn.facades.cloud.userCredentials).not.toHaveBeenCalled();
-  });
-
-  it("handles errors from response when fetching user credentials", async () => {
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    conn.facades.cloud.userCredentials.mockResolvedValue({
-      error: { code: "BOOM", message: "Error" },
-    });
-    const middleware = await runMiddleware();
-    const action = jujuActions.fetchUserCredentials({
-      wsControllerURL: "wss://example.com",
-      userTag: "user-eggman@external",
-      cloudTag: "cloud-aws",
-    });
-    await middleware(next)(action);
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.setUserCredentialsErrors({
-        errors: {
-          code: "BOOM",
-          message: "Error",
-        },
-        wsControllerURL: "wss://example.com",
-      }),
-    );
-    expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
-      jujuActions.updateUserCredentials({
-        userCredentials: { "cloud-aws": ["credential-aws"] },
-        wsControllerURL: "wss://example.com",
       }),
     );
   });
