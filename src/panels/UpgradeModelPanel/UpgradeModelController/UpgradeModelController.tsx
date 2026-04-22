@@ -14,6 +14,7 @@ import FormikFormData from "components/FormikFormData";
 import Panel from "components/Panel";
 import type { VersionElem } from "juju/jimm/JIMMV4";
 import { CharmsAndActionsPanelTestId } from "panels/CharmsAndActionsPanel";
+import { getWSControllerURL } from "store/general/selectors";
 import {
   getControllerByUUID,
   getModelDataByUUID,
@@ -21,7 +22,9 @@ import {
 } from "store/juju/selectors";
 import { getControllerVersion } from "store/juju/utils/controllers";
 import { requiresMigration } from "store/juju/utils/upgrades";
-import { useAppSelector } from "store/store";
+import { upgradeModel } from "store/middleware/process";
+import type { VersionNumber } from "store/middleware/process/model-upgrade/upgrade-model";
+import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 
 import UpgradeModelPanelHeader from "../UpgradeModelPanelHeader";
@@ -45,6 +48,7 @@ const UpgradeModelController: FC<Props> = ({
   version,
   qualifier,
 }) => {
+  const dispatch = useAppDispatch();
   const formId = useId();
   const [isValid, setIsValid] = useState(false);
   const modelUUID = useAppSelector((state) =>
@@ -58,6 +62,7 @@ const UpgradeModelController: FC<Props> = ({
   const controllerVersion = modelController
     ? getControllerVersion(modelController)
     : null;
+  const wsControllerURL = useAppSelector(getWSControllerURL);
   const currentVersion = model?.model.version;
   const needsMigration =
     (controllerVersion &&
@@ -75,6 +80,51 @@ const UpgradeModelController: FC<Props> = ({
       message: "You must confirm to be able to upgrade.",
     }),
   });
+  function triggerMigration(): void {
+    // TODO: Properly handle
+    if (!wsControllerURL) {
+      throw new Error("wsControllerURL is required");
+    }
+    if (!modelUUID) {
+      throw new Error("modelUUID is missing");
+    }
+    if (!currentVersion) {
+      throw new Error("currentVersion is missing");
+    }
+
+    if (needsMigration) {
+      // TODO: Trigger MigrateTo
+    } else {
+      const [major, minor, patch] = version.version
+        .split(".")
+        .slice(0, 3)
+        .map(Number)
+        .filter((number) => !isNaN(number));
+
+      if (major === undefined || minor === undefined || patch === undefined) {
+        // TODO: Properly handle.
+        throw new Error("invalid version");
+      }
+
+      const targetVersion: VersionNumber = {
+        Major: major,
+        Minor: minor,
+        Patch: patch,
+        // FIXME: Workout if these values matter
+        Build: 0,
+        Tag: "",
+      };
+
+      const action = upgradeModel.run({
+        targetVersion,
+        currentVersion,
+        wsControllerURL,
+        modelUUID,
+        modelURL: wsControllerURL.replace("/api", `/model/${modelUUID}/api`),
+      });
+      dispatch(action);
+    }
+  }
   return (
     <Panel
       animateMount={false}
@@ -175,7 +225,7 @@ const UpgradeModelController: FC<Props> = ({
             [FieldName.CONFIRM]: false,
           }}
           onSubmit={(_values) => {
-            // TODO: start the upgrade: https://warthogs.atlassian.net/browse/JUJU-9503
+            triggerMigration();
             onRemovePanelQueryParams();
           }}
           validationSchema={schema}

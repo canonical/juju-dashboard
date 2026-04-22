@@ -1,0 +1,30 @@
+import type { PayloadAction, PayloadActionCreator } from "@reduxjs/toolkit";
+
+import type { Store } from "store/store";
+
+export type Hooks<P> = {
+  addActionMeta?: (payload: P) => Record<string, unknown>;
+};
+
+export type ProcessOutcome<Result> =
+  | { error: { message: string; source: unknown } }
+  | { result: Result };
+
+export type ProcessActions<Payload, Status, Result> = {
+  setStatus: (payload: Payload, status: Status) => PayloadAction<unknown>;
+  setRunning: (payload: Payload, running: boolean) => PayloadAction<unknown>;
+  setOutcome: (
+    payload: Payload,
+    outcome: ProcessOutcome<Result>,
+  ) => PayloadAction<unknown>;
+};
+
+export type Process<Payload> = {
+  actions: {
+    run: PayloadActionCreator<Payload>;
+  };
+  start: (
+    payload: { meta: Record<string, unknown> } & Payload,
+    dispatch: Store["dispatch"],
+  ) => Promise<void>;
+};

@@ -20,6 +20,7 @@ import type {
   ModelInfo as ModelManagerV11ModelInfo,
   UserModelList as ModelManagerV11UserModelList,
 } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV11";
+import type ModelUpgraderV1 from "@canonical/jujulib/dist/api/facades/model-upgrader/ModelUpgraderV1";
 import type PingerV1 from "@canonical/jujulib/dist/api/facades/pinger/PingerV1";
 import type SecretsV2 from "@canonical/jujulib/dist/api/facades/secrets/SecretsV2";
 
@@ -51,6 +52,7 @@ export type Facades = {
   pinger?: PingerV1;
   secrets?: SecretsV2;
   jimM?: InstanceType<typeof JIMMV4>;
+  modelUpgrader?: ModelUpgraderV1;
 };
 
 export type ConnectionWithFacades = {

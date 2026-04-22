@@ -27,6 +27,7 @@
         "pgdata",
         "pgsql",
         "ungranted",
+        "upgrader",
         "virt",
         "webcli",
         "worktree",

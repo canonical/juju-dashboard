@@ -11,6 +11,7 @@ import Cloud from "@canonical/jujulib/dist/api/facades/cloud";
 import Controller from "@canonical/jujulib/dist/api/facades/controller";
 import ModelManager from "@canonical/jujulib/dist/api/facades/model-manager";
 import type { ErrorResults } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
+import ModelUpgrader from "@canonical/jujulib/dist/api/facades/model-upgrader";
 import Pinger from "@canonical/jujulib/dist/api/facades/pinger";
 import Secrets from "@canonical/jujulib/dist/api/facades/secrets";
 import { jujuUpdateAvailable } from "@canonical/jujulib/dist/api/versions";
@@ -75,6 +76,7 @@ export function generateConnectionOptions(
       Cloud,
       Controller,
       ModelManager,
+      ModelUpgrader,
       JIMM,
       Secrets,
     ].concat(usePinger ? Pinger : []),
