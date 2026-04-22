@@ -1,5 +1,10 @@
 import type { CategoryDefinition } from "./configCatalog";
-import { buildConfigYAML, getChangedFields, isConfigChanged } from "./utils";
+import {
+  buildConfigYAML,
+  getChangedFields,
+  isConfigChanged,
+  validateAndParseConfigYAML,
+} from "./utils";
 
 describe("utils", () => {
   describe("isConfigChanged", () => {
@@ -170,6 +175,78 @@ describe("utils", () => {
       expect(result).not.toContain("container-networking-method");
       expect(result).toContain("logging-config: debug");
       expect(result).not.toContain("logging-level");
+    });
+  });
+
+  describe("validateAndParseConfigYAML", () => {
+    const categories: CategoryDefinition[] = [
+      {
+        category: "Networking",
+        fields: [
+          {
+            label: "container-networking-method",
+            defaultValue: "local",
+            description: "Networking method",
+            input: {
+              type: "select",
+              options: [
+                { label: "local", value: "local" },
+                { label: "fan", value: "fan" },
+              ],
+            },
+          },
+          {
+            label: "net-bond-reconfigure-delay",
+            defaultValue: "17",
+            description: "Delay",
+          },
+        ],
+      },
+    ];
+
+    it("returns line-level format error for invalid YAML line", () => {
+      const result = validateAndParseConfigYAML(
+        "container-networking-method local",
+        categories,
+      );
+
+      expect(result.values).toEqual({});
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0].line).toBe(1);
+      expect(result.errors[0].message).toContain("Invalid format");
+    });
+
+    it("returns error for unknown key", () => {
+      const result = validateAndParseConfigYAML(
+        "unknown-key: value",
+        categories,
+      );
+
+      expect(result.values).toEqual({});
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0].message).toContain("Unknown key");
+    });
+
+    it("returns error for invalid select value", () => {
+      const result = validateAndParseConfigYAML(
+        "container-networking-method: invalid",
+        categories,
+      );
+
+      expect(result.values).toEqual({});
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0].message).toContain("Expected one of");
+    });
+
+    it("returns error for invalid numeric type", () => {
+      const result = validateAndParseConfigYAML(
+        "net-bond-reconfigure-delay: invalid-number",
+        categories,
+      );
+
+      expect(result.values).toEqual({});
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0].message).toContain("Expected a number");
     });
   });
 });

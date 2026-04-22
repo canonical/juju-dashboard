@@ -1,10 +1,12 @@
 import {
+  ConfirmationModal,
   FormikField,
   Icon,
   MainTable,
   Select,
   Switch,
   Textarea,
+  usePortal,
 } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { useFormikContext } from "formik";
@@ -22,12 +24,24 @@ import {
   TestId,
   type ConfigsConstraintsFormValues,
 } from "./types";
-import { buildConfigYAML, getChangedFields, isConfigChanged } from "./utils";
+import {
+  buildConfigYAML,
+  getChangedFields,
+  isConfigChanged,
+  validateAndParseConfigYAML,
+  type YAMLValidationError,
+} from "./utils";
+
+const YAML_ERROR_TITLE = "Invalid configuration";
 
 const ConfigsConstraints = (): JSX.Element => {
   const { values, setFieldValue } =
     useFormikContext<ConfigsConstraintsFormValues>();
   const [changedOnly, setChangedOnly] = useState(false);
+  const { Portal } = usePortal();
+  const [yamlErrors, setYAMLErrors] = useState<
+    Record<string, YAMLValidationError[]>
+  >({});
   const isConfigListMode =
     values[FieldName.CONFIG_INPUT_MODE] !== InputMode.YAML;
 
@@ -91,6 +105,35 @@ const ConfigsConstraints = (): JSX.Element => {
         FieldName.CONFIG_YAML,
         buildConfigYAML(CONFIG_CATEGORIES, values),
       );
+    } else {
+      const { values: parsedYAMLValues, errors } = validateAndParseConfigYAML(
+        values[FieldName.CONFIG_YAML] ?? "",
+        CONFIG_CATEGORIES,
+      );
+
+      if (
+        errors.invalidKeys.length > 0 ||
+        errors.invalidValues.length > 0 ||
+        errors.otherErrors.length > 0
+      ) {
+        setYAMLErrors(errors);
+        return;
+      }
+
+      const parsedYAMLKeys = Object.keys(parsedYAMLValues);
+      const changedConfigLabels = CONFIG_CATEGORIES.flatMap((category) =>
+        getChangedFields(category, true, values).map((field) => field.label),
+      );
+
+      changedConfigLabels
+        .filter((label) => !parsedYAMLKeys.includes(label))
+        .forEach((label) => {
+          void setFieldValue(label, "");
+        });
+
+      Object.entries(parsedYAMLValues).forEach(([label, value]) => {
+        void setFieldValue(label, value);
+      });
     }
 
     void setFieldValue(
@@ -101,6 +144,58 @@ const ConfigsConstraints = (): JSX.Element => {
 
   return (
     <div {...testId(TestId.CONFIGS_CONSTRAINTS_FORM)}>
+      {Object.keys(yamlErrors).length > 0 ? (
+        <Portal>
+          <ConfirmationModal
+            title={YAML_ERROR_TITLE}
+            className="configs__error-modal"
+            cancelButtonLabel="Cancel"
+            confirmButtonLabel="Switch to list view"
+            confirmButtonAppearance="primary"
+            onConfirm={() => {
+              setYAMLErrors({});
+            }}
+            close={() => {
+              setYAMLErrors({});
+            }}
+          >
+            <p>
+              Please fix the configuration errors below before switching to list
+              mode:
+            </p>
+            {yamlErrors.invalidKeys.length > 0 ? (
+              <ul>
+                Invalid keys:
+                {yamlErrors.invalidKeys?.map((error, index) => (
+                  <li key={`invalid-key-${index}`}>
+                    Line {error.line}: {error.message}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {yamlErrors.invalidValues.length > 0 ? (
+              <ul>
+                Invalid values:
+                {yamlErrors.invalidValues.map((error, index) => (
+                  <li key={`invalid-value-${index}`}>
+                    Line {error.line}: {error.message}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {yamlErrors.otherErrors.length > 0 ? (
+              <ul>
+                Other errors:
+                {yamlErrors.otherErrors?.map((error, index) => (
+                  <li key={`other-error-${index}`}>
+                    Line {error.line}: {error.message}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </ConfirmationModal>
+        </Portal>
+      ) : null}
       <ContentSwitcher
         showPrimary={isConfigListMode}
         docsLabel={Label.MODEL_CONFIG_DOCS}
