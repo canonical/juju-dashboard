@@ -81,4 +81,16 @@ describe("ModelVersion", () => {
     );
     expect(document.querySelector(".p-chip--caution")).toBeInTheDocument();
   });
+
+  it("can override the version", () => {
+    renderComponent(
+      <ModelVersion
+        modelName="test-model"
+        qualifier="eggman@external"
+        version="99.99.99"
+      />,
+      { state },
+    );
+    expect(document.querySelector(".p-chip")).toHaveTextContent("99.99.99");
+  });
 });

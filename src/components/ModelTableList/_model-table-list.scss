@@ -5,6 +5,7 @@
 
     &__status {
       flex-shrink: 0;
+      margin-right: $sph--small;
     }
 
     &__name {
@@ -49,6 +50,23 @@
   .status-group {
     td,
     th {
+      @include desktop {
+        // Summary icons
+        &:nth-child(2) {
+          width: 8rem;
+        }
+
+        // Last updated
+        &:nth-child(7) {
+          width: 7rem;
+        }
+
+        // Actions
+        &:nth-child(8) {
+          width: 5rem;
+        }
+      }
+
       @include mobile-and-medium {
         // Credential
         &:nth-child(5),
@@ -72,6 +90,23 @@
   .owners-group {
     td,
     th {
+      @include desktop {
+        // Summary icons
+        &:nth-child(2) {
+          width: 8rem;
+        }
+
+        // Last updated
+        &:nth-child(7) {
+          width: 7rem;
+        }
+
+        // Actions
+        &:nth-child(8) {
+          width: 5rem;
+        }
+      }
+
       @include mobile-and-medium {
         // Credential
         &:nth-child(5),
@@ -95,6 +130,33 @@
   .cloud-group {
     td,
     th {
+      @include desktop {
+        // Summary icons
+        &:nth-child(2) {
+          width: 8rem;
+        }
+
+        // Region
+        &:nth-child(5) {
+          width: 7rem;
+        }
+
+        // Credential
+        &:nth-child(6) {
+          width: 7rem;
+        }
+
+        // Last updated
+        &:nth-child(8) {
+          width: 7rem;
+        }
+
+        // Actions
+        &:nth-child(9) {
+          width: 5rem;
+        }
+      }
+
       @include mobile-and-medium {
         // Credential
         &:nth-child(6),

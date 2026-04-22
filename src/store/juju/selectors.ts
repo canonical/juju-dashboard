@@ -1403,10 +1403,18 @@ export const getSupportedJujuVersions = createSelector(
 /**
   Get a model upgrade by UUID.
 */
+export const getModelUpgrades = createSelector(
+  [slice],
+  (state) => state.modelUpgrade,
+);
+
+/**
+  Get a model upgrade by UUID.
+*/
 export const getModelUpgrade = createSelector(
-  [slice, (_, uuid: null | string = null): null | string => uuid],
-  (state, uuid) =>
-    uuid && uuid in state.modelUpgrade ? state.modelUpgrade[uuid] : null,
+  [getModelUpgrades, (_, uuid: null | string = null): null | string => uuid],
+  (modelUpgrades, uuid) =>
+    uuid && uuid in modelUpgrades ? modelUpgrades[uuid] : null,
 );
 
 export const getModelMigrationTargets = createSelector(

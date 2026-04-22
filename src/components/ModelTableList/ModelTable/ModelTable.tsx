@@ -1,4 +1,4 @@
-import { Chip, MainTable } from "@canonical/react-components";
+import { Chip, MainTable, Spinner } from "@canonical/react-components";
 import type {
   MainTableCell,
   MainTableRow,
@@ -12,8 +12,17 @@ import ModelDetailsLink from "components/ModelDetailsLink";
 import ModelVersion from "components/ModelVersion";
 import Status from "components/Status";
 import TruncatedTooltip from "components/TruncatedTooltip";
-import { getControllerData, getDestructionState } from "store/juju/selectors";
-import type { Controllers, DestroyState, ModelData } from "store/juju/types";
+import {
+  getControllerData,
+  getDestructionState,
+  getModelUpgrades,
+} from "store/juju/selectors";
+import type {
+  Controllers,
+  DestroyState,
+  ModelData,
+  ModelUpgradeState,
+} from "store/juju/types";
 import { getControllerByUUID } from "store/juju/utils/controllers";
 import {
   extractOwnerName,
@@ -55,6 +64,7 @@ const getConditionalCell = (
 function generateModelTableList(
   models: ModelData[],
   controllers: Controllers | null,
+  modelUpgrades: ModelUpgradeState,
   groupBy: GroupBy,
   destructionState: DestroyState,
   groupLabel?: string,
@@ -78,6 +88,9 @@ function generateModelTableList(
         : controller?.path) || controllerUUID;
     const lastUpdated = getLastUpdated(model);
     const isDying = model.uuid in destructionState;
+    const upgrade =
+      model.uuid in modelUpgrades ? modelUpgrades[model.uuid] : null;
+    const isUpgrading = !!upgrade;
     const columns = [
       {
         ...testId(TestId.COLUMN_NAME),
@@ -86,7 +99,12 @@ function generateModelTableList(
             <div className="model-name-column">
               {isDying ? (
                 <span className="model-name-column__status u-truncate">
-                  Destroying&hellip;&nbsp;
+                  Destroying&hellip;
+                </span>
+              ) : null}
+              {isUpgrading ? (
+                <span className="model-name-column__status">
+                  <Spinner />
                 </span>
               ) : null}
               <div className="model-name-column__name">
@@ -100,14 +118,31 @@ function generateModelTableList(
                   >
                     {model.model.name}
                   </ModelDetailsLink>
-                  <ModelVersion
-                    className="models__version"
-                    modelName={model.model.name}
-                    qualifier={qualifier}
-                  />
+                  {isUpgrading ? null : (
+                    <ModelVersion
+                      className="models__version"
+                      modelName={model.model.name}
+                      qualifier={qualifier}
+                    />
+                  )}
                 </TruncatedTooltip>
               </div>
             </div>
+            {isUpgrading ? (
+              <>
+                <ModelVersion
+                  modelName={model.model.name}
+                  qualifier={qualifier}
+                  version={upgrade.currentVersion}
+                />
+                <span className="u-sh1 u-sh1--right">&rarr;</span>
+                <ModelVersion
+                  modelName={model.model.name}
+                  qualifier={qualifier}
+                  version={upgrade.upgradeVersion}
+                />
+              </>
+            ) : null}
             {groupBy === GroupBy.STATUS && groupLabel === "Blocked" ? (
               <WarningMessage model={model} />
             ) : null}
@@ -243,6 +278,7 @@ export default function ModelTable({
 }: Props): JSX.Element {
   const controllers = useAppSelector(getControllerData);
   const destructionState = useAppSelector(getDestructionState);
+  const modelUpgrades = useAppSelector(getModelUpgrades);
 
   const headerOptions = {
     showCloud: [GroupBy.STATUS, GroupBy.OWNER].includes(groupBy),
@@ -258,11 +294,12 @@ export default function ModelTable({
       generateModelTableList(
         models,
         controllers,
+        modelUpgrades,
         groupBy,
         destructionState,
         groupLabel,
       ),
-    [models, controllers, groupBy, destructionState, groupLabel],
+    [models, controllers, modelUpgrades, groupBy, destructionState, groupLabel],
   );
 
   return (
