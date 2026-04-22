@@ -125,3 +125,17 @@ export const supportedJujuVersions = async (
     jimm.supportedJujuVersions(minVersion),
   );
 };
+
+/*
+ * Initiate a model upgrade.
+ */
+export const upgradeTo = async (
+  conn: ConnectionWithFacades,
+  modelTag: string,
+  targetController: string,
+): Promise<boolean> => {
+  return withJimmCheck(
+    conn,
+    async (jimm) => (await jimm.upgradeTo(modelTag, targetController)) ?? false,
+  );
+};

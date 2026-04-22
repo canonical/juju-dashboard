@@ -193,6 +193,32 @@ class JIMMV4 extends JIMMV3 {
       this._transport.write(req, resolve, reject);
     });
   }
+
+  /**
+   * Initiate a model upgrade.
+   *
+   * @param modelTag Tag of the model which will be upgraded.
+   * @param targetController Name of controller to migrate the model to.
+   *
+   * @see {@link https://github.com/canonical/jimm/blob/53c606aa41ae6339c7b6cf430c7051bf489b9238/internal/jujuapi/jimm.go#L738}
+   */
+  async upgradeTo(
+    modelTag: string,
+    targetController: string,
+  ): Promise<boolean | undefined> {
+    return new Promise((resolve, reject) => {
+      const req = {
+        type: "JIMM",
+        request: "UpgradeTo",
+        version: 4,
+        params: {
+          "model-tag": modelTag,
+          "target-controller-name": targetController,
+        },
+      };
+      this._transport.write(req, resolve, reject);
+    });
+  }
 }
 
 JIMMV4.NAME = "JIMM";
