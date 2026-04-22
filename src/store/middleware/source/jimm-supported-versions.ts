@@ -1,10 +1,21 @@
 import { createPollingSource } from "data/pollingSource";
-import type { VersionElem } from "juju/jimm/JIMMV4";
+import type {
+  SupportedJujuVersionsResponse,
+  VersionElem,
+} from "juju/jimm/JIMMV4";
 import { supportedJujuVersions } from "juju/jimm/api";
+import type { ConnectionWithFacades } from "juju/types";
 import { actions as jujuActions } from "store/juju";
 
 import { hasConnections } from "../connection/util";
 import { createSourceMiddleware } from "../source-middleware";
+
+export async function getSupportedVersions(
+  connection: ConnectionWithFacades,
+): Promise<SupportedJujuVersionsResponse["versions"]> {
+  const response = await supportedJujuVersions(connection);
+  return response.versions;
+}
 
 export default createSourceMiddleware<
   VersionElem[],
@@ -18,13 +29,9 @@ export default createSourceMiddleware<
 
     const connection = meta.connections.wsControllerURL;
 
-    return createPollingSource(
-      async () => {
-        const response = await supportedJujuVersions(connection);
-        return response.versions;
-      },
-      { interval: { minutes: 24 * 60 } },
-    );
+    return createPollingSource(async () => getSupportedVersions(connection), {
+      interval: { minutes: 24 * 60 },
+    });
   },
   {
     setData: ({ wsControllerURL }, data) =>
