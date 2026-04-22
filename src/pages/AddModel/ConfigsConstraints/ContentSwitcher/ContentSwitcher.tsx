@@ -1,39 +1,30 @@
 import { RadioInput } from "@canonical/react-components";
-import type { JSX, ReactNode } from "react";
+import { useId, type JSX } from "react";
 
-type Props = {
-  showPrimary?: boolean;
-  docsLabel: string;
-  docsLink: string;
-  name: string;
-  primaryContent: ReactNode;
-  secondaryContent: ReactNode;
-  onModeChange: (isListMode: boolean) => void;
-  title: string;
-};
+import { InputMode, type Props } from "./types";
 
 const ContentSwitcher = ({
   showPrimary = true,
   docsLabel,
   docsLink,
-  name,
   primaryContent,
   secondaryContent,
   onModeChange,
   title,
 }: Props): JSX.Element => {
+  const id = useId();
   return (
     <>
       <h5 className="configs__section-heading u-no-margin--bottom">{title}</h5>
-      <a href={docsLink} className="configs__link">
+      <a href={docsLink} className="p-text--small">
         {docsLabel}
       </a>
       <div className="u-flex u-flex--gap">
         <div>
           <RadioInput
             checked={showPrimary}
-            label="List"
-            name={name}
+            label={InputMode.LIST}
+            name={id}
             onChange={() => {
               onModeChange(true);
             }}
@@ -43,8 +34,8 @@ const ContentSwitcher = ({
         <div>
           <RadioInput
             checked={!showPrimary}
-            label="YAML"
-            name={name}
+            label={InputMode.YAML}
+            name={id}
             onChange={() => {
               onModeChange(false);
             }}

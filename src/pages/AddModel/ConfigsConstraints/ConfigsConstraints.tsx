@@ -1,5 +1,6 @@
 import {
   FormikField,
+  Icon,
   MainTable,
   Select,
   Switch,
@@ -13,16 +14,22 @@ import { testId } from "testing/utils";
 import { externalURLs } from "urls";
 
 import ContentSwitcher from "./ContentSwitcher/ContentSwitcher";
+import { InputMode } from "./ContentSwitcher/types";
 import { type CategoryDefinition, CONFIG_CATEGORIES } from "./configCatalog";
-import { Label, TestId } from "./types";
+import {
+  FieldName,
+  Label,
+  TestId,
+  type ConfigsConstraintsFormValues,
+} from "./types";
 import { buildConfigYAML, getChangedFields, isConfigChanged } from "./utils";
 
 const ConfigsConstraints = (): JSX.Element => {
-  const { values, setFieldValue } = useFormikContext<Record<string, unknown>>();
-  const [isConfigListMode, setIsConfigListMode] = useState(
-    values.configInputMode !== "yaml",
-  );
+  const { values, setFieldValue } =
+    useFormikContext<ConfigsConstraintsFormValues>();
   const [changedOnly, setChangedOnly] = useState(false);
+  const isConfigListMode =
+    values[FieldName.CONFIG_INPUT_MODE] !== InputMode.YAML;
 
   const buildRows = (categories: CategoryDefinition[]): MainTableRow[] =>
     categories.flatMap((category) => {
@@ -31,8 +38,8 @@ const ConfigsConstraints = (): JSX.Element => {
       return visibleConfigs.map((config, visibleIndex) => {
         const changed = isConfigChanged(
           config.label,
-          config.input.defaultValue,
           values,
+          config.defaultValue,
         );
 
         return {
@@ -50,9 +57,7 @@ const ConfigsConstraints = (): JSX.Element => {
               content: (
                 <div>
                   <span>
-                    {changed ? (
-                      <i className="p-icon--status-in-progress-small" />
-                    ) : null}
+                    {changed ? <Icon name="status-in-progress-small" /> : null}
                     {config.label}
                   </span>
                   <span className="p-form-help-text u-no-margin--bottom">
@@ -65,10 +70,11 @@ const ConfigsConstraints = (): JSX.Element => {
             {
               content: (
                 <FormikField
-                  {...(config.input.type === "select"
+                  {...(config.input?.type === "select"
                     ? { component: Select }
-                    : {})}
+                    : { type: "text", placeholder: config.placeholder })}
                   name={config.label}
+                  defaultValue={config.defaultValue}
                   {...config.input}
                 />
               ),
@@ -80,18 +86,17 @@ const ConfigsConstraints = (): JSX.Element => {
     });
 
   const handleConfigModeChange = (isListMode: boolean): void => {
-    const existingConfigYAML =
-      typeof values.configYAML === "string" ? values.configYAML.trim() : "";
-
-    if (!isListMode && !existingConfigYAML) {
+    if (!isListMode) {
       void setFieldValue(
-        "configYAML",
+        FieldName.CONFIG_YAML,
         buildConfigYAML(CONFIG_CATEGORIES, values),
       );
     }
 
-    void setFieldValue("configInputMode", isListMode ? "list" : "yaml");
-    setIsConfigListMode(isListMode);
+    void setFieldValue(
+      FieldName.CONFIG_INPUT_MODE,
+      isListMode ? InputMode.LIST : InputMode.YAML,
+    );
   };
 
   return (
@@ -100,7 +105,6 @@ const ConfigsConstraints = (): JSX.Element => {
         showPrimary={isConfigListMode}
         docsLabel={Label.MODEL_CONFIG_DOCS}
         docsLink={externalURLs.configureModel}
-        name="config-input-mode"
         primaryContent={
           <>
             <Switch
@@ -122,7 +126,7 @@ const ConfigsConstraints = (): JSX.Element => {
           <FormikField
             className="configs__yaml-input"
             component={Textarea}
-            name="configYAML"
+            name={FieldName.CONFIG_YAML}
             placeholder={Label.MODEL_CONFIG_PLACEHOLDER}
           />
         }

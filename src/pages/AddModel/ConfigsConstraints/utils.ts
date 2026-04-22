@@ -2,38 +2,38 @@ import type { CategoryDefinition } from "./configCatalog";
 
 export const isConfigChanged = (
   label: string,
-  defaultValue: unknown,
-  values: Record<string, unknown>,
+  values: Record<string, string>,
+  defaultValue: string | undefined,
 ): boolean => {
   const currentValue = values[label];
-  if (currentValue === undefined || currentValue === null) {
+  if (!currentValue) {
     return false;
   }
   if (defaultValue !== undefined) {
-    return String(currentValue) !== String(defaultValue);
+    return currentValue !== defaultValue;
   }
-  return String(currentValue).length > 0;
+  return currentValue.length > 0;
 };
 
 export const getChangedFields = (
   category: CategoryDefinition,
   onlyChanged: boolean,
-  values: Record<string, unknown>,
+  values: Record<string, string>,
 ): CategoryDefinition["fields"] =>
   onlyChanged
     ? category.fields.filter((field) =>
-        isConfigChanged(field.label, field.input.defaultValue, values),
+        isConfigChanged(field.label, values, field.defaultValue),
       )
     : category.fields;
 
 export const buildConfigYAML = (
   categories: CategoryDefinition[],
-  values: Record<string, unknown>,
+  values: Record<string, string>,
 ): string => {
   const yamlSections = categories
     .map((category) => {
       const changedFields = getChangedFields(category, true, values).map(
-        (field) => `${field.label}: ${String(values[field.label])}`,
+        (field) => `${field.label}: ${values[field.label]}`,
       );
 
       if (changedFields.length === 0) {
@@ -42,7 +42,7 @@ export const buildConfigYAML = (
 
       return [`# ${category.category}`, ...changedFields].join("\n");
     })
-    .filter((section): section is string => Boolean(section));
+    .filter(Boolean);
 
   return yamlSections.join("\n\n");
 };

@@ -24,8 +24,8 @@ import urls from "urls";
 import { toErrorString } from "utils";
 import { toastNotification } from "utils/toastNotification";
 
-import ConfigsConstraints from "./ConfigsConstraints/ConfigsConstraints";
-import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
+import ConfigsConstraints from "./ConfigsConstraints";
+import MandatoryDetails from "./MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
 const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
