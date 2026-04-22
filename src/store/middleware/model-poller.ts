@@ -32,18 +32,12 @@ import {
 } from "./connection";
 import cloudInfoMiddleware from "./source/cloud-info";
 import modelListMiddleware from "./source/model-list";
+import { ModelsError } from "./types";
 
 export enum LoginError {
   LOG = "Unable to log into controller.",
   NO_INFO = "Unable to retrieve controller details.",
   WHOAMI = "Unable to check authentication status. You can attempt to log in anyway.",
-}
-
-export enum ModelsError {
-  LOAD_ALL_MODELS = "Unable to load models.",
-  LOAD_SOME_MODELS = "Unable to load some models.",
-  LOAD_LATEST_MODELS = "Unable to load latest model data.",
-  LIST_OR_UPDATE_MODELS = "Unable to list or update models.",
 }
 
 function runModelPoller(
