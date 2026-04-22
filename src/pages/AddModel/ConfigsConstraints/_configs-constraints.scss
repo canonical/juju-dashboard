@@ -1,10 +1,5 @@
 .configs__section-heading {
   line-height: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-.configs__link {
-  font-size: #{map-get($font-sizes, small)}rem;
 }
 
 .configs__table-scroll {
@@ -40,13 +35,13 @@
     div {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: $sp-x-small;
     }
   }
 
   .configs__input {
-    padding-bottom: 3px;
-    padding-top: 3px;
+    padding-bottom: $sp-x-small;
+    padding-top: $sp-x-small;
 
     .p-form-validation__input {
       margin-bottom: 0;

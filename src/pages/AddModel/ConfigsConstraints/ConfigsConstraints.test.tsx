@@ -6,6 +6,7 @@ import { vi } from "vitest";
 import { renderComponent } from "testing/utils";
 
 import ConfigsConstraints from "./ConfigsConstraints";
+import { InputMode } from "./ContentSwitcher/types";
 import { Label } from "./types";
 
 describe("ConfigsConstraints", () => {
@@ -16,11 +17,12 @@ describe("ConfigsConstraints", () => {
       </Formik>,
     );
 
-    expect(screen.getByLabelText("List")).toBeChecked();
+    expect(screen.getByRole("radio", { name: InputMode.LIST })).toBeChecked();
     expect(
       screen.getByLabelText(Label.CHANGED_CONFIGS_ONLY),
     ).toBeInTheDocument();
   });
+
   it("hides the table and shows the textarea on switching to YAML mode", async () => {
     renderComponent(
       <Formik initialValues={{}} onSubmit={vi.fn()}>
@@ -28,7 +30,7 @@ describe("ConfigsConstraints", () => {
       </Formik>,
     );
 
-    await userEvent.click(screen.getByLabelText("YAML"));
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
 
     expect(
       screen.queryByText("container-networking-method"),
@@ -48,7 +50,7 @@ describe("ConfigsConstraints", () => {
       </Formik>,
     );
 
-    await userEvent.click(screen.getByLabelText("YAML"));
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
 
     const textarea = screen.getByPlaceholderText(
       Label.MODEL_CONFIG_PLACEHOLDER,
@@ -56,11 +58,10 @@ describe("ConfigsConstraints", () => {
     expect(textarea.value).toContain("default-space: my-space");
   });
 
-  it("does not overwrite existing YAML the user already typed", async () => {
+  it("regenerates YAML to include newly changed categories", async () => {
     renderComponent(
       <Formik
         initialValues={{
-          configYAML: "custom: value",
           "default-space": "my-space",
         }}
         onSubmit={vi.fn()}
@@ -69,12 +70,28 @@ describe("ConfigsConstraints", () => {
       </Formik>,
     );
 
-    await userEvent.click(screen.getByLabelText("YAML"));
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
 
-    const textarea = screen.getByPlaceholderText(
+    let textarea = screen.getByPlaceholderText(
       Label.MODEL_CONFIG_PLACEHOLDER,
     ) as HTMLTextAreaElement;
-    expect(textarea.value).toBe("custom: value");
+    expect(textarea.value).toContain("# Networking & Firewall");
+    expect(textarea.value).not.toContain("# Proxy & Mirror");
+
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.LIST }));
+    const aptHttpProxyInput = document.querySelector(
+      'input[name="apt-http-proxy"]',
+    ) as HTMLInputElement;
+    await userEvent.type(aptHttpProxyInput, "http://proxy.example");
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
+
+    textarea = screen.getByPlaceholderText(
+      Label.MODEL_CONFIG_PLACEHOLDER,
+    ) as HTMLTextAreaElement;
+    expect(textarea.value).toContain("# Networking & Firewall");
+    expect(textarea.value).toContain("default-space: my-space");
+    expect(textarea.value).toContain("# Proxy & Mirror");
+    expect(textarea.value).toContain("apt-http-proxy: http://proxy.example");
   });
 
   it("hides unchanged rows when changed-configs-only is toggled on", async () => {
@@ -85,9 +102,7 @@ describe("ConfigsConstraints", () => {
     );
 
     expect(screen.getByText("container-networking-method")).toBeInTheDocument();
-
     await userEvent.click(screen.getByLabelText(Label.CHANGED_CONFIGS_ONLY));
-
     expect(
       screen.queryByText("container-networking-method"),
     ).not.toBeInTheDocument();
@@ -109,7 +124,6 @@ describe("ConfigsConstraints", () => {
     expect(screen.getByText("default-space")).toBeInTheDocument();
 
     await userEvent.click(screen.getByLabelText(Label.CHANGED_CONFIGS_ONLY));
-
     expect(
       screen.queryByText("container-networking-method"),
     ).not.toBeInTheDocument();
@@ -118,12 +132,15 @@ describe("ConfigsConstraints", () => {
 
   it("initialises in YAML mode when configInputMode is yaml", () => {
     renderComponent(
-      <Formik initialValues={{ configInputMode: "yaml" }} onSubmit={vi.fn()}>
+      <Formik
+        initialValues={{ configInputMode: InputMode.YAML }}
+        onSubmit={vi.fn()}
+      >
         <ConfigsConstraints />
       </Formik>,
     );
 
-    expect(screen.getByLabelText("YAML")).toBeChecked();
+    expect(screen.getByRole("radio", { name: InputMode.YAML })).toBeChecked();
     expect(
       screen.getByPlaceholderText(Label.MODEL_CONFIG_PLACEHOLDER),
     ).toBeInTheDocument();

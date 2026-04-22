@@ -4,31 +4,37 @@ import { buildConfigYAML, getChangedFields, isConfigChanged } from "./utils";
 describe("utils", () => {
   describe("isConfigChanged", () => {
     it("returns false when value is undefined", () => {
-      const result = isConfigChanged("some-label", "default-value", {});
+      const result = isConfigChanged("some-label", {}, "default-value");
 
       expect(result).toBe(false);
     });
 
     it("returns false when value matches the default value", () => {
-      const result = isConfigChanged("some-label", "default-value", {
-        "some-label": "default-value",
-      });
+      const result = isConfigChanged(
+        "some-label",
+        { "some-label": "default-value" },
+        "default-value",
+      );
 
       expect(result).toBe(false);
     });
 
     it("returns true when value differs from the default value", () => {
-      const result = isConfigChanged("some-label", "default-value", {
-        "some-label": "different-value",
-      });
+      const result = isConfigChanged(
+        "some-label",
+        { "some-label": "different-value" },
+        "default-value",
+      );
 
       expect(result).toBe(true);
     });
 
     it("returns true when value is non-empty and no default is provided", () => {
-      const result = isConfigChanged("some-label", undefined, {
-        "some-label": "some-value",
-      });
+      const result = isConfigChanged(
+        "some-label",
+        { "some-label": "some-value" },
+        undefined,
+      );
 
       expect(result).toBe(true);
     });
@@ -40,17 +46,17 @@ describe("utils", () => {
       fields: [
         {
           label: "default-space",
-          input: { defaultValue: "alpha" },
+          defaultValue: "alpha",
           description: "Default space",
         },
         {
           label: "container-networking-method",
-          input: { defaultValue: "provider" },
+          defaultValue: "provider",
           description: "Networking method",
         },
         {
           label: "logging-config",
-          input: { defaultValue: "" },
+          defaultValue: "",
           description: "Logging config",
         },
       ],
@@ -97,12 +103,12 @@ describe("utils", () => {
         fields: [
           {
             label: "default-space",
-            input: { defaultValue: "alpha" },
+            defaultValue: "alpha",
             description: "Default space",
           },
           {
             label: "container-networking-method",
-            input: { defaultValue: "provider" },
+            defaultValue: "provider",
             description: "Networking method",
           },
         ],
@@ -112,12 +118,12 @@ describe("utils", () => {
         fields: [
           {
             label: "logging-config",
-            input: { defaultValue: "" },
+            defaultValue: "",
             description: "Logging config",
           },
           {
             label: "logging-level",
-            input: { defaultValue: "warning" },
+            defaultValue: "warning",
             description: "Logging level",
           },
         ],
