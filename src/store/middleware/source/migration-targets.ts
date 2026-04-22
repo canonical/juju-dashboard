@@ -2,7 +2,7 @@ import { createPollingSource } from "data/pollingSource";
 import { listMigrationTargets } from "juju/jimm/api";
 import { actions as jujuActions } from "store/juju";
 
-import { hasConnections } from "../connection/middleware";
+import { hasConnections } from "../connection/util";
 import { createSourceMiddleware } from "../source-middleware";
 
 export default createSourceMiddleware<

@@ -1,10 +1,22 @@
 import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 
 import { createPollingSource } from "data/pollingSource";
+import type { ConnectionWithFacades } from "juju/types";
 import { actions as jujuActions } from "store/juju";
 
-import { hasConnections } from "../connection/middleware";
+import { hasConnections } from "../connection/util";
 import { createSourceMiddleware } from "../source-middleware";
+
+export async function getCloudInfo(
+  connection: ConnectionWithFacades,
+): Promise<CloudsResult["clouds"]> {
+  if (!connection.facades.cloud) {
+    throw new Error("Unsupported facade: cloud");
+  }
+
+  const response = (await connection.facades.cloud?.clouds({})) ?? {};
+  return response.clouds;
+}
 
 export default createSourceMiddleware<
   CloudsResult["clouds"],
@@ -12,23 +24,19 @@ export default createSourceMiddleware<
 >(
   "cloud-info",
   ({ wsControllerURL: _, meta }) => {
-    return createPollingSource(
-      async () => {
-        if (!hasConnections(meta, ["wsControllerURL"])) {
-          throw new Error("connection not provided");
-        }
+    if (!hasConnections(meta, ["wsControllerURL"])) {
+      throw new Error("connection not provided");
+    }
 
-        const connection = meta.connections.wsControllerURL;
+    const connection = meta.connections.wsControllerURL;
 
-        if (!connection?.info.user?.identity) {
-          throw new Error("not authenticated with controller");
-        }
+    if (!connection?.info.user?.identity) {
+      throw new Error("not authenticated with controller");
+    }
 
-        const response = (await connection.facades.cloud?.clouds({})) ?? {};
-        return response.clouds;
-      },
-      { interval: { seconds: 30 } },
-    );
+    return createPollingSource(async () => getCloudInfo(connection), {
+      interval: { seconds: 30 },
+    });
   },
   {
     setData: (_, data) =>

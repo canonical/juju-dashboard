@@ -1,8 +1,32 @@
 import { createPollingSource } from "data/pollingSource";
+import type { ConnectionWithFacades } from "juju/types";
 import { actions as jujuActions } from "store/juju";
 
-import { hasConnections } from "../connection/middleware";
+import { hasConnections } from "../connection/util";
 import { createSourceMiddleware } from "../source-middleware";
+
+export async function getUserCredentials(
+  connection: ConnectionWithFacades,
+  cloudTag: string,
+): Promise<string[]> {
+  if (!connection?.info.user?.identity) {
+    throw new Error("not authenticated with controller");
+  }
+
+  if (!connection.facades.cloud) {
+    throw new Error("Unsupported facade: cloud");
+  }
+
+  const response = await connection.facades.cloud?.userCredentials({
+    "user-clouds": [
+      {
+        "cloud-tag": cloudTag,
+        "user-tag": connection.info.user.identity,
+      },
+    ],
+  });
+  return response?.results[0]?.result ?? [];
+}
 
 export default createSourceMiddleware<
   string[],
@@ -10,28 +34,14 @@ export default createSourceMiddleware<
 >(
   "user-credentials",
   ({ wsControllerURL: _, cloudTag, meta }) => {
+    if (!hasConnections(meta, ["wsControllerURL"])) {
+      throw new Error("connection not provided");
+    }
+
+    const connection = meta.connections.wsControllerURL;
+
     return createPollingSource(
-      async () => {
-        if (!hasConnections(meta, ["wsControllerURL"])) {
-          throw new Error("connection not provided");
-        }
-
-        const connection = meta.connections.wsControllerURL;
-
-        if (!connection?.info.user?.identity) {
-          throw new Error("not authenticated with controller");
-        }
-
-        const response = await connection.facades.cloud?.userCredentials({
-          "user-clouds": [
-            {
-              "cloud-tag": cloudTag,
-              "user-tag": connection.info.user.identity,
-            },
-          ],
-        });
-        return response?.results[0]?.result ?? [];
-      },
+      async () => getUserCredentials(connection, cloudTag),
       { interval: { seconds: 30 } },
     );
   },

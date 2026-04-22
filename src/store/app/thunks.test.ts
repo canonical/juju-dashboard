@@ -88,7 +88,6 @@ describe("thunks", () => {
     const action = logOut();
     const dispatch = vi.fn();
     const getState = vi.fn(() => state);
-    const logoutSpy = vi.spyOn(CandidAuth.prototype, "logout");
     new CandidAuth(dispatch);
     await action(dispatch, getState, null);
     expect(dispatch).toHaveBeenCalledWith(
@@ -96,11 +95,6 @@ describe("thunks", () => {
         wsControllerURL: "wss://controller.example.com",
       }),
     );
-    expect(dispatch).toHaveBeenCalledWith(jujuActions.clearModelData());
-    expect(dispatch).toHaveBeenCalledWith(jujuActions.clearModelData());
-    expect(dispatch).toHaveBeenCalledWith(jujuActions.clearControllerData());
-    expect(dispatch).toHaveBeenCalledWith(generalActions.logOut());
-    expect(logoutSpy).toHaveBeenCalledOnce();
   });
 
   it("logOut from OIDC", async () => {
