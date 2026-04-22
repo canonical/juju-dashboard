@@ -38,7 +38,7 @@ contribute and what kinds of contributions are welcome.
       - [Vanilla Framework](#vanilla-framework)
       - [Vanilla React Components](#vanilla-react-components)
   - [Deployed JIMM controller](#deployed-jimm-controller)
-    - [Adding users](#adding-users)
+      - [Adding users](#adding-users)
     - [Self signed certificates](#self-signed-certificates)
     - [Juju on M1 Macs](#juju-on-m1-macs)
   - [Building the Docker image](#building-the-docker-image)
@@ -46,6 +46,7 @@ contribute and what kinds of contributions are welcome.
     - [Deploying a local app](#deploying-a-local-app)
     - [Setting up cross model integrations](#setting-up-cross-model-integrations)
     - [Getting models into a broken state](#getting-models-into-a-broken-state)
+    - [Setting up model migrations](#setting-up-model-migrations)
 
 ## Setting up the dashboard for development
 
@@ -567,3 +568,27 @@ To get the model out of the broken state run:
 ```shell
 juju exec --app nginx "status-set --application=True active"
 ```
+
+### Setting up model migrations
+
+There are two scenarios when testing model upgrades:
+1. Upgrade a model to a patch version that is equal to or lower than the current controller's patch version (this does not require a migration to a new controller).
+2. Upgrade to a patch version that is higher than the current controller's patch version or upgrade the model's major and/or minor version (this will require a migration to a controller with the new version).
+
+- Currently Multipass does not support environment variables in cloud init scripts so on your host open `scripts/cloud-init-jimm-lxd-oidc.yaml` and change the line `su -c '/home/ubuntu/juju-dashboard/scripts/cloud-init-jimm-lxd-oidc.sh' - ubuntu` to `su -c 'export AGENT_VERSION=3.6.19 && /home/ubuntu/juju-dashboard/scripts/cloud-init-jimm-lxd-oidc.sh' - ubuntu`
+- From the root of the dashboard run `multipass launch --cpus 2 --disk 25G --memory 12G --name jimm-oidc --timeout 5000 --cloud-init ./scripts/cloud-init-jimm-lxd-oidc.yaml` and wait for the JIMM container to be ready.
+- At this point we will have a model `test` on Juju 3.6.19, now we need to upgrade the controller so its version is higher than the model's version (note: it might take a while for the controller to upgrade):
+```
+multipass shell jimm-oidc
+juju switch qa-lxd
+juju upgrade-controller --agent-version 3.6.20
+```
+- We also need a controller that has a higher version that the model's current controller version, so add a second controller, this time running 3.6.21:
+```
+cd ~/jimm
+export AGENT_VERSION=3.6.21
+export CONTROLLER_NAME=jimm2
+./local/jimm/setup-controller.sh
+./local/jimm/add-controller.sh
+```
+- Lastly, if you want to use a local dashboard with this JIMM env then [update the config](#configure-jimm-for-localhost) and [configure your local dashboard](#controller-configuration) to point to the new controller, just as you would normally.
