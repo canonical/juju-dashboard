@@ -9,7 +9,6 @@ import { Auth, AuthMethod } from "auth";
 import AuthenticationButton from "components/AuthenticationButton";
 import Logo from "components/Logo";
 import ToastCard from "components/ToastCard";
-import type { ToastInstance } from "components/ToastCard";
 import type { BaseLayoutContext } from "layout/BaseLayout";
 import {
   getLoginError,
@@ -75,7 +74,7 @@ export default function LogIn(): JSX.Element {
   useEffect(() => {
     visitURLs?.forEach((visitURL) => {
       if (!viewedAuthRequests.current.includes(visitURL)) {
-        reactHotToast.custom((toast: ToastInstance) => (
+        reactHotToast.custom((toast) => (
           <ToastCard toastInstance={toast} type="caution">
             <p className="u-no-margin--top u-no-padding--top">
               {Label.AUTH_REQUIRED}
