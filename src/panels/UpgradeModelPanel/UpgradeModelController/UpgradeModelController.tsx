@@ -7,6 +7,7 @@ import FormikFormData from "components/FormikFormData";
 import Panel from "components/Panel";
 import type { VersionElem } from "juju/jimm/JIMMV4";
 import { CharmsAndActionsPanelTestId } from "panels/CharmsAndActionsPanel";
+import { getWSControllerURL } from "store/general/selectors";
 import {
   getControllerByUUID,
   getModelDataByUUID,
@@ -14,7 +15,8 @@ import {
 } from "store/juju/selectors";
 import { getControllerVersion } from "store/juju/utils/controllers";
 import { requiresMigration } from "store/juju/utils/upgrades";
-import { useAppSelector } from "store/store";
+import { upgradeTo } from "store/middleware/process";
+import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 
 import UpgradeModelPanelHeader from "../UpgradeModelPanelHeader";
@@ -38,6 +40,7 @@ const UpgradeModelController: FC<Props> = ({
   version,
   qualifier,
 }) => {
+  const dispatch = useAppDispatch();
   const formId = useId();
   const [isValid, setIsValid] = useState(false);
   const modelUUID = useAppSelector((state) =>
@@ -55,6 +58,7 @@ const UpgradeModelController: FC<Props> = ({
     (controllerVersion &&
       requiresMigration(controllerVersion, version.version)) ||
     false;
+  const wsControllerURL = useAppSelector(getWSControllerURL);
   const schema = Yup.object().shape({
     [FieldName.TARGET_CONTROLLER]: Yup.string().test({
       name: "required",
@@ -67,6 +71,33 @@ const UpgradeModelController: FC<Props> = ({
       message: "You must confirm to be able to upgrade.",
     }),
   });
+  function triggerMigration(values: FormFields): void {
+    const currentVersion = model?.info?.["agent-version"];
+
+    // TODO: Properly handle
+    if (!wsControllerURL) {
+      throw new Error("wsControllerURL is required");
+    }
+    if (!modelUUID) {
+      throw new Error("modelUUID is missing");
+    }
+    if (!currentVersion) {
+      throw new Error("currentVersion is missing");
+    }
+
+    if (needsMigration) {
+      const action = upgradeTo.run({
+        targetVersion: version.version,
+        targetController: values[FieldName.TARGET_CONTROLLER],
+        currentVersion,
+        wsControllerURL,
+        modelUUID,
+        modelURL: wsControllerURL.replace("/api", `/model/${modelUUID}/api`),
+        modelName: model?.info?.name ?? "Unknown model",
+      });
+      dispatch(action);
+    }
+  }
   return (
     <Panel
       animateMount={false}
@@ -117,8 +148,8 @@ const UpgradeModelController: FC<Props> = ({
             [FieldName.TARGET_CONTROLLER]: "",
             [FieldName.CONFIRM]: false,
           }}
-          onSubmit={(_values) => {
-            // TODO: start the upgrade: https://warthogs.atlassian.net/browse/JUJU-9503
+          onSubmit={(values) => {
+            triggerMigration(values);
             onRemovePanelQueryParams();
           }}
           validationSchema={schema}
