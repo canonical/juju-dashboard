@@ -12,7 +12,7 @@ import { useEffect, type PropsWithChildren } from "react";
 export type Props = PropsWithSpread<
   {
     className?: string;
-    width?: "narrow" | "unset" | "wide" | null;
+    width?: "medium" | "narrow" | "unset" | "wide" | null;
     pinned?: boolean;
     loading?: boolean;
     panelProps?: PanelProps;
@@ -61,6 +61,7 @@ export default function Aside({
     <AppAside
       className={classnames(className, {
         "is-narrow": width === "narrow",
+        "is-medium": width === "medium",
         "is-wide": width === "wide",
         "is-split": isSplit,
         "l-aside--initially-offscreen": animateMount,

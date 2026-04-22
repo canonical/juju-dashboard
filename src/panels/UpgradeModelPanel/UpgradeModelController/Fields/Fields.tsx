@@ -1,17 +1,22 @@
 import {
+  Chip,
+  CustomSelect,
   FormikField,
   NotificationSeverity,
-  Select,
   Notification as VanillaNotification,
 } from "@canonical/react-components";
 import { useFormikContext } from "formik";
 import type { FC } from "react";
 
+import ModelVersion from "components/ModelVersion";
 import type { VersionElem } from "juju/jimm/JIMMV4";
 import {
+  getControllerByUUID,
+  getModelDataByUUID,
   getModelMigrationControllersByVersion,
   getModelUUIDFromList,
 } from "store/juju/selectors";
+import { getControllerVersion } from "store/juju/utils/controllers";
 import { useAppSelector } from "store/store";
 
 import type { FormFields } from "../types";
@@ -35,10 +40,18 @@ const Fields: FC<Props> = ({
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, qualifier),
   );
+  const model = useAppSelector((state) => getModelDataByUUID(state, modelUUID));
+  const currentVersion = model?.model.version;
+  const modelController = useAppSelector((state) =>
+    getControllerByUUID(state, model?.info?.["controller-uuid"]),
+  );
+  const controllerVersion = modelController
+    ? getControllerVersion(modelController)
+    : null;
   const targetControllers = useAppSelector((state) =>
     getModelMigrationControllersByVersion(state, modelUUID, version.version),
   );
-  const { values } = useFormikContext<FormFields>();
+  const { setFieldValue, values } = useFormikContext<FormFields>();
   const showConfirm = needsMigration
     ? !!values[FieldName.TARGET_CONTROLLER]
     : true;
@@ -46,22 +59,109 @@ const Fields: FC<Props> = ({
   return (
     <>
       {needsMigration ? (
-        <FormikField
-          component={Select}
-          label={Label.TARGET_CONTROLLER}
-          name={FieldName.TARGET_CONTROLLER}
-          options={[
-            {
-              label: "",
-              value: "",
-            },
-            ...(targetControllers?.map((controller) => ({
-              label: controller.name,
-              value: controller.uuid,
-            })) ?? []),
-          ]}
-        />
+        <VanillaNotification severity={NotificationSeverity.INFORMATION}>
+          {Label.REQUIRES_MIGRATION}
+        </VanillaNotification>
       ) : null}
+      <h5>Changes</h5>
+      <table className="u-no-margin--bottom">
+        <thead>
+          <tr>
+            <th>{Label.HEADER_MODEL_NAME}</th>
+            <th>{Label.HEADER_CURRENT_VERSION}</th>
+            <th>{Label.HEADER_UPGRADE_VERSION}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>{modelName}</th>
+            <td className="u-flex">
+              <div className="u-flex-grow">
+                {currentVersion ? (
+                  <ModelVersion
+                    modelName={model.model.name}
+                    qualifier={qualifier}
+                  />
+                ) : null}
+              </div>
+              <span>&rarr;</span>
+            </td>
+            <td>
+              <ModelVersion
+                modelName={model?.model.name}
+                qualifier={qualifier}
+                versionOverride={version.version}
+              />
+            </td>
+          </tr>
+          {needsMigration ? (
+            <tr>
+              <th></th>
+              <td className="u-flex">
+                <div className="u-flex-grow">
+                  <span className="u-sh1--right">{modelController?.name}</span>
+                  {controllerVersion ? (
+                    <Chip
+                      isReadOnly
+                      isDense
+                      isInline
+                      value={controllerVersion}
+                    />
+                  ) : null}
+                </div>
+                <span className="u-flex-content-center">&rarr;</span>
+              </td>
+              <td className="controller-select__cell">
+                {needsMigration ? (
+                  <>
+                    <FormikField
+                      name={FieldName.TARGET_CONTROLLER}
+                      type="hidden"
+                    />
+                    <CustomSelect
+                      defaultToggleLabel={Label.TARGET_CONTROLLER}
+                      toggleClassName="controller-select__toggle"
+                      dropdownClassName="controller-select__dropdown prevent-panel-close"
+                      value={values[FieldName.TARGET_CONTROLLER]}
+                      onChange={(value) => {
+                        void setFieldValue(FieldName.TARGET_CONTROLLER, value);
+                      }}
+                      options={[
+                        ...(targetControllers?.map((controller) => {
+                          const optionVersion =
+                            getControllerVersion(controller);
+                          return {
+                            label: (
+                              <span className="u-flex">
+                                <span className="u-flex-grow">
+                                  {controller.name}
+                                </span>
+                                <span>
+                                  {optionVersion ? (
+                                    <Chip
+                                      isReadOnly
+                                      isDense
+                                      isInline
+                                      value={optionVersion}
+                                    />
+                                  ) : null}
+                                </span>
+                              </span>
+                            ),
+                            text: controller.name,
+                            value: controller.uuid,
+                          };
+                        }) ?? []),
+                      ]}
+                    />
+                  </>
+                ) : null}
+              </td>
+            </tr>
+          ) : null}
+        </tbody>
+      </table>
+      <hr />
       {showConfirm ? (
         <div className="u-flex-grow u-flex-content-end u-sv3">
           <div className="u-sv1">

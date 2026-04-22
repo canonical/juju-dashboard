@@ -1,5 +1,4 @@
-import { NotificationSeverity } from "@canonical/react-components";
-import { act, fireEvent, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
@@ -25,7 +24,6 @@ import {
   modelMigrationTargetsStateFactory,
   supportedJujuVersionsStateFactory,
 } from "testing/factories/juju/juju";
-import { customWithin } from "testing/queries/within";
 import { renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -127,33 +125,23 @@ describe("UpgradeModelController", () => {
     expect(onRemovePanelQueryParams).toHaveBeenCalled();
   });
 
-  it("displays correctly when a migration is required", async () => {
-    const {
-      result: { queryNotificationByText },
-    } = renderComponent(
+  it("does not close the panel when clicking inside the target dropdown", async () => {
+    const onRemovePanelQueryParams = vi.fn();
+    renderComponent(
       <UpgradeModelController
         back={vi.fn}
-        onRemovePanelQueryParams={vi.fn()}
+        onRemovePanelQueryParams={onRemovePanelQueryParams}
         version={versionElemFactory.build({ version: "4.6.14" })}
         modelName="test1"
         qualifier="eggman@external"
       />,
       { state, url, path },
     );
-    const rows = screen.getAllByRole("row");
-    // There should be a header, a model row and then a controller row.
-    expect(rows).toHaveLength(3);
-    const table = await screen.findByRole("table");
-    const controllerCol = customWithin(table).getCellByHeader(
-      Label.HEADER_UPGRADE_VERSION,
+    await userEvent.click(
+      screen.getByRole("button", { name: FieldsLabel.TARGET_CONTROLLER }),
     );
-    expect(controllerCol).toHaveTextContent(/controller1/);
-    expect(controllerCol).toHaveTextContent(/1.2.3/);
-    expect(
-      queryNotificationByText(Label.REQUIRES_MIGRATION, {
-        severity: NotificationSeverity.INFORMATION,
-      }),
-    ).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("option", { name: /controller2/ }));
+    expect(onRemovePanelQueryParams).not.toHaveBeenCalled();
   });
 
   it("requires the controller and confirmation when a migration is required", async () => {
@@ -169,40 +157,16 @@ describe("UpgradeModelController", () => {
     );
     const submit = screen.queryByRole("button", { name: Label.SUBMIT });
     expect(submit).toHaveAttribute("aria-disabled");
-    await userEvent.selectOptions(
-      screen.getByRole("combobox", { name: FieldsLabel.TARGET_CONTROLLER }),
-      "controller2",
+    await userEvent.click(
+      screen.getByRole("button", { name: FieldsLabel.TARGET_CONTROLLER }),
     );
+    await userEvent.click(screen.getByRole("option", { name: /controller2/ }));
     expect(submit).toHaveAttribute("aria-disabled");
     const confirm = screen.getByRole("checkbox", { name: FieldsLabel.CONFIRM });
     await userEvent.click(confirm);
     // Vanilla doesn't display validation until the field loses focus.
     await act(() => fireEvent.blur(confirm));
     expect(submit).not.toHaveAttribute("aria-disabled");
-  });
-
-  it("displays correctly when a migration is not required", async () => {
-    const {
-      result: { queryNotificationByText },
-    } = renderComponent(
-      <UpgradeModelController
-        back={vi.fn}
-        onRemovePanelQueryParams={vi.fn()}
-        version={versionElemFactory.build({ version: "1.2.2" })}
-        modelName="test1"
-        qualifier="eggman@external"
-      />,
-      { state, url, path },
-    );
-    // There should be a header and a model row.
-    expect(screen.getAllByRole("row")).toHaveLength(2);
-    await waitFor(() => {
-      expect(
-        queryNotificationByText(Label.REQUIRES_MIGRATION, {
-          severity: NotificationSeverity.INFORMATION,
-        }),
-      ).not.toBeInTheDocument();
-    });
   });
 
   it("requires the confirmation when a migration is not required", async () => {

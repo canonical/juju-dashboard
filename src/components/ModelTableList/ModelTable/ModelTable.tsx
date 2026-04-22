@@ -133,13 +133,13 @@ function generateModelTableList(
                 <ModelVersion
                   modelName={model.model.name}
                   qualifier={qualifier}
-                  version={upgrade.currentVersion}
+                  versionOverride={upgrade.currentVersion}
                 />
                 <span className="u-sh1 u-sh1--right">&rarr;</span>
                 <ModelVersion
                   modelName={model.model.name}
                   qualifier={qualifier}
-                  version={upgrade.upgradeVersion}
+                  versionOverride={upgrade.upgradeVersion}
                 />
               </>
             ) : null}

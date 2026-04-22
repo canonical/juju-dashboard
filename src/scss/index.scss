@@ -102,4 +102,5 @@ $color-navigation-background: $color-brand;
 @import "../pages/ModelsIndex/models";
 @import "../panels/ConfigPanel/config-panel";
 @import "../panels/ShareModelPanel/share-model";
+@import "../panels/UpgradeModelPanel/UpgradeModelController/upgrade-model-controller";
 @import "../panels/UpgradeModelPanel/UpgradeModelVersion/RecommendedVersion/recommended-version";
