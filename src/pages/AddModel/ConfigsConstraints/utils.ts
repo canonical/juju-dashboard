@@ -6,12 +6,19 @@ export const isConfigChanged = (
   defaultValue: string | undefined,
 ): boolean => {
   const currentValue = values[label];
-  if (!currentValue) {
+
+  // If value is undefined, it hasn't been set - not changed
+  if (currentValue === undefined) {
     return false;
   }
+
+  // If there's a default value, check if current differs from it
+  // This includes catching empty string ("") vs default
   if (defaultValue !== undefined) {
     return currentValue !== defaultValue;
   }
+
+  // No default value: only changed if non-empty
   return currentValue.length > 0;
 };
 
@@ -26,6 +33,18 @@ export const getChangedFields = (
       )
     : category.fields;
 
+export const getCategoriesWithVisibleConfigs = (
+  categories: CategoryDefinition[],
+  onlyChanged: boolean,
+  values: Record<string, string>,
+): Array<{ category: string; fields: CategoryDefinition["fields"] }> =>
+  categories
+    .map((cat) => ({
+      category: cat.category,
+      fields: getChangedFields(cat, onlyChanged, values),
+    }))
+    .filter(({ fields }) => fields.length > 0);
+
 export const buildConfigYAML = (
   categories: CategoryDefinition[],
   values: Record<string, string>,
@@ -33,7 +52,11 @@ export const buildConfigYAML = (
   const yamlSections = categories
     .map((category) => {
       const changedFields = getChangedFields(category, true, values).map(
-        (field) => `${field.label}: ${values[field.label]}`,
+        (field) => {
+          const value = values[field.label];
+          const quotedValue = value === "" ? '""' : value;
+          return `${field.label}: ${quotedValue}`;
+        },
       );
 
       if (changedFields.length === 0) {

@@ -15,8 +15,7 @@ export enum FieldName {
   CONFIG_YAML = "configYAML",
 }
 
-export interface ConfigsConstraintsFormValues {
-  [key: string]: string;
+export type FormFields = {
   [FieldName.CONFIG_INPUT_MODE]: InputMode;
   [FieldName.CONFIG_YAML]: string;
-}
+};

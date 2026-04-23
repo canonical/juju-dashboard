@@ -15,10 +15,10 @@ const ContentSwitcher = ({
   const id = useId();
   return (
     <>
-      <h5 className="configs__section-heading u-no-margin--bottom">{title}</h5>
-      <a href={docsLink} className="p-text--small">
-        {docsLabel}
-      </a>
+      <h5 className="u-no-padding--top u-no-margin--bottom">{title}</h5>
+      <p className="u-no-margin--bottom p-text--small">
+        <a href={docsLink}>{docsLabel}</a>
+      </p>
       <div className="u-flex u-flex--gap">
         <div>
           <RadioInput
@@ -28,7 +28,7 @@ const ContentSwitcher = ({
             onChange={() => {
               onModeChange(true);
             }}
-            value="list"
+            value={InputMode.LIST}
           />
         </div>
         <div>
@@ -39,7 +39,7 @@ const ContentSwitcher = ({
             onChange={() => {
               onModeChange(false);
             }}
-            value="yaml"
+            value={InputMode.YAML}
           />
         </div>
       </div>

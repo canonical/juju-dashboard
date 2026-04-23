@@ -1,89 +1,25 @@
-import {
-  FormikField,
-  Icon,
-  MainTable,
-  Select,
-  Switch,
-  Textarea,
-} from "@canonical/react-components";
-import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import { FormikField, Switch, Textarea } from "@canonical/react-components";
 import { useFormikContext } from "formik";
 import { useState, type ChangeEvent, type JSX } from "react";
 
 import { testId } from "testing/utils";
 import { externalURLs } from "urls";
 
-import ContentSwitcher from "./ContentSwitcher/ContentSwitcher";
+import ContentSwitcher from "./ContentSwitcher";
 import { InputMode } from "./ContentSwitcher/types";
-import { type CategoryDefinition, CONFIG_CATEGORIES } from "./configCatalog";
-import {
-  FieldName,
-  Label,
-  TestId,
-  type ConfigsConstraintsFormValues,
-} from "./types";
-import { buildConfigYAML, getChangedFields, isConfigChanged } from "./utils";
+import StackList from "./StackList";
+import { CONFIG_CATEGORIES } from "./configCatalog";
+import { type FormFields, FieldName, Label, TestId } from "./types";
+import { buildConfigYAML, getCategoriesWithVisibleConfigs } from "./utils";
 
 const ConfigsConstraints = (): JSX.Element => {
-  const { values, setFieldValue } =
-    useFormikContext<ConfigsConstraintsFormValues>();
+  const { values, setFieldValue } = useFormikContext<
+    FormFields & Record<string, string>
+  >();
+
   const [changedOnly, setChangedOnly] = useState(false);
   const isConfigListMode =
     values[FieldName.CONFIG_INPUT_MODE] !== InputMode.YAML;
-
-  const buildRows = (categories: CategoryDefinition[]): MainTableRow[] =>
-    categories.flatMap((category) => {
-      const visibleConfigs = getChangedFields(category, changedOnly, values);
-
-      return visibleConfigs.map((config, visibleIndex) => {
-        const changed = isConfigChanged(
-          config.label,
-          values,
-          config.defaultValue,
-        );
-
-        return {
-          columns: [
-            ...(visibleIndex === 0 && visibleConfigs.length > 0
-              ? [
-                  {
-                    content: <h5>{category.category}</h5>,
-                    rowSpan: visibleConfigs.length,
-                    className: "configs__category",
-                  },
-                ]
-              : []),
-            {
-              content: (
-                <div>
-                  <span>
-                    {changed ? <Icon name="status-in-progress-small" /> : null}
-                    {config.label}
-                  </span>
-                  <span className="p-form-help-text u-no-margin--bottom">
-                    {config.description}
-                  </span>
-                </div>
-              ),
-              className: "configs__config p-table__cell--icon-placeholder",
-            },
-            {
-              content: (
-                <FormikField
-                  {...(config.input?.type === "select"
-                    ? { component: Select }
-                    : { type: "text", placeholder: config.placeholder })}
-                  name={config.label}
-                  defaultValue={config.defaultValue}
-                  {...config.input}
-                />
-              ),
-              className: "configs__input",
-            },
-          ],
-        };
-      });
-    });
 
   const handleConfigModeChange = (isListMode: boolean): void => {
     if (!isListMode) {
@@ -98,6 +34,12 @@ const ConfigsConstraints = (): JSX.Element => {
       isListMode ? InputMode.LIST : InputMode.YAML,
     );
   };
+
+  const categoriesWithConfigs = getCategoriesWithVisibleConfigs(
+    CONFIG_CATEGORIES,
+    changedOnly,
+    values,
+  );
 
   return (
     <div {...testId(TestId.CONFIGS_CONSTRAINTS_FORM)}>
@@ -114,21 +56,24 @@ const ConfigsConstraints = (): JSX.Element => {
                 setChangedOnly(event.target.checked);
               }}
             />
-            <div className="configs__table-scroll">
-              <MainTable
-                className="p-main-table configs__table"
-                rows={buildRows(CONFIG_CATEGORIES)}
-              />
+            <div className="configs__form-scroll p-form--stacked">
+              {categoriesWithConfigs.map(({ category, fields }) => (
+                <StackList category={category} visibleConfigs={fields} />
+              ))}
             </div>
           </>
         }
         secondaryContent={
-          <FormikField
-            className="configs__yaml-input"
-            component={Textarea}
-            name={FieldName.CONFIG_YAML}
-            placeholder={Label.MODEL_CONFIG_PLACEHOLDER}
-          />
+          <div className="p-form__group row u-no-padding">
+            <div className="col-6">
+              <FormikField
+                className="configs__yaml-input"
+                component={Textarea}
+                name={FieldName.CONFIG_YAML}
+                placeholder={Label.MODEL_CONFIG_PLACEHOLDER}
+              />
+            </div>
+          </div>
         }
         onModeChange={handleConfigModeChange}
         title="Configuration (optional)"
