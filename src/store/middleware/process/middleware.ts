@@ -1,7 +1,7 @@
-import type { PayloadAction } from "@reduxjs/toolkit";
 import { isAction, type Middleware } from "@reduxjs/toolkit";
 
 import type { RootState, Store } from "store/store";
+import { isMetaAction } from "types";
 
 import type { Process } from "./types";
 
@@ -23,15 +23,11 @@ export default function createMiddleware<P extends Process<Payload>, Payload>(
       }
 
       if (process.actions.run.match(action)) {
-        const actionPayload = action.payload as Payload;
-        const actionMeta = (
-          action as PayloadAction<Payload, string, Record<string, unknown>>
-        ).meta as Record<string, unknown> | undefined;
-        const payload = Object.assign(
-          {},
-          actionPayload,
-          actionMeta ? { meta: actionMeta } : undefined,
-        );
+        const actionPayload = action.payload;
+        const actionMeta = isMetaAction(action)
+          ? { meta: action.meta }
+          : undefined;
+        const payload = Object.assign({}, actionPayload, actionMeta);
         await process.start(payload, store.dispatch);
         return;
       } else {

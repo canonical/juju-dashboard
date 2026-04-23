@@ -1,4 +1,8 @@
-import type { PayloadAction, PayloadActionCreator } from "@reduxjs/toolkit";
+import type {
+  PayloadAction,
+  PayloadActionCreator,
+  PrepareAction,
+} from "@reduxjs/toolkit";
 
 import type { Store } from "store/store";
 
@@ -21,7 +25,7 @@ export type ProcessActions<Payload, Status, Result> = {
 
 export type Process<Payload> = {
   actions: {
-    run: PayloadActionCreator<Payload>;
+    run: PayloadActionCreator<Payload, string, PrepareAction<Payload>>;
   };
   start: (
     payload: { meta: Record<string, unknown> } & Payload,

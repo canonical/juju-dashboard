@@ -1,4 +1,3 @@
-import type { PayloadActionCreator } from "@reduxjs/toolkit";
 import { createAction } from "@reduxjs/toolkit";
 
 import type { Store } from "store/store";
@@ -15,20 +14,10 @@ export function createProcess<Payload, Status, Result>(
   hooks?: Hooks<Payload>,
 ): Process<Payload> {
   const actions = {
-    run: createAction(
-      `process/${identifier}/run`,
-      (
-        payload: Payload,
-      ): { payload: Payload; meta?: Record<string, unknown> } =>
-        Object.assign(
-          {
-            payload,
-          },
-          hooks?.addActionMeta
-            ? { meta: hooks.addActionMeta(payload) }
-            : undefined,
-        ),
-    ) as unknown as PayloadActionCreator<Payload>,
+    run: createAction(`process/${identifier}/run`, (payload: Payload) => ({
+      payload,
+      meta: hooks?.addActionMeta?.(payload),
+    })),
   };
 
   const start = async (
