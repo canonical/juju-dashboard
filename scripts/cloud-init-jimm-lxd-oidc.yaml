@@ -54,6 +54,13 @@ runcmd:
     # Finish Docker setup.
     sudo addgroup --system docker
     sudo adduser ubuntu docker
+
+    # Don't allow Docker to set global drop rule.
+    # See: https://docs.docker.com/engine/network/packet-filtering-firewalls/#docker-on-a-router
+    DAEMON_CONF=/var/snap/docker/current/config/daemon.json
+    sudo cat ${DAEMON_CONF} | jq '."ip-forward-no-drop" = true' | sudo tee "${DAEMON_CONF}.tmp"
+    sudo mv "${DAEMON_CONF}.tmp" ${DAEMON_CONF}
+
     sudo snap disable docker
     sudo snap enable docker
 
