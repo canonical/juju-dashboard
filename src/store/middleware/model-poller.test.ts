@@ -13,6 +13,7 @@ import { Label } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { updateModelStatuses, type ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
+import * as generalSelectors from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -29,6 +30,7 @@ import {
 import { createStore } from "testing/utils";
 
 import { LoginError, modelPollerMiddleware } from "./model-poller";
+import disableCommand from "./process/disableCommand";
 import sourceMiddleware from "./source";
 import cloudInfoSource from "./source/cloud-info";
 import modelListSource from "./source/model-list";
@@ -41,6 +43,7 @@ vi.mock("juju/api", () => ({
   fetchAndStoreModelStatus: vi.fn(),
   fetchModelInfo: vi.fn(),
   setModelSharingPermissions: vi.fn(),
+  connectToModel: vi.fn(),
 }));
 
 vi.mock("juju/jimm/api", () => ({
@@ -1406,6 +1409,7 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
+      disabledCommands: "none",
     });
     await middleware(next)(action);
     expect(conn.facades.modelManager.createModel).toHaveBeenCalledWith({
@@ -1437,6 +1441,7 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
+      disabledCommands: "none",
     });
     await middleware(next)(action);
     expect(conn.facades.modelManager.createModel).not.toHaveBeenCalled();
@@ -1456,6 +1461,7 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
+      disabledCommands: "none",
     });
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -1483,6 +1489,7 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
+      disabledCommands: "none",
     });
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -1510,12 +1517,109 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
+      disabledCommands: "none",
     });
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.setAddModelResult({
         errors: "Could not add model.",
         success: false,
+        wsControllerURL: "wss://example.com",
+      }),
+    );
+  });
+
+  it("triggers disable command process when model created with disabledCommands", async () => {
+    vi.spyOn(disableCommand, "start").mockResolvedValue();
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(generalSelectors, "getUserPass").mockReturnValue({
+      user: "eggman@external",
+      password: "test",
+    });
+    vi.spyOn(jujuModule, "connectToModel").mockResolvedValue({
+      facades: {
+        block: { switchBlockOn: vi.fn().mockReturnValue(null) },
+      },
+    } as unknown as Connection);
+    conn.facades.modelManager.createModel.mockResolvedValue({
+      uuid: "model-uuid-123",
+    });
+    const middleware = await runMiddleware();
+    const action = jujuActions.addModel({
+      wsControllerURL: "wss://example.com",
+      modelName: "model123",
+      userTag: "user-eggman@external",
+      cloudTag: "cloud-aws",
+      credential: "credential-aws",
+      disabledCommands: "BlockChange",
+    });
+    await middleware(next)(action);
+    expect(conn.facades.modelManager.createModel).toHaveBeenCalledWith({
+      name: "model123",
+      credential: "credential-aws",
+      "cloud-tag": "cloud-aws",
+      "owner-tag": "user-eggman@external",
+      qualifier: "user-eggman@external",
+      region: undefined,
+    });
+    expect(jujuModule.connectToModel).toHaveBeenCalledWith(
+      "model-uuid-123",
+      "wss://example.com",
+      { user: "eggman@external", password: "test" },
+    );
+    expect(disableCommand.start).toHaveBeenCalledWith(
+      expect.objectContaining({
+        modelUUID: "model-uuid-123",
+        wsControllerURL: "wss://example.com",
+        params: { type: "BlockChange" },
+      }),
+      fakeStore.dispatch,
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.setAddModelResult({
+        success: true,
+        wsControllerURL: "wss://example.com",
+      }),
+    );
+  });
+
+  it("skips disable command process when model connection fails", async () => {
+    vi.spyOn(disableCommand, "start").mockResolvedValue();
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jujuModule, "connectToModel").mockResolvedValue(undefined);
+    conn.facades.modelManager.createModel.mockResolvedValue({
+      uuid: "model-uuid-123",
+    });
+    const middleware = await runMiddleware();
+    const action = jujuActions.addModel({
+      wsControllerURL: "wss://example.com",
+      modelName: "model123",
+      userTag: "user-eggman@external",
+      cloudTag: "cloud-aws",
+      credential: "credential-aws",
+      disabledCommands: "BlockChange",
+    });
+    await middleware(next)(action);
+    expect(conn.facades.modelManager.createModel).toHaveBeenCalledWith({
+      name: "model123",
+      credential: "credential-aws",
+      "cloud-tag": "cloud-aws",
+      "owner-tag": "user-eggman@external",
+      qualifier: "user-eggman@external",
+      region: undefined,
+    });
+    expect(disableCommand.start).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.setAddModelResult({
+        success: true,
         wsControllerURL: "wss://example.com",
       }),
     );

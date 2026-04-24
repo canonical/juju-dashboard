@@ -17,6 +17,10 @@ import urls from "urls";
 
 import AddModel from "./AddModel";
 import {
+  TestId as ConfigsConstraintsTestId,
+  Label as ConfigsConstraintsLabel,
+} from "./ConfigsConstraints/types";
+import {
   TestId as MandatoryDetailsTestId,
   Label as MandatoryDetailsLabel,
 } from "./MandatoryDetails/types";
@@ -81,7 +85,7 @@ describe("AddModel page", () => {
       screen.getByTestId(MandatoryDetailsTestId.MANDATORY_DETAILS_FORM),
     ).toBeInTheDocument();
     expect(
-      screen.queryByText("Configuration and constraints form goes here."),
+      screen.queryByTestId(ConfigsConstraintsTestId.CONFIGS_CONSTRAINTS_FORM),
     ).toBeNull();
 
     await userEvent.click(
@@ -92,7 +96,7 @@ describe("AddModel page", () => {
       screen.queryByTestId(MandatoryDetailsTestId.MANDATORY_DETAILS_FORM),
     ).toBeNull();
     expect(
-      screen.getByText("Configuration and constraints form goes here."),
+      screen.getByTestId(ConfigsConstraintsTestId.CONFIGS_CONSTRAINTS_FORM),
     ).toBeInTheDocument();
   });
 
@@ -184,7 +188,7 @@ describe("AddModel page", () => {
       screen.getByText("Configuration & Constraints (optional)"),
     );
     expect(
-      screen.getByText("Configuration and constraints form goes here."),
+      screen.getByTestId(ConfigsConstraintsTestId.CONFIGS_CONSTRAINTS_FORM),
     ).toBeInTheDocument();
   });
 
@@ -243,11 +247,48 @@ describe("AddModel page", () => {
       modelName: "my-model",
       userTag: "user-eggman@external",
       wsControllerURL: "wss://controller.example.com",
+      disabledCommands: "none",
     });
 
     await userEvent.type(
       screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
       "my-model",
+    );
+    await waitFor(() =>
+      fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM)),
+    );
+
+    await waitFor(() => {
+      expect(
+        actions.find((dispatch) => dispatch.type === addModelAction.type),
+      ).toMatchObject(addModelAction);
+    });
+  });
+
+  it("disables commands on selection after successful model creation", async () => {
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<AddModel />, { store });
+
+    const addModelAction = jujuActions.addModel({
+      cloudTag: "cloud-aws",
+      credential: "",
+      modelName: "my-model",
+      userTag: "user-eggman@external",
+      wsControllerURL: "wss://controller.example.com",
+      disabledCommands: "BlockDestroy",
+    });
+
+    await userEvent.type(
+      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
+      "my-model",
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
+    await userEvent.click(
+      screen.getByRole("radio", {
+        name: ConfigsConstraintsLabel.DISABLE_DESTROY_MODEL,
+      }),
     );
     await waitFor(() =>
       fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM)),

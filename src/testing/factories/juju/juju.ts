@@ -191,4 +191,5 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   supportedJujuVersions: supportedJujuVersionsStateFactory.build(),
   modelMigrationTargets: modelMigrationTargetsStateFactory.build(),
   addModelState: addModelStateFactory.build(),
+  blockState: {},
 }));

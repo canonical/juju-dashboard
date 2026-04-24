@@ -1,3 +1,5 @@
+import type { DisableType } from "./ConfigsConstraints/types";
+
 export enum TestId {
   COMPONENT = "add-model",
   ADD_MODEL_CONTENT = "add-model-content",
@@ -15,6 +17,7 @@ export type AddModelFormState = {
   cloud: string;
   region: string;
   credential: string;
+  disabledCommands: DisableType;
 };
 
 export enum Label {
