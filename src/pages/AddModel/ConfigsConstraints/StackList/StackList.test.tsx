@@ -41,15 +41,12 @@ describe("StackList", () => {
   it("renders properly", () => {
     renderComponent(
       <Formik initialValues={{}} onSubmit={vi.fn()}>
-        <StackList
-          category={mockCategory.category}
-          visibleConfigs={mockCategory.fields}
-        />
+        <StackList visibleConfigs={mockCategory.fields} />
       </Formik>,
     );
 
-    expect(screen.getByText("Networking")).toBeInTheDocument();
     expect(screen.getByText("default-space")).toBeInTheDocument();
+    expect(screen.getByText("The default network space")).toBeInTheDocument();
   });
 
   it("does not show a changed indicator when fields have default values", () => {
@@ -61,10 +58,7 @@ describe("StackList", () => {
         }}
         onSubmit={vi.fn()}
       >
-        <StackList
-          category={mockCategory.category}
-          visibleConfigs={mockCategory.fields}
-        />
+        <StackList visibleConfigs={mockCategory.fields} />
       </Formik>,
     );
 
@@ -81,10 +75,7 @@ describe("StackList", () => {
         }}
         onSubmit={vi.fn()}
       >
-        <StackList
-          category={mockCategory.category}
-          visibleConfigs={mockCategory.fields}
-        />
+        <StackList visibleConfigs={mockCategory.fields} />
       </Formik>,
     );
 

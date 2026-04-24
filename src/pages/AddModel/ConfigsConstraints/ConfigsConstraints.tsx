@@ -1,4 +1,10 @@
-import { FormikField, Switch, Textarea } from "@canonical/react-components";
+import {
+  Col,
+  FormikField,
+  Row,
+  Switch,
+  Textarea,
+} from "@canonical/react-components";
 import { useFormikContext } from "formik";
 import { useState, type ChangeEvent, type JSX } from "react";
 
@@ -56,15 +62,25 @@ const ConfigsConstraints = (): JSX.Element => {
                 setChangedOnly(event.target.checked);
               }}
             />
-            <div className="configs__form-scroll p-form--stacked">
-              {categoriesWithConfigs.map(({ category, fields }) => (
-                <StackList category={category} visibleConfigs={fields} />
+            <div className="configs__form-scroll">
+              {categoriesWithConfigs.map(({ category, fields }, index) => (
+                <Row key={category} className="u-no-padding u-sv1--top">
+                  <Col size={3}>
+                    <h5>{category}</h5>
+                  </Col>
+                  <Col size={9}>
+                    <StackList visibleConfigs={fields} />
+                  </Col>
+                  {index < categoriesWithConfigs.length - 1 ? (
+                    <hr className="p-rule--muted" />
+                  ) : null}
+                </Row>
               ))}
             </div>
           </>
         }
         secondaryContent={
-          <div className="p-form__group row u-no-padding">
+          <div className="row u-no-padding">
             <div className="col-6">
               <FormikField
                 className="configs__yaml-input"

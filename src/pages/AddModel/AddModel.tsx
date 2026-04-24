@@ -170,6 +170,7 @@ const AddModel: FC = () => {
               id={currentStep.key}
               {...testId(TestId.ADD_MODEL_FORM)}
               className={currentStep.key}
+              stacked={currentStep.key === StepType.CONFIGURATION_CONSTRAINTS}
             >
               {currentStep.content}
             </FormikFormData>

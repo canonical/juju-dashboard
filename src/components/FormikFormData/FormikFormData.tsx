@@ -1,5 +1,7 @@
-import { Form, useFormikContext } from "formik";
-import type { HTMLProps, JSX, ReactNode } from "react";
+import type { FormProps } from "@canonical/react-components";
+import { Form } from "@canonical/react-components";
+import { useFormikContext } from "formik";
+import type { JSX, ReactNode } from "react";
 import { useEffect, useRef } from "react";
 
 import type { SetFieldValue } from "./types";
@@ -10,7 +12,7 @@ type Props<V> = {
   onSetup?: (setFieldValue: SetFieldValue<V>) => void;
   onValidate?: (valid: boolean) => void;
   skipFirstValidation?: boolean;
-} & HTMLProps<HTMLFormElement>;
+} & FormProps;
 
 export default function FormikFormData<V>({
   children,
@@ -20,7 +22,8 @@ export default function FormikFormData<V>({
   skipFirstValidation = true,
   ...props
 }: Props<V>): JSX.Element {
-  const { values, setFieldValue, isValid } = useFormikContext<V>();
+  const { values, setFieldValue, isValid, handleReset, handleSubmit } =
+    useFormikContext<V>();
 
   useEffect(() => {
     onSetup?.(setFieldValue);
@@ -43,7 +46,7 @@ export default function FormikFormData<V>({
   }, [onValidate, isValid]);
 
   return (
-    <Form role="form" {...props}>
+    <Form onReset={handleReset} onSubmit={handleSubmit} role="form" {...props}>
       {children}
     </Form>
   );

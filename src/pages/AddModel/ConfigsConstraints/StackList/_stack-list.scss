@@ -1,37 +1,7 @@
-.stack__list {
-  border-top: 1px solid $colors--theme--border-low-contrast;
-  padding-top: $sp-medium;
+.p-form--stacked .p-form__group.stack__list-row {
+  align-items: normal;
+}
 
-  &:first-child {
-    border-top: 0;
-  }
-
-  .stack__row {
-    border-top: 1px solid $colors--theme--border-low-contrast;
-    display: grid;
-    gap: $sp-medium;
-    grid-template-columns: 1fr 1fr;
-
-    &:first-child {
-      border-top: 0;
-    }
-
-    .p-table__cell--icon-placeholder {
-      padding-left: $sp-x-small;
-    }
-
-    .stack__config {
-      display: flex;
-      flex-direction: column;
-      gap: $sp-x-small;
-    }
-
-    .stack__input {
-      padding: $sp-x-small 0;
-
-      .p-form-validation__input {
-        margin-bottom: 0;
-      }
-    }
-  }
+.stack__list-field {
+  margin-top: $spv--x-small;
 }

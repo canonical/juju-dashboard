@@ -33,7 +33,7 @@ describe("ConfigsConstraints", () => {
     await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
 
     expect(
-      screen.queryByText("container-networking-method"),
+      screen.queryByLabelText("container-networking-method"),
     ).not.toBeInTheDocument();
     expect(
       screen.getByPlaceholderText(Label.MODEL_CONFIG_PLACEHOLDER),
@@ -101,10 +101,12 @@ describe("ConfigsConstraints", () => {
       </Formik>,
     );
 
-    expect(screen.getByText("container-networking-method")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("container-networking-method"),
+    ).toBeInTheDocument();
     await userEvent.click(screen.getByLabelText(Label.CHANGED_CONFIGS_ONLY));
     expect(
-      screen.queryByText("container-networking-method"),
+      screen.queryByLabelText("container-networking-method"),
     ).not.toBeInTheDocument();
   });
 
@@ -120,14 +122,16 @@ describe("ConfigsConstraints", () => {
       </Formik>,
     );
 
-    expect(screen.getByText("container-networking-method")).toBeInTheDocument();
-    expect(screen.getByText("default-space")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("container-networking-method"),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("default-space")).toBeInTheDocument();
 
     await userEvent.click(screen.getByLabelText(Label.CHANGED_CONFIGS_ONLY));
     expect(
-      screen.queryByText("container-networking-method"),
+      screen.queryByLabelText("container-networking-method"),
     ).not.toBeInTheDocument();
-    expect(screen.queryByText("default-space")).toBeInTheDocument();
+    expect(screen.queryByLabelText("default-space")).toBeInTheDocument();
   });
 
   it("initialises in YAML mode when configInputMode is yaml", () => {
