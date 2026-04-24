@@ -28,6 +28,7 @@ import ConfigsConstraints from "./ConfigsConstraints";
 import { InputMode } from "./ConfigsConstraints/ContentSwitcher/types";
 import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
 import { FieldName as ConfigFieldName } from "./ConfigsConstraints/types";
+import { DisableType } from "./ConfigsConstraints/types";
 import { getConfigInitialValues } from "./ConfigsConstraints/utils";
 import MandatoryDetails from "./MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
@@ -95,6 +96,7 @@ const AddModel: FC = () => {
         cloudTag: values.cloud,
         credential: values.credential,
         userTag,
+        disabledCommands: values.disabledCommands,
         region: values.region || undefined,
       }),
     );
@@ -168,6 +170,7 @@ const AddModel: FC = () => {
               [ConfigFieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
               [ConfigFieldName.CONFIG_YAML]: "",
               ...getConfigInitialValues(CONFIG_CATEGORIES),
+              disabledCommands: DisableType.NONE,
             }}
             validationSchema={validationSchema}
             onSubmit={handleCreateClick}

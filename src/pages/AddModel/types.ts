@@ -1,4 +1,4 @@
-import type { FormFields } from "./ConfigsConstraints/types";
+import type { FormFields, DisableType } from "./ConfigsConstraints/types";
 
 export enum TestId {
   COMPONENT = "add-model",
@@ -17,6 +17,7 @@ export type AddModelFormState = {
   cloud: string;
   region: string;
   credential: string;
+  disabledCommands: DisableType;
 } & FormFields &
   Record<string, string>;
 

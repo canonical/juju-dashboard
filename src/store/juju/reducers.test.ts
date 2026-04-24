@@ -1672,6 +1672,7 @@ describe("reducers", () => {
           credential: "credential-aws",
           userTag: "user-123",
           wsControllerURL: "wss://example.com",
+          disabledCommands: "none",
         }),
       ),
     ).toStrictEqual({

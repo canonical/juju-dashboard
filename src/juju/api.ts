@@ -3,6 +3,7 @@ import { connect, connectAndLogin } from "@canonical/jujulib";
 import Action from "@canonical/jujulib/dist/api/facades/action";
 import Annotations from "@canonical/jujulib/dist/api/facades/annotations";
 import Application from "@canonical/jujulib/dist/api/facades/application";
+import Block from "@canonical/jujulib/dist/api/facades/block";
 import Charms from "@canonical/jujulib/dist/api/facades/charms";
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV5";
 import Client from "@canonical/jujulib/dist/api/facades/client";
@@ -70,6 +71,7 @@ export function generateConnectionOptions(
       Action,
       Annotations,
       Application,
+      Block,
       Charms,
       Client,
       Cloud,

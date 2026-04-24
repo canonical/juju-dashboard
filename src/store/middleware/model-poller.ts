@@ -2,6 +2,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { isAction, type Middleware } from "redux";
 
 import {
+  connectToModel,
   fetchAndStoreModelStatus,
   fetchControllerList,
   fetchModelInfo,
@@ -17,7 +18,7 @@ import type { DestroyModelErrors } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { updateModelStatuses } from "store/app/actions";
 import { actions as generalActions } from "store/general";
-import { isLoggedIn } from "store/general/selectors";
+import { getUserPass, isLoggedIn } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { getModelList } from "store/juju/selectors";
 import { addControllerCloudRegion } from "store/juju/thunks";
@@ -30,6 +31,7 @@ import {
   createConnectionMiddleware,
   type ConnectionManager,
 } from "./connection";
+import disableCommandProcess from "./process/disableCommand";
 import cloudInfoMiddleware from "./source/cloud-info";
 import modelListMiddleware from "./source/model-list";
 import { ModelsError } from "./types";
@@ -507,6 +509,7 @@ function runModelPoller(
         credential,
         region,
         userTag,
+        disabledCommands,
       } = action.payload;
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
@@ -534,7 +537,37 @@ function runModelPoller(
         if (response) {
           if ("error" in response) {
             throw response.error;
+          } else if (
+            disabledCommands !== "none" &&
+            typeof response.uuid === "string" &&
+            response.uuid.length > 0
+          ) {
+            const credentials = getUserPass(
+              reduxStore.getState(),
+              wsControllerURL,
+            );
+            const modelConnection = await connectToModel(
+              response.uuid,
+              wsControllerURL,
+              credentials,
+            );
+            if (modelConnection) {
+              console.log("here");
+              await disableCommandProcess.start(
+                {
+                  connection: modelConnection,
+                  modelUUID: response.uuid,
+                  wsControllerURL,
+                  params: {
+                    type: disabledCommands,
+                  },
+                  meta: {},
+                },
+                reduxStore.dispatch,
+              );
+            }
           }
+
           reduxStore.dispatch(
             jujuActions.setAddModelResult({
               success: true,

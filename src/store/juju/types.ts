@@ -1,3 +1,4 @@
+import type { ErrorResult as BlockErrorResult } from "@canonical/jujulib/dist/api/facades/block/BlockV2";
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
@@ -16,6 +17,7 @@ import type {
   VersionElem,
 } from "juju/jimm/JIMMV4";
 import type { FullStatusWithAnnotations, ModelInfo } from "juju/types";
+import type { ProcessOutcome } from "store/middleware/process";
 import type { GenericItemsState, GenericState } from "store/types";
 
 /**
@@ -147,6 +149,7 @@ export type AddModel = {
   credential: string;
   cloudTag: string;
   userTag: string;
+  disabledCommands: string;
   region?: string;
 };
 
@@ -156,6 +159,12 @@ export type AddModelState = {
   errors?: string | unknown;
   success?: boolean;
 };
+
+export type BlockEntry = {
+  outcome: null | ProcessOutcome<BlockErrorResult>;
+};
+
+export type BlockState = Record<string, BlockEntry>;
 
 export type JujuState = {
   auditEvents: AuditEventsState;
@@ -179,4 +188,5 @@ export type JujuState = {
   selectedApplications: Record<string, ApplicationStatus>;
   supportedJujuVersions: SupportedJujuVersionsState;
   addModelState: AddModelState;
+  blockState: BlockState;
 };

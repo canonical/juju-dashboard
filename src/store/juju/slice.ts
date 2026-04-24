@@ -35,6 +35,7 @@ import type {
   SourceData,
   ModelUpgrade,
   AddModel,
+  BlockEntry,
 } from "./types";
 import { getModelQualifier } from "./utils/models";
 
@@ -160,6 +161,7 @@ const slice = createSlice({
       loading: false,
       loaded: false,
     },
+    blockState: {},
   } as JujuState,
   reducers: {
     updateModelList: (
@@ -834,6 +836,31 @@ const slice = createSlice({
       state.addModelState.success = action.payload.success;
       state.addModelState.loading = false;
       state.addModelState.loaded = true;
+    },
+    setBlockState: (
+      state,
+      action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
+    ) => {
+      state.blockState[action.payload.modelUUID] = {
+        outcome: null,
+      };
+    },
+    setBlockOutcome: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          outcome: BlockEntry["outcome"];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      if (!state.blockState[action.payload.modelUUID]) {
+        state.blockState[action.payload.modelUUID] = {
+          outcome: null,
+        };
+      }
+      state.blockState[action.payload.modelUUID].outcome =
+        action.payload.outcome;
     },
   },
 });
