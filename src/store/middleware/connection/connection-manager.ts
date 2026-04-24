@@ -1,7 +1,11 @@
-import type { Client } from "@canonical/jujulib";
+import { connectAndLogin } from "@canonical/jujulib";
 
 import { Auth } from "auth";
-import { loginWithBakery } from "juju/api";
+import {
+  CLIENT_VERSION,
+  generateConnectionOptions,
+  loginWithBakery,
+} from "juju/api";
 import { Label, type ConnectionWithFacades } from "juju/types";
 import type { AuthCredential } from "store/general/types";
 import { logger } from "utils/logger";
@@ -14,16 +18,114 @@ type Hooks = {
   ) => Promise<void> | void;
 };
 
-type SavedConnection = {
+/**
+ * The result of a connection handler.
+ */
+type ConnectionResult = {
   connection: ConnectionWithFacades;
-  intervalId?: number;
-  juju?: Client;
+  onClose?: () => PromiseLike<void>;
+};
+
+/**
+ * A function which resolves with a connection for a given URL and credentials.
+ */
+type ConnectionHandler = (
+  wsControllerURL: string,
+  credentials: AuthCredential | undefined,
+) => Promise<ConnectionResult>;
+
+/**
+ * Symbol representing the default handler.
+ */
+export const DefaultHandler = Symbol();
+
+/**
+ * Map of URL paths to a connection handler, with `DefaultHandler` suitable for any connection kind.
+ */
+export const CONNECTION_HANDLERS_BY_PATH: Record<
+  string | typeof DefaultHandler,
+  ConnectionHandler
+> = {
+  /**
+   * Handler used by default
+   */
+  [DefaultHandler]: async (wsControllerURL, credentials) => {
+    const options = generateConnectionOptions(true);
+    const instanceCredentials = Auth.instance.determineCredentials(credentials);
+    const { conn, logout } = await connectAndLogin(
+      wsControllerURL,
+      options,
+      instanceCredentials,
+      CLIENT_VERSION,
+    );
+    if (!conn) {
+      throw new Error(`could not connect to ${wsControllerURL}`);
+    }
+    return {
+      connection: conn,
+      onClose: async (): Promise<void> => {
+        await new Promise<void>((resolve) => {
+          logout((code, cb) => {
+            resolve();
+            cb(code);
+          });
+        });
+      },
+    };
+  },
+  /*
+   * If a URL path is `/api`, then it is a controller.
+   */
+  "/api": async (wsControllerURL, credentials) => {
+    const continueConnection = await Auth.instance.beforeControllerConnect({
+      wsControllerURL,
+      credentials,
+    });
+    if (!continueConnection) {
+      throw new Error("could not continue connection");
+    }
+
+    const {
+      conn: connection,
+      error,
+      juju,
+      intervalId,
+    } = await loginWithBakery(wsControllerURL, credentials).catch((cause) => {
+      const message =
+        "Unable to log into the controller, check that the controller address is correct and that it is online.";
+      logger.error(message, cause);
+      throw new Error(message, { cause });
+    });
+    if (error) {
+      throw new Error(Label.CONTROLLER_LOGIN_ERROR);
+    }
+    if (!connection) {
+      throw new Error("Could not connect to controller");
+    }
+
+    return {
+      connection,
+      onClose: async (): Promise<void> => {
+        if (intervalId !== undefined && intervalId !== null) {
+          clearInterval(intervalId);
+        }
+        if (juju) {
+          await new Promise<void>((resolve) => {
+            juju.logout((code, cb) => {
+              resolve();
+              cb(code);
+            });
+          });
+        }
+      },
+    };
+  },
 };
 
 export class ConnectionManager {
   private connections = new Map<
     string,
-    Promise<ConnectionWithFacades> | SavedConnection
+    ConnectionResult | Promise<ConnectionWithFacades>
   >();
   private hooks: Hooks;
 
@@ -53,8 +155,8 @@ export class ConnectionManager {
   async logout(wsControllerURL: string): Promise<void> {
     // Wait to get the connection;
     let connection:
+      | ConnectionResult
       | Promise<ConnectionWithFacades>
-      | SavedConnection
       | undefined = undefined;
     do {
       connection = this.connections.get(wsControllerURL);
@@ -69,17 +171,7 @@ export class ConnectionManager {
     // Remove it from the map.
     this.connections.delete(wsControllerURL);
 
-    if (connection.intervalId !== undefined) {
-      clearInterval(connection.intervalId);
-    }
-    if (connection.juju) {
-      await new Promise<void>((resolve) => {
-        connection.juju?.logout((code, cb) => {
-          resolve();
-          cb(code);
-        });
-      });
-    }
+    await connection.onClose?.();
   }
 
   /**
@@ -100,37 +192,31 @@ export class ConnectionManager {
 
     const credentials = this.hooks.getCredentials(wsControllerURL);
 
-    const continueConnection = await Auth.instance.beforeControllerConnect({
+    // Extract the path to determine the connection handler.
+    let path = "";
+    try {
+      const url = new URL(wsControllerURL);
+      path = url.pathname;
+    } catch (err) {
+      logger.warn(
+        `invalid URL for connection, falling back on default connection handler`,
+        wsControllerURL,
+        err,
+      );
+    }
+
+    // Select an appropriate connection handler.
+    const connectionHandler =
+      CONNECTION_HANDLERS_BY_PATH[path] ??
+      CONNECTION_HANDLERS_BY_PATH[DefaultHandler];
+
+    const connectionResult = await connectionHandler(
       wsControllerURL,
       credentials,
-    });
-    if (!continueConnection) {
-      throw new Error("could not continue connection");
-    }
+    );
+    const { connection } = connectionResult;
 
-    const {
-      conn: connection,
-      error,
-      juju,
-      intervalId,
-    } = await loginWithBakery(wsControllerURL, credentials).catch((cause) => {
-      const message =
-        "Unable to log into the controller, check that the controller address is correct and that it is online.";
-      logger.error(message, cause);
-      throw new Error(message, { cause });
-    });
-    if (error) {
-      throw new Error(Label.CONTROLLER_LOGIN_ERROR);
-    }
-    if (!connection) {
-      throw new Error("Could not connect to controller");
-    }
-
-    this.connections.set(wsControllerURL, {
-      connection,
-      intervalId: intervalId ?? undefined,
-      juju,
-    });
+    this.connections.set(wsControllerURL, connectionResult);
     connectionPromise.resolve(connection);
 
     await this.hooks.onConnection?.(wsControllerURL, connection);
