@@ -7,11 +7,14 @@ import { actions as jujuActions } from "store/juju";
 import { hasConnections } from "../connection/util";
 import { createSourceMiddleware } from "../source-middleware";
 
+export const NO_CLOUD_FACADE =
+  "Cloud facade is not available on the connection";
+
 export async function getCloudInfo(
   connection: ConnectionWithFacades,
 ): Promise<CloudsResult["clouds"]> {
   if (!connection.facades.cloud) {
-    throw new Error("Unsupported facade: cloud");
+    throw new Error(NO_CLOUD_FACADE);
   }
 
   const response = (await connection.facades.cloud?.clouds({})) ?? {};

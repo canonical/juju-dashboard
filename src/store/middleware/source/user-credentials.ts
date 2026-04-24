@@ -5,16 +5,19 @@ import { actions as jujuActions } from "store/juju";
 import { hasConnections } from "../connection/util";
 import { createSourceMiddleware } from "../source-middleware";
 
+export const NOT_AUTHENTICATED_ERROR = "not authenticated with controller";
+export const NO_CLOUD_FACADE =
+  "Cloud facade is not available on the connection";
+
 export async function getUserCredentials(
   connection: ConnectionWithFacades,
   cloudTag: string,
 ): Promise<string[]> {
-  if (!connection?.info.user?.identity) {
-    throw new Error("not authenticated with controller");
+  if (!connection.info.user?.identity) {
+    throw new Error(NOT_AUTHENTICATED_ERROR);
   }
-
   if (!connection.facades.cloud) {
-    throw new Error("Unsupported facade: cloud");
+    throw new Error(NO_CLOUD_FACADE);
   }
 
   const response = await connection.facades.cloud?.userCredentials({

@@ -28,11 +28,11 @@ import {
 } from "testing/factories/juju/juju";
 import { createStore } from "testing/utils";
 
-import { LoginError, ModelsError, modelPollerMiddleware } from "./model-poller";
+import { LoginError, modelPollerMiddleware } from "./model-poller";
 import sourceMiddleware from "./source";
 import cloudInfoSource from "./source/cloud-info";
 import modelListSource from "./source/model-list";
-import type { MockMiddlewareResult } from "./types";
+import { type MockMiddlewareResult, ModelsError } from "./types";
 
 vi.mock("juju/api", () => ({
   disableControllerUUIDMasking: vi.fn(),

@@ -1,44 +1,54 @@
 import { createPollingSource } from "data/pollingSource";
-import type { UserModelList } from "juju/types";
+import type { ConnectionWithFacades, UserModelList } from "juju/types";
 import * as appActions from "store/app/actions";
 import { actions as jujuActions } from "store/juju";
 import { logger } from "utils/logger";
 
 import { hasConnections } from "../connection/util";
-import { ModelsError } from "../model-poller";
 import { createSourceMiddleware } from "../source-middleware";
+import { ModelsError } from "../types";
+
+export const NOT_AUTHENTICATED_ERROR = "not authenticated with controller";
+export const NO_MODEL_MANAGER_FACADE =
+  "ModelManager facade is not available on the connection";
+
+export async function getModelList(
+  connection: ConnectionWithFacades,
+): Promise<UserModelList> {
+  if (!connection.info.user?.identity) {
+    throw new Error(NOT_AUTHENTICATED_ERROR);
+  }
+  if (!connection.facades.modelManager) {
+    throw new Error(NO_MODEL_MANAGER_FACADE);
+  }
+
+  try {
+    const models = (await connection.facades.modelManager.listModels({
+      tag: connection.info.user.identity,
+    })) ?? { "user-models": [] };
+    return models;
+  } catch (listError) {
+    const errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
+    logger.error(errorMessage, listError);
+    throw new Error(errorMessage);
+  }
+}
 
 export default createSourceMiddleware<
   UserModelList,
   { wsControllerURL: string }
 >(
   "model-list",
-  ({ wsControllerURL: _, meta }) => {
-    return createPollingSource(
-      async () => {
-        if (!hasConnections(meta, ["wsControllerURL"])) {
-          throw new Error("connection not provided");
-        }
+  ({ meta }) => {
+    if (!hasConnections(meta, ["wsControllerURL"])) {
+      throw new Error("connection not provided");
+    }
 
-        const connection = meta.connections.wsControllerURL;
+    const connection = meta.connections.wsControllerURL;
 
-        if (!connection?.info.user?.identity) {
-          throw new Error("not authenticated with controller");
-        }
-
-        try {
-          const models = (await connection.facades.modelManager?.listModels({
-            tag: connection.info.user.identity,
-          })) ?? { "user-models": [] };
-          return models;
-        } catch (listError) {
-          const errorMessage = ModelsError.LIST_OR_UPDATE_MODELS;
-          logger.error(errorMessage, listError);
-          throw new Error(errorMessage);
-        }
-      },
-      { interval: { seconds: 30 } },
-    );
+    return createPollingSource(async () => getModelList(connection), {
+      interval: { seconds: 30 },
+    });
   },
   {
     setData: ({ wsControllerURL }, models) =>
