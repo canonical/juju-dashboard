@@ -90,6 +90,71 @@ describe("ConnectionManager", () => {
     expect(connections).toContain("wss://example-4.com/");
   });
 
+  describe("reconnect", () => {
+    beforeEach(() => {
+      connectionHandler.mockImplementation(() => ({
+        connection: {},
+        onClose: connectionOnClose,
+      }));
+    });
+
+    it("produces a new connection", async ({ expect }) => {
+      const manager = new ConnectionManager({ getCredentials: vi.fn() });
+      const connection1 = await manager.get("wss://example.com/");
+      expect(connectionHandler).toHaveBeenCalledTimes(1);
+      const connection2 = await connection1.reconnect();
+      expect(connectionHandler).toHaveBeenCalledTimes(2);
+      expect(connectionOnClose).toHaveBeenCalledTimes(1);
+      expect(connection1).not.toEqual(connection2);
+    });
+
+    it("produces the new connection from `get`", async ({ expect }) => {
+      const manager = new ConnectionManager({ getCredentials: vi.fn() });
+      const connection1 = await manager.get("wss://example.com");
+      const connection2 = await connection1.reconnect();
+      const connection3 = await manager.get("wss://example.com");
+      expect(connectionHandler).toBeCalledTimes(2);
+      expect(connection2).toEqual(connection3);
+    });
+
+    it("re-uses existing pending connection", async ({ expect }) => {
+      vi.useFakeTimers();
+      const connectionPromise = Promise.withResolvers();
+      connectionHandler
+        .mockResolvedValueOnce({
+          connection: {},
+          onClose: connectionOnClose,
+        })
+        .mockReturnValueOnce(connectionPromise.promise);
+      const manager = new ConnectionManager({ getCredentials: vi.fn() });
+      const logoutSpy = vi.spyOn(manager, "logout");
+
+      const connection1 = await manager.get("wss://example.com/");
+      expect(connectionHandler).toHaveBeenCalledTimes(1);
+      expect(connectionOnClose).not.toHaveBeenCalled();
+
+      const pendingConnection2 = connection1.reconnect();
+      await vi.runOnlyPendingTimersAsync();
+      expect(connectionOnClose).toHaveBeenCalledTimes(1);
+      expect(connectionHandler).toBeCalledTimes(2);
+      expect(logoutSpy).toHaveBeenCalledTimes(1);
+
+      const pendingConnection3 = connection1.reconnect();
+      await vi.runOnlyPendingTimersAsync();
+      expect(connectionOnClose).toHaveBeenCalledTimes(1);
+      expect(connectionHandler).toBeCalledTimes(2);
+      expect(logoutSpy).toHaveBeenCalledTimes(1);
+
+      const newConnection = {};
+      connectionPromise.resolve({ connection: newConnection });
+      const connection2 = await pendingConnection2;
+      const connection3 = await pendingConnection3;
+
+      expect(connection2).toEqual(newConnection);
+      expect(connection3).toEqual(newConnection);
+    });
+  });
+
   describe("logout", () => {
     it("correctly cleans up", async ({ expect }) => {
       const manager = new ConnectionManager({ getCredentials: vi.fn() });
