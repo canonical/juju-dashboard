@@ -9,6 +9,8 @@ import { createSourceMiddleware } from "../source-middleware";
 import { ModelsError } from "../types";
 
 export const NOT_AUTHENTICATED_ERROR = "not authenticated with controller";
+export const NO_MODEL_MANAGER_FACADE =
+  "ModelManager facade is not available on the connection";
 
 export async function getModelList(
   connection: ConnectionWithFacades,
@@ -16,9 +18,12 @@ export async function getModelList(
   if (!connection.info.user?.identity) {
     throw new Error(NOT_AUTHENTICATED_ERROR);
   }
+  if (!connection.facades.modelManager) {
+    throw new Error(NO_MODEL_MANAGER_FACADE);
+  }
 
   try {
-    const models = (await connection.facades.modelManager?.listModels({
+    const models = (await connection.facades.modelManager.listModels({
       tag: connection.info.user.identity,
     })) ?? { "user-models": [] };
     return models;
