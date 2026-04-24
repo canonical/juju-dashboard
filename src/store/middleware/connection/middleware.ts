@@ -4,7 +4,6 @@ import { isAction, type Middleware } from "redux";
 
 import { Auth } from "auth";
 import { disableControllerUUIDMasking } from "juju/api";
-import type { ConnectionWithFacades } from "juju/types";
 import { actions as generalActions } from "store/general";
 import {
   getAnalyticsEnabled,
@@ -18,6 +17,7 @@ import { isMetaAction, isPayloadAction } from "types";
 import analytics from "utils/analytics";
 import { logger } from "utils/logger";
 
+import type { ManagedConnection } from "./connection-manager";
 import { ConnectionManager } from "./connection-manager";
 import { hasConnectionURL } from "./util";
 
@@ -145,7 +145,7 @@ export function createConnectionMiddleware(): {
           : ["wsControllerURL"];
         const actionConnections: Record<
           (typeof connectionList)[number],
-          ConnectionWithFacades
+          ManagedConnection
         > = {};
 
         for (const connectionKey of connectionList) {

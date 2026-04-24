@@ -13,19 +13,23 @@ import { Label, type ConnectionWithFacades } from "juju/types";
 import type { AuthCredential } from "store/general/types";
 import { logger } from "utils/logger";
 
+export type ManagedConnection = {
+  reconnect: () => Promise<ManagedConnection>;
+} & ConnectionWithFacades;
+
 type Hooks = {
   getCredentials: (wsURL: string) => AuthCredential | undefined;
   onConnection?: (
     wsURL: string,
-    connection: ConnectionWithFacades,
+    connection: ManagedConnection,
   ) => Promise<void> | void;
 };
 
 /**
  * The result of a connection handler.
  */
-type ConnectionResult = {
-  connection: ConnectionWithFacades;
+type ConnectionResult<Connection = ManagedConnection> = {
+  connection: Connection;
   onClose?: () => PromiseLike<void>;
 };
 
@@ -35,7 +39,7 @@ type ConnectionResult = {
 type ConnectionHandler = (
   wsURL: string,
   credentials: AuthCredential | undefined,
-) => Promise<ConnectionResult>;
+) => Promise<ConnectionResult<ConnectionWithFacades>>;
 
 /**
  * Symbol representing the default handler.
@@ -136,8 +140,9 @@ export const CONNECTION_HANDLERS_BY_PATH: Record<
 export class ConnectionManager {
   private connections = new Map<
     string,
-    ConnectionResult | Promise<ConnectionWithFacades>
+    ConnectionResult | Promise<ManagedConnection>
   >();
+  private reconnecting = new Set();
   private hooks: Hooks;
 
   constructor(hooks: Hooks) {
@@ -148,16 +153,16 @@ export class ConnectionManager {
    * Fetch the connection for a given URL. If the connection doesn't exist, then create it
    * before returning.
    */
-  async get(wsURL: string): Promise<ConnectionWithFacades> {
+  async get(wsURL: string): Promise<ManagedConnection> {
     const existing = this.connections.get(wsURL);
     if (existing !== undefined) {
       if (existing instanceof Promise) {
-        return await existing;
+        return existing;
       } else {
         return existing.connection;
       }
     }
-    return await this.connect(wsURL);
+    return this.connect(wsURL);
   }
 
   /**
@@ -165,10 +170,8 @@ export class ConnectionManager {
    */
   async logout(wsURL: string): Promise<void> {
     // Wait to get the connection;
-    let connection:
-      | ConnectionResult
-      | Promise<ConnectionWithFacades>
-      | undefined = undefined;
+    let connection: ConnectionResult | Promise<ManagedConnection> | undefined =
+      undefined;
     do {
       connection = this.connections.get(wsURL);
       if (!connection) {
@@ -195,8 +198,8 @@ export class ConnectionManager {
   /**
    * Connect to a controller, and save it.
    */
-  private async connect(wsURL: string): Promise<ConnectionWithFacades> {
-    const connectionPromise = Promise.withResolvers<ConnectionWithFacades>();
+  private async connect(wsURL: string): Promise<ManagedConnection> {
+    const connectionPromise = Promise.withResolvers<ManagedConnection>();
     this.connections.set(wsURL, connectionPromise.promise);
 
     const credentials = this.hooks.getCredentials(wsURL);
@@ -219,14 +222,36 @@ export class ConnectionManager {
       CONNECTION_HANDLERS_BY_PATH[path] ??
       CONNECTION_HANDLERS_BY_PATH[DefaultHandler];
 
-    const connectionResult = await connectionHandler(wsURL, credentials);
-    const { connection } = connectionResult;
+    const { connection, onClose } = await connectionHandler(wsURL, credentials);
 
-    this.connections.set(wsURL, connectionResult);
-    connectionPromise.resolve(connection);
+    // Force cast the connection type, then add the extra fields.
+    const managedConnection = Object.assign(connection, {
+      reconnect: async (): Promise<ManagedConnection> => {
+        // Only call logout if the connection isn't already marked as reconnecting.
+        if (!this.reconnecting.has(wsURL)) {
+          this.reconnecting.add(wsURL);
+          await this.logout(wsURL);
+        }
 
-    await this.hooks.onConnection?.(wsURL, connection);
+        // Trigger re-connecting the connection. If it's already being connected, this will be
+        // handled within.
+        const newConnection = await this.get(wsURL);
 
-    return connection;
+        // Connection is finished reconnecting.
+        this.reconnecting.delete(wsURL);
+
+        return newConnection;
+      },
+    });
+
+    this.connections.set(wsURL, {
+      connection: managedConnection,
+      onClose,
+    });
+    connectionPromise.resolve(managedConnection);
+
+    await this.hooks.onConnection?.(wsURL, managedConnection);
+
+    return managedConnection;
   }
 }

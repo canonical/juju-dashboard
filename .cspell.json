@@ -44,5 +44,5 @@
         "microk8s",
         "rebac",
         "snapstore"
-    ],
+    ]
 }

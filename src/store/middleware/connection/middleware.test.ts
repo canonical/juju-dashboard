@@ -1,13 +1,13 @@
 import type { UnknownAction } from "@reduxjs/toolkit";
 import type { MockInstance } from "vitest";
 
-import type { ConnectionWithFacades } from "juju/types";
 import type { Store } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { createStore } from "testing/utils";
 import { logger } from "utils/logger";
 
 import * as connectionManagerModule from "./connection-manager";
+import type { ManagedConnection } from "./connection-manager";
 import {
   connectionMiddleware,
   MISSING_WS_CONTROLLER_URL_ERROR,
@@ -67,7 +67,7 @@ describe("connectionMiddleware", () => {
   });
 
   describe("with `meta.withConnection`", () => {
-    let getPromise: PromiseWithResolvers<ConnectionWithFacades>;
+    let getPromise: PromiseWithResolvers<ManagedConnection>;
     let action: UnknownAction;
     beforeEach(() => {
       getPromise = Promise.withResolvers();
@@ -93,7 +93,7 @@ describe("connectionMiddleware", () => {
       // Next shouldn't be called, as connection hasn't been resolved.
       expect(next).not.toHaveBeenCalled();
 
-      const connection = {} as ConnectionWithFacades;
+      const connection = {} as ManagedConnection;
       getPromise.resolve(connection);
       await vi.runOnlyPendingTimersAsync();
 
@@ -126,8 +126,8 @@ describe("connectionMiddleware", () => {
   });
 
   it("fetches connections from `connections` key", async ({ expect }) => {
-    const connection1 = {} as ConnectionWithFacades;
-    const connection2 = {} as ConnectionWithFacades;
+    const connection1 = {} as ManagedConnection;
+    const connection2 = {} as ManagedConnection;
     getMock
       .mockResolvedValueOnce(connection1)
       .mockResolvedValueOnce(connection2);
