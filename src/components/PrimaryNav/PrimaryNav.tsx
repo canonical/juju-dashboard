@@ -14,15 +14,12 @@ import { NavLink } from "react-router";
 
 import UserMenu from "components/UserMenu/UserMenu";
 import { DARK_THEME } from "consts";
-import {
-  useAuditLogsPermitted,
-  useIsJIMMAdmin,
-} from "juju/api-hooks/permissions";
+import useCanAccessReBACAdmin from "hooks/useCanAccessReBACAdmin";
+import { useAuditLogsPermitted } from "juju/api-hooks/permissions";
 import {
   getAppVersion,
   isCrossModelQueriesEnabled,
   getVisitURLs,
-  isReBACEnabled,
 } from "store/general/selectors";
 import {
   getControllerData,
@@ -31,9 +28,7 @@ import {
 import type { Controllers } from "store/juju/types";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
-import { FeatureFlags } from "types";
 import urls, { externalURLs, rebacURLS } from "urls";
-import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
 
 import { Label, TestId } from "./types";
 
@@ -93,16 +88,12 @@ const PrimaryNav: FC = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const versionRequested = useRef(false);
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
-  const rebacEnabled = useAppSelector(isReBACEnabled);
-  const rebacFlagEnabled = isFeatureFlagEnabled(FeatureFlags.REBAC);
   const { blocked: blockedModels } = useAppSelector(
     getGroupedModelStatusCounts,
   );
-  const { permitted: isJIMMControllerAdmin } = useIsJIMMAdmin();
   const { permitted: auditLogsAllowed } = useAuditLogsPermitted();
   const controllersLink = useControllersLink();
-  const rebacAllowed =
-    rebacEnabled && rebacFlagEnabled && isJIMMControllerAdmin;
+  const rebacAllowed = useCanAccessReBACAdmin();
 
   useEffect(() => {
     if (appVersion && !versionRequested.current) {

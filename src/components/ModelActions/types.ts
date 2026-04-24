@@ -18,6 +18,7 @@ export enum Label {
   DESTROY = "Destroy model",
   TOGGLE = "Toggle model actions menu",
   UPGRADE = "Upgrade",
+  NO_UPGRADE = "Upgrade (no upgrade available)",
 }
 
 export enum TestId {

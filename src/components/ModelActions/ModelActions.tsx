@@ -1,16 +1,27 @@
 import type { MenuLink } from "@canonical/react-components";
-import { ContextualMenu, Icon, usePortal } from "@canonical/react-components";
-import type { FC } from "react";
+import {
+  ContextualMenu,
+  Icon,
+  Spinner,
+  usePortal,
+} from "@canonical/react-components";
+import { useState, type FC } from "react";
 import type { LinkProps } from "react-router";
 import { Link } from "react-router";
 
 import DestroyModelDialog from "components/DestroyModelDialog";
+import useCanAccessReBACAdmin from "hooks/useCanAccessReBACAdmin";
 import { useCanConfigureModelWithUUID } from "hooks/useCanConfigureModel";
+import useModelMigrationData from "hooks/useModelMigrationData";
 import useModelStatus from "hooks/useModelStatus";
 import type { SetParams } from "hooks/useQueryParams";
 import { useQueryParams } from "hooks/useQueryParams";
 import { useIsJIMMAdmin } from "juju/api-hooks/permissions";
 import { getIsJuju } from "store/general/selectors";
+import {
+  getModelUpgradeDataLoaded,
+  getModelUpgradeVersions,
+} from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import { rebacURLS } from "urls";
@@ -35,14 +46,26 @@ const generateLinks = (
   ) => void,
   qualifier: null | string,
   setPanelQs: SetParams<QueryParams>,
+  hasUpgrades: boolean,
+  upgradeDataLoaded: boolean,
+  rebacAllowed: boolean,
 ): MenuLink<LinkProps & React.RefAttributes<HTMLAnchorElement>>[] => {
   return [
     ...(isJuju
       ? []
       : [
           {
-            children: Label.UPGRADE,
-            disabled: !isJIMMControllerAdmin,
+            children: (
+              <>
+                {upgradeDataLoaded ? null : (
+                  <Spinner className="u-sh1--right" />
+                )}
+                {upgradeDataLoaded && !hasUpgrades
+                  ? Label.NO_UPGRADE
+                  : Label.UPGRADE}
+              </>
+            ),
+            disabled: !isJIMMControllerAdmin || !hasUpgrades,
             onClick: (
               event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
             ): void => {
@@ -60,7 +83,7 @@ const generateLinks = (
         ]),
     {
       children: Label.ACCESS,
-      disabled: !canConfigureModel,
+      disabled: !canConfigureModel || (!isJuju && !rebacAllowed),
       ...(isJuju
         ? {
             onClick: (
@@ -99,6 +122,7 @@ const ModelActions: FC<Props> = ({
   position,
   qualifier,
 }: Props) => {
+  const [fetchUpgrades, setFetchUpgrades] = useState(false);
   const [_panelQs, setPanelQs] = useQueryParams<QueryParams>({
     model: null,
     modelName: null,
@@ -109,6 +133,14 @@ const ModelActions: FC<Props> = ({
   const modelStatusData = useModelStatus(modelUUID);
   const isController = modelStatusData?.info?.["is-controller"];
   const isJuju = useAppSelector(getIsJuju);
+  const upgrades = useAppSelector((state) =>
+    getModelUpgradeVersions(state, modelUUID),
+  );
+  const upgradeDataLoaded = useAppSelector((state) =>
+    getModelUpgradeDataLoaded(state, modelUUID),
+  );
+  const hasUpgrades = !!upgrades.length;
+  const rebacAllowed = useCanAccessReBACAdmin();
   const { permitted: isJIMMControllerAdmin } = useIsJIMMAdmin();
   const {
     openPortal,
@@ -116,6 +148,7 @@ const ModelActions: FC<Props> = ({
     isOpen: showDestroyModel,
     Portal,
   } = usePortal();
+  useModelMigrationData(modelName, qualifier, fetchUpgrades);
 
   return (
     <>
@@ -143,6 +176,7 @@ const ModelActions: FC<Props> = ({
           hasIcon: true,
           "aria-label": Label.TOGGLE,
         }}
+        onToggleMenu={setFetchUpgrades}
         links={generateLinks(
           canConfigureModel,
           isController,
@@ -152,6 +186,9 @@ const ModelActions: FC<Props> = ({
           openPortal,
           qualifier,
           setPanelQs,
+          hasUpgrades,
+          upgradeDataLoaded,
+          rebacAllowed,
         )}
         position={position}
       />

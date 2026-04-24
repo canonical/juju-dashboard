@@ -6,16 +6,13 @@ import { NavLink } from "react-router";
 
 import { axiosInstance } from "axios-instance";
 import CheckPermissions from "components/CheckPermissions";
+import useCanAccessReBACAdmin from "hooks/useCanAccessReBACAdmin";
 import useLogout from "hooks/useLogout";
 import { useIsJIMMAdmin } from "juju/api-hooks/permissions";
 import { endpoints } from "juju/jimm/api";
 import MainContent from "layout/MainContent";
-import { isReBACEnabled } from "store/general/selectors";
-import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
-import { FeatureFlags } from "types";
 import { rebacURLS } from "urls";
-import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
 
 import { Label, TestId } from "./types";
 
@@ -44,9 +41,8 @@ const navItems = [
 
 const PermissionsPage = (): JSX.Element => {
   const logout = useLogout();
-  const rebacEnabled = useAppSelector(isReBACEnabled);
-  const rebacFlagEnabled = isFeatureFlagEnabled(FeatureFlags.REBAC);
-  const { permitted, loading } = useIsJIMMAdmin();
+  const { loading } = useIsJIMMAdmin();
+  const rebacAllowed = useCanAccessReBACAdmin();
 
   useRef(
     axiosInstance.interceptors.response.use(
@@ -70,7 +66,7 @@ const PermissionsPage = (): JSX.Element => {
 
   return (
     <CheckPermissions
-      allowed={rebacEnabled && rebacFlagEnabled && permitted}
+      allowed={rebacAllowed}
       {...testId(TestId.COMPONENT)}
       loading={loading}
     >
