@@ -1,0 +1,235 @@
+import {
+  ConfirmationModal,
+  FormikField,
+  Icon,
+  MainTable,
+  Select,
+  Switch,
+  Textarea,
+  usePortal,
+} from "@canonical/react-components";
+import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
+import { useFormikContext } from "formik";
+import { useState, type ChangeEvent, type JSX } from "react";
+
+import { testId } from "testing/utils";
+import { externalURLs } from "urls";
+
+import ContentSwitcher from "./ContentSwitcher/ContentSwitcher";
+import { InputMode } from "./ContentSwitcher/types";
+import { type CategoryDefinition, CONFIG_CATEGORIES } from "./configCatalog";
+import {
+  FieldName,
+  Label,
+  TestId,
+  type ConfigsConstraintsFormValues,
+} from "./types";
+import {
+  buildConfigYAML,
+  getChangedFields,
+  isConfigChanged,
+  validateAndParseConfigYAML,
+  type YAMLValidationError,
+} from "./utils";
+
+const YAML_ERROR_TITLE = "Invalid configuration";
+
+const ConfigsConstraints = (): JSX.Element => {
+  const { values, setFieldValue } =
+    useFormikContext<ConfigsConstraintsFormValues>();
+  const [changedOnly, setChangedOnly] = useState(false);
+  const { Portal } = usePortal();
+  const [yamlErrors, setYAMLErrors] = useState<
+    Record<string, YAMLValidationError[]>
+  >({});
+  const isConfigListMode =
+    values[FieldName.CONFIG_INPUT_MODE] !== InputMode.YAML;
+
+  const buildRows = (categories: CategoryDefinition[]): MainTableRow[] =>
+    categories.flatMap((category) => {
+      const visibleConfigs = getChangedFields(category, changedOnly, values);
+
+      return visibleConfigs.map((config, visibleIndex) => {
+        const changed = isConfigChanged(
+          config.label,
+          values,
+          config.defaultValue,
+        );
+
+        return {
+          columns: [
+            ...(visibleIndex === 0 && visibleConfigs.length > 0
+              ? [
+                  {
+                    content: <h5>{category.category}</h5>,
+                    rowSpan: visibleConfigs.length,
+                    className: "configs__category",
+                  },
+                ]
+              : []),
+            {
+              content: (
+                <div>
+                  <span>
+                    {changed ? <Icon name="status-in-progress-small" /> : null}
+                    {config.label}
+                  </span>
+                  <span className="p-form-help-text u-no-margin--bottom">
+                    {config.description}
+                  </span>
+                </div>
+              ),
+              className: "configs__config p-table__cell--icon-placeholder",
+            },
+            {
+              content: (
+                <FormikField
+                  {...(config.input?.type === "select"
+                    ? { component: Select }
+                    : { type: "text", placeholder: config.placeholder })}
+                  name={config.label}
+                  defaultValue={config.defaultValue}
+                  {...config.input}
+                />
+              ),
+              className: "configs__input",
+            },
+          ],
+        };
+      });
+    });
+
+  const handleConfigModeChange = (isListMode: boolean): void => {
+    if (!isListMode) {
+      void setFieldValue(
+        FieldName.CONFIG_YAML,
+        buildConfigYAML(CONFIG_CATEGORIES, values),
+      );
+    } else {
+      const { values: parsedYAMLValues, errors } = validateAndParseConfigYAML(
+        values[FieldName.CONFIG_YAML] ?? "",
+        CONFIG_CATEGORIES,
+      );
+
+      if (
+        errors.invalidKeys.length > 0 ||
+        errors.invalidValues.length > 0 ||
+        errors.otherErrors.length > 0
+      ) {
+        setYAMLErrors(errors);
+        return;
+      }
+
+      const parsedYAMLKeys = Object.keys(parsedYAMLValues);
+      const changedConfigLabels = CONFIG_CATEGORIES.flatMap((category) =>
+        getChangedFields(category, true, values).map((field) => field.label),
+      );
+
+      changedConfigLabels
+        .filter((label) => !parsedYAMLKeys.includes(label))
+        .forEach((label) => {
+          void setFieldValue(label, "");
+        });
+
+      Object.entries(parsedYAMLValues).forEach(([label, value]) => {
+        void setFieldValue(label, value);
+      });
+    }
+
+    void setFieldValue(
+      FieldName.CONFIG_INPUT_MODE,
+      isListMode ? InputMode.LIST : InputMode.YAML,
+    );
+  };
+
+  return (
+    <div {...testId(TestId.CONFIGS_CONSTRAINTS_FORM)}>
+      {Object.keys(yamlErrors).length > 0 ? (
+        <Portal>
+          <ConfirmationModal
+            title={YAML_ERROR_TITLE}
+            className="configs__error-modal"
+            cancelButtonLabel="Cancel"
+            confirmButtonLabel="Switch to list view"
+            confirmButtonAppearance="primary"
+            onConfirm={() => {
+              setYAMLErrors({});
+            }}
+            close={() => {
+              setYAMLErrors({});
+            }}
+          >
+            <p>
+              Please fix the configuration errors below before switching to list
+              mode:
+            </p>
+            {yamlErrors.invalidKeys.length > 0 ? (
+              <ul>
+                Invalid keys:
+                {yamlErrors.invalidKeys?.map((error, index) => (
+                  <li key={`invalid-key-${index}`}>
+                    Line {error.line}: {error.message}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {yamlErrors.invalidValues.length > 0 ? (
+              <ul>
+                Invalid values:
+                {yamlErrors.invalidValues.map((error, index) => (
+                  <li key={`invalid-value-${index}`}>
+                    Line {error.line}: {error.message}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {yamlErrors.otherErrors.length > 0 ? (
+              <ul>
+                Other errors:
+                {yamlErrors.otherErrors?.map((error, index) => (
+                  <li key={`other-error-${index}`}>
+                    Line {error.line}: {error.message}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </ConfirmationModal>
+        </Portal>
+      ) : null}
+      <ContentSwitcher
+        showPrimary={isConfigListMode}
+        docsLabel={Label.MODEL_CONFIG_DOCS}
+        docsLink={externalURLs.configureModel}
+        primaryContent={
+          <>
+            <Switch
+              label={Label.CHANGED_CONFIGS_ONLY}
+              checked={changedOnly}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setChangedOnly(event.target.checked);
+              }}
+            />
+            <div className="configs__table-scroll">
+              <MainTable
+                className="p-main-table configs__table"
+                rows={buildRows(CONFIG_CATEGORIES)}
+              />
+            </div>
+          </>
+        }
+        secondaryContent={
+          <FormikField
+            className="configs__yaml-input"
+            component={Textarea}
+            name={FieldName.CONFIG_YAML}
+            placeholder={Label.MODEL_CONFIG_PLACEHOLDER}
+          />
+        }
+        onModeChange={handleConfigModeChange}
+        title="Configuration (optional)"
+      />
+    </div>
+  );
+};
+
+export default ConfigsConstraints;

@@ -16,6 +16,7 @@ import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import AddModel from "./AddModel";
+import { TestId as ConfigsConstraintsTestId } from "./ConfigsConstraints/types";
 import {
   TestId as MandatoryDetailsTestId,
   Label as MandatoryDetailsLabel,
@@ -81,7 +82,7 @@ describe("AddModel page", () => {
       screen.getByTestId(MandatoryDetailsTestId.MANDATORY_DETAILS_FORM),
     ).toBeInTheDocument();
     expect(
-      screen.queryByText("Configuration and constraints form goes here."),
+      screen.queryByTestId(ConfigsConstraintsTestId.CONFIGS_CONSTRAINTS_FORM),
     ).toBeNull();
 
     await userEvent.click(
@@ -92,7 +93,7 @@ describe("AddModel page", () => {
       screen.queryByTestId(MandatoryDetailsTestId.MANDATORY_DETAILS_FORM),
     ).toBeNull();
     expect(
-      screen.getByText("Configuration and constraints form goes here."),
+      screen.getByTestId(ConfigsConstraintsTestId.CONFIGS_CONSTRAINTS_FORM),
     ).toBeInTheDocument();
   });
 
@@ -184,7 +185,7 @@ describe("AddModel page", () => {
       screen.getByText("Configuration & Constraints (optional)"),
     );
     expect(
-      screen.getByText("Configuration and constraints form goes here."),
+      screen.getByTestId(ConfigsConstraintsTestId.CONFIGS_CONSTRAINTS_FORM),
     ).toBeInTheDocument();
   });
 
