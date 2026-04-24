@@ -230,6 +230,9 @@ describe("UpgradeModelVersion", () => {
   });
 
   it("displays an error if the manual version does not match any controllers", async () => {
+    state.juju.supportedJujuVersions.data?.push(
+      versionElemFactory.build({ version: "1.2.4" }),
+    );
     renderComponent(
       <UpgradeModelVersion
         firstRender
@@ -247,7 +250,30 @@ describe("UpgradeModelVersion", () => {
     await userEvent.type(input, "1.2.4");
     // Vanilla doesn't display validation until the field loses focus.
     await act(() => fireEvent.blur(input));
-    expect(input).toHaveAccessibleErrorMessage(Label.ERROR_NO_CONTROLLERS);
+    expect(input).toHaveAccessibleErrorMessage(
+      "No 1.2.4 controllers exist. Bootstrap a 1.2.4 controller before upgrading to this version.",
+    );
+  });
+
+  it("displays an error if the manual version does not match any Juju versions", async () => {
+    renderComponent(
+      <UpgradeModelVersion
+        firstRender
+        modelName="test1"
+        onRemovePanelQueryParams={vi.fn()}
+        qualifier="eggman@external"
+        setVersion={vi.fn()}
+      />,
+      { state },
+    );
+    await userEvent.click(
+      screen.getByRole("radio", { name: FieldsLabel.MANUAL }),
+    );
+    const input = screen.getByRole("textbox", { name: FieldsLabel.VERSION });
+    await userEvent.type(input, "1.2.4");
+    // Vanilla doesn't display validation until the field loses focus.
+    await act(() => fireEvent.blur(input));
+    expect(input).toHaveAccessibleErrorMessage(Label.ERROR_NO_VERSION);
   });
 
   it("displays an error if the manual version is older than the current version", async () => {

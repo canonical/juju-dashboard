@@ -18,8 +18,8 @@ import {
   getSupportedJujuVersions,
   getRecommendedVersions,
   getModelListLoaded,
-  getModelMigrationTargets,
   getModelDataByUUID,
+  getModelUpgradeDataLoaded,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
@@ -54,9 +54,8 @@ const UpgradeModelVersion: FC<Props> = ({
     getModelUUIDFromList(state, modelName, qualifier),
   );
   const model = useAppSelector((state) => getModelDataByUUID(state, modelUUID));
-  const supportedJujuVersions = useAppSelector(getSupportedJujuVersions);
-  const modelMigrationTargets = useAppSelector((state) =>
-    getModelMigrationTargets(state, modelUUID),
+  const upgradeDataLoaded = useAppSelector((state) =>
+    getModelUpgradeDataLoaded(state, modelUUID),
   );
   const recommendedVersions = useAppSelector((state) =>
     getRecommendedVersions(state, modelUUID),
@@ -64,6 +63,7 @@ const UpgradeModelVersion: FC<Props> = ({
   const availableVersions = useAppSelector((state) =>
     getModelUpgradeVersions(state, modelUUID),
   );
+  const jujuVersions = useAppSelector(getSupportedJujuVersions);
   const modelsLoaded = useAppSelector(getModelListLoaded);
   let content: ReactNode = null;
   if (!model) {
@@ -94,18 +94,26 @@ const UpgradeModelVersion: FC<Props> = ({
               test: (value) => !currentVersion || value !== currentVersion,
             })
             .test({
-              message: Label.ERROR_NO_CONTROLLERS,
-              test: (value) =>
-                !!availableVersions?.find(
-                  (versionData) => !value || versionData.version === value,
-                ),
-            })
-            .test({
               message: Label.ERROR_OLDER,
               test: (value) =>
                 !currentVersion ||
                 !value ||
                 isHigherSemver(value, currentVersion),
+            })
+            .test({
+              message: Label.ERROR_NO_VERSION,
+              test: (value) =>
+                !!jujuVersions.data?.find(
+                  (versionData) => !value || versionData.version === value,
+                ),
+            })
+            .test({
+              message: ({ value }) =>
+                `No ${value} controllers exist. Bootstrap a ${value} controller before upgrading to this version.`,
+              test: (value) =>
+                !!availableVersions?.find(
+                  (versionData) => !value || versionData.version === value,
+                ),
             }),
       }),
     });
@@ -159,13 +167,7 @@ const UpgradeModelVersion: FC<Props> = ({
     <Panel
       animateMount={firstRender}
       contentClassName="no-indent"
-      loading={
-        !modelsLoaded ||
-        // This checks the existence of the data instead of using the loading state otherwise,
-        // each time it fetches data in the background the form would be replaced with the spinner.
-        !supportedJujuVersions.data ||
-        (!!model && !modelMigrationTargets.data)
-      }
+      loading={!modelsLoaded || !upgradeDataLoaded}
       drawer={
         <>
           <Button

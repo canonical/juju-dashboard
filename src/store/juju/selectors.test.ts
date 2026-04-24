@@ -154,6 +154,7 @@ import {
   getModelUpgradeVersions,
   getRecommendedVersions,
   getModelUpgrades,
+  getModelUpgradeDataLoaded,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3532,6 +3533,58 @@ describe("getModelUpgradeVersions", () => {
     ]);
   });
 
+  it("does not include target controllers with the same version as the model", () => {
+    const versions = [
+      versionElemFactory.build({ version: "1.2.3" }),
+      versionElemFactory.build({ version: "4.5.6" }),
+    ];
+    const state = rootStateFactory.build({
+      juju: {
+        controllers: {
+          "wss://example.com/api": [
+            controllerFactory.build({
+              uuid: "controller123",
+              version: "1.2.3",
+              name: "controller1",
+            }),
+            controllerFactory.build({
+              uuid: "controller456",
+              version: "4.5.6",
+              name: "controller1",
+            }),
+            controllerFactory.build({
+              uuid: "controller789",
+              version: "1.2.3",
+              name: "controller1",
+            }),
+          ],
+        },
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: versions,
+        }),
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelInfoFactory.build({
+              uuid: "abc123",
+              "controller-uuid": "controller123",
+            }),
+            model: modelStatusInfoFactory.build({
+              version: "1.2.3",
+            }),
+          }),
+        },
+        modelMigrationTargets: modelMigrationTargetsStateFactory.build({
+          abc123: modelMigrationTargetFactory.build({
+            data: ["controller456", "controller789"],
+          }),
+        }),
+      },
+    });
+    expect(getModelUpgradeVersions(state, "abc123")).toStrictEqual([
+      versions[1],
+    ]);
+  });
+
   it("includes the current controller version if it does not require a migration", () => {
     const versions = [
       versionElemFactory.build({ version: "1.2.3" }),
@@ -3627,6 +3680,89 @@ describe("getModelUpgradeVersions", () => {
     expect(getModelUpgradeVersions(state, "abc123")).toStrictEqual([
       versions[0],
     ]);
+  });
+});
+
+describe("getModelUpgradeDataLoaded", () => {
+  it("is loaded when data exists", () => {
+    const state = rootStateFactory.build({
+      juju: {
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: [versionElemFactory.build({ version: "1.2.2" })],
+        }),
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelInfoFactory.build({
+              uuid: "abc123",
+            }),
+          }),
+        },
+        modelMigrationTargets: modelMigrationTargetsStateFactory.build({
+          abc123: modelMigrationTargetFactory.build({
+            data: ["controller456"],
+          }),
+        }),
+      },
+    });
+    expect(getModelUpgradeDataLoaded(state, "abc123")).toBe(true);
+  });
+
+  it("is not loaded when there is no version data", () => {
+    const state = rootStateFactory.build({
+      juju: {
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: undefined,
+        }),
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelInfoFactory.build({
+              uuid: "abc123",
+            }),
+          }),
+        },
+        modelMigrationTargets: modelMigrationTargetsStateFactory.build({
+          abc123: modelMigrationTargetFactory.build({
+            data: ["controller456"],
+          }),
+        }),
+      },
+    });
+    expect(getModelUpgradeDataLoaded(state, "abc123")).toBe(false);
+  });
+
+  it("is not loaded when there is no target data", () => {
+    const state = rootStateFactory.build({
+      juju: {
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: [versionElemFactory.build({ version: "1.2.2" })],
+        }),
+        modelData: {
+          abc123: modelDataFactory.build({
+            info: modelInfoFactory.build({
+              uuid: "abc123",
+            }),
+          }),
+        },
+        modelMigrationTargets: modelMigrationTargetsStateFactory.build({
+          abc123: modelMigrationTargetFactory.build({
+            data: undefined,
+          }),
+        }),
+      },
+    });
+    expect(getModelUpgradeDataLoaded(state, "abc123")).toBe(false);
+  });
+
+  it("is loaded if there is a model but no target data", () => {
+    const state = rootStateFactory.build({
+      juju: {
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: [versionElemFactory.build({ version: "1.2.2" })],
+        }),
+        modelMigrationTargets: modelMigrationTargetsStateFactory.build({}),
+      },
+    });
+    expect(getModelUpgradeDataLoaded(state, "abc123")).toBe(true);
   });
 });
 

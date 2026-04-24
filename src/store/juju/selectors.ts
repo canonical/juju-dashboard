@@ -1481,13 +1481,14 @@ export const getModelUpgradeVersions = createSelector(
     if (!controllers) {
       return [];
     }
+    const modelVersion = model?.model.version;
     const upgradeVersions = (migrationTargets.data ?? []).reduce<VersionElem[]>(
       (versions, controllerUUID) => {
         const controller = getControllerByUUIDUtil(controllers, controllerUUID);
         const controllerVersion = controller
           ? getControllerVersion(controller)
           : null;
-        if (controllerVersion) {
+        if (controllerVersion && controllerVersion !== modelVersion) {
           const version = supportedVersions.data?.find(
             (supportedVersion) =>
               supportedVersion.version === controllerVersion,
@@ -1509,7 +1510,6 @@ export const getModelUpgradeVersions = createSelector(
     const controllerVersion = modelController
       ? getControllerVersion(modelController)
       : null;
-    const modelVersion = model?.model.version;
     if (
       modelVersion &&
       controllerVersion &&
@@ -1525,6 +1525,20 @@ export const getModelUpgradeVersions = createSelector(
     }
     return upgradeVersions;
   },
+);
+
+/**
+ * Get the version objects filtered by versions that have corresponding
+ * model migration targets.
+ */
+export const getModelUpgradeDataLoaded = createSelector(
+  [getSupportedJujuVersions, getModelMigrationTargets, getModelDataByUUID],
+  (supportedVersions, migrationTargets, model) =>
+    // This checks the existence of the data instead of using the loading state otherwise,
+    // each time it polls data in the background it will be marked as not loaded.
+    !!supportedVersions.data &&
+    // If there is no model (e.g. if it's using an invalid UUID) then the migration targets won't exist.
+    (!model || (!!model && !!migrationTargets.data)),
 );
 
 /**
