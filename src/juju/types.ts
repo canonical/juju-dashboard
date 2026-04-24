@@ -3,6 +3,7 @@ import type ActionV7 from "@canonical/jujulib/dist/api/facades/action/ActionV7";
 import type { AnnotationsGetResult } from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
 import type AnnotationsV2 from "@canonical/jujulib/dist/api/facades/annotations/AnnotationsV2";
 import type ApplicationV22 from "@canonical/jujulib/dist/api/facades/application/ApplicationV22";
+import type BlockV2 from "@canonical/jujulib/dist/api/facades/block/BlockV2";
 import type CharmsV6 from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type ClientV8 from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
@@ -43,6 +44,7 @@ export type Facades = {
   action?: ActionV7;
   annotations?: AnnotationsV2;
   application?: ApplicationV22;
+  block?: BlockV2;
   charms?: CharmsV6;
   client?: ClientV8;
   cloud?: CloudV7;

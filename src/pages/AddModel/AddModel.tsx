@@ -24,7 +24,9 @@ import urls from "urls";
 import { toErrorString } from "utils";
 import { toastNotification } from "utils/toastNotification";
 
-import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
+import ConfigsConstraints from "./ConfigsConstraints";
+import { DisableType } from "./ConfigsConstraints/types";
+import MandatoryDetails from "./MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
 const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
@@ -48,7 +50,7 @@ const stepDefinitions: Array<{
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
     title: "Configuration & Constraints (optional)",
-    content: <div>Configuration and constraints form goes here.</div>,
+    content: <ConfigsConstraints />,
   },
   {
     key: StepType.ACCESS_MANAGEMENT,
@@ -90,6 +92,7 @@ const AddModel: FC = () => {
         cloudTag: values.cloud,
         credential: values.credential,
         userTag,
+        disabledCommands: values.disabledCommands,
         region: values.region || undefined,
       }),
     );
@@ -160,6 +163,7 @@ const AddModel: FC = () => {
               cloud: "",
               region: "",
               credential: "",
+              disabledCommands: DisableType.NONE,
             }}
             validationSchema={validationSchema}
             onSubmit={handleCreateClick}
