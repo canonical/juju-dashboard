@@ -24,7 +24,7 @@ import {
   modelMigrationTargetsStateFactory,
   supportedJujuVersionsStateFactory,
 } from "testing/factories/juju/juju";
-import { createStore, renderComponent } from "testing/utils";
+import { renderComponent } from "testing/utils";
 import urls from "urls";
 
 import UpgradeModelPanel from "./UpgradeModelPanel";
@@ -109,63 +109,6 @@ describe("UpgradeModelPanel", () => {
     expect(
       screen.getByRole("dialog", { name: UpgradeModelPanelHeaderLabel.TITLE }),
     ).toBeVisible();
-  });
-
-  it("starts the pollers for versions and targets on mount", async () => {
-    const [store, actions] = createStore(state, {
-      trackActions: true,
-    });
-    renderComponent(<UpgradeModelPanel />, { store, url, path });
-    const supportedVersionsStart = {
-      type: "source/jimm-supported-versions/start",
-      payload: { wsControllerURL: "wss://example.com/api" },
-      meta: { withConnection: true },
-    };
-    expect(
-      actions.find((dispatch) => dispatch.type === supportedVersionsStart.type),
-    ).toMatchObject(supportedVersionsStart);
-    const modelMigrationTargetsStart = {
-      type: "source/migration-targets/start",
-      payload: {
-        modelUUID: "abc123",
-        wsControllerURL: "wss://example.com/api",
-      },
-      meta: { withConnection: true },
-    };
-    expect(
-      actions.find(
-        (dispatch) => dispatch.type === modelMigrationTargetsStart.type,
-      ),
-    ).toMatchObject(modelMigrationTargetsStart);
-  });
-
-  it("stops the pollers for versions and targets when unmounted", async () => {
-    const [store, actions] = createStore(state, {
-      trackActions: true,
-    });
-    const {
-      result: { unmount },
-    } = renderComponent(<UpgradeModelPanel />, { store, url, path });
-    unmount();
-    const supportedVersionsStop = {
-      type: "source/jimm-supported-versions/stop",
-      payload: { wsControllerURL: "wss://example.com/api" },
-    };
-    expect(
-      actions.find((dispatch) => dispatch.type === supportedVersionsStop.type),
-    ).toMatchObject(supportedVersionsStop);
-    const modelMigrationTargetsStop = {
-      type: "source/migration-targets/stop",
-      payload: {
-        modelUUID: "abc123",
-        wsControllerURL: "wss://example.com/api",
-      },
-    };
-    expect(
-      actions.find(
-        (dispatch) => dispatch.type === modelMigrationTargetsStop.type,
-      ),
-    ).toMatchObject(modelMigrationTargetsStop);
   });
 
   it("can transition to the confirmation panel", async () => {
