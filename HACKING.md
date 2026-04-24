@@ -47,6 +47,7 @@ contribute and what kinds of contributions are welcome.
     - [Setting up cross model integrations](#setting-up-cross-model-integrations)
     - [Getting models into a broken state](#getting-models-into-a-broken-state)
     - [Setting up model migrations](#setting-up-model-migrations)
+    - [Add a model to a specific JAAS controller](#add-a-model-to-a-specific-jaas-controller)
 
 ## Setting up the dashboard for development
 
@@ -592,3 +593,14 @@ export CONTROLLER_NAME=jimm2
 ./local/jimm/add-controller.sh
 ```
 - Lastly, if you want to use a local dashboard with this JIMM env then [update the config](#configure-jimm-for-localhost) and [configure your local dashboard](#controller-configuration) to point to the new controller, just as you would normally.
+
+### Add a model to a specific JAAS controller
+
+If you're using JAAS you might want to add a model to a specific controller.
+
+Assuming you have a local jimm repo and running jimm (if you haven't already built the jaas command it can be done with `./local/jimm/detect-jaas.sh`)
+
+```bash
+cd ~/jimm
+./jaas add-model --target-controller controller-name test-model
+```
