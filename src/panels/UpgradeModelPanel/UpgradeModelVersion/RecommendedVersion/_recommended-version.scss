@@ -13,6 +13,8 @@
   }
 
   &-details {
+    flex-grow: 1;
+
     @include mobile {
       display: block;
     }
@@ -33,6 +35,7 @@
   }
 
   &-changelog {
+    flex-grow: 1;
     text-align: right;
 
     @include mobile {

@@ -52,3 +52,8 @@ export enum FeatureFlags {
 export type Nullable<T> = {
   [P in keyof T]: null | T[P];
 };
+
+export const isKeyOf = <O extends object>(
+  key: PropertyKey,
+  data: O,
+): key is keyof O => !!key && typeof key === "string" && key in data;

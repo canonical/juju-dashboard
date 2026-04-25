@@ -1,0 +1,24 @@
+.controller-select__cell {
+  border-left: 1px solid $colors--theme--border-low-contrast;
+  border-right: 1px solid $colors--theme--border-low-contrast;
+  padding: $spv--x-small 0 0 0;
+}
+
+.p-custom-select .p-custom-select__toggle.controller-select__toggle {
+  background-color: $color-x-light;
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+
+.controller-select__dropdown
+  .p-custom-select__dropdown
+  .p-custom-select__option.highlight {
+  &,
+  .p-chip {
+    background-color: $colors--theme--background-active;
+  }
+
+  * {
+    color: $colors--theme--text-default;
+  }
+}

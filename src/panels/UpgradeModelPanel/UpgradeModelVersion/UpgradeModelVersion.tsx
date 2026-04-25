@@ -158,6 +158,7 @@ const UpgradeModelVersion: FC<Props> = ({
   return (
     <Panel
       animateMount={firstRender}
+      contentClassName="no-indent"
       loading={
         !modelsLoaded ||
         // This checks the existence of the data instead of using the loading state otherwise,
@@ -189,7 +190,7 @@ const UpgradeModelVersion: FC<Props> = ({
       header={<UpgradeModelPanelHeader titleId={titleId} />}
       onRemovePanelQueryParams={onRemovePanelQueryParams}
       titleId={titleId}
-      width="unset"
+      width="medium"
       {...testId(UpgradeModelPanelTestId.PANEL)}
     >
       {content}

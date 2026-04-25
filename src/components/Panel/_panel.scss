@@ -12,6 +12,11 @@
     flex-direction: column;
     padding-left: $sph--large;
     padding-right: $sph--large;
+
+    &.no-indent {
+      padding-left: 0;
+      padding-right: 0;
+    }
   }
 
   .side-panel__content-scrolling {

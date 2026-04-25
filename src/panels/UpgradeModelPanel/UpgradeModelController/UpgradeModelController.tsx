@@ -1,11 +1,4 @@
-import {
-  Button,
-  Chip,
-  Icon,
-  ICONS,
-  NotificationSeverity,
-  Notification as VanillaNotification,
-} from "@canonical/react-components";
+import { Button } from "@canonical/react-components";
 import { Formik } from "formik";
 import { useId, useState, type FC } from "react";
 import * as Yup from "yup";
@@ -58,7 +51,6 @@ const UpgradeModelController: FC<Props> = ({
   const controllerVersion = modelController
     ? getControllerVersion(modelController)
     : null;
-  const currentVersion = model?.model.version;
   const needsMigration =
     (controllerVersion &&
       requiresMigration(controllerVersion, version.version)) ||
@@ -78,6 +70,13 @@ const UpgradeModelController: FC<Props> = ({
   return (
     <Panel
       animateMount={false}
+      checkCanClose={(event) => {
+        const target = event.target as HTMLElement;
+        // Prevent clicks in the custom select dropdown from closing the panel (the
+        // dropdown is rendered inside a portal so is outside the panel's children.)
+        return !target.closest(".prevent-panel-close");
+      }}
+      contentClassName="no-indent"
       drawer={
         <>
           <Button
@@ -109,66 +108,10 @@ const UpgradeModelController: FC<Props> = ({
       onRemovePanelQueryParams={onRemovePanelQueryParams}
       scrollingContentClassName="u-flex"
       titleId={titleId}
-      width="unset"
+      width="medium"
       {...testId(CharmsAndActionsPanelTestId.PANEL)}
     >
       <div className="u-flex u-flex-column">
-        <h5>Changes</h5>
-        <table>
-          <thead>
-            <tr>
-              <th>{Label.HEADER_MODEL_NAME}</th>
-              <th>{Label.HEADER_CURRENT_VERSION}</th>
-              <th>{Label.HEADER_UPGRADE_VERSION}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>{modelName}</th>
-              <td className="u-flex">
-                <div className="u-flex-grow">
-                  {currentVersion ? (
-                    <Chip
-                      isReadOnly
-                      isDense
-                      isInline
-                      appearance="caution"
-                      value={currentVersion}
-                    />
-                  ) : null}
-                </div>
-                <span>&rarr;</span>
-              </td>
-              <td>
-                <Chip isReadOnly isDense isInline value={version.version} />
-              </td>
-            </tr>
-            {needsMigration ? (
-              <tr>
-                <th></th>
-                <td className="u-flex">
-                  <div className="u-flex-grow">
-                    <p className="u-no-padding--top u-no-margin--bottom">
-                      {modelController?.name}
-                    </p>
-                    {controllerVersion ? (
-                      <Chip
-                        isReadOnly
-                        isDense
-                        isInline
-                        value={controllerVersion}
-                      />
-                    ) : null}
-                  </div>
-                  <span className="u-flex-content-center">&rarr;</span>
-                </td>
-                <td className="u-vertical-align--middle">
-                  <Icon name={ICONS.help} />
-                </td>
-              </tr>
-            ) : null}
-          </tbody>
-        </table>
         <Formik<FormFields>
           initialValues={{
             [FieldName.TARGET_CONTROLLER]: "",
@@ -186,11 +129,6 @@ const UpgradeModelController: FC<Props> = ({
             onValidate={setIsValid}
             id={formId}
           >
-            {needsMigration ? (
-              <VanillaNotification severity={NotificationSeverity.INFORMATION}>
-                {Label.REQUIRES_MIGRATION}
-              </VanillaNotification>
-            ) : null}
             <Fields
               modelName={modelName}
               needsMigration={needsMigration}

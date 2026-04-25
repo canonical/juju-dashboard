@@ -1,5 +1,5 @@
 import { NotificationSeverity } from "@canonical/react-components";
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 
@@ -22,6 +22,7 @@ import {
   controllerFactory,
   modelMigrationTargetsStateFactory,
 } from "testing/factories/juju/juju";
+import { customWithin } from "testing/queries/within";
 import { renderComponent } from "testing/utils";
 
 import { FieldName } from "../types";
@@ -111,7 +112,7 @@ it("displays correctly when a migration is required", async () => {
     { state },
   );
   expect(
-    screen.getByRole("combobox", { name: Label.TARGET_CONTROLLER }),
+    screen.getByRole("button", { name: Label.TARGET_CONTROLLER }),
   ).toBeInTheDocument();
   expect(
     queryNotificationByText(Label.REVIEW_RISKS, { severity: "caution" }),
@@ -119,6 +120,20 @@ it("displays correctly when a migration is required", async () => {
   expect(
     screen.queryByRole("checkbox", { name: Label.CONFIRM }),
   ).not.toBeInTheDocument();
+  const rows = screen.getAllByRole("row");
+  // There should be a header, a model row and then a controller row.
+  expect(rows).toHaveLength(3);
+  const table = await screen.findByRole("table");
+  const controllerCol = customWithin(table).getCellByHeader(
+    Label.HEADER_UPGRADE_VERSION,
+  );
+  expect(controllerCol).toHaveTextContent(/controller1/);
+  expect(controllerCol).toHaveTextContent(/4.6.14/);
+  expect(
+    queryNotificationByText(Label.REQUIRES_MIGRATION, {
+      severity: NotificationSeverity.INFORMATION,
+    }),
+  ).toBeInTheDocument();
 });
 
 it("displays confirmation when a migration is required", async () => {
@@ -141,10 +156,10 @@ it("displays confirmation when a migration is required", async () => {
     </Formik>,
     { state },
   );
-  await userEvent.selectOptions(
-    screen.getByRole("combobox", { name: Label.TARGET_CONTROLLER }),
-    "controller1",
+  await userEvent.click(
+    screen.getByRole("button", { name: Label.TARGET_CONTROLLER }),
   );
+  await userEvent.click(screen.getByRole("option", { name: /controller1/ }));
   expect(
     queryNotificationByText(Label.REVIEW_RISKS, {
       severity: NotificationSeverity.CAUTION,
@@ -176,7 +191,7 @@ it("displays correctly when a migration is not required", async () => {
     { state },
   );
   expect(
-    screen.queryByRole("combobox", { name: Label.TARGET_CONTROLLER }),
+    screen.queryByRole("button", { name: Label.TARGET_CONTROLLER }),
   ).not.toBeInTheDocument();
   expect(
     queryNotificationByText(Label.REVIEW_RISKS, { severity: "caution" }),
@@ -184,4 +199,13 @@ it("displays correctly when a migration is not required", async () => {
   expect(
     screen.getByRole("checkbox", { name: Label.CONFIRM }),
   ).toBeInTheDocument();
+  // There should be a header and a model row.
+  expect(screen.getAllByRole("row")).toHaveLength(2);
+  await waitFor(() => {
+    expect(
+      queryNotificationByText(Label.REQUIRES_MIGRATION, {
+        severity: NotificationSeverity.INFORMATION,
+      }),
+    ).not.toBeInTheDocument();
+  });
 });

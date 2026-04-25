@@ -87,7 +87,7 @@ describe("ModelVersion", () => {
       <ModelVersion
         modelName="test-model"
         qualifier="eggman@external"
-        version="99.99.99"
+        versionOverride="99.99.99"
       />,
       { state },
     );
