@@ -36,7 +36,9 @@ test.describe("Model Access Control", () => {
     await user2.dashboardLogin(page, urls.models.index);
 
     await page.getByRole("button", { name: ModelActionsLabel.TOGGLE }).click();
-    await page.getByRole("button", { name: ModelActionsLabel.ACCESS }).click();
+    await page
+      .getByRole("menuitem", { name: ModelActionsLabel.ACCESS })
+      .click();
 
     await expect(
       page.getByRole("dialog", {
