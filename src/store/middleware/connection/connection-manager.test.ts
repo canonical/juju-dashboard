@@ -4,7 +4,7 @@ import type { Mock, MockInstance } from "vitest";
 
 import { Auth, LocalAuth } from "auth";
 import * as jujuModule from "juju/api";
-import type { ConnectionWithFacades } from "juju/types";
+import { Label, type ConnectionWithFacades } from "juju/types";
 
 import {
   ConnectionManager,
@@ -178,6 +178,16 @@ describe("connection handlers", () => {
 
       expect(logout).toHaveBeenCalledTimes(1);
       expect(logoutCb).toHaveBeenCalledTimes(1);
+    });
+
+    it("throws error on timeout", async ({ expect }) => {
+      vi.useFakeTimers();
+      connectAndLoginSpy.mockReturnValue(new Promise(() => {}));
+      const connectionPromise = defaultHandler("wss://example.com", undefined);
+      vi.advanceTimersByTime(jujuModule.LOGIN_TIMEOUT);
+      await expect(async () => await connectionPromise).rejects.toThrow(
+        Label.LOGIN_TIMEOUT_ERROR,
+      );
     });
   });
 

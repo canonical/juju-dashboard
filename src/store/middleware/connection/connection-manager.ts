@@ -4,6 +4,7 @@ import { Auth } from "auth";
 import {
   CLIENT_VERSION,
   generateConnectionOptions,
+  LOGIN_TIMEOUT,
   loginWithBakery,
 } from "juju/api";
 import { Label, type ConnectionWithFacades } from "juju/types";
@@ -50,14 +51,18 @@ export const CONNECTION_HANDLERS_BY_PATH: Record<
    * Handler used by default
    */
   [DefaultHandler]: async (wsURL, credentials) => {
+    const timeout = new Promise<never>((_resolve, reject) => {
+      setTimeout(() => {
+        reject(Label.LOGIN_TIMEOUT_ERROR);
+      }, LOGIN_TIMEOUT);
+    });
+
     const options = generateConnectionOptions(true);
     const instanceCredentials = Auth.instance.determineCredentials(credentials);
-    const { conn, logout } = await connectAndLogin(
-      wsURL,
-      options,
-      instanceCredentials,
-      CLIENT_VERSION,
-    );
+    const { conn, logout } = await Promise.race([
+      connectAndLogin(wsURL, options, instanceCredentials, CLIENT_VERSION),
+      timeout,
+    ]);
     if (!conn) {
       throw new Error(`could not connect to ${wsURL}`);
     }

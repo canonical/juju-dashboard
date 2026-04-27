@@ -34,14 +34,18 @@ import cloudInfoSource from "./source/cloud-info";
 import modelListSource from "./source/model-list";
 import type { MockMiddlewareResult } from "./types";
 
-vi.mock("juju/api", () => ({
-  disableControllerUUIDMasking: vi.fn(),
-  fetchControllerList: vi.fn(),
-  loginWithBakery: vi.fn(),
-  fetchAndStoreModelStatus: vi.fn(),
-  fetchModelInfo: vi.fn(),
-  setModelSharingPermissions: vi.fn(),
-}));
+vi.mock("juju/api", async (importOriginal) => {
+  const original = (await importOriginal()) as typeof jujuModule;
+  return {
+    ...original,
+    disableControllerUUIDMasking: vi.fn(),
+    fetchControllerList: vi.fn(),
+    loginWithBakery: vi.fn(),
+    fetchAndStoreModelStatus: vi.fn(),
+    fetchModelInfo: vi.fn(),
+    setModelSharingPermissions: vi.fn(),
+  };
+});
 
 vi.mock("juju/jimm/api", () => ({
   checkRelation: vi.fn(),
