@@ -918,6 +918,46 @@ describe("createSource", () => {
         expect(await next).toStrictEqual({ value: undefined, done: true });
       });
 
+      it("doesn't produce unhandled error after finishing", async ({
+        onTestFinished,
+      }) => {
+        vi.useFakeTimers();
+
+        // Install a listener on the process to detect when an unhandled error is raised.
+        const unhandledRejectionListener = vi.fn();
+        process.on("unhandledRejection", unhandledRejectionListener);
+        onTestFinished(() => {
+          process.off("unhandledRejection", unhandledRejectionListener);
+        });
+
+        // Ensure the hook is correctly installed.
+        const testError = new Error("test error");
+        void Promise.reject(testError);
+        await vi.runAllTimersAsync();
+        expect(unhandledRejectionListener).toHaveBeenCalledExactlyOnceWith(
+          testError,
+          expect.any(Promise),
+        );
+        unhandledRejectionListener.mockReset();
+
+        const source = createSource(({ load }) => {
+          load(Promise.resolve(1));
+          return DUMMY_HOOKS;
+        });
+
+        // Begin iterator, and immediately stop it.
+        for await (const _ of source) {
+          break;
+        }
+
+        // Clean up source
+        source.done();
+
+        // Give unhandled rejection a chance to propagate.
+        await vi.runAllTimersAsync();
+        expect(unhandledRejectionListener).not.toHaveBeenCalled();
+      });
+
       describe("cleans up listener", () => {
         let promise: PromiseWithResolvers<number>;
         let source: Source<number>;

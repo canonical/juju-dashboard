@@ -31,6 +31,12 @@ export type SourceHooks = {
   refetch: () => void;
 };
 
+class SourceIteratorStopped extends Error {
+  constructor() {
+    super(`This error was used to stop a source`);
+  }
+}
+
 export function createSource<T>(
   setup: (base: SourceBase<T>) => SourceHooks,
 ): Source<T> {
@@ -88,16 +94,22 @@ export function createSource<T>(
       };
     },
     async *[Symbol.asyncIterator]() {
+      // Create the stop error here to capture the stacktrace.
+      const sourceStoppedError = new SourceIteratorStopped();
+
       let promise = Promise.withResolvers<T>();
       // Capture incoming data, and resolve the current promise.
       const unsubscribe = this.on("data", (data) => {
         promise.resolve(data);
       });
+      let running = true;
       // When the source is complete, reject the existing promise.
       sourceDone.signal.addEventListener(
         "abort",
         () => {
-          promise.reject();
+          if (running) {
+            promise.reject(sourceStoppedError);
+          }
         },
         { once: true },
       );
@@ -110,13 +122,14 @@ export function createSource<T>(
           yield value;
         }
       } catch (error) {
-        // Promise should only reject (with no value) when the source is complete.
-        if (error) {
+        // Ignore the specific error used to stop the source.
+        if (error !== sourceStoppedError) {
           throw error;
         }
       } finally {
         // Ensure the event listener is unsubscribed.
         unsubscribe();
+        running = false;
       }
     },
   };
