@@ -3770,7 +3770,7 @@ describe("getModelUpgradeDataLoaded", () => {
     const state = rootStateFactory.build({
       juju: {
         supportedJujuVersions: supportedJujuVersionsStateFactory.build({
-          data: undefined,
+          data: null,
         }),
         modelData: {
           abc123: modelDataFactory.build({
