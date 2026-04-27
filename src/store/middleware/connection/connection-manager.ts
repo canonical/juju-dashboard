@@ -11,9 +11,9 @@ import type { AuthCredential } from "store/general/types";
 import { logger } from "utils/logger";
 
 type Hooks = {
-  getCredentials: (wsControllerURL: string) => AuthCredential | undefined;
+  getCredentials: (wsURL: string) => AuthCredential | undefined;
   onConnection?: (
-    wsControllerURL: string,
+    wsURL: string,
     connection: ConnectionWithFacades,
   ) => Promise<void> | void;
 };
@@ -30,7 +30,7 @@ type ConnectionResult = {
  * A function which resolves with a connection for a given URL and credentials.
  */
 type ConnectionHandler = (
-  wsControllerURL: string,
+  wsURL: string,
   credentials: AuthCredential | undefined,
 ) => Promise<ConnectionResult>;
 
@@ -49,17 +49,17 @@ export const CONNECTION_HANDLERS_BY_PATH: Record<
   /**
    * Handler used by default
    */
-  [DefaultHandler]: async (wsControllerURL, credentials) => {
+  [DefaultHandler]: async (wsURL, credentials) => {
     const options = generateConnectionOptions(true);
     const instanceCredentials = Auth.instance.determineCredentials(credentials);
     const { conn, logout } = await connectAndLogin(
-      wsControllerURL,
+      wsURL,
       options,
       instanceCredentials,
       CLIENT_VERSION,
     );
     if (!conn) {
-      throw new Error(`could not connect to ${wsControllerURL}`);
+      throw new Error(`could not connect to ${wsURL}`);
     }
     return {
       connection: conn,
@@ -134,11 +134,11 @@ export class ConnectionManager {
   }
 
   /**
-   * Fetch the connection for a given controller. If the connection doesn't exist, then create it
+   * Fetch the connection for a given URL. If the connection doesn't exist, then create it
    * before returning.
    */
-  async get(wsControllerURL: string): Promise<ConnectionWithFacades> {
-    const existing = this.connections.get(wsControllerURL);
+  async get(wsURL: string): Promise<ConnectionWithFacades> {
+    const existing = this.connections.get(wsURL);
     if (existing !== undefined) {
       if (existing instanceof Promise) {
         return await existing;
@@ -146,20 +146,20 @@ export class ConnectionManager {
         return existing.connection;
       }
     }
-    return await this.connect(wsControllerURL);
+    return await this.connect(wsURL);
   }
 
   /**
    * Logout from a connection.
    */
-  async logout(wsControllerURL: string): Promise<void> {
+  async logout(wsURL: string): Promise<void> {
     // Wait to get the connection;
     let connection:
       | ConnectionResult
       | Promise<ConnectionWithFacades>
       | undefined = undefined;
     do {
-      connection = this.connections.get(wsControllerURL);
+      connection = this.connections.get(wsURL);
       if (!connection) {
         return;
       } else if (connection instanceof Promise) {
@@ -169,7 +169,7 @@ export class ConnectionManager {
     } while (connection === undefined);
 
     // Remove it from the map.
-    this.connections.delete(wsControllerURL);
+    this.connections.delete(wsURL);
 
     await connection.onClose?.();
   }
@@ -184,23 +184,21 @@ export class ConnectionManager {
   /**
    * Connect to a controller, and save it.
    */
-  private async connect(
-    wsControllerURL: string,
-  ): Promise<ConnectionWithFacades> {
+  private async connect(wsURL: string): Promise<ConnectionWithFacades> {
     const connectionPromise = Promise.withResolvers<ConnectionWithFacades>();
-    this.connections.set(wsControllerURL, connectionPromise.promise);
+    this.connections.set(wsURL, connectionPromise.promise);
 
-    const credentials = this.hooks.getCredentials(wsControllerURL);
+    const credentials = this.hooks.getCredentials(wsURL);
 
     // Extract the path to determine the connection handler.
     let path = "";
     try {
-      const url = new URL(wsControllerURL);
+      const url = new URL(wsURL);
       path = url.pathname;
     } catch (err) {
       logger.warn(
         `invalid URL for connection, falling back on default connection handler`,
-        wsControllerURL,
+        wsURL,
         err,
       );
     }
@@ -210,16 +208,13 @@ export class ConnectionManager {
       CONNECTION_HANDLERS_BY_PATH[path] ??
       CONNECTION_HANDLERS_BY_PATH[DefaultHandler];
 
-    const connectionResult = await connectionHandler(
-      wsControllerURL,
-      credentials,
-    );
+    const connectionResult = await connectionHandler(wsURL, credentials);
     const { connection } = connectionResult;
 
-    this.connections.set(wsControllerURL, connectionResult);
+    this.connections.set(wsURL, connectionResult);
     connectionPromise.resolve(connection);
 
-    await this.hooks.onConnection?.(wsControllerURL, connection);
+    await this.hooks.onConnection?.(wsURL, connection);
 
     return connection;
   }
