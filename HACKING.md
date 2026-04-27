@@ -38,7 +38,7 @@ contribute and what kinds of contributions are welcome.
       - [Vanilla Framework](#vanilla-framework)
       - [Vanilla React Components](#vanilla-react-components)
   - [Deployed JIMM controller](#deployed-jimm-controller)
-      - [Adding users](#adding-users)
+    - [Adding users](#adding-users)
     - [Self signed certificates](#self-signed-certificates)
     - [Juju on M1 Macs](#juju-on-m1-macs)
   - [Building the Docker image](#building-the-docker-image)
@@ -352,7 +352,7 @@ Now you can connect to the VPN and then you should be able to access the dashboa
 
 https://jimm-dashboard.k8s.dev.canonical.com
 
-#### Adding users
+### Adding users
 
 The QA deployment uses Keycloak to manage users. The deployment includes a web
 UI which can be found at http://keycloak.localhost:8082/.
