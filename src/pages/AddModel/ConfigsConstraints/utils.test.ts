@@ -1,5 +1,12 @@
 import type { CategoryDefinition } from "./configCatalog";
-import { buildConfigYAML, getChangedFields, isConfigChanged } from "./utils";
+import {
+  buildConfigYAML,
+  filterConfigsBySearch,
+  getChangedFields,
+  getCategoriesWithVisibleConfigs,
+  getConfigInitialValues,
+  isConfigChanged,
+} from "./utils";
 
 describe("utils", () => {
   describe("isConfigChanged", () => {
@@ -62,17 +69,18 @@ describe("utils", () => {
       ],
     };
 
-    it("returns all fields when onlyChanged is false", () => {
-      const result = getChangedFields(category, false, {
-        "default-space": "modified-space",
+    it("returns empty array when nothing has changed", () => {
+      const result = getChangedFields(category, {
+        "default-space": "alpha",
+        "container-networking-method": "provider",
+        "logging-config": "",
       });
 
-      expect(result).toHaveLength(3);
-      expect(result).toEqual(category.fields);
+      expect(result).toEqual([]);
     });
 
-    it("filters to only changed fields when onlyChanged is true", () => {
-      const result = getChangedFields(category, true, {
+    it("filters changed fields", () => {
+      const result = getChangedFields(category, {
         "default-space": "modified-space",
         "container-networking-method": "provider",
         "logging-config": "debug",
@@ -83,16 +91,6 @@ describe("utils", () => {
         "default-space",
         "logging-config",
       ]);
-    });
-
-    it("returns empty array when no fields have changed", () => {
-      const result = getChangedFields(category, true, {
-        "default-space": "alpha",
-        "container-networking-method": "provider",
-        "logging-config": "",
-      });
-
-      expect(result).toHaveLength(0);
     });
   });
 
@@ -170,6 +168,170 @@ describe("utils", () => {
       expect(result).not.toContain("container-networking-method");
       expect(result).toContain("logging-config: debug");
       expect(result).not.toContain("logging-level");
+    });
+  });
+
+  describe("getCategoriesWithVisibleConfigs", () => {
+    const categories: CategoryDefinition[] = [
+      {
+        category: "Networking",
+        fields: [
+          {
+            label: "default-space",
+            defaultValue: "alpha",
+            description: "Default space",
+          },
+          {
+            label: "container-networking-method",
+            defaultValue: "provider",
+            description: "Networking method",
+          },
+        ],
+      },
+      {
+        category: "Logging",
+        fields: [
+          {
+            label: "logging-config",
+            defaultValue: "",
+            description: "Logging config",
+          },
+        ],
+      },
+    ];
+
+    it("returns empty array when no fields have changed", () => {
+      const result = getCategoriesWithVisibleConfigs(categories, {});
+
+      expect(result).toHaveLength(0);
+    });
+
+    it("returns categories with only changed fields visible", () => {
+      const result = getCategoriesWithVisibleConfigs(categories, {
+        "default-space": "modified-space",
+      });
+
+      expect(result).toHaveLength(1);
+      expect(result[0].category).toBe("Networking");
+      expect(result[0].fields).toHaveLength(1);
+      expect(result[0].fields[0].label).toBe("default-space");
+    });
+  });
+
+  describe("getConfigInitialValues", () => {
+    const categories: CategoryDefinition[] = [
+      {
+        category: "Networking",
+        fields: [
+          {
+            label: "default-space",
+            defaultValue: "alpha",
+            description: "Default space",
+          },
+          {
+            label: "container-networking-method",
+            defaultValue: "provider",
+            description: "Networking method",
+          },
+        ],
+      },
+      {
+        category: "Logging",
+        fields: [
+          {
+            label: "logging-config",
+            defaultValue: "",
+            description: "Logging config",
+          },
+        ],
+      },
+    ];
+
+    it("returns object with all fields and their default values", () => {
+      const result = getConfigInitialValues(categories);
+
+      expect(result).toEqual({
+        "default-space": "alpha",
+        "container-networking-method": "provider",
+        "logging-config": "",
+      });
+    });
+
+    it("handles fields with undefined default values", () => {
+      const categoriesWithUndefinedDefaults: CategoryDefinition[] = [
+        {
+          category: "Test",
+          fields: [
+            {
+              label: "test-field",
+              defaultValue: undefined,
+              description: "Test",
+            },
+          ],
+        },
+      ];
+
+      const result = getConfigInitialValues(categoriesWithUndefinedDefaults);
+
+      expect(result["test-field"]).toBe("");
+    });
+
+    it("returns empty object when categories are empty", () => {
+      const result = getConfigInitialValues([]);
+
+      expect(result).toEqual({});
+    });
+  });
+
+  describe("filterConfigsBySearch", () => {
+    it("returns all categories when query is empty", () => {
+      const result = filterConfigsBySearch("");
+
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it("filters fields by label", () => {
+      const result = filterConfigsBySearch("proxy");
+
+      expect(result.length).toBeGreaterThan(0);
+      const allLabels = result.flatMap((cat) =>
+        cat.fields.map((field) => field.label.toLowerCase()),
+      );
+
+      const hasMatch = allLabels.some((label) => label.includes("proxy"));
+      expect(hasMatch).toBe(true);
+    });
+
+    it("filters fields by description", () => {
+      const result = filterConfigsBySearch("method");
+
+      expect(result.length).toBeGreaterThan(0);
+      const allDescriptions = result.flatMap((cat) =>
+        cat.fields.map((field) => field.description.toLowerCase()),
+      );
+
+      const hasMatch = allDescriptions.some((desc) => desc.includes("method"));
+      expect(hasMatch).toBe(true);
+    });
+
+    it("returns empty array when no fields match", () => {
+      const result = filterConfigsBySearch("non-existent-query123456");
+
+      expect(result).toEqual([]);
+    });
+
+    it("filters out categories with no matching fields", () => {
+      const result = filterConfigsBySearch("proxy");
+
+      // All returned categories should have at least one field matching the query
+      result.forEach((category) => {
+        const hasMatch = category.fields.some(
+          (field) =>
+            field.label.toLowerCase().includes("proxy") ||
+            field.description.toLowerCase().includes("proxy"),
+        );
+        expect(hasMatch).toBe(true);
+      });
     });
   });
 });

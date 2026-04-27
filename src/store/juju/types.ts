@@ -151,6 +151,7 @@ export type AddModel = {
   userTag: string;
   disabledCommands: DisableType;
   region?: string;
+  config?: Record<string, string>;
 };
 
 export type AddModelState = {

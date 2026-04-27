@@ -23,6 +23,7 @@
     padding: $spv--large $sph--small 0;
     position: sticky;
     text-align: right;
+    z-index: 2;
 
     .navigation-buttons {
       border-left: 1px solid $color-mid-light;

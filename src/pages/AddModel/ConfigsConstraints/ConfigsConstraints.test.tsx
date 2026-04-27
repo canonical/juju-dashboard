@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 import { vi } from "vitest";
@@ -9,6 +9,8 @@ import { externalURLs } from "urls";
 import ConfigsConstraints from "./ConfigsConstraints";
 import { InputMode } from "./ContentSwitcher/types";
 import { DisableType, Label } from "./types";
+
+import { ConfigsConstraintsTestId } from ".";
 
 describe("ConfigsConstraints", () => {
   it("renders properly", () => {
@@ -95,7 +97,7 @@ describe("ConfigsConstraints", () => {
     expect(textarea.value).toContain("apt-http-proxy: http://proxy.example");
   });
 
-  it("hides unchanged rows when changed-configs-only is toggled on", async () => {
+  it("does not toggle and shows a tooltip when there are no changed configs", async () => {
     renderComponent(
       <Formik initialValues={{}} onSubmit={vi.fn()}>
         <ConfigsConstraints />
@@ -107,8 +109,10 @@ describe("ConfigsConstraints", () => {
     ).toBeInTheDocument();
     await userEvent.click(screen.getByLabelText(Label.CHANGED_CONFIGS_ONLY));
     expect(
-      screen.queryByLabelText("container-networking-method"),
-    ).not.toBeInTheDocument();
+      within(
+        screen.getByTestId(ConfigsConstraintsTestId.CONFIGS_CONSTRAINTS_FORM),
+      ).getByText(Label.CHANGED_CONFIGS_ONLY),
+    ).toBeInTheDocument();
   });
 
   it("shows a changed row when toggled on", async () => {
@@ -133,6 +137,74 @@ describe("ConfigsConstraints", () => {
       screen.queryByLabelText("container-networking-method"),
     ).not.toBeInTheDocument();
     expect(screen.queryByLabelText("default-space")).toBeInTheDocument();
+  });
+
+  it("filters configs by field name", async () => {
+    renderComponent(
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
+        <ConfigsConstraints />
+      </Formik>,
+    );
+
+    await userEvent.type(
+      screen.getByRole("searchbox", { name: "Search configurations" }),
+      "default-space",
+    );
+
+    expect(screen.getByLabelText("default-space")).toBeInTheDocument();
+    expect(
+      screen.queryByLabelText("container-networking-method"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("filters configs by description", async () => {
+    renderComponent(
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
+        <ConfigsConstraints />
+      </Formik>,
+    );
+
+    const searchInput = screen.getByRole("searchbox", {
+      name: "Search configurations",
+    });
+
+    await userEvent.type(searchInput, "network firewalling");
+
+    expect(screen.getByLabelText("firewall-mode")).toBeInTheDocument();
+    expect(screen.queryByLabelText("default-space")).not.toBeInTheDocument();
+
+    await userEvent.clear(searchInput);
+    await userEvent.type(searchInput, "Proxy & Mirror");
+
+    expect(
+      screen.getByText('No results found for "Proxy & Mirror"'),
+    ).toBeInTheDocument();
+  });
+
+  it("clears the search and restores the full list", async () => {
+    renderComponent(
+      <Formik initialValues={{}} onSubmit={vi.fn()}>
+        <ConfigsConstraints />
+      </Formik>,
+    );
+
+    const searchInput = screen.getByRole("searchbox", {
+      name: "Search configurations",
+    });
+
+    await userEvent.type(searchInput, "default-space");
+    expect(
+      screen.queryByLabelText("container-networking-method"),
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByRole("button", { name: /clear search field/i }),
+    );
+
+    expect(screen.getByLabelText("default-space")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("container-networking-method"),
+    ).toBeInTheDocument();
   });
 
   it("initialises in YAML mode when configInputMode is yaml", () => {

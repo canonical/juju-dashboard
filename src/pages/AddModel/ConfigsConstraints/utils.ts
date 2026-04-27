@@ -1,4 +1,4 @@
-import type { CategoryDefinition } from "./configCatalog";
+import { CONFIG_CATEGORIES, type CategoryDefinition } from "./configCatalog";
 
 export const isConfigChanged = (
   label: string,
@@ -24,24 +24,20 @@ export const isConfigChanged = (
 
 export const getChangedFields = (
   category: CategoryDefinition,
-  onlyChanged: boolean,
   values: Record<string, string>,
 ): CategoryDefinition["fields"] =>
-  onlyChanged
-    ? category.fields.filter((field) =>
-        isConfigChanged(field.label, values, field.defaultValue),
-      )
-    : category.fields;
+  category.fields.filter((field) =>
+    isConfigChanged(field.label, values, field.defaultValue),
+  );
 
 export const getCategoriesWithVisibleConfigs = (
   categories: CategoryDefinition[],
-  onlyChanged: boolean,
   values: Record<string, string>,
 ): Array<{ category: string; fields: CategoryDefinition["fields"] }> =>
   categories
     .map((cat) => ({
       category: cat.category,
-      fields: getChangedFields(cat, onlyChanged, values),
+      fields: getChangedFields(cat, values),
     }))
     .filter(({ fields }) => fields.length > 0);
 
@@ -51,13 +47,11 @@ export const buildConfigYAML = (
 ): string => {
   const yamlSections = categories
     .map((category) => {
-      const changedFields = getChangedFields(category, true, values).map(
-        (field) => {
-          const value = values[field.label];
-          const quotedValue = value === "" ? '""' : value;
-          return `${field.label}: ${quotedValue}`;
-        },
-      );
+      const changedFields = getChangedFields(category, values).map((field) => {
+        const value = values[field.label];
+        const quotedValue = value === "" ? '""' : value;
+        return `${field.label}: ${quotedValue}`;
+      });
 
       if (changedFields.length === 0) {
         return null;
@@ -79,3 +73,18 @@ export const getConfigInitialValues = (
     });
     return values;
   }, {});
+
+export const filterConfigsBySearch = (query: string): CategoryDefinition[] => {
+  if (!query.trim()) {
+    return CONFIG_CATEGORIES;
+  }
+  const lowerQuery = query.toLowerCase();
+  return CONFIG_CATEGORIES.map((category) => ({
+    ...category,
+    fields: category.fields.filter(
+      (field) =>
+        field.label.toLowerCase().includes(lowerQuery) ||
+        field.description.toLowerCase().includes(lowerQuery),
+    ),
+  })).filter(({ fields }) => fields.length > 0);
+};

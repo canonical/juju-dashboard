@@ -510,6 +510,7 @@ function runModelPoller(
         region,
         userTag,
         disabledCommands,
+        config,
       } = action.payload;
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
@@ -532,6 +533,7 @@ function runModelPoller(
           "cloud-tag": cloudTag,
           credential,
           region,
+          ...(config && Object.keys(config).length > 0 ? { config } : {}),
         });
 
         if (response) {
