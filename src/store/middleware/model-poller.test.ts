@@ -34,14 +34,18 @@ import cloudInfoSource from "./source/cloud-info";
 import modelListSource from "./source/model-list";
 import { type MockMiddlewareResult, ModelsError } from "./types";
 
-vi.mock("juju/api", () => ({
-  disableControllerUUIDMasking: vi.fn(),
-  fetchControllerList: vi.fn(),
-  loginWithBakery: vi.fn(),
-  fetchAndStoreModelStatus: vi.fn(),
-  fetchModelInfo: vi.fn(),
-  setModelSharingPermissions: vi.fn(),
-}));
+vi.mock("juju/api", async (importOriginal) => {
+  const original = (await importOriginal()) as typeof jujuModule;
+  return {
+    ...original,
+    disableControllerUUIDMasking: vi.fn(),
+    fetchControllerList: vi.fn(),
+    loginWithBakery: vi.fn(),
+    fetchAndStoreModelStatus: vi.fn(),
+    fetchModelInfo: vi.fn(),
+    setModelSharingPermissions: vi.fn(),
+  };
+});
 
 vi.mock("juju/jimm/api", () => ({
   checkRelation: vi.fn(),
@@ -53,7 +57,7 @@ vi.mock("juju/jimm/api", () => ({
 describe("model poller", () => {
   let fakeStore: MiddlewareAPI<Dispatch<UnknownAction>, RootState>;
   let next: Mock;
-  const wsControllerURL = "wss://example.com";
+  const wsControllerURL = "wss://example.com/api";
   const controllers: ControllerArgs[] = [
     [wsControllerURL, { user: "eggman@external", password: "test" }],
   ];
@@ -183,7 +187,7 @@ describe("model poller", () => {
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       generalActions.storeLoginError({
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
         error: Label.CONTROLLER_LOGIN_ERROR,
       }),
     );
@@ -391,7 +395,7 @@ describe("model poller", () => {
     expect(next).not.toHaveBeenCalled();
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       generalActions.storeLoginError({
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
         error: LoginError.NO_INFO,
       }),
     );
@@ -748,7 +752,7 @@ describe("model poller", () => {
       permissionFrom: "read",
       permissionTo: "write",
       user: "admin",
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
     });
     const response = middleware(next)(action);
     await vi.runOnlyPendingTimersAsync();
@@ -770,7 +774,7 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.fetchAuditEvents({
       "user-tag": "user-eggman@external",
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
     });
     await middleware(next)(action);
     expect(jimmModule.findAuditEvents).toHaveBeenCalledWith(
@@ -814,7 +818,7 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.fetchAuditEvents({
       "user-tag": "user-eggman@external",
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
     });
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -834,7 +838,7 @@ describe("model poller", () => {
     );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       query: ".",
     });
     await middleware(next)(action);
@@ -882,7 +886,7 @@ describe("model poller", () => {
     );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       query: ".",
     });
     await middleware(next)(action);
@@ -902,7 +906,7 @@ describe("model poller", () => {
     );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       query: ".",
     });
     await middleware(next)(action);
@@ -922,7 +926,7 @@ describe("model poller", () => {
     );
     const middleware = await runMiddleware();
     const action = jujuActions.fetchCrossModelQuery({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       query: ".",
     });
     await middleware(next)(action);
@@ -946,7 +950,7 @@ describe("model poller", () => {
     );
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelation({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       tuple,
     });
     await middleware(next)(action);
@@ -995,7 +999,7 @@ describe("model poller", () => {
     );
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelation({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       tuple,
     });
     await middleware(next)(action);
@@ -1019,7 +1023,7 @@ describe("model poller", () => {
     );
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelation({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       tuple,
     });
     await middleware(next)(action);
@@ -1047,7 +1051,7 @@ describe("model poller", () => {
     );
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelations({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       tuples,
       requestId,
     });
@@ -1104,7 +1108,7 @@ describe("model poller", () => {
     const middleware = await runMiddleware();
     const action = jujuActions.checkRelations({
       requestId,
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       tuples,
     });
     await middleware(next)(action);
@@ -1133,7 +1137,7 @@ describe("model poller", () => {
     });
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       models: [
         {
           "model-tag": "model-123abc",
@@ -1161,7 +1165,7 @@ describe("model poller", () => {
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateModelsDestroyed({
         modelUUIDs: ["123abc"],
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
       }),
     );
   });
@@ -1199,7 +1203,7 @@ describe("model poller", () => {
     const fetchModelInfo = vi.spyOn(jujuModule, "fetchModelInfo");
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       models: [
         {
           "model-tag": "model-123abc",
@@ -1218,7 +1222,7 @@ describe("model poller", () => {
     expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
       jujuActions.updateModelsDestroyed({
         modelUUIDs: ["123abc"],
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
       }),
     );
   });
@@ -1239,7 +1243,7 @@ describe("model poller", () => {
     });
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       models: [
         {
           "model-tag": "model-123abc",
@@ -1263,7 +1267,7 @@ describe("model poller", () => {
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateModelsDestroyed({
         modelUUIDs: ["456xyz"],
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
       }),
     );
   });
@@ -1296,7 +1300,7 @@ describe("model poller", () => {
 
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       models: [
         {
           "model-tag": "model-123abc",
@@ -1329,7 +1333,7 @@ describe("model poller", () => {
       expect(fakeStore.dispatch).toHaveBeenCalledWith(
         jujuActions.updateDestroyModelsLoading({
           modelUUIDs: ["123abc", "456xyz"],
-          wsControllerURL: "wss://example.com",
+          wsControllerURL: "wss://example.com/api",
         }),
       );
     });
@@ -1339,7 +1343,7 @@ describe("model poller", () => {
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateModelsDestroyed({
         modelUUIDs: ["123abc"],
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
       }),
     );
 
@@ -1355,7 +1359,7 @@ describe("model poller", () => {
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.updateModelsDestroyed({
         modelUUIDs: ["456xyz"],
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
       }),
     );
   });
@@ -1371,7 +1375,7 @@ describe("model poller", () => {
     );
     const middleware = await runMiddleware();
     const action = jujuActions.destroyModels({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       models: [
         {
           "model-tag": "model-123abc",
@@ -1401,7 +1405,7 @@ describe("model poller", () => {
     }));
     const middleware = await runMiddleware();
     const action = jujuActions.addModel({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       modelName: "model123",
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
@@ -1419,7 +1423,7 @@ describe("model poller", () => {
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.setAddModelResult({
         success: true,
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
       }),
     );
   });
@@ -1451,7 +1455,7 @@ describe("model poller", () => {
     conn.facades.modelManager = undefined;
     const middleware = await runMiddleware();
     const action = jujuActions.addModel({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       modelName: "model123",
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
@@ -1462,7 +1466,7 @@ describe("model poller", () => {
       jujuActions.setAddModelResult({
         errors: "Unsupported facade: modelManager",
         success: false,
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
       }),
     );
   });
@@ -1478,7 +1482,7 @@ describe("model poller", () => {
     });
     const middleware = await runMiddleware();
     const action = jujuActions.addModel({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       modelName: "model123",
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
@@ -1489,7 +1493,7 @@ describe("model poller", () => {
       jujuActions.setAddModelResult({
         errors: "Could not add model.",
         success: false,
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
       }),
     );
   });
@@ -1505,7 +1509,7 @@ describe("model poller", () => {
     });
     const middleware = await runMiddleware();
     const action = jujuActions.addModel({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       modelName: "model123",
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
@@ -1516,7 +1520,7 @@ describe("model poller", () => {
       jujuActions.setAddModelResult({
         errors: "Could not add model.",
         success: false,
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
       }),
     );
   });

@@ -1,7 +1,7 @@
 import { Connection } from "@canonical/jujulib";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import type { ConnectionWithFacades } from "juju/types";
+import type { ManagedConnection } from "./connection-manager";
 
 /**
  * Guard to test of an action has a connection URL in the payload.
@@ -19,7 +19,7 @@ export function hasConnectionURL<P extends Record<string, unknown>>(
 export function hasConnections<K extends string>(
   meta: Record<string, unknown>,
   connectionKeys: K[],
-): meta is { connections: Record<K, ConnectionWithFacades> } & Record<
+): meta is { connections: Record<K, ManagedConnection> } & Record<
   string,
   unknown
 > {
