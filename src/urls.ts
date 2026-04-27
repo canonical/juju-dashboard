@@ -68,6 +68,8 @@ export const externalURLs = {
     "https://documentation.ubuntu.com/juju/latest/reference/juju-web-cli/",
   cliHelpCommand: (command: string): string =>
     `https://documentation.ubuntu.com/juju/latest/reference/juju-cli/list-of-juju-cli-commands/${command.replace(/^\//, "")}`,
+  configureModel:
+    "https://documentation.ubuntu.com/juju/latest/howto/manage-models/#configure-a-model",
   crossModelRelations:
     "https://documentation.ubuntu.com/juju/latest/reference/relation/#cross-model-relation",
   deployingApplication:

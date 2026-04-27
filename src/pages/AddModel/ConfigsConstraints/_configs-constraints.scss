@@ -1,0 +1,22 @@
+.configs__form-scroll {
+  margin-bottom: 1rem;
+  max-height: min(40rem, calc(100dvh - 24rem));
+  min-height: 10rem;
+  overflow-y: auto;
+
+  @media (min-height >= 900px) {
+    .configs__form-scroll {
+      max-height: min(40rem, calc(100dvh - 24rem));
+    }
+  }
+
+  @media (min-height >= 1100px) {
+    .configs__form-scroll {
+      max-height: min(40rem, calc(100dvh - 21rem));
+    }
+  }
+}
+
+.configs__yaml-input {
+  min-height: 10rem;
+}

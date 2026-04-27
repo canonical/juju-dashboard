@@ -56,6 +56,7 @@ $color-navigation-background: $color-brand;
 @include vf-p-icon-topic;
 @include vf-p-icon-get-link;
 @include vf-p-icon-contextual-menu;
+@include vf-p-icon-status-in-progress-small;
 
 // Overrides for Vanilla. This needs to be after the Vanilla includes.
 @import "vanilla-overrides";
@@ -89,6 +90,8 @@ $color-navigation-background: $color-brand;
 @import "../components/WebCLI/webcli";
 @import "../layout/MainContent/main-content";
 @import "../pages/AddModel/add-model";
+@import "../pages/AddModel/ConfigsConstraints/configs-constraints";
+@import "../pages/AddModel/ConfigsConstraints/StackList/stack-list";
 @import "../pages/AddModel/MandatoryDetails/mandatory-details";
 @import "../pages/AdvancedSearch/ErrorsBlock/errors-block";
 @import "../pages/AdvancedSearch/ResultsBlock/results-block";

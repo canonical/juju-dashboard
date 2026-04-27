@@ -24,7 +24,12 @@ import urls from "urls";
 import { toErrorString } from "utils";
 import { toastNotification } from "utils/toastNotification";
 
-import MandatoryDetails from "./MandatoryDetails/MandatoryDetails";
+import ConfigsConstraints from "./ConfigsConstraints";
+import { InputMode } from "./ConfigsConstraints/ContentSwitcher/types";
+import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
+import { FieldName as ConfigFieldName } from "./ConfigsConstraints/types";
+import { getConfigInitialValues } from "./ConfigsConstraints/utils";
+import MandatoryDetails from "./MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
 const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
@@ -48,7 +53,7 @@ const stepDefinitions: Array<{
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
     title: "Configuration & Constraints (optional)",
-    content: <div>Configuration and constraints form goes here.</div>,
+    content: <ConfigsConstraints />,
   },
   {
     key: StepType.ACCESS_MANAGEMENT,
@@ -160,6 +165,9 @@ const AddModel: FC = () => {
               cloud: "",
               region: "",
               credential: "",
+              [ConfigFieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+              [ConfigFieldName.CONFIG_YAML]: "",
+              ...getConfigInitialValues(CONFIG_CATEGORIES),
             }}
             validationSchema={validationSchema}
             onSubmit={handleCreateClick}
@@ -169,6 +177,7 @@ const AddModel: FC = () => {
               id={currentStep.key}
               {...testId(TestId.ADD_MODEL_FORM)}
               className={currentStep.key}
+              stacked={currentStep.key === StepType.CONFIGURATION_CONSTRAINTS}
             >
               {currentStep.content}
             </FormikFormData>
