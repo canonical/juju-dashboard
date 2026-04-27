@@ -8,6 +8,7 @@ import type { Store } from "store/store";
 
 export type Hooks<P> = {
   addActionMeta?: (payload: P) => Record<string, unknown>;
+  after?: (args: P, store: Store["dispatch"]) => void;
 };
 
 export type ProcessOutcome<Result> =

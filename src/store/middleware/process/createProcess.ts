@@ -74,6 +74,9 @@ export function createProcess<Payload, Status, Result>(
 
     // Mark process as not running.
     dispatch(processActions.setRunning(payload, false));
+
+    // Call any callback function.
+    hooks?.after?.(payload, dispatch);
   };
 
   return { actions, start };
