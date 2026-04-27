@@ -1,6 +1,6 @@
 import { FormikField, Icon, Select } from "@canonical/react-components";
 import { useFormikContext } from "formik";
-import type { JSX } from "react";
+import { Fragment, type JSX } from "react";
 
 import type { CategoryDefinition } from "../configCatalog";
 import type { FormFields } from "../types";
@@ -22,12 +22,11 @@ const StackList = ({ visibleConfigs }: Props): JSX.Element => {
           config.defaultValue,
         );
         return (
-          <>
+          <Fragment key={config.label}>
             <FormikField
               {...(config.input?.type === "select"
                 ? { component: Select }
-                : { type: "text", placeholder: config.placeholder })}
-              key={config.label}
+                : { type: "text", placeholder: config.defaultValue })}
               label={
                 <>
                   {changed ? (
@@ -52,7 +51,7 @@ const StackList = ({ visibleConfigs }: Props): JSX.Element => {
             {index < visibleConfigs.length - 1 ? (
               <hr className="p-rule--muted u-no-margin--bottom" />
             ) : null}
-          </>
+          </Fragment>
         );
       })}
     </>

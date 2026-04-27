@@ -69,3 +69,13 @@ export const buildConfigYAML = (
 
   return yamlSections.join("\n\n");
 };
+
+export const getConfigInitialValues = (
+  categories: CategoryDefinition[],
+): Record<string, string> =>
+  categories.reduce<Record<string, string>>((values, category) => {
+    category.fields.forEach((field) => {
+      values[field.label] = field.defaultValue ?? "";
+    });
+    return values;
+  }, {});

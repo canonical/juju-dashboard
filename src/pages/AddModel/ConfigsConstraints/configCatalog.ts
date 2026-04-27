@@ -8,7 +8,6 @@ export type CategoryDefinition = {
     label: string;
     description: string;
     defaultValue?: string;
-    placeholder?: string;
     input?: { type: "select" } & SelectProps;
   }[];
 };
@@ -86,21 +85,18 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "The amount of time in seconds to sleep between ifdown and ifup when bridging",
         defaultValue: "17",
-        placeholder: "17",
       },
       {
         label: "saas-ingress-allow",
         description:
           "The CIDR allowlist for SAAS ingress traffic to this model",
         defaultValue: "0.0.0.0/0,::/0",
-        placeholder: "0.0.0.0/0,::/0",
       },
       {
         label: "ssh-allow",
         description:
           "The CIDR allowlist for SSH access to instances in this model",
         defaultValue: "0.0.0.0/0,::/0",
-        placeholder: "0.0.0.0/0,::/0",
       },
       {
         label: "ssl-hostname-verification",
@@ -175,14 +171,12 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "The list of domain addresses not to be proxied (comma-separated), may contain CIDRs. Passed to charms in the JUJU_CHARM_NO_PROXY environment variable",
         defaultValue: "127.0.0.1,localhost,::1",
-        placeholder: "127.0.0.1,localhost,::1",
       },
       {
         label: "no-proxy",
         description:
           "The list of domain addresses not to be proxied (comma-separated)",
         defaultValue: "127.0.0.1,localhost,::1",
-        placeholder: "127.0.0.1,localhost,::1",
       },
       {
         label: "proxy-ssh",

@@ -25,6 +25,10 @@ import { toErrorString } from "utils";
 import { toastNotification } from "utils/toastNotification";
 
 import ConfigsConstraints from "./ConfigsConstraints";
+import { InputMode } from "./ConfigsConstraints/ContentSwitcher/types";
+import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
+import { FieldName as ConfigFieldName } from "./ConfigsConstraints/types";
+import { getConfigInitialValues } from "./ConfigsConstraints/utils";
 import MandatoryDetails from "./MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
@@ -161,6 +165,9 @@ const AddModel: FC = () => {
               cloud: "",
               region: "",
               credential: "",
+              [ConfigFieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+              [ConfigFieldName.CONFIG_YAML]: "",
+              ...getConfigInitialValues(CONFIG_CATEGORIES),
             }}
             validationSchema={validationSchema}
             onSubmit={handleCreateClick}
