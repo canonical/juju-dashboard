@@ -138,6 +138,8 @@ describe("connection handlers", () => {
     let logoutCb: Mock;
     const connection = {} as ConnectionWithFacades;
     let connectAndLoginSpy: MockInstance;
+    let startPingerLoopSpy: MockInstance;
+    let stopPingerLoopSpy: MockInstance;
 
     const defaultHandler = CONNECTION_HANDLERS_BY_PATH[DefaultHandler];
 
@@ -151,6 +153,12 @@ describe("connection handlers", () => {
           conn: connection,
           logout,
         });
+      startPingerLoopSpy = vi
+        .spyOn(jujuModule, "startPingerLoop")
+        .mockReturnValue(1234);
+      stopPingerLoopSpy = vi
+        .spyOn(jujuModule, "stopPingerLoop")
+        .mockReturnValue();
     });
 
     afterEach(() => {
@@ -167,6 +175,7 @@ describe("connection handlers", () => {
         expect.anything(),
         jujuModule.CLIENT_VERSION,
       );
+      expect(startPingerLoopSpy).to.toHaveBeenCalledExactlyOnceWith(connection);
       expect(result.connection).toEqual(connection);
     });
 
@@ -178,6 +187,7 @@ describe("connection handlers", () => {
 
       expect(logout).toHaveBeenCalledTimes(1);
       expect(logoutCb).toHaveBeenCalledTimes(1);
+      expect(stopPingerLoopSpy).toHaveBeenCalledExactlyOnceWith(1234);
     });
 
     it("throws error on timeout", async ({ expect }) => {

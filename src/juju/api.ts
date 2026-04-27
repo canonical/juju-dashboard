@@ -83,13 +83,13 @@ export function generateConnectionOptions(
   };
 }
 
-function stopPingerLoop(intervalId: number): void {
+export function stopPingerLoop(intervalId: number): void {
   if (intervalId) {
     clearInterval(intervalId);
   }
 }
 
-function startPingerLoop(conn: ConnectionWithFacades): number {
+export function startPingerLoop(conn: ConnectionWithFacades): number {
   // Ping to keep the connection alive.
   const intervalId = window.setInterval(() => {
     conn.facades.pinger?.ping(null).catch((err) => {

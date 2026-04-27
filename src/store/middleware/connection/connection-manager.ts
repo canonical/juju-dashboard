@@ -6,6 +6,8 @@ import {
   generateConnectionOptions,
   LOGIN_TIMEOUT,
   loginWithBakery,
+  startPingerLoop,
+  stopPingerLoop,
 } from "juju/api";
 import { Label, type ConnectionWithFacades } from "juju/types";
 import type { AuthCredential } from "store/general/types";
@@ -66,10 +68,14 @@ export const CONNECTION_HANDLERS_BY_PATH: Record<
     if (!conn) {
       throw new Error(`could not connect to ${wsURL}`);
     }
+
+    const intervalId = startPingerLoop(conn);
+
     return {
       connection: conn,
       onClose: async (): Promise<void> => {
         await new Promise<void>((resolve) => {
+          stopPingerLoop(intervalId);
           logout((code, cb) => {
             resolve();
             cb(code);
