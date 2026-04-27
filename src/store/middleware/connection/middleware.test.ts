@@ -3,6 +3,10 @@ import type { MockInstance } from "vitest";
 
 import type { Store } from "store/store";
 import { rootStateFactory } from "testing/factories";
+import {
+  credentialFactory,
+  generalStateFactory,
+} from "testing/factories/general";
 import { createStore } from "testing/utils";
 import { logger } from "utils/logger";
 
@@ -34,6 +38,9 @@ describe("connectionMiddleware", () => {
   // Mocks.
   let getMock: MockInstance<ConnectionManagerInstance["get"]>;
   let logoutMock: MockInstance<ConnectionManagerInstance["logout"]>;
+  let connectionManagerHooks: {
+    getCredentials: (wsControllerURL: string) => unknown;
+  };
 
   // Middleware.
   let store: Store;
@@ -48,7 +55,8 @@ describe("connectionMiddleware", () => {
     logoutMock = vi.fn();
     vi.spyOn(connectionManagerModule, "ConnectionManager").mockImplementation(
       // @ts-expect-error Mocking a class
-      function (_hooks) {
+      function (hooks) {
+        connectionManagerHooks = hooks;
         // @ts-expect-error Mocking a class
         this.get = getMock;
         // @ts-expect-error Mocking a class
@@ -157,6 +165,31 @@ describe("connectionMiddleware", () => {
         }),
       }),
     );
+  });
+
+  it("resolves modelURL credentials from the controller URL", ({ expect }) => {
+    const credentials = credentialFactory.build();
+    [store, _actions] = createStore(
+      rootStateFactory.build({
+        general: generalStateFactory.build({
+          credentials: {
+            "wss://controller.example.com/api": credentials,
+          },
+        }),
+      }),
+      {
+        trackActions: true,
+      },
+    );
+    middleware = connectionMiddleware(store)(
+      // @ts-expect-error Mocked function can be passed as next.
+      next,
+    );
+
+    const resolved = connectionManagerHooks.getCredentials(
+      "wss://controller.example.com/model/abc123/api",
+    );
+    expect(resolved).toEqual(credentials);
   });
 
   it.for([

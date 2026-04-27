@@ -36,7 +36,6 @@ const StackList = ({ visibleConfigs }: Props): JSX.Element => {
                 </>
               }
               name={config.label}
-              defaultValue={config.defaultValue}
               help={config.description}
               helpAfterLabel
               stacked

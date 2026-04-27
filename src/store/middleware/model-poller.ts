@@ -2,7 +2,6 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { isAction, type Middleware } from "redux";
 
 import {
-  connectToModel,
   fetchAndStoreModelStatus,
   fetchControllerList,
   fetchModelInfo,
@@ -18,7 +17,7 @@ import type { DestroyModelErrors } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { updateModelStatuses } from "store/app/actions";
 import { actions as generalActions } from "store/general";
-import { getUserPass, isLoggedIn } from "store/general/selectors";
+import { isLoggedIn } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { getModelList } from "store/juju/selectors";
 import { addControllerCloudRegion } from "store/juju/thunks";
@@ -31,7 +30,7 @@ import {
   createConnectionMiddleware,
   type ConnectionManager,
 } from "./connection";
-import disableCommandProcess from "./process/disableCommand";
+import { disableCommand } from "./process";
 import cloudInfoMiddleware from "./source/cloud-info";
 import modelListMiddleware from "./source/model-list";
 import { ModelsError } from "./types";
@@ -542,30 +541,20 @@ function runModelPoller(
             typeof response.uuid === "string" &&
             response.uuid.length > 0
           ) {
-            const credentials = getUserPass(
-              reduxStore.getState(),
-              wsControllerURL,
+            const modelURL = wsControllerURL.replace(
+              "/api",
+              `/model/${response.uuid}/api`,
             );
-            const modelConnection = await connectToModel(
-              response.uuid,
-              wsControllerURL,
-              credentials,
-            );
-            if (modelConnection) {
-              console.log("here");
-              await disableCommandProcess.start(
-                {
-                  connection: modelConnection,
-                  modelUUID: response.uuid,
-                  wsControllerURL,
-                  params: {
-                    type: disabledCommands,
-                  },
-                  meta: {},
+            reduxStore.dispatch(
+              disableCommand.run({
+                modelUUID: response.uuid,
+                modelURL,
+                wsControllerURL,
+                params: {
+                  type: disabledCommands,
                 },
-                reduxStore.dispatch,
-              );
-            }
+              }),
+            );
           }
 
           reduxStore.dispatch(

@@ -1,54 +1,66 @@
+import { Connection, type Transport } from "@canonical/jujulib";
 import type {
   BlockSwitchParams,
   ErrorResult,
 } from "@canonical/jujulib/dist/api/facades/block/BlockV2";
 
-import type { ConnectionWithFacades } from "juju/types";
 import { actions as jujuActions } from "store/juju";
 import type { Store } from "store/store";
 
-import disableCommand, { Label, type Payload } from "./disableCommand";
+import disableCommand, { Label, type Payload } from "./disable-command";
 
 describe("disableCommand process", () => {
   let dispatch: Store["dispatch"];
   let params: BlockSwitchParams;
   let payload: { meta: Record<string, unknown> } & Payload;
+  let modelConnection: Connection;
 
   beforeEach(() => {
     dispatch = vi.fn();
     params = { type: "BlockChange" };
+    // @ts-expect-error - Connection mocked in `src/testing/setup.ts`.
+    modelConnection = new Connection();
+    modelConnection.facades = {
+      block: {
+        switchBlockOn: vi.fn(),
+      },
+    };
+    modelConnection.transport = {} as Transport;
+
     payload = {
-      connection: {
-        facades: {
-          block: {
-            switchBlockOn: vi.fn(),
-          },
-        },
-      } as unknown as ConnectionWithFacades,
       modelUUID: "model-uuid-123",
+      modelURL: "wss://example.com/model/model-uuid-123/api",
       wsControllerURL: "wss://example.com",
       params,
-      meta: {},
+      meta: {
+        connections: {
+          modelURL: modelConnection,
+          wsControllerURL: modelConnection,
+        },
+      },
     };
   });
 
   it("creates a run action with the provided payload", () => {
     const action = disableCommand.actions.run({
-      connection: payload.connection,
       modelUUID: payload.modelUUID,
+      modelURL: payload.modelURL,
       wsControllerURL: payload.wsControllerURL,
       params: payload.params,
     });
 
     expect(action).toEqual({
-      type: "process/disableCommand/run",
+      type: "process/block/disable-command/run",
       payload: {
-        connection: payload.connection,
         modelUUID: "model-uuid-123",
+        modelURL: "wss://example.com/model/model-uuid-123/api",
         wsControllerURL: "wss://example.com",
         params,
       },
-      meta: undefined,
+      meta: {
+        withConnection: true,
+        connectionList: ["wsControllerURL", "modelURL"],
+      },
     });
   });
 
@@ -57,13 +69,11 @@ describe("disableCommand process", () => {
       error: null,
     } as unknown as ErrorResult;
     const switchBlockOn = vi.fn().mockResolvedValue(result);
-    payload.connection = {
-      facades: {
-        block: {
-          switchBlockOn,
-        },
+    modelConnection.facades = {
+      block: {
+        switchBlockOn,
       },
-    } as unknown as ConnectionWithFacades;
+    };
 
     await disableCommand.start(payload, dispatch);
 
@@ -77,6 +87,18 @@ describe("disableCommand process", () => {
     );
     expect(dispatch).toHaveBeenNthCalledWith(
       2,
+      expect.objectContaining({
+        type: "block/disable-command/noop",
+      }),
+    );
+    expect(dispatch).toHaveBeenNthCalledWith(
+      3,
+      expect.objectContaining({
+        type: "block/disable-command/noop",
+      }),
+    );
+    expect(dispatch).toHaveBeenNthCalledWith(
+      4,
       jujuActions.setBlockOutcome({
         modelUUID: "model-uuid-123",
         wsControllerURL: "wss://example.com",
@@ -86,7 +108,7 @@ describe("disableCommand process", () => {
       }),
     );
     expect(dispatch).toHaveBeenNthCalledWith(
-      3,
+      5,
       jujuActions.setBlockState({
         modelUUID: "model-uuid-123",
         wsControllerURL: "wss://example.com",
@@ -95,9 +117,7 @@ describe("disableCommand process", () => {
   });
 
   it("stores an error outcome when the block facade is missing", async () => {
-    payload.connection = {
-      facades: {},
-    } as unknown as ConnectionWithFacades;
+    modelConnection.facades = {};
 
     await disableCommand.start(payload, dispatch);
 
@@ -141,18 +161,16 @@ describe("disableCommand process", () => {
   it("stores an error outcome when switchBlockOn rejects", async () => {
     const error = new Error("boom");
     const switchBlockOn = vi.fn().mockRejectedValue(error);
-    payload.connection = {
-      facades: {
-        block: {
-          switchBlockOn,
-        },
+    modelConnection.facades = {
+      block: {
+        switchBlockOn,
       },
-    } as unknown as ConnectionWithFacades;
+    };
 
     await disableCommand.start(payload, dispatch);
 
     expect(switchBlockOn).toHaveBeenCalledExactlyOnceWith(params);
-    const [, [outcomeAction]] = (dispatch as ReturnType<typeof vi.fn>).mock
+    const [, , [outcomeAction]] = (dispatch as ReturnType<typeof vi.fn>).mock
       .calls;
     expect(outcomeAction).toEqual(
       jujuActions.setBlockOutcome({

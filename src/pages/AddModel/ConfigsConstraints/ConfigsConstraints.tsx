@@ -5,7 +5,6 @@ import {
   Switch,
   Textarea,
   List,
-  RadioInput,
 } from "@canonical/react-components";
 import { useFormikContext } from "formik";
 import { useState, type ChangeEvent, type JSX } from "react";
@@ -107,18 +106,15 @@ const ConfigsConstraints = (): JSX.Element => {
         items={DISABLED_COMMAND_OPTIONS.map(
           ({ label, value, description, disabledCommands }) => (
             <div className="disabled-commands__option" key={value}>
-              <RadioInput
-                checked={values.disabledCommands === value}
-                name="disableCommands"
+              <FormikField
+                type="radio"
+                name={FieldName.DISABLED_COMMANDS}
                 label={label}
-                onChange={() => {
-                  void setFieldValue("disabledCommands", value);
-                }}
                 value={value}
               />
               <div className="p-text--small u-no-margin--bottom">
                 {description}
-                {disabledCommands && disabledCommands.length > 0 ? (
+                {disabledCommands ? (
                   <div>
                     <b>Disables commands:</b> {disabledCommands.join(", ")}
                   </div>

@@ -21,6 +21,7 @@ export enum Label {
 export enum FieldName {
   CONFIG_INPUT_MODE = "configInputMode",
   CONFIG_YAML = "configYAML",
+  DISABLED_COMMANDS = "disabledCommands",
 }
 
 export type FormFields = {

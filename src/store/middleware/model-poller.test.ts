@@ -13,7 +13,6 @@ import { Label } from "juju/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { updateModelStatuses, type ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
-import * as generalSelectors from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -30,7 +29,7 @@ import {
 import { createStore } from "testing/utils";
 
 import { LoginError, modelPollerMiddleware } from "./model-poller";
-import disableCommand from "./process/disableCommand";
+import disableCommand from "./process/block/disable-command";
 import sourceMiddleware from "./source";
 import cloudInfoSource from "./source/cloud-info";
 import modelListSource from "./source/model-list";
@@ -46,7 +45,6 @@ vi.mock("juju/api", async (importOriginal) => {
     fetchAndStoreModelStatus: vi.fn(),
     fetchModelInfo: vi.fn(),
     setModelSharingPermissions: vi.fn(),
-    connectToModel: vi.fn(),
   };
 });
 
@@ -1534,27 +1532,17 @@ describe("model poller", () => {
   });
 
   it("triggers disable command process when model created with disabledCommands", async () => {
-    vi.spyOn(disableCommand, "start").mockResolvedValue();
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    vi.spyOn(generalSelectors, "getUserPass").mockReturnValue({
-      user: "eggman@external",
-      password: "test",
-    });
-    vi.spyOn(jujuModule, "connectToModel").mockResolvedValue({
-      facades: {
-        block: { switchBlockOn: vi.fn().mockReturnValue(null) },
-      },
-    } as unknown as Connection);
     conn.facades.modelManager.createModel.mockResolvedValue({
       uuid: "model-uuid-123",
     });
     const middleware = await runMiddleware();
     const action = jujuActions.addModel({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       modelName: "model123",
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
@@ -1570,41 +1558,34 @@ describe("model poller", () => {
       qualifier: "user-eggman@external",
       region: undefined,
     });
-    expect(jujuModule.connectToModel).toHaveBeenCalledWith(
-      "model-uuid-123",
-      "wss://example.com",
-      { user: "eggman@external", password: "test" },
-    );
-    expect(disableCommand.start).toHaveBeenCalledWith(
-      expect.objectContaining({
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      disableCommand.actions.run({
         modelUUID: "model-uuid-123",
-        wsControllerURL: "wss://example.com",
+        modelURL: "wss://example.com/model/model-uuid-123/api",
+        wsControllerURL: "wss://example.com/api",
         params: { type: "BlockChange" },
       }),
-      fakeStore.dispatch,
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.setAddModelResult({
         success: true,
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
       }),
     );
   });
 
   it("skips disable command process when model connection fails", async () => {
-    vi.spyOn(disableCommand, "start").mockResolvedValue();
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
       juju,
     }));
-    vi.spyOn(jujuModule, "connectToModel").mockResolvedValue(undefined);
     conn.facades.modelManager.createModel.mockResolvedValue({
       uuid: "model-uuid-123",
     });
     const middleware = await runMiddleware();
     const action = jujuActions.addModel({
-      wsControllerURL: "wss://example.com",
+      wsControllerURL: "wss://example.com/api",
       modelName: "model123",
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
@@ -1620,11 +1601,18 @@ describe("model poller", () => {
       qualifier: "user-eggman@external",
       region: undefined,
     });
-    expect(disableCommand.start).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      disableCommand.actions.run({
+        modelUUID: "model-uuid-123",
+        modelURL: "wss://example.com/model/model-uuid-123/api",
+        wsControllerURL: "wss://example.com/api",
+        params: { type: "BlockChange" },
+      }),
+    );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
       jujuActions.setAddModelResult({
         success: true,
-        wsControllerURL: "wss://example.com",
+        wsControllerURL: "wss://example.com/api",
       }),
     );
   });
