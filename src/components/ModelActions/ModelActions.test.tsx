@@ -1,4 +1,5 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
+import type { UserEvent } from "@testing-library/user-event";
 import userEvent from "@testing-library/user-event";
 
 import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
@@ -299,7 +300,12 @@ describe("ModelActions", () => {
   });
 
   describe("upgrade model", () => {
+    let userEventWithTimers: UserEvent;
+
     beforeEach(() => {
+      userEventWithTimers = userEvent.setup({
+        advanceTimers: vi.advanceTimersByTime,
+      });
       state = rootStateFactory.build({
         general: generalStateFactory.build({
           config: configFactory.build({
@@ -379,6 +385,10 @@ describe("ModelActions", () => {
       });
     });
 
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
     it("displays the loading state", async () => {
       state.juju.modelMigrationTargets = {
         abc123: modelMigrationTargetFactory.build({
@@ -409,7 +419,8 @@ describe("ModelActions", () => {
       expect(upgrade).toHaveAttribute("aria-disabled", "true");
     });
 
-    it("disables the upgrade option if there are no upgrades", async () => {
+    it("disables the upgrade option if there are no available controllers", async () => {
+      vi.useFakeTimers();
       state.juju.modelMigrationTargets = {
         abc123: modelMigrationTargetFactory.build({
           data: [],
@@ -425,10 +436,53 @@ describe("ModelActions", () => {
           state,
         },
       );
-      await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
-      expect(
-        screen.getByRole("menuitem", { name: Label.NO_UPGRADE }),
-      ).toHaveAttribute("aria-disabled", "true");
+      await userEventWithTimers.click(
+        screen.getByRole("button", { name: Label.TOGGLE }),
+      );
+      const menuItem = screen.getByRole("menuitem", { name: Label.UPGRADE });
+      expect(menuItem).toHaveAttribute("aria-disabled", "true");
+      await act(async () => {
+        await userEventWithTimers.hover(menuItem);
+        vi.runAllTimers();
+      });
+      expect(menuItem).toHaveAccessibleDescription(
+        "No upgrade available. Bootstrap a controller >=4.6.14 version first, to enable upgrades.",
+      );
+    });
+
+    it("disables the upgrade option if it is on the latest version", async () => {
+      vi.useFakeTimers();
+      state.juju.modelData.abc123.model.version = "4.6.14";
+      if (state.juju.modelData.abc123.info) {
+        state.juju.modelData.abc123.info["controller-uuid"] = "controller456";
+      } else {
+        assert.fail("Model info is undefined");
+      }
+      state.juju.modelMigrationTargets = {
+        abc123: modelMigrationTargetFactory.build({
+          data: [],
+        }),
+      };
+      renderComponent(
+        <ModelActions
+          qualifier="eggman@external"
+          modelUUID="abc123"
+          modelName="test1"
+        />,
+        {
+          state,
+        },
+      );
+      await userEventWithTimers.click(
+        screen.getByRole("button", { name: Label.TOGGLE }),
+      );
+      const menuItem = screen.getByRole("menuitem", { name: Label.UPGRADE });
+      expect(menuItem).toHaveAttribute("aria-disabled", "true");
+      await act(async () => {
+        await userEventWithTimers.hover(menuItem);
+        vi.runAllTimers();
+      });
+      expect(menuItem).toHaveAccessibleDescription(Label.UPGRADE_LATEST);
     });
 
     it("enables the upgrade option if there are upgrades", async () => {

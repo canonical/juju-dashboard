@@ -1,12 +1,13 @@
-import type { MenuLink } from "@canonical/react-components";
+import type { ContextualMenuDropdownProps } from "@canonical/react-components";
+import { Button, Tooltip } from "@canonical/react-components";
 import {
   ContextualMenu,
   Icon,
   Spinner,
   usePortal,
 } from "@canonical/react-components";
+import type { ReactNode } from "react";
 import { useState, type FC } from "react";
-import type { LinkProps } from "react-router";
 import { Link } from "react-router";
 
 import DestroyModelDialog from "components/DestroyModelDialog";
@@ -21,6 +22,8 @@ import { getIsJuju } from "store/general/selectors";
 import {
   getModelUpgradeDataLoaded,
   getModelUpgradeVersions,
+  getHighestSupportedVersion,
+  getNextSupportedVersion,
 } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
@@ -49,70 +52,88 @@ const generateLinks = (
   hasUpgrades: boolean,
   upgradeDataLoaded: boolean,
   rebacAllowed: boolean,
-): MenuLink<LinkProps & React.RefAttributes<HTMLAnchorElement>>[] => {
-  return [
-    ...(isJuju
-      ? []
-      : [
-          {
-            children: (
-              <>
-                {upgradeDataLoaded ? null : (
-                  <Spinner className="u-sh1--right" />
-                )}
-                {upgradeDataLoaded && !hasUpgrades
-                  ? Label.NO_UPGRADE
-                  : Label.UPGRADE}
-              </>
-            ),
-            disabled: !isJIMMControllerAdmin || !hasUpgrades,
-            onClick: (
-              event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-            ): void => {
-              event.stopPropagation();
-              setPanelQs(
-                {
-                  modelName,
-                  panel: "upgrade-model",
-                  qualifier,
-                },
-                { replace: true },
-              );
-            },
-          },
-        ]),
-    {
-      children: Label.ACCESS,
-      disabled: !canConfigureModel || (!isJuju && !rebacAllowed),
-      ...(isJuju
-        ? {
-            onClick: (
-              event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-            ): void => {
-              event.stopPropagation();
-              setPanelQs(
-                {
-                  model: modelName,
-                  panel: "share-model",
-                },
-                { replace: true },
-              );
-            },
-          }
-        : {
-            element: Link,
-            to: rebacURLS.groups.index,
-          }),
-    },
-    {
-      children: Label.DESTROY,
-      disabled: isController || !canConfigureModel,
-      onClick: (event: React.MouseEvent<HTMLButtonElement>): void => {
+  isLatest: boolean,
+  nextVersion: string | undefined,
+  handleClose: NonNullable<ContextualMenuDropdownProps["handleClose"]>,
+): React.JSX.Element => {
+  const upgradeButton: ReactNode = isJuju ? null : (
+    <Button
+      className="p-contextual-menu__link"
+      disabled={!isJIMMControllerAdmin || !hasUpgrades}
+      role="menuitem"
+      onClick={(event) => {
         event.stopPropagation();
-        openPortal(event);
-      },
-    },
-  ];
+        handleClose(event);
+        setPanelQs(
+          {
+            modelName,
+            panel: "upgrade-model",
+            qualifier,
+          },
+          { replace: true },
+        );
+      }}
+    >
+      {Label.UPGRADE}
+      {upgradeDataLoaded ? null : <Spinner className="u-sh1" />}
+    </Button>
+  );
+  let upgradeTooltip: null | string = null;
+  if (upgradeDataLoaded && !hasUpgrades) {
+    if (isLatest) {
+      upgradeTooltip = Label.UPGRADE_LATEST;
+    } else if (nextVersion) {
+      upgradeTooltip = `No upgrade available. Bootstrap a controller >=${nextVersion} version first, to enable upgrades.`;
+    }
+  }
+  return (
+    <>
+      {upgradeTooltip ? (
+        <Tooltip message={upgradeTooltip}>{upgradeButton}</Tooltip>
+      ) : (
+        upgradeButton
+      )}
+      <Button
+        className="p-contextual-menu__link"
+        disabled={!canConfigureModel || (!isJuju && !rebacAllowed)}
+        role="menuitem"
+        {...(isJuju
+          ? {
+              onClick: (
+                event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+              ): void => {
+                event.stopPropagation();
+                handleClose(event);
+                setPanelQs(
+                  {
+                    model: modelName,
+                    panel: "share-model",
+                  },
+                  { replace: true },
+                );
+              },
+            }
+          : {
+              element: Link,
+              to: rebacURLS.groups.index,
+            })}
+      >
+        {Label.ACCESS}
+      </Button>
+      <Button
+        className="p-contextual-menu__link"
+        disabled={isController || !canConfigureModel}
+        role="menuitem"
+        onClick={(event) => {
+          event.stopPropagation();
+          handleClose(event);
+          openPortal(event);
+        }}
+      >
+        {Label.DESTROY}
+      </Button>
+    </>
+  );
 };
 
 const ModelActions: FC<Props> = ({
@@ -136,6 +157,13 @@ const ModelActions: FC<Props> = ({
   const upgrades = useAppSelector((state) =>
     getModelUpgradeVersions(state, modelUUID),
   );
+  const modelVersion = modelStatusData?.model.version;
+  const nextVersion = useAppSelector((state) =>
+    getNextSupportedVersion(state, modelVersion),
+  );
+  const highestVersion = useAppSelector(getHighestSupportedVersion);
+  const isLatest =
+    !!highestVersion?.version && highestVersion.version === modelVersion;
   const upgradeDataLoaded = useAppSelector((state) =>
     getModelUpgradeDataLoaded(state, modelUUID),
   );
@@ -177,19 +205,24 @@ const ModelActions: FC<Props> = ({
           "aria-label": Label.TOGGLE,
         }}
         onToggleMenu={setFetchUpgrades}
-        links={generateLinks(
-          canConfigureModel,
-          isController,
-          isJIMMControllerAdmin,
-          isJuju,
-          modelName,
-          openPortal,
-          qualifier,
-          setPanelQs,
-          hasUpgrades,
-          upgradeDataLoaded,
-          rebacAllowed,
-        )}
+        children={(handleClose) =>
+          generateLinks(
+            canConfigureModel,
+            isController,
+            isJIMMControllerAdmin,
+            isJuju,
+            modelName,
+            openPortal,
+            qualifier,
+            setPanelQs,
+            hasUpgrades,
+            upgradeDataLoaded,
+            rebacAllowed,
+            isLatest,
+            nextVersion?.version,
+            handleClose,
+          )
+        }
         position={position}
       />
     </>

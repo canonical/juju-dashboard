@@ -155,6 +155,8 @@ import {
   getRecommendedVersions,
   getModelUpgrades,
   getModelUpgradeDataLoaded,
+  getHighestSupportedVersion,
+  getNextSupportedVersion,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3354,6 +3356,63 @@ describe("getModelUpgrade", () => {
       }),
     });
     expect(getModelUpgrade(state, "abc123")).toStrictEqual(upgrade);
+  });
+});
+
+describe("getHighestSupportedVersion", () => {
+  it("gets the highest version", () => {
+    const state = rootStateFactory.build({
+      juju: {
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: [
+            versionElemFactory.build({ version: "1.2.2" }),
+            versionElemFactory.build({ version: "1.2.3" }),
+            versionElemFactory.build({ version: "4.5.6" }),
+          ],
+        }),
+      },
+    });
+    expect(getHighestSupportedVersion(state)).toStrictEqual(
+      versionElemFactory.build({ version: "4.5.6" }),
+    );
+  });
+
+  it("handles no versions", () => {
+    const state = rootStateFactory.build();
+    expect(getHighestSupportedVersion(state)).toBeNull();
+  });
+});
+
+describe("getNextSupportedVersion", () => {
+  it("gets the highest version", () => {
+    const state = rootStateFactory.build({
+      juju: {
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: [
+            versionElemFactory.build({ version: "1.2.2" }),
+            versionElemFactory.build({ version: "1.2.3" }),
+            versionElemFactory.build({ version: "4.5.6" }),
+          ],
+        }),
+      },
+    });
+    expect(getNextSupportedVersion(state, "1.2.2")).toStrictEqual(
+      versionElemFactory.build({ version: "1.2.3" }),
+    );
+  });
+
+  it("handles no higher versions", () => {
+    const state = rootStateFactory.build({
+      juju: {
+        supportedJujuVersions: supportedJujuVersionsStateFactory.build({
+          data: [
+            versionElemFactory.build({ version: "1.2.2" }),
+            versionElemFactory.build({ version: "1.2.3" }),
+          ],
+        }),
+      },
+    });
+    expect(getNextSupportedVersion(state, "1.2.3")).toBeNull();
   });
 });
 

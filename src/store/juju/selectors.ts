@@ -1427,6 +1427,44 @@ export const getModelMigrationTargets = createSelector(
     },
 );
 
+export const getHighestSupportedVersion = createSelector(
+  [getSupportedJujuVersions],
+  (versions) =>
+    versions.data?.reduce<null | VersionElem>((highest, version) => {
+      if (!highest || isHigherSemver(version.version, highest.version)) {
+        highest = version;
+      }
+      return highest;
+    }, null) ?? null,
+);
+
+export const getNextSupportedVersion = createSelector(
+  [
+    getSupportedJujuVersions,
+    (_state, version?: null | string): null | string | undefined => version,
+  ],
+  (versions, version) => {
+    if (!version) {
+      return null;
+    }
+    return (
+      versions.data?.reduce<null | VersionElem>((next, supportedVersion) => {
+        const higherThanCurrent = isHigherSemver(
+          supportedVersion.version,
+          version,
+        );
+        if (
+          higherThanCurrent &&
+          (!next || isHigherSemver(next.version, supportedVersion.version))
+        ) {
+          next = supportedVersion;
+        }
+        return next;
+      }, null) ?? null
+    );
+  },
+);
+
 /**
  * Get the controller objects for model migration targets that have a specific version.
  */
