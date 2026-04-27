@@ -29,7 +29,10 @@ import { InputMode } from "./ConfigsConstraints/ContentSwitcher/types";
 import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
 import { FieldName as ConfigFieldName } from "./ConfigsConstraints/types";
 import { DisableType } from "./ConfigsConstraints/types";
-import { getConfigInitialValues } from "./ConfigsConstraints/utils";
+import {
+  buildChangedConfigPayload,
+  getConfigInitialValues,
+} from "./ConfigsConstraints/utils";
 import MandatoryDetails from "./MandatoryDetails";
 import { TestId, StepType, Label, type AddModelFormState } from "./types";
 
@@ -89,6 +92,8 @@ const AddModel: FC = () => {
       return;
     }
 
+    const config = buildChangedConfigPayload(CONFIG_CATEGORIES, values);
+
     dispatch(
       jujuActions.addModel({
         wsControllerURL,
@@ -98,6 +103,7 @@ const AddModel: FC = () => {
         userTag,
         disabledCommands: values.disabledCommands,
         region: values.region || undefined,
+        ...(Object.keys(config).length > 0 ? { config } : {}),
       }),
     );
     setModelName(values.modelName);

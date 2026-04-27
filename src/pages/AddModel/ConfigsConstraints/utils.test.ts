@@ -1,5 +1,6 @@
 import type { CategoryDefinition } from "./configCatalog";
 import {
+  buildChangedConfigPayload,
   buildConfigYAML,
   filterConfigsBySearch,
   getChangedFields,
@@ -168,6 +169,59 @@ describe("utils", () => {
       expect(result).not.toContain("container-networking-method");
       expect(result).toContain("logging-config: debug");
       expect(result).not.toContain("logging-level");
+    });
+  });
+
+  describe("buildChangedConfigPayload", () => {
+    const categories: CategoryDefinition[] = [
+      {
+        category: "Networking",
+        fields: [
+          {
+            label: "default-space",
+            defaultValue: "alpha",
+            description: "Default space",
+          },
+          {
+            label: "container-networking-method",
+            defaultValue: "provider",
+            description: "Networking method",
+          },
+        ],
+      },
+      {
+        category: "Logging",
+        fields: [
+          {
+            label: "logging-config",
+            defaultValue: "",
+            description: "Logging config",
+          },
+        ],
+      },
+    ];
+
+    it("returns empty object when no fields have changed", () => {
+      const result = buildChangedConfigPayload(categories, {
+        "default-space": "alpha",
+        "container-networking-method": "provider",
+        "logging-config": "",
+      });
+
+      expect(result).toEqual({});
+    });
+
+    it("returns only changed field labels and values", () => {
+      const result = buildChangedConfigPayload(categories, {
+        "default-space": "custom-space",
+        "container-networking-method": "provider",
+        "logging-config": "debug",
+      });
+
+      expect(result).toEqual({
+        "default-space": "custom-space",
+        "logging-config": "debug",
+      });
     });
   });
 

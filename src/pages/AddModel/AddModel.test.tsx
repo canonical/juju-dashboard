@@ -302,6 +302,41 @@ describe("AddModel page", () => {
     });
   });
 
+  it("sends changed configs when model is submitted", async () => {
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<AddModel />, { store });
+
+    const addModelAction = jujuActions.addModel({
+      cloudTag: "cloud-aws",
+      credential: "",
+      config: {
+        "default-space": "my-space",
+      },
+      modelName: "my-model",
+      userTag: "user-eggman@external",
+      disabledCommands: DisableType.NONE,
+      wsControllerURL: "wss://controller.example.com",
+    });
+
+    await userEvent.type(
+      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
+      "my-model",
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
+    await userEvent.type(screen.getByLabelText("default-space"), "my-space");
+    await waitFor(() =>
+      fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM)),
+    );
+
+    await waitFor(() => {
+      expect(
+        actions.find((dispatch) => dispatch.type === addModelAction.type),
+      ).toMatchObject(addModelAction);
+    });
+  });
+
   it("shows success toast when model creation succeeds", async () => {
     state.juju.addModelState = {
       loading: false,

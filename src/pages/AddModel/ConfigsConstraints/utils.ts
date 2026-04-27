@@ -64,6 +64,17 @@ export const buildConfigYAML = (
   return yamlSections.join("\n\n");
 };
 
+export const buildChangedConfigPayload = (
+  categories: CategoryDefinition[],
+  values: Record<string, string>,
+): Record<string, string> =>
+  categories.reduce<Record<string, string>>((config, category) => {
+    getChangedFields(category, values).forEach((field) => {
+      config[field.label] = values[field.label];
+    });
+    return config;
+  }, {});
+
 export const getConfigInitialValues = (
   categories: CategoryDefinition[],
 ): Record<string, string> =>
