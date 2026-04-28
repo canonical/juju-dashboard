@@ -97,5 +97,5 @@ export const filterConfigsBySearch = (query: string): CategoryDefinition[] => {
         field.label.toLowerCase().includes(lowerQuery) ||
         field.description.toLowerCase().includes(lowerQuery),
     ),
-  })).filter(({ fields }) => fields.length > 0);
+  })).filter((category) => category.fields.length > 0);
 };

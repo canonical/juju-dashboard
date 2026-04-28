@@ -63,24 +63,22 @@ const ConfigsConstraints = (): JSX.Element => {
     ? categoriesWithChangedConfigs
     : filteredCategories;
 
-  const ChangedOnlySwitchWrapper = ({
-    children,
-  }: {
-    children: JSX.Element;
-  }): JSX.Element =>
-    hasChangedConfigs ? (
-      <>{children}</>
-    ) : (
-      <Tooltip message={Label.NO_CHANGED_CONFIGS} position="btm-left">
-        {children}
-      </Tooltip>
-    );
+  const changedOnlySwitch = (
+    <Switch
+      label={Label.CHANGED_CONFIGS_ONLY}
+      checked={changedOnly}
+      onChange={(event: ChangeEvent<HTMLInputElement>): void => {
+        if (!hasChangedConfigs && event.target.checked) {
+          return;
+        }
+
+        setChangedOnly(event.target.checked);
+      }}
+    />
+  );
 
   return (
-    <div
-      {...testId(TestId.CONFIGS_CONSTRAINTS_FORM)}
-      className="configs-constraints"
-    >
+    <div {...testId(TestId.CONFIGS_CONSTRAINTS_FORM)}>
       <ContentSwitcher
         showPrimary={isConfigListMode}
         docsLabel={Label.MODEL_CONFIG_DOCS}
@@ -97,25 +95,19 @@ const ConfigsConstraints = (): JSX.Element => {
                   onClear={() => {
                     setRawSearchQuery("");
                   }}
-                  className="configs__search-input"
+                  className="u-no-margin--bottom"
                   aria-label="Search configurations"
                 />
               </div>
             </div>
-            <ChangedOnlySwitchWrapper>
-              <Switch
-                label={Label.CHANGED_CONFIGS_ONLY}
-                checked={changedOnly}
-                onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-                  if (!hasChangedConfigs && event.target.checked) {
-                    return;
-                  }
-
-                  setChangedOnly(event.target.checked);
-                }}
-              />
-            </ChangedOnlySwitchWrapper>
-            <div className="configs__form-scroll">
+            {hasChangedConfigs ? (
+              changedOnlySwitch
+            ) : (
+              <Tooltip message={Label.NO_CHANGED_CONFIGS} position="btm-left">
+                {changedOnlySwitch}
+              </Tooltip>
+            )}
+            <div className="configs__form-scroll u-sv-1--top">
               {visibleCategories.length > 0 ? (
                 visibleCategories.map(({ category, fields }, index) => (
                   <Row
