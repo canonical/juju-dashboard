@@ -1,7 +1,8 @@
-import { Connection, type Transport } from "@canonical/jujulib";
+import { Connection } from "@canonical/jujulib";
 import type { BlockSwitchParams } from "@canonical/jujulib/dist/api/facades/block/BlockV2";
 
 import { actions as jujuActions } from "store/juju";
+import type { ManagedConnection } from "store/middleware/connection/connection-manager";
 import type { Store } from "store/store";
 
 import disableCommand, { Label, type Payload } from "./disable-command";
@@ -15,14 +16,15 @@ describe("disableCommand process", () => {
   beforeEach(() => {
     dispatch = vi.fn();
     params = { type: "BlockChange" };
-    // @ts-expect-error - Connection mocked in `src/testing/setup.ts`.
-    modelConnection = new Connection();
+    modelConnection = {} as ManagedConnection;
+    const controllerConnection = {} as ManagedConnection;
+    Object.setPrototypeOf(modelConnection, Connection.prototype);
+    Object.setPrototypeOf(controllerConnection, Connection.prototype);
     modelConnection.facades = {
       block: {
         switchBlockOn: vi.fn(),
       },
     };
-    modelConnection.transport = {} as Transport;
 
     payload = {
       modelUUID: "model-uuid-123",
@@ -32,7 +34,7 @@ describe("disableCommand process", () => {
       meta: {
         connections: {
           modelURL: modelConnection,
-          wsControllerURL: modelConnection,
+          wsControllerURL: controllerConnection,
         },
       },
     };
@@ -77,21 +79,26 @@ describe("disableCommand process", () => {
     expect(switchBlockOn).toHaveBeenCalledExactlyOnceWith(params);
     expect(dispatch).toHaveBeenNthCalledWith(
       1,
-      jujuActions.setBlockState({
+      jujuActions.setBlockRunning({
         modelUUID: "model-uuid-123",
+        running: true,
         wsControllerURL: "wss://example.com",
       }),
     );
     expect(dispatch).toHaveBeenNthCalledWith(
       2,
-      expect.objectContaining({
-        type: "block/disable-command/noop",
+      jujuActions.setBlockStatus({
+        modelUUID: "model-uuid-123",
+        status: "pending",
+        wsControllerURL: "wss://example.com",
       }),
     );
     expect(dispatch).toHaveBeenNthCalledWith(
       3,
-      expect.objectContaining({
-        type: "block/disable-command/noop",
+      jujuActions.setBlockStatus({
+        modelUUID: "model-uuid-123",
+        status: "initiated",
+        wsControllerURL: "wss://example.com",
       }),
     );
     expect(dispatch).toHaveBeenNthCalledWith(
@@ -100,14 +107,15 @@ describe("disableCommand process", () => {
         modelUUID: "model-uuid-123",
         wsControllerURL: "wss://example.com",
         outcome: {
-          result,
+          result: undefined,
         },
       }),
     );
     expect(dispatch).toHaveBeenNthCalledWith(
       5,
-      jujuActions.setBlockState({
+      jujuActions.setBlockRunning({
         modelUUID: "model-uuid-123",
+        running: false,
         wsControllerURL: "wss://example.com",
       }),
     );
@@ -115,13 +123,13 @@ describe("disableCommand process", () => {
 
   it("stores an error outcome when the block facade is missing", async () => {
     modelConnection.facades = {};
-
     await disableCommand.start(payload, dispatch);
 
     expect(dispatch).toHaveBeenNthCalledWith(
       1,
-      jujuActions.setBlockState({
+      jujuActions.setBlockRunning({
         modelUUID: "model-uuid-123",
+        running: true,
         wsControllerURL: "wss://example.com",
       }),
     );
@@ -140,8 +148,9 @@ describe("disableCommand process", () => {
     );
     expect(dispatch).toHaveBeenNthCalledWith(
       3,
-      jujuActions.setBlockState({
+      jujuActions.setBlockRunning({
         modelUUID: "model-uuid-123",
+        running: false,
         wsControllerURL: "wss://example.com",
       }),
     );
@@ -167,6 +176,14 @@ describe("disableCommand process", () => {
     await disableCommand.start(payload, dispatch);
 
     expect(switchBlockOn).toHaveBeenCalledExactlyOnceWith(params);
+    expect(dispatch).toHaveBeenNthCalledWith(
+      2,
+      jujuActions.setBlockStatus({
+        modelUUID: "model-uuid-123",
+        status: "pending",
+        wsControllerURL: "wss://example.com",
+      }),
+    );
     const [, , [outcomeAction]] = (dispatch as ReturnType<typeof vi.fn>).mock
       .calls;
     expect(outcomeAction).toEqual(

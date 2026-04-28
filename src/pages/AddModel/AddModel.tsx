@@ -169,8 +169,8 @@ const AddModel: FC = () => {
               credential: "",
               [ConfigFieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
               [ConfigFieldName.CONFIG_YAML]: "",
+              [ConfigFieldName.DISABLED_COMMANDS]: DisableType.NONE,
               ...getConfigInitialValues(CONFIG_CATEGORIES),
-              disabledCommands: DisableType.NONE,
             }}
             validationSchema={validationSchema}
             onSubmit={handleCreateClick}

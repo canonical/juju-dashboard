@@ -27,7 +27,7 @@ export enum FieldName {
 export type FormFields = {
   [FieldName.CONFIG_INPUT_MODE]: InputMode;
   [FieldName.CONFIG_YAML]: string;
-  disabledCommands: DisableType;
+  [FieldName.DISABLED_COMMANDS]: DisableType;
 };
 
 export enum DisableType {

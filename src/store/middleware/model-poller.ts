@@ -546,16 +546,21 @@ function runModelPoller(
               "/api",
               `/model/${response.uuid}/api`,
             );
-            reduxStore.dispatch(
-              disableCommand.run({
-                modelUUID: response.uuid,
-                modelURL,
-                wsControllerURL,
-                params: {
-                  type: disabledCommands,
-                },
-              }),
-            );
+            const modelConnection = await connections
+              .get(modelURL)
+              .catch((_err) => undefined);
+            if (modelConnection) {
+              reduxStore.dispatch(
+                disableCommand.run({
+                  modelUUID: response.uuid,
+                  modelURL,
+                  wsControllerURL,
+                  params: {
+                    type: disabledCommands,
+                  },
+                }),
+              );
+            }
           }
 
           reduxStore.dispatch(

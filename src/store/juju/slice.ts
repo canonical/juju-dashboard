@@ -837,13 +837,42 @@ const slice = createSlice({
       state.addModelState.loading = false;
       state.addModelState.loaded = true;
     },
-    setBlockState: (
+    setBlockRunning: (
       state,
-      action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          running: boolean;
+        } & WsControllerURLParam
+      >,
     ) => {
-      state.blockState[action.payload.modelUUID] = {
-        outcome: null,
-      };
+      if (!state.blockState[action.payload.modelUUID]) {
+        state.blockState[action.payload.modelUUID] = {
+          running: false,
+          status: null,
+          outcome: null,
+        };
+      }
+      state.blockState[action.payload.modelUUID].running =
+        action.payload.running;
+    },
+    setBlockStatus: (
+      state,
+      action: PayloadAction<
+        {
+          modelUUID: string;
+          status: BlockEntry["status"];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      if (!state.blockState[action.payload.modelUUID]) {
+        state.blockState[action.payload.modelUUID] = {
+          running: false,
+          status: null,
+          outcome: null,
+        };
+      }
+      state.blockState[action.payload.modelUUID].status = action.payload.status;
     },
     setBlockOutcome: (
       state,
@@ -856,6 +885,8 @@ const slice = createSlice({
     ) => {
       if (!state.blockState[action.payload.modelUUID]) {
         state.blockState[action.payload.modelUUID] = {
+          running: false,
+          status: null,
           outcome: null,
         };
       }

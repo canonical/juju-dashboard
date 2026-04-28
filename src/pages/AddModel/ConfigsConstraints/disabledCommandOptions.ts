@@ -75,7 +75,6 @@ export const DISABLED_COMMAND_OPTIONS: DisabledCommandOptionDefinition[] = [
       "set-credential",
       "set-constraints",
       "sync-agents",
-      // eslint-disable-next-line @cspell/spellchecker
       "unexpose",
       "refresh",
       "upgrade-model",

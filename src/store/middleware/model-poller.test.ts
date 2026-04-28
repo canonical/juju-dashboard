@@ -1,5 +1,6 @@
 import type { Client, Transport } from "@canonical/jujulib";
 import { Connection } from "@canonical/jujulib";
+import * as jujuLib from "@canonical/jujulib";
 import { waitFor } from "@testing-library/dom";
 import type { UnknownAction, MiddlewareAPI, Dispatch } from "redux";
 import type { Mock, MockInstance } from "vitest";
@@ -1538,6 +1539,10 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
+    vi.spyOn(jujuLib, "connectAndLogin").mockResolvedValue({
+      conn,
+      logout: vi.fn(),
+    });
     conn.facades.modelManager.createModel.mockResolvedValue({
       uuid: "model-uuid-123",
     });
@@ -1581,6 +1586,9 @@ describe("model poller", () => {
       intervalId,
       juju,
     }));
+    vi.spyOn(jujuLib, "connectAndLogin").mockRejectedValue(
+      new Error("model connection failed"),
+    );
     conn.facades.modelManager.createModel.mockResolvedValue({
       uuid: "model-uuid-123",
     });
@@ -1602,7 +1610,7 @@ describe("model poller", () => {
       qualifier: "user-eggman@external",
       region: undefined,
     });
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+    expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
       disableCommand.actions.run({
         modelUUID: "model-uuid-123",
         modelURL: "wss://example.com/model/model-uuid-123/api",
