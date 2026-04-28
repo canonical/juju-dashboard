@@ -86,10 +86,10 @@ export const getConfigInitialValues = (
   }, {});
 
 export const filterConfigsBySearch = (query: string): CategoryDefinition[] => {
-  if (!query.trim()) {
+  const lowerQuery = query.toLowerCase().trim();
+  if (!lowerQuery) {
     return CONFIG_CATEGORIES;
   }
-  const lowerQuery = query.toLowerCase();
   return CONFIG_CATEGORIES.map((category) => ({
     ...category,
     fields: category.fields.filter(

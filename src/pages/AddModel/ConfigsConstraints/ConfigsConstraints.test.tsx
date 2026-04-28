@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { act, fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 import { vi } from "vitest";
@@ -140,24 +140,31 @@ describe("ConfigsConstraints", () => {
   });
 
   it("filters configs by field name", async () => {
+    vi.useFakeTimers();
     renderComponent(
       <Formik initialValues={{}} onSubmit={vi.fn()}>
         <ConfigsConstraints />
       </Formik>,
     );
 
-    await userEvent.type(
-      screen.getByRole("searchbox", { name: "Search configurations" }),
-      "default-space",
-    );
+    const searchInput = screen.getByRole("searchbox", {
+      name: "Search configurations",
+    });
+    fireEvent.change(searchInput, { target: { value: "default-space" } });
+
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
 
     expect(screen.getByLabelText("default-space")).toBeInTheDocument();
     expect(
       screen.queryByLabelText("container-networking-method"),
     ).not.toBeInTheDocument();
+    vi.useRealTimers();
   });
 
   it("filters configs by description", async () => {
+    vi.useFakeTimers();
     renderComponent(
       <Formik initialValues={{}} onSubmit={vi.fn()}>
         <ConfigsConstraints />
@@ -168,20 +175,36 @@ describe("ConfigsConstraints", () => {
       name: "Search configurations",
     });
 
-    await userEvent.type(searchInput, "network firewalling");
+    fireEvent.change(searchInput, {
+      target: { value: "network firewalling" },
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
 
     expect(screen.getByLabelText("firewall-mode")).toBeInTheDocument();
     expect(screen.queryByLabelText("default-space")).not.toBeInTheDocument();
 
-    await userEvent.clear(searchInput);
-    await userEvent.type(searchInput, "Proxy & Mirror");
+    fireEvent.change(searchInput, { target: { value: "" } });
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
+
+    fireEvent.change(searchInput, { target: { value: "Proxy & Mirror" } });
+
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
 
     expect(
       screen.getByText('No results found for "Proxy & Mirror"'),
     ).toBeInTheDocument();
+    vi.useRealTimers();
   });
 
   it("clears the search and restores the full list", async () => {
+    vi.useFakeTimers();
     renderComponent(
       <Formik initialValues={{}} onSubmit={vi.fn()}>
         <ConfigsConstraints />
@@ -192,19 +215,29 @@ describe("ConfigsConstraints", () => {
       name: "Search configurations",
     });
 
-    await userEvent.type(searchInput, "default-space");
+    fireEvent.change(searchInput, { target: { value: "default-space" } });
+
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
+
     expect(
       screen.queryByLabelText("container-networking-method"),
     ).not.toBeInTheDocument();
 
-    await userEvent.click(
+    fireEvent.click(
       screen.getByRole("button", { name: /clear search field/i }),
     );
+
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
 
     expect(screen.getByLabelText("default-space")).toBeInTheDocument();
     expect(
       screen.getByLabelText("container-networking-method"),
     ).toBeInTheDocument();
+    vi.useRealTimers();
   });
 
   it("initialises in YAML mode when configInputMode is yaml", () => {

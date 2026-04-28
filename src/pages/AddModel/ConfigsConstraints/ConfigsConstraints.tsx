@@ -12,6 +12,7 @@ import classNames from "classnames";
 import { useFormikContext } from "formik";
 import { useState, type ChangeEvent, type JSX } from "react";
 
+import useDebounce from "hooks/useDebounce";
 import { testId } from "testing/utils";
 import { externalURLs } from "urls";
 
@@ -33,7 +34,8 @@ const ConfigsConstraints = (): JSX.Element => {
   >();
 
   const [changedOnly, setChangedOnly] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [rawSearchQuery, setRawSearchQuery] = useState("");
+  const searchQuery = useDebounce(rawSearchQuery, 250);
   const isConfigListMode =
     values[FieldName.CONFIG_INPUT_MODE] !== InputMode.YAML;
 
@@ -88,14 +90,12 @@ const ConfigsConstraints = (): JSX.Element => {
             <div className="row u-no-padding">
               <div className="col-4">
                 <SearchBox
-                  externallyControlled
                   name="configSearch"
                   id="configSearch"
                   placeholder="Search configurations"
-                  value={searchQuery}
-                  onChange={setSearchQuery}
+                  onChange={setRawSearchQuery}
                   onClear={() => {
-                    setSearchQuery("");
+                    setRawSearchQuery("");
                   }}
                   className="configs__search-input"
                   aria-label="Search configurations"
