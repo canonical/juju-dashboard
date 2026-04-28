@@ -14,6 +14,7 @@ import {
   findAuditEvents,
 } from "juju/jimm/api";
 import type { DestroyModelErrors } from "juju/types";
+import { DisableType } from "pages/AddModel/ConfigsConstraints/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { updateModelStatuses } from "store/app/actions";
 import { actions as generalActions } from "store/general";
@@ -537,7 +538,7 @@ function runModelPoller(
           if ("error" in response) {
             throw response.error;
           } else if (
-            disabledCommands !== "none" &&
+            disabledCommands !== DisableType.NONE &&
             typeof response.uuid === "string" &&
             response.uuid.length > 0
           ) {

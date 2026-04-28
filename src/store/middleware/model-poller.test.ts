@@ -10,6 +10,7 @@ import * as jujuModule from "juju/api";
 import * as jimmModule from "juju/jimm/api";
 import { pollWhoamiStart } from "juju/jimm/listeners";
 import { Label } from "juju/types";
+import { DisableType } from "pages/AddModel/ConfigsConstraints/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { updateModelStatuses, type ControllerArgs } from "store/app/actions";
 import { actions as generalActions } from "store/general";
@@ -1411,7 +1412,7 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
-      disabledCommands: "none",
+      disabledCommands: DisableType.NONE,
     });
     await middleware(next)(action);
     expect(conn.facades.modelManager.createModel).toHaveBeenCalledWith({
@@ -1443,7 +1444,7 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
-      disabledCommands: "none",
+      disabledCommands: DisableType.NONE,
     });
     await middleware(next)(action);
     expect(conn.facades.modelManager.createModel).not.toHaveBeenCalled();
@@ -1463,7 +1464,7 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
-      disabledCommands: "none",
+      disabledCommands: DisableType.NONE,
     });
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -1491,7 +1492,7 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
-      disabledCommands: "none",
+      disabledCommands: DisableType.NONE,
     });
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -1519,7 +1520,7 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
-      disabledCommands: "none",
+      disabledCommands: DisableType.NONE,
     });
     await middleware(next)(action);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -1547,7 +1548,7 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
-      disabledCommands: "BlockChange",
+      disabledCommands: DisableType.ALL,
     });
     await middleware(next)(action);
     expect(conn.facades.modelManager.createModel).toHaveBeenCalledWith({
@@ -1563,7 +1564,7 @@ describe("model poller", () => {
         modelUUID: "model-uuid-123",
         modelURL: "wss://example.com/model/model-uuid-123/api",
         wsControllerURL: "wss://example.com/api",
-        params: { type: "BlockChange" },
+        params: { type: DisableType.ALL },
       }),
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -1590,7 +1591,7 @@ describe("model poller", () => {
       userTag: "user-eggman@external",
       cloudTag: "cloud-aws",
       credential: "credential-aws",
-      disabledCommands: "BlockChange",
+      disabledCommands: DisableType.ALL,
     });
     await middleware(next)(action);
     expect(conn.facades.modelManager.createModel).toHaveBeenCalledWith({
@@ -1606,7 +1607,7 @@ describe("model poller", () => {
         modelUUID: "model-uuid-123",
         modelURL: "wss://example.com/model/model-uuid-123/api",
         wsControllerURL: "wss://example.com/api",
-        params: { type: "BlockChange" },
+        params: { type: DisableType.ALL },
       }),
     );
     expect(fakeStore.dispatch).toHaveBeenCalledWith(

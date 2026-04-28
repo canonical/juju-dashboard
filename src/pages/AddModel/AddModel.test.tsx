@@ -19,6 +19,7 @@ import AddModel from "./AddModel";
 import {
   TestId as ConfigsConstraintsTestId,
   Label as ConfigsConstraintsLabel,
+  DisableType,
 } from "./ConfigsConstraints/types";
 import {
   TestId as MandatoryDetailsTestId,
@@ -247,7 +248,7 @@ describe("AddModel page", () => {
       modelName: "my-model",
       userTag: "user-eggman@external",
       wsControllerURL: "wss://controller.example.com",
-      disabledCommands: "none",
+      disabledCommands: DisableType.NONE,
     });
 
     await userEvent.type(
@@ -275,7 +276,7 @@ describe("AddModel page", () => {
       modelName: "my-model",
       userTag: "user-eggman@external",
       wsControllerURL: "wss://controller.example.com",
-      disabledCommands: "BlockDestroy",
+      disabledCommands: DisableType.DESTROY_MODEL,
     });
 
     await userEvent.type(

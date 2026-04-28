@@ -17,6 +17,7 @@ import type {
   VersionElem,
 } from "juju/jimm/JIMMV4";
 import type { FullStatusWithAnnotations, ModelInfo } from "juju/types";
+import type { DisableType } from "pages/AddModel/ConfigsConstraints/types";
 import type { ProcessOutcome } from "store/middleware/process";
 import type { GenericItemsState, GenericState } from "store/types";
 
@@ -149,7 +150,7 @@ export type AddModel = {
   credential: string;
   cloudTag: string;
   userTag: string;
-  disabledCommands: string;
+  disabledCommands: DisableType;
   region?: string;
 };
 

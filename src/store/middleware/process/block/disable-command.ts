@@ -24,7 +24,7 @@ export type Payload = {
   params: BlockSwitchParams;
 };
 
-export type BlockStatus = { status: "initiated" } | { status: "pending" };
+export type BlockStatus = { status: "initiated" | "pending" };
 
 export async function* runBlock(
   params: BlockSwitchParams,

@@ -1,8 +1,5 @@
 import { Connection, type Transport } from "@canonical/jujulib";
-import type {
-  BlockSwitchParams,
-  ErrorResult,
-} from "@canonical/jujulib/dist/api/facades/block/BlockV2";
+import type { BlockSwitchParams } from "@canonical/jujulib/dist/api/facades/block/BlockV2";
 
 import { actions as jujuActions } from "store/juju";
 import type { Store } from "store/store";
@@ -66,8 +63,8 @@ describe("disableCommand process", () => {
 
   it("calls switchBlockOn and dispatches success outcome", async () => {
     const result = {
-      error: null,
-    } as unknown as ErrorResult;
+      error: undefined,
+    };
     const switchBlockOn = vi.fn().mockResolvedValue(result);
     modelConnection.facades = {
       block: {

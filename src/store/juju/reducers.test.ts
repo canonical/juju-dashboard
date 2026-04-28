@@ -1,3 +1,4 @@
+import { DisableType } from "pages/AddModel/ConfigsConstraints/types";
 import { charmInfoFactory } from "testing/factories/juju/Charms";
 import {
   applicationStatusFactory,
@@ -1672,7 +1673,7 @@ describe("reducers", () => {
           credential: "credential-aws",
           userTag: "user-123",
           wsControllerURL: "wss://example.com",
-          disabledCommands: "none",
+          disabledCommands: DisableType.NONE,
         }),
       ),
     ).toStrictEqual({
