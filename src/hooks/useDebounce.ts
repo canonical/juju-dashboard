@@ -1,22 +1,50 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
- * Hook that debounces a value.
- * @param value - The value to debounce
+ * Hook that debounces state updates.
+ * @param initialValue - The initial value
  * @param delay - The debounce delay in milliseconds
- * @returns The debounced value
+ * @returns Tuple of debounced value and setter
  */
-export default function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+export default function useDebounce<T>(
+  initialValue: T,
+  delay: number,
+): [T, (value: T, options?: { immediate?: boolean }) => void] {
+  const [debouncedValue, setDebouncedValue] = useState(() => initialValue);
+  const pendingValueRef = useRef(initialValue);
+  const timeoutRef = useRef<null | ReturnType<typeof setTimeout>>(null);
+
+  const clearPendingTimeout = useCallback((): void => {
+    if (timeoutRef.current !== null && timeoutRef.current !== undefined) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, []);
+
+  const setValue = useCallback(
+    (value: T, options?: { immediate?: boolean }): void => {
+      pendingValueRef.current = value;
+
+      clearPendingTimeout();
+
+      if (options?.immediate) {
+        setDebouncedValue(() => value);
+        return;
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        setDebouncedValue(() => pendingValueRef.current);
+        timeoutRef.current = null;
+      }, delay);
+    },
+    [clearPendingTimeout, delay],
+  );
 
   useEffect(() => {
-    const id = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
     return (): void => {
-      clearTimeout(id);
+      clearPendingTimeout();
     };
-  }, [value, delay]);
+  }, [clearPendingTimeout]);
 
-  return debouncedValue;
+  return [debouncedValue, setValue];
 }

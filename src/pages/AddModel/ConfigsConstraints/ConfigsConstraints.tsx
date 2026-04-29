@@ -34,8 +34,7 @@ const ConfigsConstraints = (): JSX.Element => {
   >();
 
   const [changedOnly, setChangedOnly] = useState(false);
-  const [rawSearchQuery, setRawSearchQuery] = useState("");
-  const searchQuery = useDebounce(rawSearchQuery, 250);
+  const [searchQuery, setSearchQuery] = useDebounce("", 250);
   const isConfigListMode =
     values[FieldName.CONFIG_INPUT_MODE] !== InputMode.YAML;
 
@@ -91,9 +90,9 @@ const ConfigsConstraints = (): JSX.Element => {
                   name="configSearch"
                   id="configSearch"
                   placeholder="Search configurations"
-                  onChange={setRawSearchQuery}
+                  onChange={setSearchQuery}
                   onClear={() => {
-                    setRawSearchQuery("");
+                    setSearchQuery("", { immediate: true });
                   }}
                   className="u-no-margin--bottom"
                   aria-label="Search configurations"

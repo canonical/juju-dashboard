@@ -14,61 +14,119 @@ describe("useDebounce", () => {
 
   it("returns the initial value immediately", () => {
     const { result } = renderHook(() => useDebounce("hello", 250));
-    expect(result.current).toBe("hello");
+    expect(result.current[0]).toBe("hello");
   });
 
   it("debounces updates", () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }: { value: string; delay: number }) =>
-        useDebounce(value, delay),
-      { initialProps: { value: "hello", delay: 250 } },
-    );
+    const { result } = renderHook(() => useDebounce("hello", 250));
 
-    expect(result.current).toBe("hello");
+    expect(result.current[0]).toBe("hello");
 
-    rerender({ value: "world", delay: 250 });
-    expect(result.current).toBe("hello");
+    act(() => {
+      result.current[1]("world");
+    });
+    expect(result.current[0]).toBe("hello");
 
     act(() => {
       vi.advanceTimersByTime(250);
     });
-    expect(result.current).toBe("world");
+    expect(result.current[0]).toBe("world");
+  });
+
+  it("only applies the last value when updates happen during the delay", () => {
+    const { result } = renderHook(() => useDebounce("hello", 250));
+
+    act(() => {
+      result.current[1]("first");
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+
+    act(() => {
+      result.current[1]("second");
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(249);
+    });
+    expect(result.current[0]).toBe("hello");
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(result.current[0]).toBe("second");
   });
 
   it("cancels pending updates on unmount", () => {
-    const { result, rerender, unmount } = renderHook(
-      ({ value, delay }: { value: string; delay: number }) =>
-        useDebounce(value, delay),
-      { initialProps: { value: "hello", delay: 250 } },
-    );
+    const { result, unmount } = renderHook(() => useDebounce("hello", 250));
 
-    rerender({ value: "world", delay: 250 });
+    act(() => {
+      result.current[1]("world");
+    });
     unmount();
 
     act(() => {
       vi.advanceTimersByTime(250);
     });
-    expect(result.current).toBe("hello");
+    expect(result.current[0]).toBe("hello");
   });
 
   it("respects custom delay", () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }: { value: string; delay: number }) =>
-        useDebounce(value, delay),
-      { initialProps: { value: "hello", delay: 100 } },
-    );
+    const { result } = renderHook(() => useDebounce("hello", 100));
 
-    rerender({ value: "world", delay: 100 });
-    expect(result.current).toBe("hello");
+    act(() => {
+      result.current[1]("world");
+    });
+    expect(result.current[0]).toBe("hello");
 
     act(() => {
       vi.advanceTimersByTime(50);
     });
-    expect(result.current).toBe("hello");
+    expect(result.current[0]).toBe("hello");
 
     act(() => {
       vi.advanceTimersByTime(50);
     });
-    expect(result.current).toBe("world");
+    expect(result.current[0]).toBe("world");
+  });
+
+  it("updates immediately and clears pending debounced updates", () => {
+    const { result } = renderHook(() => useDebounce("hello", 250));
+
+    act(() => {
+      result.current[1]("delayed");
+    });
+
+    act(() => {
+      result.current[1]("", { immediate: true });
+    });
+    expect(result.current[0]).toBe("");
+
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
+    expect(result.current[0]).toBe("");
+  });
+
+  it("supports function values without invoking them", () => {
+    const initialFn = vi.fn(() => "initial");
+    const nextFn = vi.fn(() => "next");
+    const { result } = renderHook(() => useDebounce(initialFn, 250));
+
+    expect(result.current[0]).toBe(initialFn);
+
+    act(() => {
+      result.current[1](nextFn);
+    });
+    expect(result.current[0]).toBe(initialFn);
+
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
+    expect(result.current[0]).toBe(nextFn);
+    expect(initialFn).not.toHaveBeenCalled();
+    expect(nextFn).not.toHaveBeenCalled();
   });
 });
