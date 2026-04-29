@@ -110,7 +110,7 @@ yq -i ".services.jimm-base.environment.CORS_ALLOWED_ORIGINS = \"$DASHBOARD_ADDRE
 Now you can restart the Multipass container or running the following commands to reload the Docker environment
 
 ```shell
-cd /home/ubuntu/jimm && INSECURE_SECRET_STORAGE=true docker compose --profile dev up -d && docker restart jimm && juju show-controller qa-lxd | yq '.[].controller-machines.[].instance-id' | xargs lxc restart
+sudo systemctl restart jimm.service
 ```
 
 #### Dashboard setup

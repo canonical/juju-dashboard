@@ -20,10 +20,8 @@ describe("AutocompleteField", () => {
     const input = screen.getByRole("textbox", { name: "auto complete" });
     expect(input).toBeInTheDocument();
     await userEvent.click(input);
-    expect(screen.getByRole("option", { name: "Option One" })).toHaveAttribute(
-      "data-value",
-      "option1",
-    );
+    await userEvent.click(screen.getByRole("option", { name: "Option One" }));
+    expect(input).toHaveValue("option1");
   });
 
   it("should update value in formik", async () => {

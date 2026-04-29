@@ -9,5 +9,9 @@
 
   &__dropdown-item {
     cursor: pointer;
+
+    &.highlight {
+      background-color: $colors--theme--background-active;
+    }
   }
 }

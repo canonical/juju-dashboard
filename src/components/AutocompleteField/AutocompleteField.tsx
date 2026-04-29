@@ -7,7 +7,7 @@ import AutocompleteInput from "components/AutocompleteInput";
 
 export type AutocompleteInputItem = {
   label: string;
-  value: number | string;
+  value: string;
 };
 
 const AutocompleteField: FC<FormikFieldProps<typeof AutocompleteInput>> = ({
