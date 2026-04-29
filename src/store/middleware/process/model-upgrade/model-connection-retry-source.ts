@@ -10,35 +10,58 @@ import { logger } from "utils/logger";
  */
 const MODEL_STATUS_POLL_S = 5;
 
+type ConnectionRetryResult = { reconnecting: true } | { version: string };
+
+/**
+ * Internal logic for `createModelConnectionRetrySource`.
+ *
+ * Saves a connection, and whenever the returned function is called, it will try to call the
+ * `fullStatus` facade method. If the call fails, it will clear the connection, and attempt to
+ * reconnect on the next call.
+ */
+export function createModelConnectionRetry(modelConnection: ManagedConnection) {
+  // A promise which will resolve to the current connection, or `null` if a connection needs to be
+  // initiated.
+  let connection: null | Promise<ManagedConnection> =
+    Promise.resolve(modelConnection);
+
+  return async (): Promise<ConnectionRetryResult> => {
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    if (!connection) {
+      // Only initiate a connection if there isn't an existing one.
+      connection = modelConnection.reconnect();
+    }
+
+    const currentConnection = await connection;
+
+    if (!currentConnection.facades.client) {
+      throw new Error("missing client facade on connection");
+    }
+
+    let status: FullStatus | undefined = undefined;
+    try {
+      status = await currentConnection.facades.client.fullStatus({
+        patterns: [],
+      });
+    } catch (error) {
+      // Client throws an error if the socket is closed. Begin reconnecting.
+      logger.warn("caught error, assuming disconnected", error);
+      connection = null;
+      return { reconnecting: true };
+    }
+
+    return { version: status.model.version };
+  };
+}
+
+/**
+ * A source which will produce the version of a model, or an indication that it's being reconnected
+ * to.
+ */
 export default function createModelConnectionRetrySource(
   modelConnection: ManagedConnection,
-): Source<{ reconnecting: true } | { version: string }> {
-  let connection: ManagedConnection | null = modelConnection;
-  return createPollingSource(
-    async () => {
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      if (!connection) {
-        connection = await modelConnection.reconnect();
-      }
-
-      let status: FullStatus | undefined = undefined;
-      try {
-        status = await connection.facades.client?.fullStatus({
-          patterns: [],
-        });
-      } catch (error) {
-        // Client throws an error if the socket is closed. Begin reconnecting.
-        logger.warn("caught error, assuming disconnected", error);
-        connection = null;
-        return { reconnecting: true };
-      }
-
-      if (!status) {
-        throw new Error("Status not produced");
-      }
-
-      return { version: status.model.version };
-    },
-    { interval: { seconds: MODEL_STATUS_POLL_S } },
-  );
+): Source<ConnectionRetryResult> {
+  return createPollingSource(createModelConnectionRetry(modelConnection), {
+    interval: { seconds: MODEL_STATUS_POLL_S },
+  });
 }
