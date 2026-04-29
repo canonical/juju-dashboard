@@ -127,31 +127,40 @@ const Fields: FC<Props> = ({
                         void setFieldValue(FieldName.TARGET_CONTROLLER, value);
                       }}
                       options={[
-                        ...(targetControllers?.map((controller) => {
-                          const optionVersion =
-                            getControllerVersion(controller);
-                          return {
-                            label: (
-                              <span className="u-flex">
-                                <span className="u-flex-grow">
-                                  {controller.name}
+                        ...(targetControllers
+                          ?.filter(
+                            (
+                              controller,
+                            ): controller is {
+                              name: string;
+                            } & typeof controller =>
+                              controller.name !== undefined,
+                          )
+                          .map((controller) => {
+                            const optionVersion =
+                              getControllerVersion(controller);
+                            return {
+                              label: (
+                                <span className="u-flex">
+                                  <span className="u-flex-grow">
+                                    {controller.name}
+                                  </span>
+                                  <span>
+                                    {optionVersion ? (
+                                      <Chip
+                                        isReadOnly
+                                        isDense
+                                        isInline
+                                        value={optionVersion}
+                                      />
+                                    ) : null}
+                                  </span>
                                 </span>
-                                <span>
-                                  {optionVersion ? (
-                                    <Chip
-                                      isReadOnly
-                                      isDense
-                                      isInline
-                                      value={optionVersion}
-                                    />
-                                  ) : null}
-                                </span>
-                              </span>
-                            ),
-                            text: controller.name,
-                            value: controller.uuid,
-                          };
-                        }) ?? []),
+                              ),
+                              text: controller.name,
+                              value: controller.name,
+                            };
+                          }) ?? []),
                       ]}
                     />
                   </>
