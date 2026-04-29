@@ -1,8 +1,5 @@
-import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { createPollingSource } from "data/pollingSource";
-import type { Source } from "data/source";
 import * as jimmApi from "juju/jimm/api";
 import { createToast } from "store/app/actions";
 import { actions as jujuActions } from "store/juju";
@@ -13,6 +10,8 @@ import { logger } from "utils/logger";
 
 import { createProcess } from "../createProcess";
 
+import createModelConnectionRetrySource from "./model-connection-retry-source";
+
 export type UpgradeStatus =
   | { status: "initiated" }
   | { status: "loading" }
@@ -20,10 +19,6 @@ export type UpgradeStatus =
   | { status: "reconnecting" };
 
 const REQUIRED_CONNECTIONS = ["wsControllerURL", "modelURL"];
-/**
- * Timeout in seconds to poll the model status.
- */
-const MODEL_STATUS_POLL_S = 5;
 /**
  * Number of poll requests between each toast.
  */
@@ -38,39 +33,6 @@ type Params = {
   targetVersion: string;
   targetController: string;
 };
-
-export function createModelConnectionRetrySource(
-  modelConnection: ManagedConnection,
-): Source<{ reconnecting: true } | { version: string }> {
-  let connection: ManagedConnection | null = modelConnection;
-  return createPollingSource(
-    async () => {
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      if (!connection) {
-        connection = await modelConnection.reconnect();
-      }
-
-      let status: FullStatus | undefined = undefined;
-      try {
-        status = await connection.facades.client?.fullStatus({
-          patterns: [],
-        });
-      } catch (error) {
-        // Client throws an error if the socket is closed. Begin reconnecting.
-        logger.warn("caught error, assuming disconnected", error);
-        connection = null;
-        return { reconnecting: true };
-      }
-
-      if (!status) {
-        throw new Error("Status not produced");
-      }
-
-      return { version: status.model.version };
-    },
-    { interval: { seconds: MODEL_STATUS_POLL_S } },
-  );
-}
 
 export async function* upgradeTo(
   modelUUID: string,
