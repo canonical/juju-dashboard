@@ -9,14 +9,25 @@ import { useFormikContext } from "formik";
 import type { JSX } from "react";
 import { useState } from "react";
 
-import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
+import {
+  getActiveUserTag,
+  getIsJuju,
+  getWSControllerURL,
+} from "store/general/selectors";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import { getUserName } from "utils";
 
 import type { AddModelFormState } from "../types";
 
-import { AccessLevel, type AccessUserItem, TestId } from "./types";
+import {
+  AccessLevel,
+  type AccessUserItem,
+  AddUserHint,
+  FormatHint,
+  Label,
+  TestId,
+} from "./types";
 
 const ACCESS_LEVEL_OPTIONS = [
   { label: "Admin", value: AccessLevel.ADMIN },
@@ -25,6 +36,7 @@ const ACCESS_LEVEL_OPTIONS = [
 ];
 
 const AccessManagement = (): JSX.Element => {
+  const isJuju = useAppSelector(getIsJuju);
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const userName =
     useAppSelector((state) => getActiveUserTag(state, wsControllerURL)) ?? "";
@@ -34,7 +46,7 @@ const AccessManagement = (): JSX.Element => {
   const shareModelWith = values.shareModelWith ?? {};
   const activeUserValue = activeUserName || "active-user";
   const ACTIVE_USER: AccessUserItem = {
-    label: `${activeUserName || "username"} (you)`,
+    label: activeUserName,
     value: activeUserValue,
     access: shareModelWith[activeUserName] ?? AccessLevel.ADMIN,
   };
@@ -57,8 +69,9 @@ const AccessManagement = (): JSX.Element => {
   const handleItemsUpdate = (nextSelectedItems: MultiSelectItem[]): void => {
     const nextShareModelWith: Record<string, string> = {};
 
-    for (const item of nextSelectedItems as AccessUserItem[]) {
-      const { value: key, access } = item;
+    for (const { value } of nextSelectedItems) {
+      const key = value;
+      const access = shareModelWith[key] ?? AccessLevel.ADMIN;
 
       // Keep active user in state only when they are not admin.
       if (key === ACTIVE_USER.value && access === AccessLevel.ADMIN) {
@@ -82,38 +95,43 @@ const AccessManagement = (): JSX.Element => {
     );
   };
 
+  const addUserHint = !isJuju ? AddUserHint.JIMM : AddUserHint.JUJU;
+  const formatHint = !isJuju ? FormatHint.JIMM : FormatHint.JUJU;
+
   return (
     <div
       {...testId(TestId.ACCESS_MANAGEMENT_FORM)}
       className="access-management"
     >
-      Add users
+      {Label.MULTI_SELECT_LABEL}
       <div className="row u-no-padding">
         <div className="col-4">
           <MultiSelect
-            id="access-management-users"
             variant="search"
-            placeholder="Search and add users"
-            label="Add users"
-            emptyMessage="No users found"
+            placeholder={Label.MULTI_SELECT_PLACEHOLDER}
+            label={Label.MULTI_SELECT_LABEL}
+            emptyMessage={Label.MULTI_SELECT_NO_USERS}
             dropdownFooter={
-              <div className="access-management__dropdown-footer">
-                <h4 className="p-muted-heading u-no-padding--top p-text--small">
-                  YOU CAN ADD
-                </h4>
+              <div className="u-flex-grow">
+                <h5 className="u-no-padding--top p-text--small-caps u-text--muted u-sh2 u-sv-1--top">
+                  You can add
+                </h5>
                 {trimmedSearchInput && !hasExactSelectedMatch ? (
                   <Button
                     appearance="base"
                     type="button"
-                    className="u-align--left"
+                    className="u-align--left u-full-width u-no-margin--bottom u-sv-1--top"
                     onClick={handleAddUser}
                   >
-                    <Icon name="plus" />
+                    <Icon name="plus" className="u-sh1--right" />
                     {trimmedSearchInput}
+                    <p className="u-text--muted p-text--small u-sh3 u-sv-1">
+                      {formatHint}
+                    </p>
                   </Button>
                 ) : (
-                  <p className="p-form-help-text add-users">
-                    Add users by entering an email address
+                  <p className="u-text--muted p-text--small u-sh2 u-sv-1">
+                    {addUserHint}
                   </p>
                 )}
               </div>
@@ -131,36 +149,39 @@ const AccessManagement = (): JSX.Element => {
       </div>
       <table className="u-no-margin--bottom">
         <thead>
-          <tr className="u-flex">
-            <th className="u-no-margin--bottom u-sv2--top access-management__user-col">
-              User Name
-            </th>
-            <th className="u-no-margin--bottom u-sv2--top access-management__access-col">
+          <tr className="u-sv2--top">
+            <th className="u-no-margin--bottom">User Name</th>
+            <th className="u-no-margin--bottom access-management__access-col">
               Access Level
             </th>
-            <th className="u-no-margin--bottom u-sv2--top u-flex-shrink"></th>
+            <th className="access-management__delete-col" />
           </tr>
         </thead>
         <tbody>
           {selectedItems.map(
             ({ label: userLabel, value: userValue }, index) => (
-              <tr key={String(userValue)} className="u-flex">
-                <td className="access-management__user-col">
+              <tr key={userValue}>
+                <td>
                   <span className="u-sh1--right u-truncate" title={userLabel}>
-                    {userLabel}
+                    {userLabel === activeUserName ? (
+                      <>
+                        <b>{`${userLabel}`}</b> (you)
+                      </>
+                    ) : (
+                      userLabel
+                    )}
                   </span>
                 </td>
                 <td className="controller-select__cell access-management__access-col">
                   <CustomSelect
-                    id={`access-level-${String(userValue)}`}
+                    id={`access-level-${userValue}`}
                     defaultToggleLabel="Admin"
                     toggleClassName="controller-select__toggle"
                     dropdownClassName="controller-select__dropdown prevent-panel-close"
                     value={
                       userValue === ACTIVE_USER.value
                         ? ACTIVE_USER.access
-                        : (shareModelWith[String(userValue)] ??
-                          AccessLevel.ADMIN)
+                        : (shareModelWith[userValue] ?? AccessLevel.ADMIN)
                     }
                     // This will be enabled once we understand the flow for it
                     disabled={index === 0}
@@ -173,7 +194,7 @@ const AccessManagement = (): JSX.Element => {
                     options={ACCESS_LEVEL_OPTIONS}
                   />
                 </td>
-                <td className="u-flex-shrink">
+                <td className="access-management__delete-col">
                   <Button
                     hasIcon
                     appearance="base"
@@ -196,6 +217,7 @@ const AccessManagement = (): JSX.Element => {
           )}
         </tbody>
       </table>
+      <hr />
     </div>
   );
 };

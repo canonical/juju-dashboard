@@ -25,6 +25,7 @@ import { addControllerCloudRegion } from "store/juju/thunks";
 import type { RootState, Store } from "store/store";
 import { isSpecificAction } from "types";
 import { toErrorString } from "utils";
+import getModelURL from "utils/getModelURL";
 import { logger } from "utils/logger";
 
 import {
@@ -545,10 +546,7 @@ function runModelPoller(
             response.uuid.length > 0
           ) {
             if (disabledCommands !== DisableType.NONE) {
-              const modelURL = wsControllerURL.replace(
-                "/api",
-                `/model/${response.uuid}/api`,
-              );
+              const modelURL = getModelURL(wsControllerURL, response.uuid);
               reduxStore.dispatch(
                 disableCommand.run({
                   modelUUID: response.uuid,

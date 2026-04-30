@@ -36,6 +36,7 @@ import type {
 import { getControllerVersion } from "store/juju/utils/controllers";
 import type { RootState, Store } from "store/store";
 import { toErrorString } from "utils";
+import getModelURL from "utils/getModelURL";
 import { logger } from "utils/logger";
 
 import { getModelByUUID } from "../store/juju/selectors";
@@ -188,7 +189,7 @@ export async function fetchModelStatus(
   status: FullStatusWithAnnotations | null;
   features: ModelFeatures | null;
 }> {
-  const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
+  const modelURL = getModelURL(wsControllerURL, modelUUID);
   let status: FullStatusWithAnnotations | null = null;
   let features: ModelFeatures | null = null;
   // Logged in state is checked multiple times as the user may have logged out
@@ -397,7 +398,7 @@ export async function connectToModel(
   wsControllerURL: string,
   credentials?: AuthCredential,
 ): Promise<ConnectionWithFacades | undefined> {
-  const modelURL = wsControllerURL.replace("/api", `/model/${modelUUID}/api`);
+  const modelURL = getModelURL(wsControllerURL, modelUUID);
   const response = await connectAndLoginWithTimeout(
     modelURL,
     credentials,

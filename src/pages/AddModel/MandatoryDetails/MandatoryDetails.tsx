@@ -67,8 +67,7 @@ const toRegionOptions = (
 
 const MandatoryDetails = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const { values, setFieldValue, setValues } =
-    useFormikContext<AddModelFormState>();
+  const { values, setFieldValue } = useFormikContext<AddModelFormState>();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const cloudInfo = useAppSelector(getCloudInfoState).clouds;
   const userCredentials = useAppSelector(getUserCredentialsState);
@@ -139,16 +138,10 @@ const MandatoryDetails = (): JSX.Element => {
         required
         options={cloudOptions}
         onChange={(ev) => {
-          const nextCloud = String(ev.target.value);
-          void setValues(
-            (prevValues) =>
-              ({
-                ...prevValues,
-                cloud: nextCloud,
-                region: "",
-                credential: "",
-              }) as AddModelFormState,
-          );
+          const nextCloud = ev.target.value;
+          void setFieldValue("cloud", nextCloud);
+          void setFieldValue("region", "");
+          void setFieldValue("credential", "");
           setSelectedCloud(nextCloud);
         }}
       />
