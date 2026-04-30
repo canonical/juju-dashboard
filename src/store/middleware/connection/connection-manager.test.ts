@@ -76,6 +76,51 @@ describe("ConnectionManager", () => {
     await expect(connect2).resolves.toBe(connection);
   });
 
+  describe("failed connections", () => {
+    it("propagates error to `get` caller", async ({ expect }) => {
+      const error = new Error("unable to connect");
+      connectionHandler.mockRejectedValue(error);
+
+      const manager = new ConnectionManager({ getCredentials: vi.fn() });
+      await expect(manager.get("wss://example.com/")).rejects.toThrowError(
+        error,
+      );
+    });
+
+    it("propagates error to all pending callers", async ({ expect }) => {
+      const promise = Promise.withResolvers();
+      connectionHandler.mockReturnValue(promise.promise);
+
+      const manager = new ConnectionManager({ getCredentials: vi.fn() });
+      const req1 = manager.get("wss://example.com/");
+      const req2 = manager.get("wss://example.com/");
+      const req3 = manager.get("wss://example.com/");
+
+      const error = new Error("unable to connect");
+      promise.reject(error);
+
+      await expect(req1).rejects.toThrowError(error);
+      await expect(req2).rejects.toThrowError(error);
+      await expect(req3).rejects.toThrowError(error);
+
+      expect(connectionHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it("doesn't block connection on failed handler", async ({ expect }) => {
+      const error = new Error("unable to connect");
+      connectionHandler.mockRejectedValue(error);
+
+      const manager = new ConnectionManager({ getCredentials: vi.fn() });
+      await expect(manager.get("wss://example.com/")).rejects.toThrowError(
+        error,
+      );
+      await expect(manager.get("wss://example.com/")).rejects.toThrowError(
+        error,
+      );
+      expect(connectionHandler).toHaveBeenCalledTimes(2);
+    });
+  });
+
   it("produces iterator of all connections", async ({ expect }) => {
     const manager = new ConnectionManager({ getCredentials: vi.fn() });
     await manager.get("wss://example-1.com/");
@@ -153,6 +198,31 @@ describe("ConnectionManager", () => {
       expect(connection2).toEqual(newConnection);
       expect(connection3).toEqual(newConnection);
     });
+
+    it("recovers if reconnection fails", async ({ expect }) => {
+      const error = new Error("couldn't create connection");
+      connectionHandler
+        .mockResolvedValueOnce({
+          connection: {},
+          onClose: connectionOnClose,
+        })
+        .mockRejectedValueOnce(error)
+        .mockResolvedValueOnce({
+          connection: {},
+          onClose: connectionOnClose,
+        });
+
+      const manager = new ConnectionManager({ getCredentials: vi.fn() });
+
+      const connection1 = await manager.get("wss://example.com/");
+      expect(connectionHandler).toHaveBeenCalledTimes(1);
+
+      await expect(connection1.reconnect()).rejects.toThrowError(error);
+      expect(connectionHandler).toHaveBeenCalledTimes(2);
+
+      await connection1.reconnect();
+      expect(connectionHandler).toHaveBeenCalledTimes(3);
+    });
   });
 
   describe("logout", () => {
@@ -198,10 +268,23 @@ describe("ConnectionManager", () => {
 });
 
 describe("connection handlers", () => {
+  window.WebSocket = {
+    CONNECTING: 0,
+    OPEN: 1,
+    CLOSING: 2,
+    CLOSED: 3,
+  } as unknown as (typeof window)["WebSocket"];
+
   describe("default", () => {
     let logout: Mock;
     let logoutCb: Mock;
-    const connection = {} as ConnectionWithFacades;
+    const connection = {
+      transport: {
+        _ws: {
+          readyState: WebSocket.CONNECTING,
+        },
+      },
+    } as unknown as ConnectionWithFacades;
     let connectAndLoginSpy: MockInstance;
     let startPingerLoopSpy: MockInstance;
     let stopPingerLoopSpy: MockInstance;
@@ -244,17 +327,6 @@ describe("connection handlers", () => {
       expect(result.connection).toEqual(connection);
     });
 
-    it("calls connection logout on close", async ({ expect }) => {
-      const result = await defaultHandler("wss://example.com", undefined);
-      expect(result.onClose).not.toBeUndefined();
-      expect(logout).not.toHaveBeenCalled();
-      await result.onClose?.();
-
-      expect(logout).toHaveBeenCalledTimes(1);
-      expect(logoutCb).toHaveBeenCalledTimes(1);
-      expect(stopPingerLoopSpy).toHaveBeenCalledExactlyOnceWith(1234);
-    });
-
     it("throws error on timeout", async ({ expect }) => {
       vi.useFakeTimers();
       connectAndLoginSpy.mockReturnValue(new Promise(() => {}));
@@ -264,10 +336,47 @@ describe("connection handlers", () => {
         Label.LOGIN_TIMEOUT_ERROR,
       );
     });
+
+    describe("on close", () => {
+      let onClose: Awaited<ReturnType<typeof defaultHandler>>["onClose"];
+
+      beforeEach(async () => {
+        const result = await defaultHandler("wss://example.com", undefined);
+        ({ onClose } = result);
+      });
+
+      it("calls connection logout", async ({ expect }) => {
+        expect(onClose).not.toBeUndefined();
+        expect(logout).not.toHaveBeenCalled();
+        await onClose?.();
+
+        expect(logout).toHaveBeenCalledTimes(1);
+        expect(logoutCb).toHaveBeenCalledTimes(1);
+        expect(stopPingerLoopSpy).toHaveBeenCalledExactlyOnceWith(1234);
+      });
+
+      it("doesn't block if connection already closed", async ({ expect }) => {
+        // @ts-expect-error - Re-assigning mocked readonly property.
+        connection.transport._ws.readyState = WebSocket.CLOSED;
+        // Mock to never call the callback, as if logout never completes.
+        logout.mockImplementation(() => {});
+
+        expect(onClose).not.toBeUndefined();
+        await onClose?.();
+        expect(stopPingerLoopSpy).toHaveBeenCalledTimes(1);
+        expect(logout).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe("controller", () => {
-    const connection = {} as ConnectionWithFacades;
+    const connection = {
+      transport: {
+        _ws: {
+          readyState: WebSocket.OPEN,
+        },
+      },
+    } as unknown as ConnectionWithFacades;
     const intervalId = 1234;
     let bakeryResult: Awaited<
       ReturnType<(typeof jujuModule)["loginWithBakery"]>
@@ -333,6 +442,14 @@ describe("connection handlers", () => {
         expect(onClose).not.toBeUndefined();
         await onClose?.();
         expect(clearIntervalSpy).toHaveBeenCalledExactlyOnceWith(intervalId);
+      });
+
+      it("doesn't block if connection already closed", async ({ expect }) => {
+        // @ts-expect-error - Re-assigning mocked readonly property.
+        connection.transport._ws.readyState = WebSocket.CLOSED;
+        expect(onClose).not.toBeUndefined();
+        await onClose?.();
+        expect(juju.logout).not.toHaveBeenCalled();
       });
     });
   });

@@ -32,7 +32,14 @@ export function createModelConnectionRetry(modelConnection: ManagedConnection) {
       connection = modelConnection.reconnect();
     }
 
-    const currentConnection = await connection;
+    let currentConnection: ManagedConnection | null = null;
+    try {
+      currentConnection = await connection;
+    } catch (error) {
+      logger.warn("caught error, assuming reconnecting", error);
+      connection = null;
+      return { reconnecting: true };
+    }
 
     if (!currentConnection.facades.client) {
       throw new Error("missing client facade on connection");

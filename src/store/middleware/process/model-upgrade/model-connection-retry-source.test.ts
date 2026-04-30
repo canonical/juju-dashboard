@@ -79,4 +79,29 @@ describe("modelConnectionRetrySource", () => {
 
     expect(reconnectMock).toHaveBeenCalledTimes(1);
   });
+
+  it("handles error thrown from reconnect", async ({ expect }) => {
+    fullStatusMock
+      .mockRejectedValueOnce(new Error("connection closed"))
+      .mockResolvedValueOnce({ model: { version: "1.2.3" } });
+    const error = new Error("couldn't connect");
+    reconnectMock
+      .mockRejectedValueOnce(error)
+      .mockResolvedValueOnce(connection);
+
+    const tryConnection = createModelConnectionRetry(connection);
+
+    // Will clear the connection.
+    await expect(tryConnection()).resolves.toEqual({ reconnecting: true });
+    expect(fullStatusMock).toHaveBeenCalledTimes(1);
+    expect(reconnectMock).not.toHaveBeenCalled();
+
+    await expect(tryConnection()).resolves.toEqual({ reconnecting: true });
+    expect(fullStatusMock).toHaveBeenCalledTimes(1);
+    expect(reconnectMock).toHaveBeenCalledTimes(1);
+
+    await expect(tryConnection()).resolves.toEqual({ version: "1.2.3" });
+    expect(fullStatusMock).toHaveBeenCalledTimes(2);
+    expect(reconnectMock).toHaveBeenCalledTimes(2);
+  });
 });

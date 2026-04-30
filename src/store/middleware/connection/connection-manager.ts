@@ -80,6 +80,11 @@ export const CONNECTION_HANDLERS_BY_PATH: Record<
       onClose: async (): Promise<void> => {
         await new Promise<void>((resolve) => {
           stopPingerLoop(intervalId);
+          if (conn.transport._ws.readyState === WebSocket.CLOSED) {
+            logger.warn("connection has already closed");
+            resolve();
+            return;
+          }
           logout((code, cb) => {
             resolve();
             cb(code);
@@ -126,6 +131,11 @@ export const CONNECTION_HANDLERS_BY_PATH: Record<
         }
         if (juju) {
           await new Promise<void>((resolve) => {
+            if (connection.transport._ws.readyState === WebSocket.CLOSED) {
+              logger.warn("connection has already closed");
+              resolve();
+              return;
+            }
             juju.logout((code, cb) => {
               resolve();
               cb(code);
@@ -202,6 +212,9 @@ export class ConnectionManager {
     const connectionPromise = Promise.withResolvers<ManagedConnection>();
     this.connections.set(wsURL, connectionPromise.promise);
 
+    // Always have something handling the error, so that it doesn't become unhandled.
+    connectionPromise.promise.catch(() => {});
+
     const credentials = this.hooks.getCredentials(wsURL);
 
     // Extract the path to determine the connection handler.
@@ -222,7 +235,17 @@ export class ConnectionManager {
       CONNECTION_HANDLERS_BY_PATH[path] ??
       CONNECTION_HANDLERS_BY_PATH[DefaultHandler];
 
-    const { connection, onClose } = await connectionHandler(wsURL, credentials);
+    let connectionResult = null;
+    try {
+      connectionResult = await connectionHandler(wsURL, credentials);
+    } catch (error) {
+      // If an error is thrown when connecting, clear this connection and continue throwing it.
+      logger.warn(`failed to connect to ${wsURL}`, error);
+      this.connections.delete(wsURL);
+      connectionPromise.reject(error);
+      throw error;
+    }
+    const { connection, onClose } = connectionResult;
 
     // Force cast the connection type, then add the extra fields.
     const managedConnection = Object.assign(connection, {
@@ -233,14 +256,15 @@ export class ConnectionManager {
           await this.logout(wsURL);
         }
 
-        // Trigger re-connecting the connection. If it's already being connected, this will be
-        // handled within.
-        const newConnection = await this.get(wsURL);
-
-        // Connection is finished reconnecting.
-        this.reconnecting.delete(wsURL);
-
-        return newConnection;
+        try {
+          // Trigger re-connecting the connection. If it's already being connected, this will be
+          // handled within.
+          const newConnection = await this.get(wsURL);
+          return newConnection;
+        } finally {
+          // Connection is finished reconnecting, successfully or not.
+          this.reconnecting.delete(wsURL);
+        }
       },
     });
 
