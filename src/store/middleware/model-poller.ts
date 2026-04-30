@@ -509,6 +509,7 @@ function runModelPoller(
         credential,
         region,
         userTag,
+        shareModelWith,
         disabledCommands,
         config,
       } = action.payload;
@@ -540,24 +541,49 @@ function runModelPoller(
           if ("error" in response) {
             throw response.error;
           } else if (
-            disabledCommands !== DisableType.NONE &&
             typeof response.uuid === "string" &&
             response.uuid.length > 0
           ) {
-            const modelURL = wsControllerURL.replace(
-              "/api",
-              `/model/${response.uuid}/api`,
-            );
-            reduxStore.dispatch(
-              disableCommand.run({
-                modelUUID: response.uuid,
-                modelURL,
-                wsControllerURL,
-                params: {
-                  type: disabledCommands,
-                },
-              }),
-            );
+            if (disabledCommands !== DisableType.NONE) {
+              const modelURL = wsControllerURL.replace(
+                "/api",
+                `/model/${response.uuid}/api`,
+              );
+              reduxStore.dispatch(
+                disableCommand.run({
+                  modelUUID: response.uuid,
+                  modelURL,
+                  wsControllerURL,
+                  params: {
+                    type: disabledCommands,
+                  },
+                }),
+              );
+            }
+
+            if (shareModelWith) {
+              const usersToShare = Object.entries(shareModelWith);
+
+              for (const [user, accessLevel] of usersToShare) {
+                try {
+                  await setModelSharingPermissions(
+                    wsControllerURL,
+                    response.uuid,
+                    conn,
+                    user,
+                    accessLevel,
+                    undefined,
+                    "grant",
+                    reduxStore.dispatch,
+                  );
+                } catch (error) {
+                  logger.error(
+                    "Could not set model sharing permissions.",
+                    error,
+                  );
+                }
+              }
+            }
           }
 
           reduxStore.dispatch(

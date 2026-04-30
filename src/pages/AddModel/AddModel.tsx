@@ -24,6 +24,7 @@ import urls from "urls";
 import { toErrorString } from "utils";
 import { toastNotification } from "utils/toastNotification";
 
+import AccessManagement from "./AccessManagement";
 import ConfigsConstraints from "./ConfigsConstraints";
 import { InputMode } from "./ConfigsConstraints/ContentSwitcher/types";
 import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
@@ -62,7 +63,7 @@ const stepDefinitions: Array<{
   {
     key: StepType.ACCESS_MANAGEMENT,
     title: "Access Management (optional)",
-    content: <div>Access management form goes here.</div>,
+    content: <AccessManagement />,
   },
 ];
 
@@ -93,6 +94,7 @@ const AddModel: FC = () => {
     }
 
     const config = buildChangedConfigPayload(CONFIG_CATEGORIES, values);
+    const shareModelWith = values.shareModelWith ?? {};
 
     dispatch(
       jujuActions.addModel({
@@ -104,6 +106,7 @@ const AddModel: FC = () => {
         disabledCommands: values.disabledCommands,
         region: values.region || undefined,
         ...(Object.keys(config).length > 0 ? { config } : {}),
+        ...(Object.keys(shareModelWith).length > 0 ? { shareModelWith } : {}),
       }),
     );
     setModelName(values.modelName);

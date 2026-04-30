@@ -17,6 +17,7 @@ export type AddModelFormState = {
   cloud: string;
   region: string;
   credential: string;
+  shareModelWith?: Record<string, string>;
 } & FormFields &
   Record<string, string>;
 

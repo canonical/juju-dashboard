@@ -1575,6 +1575,48 @@ describe("model poller", () => {
     );
   });
 
+  it("shares newly added model with specified users", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    conn.facades.modelManager.createModel.mockResolvedValue({
+      uuid: "model-uuid-123",
+    });
+
+    const setModelSharingPermissionsSpy = vi.spyOn(
+      jujuModule,
+      "setModelSharingPermissions",
+    );
+
+    const middleware = await runMiddleware();
+    const action = jujuActions.addModel({
+      wsControllerURL: "wss://example.com/api",
+      modelName: "model123",
+      userTag: "user-eggman@external",
+      cloudTag: "cloud-aws",
+      credential: "credential-aws",
+      disabledCommands: DisableType.NONE,
+      shareModelWith: {
+        "new-user@external": "read",
+      },
+    });
+
+    await middleware(next)(action);
+
+    expect(setModelSharingPermissionsSpy).toHaveBeenCalledWith(
+      "wss://example.com/api",
+      "model-uuid-123",
+      conn,
+      "new-user@external",
+      "read",
+      undefined,
+      "grant",
+      fakeStore.dispatch,
+    );
+  });
+
   it("skips disable command process when add-model fails", async () => {
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,

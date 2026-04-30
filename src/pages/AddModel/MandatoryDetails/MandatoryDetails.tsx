@@ -140,12 +140,15 @@ const MandatoryDetails = (): JSX.Element => {
         options={cloudOptions}
         onChange={(ev) => {
           const nextCloud = String(ev.target.value);
-          void setValues((prevValues) => ({
-            ...prevValues,
-            cloud: nextCloud,
-            region: "",
-            credential: "",
-          }));
+          void setValues(
+            (prevValues) =>
+              ({
+                ...prevValues,
+                cloud: nextCloud,
+                region: "",
+                credential: "",
+              }) as AddModelFormState,
+          );
           setSelectedCloud(nextCloud);
         }}
       />

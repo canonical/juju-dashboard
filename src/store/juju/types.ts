@@ -149,6 +149,7 @@ export type AddModel = {
   credential: string;
   cloudTag: string;
   userTag: string;
+  shareModelWith?: Record<string, string>;
   disabledCommands: DisableType;
   region?: string;
   config?: Record<string, string>;
