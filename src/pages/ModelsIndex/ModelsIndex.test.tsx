@@ -203,10 +203,12 @@ describe("Models Index page", () => {
     expect(router.state.location.search).toBe(`?${params.toString()}`);
   });
 
-  it("should display the error notification", async () => {
+  it("should display the error notification without clearing table", async () => {
     state.juju.modelsError = "Oops!";
     renderComponent(<ModelsIndex />, { state });
     expect(screen.getByText(/Oops!/)).toBeInTheDocument();
+    expect(screen.getByText(/3 models/)).toBeInTheDocument();
+    expect(screen.getAllByRole("grid")).toHaveLength(3);
   });
 
   it("clears spinner if initial error occurs", async () => {

@@ -124,99 +124,94 @@ export default function Models(): JSX.Element {
   const modelCount = blocked + alert + running;
 
   let content: ReactNode = null;
-  if (!modelsError) {
-    if (!modelsLoaded) {
-      return <LoadingSpinner />;
-    } else if (!hasSomeModels) {
-      content = (
-        <div className="models">
-          <h3>{Label.NOT_FOUND}</h3>
-          <p>
-            Learn about <a href={externalURLs.addModel}>adding models</a> or{" "}
-            <a href={externalURLs.modelAccess}>granting access</a> to existing
-            models.
-          </p>
-        </div>
-      );
-    } else {
-      content = (
-        <>
-          <span className="models__controls" data-disabled={modelCount === 0}>
-            <SearchAndFilter
-              filterPanelData={[
-                {
-                  id: 0,
-                  heading: "Cloud",
-                  chips: generateChips("Cloud", clouds),
-                },
-                {
-                  id: 1,
-                  heading: "Region",
-                  chips: generateChips("Region", regions),
-                },
-                {
-                  id: 2,
-                  heading: "Owner",
-                  chips: generateChips("Owner", owners),
-                },
-                {
-                  id: 3,
-                  heading: "Credential",
-                  chips: generateChips("Credential", credentials),
-                },
-              ]}
-              existingSearchData={existingSearchData}
-              returnSearchData={(searchData) => {
-                // Reset active filters
-                activeFilters = {
-                  cloud: [],
-                  owner: [],
-                  region: [],
-                  credential: [],
-                  custom: [],
-                };
+  if (!modelsLoaded && !modelsError) {
+    return <LoadingSpinner />;
+  } else if (!hasSomeModels) {
+    content = (
+      <div className="models">
+        <h3>{Label.NOT_FOUND}</h3>
+        <p>
+          Learn about <a href={externalURLs.addModel}>adding models</a> or{" "}
+          <a href={externalURLs.modelAccess}>granting access</a> to existing
+          models.
+        </p>
+      </div>
+    );
+  } else {
+    content = (
+      <>
+        <span className="models__controls" data-disabled={modelCount === 0}>
+          <SearchAndFilter
+            filterPanelData={[
+              {
+                id: 0,
+                heading: "Cloud",
+                chips: generateChips("Cloud", clouds),
+              },
+              {
+                id: 1,
+                heading: "Region",
+                chips: generateChips("Region", regions),
+              },
+              {
+                id: 2,
+                heading: "Owner",
+                chips: generateChips("Owner", owners),
+              },
+              {
+                id: 3,
+                heading: "Credential",
+                chips: generateChips("Credential", credentials),
+              },
+            ]}
+            existingSearchData={existingSearchData}
+            returnSearchData={(searchData) => {
+              // Reset active filters
+              activeFilters = {
+                cloud: [],
+                owner: [],
+                region: [],
+                credential: [],
+                custom: [],
+              };
 
-                // Loop search data and pull out each filter
-                if (searchData.length) {
-                  searchData.forEach(({ lead, value }) => {
-                    const chipLead = lead ? lead.toLowerCase() : "custom";
-                    if (!(chipLead in activeFilters)) {
-                      activeFilters[chipLead] = [];
-                    }
-                    activeFilters[chipLead].push(value);
-                  });
-                }
-                if (!isObjectsEqual(activeFilters, filters)) {
-                  setQueryParams(activeFilters);
-                }
-              }}
+              // Loop search data and pull out each filter
+              if (searchData.length) {
+                searchData.forEach(({ lead, value }) => {
+                  const chipLead = lead ? lead.toLowerCase() : "custom";
+                  if (!(chipLead in activeFilters)) {
+                    activeFilters[chipLead] = [];
+                  }
+                  activeFilters[chipLead].push(value);
+                });
+              }
+              if (!isObjectsEqual(activeFilters, filters)) {
+                setQueryParams(activeFilters);
+              }
+            }}
+          />
+          <span>
+            <span className="p-text--default">Group by: </span>
+            <SegmentedControl
+              className="u-display--inline-block"
+              activeButton={queryParams.groupedby}
+              buttons={["Status", "Cloud", "Owner"].map((group) => ({
+                children: group,
+                key: group.toLowerCase(),
+                to: urls.models.group({
+                  groupedby: group.toLowerCase() as ModelsGroupedBy,
+                }),
+              }))}
+              buttonComponent={Link}
             />
-            <span>
-              <span className="p-text--default">Group by: </span>
-              <SegmentedControl
-                className="u-display--inline-block"
-                activeButton={queryParams.groupedby}
-                buttons={["Status", "Cloud", "Owner"].map((group) => ({
-                  children: group,
-                  key: group.toLowerCase(),
-                  to: urls.models.group({
-                    groupedby: group.toLowerCase() as ModelsGroupedBy,
-                  }),
-                }))}
-                buttonComponent={Link}
-              />
-            </span>
           </span>
-          <div className="models">
-            <ChipGroup chips={{ blocked, alert, running }} />
-            <ModelTableList
-              groupedBy={queryParams.groupedby}
-              filters={filters}
-            />
-          </div>
-        </>
-      );
-    }
+        </span>
+        <div className="models">
+          <ChipGroup chips={{ blocked, alert, running }} />
+          <ModelTableList groupedBy={queryParams.groupedby} filters={filters} />
+        </div>
+      </>
+    );
   }
 
   return (
