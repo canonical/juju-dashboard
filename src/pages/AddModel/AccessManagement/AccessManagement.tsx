@@ -65,10 +65,7 @@ const AccessManagement = (): JSX.Element => {
     for (const { value } of nextSelectedItems) {
       const key = value;
       const isActiveUserItem = key === ACTIVE_USER?.value;
-      const defaultAccess = isActiveUserItem
-        ? AccessLevel.ADMIN
-        : AccessLevel.READ;
-      const access = shareModelWith[key] ?? defaultAccess;
+      const access = shareModelWith[key];
 
       // Keep active user in state only when they are not admin.
       if (isActiveUserItem && access === AccessLevel.ADMIN) {
@@ -166,7 +163,6 @@ const AccessManagement = (): JSX.Element => {
               <td className="controller-select__cell access-management__access-col">
                 <CustomSelect
                   id={`access-level-${userValue}`}
-                  defaultToggleLabel="Admin"
                   toggleClassName="controller-select__toggle"
                   dropdownClassName="controller-select__dropdown prevent-panel-close"
                   value={getUserAccess(
