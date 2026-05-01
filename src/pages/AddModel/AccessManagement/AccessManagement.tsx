@@ -20,14 +20,15 @@ import { getUserName } from "utils";
 
 import type { AddModelFormState } from "../types";
 
+import { AccessLevel, Label, TestId } from "./types";
 import {
-  AccessLevel,
-  type AccessUserItem,
-  AddUserHint,
-  FormatHint,
-  Label,
-  TestId,
-} from "./types";
+  buildActiveUser,
+  buildSelectedItems,
+  getHints,
+  isAccessLevelDisabled,
+  removeUser,
+  getUserAccess,
+} from "./utils";
 
 const ACCESS_LEVEL_OPTIONS = [
   { label: "Admin", value: AccessLevel.ADMIN },
@@ -46,37 +47,31 @@ const AccessManagement = (): JSX.Element => {
 
   const activeUserName = userName ? getUserName(userName) : undefined;
   const shareModelWith = values.shareModelWith ?? {};
-  const ACTIVE_USER = activeUserName
-    ? {
-        label: activeUserName,
-        value: activeUserName,
-        access: shareModelWith[activeUserName] ?? AccessLevel.ADMIN,
-      }
-    : undefined;
-  const selectedItems: AccessUserItem[] = [
-    ...(ACTIVE_USER ? [ACTIVE_USER] : []),
-    ...Object.entries(shareModelWith)
-      .filter(([user]) => user !== activeUserName)
-      .map(([user, access]) => ({
-        label: user,
-        value: user,
-        access,
-      })),
-  ];
+  const ACTIVE_USER = buildActiveUser(activeUserName, shareModelWith);
+  const selectedItems = buildSelectedItems(
+    ACTIVE_USER,
+    shareModelWith,
+    activeUserName,
+  );
   const trimmedSearchInput = searchInput.trim();
   const hasExactSelectedMatch = selectedItems.some(
     (item) => item.value === trimmedSearchInput,
   );
+  const { addUserHint, formatHint } = getHints(!!isJuju);
 
   const handleItemsUpdate = (nextSelectedItems: MultiSelectItem[]): void => {
     const nextShareModelWith: Record<string, string> = {};
 
     for (const { value } of nextSelectedItems) {
       const key = value;
-      const access = shareModelWith[key] ?? AccessLevel.ADMIN;
+      const isActiveUserItem = key === ACTIVE_USER?.value;
+      const defaultAccess = isActiveUserItem
+        ? AccessLevel.ADMIN
+        : AccessLevel.READ;
+      const access = shareModelWith[key] ?? defaultAccess;
 
       // Keep active user in state only when they are not admin.
-      if (key === ACTIVE_USER?.value && access === AccessLevel.ADMIN) {
+      if (isActiveUserItem && access === AccessLevel.ADMIN) {
         continue;
       }
       nextShareModelWith[key] = access;
@@ -91,12 +86,9 @@ const AccessManagement = (): JSX.Element => {
 
     void setFieldValue(
       `shareModelWith["${trimmedSearchInput}"]`,
-      AccessLevel.ADMIN,
+      AccessLevel.READ,
     );
   };
-
-  const addUserHint = !isJuju ? AddUserHint.JIMM : AddUserHint.JUJU;
-  const formatHint = !isJuju ? FormatHint.JIMM : FormatHint.JUJU;
 
   return (
     <div
@@ -177,13 +169,17 @@ const AccessManagement = (): JSX.Element => {
                   defaultToggleLabel="Admin"
                   toggleClassName="controller-select__toggle"
                   dropdownClassName="controller-select__dropdown prevent-panel-close"
-                  value={
-                    userValue === ACTIVE_USER?.value
-                      ? ACTIVE_USER.access
-                      : (shareModelWith[userValue] ?? AccessLevel.ADMIN)
-                  }
-                  // This will be enabled once we understand the flow for it
-                  disabled={userValue === ACTIVE_USER?.value}
+                  value={getUserAccess(
+                    userValue,
+                    activeUserName,
+                    ACTIVE_USER?.access,
+                    shareModelWith,
+                  )}
+                  disabled={isAccessLevelDisabled(
+                    userValue,
+                    shareModelWith,
+                    activeUserName,
+                  )}
                   onChange={(accessLevel) => {
                     void setFieldValue(
                       `shareModelWith["${userValue}"]`,
@@ -198,11 +194,12 @@ const AccessManagement = (): JSX.Element => {
                   hasIcon
                   appearance="base"
                   className="u-no-margin--bottom u-no-padding--top u-no-padding--bottom"
-                  disabled={userValue === ACTIVE_USER?.value}
+                  disabled={userValue === activeUserName}
                   onClick={() => {
-                    const { [userValue]: _removedUser, ...nextShareModelWith } =
-                      shareModelWith;
-                    void setFieldValue("shareModelWith", nextShareModelWith);
+                    void setFieldValue(
+                      "shareModelWith",
+                      removeUser(userValue, shareModelWith),
+                    );
                   }}
                   aria-label="Delete"
                 >

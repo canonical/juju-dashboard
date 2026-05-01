@@ -86,8 +86,8 @@ describe("AccessManagement", () => {
       screen.getByRole("button", { name: /newuser@example.com/i }),
     );
 
-    const adminButtons = screen.getAllByRole("button", { name: "Admin" });
-    expect(adminButtons.length).toBeGreaterThan(0);
+    const readButtons = screen.getAllByRole("button", { name: "Read" });
+    expect(readButtons.length).toBeGreaterThan(0);
   });
 
   it("updates access level when changed from custom select", async () => {
@@ -106,11 +106,11 @@ describe("AccessManagement", () => {
       screen.getByRole("button", { name: /test@example.com/i }),
     );
 
-    const adminButtons = screen.getAllByRole("button", { name: "Admin" });
-    await userEvent.click(adminButtons[adminButtons.length - 1]);
-    await userEvent.click(screen.getByRole("option", { name: "Read" }));
+    const readButtons = screen.getAllByRole("button", { name: "Read" });
+    await userEvent.click(readButtons[readButtons.length - 1]);
+    await userEvent.click(screen.getByRole("option", { name: "Write" }));
 
-    expect(screen.getByRole("button", { name: "Read" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Write" })).toBeInTheDocument();
   });
 
   it("keeps changed access levels when adding another user", async () => {
@@ -129,22 +129,22 @@ describe("AccessManagement", () => {
       screen.getByRole("button", { name: /first@example.com/i }),
     );
 
-    const initialAdminButtons = screen.getAllByRole("button", {
-      name: "Admin",
+    const initialReadButtons = screen.getAllByRole("button", {
+      name: "Read",
     });
-    await userEvent.click(initialAdminButtons[initialAdminButtons.length - 1]);
-    await userEvent.click(screen.getByRole("option", { name: "Read" }));
-    expect(screen.getByRole("button", { name: "Read" })).toBeInTheDocument();
+    await userEvent.click(initialReadButtons[initialReadButtons.length - 1]);
+    await userEvent.click(screen.getByRole("option", { name: "Write" }));
+    expect(screen.getByRole("button", { name: "Write" })).toBeInTheDocument();
 
     await userEvent.type(input, "second@example.com");
     await userEvent.click(
       screen.getByRole("button", { name: /second@example.com/i }),
     );
 
-    expect(screen.getByRole("button", { name: "Read" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Write" })).toBeInTheDocument();
   });
 
-  it("shows active user in access table with disabled delete button", async () => {
+  it("shows active user in access table with disabled dropdown and remove button", async () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.withConfig().build({
         controllerConnections: {
@@ -164,6 +164,10 @@ describe("AccessManagement", () => {
       { state },
     );
 
+    expect(screen.getByRole("button", { name: "Admin" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
     const table = await screen.findByRole("table");
     const userNameCell = customWithin(table).getCellByHeader("User Name");
     expect(userNameCell).toHaveTextContent("eggman@external (you)");
@@ -218,5 +222,33 @@ describe("AccessManagement", () => {
       "new@example.com",
     );
     expect(screen.getByText(FormatHint.JIMM)).toBeInTheDocument();
+  });
+
+  it("enables active user dropdown when another user has admin access", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.withConfig().build({
+        controllerConnections: {
+          "wss://controller.example.com": {
+            user: {
+              "display-name": "eggman",
+              identity: "user-eggman@external",
+            },
+          },
+        },
+      }),
+    });
+    renderComponent(
+      <Formik
+        initialValues={{ shareModelWith: { "test@example.com": "admin" } }}
+        onSubmit={vi.fn()}
+      >
+        <AccessManagement />
+      </Formik>,
+      { state },
+    );
+
+    // Active user's dropdown should be enabled since test@example.com is admin
+    const adminButtons = screen.getAllByRole("button", { name: "Admin" });
+    expect(adminButtons[0]).not.toBeDisabled();
   });
 });
