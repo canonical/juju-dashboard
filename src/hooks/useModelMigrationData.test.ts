@@ -30,6 +30,35 @@ describe("useModelMigrationData", () => {
     });
   });
 
+  it("does not poll for data when using Juju", () => {
+    if (state.general.config) {
+      state.general.config.isJuju = true;
+    } else {
+      assert.fail("Config not defined");
+    }
+    const [store, actions] = createStore(state, {
+      trackActions: true,
+    });
+    renderWrappedHook(
+      () => {
+        useModelMigrationData("test1", "eggman@external");
+      },
+      {
+        store,
+      },
+    );
+    expect(
+      actions.find(
+        (dispatch) => dispatch.type === "source/jimm-supported-versions/start",
+      ),
+    ).toBeUndefined();
+    expect(
+      actions.find(
+        (dispatch) => dispatch.type === "source/migration-targets/start",
+      ),
+    ).toBeUndefined();
+  });
+
   it("starts polling for data when the hook is mounted", () => {
     const [store, actions] = createStore(state, {
       trackActions: true,

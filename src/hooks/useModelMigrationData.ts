@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { getWSControllerURL } from "store/general/selectors";
+import { getIsJIMM, getWSControllerURL } from "store/general/selectors";
 import { getModelUUIDFromList } from "store/juju/selectors";
 import jimmSupportedVersions from "store/middleware/source/jimm-supported-versions";
 import modelMigrationTargets from "store/middleware/source/migration-targets";
@@ -19,9 +19,10 @@ const useModelMigrationData = (
   const modelUUID = useAppSelector((state) =>
     getModelUUIDFromList(state, modelName, qualifier),
   );
+  const isJIMM = useAppSelector(getIsJIMM);
 
   useEffect(() => {
-    if (wsControllerURL && fetchData) {
+    if (wsControllerURL && fetchData && isJIMM) {
       dispatch(jimmSupportedVersions.actions.start({ wsControllerURL }));
       if (modelUUID) {
         dispatch(
@@ -30,7 +31,7 @@ const useModelMigrationData = (
       }
     }
     return (): void => {
-      if (wsControllerURL) {
+      if (wsControllerURL && isJIMM) {
         dispatch(jimmSupportedVersions.actions.stop({ wsControllerURL }));
         if (modelUUID) {
           dispatch(
@@ -39,7 +40,7 @@ const useModelMigrationData = (
         }
       }
     };
-  }, [dispatch, fetchData, modelUUID, wsControllerURL]);
+  }, [dispatch, fetchData, isJIMM, modelUUID, wsControllerURL]);
 };
 
 export default useModelMigrationData;

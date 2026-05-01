@@ -48,6 +48,7 @@ contribute and what kinds of contributions are welcome.
     - [Getting models into a broken state](#getting-models-into-a-broken-state)
     - [Setting up model migrations](#setting-up-model-migrations)
     - [Add a model to a specific JAAS controller](#add-a-model-to-a-specific-jaas-controller)
+    - [Add a model with a version older than the controller](#add-a-model-with-a-version-older-than-the-controller)
 
 ## Setting up the dashboard for development
 
@@ -602,5 +603,14 @@ Assuming you have a local jimm repo and running jimm (if you haven't already bui
 
 ```bash
 cd ~/jimm
+juju switch jimm-dev
 ./jaas add-model --target-controller controller-name test-model
+```
+
+### Add a model with a version older than the controller
+
+If you need to test with a model that has a Juju version that is older than its controller's version you can do:
+
+```bash
+juju add-model test --config="agent-version=3.6.18"
 ```
