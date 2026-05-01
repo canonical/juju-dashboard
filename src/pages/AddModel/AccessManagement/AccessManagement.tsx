@@ -10,6 +10,7 @@ import type { JSX } from "react";
 import { useState } from "react";
 
 import {
+  getActiveUserControllerAccess,
   getActiveUserTag,
   getIsJuju,
   getWSControllerURL,
@@ -41,6 +42,9 @@ const AccessManagement = (): JSX.Element => {
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const userName = useAppSelector((state) =>
     getActiveUserTag(state, wsControllerURL),
+  );
+  const activeUserControllerAccess = useAppSelector((state) =>
+    getActiveUserControllerAccess(state, wsControllerURL),
   );
   const { values, setFieldValue } = useFormikContext<AddModelFormState>();
   const [searchInput, setSearchInput] = useState("");
@@ -174,6 +178,7 @@ const AccessManagement = (): JSX.Element => {
                   disabled={isAccessLevelDisabled(
                     userValue,
                     shareModelWith,
+                    activeUserControllerAccess,
                     activeUserName,
                   )}
                   onChange={(accessLevel) => {

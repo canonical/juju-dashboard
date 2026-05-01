@@ -186,25 +186,53 @@ describe("AccessManagement utils", () => {
   });
 
   describe("isAccessLevelDisabled", () => {
-    it("returns true when user is active and no other admin exists", () => {
-      const result = isAccessLevelDisabled(
-        "user@example.com",
-        {
-          "user@example.com": AccessLevel.READ,
-          "other@example.com": AccessLevel.READ,
-        },
-        "user@example.com",
-      );
-      expect(result).toBe(true);
-    });
-
-    it("returns false when user is active but another admin exists", () => {
+    it("returns true when active user is controller superuser", () => {
       const result = isAccessLevelDisabled(
         "user@example.com",
         {
           "user@example.com": AccessLevel.READ,
           "other@example.com": AccessLevel.ADMIN,
         },
+        "superuser",
+        "user@example.com",
+      );
+      expect(result).toBe(true);
+    });
+
+    it("returns true when active user is not superuser and no other admin exists", () => {
+      const result = isAccessLevelDisabled(
+        "user@example.com",
+        {
+          "user@example.com": AccessLevel.READ,
+          "other@example.com": AccessLevel.READ,
+        },
+        "admin",
+        "user@example.com",
+      );
+      expect(result).toBe(true);
+    });
+
+    it("returns false when active user is not superuser and another admin exists", () => {
+      const result = isAccessLevelDisabled(
+        "user@example.com",
+        {
+          "user@example.com": AccessLevel.READ,
+          "other@example.com": AccessLevel.ADMIN,
+        },
+        "admin",
+        "user@example.com",
+      );
+      expect(result).toBe(false);
+    });
+
+    it("returns false when user is not active", () => {
+      const result = isAccessLevelDisabled(
+        "other@example.com",
+        {
+          "user@example.com": AccessLevel.ADMIN,
+          "other@example.com": AccessLevel.READ,
+        },
+        "superuser",
         "user@example.com",
       );
       expect(result).toBe(false);

@@ -98,10 +98,20 @@ export const removeUser = (
 export const isAccessLevelDisabled = (
   userValue: number | string,
   shareModelWith: Record<string, string>,
+  activeUserControllerAccess: null | string,
   activeUserName?: string,
-): boolean =>
-  isActiveUser(userValue, activeUserName) &&
-  !hasNonActiveUserAdmin(shareModelWith, activeUserName);
+): boolean => {
+  // Always enable for other users
+  if (!isActiveUser(userValue, activeUserName)) {
+    return false;
+  }
+  // Always disable for controller superusers
+  if (activeUserControllerAccess === "superuser") {
+    return true;
+  }
+  // Enable for active user if other admins have been added
+  return !hasNonActiveUserAdmin(shareModelWith, activeUserName);
+};
 
 /**
  * Get the current access level for a user
