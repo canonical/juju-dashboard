@@ -1,4 +1,4 @@
-import type { Client, Transport } from "@canonical/jujulib";
+import type { Client } from "@canonical/jujulib";
 import { Connection } from "@canonical/jujulib";
 import { waitFor } from "@testing-library/dom";
 import type { UnknownAction, MiddlewareAPI, Dispatch } from "redux";
@@ -132,7 +132,6 @@ describe("model poller", () => {
         identity: "user-eggman",
       },
     };
-    conn.transport = {} as Transport;
     juju = {
       logout: vi.fn(),
     } as unknown as Client;

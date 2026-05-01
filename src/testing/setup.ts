@@ -60,6 +60,12 @@ const Connection = vi.fn(function () {
       })),
     },
   };
+  // @ts-expect-error - Mocking a class.
+  this.transport = {
+    _ws: {
+      readyState: 0,
+    },
+  };
 });
 
 vi.mock("@canonical/jujulib", () => {
@@ -80,6 +86,14 @@ vi.mock("@canonical/jujulib", () => {
 vi.mock("@canonical/jujulib/dist/api/versions", () => ({
   jujuUpdateAvailable: vi.fn(),
 }));
+
+// Mock WebSocket associated constants, required for `connection-manager`.
+window.WebSocket = {
+  CONNECTING: 0,
+  OPEN: 1,
+  CLOSING: 2,
+  CLOSED: 3,
+} as unknown as (typeof window)["WebSocket"];
 
 afterEach(() => {
   localStorage.clear();

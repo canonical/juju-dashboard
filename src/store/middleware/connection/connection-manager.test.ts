@@ -268,13 +268,6 @@ describe("ConnectionManager", () => {
 });
 
 describe("connection handlers", () => {
-  window.WebSocket = {
-    CONNECTING: 0,
-    OPEN: 1,
-    CLOSING: 2,
-    CLOSED: 3,
-  } as unknown as (typeof window)["WebSocket"];
-
   describe("default", () => {
     let logout: Mock;
     let logoutCb: Mock;
