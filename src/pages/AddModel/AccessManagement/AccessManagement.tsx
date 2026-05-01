@@ -38,20 +38,23 @@ const ACCESS_LEVEL_OPTIONS = [
 const AccessManagement = (): JSX.Element => {
   const isJuju = useAppSelector(getIsJuju);
   const wsControllerURL = useAppSelector(getWSControllerURL);
-  const userName =
-    useAppSelector((state) => getActiveUserTag(state, wsControllerURL)) ?? "";
-  const activeUserName = getUserName(userName);
+  const userName = useAppSelector((state) =>
+    getActiveUserTag(state, wsControllerURL),
+  );
   const { values, setFieldValue } = useFormikContext<AddModelFormState>();
+  const [searchInput, setSearchInput] = useState("");
 
+  const activeUserName = userName ? getUserName(userName) : undefined;
   const shareModelWith = values.shareModelWith ?? {};
-  const activeUserValue = activeUserName || "active-user";
-  const ACTIVE_USER: AccessUserItem = {
-    label: activeUserName,
-    value: activeUserValue,
-    access: shareModelWith[activeUserName] ?? AccessLevel.ADMIN,
-  };
+  const ACTIVE_USER = activeUserName
+    ? {
+        label: activeUserName,
+        value: activeUserName,
+        access: shareModelWith[activeUserName] ?? AccessLevel.ADMIN,
+      }
+    : undefined;
   const selectedItems: AccessUserItem[] = [
-    ACTIVE_USER,
+    ...(ACTIVE_USER ? [ACTIVE_USER] : []),
     ...Object.entries(shareModelWith)
       .filter(([user]) => user !== activeUserName)
       .map(([user, access]) => ({
@@ -60,7 +63,6 @@ const AccessManagement = (): JSX.Element => {
         access,
       })),
   ];
-  const [searchInput, setSearchInput] = useState("");
   const trimmedSearchInput = searchInput.trim();
   const hasExactSelectedMatch = selectedItems.some(
     (item) => item.value === trimmedSearchInput,
@@ -74,13 +76,11 @@ const AccessManagement = (): JSX.Element => {
       const access = shareModelWith[key] ?? AccessLevel.ADMIN;
 
       // Keep active user in state only when they are not admin.
-      if (key === ACTIVE_USER.value && access === AccessLevel.ADMIN) {
+      if (key === ACTIVE_USER?.value && access === AccessLevel.ADMIN) {
         continue;
       }
-
       nextShareModelWith[key] = access;
     }
-
     void setFieldValue("shareModelWith", nextShareModelWith);
   };
 
@@ -136,7 +136,7 @@ const AccessManagement = (): JSX.Element => {
                 )}
               </div>
             }
-            disabledItems={[ACTIVE_USER]}
+            disabledItems={ACTIVE_USER ? [ACTIVE_USER] : []}
             items={selectedItems}
             selectedItems={selectedItems}
             onSearchChange={setSearchInput}
@@ -158,63 +158,59 @@ const AccessManagement = (): JSX.Element => {
           </tr>
         </thead>
         <tbody>
-          {selectedItems.map(
-            ({ label: userLabel, value: userValue }, index) => (
-              <tr key={userValue}>
-                <td>
-                  <span className="u-sh1--right u-truncate" title={userLabel}>
-                    {userLabel === activeUserName ? (
-                      <>
-                        <b>{`${userLabel}`}</b> (you)
-                      </>
-                    ) : (
-                      userLabel
-                    )}
-                  </span>
-                </td>
-                <td className="controller-select__cell access-management__access-col">
-                  <CustomSelect
-                    id={`access-level-${userValue}`}
-                    defaultToggleLabel="Admin"
-                    toggleClassName="controller-select__toggle"
-                    dropdownClassName="controller-select__dropdown prevent-panel-close"
-                    value={
-                      userValue === ACTIVE_USER.value
-                        ? ACTIVE_USER.access
-                        : (shareModelWith[userValue] ?? AccessLevel.ADMIN)
-                    }
-                    // This will be enabled once we understand the flow for it
-                    disabled={index === 0}
-                    onChange={(accessLevel) => {
-                      void setFieldValue(
-                        `shareModelWith["${userValue}"]`,
-                        accessLevel,
-                      );
-                    }}
-                    options={ACCESS_LEVEL_OPTIONS}
-                  />
-                </td>
-                <td className="access-management__delete-col">
-                  <Button
-                    hasIcon
-                    appearance="base"
-                    className="u-no-margin--bottom u-no-padding--top u-no-padding--bottom"
-                    disabled={index === 0}
-                    onClick={() => {
-                      const {
-                        [userValue]: _removedUser,
-                        ...nextShareModelWith
-                      } = shareModelWith;
-                      void setFieldValue("shareModelWith", nextShareModelWith);
-                    }}
-                    aria-label="Delete"
-                  >
-                    <Icon name="delete" />
-                  </Button>
-                </td>
-              </tr>
-            ),
-          )}
+          {selectedItems.map(({ label: userLabel, value: userValue }) => (
+            <tr key={userValue}>
+              <td>
+                <span className="u-sh1--right u-truncate" title={userLabel}>
+                  {userLabel === activeUserName ? (
+                    <>
+                      <b>{`${userLabel}`}</b> (you)
+                    </>
+                  ) : (
+                    userLabel
+                  )}
+                </span>
+              </td>
+              <td className="controller-select__cell access-management__access-col">
+                <CustomSelect
+                  id={`access-level-${userValue}`}
+                  defaultToggleLabel="Admin"
+                  toggleClassName="controller-select__toggle"
+                  dropdownClassName="controller-select__dropdown prevent-panel-close"
+                  value={
+                    userValue === ACTIVE_USER?.value
+                      ? ACTIVE_USER.access
+                      : (shareModelWith[userValue] ?? AccessLevel.ADMIN)
+                  }
+                  // This will be enabled once we understand the flow for it
+                  disabled={userValue === ACTIVE_USER?.value}
+                  onChange={(accessLevel) => {
+                    void setFieldValue(
+                      `shareModelWith["${userValue}"]`,
+                      accessLevel,
+                    );
+                  }}
+                  options={ACCESS_LEVEL_OPTIONS}
+                />
+              </td>
+              <td className="access-management__delete-col">
+                <Button
+                  hasIcon
+                  appearance="base"
+                  className="u-no-margin--bottom u-no-padding--top u-no-padding--bottom"
+                  disabled={userValue === ACTIVE_USER?.value}
+                  onClick={() => {
+                    const { [userValue]: _removedUser, ...nextShareModelWith } =
+                      shareModelWith;
+                    void setFieldValue("shareModelWith", nextShareModelWith);
+                  }}
+                  aria-label="Delete"
+                >
+                  <Icon name="delete" />
+                </Button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <hr />

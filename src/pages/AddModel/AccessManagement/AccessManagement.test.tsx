@@ -171,6 +171,30 @@ describe("AccessManagement", () => {
     expect(deleteButtons[0]).toHaveAttribute("aria-disabled", "true");
   });
 
+  it("renders properly without an active user", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.withConfig().build({
+        controllerConnections: null,
+      }),
+    });
+    renderComponent(
+      <Formik initialValues={{ shareModelWith: {} }} onSubmit={vi.fn()}>
+        <AccessManagement />
+      </Formik>,
+      { state },
+    );
+
+    const input = screen.getByRole("combobox", {
+      name: Label.MULTI_SELECT_LABEL,
+    });
+    await userEvent.type(input, "new@example.com");
+
+    expect(
+      screen.getByRole("button", { name: /new@example.com/i }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/\(you\)/)).not.toBeInTheDocument();
+  });
+
   it("shows correct prompts for non-Juju scenarios", async () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.build({
