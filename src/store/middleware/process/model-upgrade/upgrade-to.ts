@@ -102,10 +102,7 @@ export default createProcess<Params, UpgradeStatus, void>(
     );
   },
   {
-    setOutcome: (
-      { modelUUID, modelName, targetController, targetVersion },
-      outcome,
-    ) => {
+    setOutcome: ({ modelUUID, modelName, targetVersion }, outcome) => {
       if ("error" in outcome) {
         logger.error(
           "An error occurred during model upgrade",
@@ -113,12 +110,12 @@ export default createProcess<Params, UpgradeStatus, void>(
           outcome.error,
         );
         return createToast({
-          message: `Error during upgrade of '${modelName}': ${outcome.error.message}`,
+          message: `Error during upgrade of "${modelName}": ${outcome.error.message}`,
           severity: "negative",
         });
       } else {
         return createToast({
-          message: `Upgrade of '${modelName}' to version ${targetVersion} on ${targetController} completed.`,
+          message: `Model "${modelName}" upgraded to ${targetVersion}`,
           severity: "positive",
         });
       }
@@ -127,16 +124,17 @@ export default createProcess<Params, UpgradeStatus, void>(
       let message: string | undefined = undefined;
       switch (status.status) {
         case "pending":
-          message = `Upgrade of '${modelName}' requested`;
+          logger.info(`${modelName} (${modelUUID}) upgrade pending`);
+          message = `Upgrading model "${modelName}"…`;
           break;
         case "initiated":
-          message = `Upgrade of '${modelName}' initiated`;
+          logger.info(`${modelName} (${modelUUID}) upgrade initiated`);
           break;
         case "loading":
-          message = `Upgrade of '${modelName}' in progress`;
+          logger.info(`${modelName} (${modelUUID}) upgrade loading`);
           break;
         case "reconnecting":
-          message = `Attempting to reconnect to '${modelName}'`;
+          logger.info(`Attempting to reconnect to ${modelName} (${modelUUID})`);
           break;
         default:
           logger.warn("An unknown status was emitted", modelUUID, status);
