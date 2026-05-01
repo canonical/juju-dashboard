@@ -10,5 +10,9 @@
 
   .access-management__access-col {
     width: 22rem;
+
+    @include mobile {
+      width: 10rem;
+    }
   }
 }
