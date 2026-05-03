@@ -577,9 +577,24 @@ There are two scenarios when testing model upgrades:
 1. Upgrade a model to a patch version that is equal to or lower than the current controller's patch version (this does not require a migration to a new controller).
 2. Upgrade to a patch version that is higher than the current controller's patch version or upgrade the model's major and/or minor version (this will require a migration to a controller with the new version).
 
-- Currently Multipass does not support environment variables in cloud init scripts so on your host open `scripts/cloud-init-jimm-lxd-oidc.yaml` and change the line `su -c '/home/ubuntu/juju-dashboard/scripts/cloud-init-jimm-lxd-oidc.sh' - ubuntu` to `su -c 'export AGENT_VERSION=3.6.19 && /home/ubuntu/juju-dashboard/scripts/cloud-init-jimm-lxd-oidc.sh' - ubuntu`
-- From the root of the dashboard run `multipass launch --cpus 2 --disk 25G --memory 12G --name jimm-oidc --timeout 5000 --cloud-init ./scripts/cloud-init-jimm-lxd-oidc.yaml` and wait for the JIMM container to be ready.
-- At this point we will have a model `test` on Juju 3.6.19, now we need to upgrade the controller so its version is higher than the model's version (note: it might take a while for the controller to upgrade):
+- To begin, launch a JIMM environment: `multipass launch --cpus 2 --disk 25G --memory 12G --name jimm-oidc --timeout 5000 --cloud-init ./scripts/cloud-init-jimm-lxd-oidc.yaml` and wait for the JIMM container to be ready.
+- Now we need a controller running an older version of Juju:
+```
+cd ~/jimm
+export AGENT_VERSION=3.6.20
+export CONTROLLER_NAME=jimm2
+./local/jimm/setup-controller.sh
+./local/jimm/add-controller.sh
+```
+- Add another controller, this time running a newer version of Juju.
+```
+cd ~/jimm
+export AGENT_VERSION=3.6.21
+export CONTROLLER_NAME=jimm3
+./local/jimm/setup-controller.sh
+./local/jimm/add-controller.sh
+```
+- Now we want to add a model to the jimm2 controller but running an older version of Juju than the controller:
 ```
 multipass shell jimm-oidc
 juju switch qa-lxd
@@ -587,11 +602,7 @@ juju upgrade-controller --agent-version 3.6.20
 ```
 - We also need a controller that has a higher version that the model's current controller version, so add a second controller, this time running 3.6.21:
 ```
-cd ~/jimm
-export AGENT_VERSION=3.6.21
-export CONTROLLER_NAME=jimm2
-./local/jimm/setup-controller.sh
-./local/jimm/add-controller.sh
+~/jimm/jaas add-model --target-controller jimm2 test2 --config="agent-version=3.6.19"
 ```
 - Lastly, if you want to use a local dashboard with this JIMM env then [update the config](#configure-jimm-for-localhost) and [configure your local dashboard](#controller-configuration) to point to the new controller, just as you would normally.
 
@@ -602,9 +613,8 @@ If you're using JAAS you might want to add a model to a specific controller.
 Assuming you have a local jimm repo and running jimm (if you haven't already built the jaas command it can be done with `./local/jimm/detect-jaas.sh`)
 
 ```bash
-cd ~/jimm
 juju switch jimm-dev
-./jaas add-model --target-controller controller-name test-model
+~/jimm/jaas add-model --target-controller controller-name test-model
 ```
 
 ### Add a model with a version older than the controller
