@@ -1,7 +1,7 @@
 import { FadeInDown } from "@canonical/react-components/dist/components/MultiSelect/FadeInDown";
 import classNames from "classnames";
 import type { FC } from "react";
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 
 type AutocompleteInputItem = {
   label: string;
@@ -25,17 +25,6 @@ type Props = {
 const getOptionId = (optionsId: string, index: number): string =>
   `${optionsId}-option-${index}`;
 
-/**
- * Scroll to the option if there are more items than fit on the screen.
- */
-const scrollToOption = (id: string, highlightedOptionIndex: number): void => {
-  document
-    .getElementById(getOptionId(id, highlightedOptionIndex))
-    ?.scrollIntoView({
-      block: "nearest",
-    });
-};
-
 const AutocompleteInputDropdown: FC<Props> = ({
   options,
   onSelectItem,
@@ -45,13 +34,16 @@ const AutocompleteInputDropdown: FC<Props> = ({
   setHighlightedOptionIndex,
   ...props
 }) => {
+  const optionsRefs = useRef<HTMLLIElement[]>([]);
   // Wait for any rerenders and then scroll to items that are outside the visible scroll area.
   useLayoutEffect(() => {
     if (highlightedOptionIndex !== null) {
       // The event needs to happen after repaint in case the DOM changed.
-      window.requestAnimationFrame(
-        scrollToOption.bind(this, id, highlightedOptionIndex),
-      );
+      window.requestAnimationFrame(() => {
+        optionsRefs.current[highlightedOptionIndex]?.scrollIntoView({
+          block: "nearest",
+        });
+      });
     }
   }, [highlightedOptionIndex, id]);
 
@@ -73,6 +65,12 @@ const AutocompleteInputDropdown: FC<Props> = ({
               <li
                 key={item.value}
                 id={getOptionId(id, index)}
+                ref={(node) => {
+                  if (!node) {
+                    return;
+                  }
+                  optionsRefs.current[index] = node;
+                }}
                 aria-selected={selected}
                 className={classNames(
                   "autocomplete-input__dropdown-item p-contextual-menu__link",
@@ -80,7 +78,7 @@ const AutocompleteInputDropdown: FC<Props> = ({
                     highlight: selected,
                   },
                 )}
-                onMouseMove={() => {
+                onMouseEnter={() => {
                   // Select the item that is being hovered so that the mouse and keyboard events are in sync.
                   setHighlightedOptionIndex(index);
                 }}
