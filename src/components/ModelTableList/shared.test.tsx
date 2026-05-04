@@ -50,7 +50,10 @@ describe("shared", () => {
         }),
       }),
     });
-    expect(getLastUpdated(modelData)).toStrictEqual("19-11-12");
+    expect(getLastUpdated(modelData)).toStrictEqual([
+      "2019-11-12T23:49:17.148Z",
+      "19-11-12",
+    ]);
   });
 
   it("generateCloudAndRegion", () => {
