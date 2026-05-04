@@ -199,7 +199,7 @@ const AccessManagement = (): JSX.Element => {
                   onClick={() => {
                     void setFieldValue(
                       "shareModelWith",
-                      removeUser(userValue, shareModelWith),
+                      removeUser(userValue, shareModelWith, activeUserName),
                     );
                   }}
                   aria-label="Delete"

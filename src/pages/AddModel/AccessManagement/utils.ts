@@ -86,8 +86,16 @@ export const getHints = (
 export const removeUser = (
   userValue: number | string,
   shareModelWith: Record<string, string>,
+  activeUserName: string | undefined,
 ): Record<string, string> => {
   const { [userValue]: _removedUser, ...nextShareModelWith } = shareModelWith;
+
+  // If only one user remains after removal, set them to admin
+  if (Object.keys(nextShareModelWith).length === 1 && activeUserName) {
+    // Since the active user cannot be removed, the last user will always be the active user
+    nextShareModelWith[activeUserName] = AccessLevel.ADMIN;
+  }
+
   return nextShareModelWith;
 };
 

@@ -43,7 +43,7 @@ const toCredentialOptions = (
     const credentialName = extractCredentialName(credential);
     return {
       label: credentialName,
-      value: credentialName,
+      value: credential,
     };
   });
 
@@ -83,6 +83,15 @@ const MandatoryDetails = (): JSX.Element => {
       void setFieldValue("cloud", defaultCloud);
     }
   }, [values.cloud, defaultCloud, setFieldValue]);
+
+  useEffect(() => {
+    if (!values.credential && userCredentials && values.cloud) {
+      void setFieldValue(
+        "credential",
+        userCredentials.credentials?.[values.cloud]?.[0] ?? "",
+      );
+    }
+  }, [values.credential, values.cloud, userCredentials, setFieldValue]);
 
   useEffect(() => {
     if (

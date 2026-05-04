@@ -157,11 +157,17 @@ describe("AccessManagement utils", () => {
   describe("removeUser", () => {
     it("removes user from shareModelWith", () => {
       const shareModelWith = {
+        "user@example.com": AccessLevel.ADMIN,
         "user1@example.com": AccessLevel.ADMIN,
         "user2@example.com": AccessLevel.READ,
       };
-      const result = removeUser("user1@example.com", shareModelWith);
+      const result = removeUser(
+        "user1@example.com",
+        shareModelWith,
+        "user@example.com",
+      );
       expect(result).toEqual({
+        "user@example.com": AccessLevel.ADMIN,
         "user2@example.com": AccessLevel.READ,
       });
     });
@@ -170,18 +176,29 @@ describe("AccessManagement utils", () => {
       const shareModelWith = {
         "user1@example.com": AccessLevel.ADMIN,
       };
-      const result = removeUser("nonexistent@example.com", shareModelWith);
+      const result = removeUser(
+        "nonexistent@example.com",
+        shareModelWith,
+        "user1@example.com",
+      );
       expect(result).toEqual({
         "user1@example.com": AccessLevel.ADMIN,
       });
     });
 
-    it("returns empty object when removing the only user", () => {
+    it("resets last remaining user to admin when all others are removed", () => {
       const shareModelWith = {
         "user1@example.com": AccessLevel.ADMIN,
+        "user2@example.com": AccessLevel.READ,
       };
-      const result = removeUser("user1@example.com", shareModelWith);
-      expect(result).toEqual({});
+      const result = removeUser(
+        "user1@example.com",
+        shareModelWith,
+        "user2@example.com",
+      );
+      expect(result).toEqual({
+        "user2@example.com": AccessLevel.ADMIN,
+      });
     });
   });
 
