@@ -101,6 +101,9 @@ const AccessManagement = (): JSX.Element => {
         <div className="col-4">
           <MultiSelect
             variant="search"
+            searchButtonType="button"
+            inputClassName="access-management__dropdown-input"
+            footerClassName="access-management__dropdown-footer"
             placeholder={Label.MULTI_SELECT_PLACEHOLDER}
             label={Label.MULTI_SELECT_LABEL}
             emptyMessage={Label.MULTI_SELECT_NO_USERS}

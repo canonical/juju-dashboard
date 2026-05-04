@@ -1,18 +1,25 @@
-.access-management__delete-col {
-  width: 4rem;
+// This is rendered in a portal, so it cannot be scoped
+.access-management__dropdown-footer {
+  border: none;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .access-management {
-  .multi-select__input {
+  &__dropdown-input {
     margin-bottom: 0;
     margin-top: $spv--medium;
   }
 
-  .access-management__access-col {
+  &__access-col {
     width: 22rem;
 
     @include mobile {
       width: 10rem;
     }
+  }
+
+  &__delete-col {
+    width: 4rem;
   }
 }
