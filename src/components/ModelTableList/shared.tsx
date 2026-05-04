@@ -16,10 +16,13 @@ export const getRegion = (model: ModelData): string | undefined =>
 export const getCredential = (model: ModelData): string =>
   extractCredentialName(model.info?.["cloud-credential-tag"]);
 
-export const getLastUpdated = (model: ModelData): string | undefined => {
+export const getLastUpdated = (
+  model: ModelData,
+): [string | undefined, string | undefined] => {
   // .slice(2) here will make the year 2 characters instead of 4
   // e.g. 2021-01-01 becomes 21-01-01
-  return model.info?.status?.since?.split("T")[0].slice(2);
+  const lastUpdated = model.info?.status?.since;
+  return [lastUpdated, lastUpdated?.split("T")[0].slice(2)];
 };
 
 /**
@@ -37,6 +40,18 @@ export type TableHeaderOptions = {
   showStatus?: boolean;
   showHeaderStatus?: boolean;
 };
+
+export enum SortKey {
+  CLOUD = "cloud",
+  CONTROLLER = "controller",
+  CREDENTIAL = "credential",
+  LAST_UPDATED = "lastUpdated",
+  NAME = "name",
+  OWNER = "owner",
+  REGION = "region",
+  STATUS = "status",
+  SUMMARY = "summary",
+}
 
 /**
     Generates the table headers for the supplied table label.
@@ -56,24 +71,23 @@ export const generateTableHeaders = (
       ) : (
         `${label} (${count})`
       ),
-      sortKey: "name",
+      sortKey: SortKey.NAME,
     },
-    { content: "", sortKey: "summary" }, // The unit/machines/apps counts
-    options?.showOwner ? { content: "Owner", sortKey: "owner" } : null,
-    options?.showStatus ? { content: "Status", sortKey: "status" } : null,
+    { content: "", sortKey: SortKey.SUMMARY }, // The unit/machines/apps counts
+    options?.showOwner ? { content: "Owner", sortKey: SortKey.OWNER } : null,
+    options?.showStatus ? { content: "Status", sortKey: SortKey.STATUS } : null,
     options?.showCloud
-      ? { content: "Cloud/Region", sortKey: "cloud" }
-      : { content: "Region", sortKey: "region" },
-    { content: "Credential", sortKey: "credential" },
-    { content: "Controller", sortKey: "controller" },
+      ? { content: "Cloud/Region", sortKey: SortKey.CLOUD }
+      : { content: "Region", sortKey: SortKey.REGION },
+    { content: "Credential", sortKey: SortKey.CREDENTIAL },
+    { content: "Controller", sortKey: SortKey.CONTROLLER },
     {
       content: "Last Updated",
-      sortKey: "lastUpdated",
+      sortKey: SortKey.LAST_UPDATED,
       className: "u-align--right",
     },
     {
       content: "Actions",
-      sortKey: "actions",
       className: "u-align--right",
     },
   ];

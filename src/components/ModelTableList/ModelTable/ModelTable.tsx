@@ -41,6 +41,7 @@ import {
   getCredential,
   getLastUpdated,
   getRegion,
+  SortKey,
 } from "../shared";
 import { GroupBy, TestId } from "../types";
 
@@ -86,7 +87,7 @@ function generateModelTableList(
       (controller && "name" in controller
         ? controller.name
         : controller?.path) || controllerUUID;
-    const lastUpdated = getLastUpdated(model);
+    const [lastUpdatedFull, lastUpdated] = getLastUpdated(model);
     const isDying = model.uuid in destructionState;
     const upgrade =
       model.uuid in modelUpgrades ? modelUpgrades[model.uuid] : null;
@@ -248,7 +249,7 @@ function generateModelTableList(
       ...(groupBy === GroupBy.CLOUD ? { region } : { cloud }),
       credential,
       controller,
-      lastUpdated,
+      lastUpdated: lastUpdatedFull,
     };
 
     const row = {
@@ -306,6 +307,8 @@ export default function ModelTable({
     <MainTable
       headers={generateTableHeaders(groupLabel, models.length, headerOptions)}
       className="p-main-table"
+      defaultSort={SortKey.LAST_UPDATED}
+      defaultSortDirection="descending"
       sortable
       emptyStateMsg={emptyStateMessage}
       rows={tableRows}

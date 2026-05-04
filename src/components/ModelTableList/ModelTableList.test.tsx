@@ -3,6 +3,7 @@ import { vi } from "vitest";
 
 import * as appSelectors from "store/juju/selectors";
 import type { RootState } from "store/store";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV11";
 import {
   controllerFactory,
   jujuStateFactory,
@@ -142,5 +143,53 @@ describe("ModelTableList", () => {
       customWithin(nameCell).getSpinnerByLabel("Loading"),
     ).toBeInTheDocument();
     expect(nameCell).toHaveTextContent(/1.2.3→2.3.4/);
+  });
+
+  it("orders models by last updated", () => {
+    state.juju.modelData = {
+      abc123: modelDataFactory.build({
+        uuid: "abc123",
+        info: modelInfoFactory.build({
+          name: "test1",
+          status: {
+            status: "available",
+            info: "",
+            // Should be second.
+            since: "2026-05-05T00:24:06.89005486Z",
+          },
+        }),
+      }),
+      abc456: modelDataFactory.build({
+        uuid: "abc456",
+        info: modelInfoFactory.build({
+          name: "test2",
+          status: {
+            status: "available",
+            info: "",
+            // Should be first.
+            since: "2026-05-05T00:25:06.89005486Z",
+          },
+        }),
+      }),
+      abc789: modelDataFactory.build({
+        uuid: "abc789",
+        info: modelInfoFactory.build({
+          name: "test3",
+          status: {
+            status: "available",
+            info: "",
+            // Should be third.
+            since: "2026-05-04T00:24:06.89005486Z",
+          },
+        }),
+      }),
+    };
+    renderComponent(<ModelTableList filters={{}} groupedBy="" />, {
+      state,
+    });
+    const rows = screen.getAllByRole("row");
+    expect(rows[1]).toHaveAttribute("data-testid", "model-uuid-abc456");
+    expect(rows[2]).toHaveAttribute("data-testid", "model-uuid-abc123");
+    expect(rows[3]).toHaveAttribute("data-testid", "model-uuid-abc789");
   });
 });
