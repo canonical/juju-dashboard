@@ -23,8 +23,9 @@ import { actions as jujuActions } from "store/juju";
 import { getModelList } from "store/juju/selectors";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type { RootState, Store } from "store/store";
-import { isSpecificAction } from "types";
-import { toErrorString } from "utils";
+import { type AccessLevel, isSpecificAction } from "types";
+import { getUserName, toErrorString } from "utils";
+import { bumpAccessLevel } from "utils/getAccessLevel";
 import getModelURL from "utils/getModelURL";
 import { logger } from "utils/logger";
 
@@ -563,6 +564,9 @@ function runModelPoller(
               const usersToShare = Object.entries(shareModelWith);
 
               for (const [user, accessLevel] of usersToShare) {
+                const revokeAccessLevel = bumpAccessLevel(
+                  accessLevel as AccessLevel,
+                );
                 try {
                   await setModelSharingPermissions(
                     wsControllerURL,
@@ -570,8 +574,8 @@ function runModelPoller(
                     conn,
                     user,
                     accessLevel,
-                    undefined,
-                    "grant",
+                    revokeAccessLevel,
+                    user === getUserName(userTag) ? "revoke" : "grant",
                     reduxStore.dispatch,
                   );
                 } catch (error) {

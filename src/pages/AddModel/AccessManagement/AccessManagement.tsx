@@ -17,11 +17,12 @@ import {
 } from "store/general/selectors";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
+import { AccessLevel } from "types";
 import { getUserName } from "utils";
 
 import type { AddModelFormState } from "../types";
 
-import { AccessLevel, Label, TestId } from "./types";
+import { Label, TestId } from "./types";
 import {
   buildActiveUser,
   buildSelectedItems,

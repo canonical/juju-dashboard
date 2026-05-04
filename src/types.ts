@@ -57,3 +57,9 @@ export const isKeyOf = <O extends object>(
   key: PropertyKey,
   data: O,
 ): key is keyof O => !!key && typeof key === "string" && key in data;
+
+export enum AccessLevel {
+  ADMIN = "admin",
+  READ = "read",
+  WRITE = "write",
+}

@@ -20,6 +20,7 @@ import {
 import { getModelQualifier } from "store/juju/utils/models";
 import { useAppSelector, usePromiseDispatch } from "store/store";
 import { testId } from "testing/utils";
+import { AccessLevel } from "types";
 import { getUserName } from "utils";
 import { toastNotification } from "utils/toastNotification";
 
@@ -168,7 +169,7 @@ export default function ShareModel(): JSX.Element {
   const newUserFormik = useFormik({
     initialValues: {
       username: "",
-      access: "read",
+      access: AccessLevel.READ,
     },
     validate: (values) => {
       handleValidateNewUser(values);
@@ -240,7 +241,7 @@ export default function ShareModel(): JSX.Element {
       // whatever permission is passed to the revoke command. As we want to
       // remove the user entirely we need to revoke the lowest possible
       // permission (which also revokes all higher permissions).
-      "read",
+      AccessLevel.READ,
     );
 
     reactHotToast.custom((toast) => (
@@ -358,7 +359,7 @@ export default function ShareModel(): JSX.Element {
                   </span>
                 </>
               }
-              value="read"
+              value={AccessLevel.READ}
               name="access"
               onChange={newUserFormik.handleChange}
               defaultChecked

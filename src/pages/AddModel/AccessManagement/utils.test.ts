@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 
-import { AccessLevel, AddUserHint, FormatHint } from "./types";
+import { AccessLevel } from "types";
+
+import { AddUserHint, FormatHint } from "./types";
 import {
   buildActiveUser,
   buildSelectedItems,

@@ -4,12 +4,6 @@ export enum TestId {
   ACCESS_MANAGEMENT_FORM = "access-management-form",
 }
 
-export enum AccessLevel {
-  ADMIN = "admin",
-  READ = "read",
-  WRITE = "write",
-}
-
 export enum AddUserHint {
   JUJU = "Add users by entering a username",
   JIMM = "Add users by entering an email address",

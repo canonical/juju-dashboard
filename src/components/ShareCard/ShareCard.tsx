@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import SlideDownFadeOut from "animations/SlideDownFadeOut";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { formatFriendlyDateToNow } from "components/utils";
+import { AccessLevel } from "types";
 import { logger } from "utils/logger";
 
 import { Label } from "./types";
@@ -128,9 +129,9 @@ export default function ShareCard({
                     value={access}
                     className="share__card-access"
                     options={[
-                      { value: "read", label: "read" },
-                      { value: "write", label: "write" },
-                      { value: "admin", label: "admin" },
+                      { value: AccessLevel.READ, label: AccessLevel.READ },
+                      { value: AccessLevel.WRITE, label: AccessLevel.WRITE },
+                      { value: AccessLevel.ADMIN, label: AccessLevel.ADMIN },
                     ]}
                   />
 

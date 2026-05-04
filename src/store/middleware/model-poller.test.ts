@@ -1698,7 +1698,7 @@ describe("model poller", () => {
       conn,
       "new-user@external",
       "read",
-      undefined,
+      "write",
       "grant",
       fakeStore.dispatch,
     );

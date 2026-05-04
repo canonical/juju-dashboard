@@ -1,9 +1,6 @@
-import {
-  AccessLevel,
-  type AccessUserItem,
-  AddUserHint,
-  FormatHint,
-} from "./types";
+import { AccessLevel } from "types";
+
+import { type AccessUserItem, AddUserHint, FormatHint } from "./types";
 
 /**
  * Check if a given user value is the active user
