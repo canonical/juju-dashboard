@@ -1,3 +1,5 @@
+import jimmSupportedVersions from "store/middleware/source/jimm-supported-versions";
+import migrationTargets from "store/middleware/source/migration-targets";
 import type { RootState } from "store/store";
 import { generalStateFactory, configFactory } from "testing/factories/general";
 import {
@@ -48,13 +50,13 @@ describe("useModelMigrationData", () => {
       },
     );
     expect(
-      actions.find(
-        (dispatch) => dispatch.type === "source/jimm-supported-versions/start",
+      actions.find((dispatch) =>
+        jimmSupportedVersions.actions.start.match(dispatch),
       ),
     ).toBeUndefined();
     expect(
-      actions.find(
-        (dispatch) => dispatch.type === "source/migration-targets/start",
+      actions.find((dispatch) =>
+        migrationTargets.actions.start.match(dispatch),
       ),
     ).toBeUndefined();
   });
@@ -71,25 +73,21 @@ describe("useModelMigrationData", () => {
         store,
       },
     );
-    const supportedVersionsStart = {
-      type: "source/jimm-supported-versions/start",
-      payload: { wsControllerURL: "wss://example.com/api" },
-      meta: { withConnection: true },
-    };
+    const supportedVersionsStart = jimmSupportedVersions.actions.start({
+      wsControllerURL: "wss://example.com/api",
+    });
     expect(
-      actions.find((dispatch) => dispatch.type === supportedVersionsStart.type),
+      actions.find((dispatch) =>
+        jimmSupportedVersions.actions.start.match(dispatch),
+      ),
     ).toMatchObject(supportedVersionsStart);
-    const modelMigrationTargetsStart = {
-      type: "source/migration-targets/start",
-      payload: {
-        modelUUID: "abc123",
-        wsControllerURL: "wss://example.com/api",
-      },
-      meta: { withConnection: true },
-    };
+    const modelMigrationTargetsStart = migrationTargets.actions.start({
+      modelUUID: "abc123",
+      wsControllerURL: "wss://example.com/api",
+    });
     expect(
-      actions.find(
-        (dispatch) => dispatch.type === modelMigrationTargetsStart.type,
+      actions.find((dispatch) =>
+        migrationTargets.actions.start.match(dispatch),
       ),
     ).toMatchObject(modelMigrationTargetsStart);
   });
@@ -107,24 +105,20 @@ describe("useModelMigrationData", () => {
       },
     );
     unmount();
-    const supportedVersionsStop = {
-      type: "source/jimm-supported-versions/stop",
-      payload: { wsControllerURL: "wss://example.com/api" },
-    };
+    const supportedVersionsStop = jimmSupportedVersions.actions.stop({
+      wsControllerURL: "wss://example.com/api",
+    });
     expect(
-      actions.find((dispatch) => dispatch.type === supportedVersionsStop.type),
-    ).toMatchObject(supportedVersionsStop);
-    const modelMigrationTargetsStop = {
-      type: "source/migration-targets/stop",
-      payload: {
-        modelUUID: "abc123",
-        wsControllerURL: "wss://example.com/api",
-      },
-    };
-    expect(
-      actions.find(
-        (dispatch) => dispatch.type === modelMigrationTargetsStop.type,
+      actions.find((dispatch) =>
+        jimmSupportedVersions.actions.stop.match(dispatch),
       ),
+    ).toMatchObject(supportedVersionsStop);
+    const modelMigrationTargetsStop = migrationTargets.actions.stop({
+      modelUUID: "abc123",
+      wsControllerURL: "wss://example.com/api",
+    });
+    expect(
+      actions.find((dispatch) => migrationTargets.actions.stop.match(dispatch)),
     ).toMatchObject(modelMigrationTargetsStop);
   });
 });
