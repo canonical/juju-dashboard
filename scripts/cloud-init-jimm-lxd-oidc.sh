@@ -53,6 +53,13 @@ python3 ./charms/k8s-charm/src/config.py
 sudo iptables -I FORWARD -i lxdbr0 -j ACCEPT
 sudo iptables -I FORWARD -o lxdbr0 -j ACCEPT
 cd /home/ubuntu/juju-dashboard
+# Fix playwright install on 24.04+
+# https://github.com/microsoft/playwright/issues/40117#issuecomment-4346755958
+if [[ "$(arch)" -eq "aarch64" ]]; then
+   export PLAYWRIGHT_HOST_PLATFORM_OVERRIDE="ubuntu24.04-arm64"
+else
+   export PLAYWRIGHT_HOST_PLATFORM_OVERRIDE="ubuntu24.04-x64"
+fi
 yarn playwright install --with-deps --only-shell chromium
 cd /home/ubuntu/jimm
 ./local/jimm/setup-controller.sh
