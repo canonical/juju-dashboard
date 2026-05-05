@@ -104,6 +104,7 @@ export const isAccessLevelDisabled = (
   userValue: number | string,
   shareModelWith: Record<string, string>,
   activeUserControllerAccess: null | string,
+  isJuju?: boolean,
   activeUserName?: string,
 ): boolean => {
   // Always enable for other users
@@ -111,7 +112,8 @@ export const isAccessLevelDisabled = (
     return false;
   }
   // Always disable for controller superusers
-  if (activeUserControllerAccess === "superuser") {
+  // Temporarily disable for JIMM as access reduction for active user needs correction
+  if (!isJuju || activeUserControllerAccess === "superuser") {
     return true;
   }
   // Enable for active user if other admins have been added

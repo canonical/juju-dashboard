@@ -1759,47 +1759,4 @@ describe("model poller", () => {
       fakeStore.dispatch,
     );
   });
-
-  it("uses revoke-admin and grant-target when downgrading active user on JIMM", async () => {
-    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
-      conn,
-      intervalId,
-      juju,
-    }));
-    conn.facades.jimM = { listControllers: vi.fn() } as never;
-    conn.facades.modelManager.createModel.mockResolvedValue({
-      uuid: "model-uuid-123",
-    });
-
-    const setModelSharingPermissionsSpy = vi.spyOn(
-      jujuModule,
-      "setModelSharingPermissions",
-    );
-
-    const middleware = await runMiddleware();
-    const action = jujuActions.addModel({
-      wsControllerURL: "wss://example.com/api",
-      modelName: "model123",
-      userTag: "user-test@example.com",
-      cloudTag: "cloud-aws",
-      credential: "credential-aws",
-      disabledCommands: DisableType.NONE,
-      shareModelWith: {
-        "test@example.com": AccessLevel.READ,
-      },
-    });
-
-    await middleware(next)(action);
-
-    expect(setModelSharingPermissionsSpy).toHaveBeenCalledWith(
-      "wss://example.com/api",
-      "model-uuid-123",
-      conn,
-      "test@example.com",
-      AccessLevel.READ,
-      AccessLevel.ADMIN,
-      "grant",
-      fakeStore.dispatch,
-    );
-  });
 });

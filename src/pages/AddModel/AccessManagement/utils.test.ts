@@ -213,6 +213,7 @@ describe("AccessManagement utils", () => {
           "other@example.com": AccessLevel.ADMIN,
         },
         "superuser",
+        true,
         "user@example.com",
       );
       expect(result).toBe(true);
@@ -226,6 +227,7 @@ describe("AccessManagement utils", () => {
           "other@example.com": AccessLevel.READ,
         },
         "admin",
+        true,
         "user@example.com",
       );
       expect(result).toBe(true);
@@ -239,9 +241,24 @@ describe("AccessManagement utils", () => {
           "other@example.com": AccessLevel.ADMIN,
         },
         "admin",
+        true,
         "user@example.com",
       );
       expect(result).toBe(false);
+    });
+
+    it("returns true for active user on JIMM, even when another admin exists", () => {
+      const result = isAccessLevelDisabled(
+        "user@example.com",
+        {
+          "user@example.com": AccessLevel.READ,
+          "other@example.com": AccessLevel.ADMIN,
+        },
+        "admin",
+        false,
+        "user@example.com",
+      );
+      expect(result).toBe(true);
     });
 
     it("returns false when user is not active", () => {
@@ -252,6 +269,7 @@ describe("AccessManagement utils", () => {
           "other@example.com": AccessLevel.READ,
         },
         "superuser",
+        true,
         "user@example.com",
       );
       expect(result).toBe(false);

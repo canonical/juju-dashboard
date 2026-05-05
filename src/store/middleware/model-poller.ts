@@ -23,7 +23,7 @@ import { actions as jujuActions } from "store/juju";
 import { getModelList } from "store/juju/selectors";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type { RootState, Store } from "store/store";
-import { AccessLevel, isSpecificAction } from "types";
+import { type AccessLevel, isSpecificAction } from "types";
 import { getUserName, toErrorString } from "utils";
 import { bumpAccessLevel } from "utils/getAccessLevel";
 import getModelURL from "utils/getModelURL";
@@ -562,18 +562,14 @@ function runModelPoller(
 
             if (shareModelWith) {
               const usersToShare = Object.entries(shareModelWith);
-              const isJIMM = !!conn.facades.jimM;
-
               for (const [user, targetAccessLevel] of usersToShare) {
                 try {
                   // For the active user, we will always be downgrading the access level
                   if (user === getUserName(userTag)) {
-                    // In JIMM, downgrading access requires revoking Admin access first, then granting the target access level.
                     // In Juju, we can directly revoke access of one higher level to grant the target level.
-                    const permissionFrom = isJIMM
-                      ? AccessLevel.ADMIN
-                      : bumpAccessLevel(targetAccessLevel as AccessLevel);
-                    const actionType = isJIMM ? "grant" : "revoke";
+                    const permissionFrom = bumpAccessLevel(
+                      targetAccessLevel as AccessLevel,
+                    );
                     await setModelSharingPermissions(
                       wsControllerURL,
                       response.uuid,
@@ -581,7 +577,7 @@ function runModelPoller(
                       user,
                       targetAccessLevel,
                       permissionFrom,
-                      actionType,
+                      "revoke",
                       reduxStore.dispatch,
                     );
                   } else {

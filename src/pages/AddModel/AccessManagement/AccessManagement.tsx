@@ -183,6 +183,7 @@ const AccessManagement = (): JSX.Element => {
                     userValue,
                     shareModelWith,
                     activeUserControllerAccess,
+                    isJuju,
                     activeUserName,
                   )}
                   onChange={(accessLevel) => {
