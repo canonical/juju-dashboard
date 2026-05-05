@@ -1698,8 +1698,61 @@ describe("model poller", () => {
       conn,
       "new-user@external",
       "read",
-      "write",
+      undefined,
       "grant",
+      fakeStore.dispatch,
+    );
+  });
+
+  it("applies revoke only for active user and grant only for others", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    conn.facades.modelManager.createModel.mockResolvedValue({
+      uuid: "model-uuid-123",
+    });
+
+    const setModelSharingPermissionsSpy = vi.spyOn(
+      jujuModule,
+      "setModelSharingPermissions",
+    );
+
+    const middleware = await runMiddleware();
+    const action = jujuActions.addModel({
+      wsControllerURL: "wss://example.com/api",
+      modelName: "model123",
+      userTag: "user-test@example.com",
+      cloudTag: "cloud-aws",
+      credential: "credential-aws",
+      disabledCommands: DisableType.NONE,
+      shareModelWith: {
+        "test2@example.com": "admin",
+        "test@example.com": "read",
+      },
+    });
+
+    await middleware(next)(action);
+
+    expect(setModelSharingPermissionsSpy).toHaveBeenCalledWith(
+      "wss://example.com/api",
+      "model-uuid-123",
+      conn,
+      "test2@example.com",
+      "admin",
+      undefined,
+      "grant",
+      fakeStore.dispatch,
+    );
+    expect(setModelSharingPermissionsSpy).toHaveBeenCalledWith(
+      "wss://example.com/api",
+      "model-uuid-123",
+      conn,
+      "test@example.com",
+      undefined,
+      "write",
+      "revoke",
       fakeStore.dispatch,
     );
   });

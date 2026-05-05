@@ -564,20 +564,33 @@ function runModelPoller(
               const usersToShare = Object.entries(shareModelWith);
 
               for (const [user, accessLevel] of usersToShare) {
-                const revokeAccessLevel = bumpAccessLevel(
-                  accessLevel as AccessLevel,
-                );
                 try {
-                  await setModelSharingPermissions(
-                    wsControllerURL,
-                    response.uuid,
-                    conn,
-                    user,
-                    accessLevel,
-                    revokeAccessLevel,
-                    user === getUserName(userTag) ? "revoke" : "grant",
-                    reduxStore.dispatch,
-                  );
+                  if (user === getUserName(userTag)) {
+                    const revokeAccessLevel = bumpAccessLevel(
+                      accessLevel as AccessLevel,
+                    );
+                    await setModelSharingPermissions(
+                      wsControllerURL,
+                      response.uuid,
+                      conn,
+                      user,
+                      undefined,
+                      revokeAccessLevel,
+                      "revoke",
+                      reduxStore.dispatch,
+                    );
+                  } else {
+                    await setModelSharingPermissions(
+                      wsControllerURL,
+                      response.uuid,
+                      conn,
+                      user,
+                      accessLevel,
+                      undefined,
+                      "grant",
+                      reduxStore.dispatch,
+                    );
+                  }
                 } catch (error) {
                   logger.error(
                     "Could not set model sharing permissions.",
