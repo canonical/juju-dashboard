@@ -4,6 +4,7 @@ import { vi, describe, it, expect, beforeEach } from "vitest";
 
 import { ToastCardTestId } from "components/ToastCard";
 import { actions as jujuActions } from "store/juju";
+import modelListSource from "store/middleware/source/model-list";
 import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
@@ -75,7 +76,22 @@ describe("useModelDestructionToaster", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows a negative toast and dispatches clear action on failure", async () => {
+  it("does not show duplicate loading toasts on re-render", async () => {
+    state.juju.destroyModel.xyz456 = {
+      modelName: "enterprise",
+      errors: null,
+      loaded: false,
+      loading: true,
+    };
+    renderComponent(<TestComponent />, { state });
+
+    // There should only ever be one loading toast card for this model.
+    expect(
+      await screen.findAllByTestId(ToastCardTestId.TOAST_CARD),
+    ).toHaveLength(1);
+  });
+
+  it("shows a negative toast and dispatches clear and invalidate actions on failure", async () => {
     state.juju.destroyModel.xyz456 = {
       modelName: "enterprise",
       errors: "Permission denied",
@@ -89,6 +105,9 @@ describe("useModelDestructionToaster", () => {
       modelUUID: "xyz456",
       wsControllerURL: "wss://example.com:17070/api",
     });
+    const invalidateAction = modelListSource.actions.invalidate({
+      wsControllerURL: "wss://example.com:17070/api",
+    });
 
     const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
     expect(card).toHaveAttribute("data-type", "negative");
@@ -100,32 +119,27 @@ describe("useModelDestructionToaster", () => {
       expect(
         actions.find((dispatch) => dispatch.type === clearAction.type),
       ).toMatchObject(clearAction);
+      expect(
+        actions.find((dispatch) => dispatch.type === invalidateAction.type),
+      ).toMatchObject(invalidateAction);
     });
   });
 
-  it("shows a positive toast and dispatches clear action on success", async () => {
-    state.juju = jujuStateFactory.build({
-      models: {
-        xyz456: modelListInfoFactory.build({
-          uuid: "xyz456",
-          name: "enterprise",
-          qualifier: "user-kirk@external",
-        }),
-      },
-      destroyModel: {
-        abc123: {
-          modelName: "enterprise",
-          errors: null,
-          loaded: true,
-          loading: false,
-        },
-      },
-    });
+  it("shows a positive toast and dispatches clear and invalidate actions on success", async () => {
+    state.juju.destroyModel.xyz456 = {
+      modelName: "enterprise",
+      errors: null,
+      loaded: true,
+      loading: false,
+    };
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(<TestComponent />, { state, store });
 
     const clearAction = jujuActions.clearDestroyedModel({
-      modelUUID: "abc123",
+      modelUUID: "xyz456",
+      wsControllerURL: "wss://example.com:17070/api",
+    });
+    const invalidateAction = modelListSource.actions.invalidate({
       wsControllerURL: "wss://example.com:17070/api",
     });
 
@@ -141,18 +155,9 @@ describe("useModelDestructionToaster", () => {
       expect(
         actions.find((dispatch) => dispatch.type === clearAction.type),
       ).toMatchObject(clearAction);
+      expect(
+        actions.find((dispatch) => dispatch.type === invalidateAction.type),
+      ).toMatchObject(invalidateAction);
     });
-  });
-
-  it("takes no action when loaded=true but model is still present", () => {
-    state.juju.destroyModel.xyz456 = {
-      modelName: "enterprise",
-      errors: null,
-      loaded: true,
-      loading: false,
-    };
-    renderComponent(<TestComponent />, { state });
-
-    expect(screen.queryByTestId(ToastCardTestId.TOAST_CARD)).toBeNull();
   });
 });

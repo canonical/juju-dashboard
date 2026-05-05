@@ -4,14 +4,14 @@ import { Link } from "react-router";
 
 import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
-import { getDestructionState, getModelList } from "store/juju/selectors";
+import { getDestructionState } from "store/juju/selectors";
+import modelListSource from "store/middleware/source/model-list";
 import { useAppSelector } from "store/store";
 import { externalURLs } from "urls";
 import { toastNotification } from "utils/toastNotification";
 
 export default function useModelDestructionToaster(): void {
   const destructionState = useAppSelector(getDestructionState);
-  const modelsList = useAppSelector(getModelList);
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const dispatch = useDispatch();
 
@@ -25,18 +25,21 @@ export default function useModelDestructionToaster(): void {
           toastNotification(
             <b>Destroying model "{destructionStatus.modelName}"...</b>,
             "information",
+            `destroy-loading-${modelUUID}`,
           );
         } else if (
           wsControllerURL &&
           destructionStatus.loaded &&
-          destructionStatus.errors === null &&
-          !Object.keys(modelsList).includes(modelUUID)
+          destructionStatus.errors === null
         ) {
           // Handle a successful destruction (model is no longer in modelsList)
           toastNotification(
             <b>Model "{destructionStatus.modelName}" destroyed successfully</b>,
             "positive",
+            `destroy-success-${modelUUID}`,
           );
+          // Invalidate the model list to ensure we have the most up-to-date information.
+          dispatch(modelListSource.actions.invalidate({ wsControllerURL }));
 
           // Dispatch the clear action to remove this entry from the state.
           dispatch(
@@ -60,7 +63,10 @@ export default function useModelDestructionToaster(): void {
               </div>
             </>,
             "negative",
+            `destroy-error-${modelUUID}`,
           );
+          // Invalidate the model list to ensure we have the most up-to-date information.
+          dispatch(modelListSource.actions.invalidate({ wsControllerURL }));
 
           // Dispatch the clear action to remove this entry from the state.
           dispatch(
@@ -72,5 +78,5 @@ export default function useModelDestructionToaster(): void {
         }
       },
     );
-  }, [wsControllerURL, modelsList, destructionState, dispatch]);
+  }, [wsControllerURL, destructionState, dispatch]);
 }
