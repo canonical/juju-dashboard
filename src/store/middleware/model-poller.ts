@@ -573,6 +573,7 @@ function runModelPoller(
                     const permissionFrom = isJIMM
                       ? AccessLevel.ADMIN
                       : bumpAccessLevel(targetAccessLevel as AccessLevel);
+                    const actionType = isJIMM ? "grant" : "revoke";
                     await setModelSharingPermissions(
                       wsControllerURL,
                       response.uuid,
@@ -580,7 +581,7 @@ function runModelPoller(
                       user,
                       targetAccessLevel,
                       permissionFrom,
-                      "grant",
+                      actionType,
                       reduxStore.dispatch,
                     );
                   } else {

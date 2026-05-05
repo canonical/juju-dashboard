@@ -1705,7 +1705,7 @@ describe("model poller", () => {
     );
   });
 
-  it("applies grant for others and revoke with grant for active user on Juju", async () => {
+  it("applies grant for others and revoke for active user on Juju", async () => {
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
@@ -1755,7 +1755,7 @@ describe("model poller", () => {
       "test@example.com",
       AccessLevel.READ,
       AccessLevel.WRITE,
-      "grant",
+      "revoke",
       fakeStore.dispatch,
     );
   });
