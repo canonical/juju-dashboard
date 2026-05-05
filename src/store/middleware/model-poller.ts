@@ -23,7 +23,7 @@ import { actions as jujuActions } from "store/juju";
 import { getModelList } from "store/juju/selectors";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type { RootState, Store } from "store/store";
-import { type AccessLevel, isSpecificAction } from "types";
+import { AccessLevel, isSpecificAction } from "types";
 import { getUserName, toErrorString } from "utils";
 import { bumpAccessLevel } from "utils/getAccessLevel";
 import getModelURL from "utils/getModelURL";
@@ -561,43 +561,50 @@ function runModelPoller(
             }
 
             if (shareModelWith) {
+              const activeUser = getUserName(userTag);
               const usersToShare = Object.entries(shareModelWith);
-              for (const [user, targetAccessLevel] of usersToShare) {
-                try {
-                  // For the active user, we will always be downgrading the access level
-                  if (user === getUserName(userTag)) {
-                    // In Juju, we can directly revoke access of one higher level to grant the target level.
-                    const permissionFrom = bumpAccessLevel(
-                      targetAccessLevel as AccessLevel,
-                    );
-                    await setModelSharingPermissions(
-                      wsControllerURL,
-                      response.uuid,
-                      conn,
-                      user,
-                      targetAccessLevel,
-                      permissionFrom,
-                      "revoke",
-                      reduxStore.dispatch,
-                    );
-                  } else {
-                    await setModelSharingPermissions(
-                      wsControllerURL,
-                      response.uuid,
-                      conn,
-                      user,
-                      targetAccessLevel,
-                      undefined,
-                      "grant",
-                      reduxStore.dispatch,
-                    );
+              let activeUserTargetAccessLevel = AccessLevel.ADMIN;
+
+              try {
+                for (const [user, targetAccessLevel] of usersToShare) {
+                  if (user === activeUser) {
+                    activeUserTargetAccessLevel =
+                      targetAccessLevel as AccessLevel;
+                    continue;
                   }
-                } catch (error) {
-                  logger.error(
-                    "Could not set model sharing permissions.",
-                    error,
+
+                  await setModelSharingPermissions(
+                    wsControllerURL,
+                    response.uuid,
+                    conn,
+                    user,
+                    targetAccessLevel,
+                    undefined,
+                    "grant",
+                    reduxStore.dispatch,
                   );
                 }
+
+                // For the active user, we will always be downgrading the access level.
+                // Revoke active user's permission after sharing with other users to avoid losing access before granting.
+                if (activeUserTargetAccessLevel !== AccessLevel.ADMIN) {
+                  // In Juju, we can directly revoke access of one higher level to grant the target level.
+                  const permissionFrom = bumpAccessLevel(
+                    activeUserTargetAccessLevel,
+                  );
+                  await setModelSharingPermissions(
+                    wsControllerURL,
+                    response.uuid,
+                    conn,
+                    activeUser,
+                    activeUserTargetAccessLevel,
+                    permissionFrom,
+                    "revoke",
+                    reduxStore.dispatch,
+                  );
+                }
+              } catch (error) {
+                logger.error("Could not set model sharing permissions.", error);
               }
             }
           }

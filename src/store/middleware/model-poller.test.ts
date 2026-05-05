@@ -1759,4 +1759,59 @@ describe("model poller", () => {
       fakeStore.dispatch,
     );
   });
+
+  it("processes active user last when sharing model access", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    conn.facades.modelManager.createModel.mockResolvedValue({
+      uuid: "model-uuid-123",
+    });
+
+    const setModelSharingPermissionsSpy = vi.spyOn(
+      jujuModule,
+      "setModelSharingPermissions",
+    );
+
+    const middleware = await runMiddleware();
+    const action = jujuActions.addModel({
+      wsControllerURL: "wss://example.com/api",
+      modelName: "model123",
+      userTag: "user-test@example.com",
+      cloudTag: "cloud-aws",
+      credential: "credential-aws",
+      disabledCommands: DisableType.NONE,
+      shareModelWith: {
+        "test@example.com": AccessLevel.READ,
+        "test2@example.com": AccessLevel.ADMIN,
+      },
+    });
+
+    await middleware(next)(action);
+
+    expect(setModelSharingPermissionsSpy).toHaveBeenNthCalledWith(
+      1,
+      "wss://example.com/api",
+      "model-uuid-123",
+      conn,
+      "test2@example.com",
+      AccessLevel.ADMIN,
+      undefined,
+      "grant",
+      fakeStore.dispatch,
+    );
+    expect(setModelSharingPermissionsSpy).toHaveBeenNthCalledWith(
+      2,
+      "wss://example.com/api",
+      "model-uuid-123",
+      conn,
+      "test@example.com",
+      AccessLevel.READ,
+      AccessLevel.WRITE,
+      "revoke",
+      fakeStore.dispatch,
+    );
+  });
 });
