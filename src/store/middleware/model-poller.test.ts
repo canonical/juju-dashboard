@@ -28,6 +28,7 @@ import {
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 import { createStore } from "testing/utils";
+import { AccessLevel } from "types";
 
 import { LoginError, modelPollerMiddleware } from "./model-poller";
 import disableCommand from "./process/block/disable-command";
@@ -1686,7 +1687,7 @@ describe("model poller", () => {
       credential: "credential-aws",
       disabledCommands: DisableType.NONE,
       shareModelWith: {
-        "new-user@external": "read",
+        "new-user@external": AccessLevel.READ,
       },
     });
 
@@ -1697,14 +1698,14 @@ describe("model poller", () => {
       "model-uuid-123",
       conn,
       "new-user@external",
-      "read",
+      AccessLevel.READ,
       undefined,
       "grant",
       fakeStore.dispatch,
     );
   });
 
-  it("applies revoke only for active user and grant only for others", async () => {
+  it("applies grant for others and revoke with grant for active user on Juju", async () => {
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
       intervalId,
@@ -1728,8 +1729,63 @@ describe("model poller", () => {
       credential: "credential-aws",
       disabledCommands: DisableType.NONE,
       shareModelWith: {
-        "test2@example.com": "admin",
-        "test@example.com": "read",
+        "test2@example.com": AccessLevel.ADMIN,
+        "test@example.com": AccessLevel.READ,
+      },
+    });
+
+    await middleware(next)(action);
+
+    expect(setModelSharingPermissionsSpy).toHaveBeenNthCalledWith(
+      1,
+      "wss://example.com/api",
+      "model-uuid-123",
+      conn,
+      "test2@example.com",
+      AccessLevel.ADMIN,
+      undefined,
+      "grant",
+      fakeStore.dispatch,
+    );
+    expect(setModelSharingPermissionsSpy).toHaveBeenNthCalledWith(
+      2,
+      "wss://example.com/api",
+      "model-uuid-123",
+      conn,
+      "test@example.com",
+      AccessLevel.READ,
+      AccessLevel.WRITE,
+      "grant",
+      fakeStore.dispatch,
+    );
+  });
+
+  it("uses revoke-admin and grant-target when downgrading active user on JIMM", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    conn.facades.jimM = { listControllers: vi.fn() } as never;
+    conn.facades.modelManager.createModel.mockResolvedValue({
+      uuid: "model-uuid-123",
+    });
+
+    const setModelSharingPermissionsSpy = vi.spyOn(
+      jujuModule,
+      "setModelSharingPermissions",
+    );
+
+    const middleware = await runMiddleware();
+    const action = jujuActions.addModel({
+      wsControllerURL: "wss://example.com/api",
+      modelName: "model123",
+      userTag: "user-test@example.com",
+      cloudTag: "cloud-aws",
+      credential: "credential-aws",
+      disabledCommands: DisableType.NONE,
+      shareModelWith: {
+        "test@example.com": AccessLevel.READ,
       },
     });
 
@@ -1739,20 +1795,10 @@ describe("model poller", () => {
       "wss://example.com/api",
       "model-uuid-123",
       conn,
-      "test2@example.com",
-      "admin",
-      undefined,
-      "grant",
-      fakeStore.dispatch,
-    );
-    expect(setModelSharingPermissionsSpy).toHaveBeenCalledWith(
-      "wss://example.com/api",
-      "model-uuid-123",
-      conn,
       "test@example.com",
-      undefined,
-      "write",
-      "revoke",
+      AccessLevel.READ,
+      AccessLevel.ADMIN,
+      "grant",
       fakeStore.dispatch,
     );
   });
