@@ -31,10 +31,10 @@ const getNextOptionIndex = (
   const nextIndex = prevIndex + increment;
 
   if (increment > 0) {
-    return nextIndex < options.length ? nextIndex : prevIndex;
+    return nextIndex < options.length ? nextIndex : 0;
   }
 
-  return nextIndex >= 0 ? nextIndex : prevIndex;
+  return nextIndex >= 0 ? nextIndex : options.length - 1;
 };
 
 const updateDropdown = (
@@ -83,9 +83,18 @@ const handleKeyDown = (
       );
     }
   }
-  if ((isEnter || isTab) && isDropdownOpen) {
-    // When the menu is open then pressing enter or tab should not do the default actions (submitting a form, moving focus etc.)
+  if (isEnter && isDropdownOpen) {
+    // When the menu is open then pressing enter should not do the default action (e.g. submitting a form).
     event.preventDefault();
+  }
+  if (isTab && isDropdownOpen) {
+    // Moving focus away from the field should close the dropdown.
+    updateDropdown(
+      setIsDropdownOpen,
+      filteredOptions,
+      setHighlightedOptionIndex,
+      false,
+    );
   }
   if (
     isEnter &&
@@ -96,10 +105,9 @@ const handleKeyDown = (
     onSelectItem(filteredOptions[highlightedOptionIndex].value);
   }
   // Pressing up/down or tab/shift+tab should move the selected item up/down.
-  if (isUpDown || isTab) {
+  if (isUpDown) {
     setHighlightedOptionIndex((prevIndex) => {
-      const goingUp = isUp || (isTab && event.shiftKey);
-      return getNextOptionIndex(filteredOptions, goingUp, prevIndex);
+      return getNextOptionIndex(filteredOptions, isUp, prevIndex);
     });
   }
   // If escape is pressed and the dropdown is open then close it, otherwise let the key behave as normal.

@@ -178,6 +178,7 @@ describe("AutocompleteInput", () => {
             options={[
               { label: "Option One", value: "option1" },
               { label: "Option Two", value: "option2" },
+              { label: "Option Three", value: "option3" },
             ]}
             onValueChanged={vi.fn()}
           />
@@ -224,48 +225,42 @@ describe("AutocompleteInput", () => {
     it("selects the previous item if the up arrow is pressed", async () => {
       const input = screen.getByRole("textbox", { name: "auto complete" });
       expect(
-        screen.getByRole("option", { name: "Option Two" }),
+        screen.getByRole("option", { name: "Option Three" }),
       ).toHaveAttribute("aria-selected", "false");
+      await userEvent.type(input, "{arrowup}", { skipClick: true });
+      expect(
+        screen.getByRole("option", { name: "Option Three" }),
+      ).toHaveAttribute("aria-selected", "true");
       await userEvent.type(input, "{arrowup}", { skipClick: true });
       expect(
         screen.getByRole("option", { name: "Option Two" }),
       ).toHaveAttribute("aria-selected", "true");
+    });
+
+    it("selects the first item if the down arrow is pressed on the last item", async () => {
+      const input = screen.getByRole("textbox", { name: "auto complete" });
+      // Move to the last item.
       await userEvent.type(input, "{arrowup}", { skipClick: true });
       expect(
-        screen.getByRole("option", { name: "Option Two" }),
-      ).toHaveAttribute("aria-selected", "false");
-    });
-
-    it("selects the next item if tab is pressed", async () => {
-      const input = screen.getByRole("textbox", { name: "auto complete" });
-      expect(
-        screen.getByRole("option", { name: "Option One" }),
-      ).toHaveAttribute("aria-selected", "false");
-      await userEvent.type(input, "{tab}", { skipClick: true });
+        screen.getByRole("option", { name: "Option Three" }),
+      ).toHaveAttribute("aria-selected", "true");
+      await userEvent.type(input, "{arrowdown}", { skipClick: true });
       expect(
         screen.getByRole("option", { name: "Option One" }),
       ).toHaveAttribute("aria-selected", "true");
-      await userEvent.type(input, "{tab}", { skipClick: true });
-      expect(
-        screen.getByRole("option", { name: "Option Two" }),
-      ).toHaveAttribute("aria-selected", "true");
-      // It shouldn't remove focus from the input.
-      expect(input).toHaveFocus();
     });
 
-    it("selects the previous item if shift+tab is pressed", async () => {
+    it("selects the last item if the up arrow is pressed on the first item", async () => {
       const input = screen.getByRole("textbox", { name: "auto complete" });
+      // Move to the first item
+      await userEvent.type(input, "{arrowdown}", { skipClick: true });
       expect(
-        screen.getByRole("option", { name: "Option Two" }),
-      ).toHaveAttribute("aria-selected", "false");
-      await userEvent.type(input, "{shift>}{tab}", { skipClick: true });
-      expect(
-        screen.getByRole("option", { name: "Option Two" }),
+        screen.getByRole("option", { name: "Option One" }),
       ).toHaveAttribute("aria-selected", "true");
-      await userEvent.type(input, "{shift>}{tab}", { skipClick: true });
+      await userEvent.type(input, "{arrowup}", { skipClick: true });
       expect(
-        screen.getByRole("option", { name: "Option Two" }),
-      ).toHaveAttribute("aria-selected", "false");
+        screen.getByRole("option", { name: "Option Three" }),
+      ).toHaveAttribute("aria-selected", "true");
     });
 
     it("selects an item if the enter key is pressed", async () => {
@@ -278,6 +273,13 @@ describe("AutocompleteInput", () => {
       expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
       // It shouldn't submit the form.
       expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it("closes the menu if tab is pressed", async () => {
+      const input = screen.getByRole("textbox", { name: "auto complete" });
+      // Close the menu
+      await userEvent.type(input, "{tab}", { skipClick: true });
+      expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
     });
 
     it("closes the menu if escape is pressed", async () => {
