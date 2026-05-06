@@ -26,11 +26,8 @@ export function createModelConnectionRetry(modelConnection: ManagedConnection) {
     Promise.resolve(modelConnection);
 
   return async (): Promise<ConnectionRetryResult> => {
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    if (!connection) {
-      // Only initiate a connection if there isn't an existing one.
-      connection = modelConnection.reconnect();
-    }
+    // Only initiate a connection if there isn't an existing one.
+    connection ??= modelConnection.reconnect();
 
     let currentConnection: ManagedConnection | null = null;
     try {

@@ -16,7 +16,10 @@ export type ProcessOutcome<Result> =
   | { result: Result };
 
 export type ProcessActions<Payload, Status, Result> = {
-  setStatus: (payload: Payload, status: Status) => PayloadAction<unknown>;
+  setStatus: (
+    payload: Payload,
+    status: Status,
+  ) => PayloadAction<unknown> | void;
   setRunning: (payload: Payload, running: boolean) => PayloadAction<unknown>;
   setOutcome: (
     payload: Payload,

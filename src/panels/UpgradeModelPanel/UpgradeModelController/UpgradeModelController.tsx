@@ -73,8 +73,6 @@ const UpgradeModelController: FC<Props> = ({
   });
   function triggerMigration(values: FormFields): void {
     const currentVersion = model?.info?.["agent-version"];
-
-    // TODO: Properly handle
     if (!wsControllerURL) {
       throw new Error("wsControllerURL is required");
     }
@@ -92,8 +90,10 @@ const UpgradeModelController: FC<Props> = ({
         currentVersion,
         wsControllerURL,
         modelUUID,
+        // TODO: Use the getModelURL util here once it lands:
+        // https://github.com/canonical/juju-dashboard/pull/2285/changes#diff-b8618585b6c69654e35b6b6a0f188d72b59777badd2798cfd1d027a396ed0566R1
         modelURL: wsControllerURL.replace("/api", `/model/${modelUUID}/api`),
-        modelName: model?.info?.name ?? "Unknown model",
+        modelName: modelName,
       });
       dispatch(action);
     }

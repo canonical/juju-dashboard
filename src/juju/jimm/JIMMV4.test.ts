@@ -177,4 +177,22 @@ describe("JIMMV4", () => {
       );
     },
   );
+
+  it("upgradeTo", async () => {
+    const jimm = new JIMMV4(transport, connectionInfo);
+    void jimm.upgradeTo("model-abc123", "controller123");
+    expect(transport.write).toHaveBeenCalledWith(
+      {
+        type: "JIMM",
+        request: "UpgradeTo",
+        version: 4,
+        params: {
+          "model-tag": "model-abc123",
+          "target-controller-name": "controller123",
+        },
+      },
+      expect.any(Function),
+      expect.any(Function),
+    );
+  });
 });

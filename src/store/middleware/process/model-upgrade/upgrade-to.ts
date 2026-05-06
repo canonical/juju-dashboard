@@ -1,5 +1,3 @@
-import type { PayloadAction } from "@reduxjs/toolkit";
-
 import * as jimmApi from "juju/jimm/api";
 import { createToast } from "store/app/actions";
 import { actions as jujuActions } from "store/juju";
@@ -12,11 +10,16 @@ import { createProcess } from "../createProcess";
 
 import createModelConnectionRetrySource from "./model-connection-retry-source";
 
-export type UpgradeStatus =
-  | { status: "initiated" }
-  | { status: "loading" }
-  | { status: "pending" }
-  | { status: "reconnecting" };
+enum UpgradeStatus {
+  INITIATED = "initiated",
+  LOADING = "loading",
+  PENDING = "pending",
+  RECONNECTING = "reconnecting",
+}
+
+type UpgradeState = {
+  status: UpgradeStatus;
+};
 
 const REQUIRED_CONNECTIONS = ["wsControllerURL", "modelURL"];
 /**
@@ -40,7 +43,7 @@ export async function* upgradeTo(
   targetVersion: string,
   controllerConnection: ManagedConnection,
   modelConnection: ManagedConnection,
-): AsyncGenerator<UpgradeStatus, void, void> {
+): AsyncGenerator<UpgradeState, void, void> {
   const modelTag = `model-${modelUUID}`;
 
   const request = jimmApi.upgradeTo(
@@ -48,14 +51,14 @@ export async function* upgradeTo(
     modelTag,
     targetController,
   );
-  yield { status: "pending" };
+  yield { status: UpgradeStatus.PENDING };
   const result = await request;
 
   if (!result) {
     throw new Error("migration request rejected");
   }
 
-  yield { status: "initiated" };
+  yield { status: UpgradeStatus.INITIATED };
 
   // Poll for model version.
   const source = createModelConnectionRetrySource(modelConnection);
@@ -63,29 +66,30 @@ export async function* upgradeTo(
   for await (const retry of source) {
     if ("version" in retry) {
       if (retry.version === targetVersion) {
+        // The model has reached the target version so the source can now finish.
         break;
       }
       // Send a toast to to inform the user that it's in progress.
       statusCount += 1;
       if (statusCount % STATUS_TOAST_INTERVAL === 0) {
-        yield { status: "loading" };
+        yield { status: UpgradeStatus.LOADING };
       }
     } else {
       statusCount = 0;
-      yield { status: "reconnecting" };
+      yield { status: UpgradeStatus.RECONNECTING };
     }
   }
   source.done();
 }
 
-export default createProcess<Params, UpgradeStatus, void>(
+export default createProcess<Params, UpgradeState, void>(
   "model-upgrade/upgrade-to",
   async function* ({
     modelUUID,
     targetController,
     targetVersion,
     meta,
-  }): AsyncGenerator<UpgradeStatus, void, void> {
+  }): AsyncGenerator<UpgradeState, void, void> {
     if (!hasConnections(meta, REQUIRED_CONNECTIONS)) {
       throw new Error("missing connections");
     }
@@ -121,20 +125,22 @@ export default createProcess<Params, UpgradeStatus, void>(
       }
     },
     setStatus: ({ modelUUID, modelName }, status) => {
-      let message: string | undefined = undefined;
+      let message: null | string = null;
       switch (status.status) {
-        case "pending":
-          logger.info(`${modelName} (${modelUUID}) upgrade pending`);
+        case UpgradeStatus.PENDING:
+          logger.debug(`${modelName} (${modelUUID}) upgrade pending`);
           message = `Upgrading model "${modelName}"…`;
           break;
-        case "initiated":
-          logger.info(`${modelName} (${modelUUID}) upgrade initiated`);
+        case UpgradeStatus.INITIATED:
+          logger.debug(`${modelName} (${modelUUID}) upgrade initiated`);
           break;
-        case "loading":
-          logger.info(`${modelName} (${modelUUID}) upgrade loading`);
+        case UpgradeStatus.LOADING:
+          logger.debug(`${modelName} (${modelUUID}) upgrade loading`);
           break;
-        case "reconnecting":
-          logger.info(`Attempting to reconnect to ${modelName} (${modelUUID})`);
+        case UpgradeStatus.RECONNECTING:
+          logger.debug(
+            `Attempting to reconnect to ${modelName} (${modelUUID})`,
+          );
           break;
         default:
           logger.warn("An unknown status was emitted", modelUUID, status);
@@ -143,7 +149,7 @@ export default createProcess<Params, UpgradeStatus, void>(
 
       if (!message) {
         // Don't toast anything if there's no message.
-        return {} as PayloadAction;
+        return;
       }
 
       return createToast({ message, severity: "information" });

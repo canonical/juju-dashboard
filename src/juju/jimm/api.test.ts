@@ -18,6 +18,7 @@ import {
   Label,
   listMigrationTargets,
   supportedJujuVersions,
+  upgradeTo,
 } from "./api";
 
 describe("JIMM API", () => {
@@ -446,6 +447,46 @@ describe("JIMM API", () => {
       await expect(supportedJujuVersions(conn)).rejects.toThrow(
         new Error("Uh oh!"),
       );
+    });
+  });
+
+  describe("upgradeTo", () => {
+    it("makes and upgrade call", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            upgradeTo: vi.fn().mockResolvedValue(true),
+          },
+        },
+      } as unknown as Connection;
+      const response = await upgradeTo(conn, "model-abc123", "controller123");
+      expect(conn.facades.jimM.upgradeTo).toHaveBeenCalledExactlyOnceWith(
+        "model-abc123",
+        "controller123",
+      );
+      expect(response).toBe(true);
+    });
+
+    it("handles no JIMM connection", async () => {
+      const conn = {
+        facades: {},
+      } as unknown as Connection;
+      await expect(
+        upgradeTo(conn, "model-abc123", "controller123"),
+      ).rejects.toThrow(new Error(Label.NO_JIMM));
+    });
+
+    it("should handle exceptions", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            upgradeTo: vi.fn().mockRejectedValue(new Error("Uh oh!")),
+          },
+        },
+      } as unknown as Connection;
+      await expect(
+        upgradeTo(conn, "model-abc123", "controller123"),
+      ).rejects.toThrow(new Error("Uh oh!"));
     });
   });
 });
