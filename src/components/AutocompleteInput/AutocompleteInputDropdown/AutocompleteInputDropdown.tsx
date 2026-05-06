@@ -82,6 +82,10 @@ const AutocompleteInputDropdown: FC<Props> = ({
                   // Select the item that is being hovered so that the mouse and keyboard events are in sync.
                   setHighlightedOptionIndex(index);
                 }}
+                onMouseDown={(event) => {
+                  // Prevent clicks in the menu from removing focus from the input.
+                  event.preventDefault();
+                }}
                 onMouseUp={(event) => {
                   // Prevent clicks from propagating so that if the autocomplete is inside a panel or modal it's
                   // not registered as a cloud outside (as the dropdown is inside a portal).

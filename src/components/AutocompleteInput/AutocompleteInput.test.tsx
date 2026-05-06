@@ -275,7 +275,7 @@ describe("AutocompleteInput", () => {
       expect(onSubmit).not.toHaveBeenCalled();
     });
 
-    it("closes the menu if tab is pressed", async () => {
+    it("closes the menu if the input loses focus", async () => {
       const input = screen.getByRole("textbox", { name: "auto complete" });
       // Close the menu
       await userEvent.type(input, "{tab}", { skipClick: true });

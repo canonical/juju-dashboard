@@ -64,7 +64,6 @@ const handleKeyDown = (
   onSelectItem: (item: string) => void,
   event: React.KeyboardEvent<HTMLInputElement>,
 ): void => {
-  const isTab = event.key === "Tab";
   const isUp = event.key === "ArrowUp";
   const isDown = event.key === "ArrowDown";
   const isUpDown = isUp || isDown;
@@ -87,15 +86,6 @@ const handleKeyDown = (
     // When the menu is open then pressing enter should not do the default action (e.g. submitting a form).
     event.preventDefault();
   }
-  if (isTab && isDropdownOpen) {
-    // Moving focus away from the field should close the dropdown.
-    updateDropdown(
-      setIsDropdownOpen,
-      filteredOptions,
-      setHighlightedOptionIndex,
-      false,
-    );
-  }
   if (
     isEnter &&
     highlightedOptionIndex !== null &&
@@ -104,7 +94,7 @@ const handleKeyDown = (
     // Select the highlighted item in the menu.
     onSelectItem(filteredOptions[highlightedOptionIndex].value);
   }
-  // Pressing up/down or tab/shift+tab should move the selected item up/down.
+  // Pressing up/down should move the selected item up/down.
   if (isUpDown) {
     setHighlightedOptionIndex((prevIndex) => {
       return getNextOptionIndex(filteredOptions, isUp, prevIndex);
@@ -224,6 +214,16 @@ const AutocompleteInput: FC<Props> = ({
             );
             // Call any parent onFocus handlers.
             props.onFocus?.(event);
+          }}
+          onBlur={(event) => {
+            updateDropdown(
+              setIsDropdownOpen,
+              filteredOptions,
+              setHighlightedOptionIndex,
+              false,
+            );
+            // Call any parent onBlur handlers.
+            props.onBlur?.(event);
           }}
           onKeyDown={(event) => {
             handleKeyDown(
