@@ -3,14 +3,6 @@ import { AccessLevel } from "types";
 import { type AccessUserItem, AddUserHint, FormatHint } from "./types";
 
 /**
- * Check if a given user value is the active user
- */
-export const isActiveUser = (
-  userValue: number | string,
-  activeUserName?: string,
-): boolean => userValue === activeUserName;
-
-/**
  * Build the ACTIVE_USER object from active username and current share state
  */
 export const buildActiveUser = (
@@ -59,22 +51,13 @@ export const hasNonActiveUserAdmin = (
   );
 
 /**
- * Select hint text based on whether it's Juju or JIMM environment
- */
-export const selectHint = (
-  isJuju: boolean,
-  jujuHint: string,
-  jimmHint: string,
-): string => (isJuju ? jujuHint : jimmHint);
-
-/**
  * Get the appropriate hints for the current environment
  */
 export const getHints = (
   isJuju: boolean,
 ): { addUserHint: string; formatHint: string } => ({
-  addUserHint: selectHint(isJuju, AddUserHint.JUJU, AddUserHint.JIMM),
-  formatHint: selectHint(isJuju, FormatHint.JUJU, FormatHint.JIMM),
+  addUserHint: isJuju ? AddUserHint.JUJU : AddUserHint.JIMM,
+  formatHint: isJuju ? FormatHint.JUJU : FormatHint.JIMM,
 });
 
 /**
@@ -108,11 +91,13 @@ export const isAccessLevelDisabled = (
   activeUserName?: string,
 ): boolean => {
   // Always enable for other users
-  if (!isActiveUser(userValue, activeUserName)) {
+  if (userValue !== activeUserName) {
     return false;
   }
   // Always disable for controller superusers
   // Temporarily disable for JIMM as access reduction for active user needs correction
+  // TODO: enable the option for JIMM once the JIMM issue has been fixed:
+  // https://warthogs.atlassian.net/browse/JUJU-9822.
   if (!isJuju || activeUserControllerAccess === "superuser") {
     return true;
   }
@@ -129,6 +114,6 @@ export const getUserAccess = (
   activeUserAccess: string | undefined,
   shareModelWith: Record<string, string>,
 ): string =>
-  isActiveUser(userValue, activeUserName)
+  userValue === activeUserName
     ? (activeUserAccess ?? AccessLevel.READ)
     : (shareModelWith[userValue] ?? AccessLevel.READ);

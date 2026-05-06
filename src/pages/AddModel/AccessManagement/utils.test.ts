@@ -10,26 +10,10 @@ import {
   getUserAccess,
   hasNonActiveUserAdmin,
   isAccessLevelDisabled,
-  isActiveUser,
   removeUser,
-  selectHint,
 } from "./utils";
 
 describe("AccessManagement utils", () => {
-  describe("isActiveUser", () => {
-    it("returns true when userValue matches activeUserName", () => {
-      expect(isActiveUser("user@example.com", "user@example.com")).toBe(true);
-    });
-
-    it("returns false when userValue does not match activeUserName", () => {
-      expect(isActiveUser("other@example.com", "user@example.com")).toBe(false);
-    });
-
-    it("returns false when activeUserName is undefined", () => {
-      expect(isActiveUser("user@example.com", undefined)).toBe(false);
-    });
-  });
-
   describe("buildActiveUser", () => {
     it("returns undefined when activeUserName is undefined", () => {
       expect(buildActiveUser(undefined, {})).toBeUndefined();
@@ -127,18 +111,6 @@ describe("AccessManagement utils", () => {
           "user@example.com",
         ),
       ).toBe(false);
-    });
-  });
-
-  describe("selectHint", () => {
-    it("returns first hint when isJuju is true", () => {
-      const result = selectHint(true, "Juju Text", "JIMM Text");
-      expect(result).toBe("Juju Text");
-    });
-
-    it("returns second hint when isJuju is false", () => {
-      const result = selectHint(false, "Juju Text", "JIMM Text");
-      expect(result).toBe("JIMM Text");
     });
   });
 

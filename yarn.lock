@@ -261,9 +261,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/react-components@npm:4.5.1":
-  version: 4.5.1
-  resolution: "@canonical/react-components@npm:4.5.1"
+"@canonical/react-components@npm:4.5.2":
+  version: 4.5.2
+  resolution: "@canonical/react-components@npm:4.5.2"
   dependencies:
     "@types/jest": "npm:30.0.0"
     "@types/node": "npm:20.19.30"
@@ -282,7 +282,7 @@ __metadata:
     react: ^18.0.0 || ^19.0.0
     react-dom: ^18.0.0 || ^19.0.0
     vanilla-framework: ^3.15.1 || ^4.0.0
-  checksum: 10c0/0ba87a4a954c3265f8bca44c3a1edddb35b24c955a5ecc0b114515a98b8a1decb77d4ae468dbd44fde0311bd339eb45fbc42b9e5ecf8f8b97d8ac644207af302
+  checksum: 10c0/650dd02796f7622f82abcb57c299c13e2ea841d54780361e09a6220998f7a4c069c2ce657b80bb8283afa1820c2bc9f9631d8cfd52d456f741c0ae01e9eb8408
   languageName: node
   linkType: hard
 
@@ -8946,7 +8946,7 @@ __metadata:
   dependencies:
     "@canonical/jujulib": "npm:8.1.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
-    "@canonical/react-components": "npm:4.5.1"
+    "@canonical/react-components": "npm:4.5.2"
     "@canonical/rebac-admin": "npm:0.0.1-alpha.12"
     "@cspell/eslint-plugin": "npm:9.4.0"
     "@curvenote/ansi-to-react": "npm:7.0.0"

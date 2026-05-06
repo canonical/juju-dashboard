@@ -1,14 +1,8 @@
 // This is rendered in a portal, so it cannot be scoped
-.access-management__dropdown-footer {
-  border: none;
-  padding-left: 0;
-  padding-right: 0;
-}
 
 .access-management {
-  &__dropdown-input {
-    margin-bottom: 0;
-    margin-top: $spv--medium;
+  &__dropdown-footer {
+    border: none;
   }
 
   &__access-col {
@@ -16,6 +10,10 @@
 
     @include mobile {
       width: 10rem;
+    }
+
+    @include medium {
+      width: 16rem;
     }
   }
 

@@ -1,8 +1,12 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 
-import { configFactory, generalStateFactory } from "testing/factories/general";
+import {
+  authUserInfoFactory,
+  configFactory,
+  generalStateFactory,
+} from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
 import { customWithin } from "testing/queries/within";
 import { renderComponent } from "testing/utils";
@@ -22,7 +26,7 @@ describe("AccessManagement", () => {
       name: Label.MULTI_SELECT_LABEL,
     });
     expect(
-      screen.queryByRole("button", { name: "test@example.com" }),
+      screen.queryByRole("button", { name: /test@example.com/i }),
     ).not.toBeInTheDocument();
 
     await userEvent.type(input, "test@example.com");
@@ -149,10 +153,9 @@ describe("AccessManagement", () => {
       general: generalStateFactory.withConfig().build({
         controllerConnections: {
           "wss://controller.example.com": {
-            user: {
-              "display-name": "eggman",
+            user: authUserInfoFactory.build({
               identity: "user-eggman@external",
-            },
+            }),
           },
         },
       }),
@@ -169,9 +172,13 @@ describe("AccessManagement", () => {
       "true",
     );
     const table = await screen.findByRole("table");
-    const userNameCell = customWithin(table).getCellByHeader("User Name");
+    const userNameCell = customWithin(table).getCellByHeader(
+      Label.HEADER_USER_NAME,
+    );
     expect(userNameCell).toHaveTextContent("eggman@external (you)");
-    const deleteButtons = screen.getAllByRole("button", { name: "Delete" });
+    const deleteButtons = screen.getAllByRole("button", {
+      name: Label.BUTTON_DELETE,
+    });
     expect(deleteButtons[0]).toHaveAttribute("aria-disabled", "true");
   });
 
@@ -224,15 +231,15 @@ describe("AccessManagement", () => {
     expect(screen.getByText(FormatHint.JIMM)).toBeInTheDocument();
   });
 
-  it("enables active user dropdown when another user has admin access", async () => {
+  it("enables active user dropdown when another user has admin access for Juju", async () => {
     const state = rootStateFactory.build({
-      general: generalStateFactory.withConfig().build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          isJuju: true,
+        }),
         controllerConnections: {
           "wss://controller.example.com": {
-            user: {
-              "display-name": "eggman",
-              identity: "user-eggman@external",
-            },
+            user: authUserInfoFactory.build(),
           },
         },
       }),
@@ -249,6 +256,72 @@ describe("AccessManagement", () => {
 
     // Active user's dropdown should be enabled since test@example.com is admin
     const adminButtons = screen.getAllByRole("button", { name: "Admin" });
-    expect(adminButtons[0]).not.toBeDisabled();
+    expect(adminButtons[0]).not.toHaveAttribute("aria-disabled", "true");
+  });
+
+  it("does not enable the active user dropdown when another user has admin access for JIMM", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          isJuju: false,
+        }),
+        controllerConnections: {
+          "wss://controller.example.com": {
+            user: authUserInfoFactory.build(),
+          },
+        },
+      }),
+    });
+    renderComponent(
+      <Formik
+        initialValues={{ shareModelWith: { "test@example.com": "admin" } }}
+        onSubmit={vi.fn()}
+      >
+        <AccessManagement />
+      </Formik>,
+      { state },
+    );
+
+    const adminButtons = screen.getAllByRole("button", { name: "Admin" });
+    expect(adminButtons[0]).toHaveAttribute("aria-disabled", "true");
+  });
+
+  it("returns the active user's permission to 'admin' if all other admins are removed", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          isJuju: true,
+        }),
+        controllerConnections: {
+          "wss://controller.example.com": {
+            user: authUserInfoFactory.build(),
+          },
+        },
+      }),
+    });
+    renderComponent(
+      <Formik
+        initialValues={{ shareModelWith: { "test@example.com": "admin" } }}
+        onSubmit={vi.fn()}
+      >
+        <AccessManagement />
+      </Formik>,
+      { state },
+    );
+    const rows = screen.getAllByRole("row");
+    const activeUserButton = within(rows[1]).getByRole("button", {
+      name: "Admin",
+    });
+    // Change the active user's permission
+    await userEvent.click(activeUserButton);
+    await userEvent.click(screen.getByRole("option", { name: "Read" }));
+    expect(activeUserButton).toHaveTextContent("Read");
+    await userEvent.click(
+      within(rows[2]).getByRole("button", {
+        name: Label.BUTTON_DELETE,
+      }),
+    );
+    expect(activeUserButton).toHaveAttribute("aria-disabled", "true");
+    expect(activeUserButton).toHaveTextContent("Admin");
   });
 });

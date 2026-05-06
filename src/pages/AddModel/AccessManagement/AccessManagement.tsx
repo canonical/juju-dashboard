@@ -103,8 +103,8 @@ const AccessManagement = (): JSX.Element => {
           <MultiSelect
             variant="search"
             searchButtonType="button"
-            inputClassName="access-management__dropdown-input"
-            footerClassName="access-management__dropdown-footer"
+            inputClassName="access-management__dropdown-input u-no-margin--bottom u-sv1--top"
+            footerClassName="access-management__dropdown-footer u-no-padding--left u-no-padding--right"
             placeholder={Label.MULTI_SELECT_PLACEHOLDER}
             label={Label.MULTI_SELECT_LABEL}
             emptyMessage={Label.MULTI_SELECT_NO_USERS}
@@ -147,9 +147,9 @@ const AccessManagement = (): JSX.Element => {
       <table className="u-no-margin--bottom">
         <thead>
           <tr className="u-sv2--top">
-            <th className="u-no-margin--bottom">User Name</th>
+            <th className="u-no-margin--bottom">{Label.HEADER_USER_NAME}</th>
             <th className="u-no-margin--bottom access-management__access-col">
-              Access Level
+              {Label.HEADER_ACCESS_LEVEL}
             </th>
             <th className="access-management__delete-col" />
           </tr>
@@ -172,7 +172,7 @@ const AccessManagement = (): JSX.Element => {
                 <CustomSelect
                   id={`access-level-${userValue}`}
                   toggleClassName="controller-select__toggle"
-                  dropdownClassName="controller-select__dropdown prevent-panel-close"
+                  dropdownClassName="controller-select__dropdown"
                   value={getUserAccess(
                     userValue,
                     activeUserName,
@@ -207,7 +207,7 @@ const AccessManagement = (): JSX.Element => {
                       removeUser(userValue, shareModelWith, activeUserName),
                     );
                   }}
-                  aria-label="Delete"
+                  aria-label={Label.BUTTON_DELETE}
                 >
                   <Icon name="delete" />
                 </Button>
