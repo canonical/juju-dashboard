@@ -1,6 +1,6 @@
 import { AccessLevel } from "types";
 
-import { type AccessUserItem, AddUserHint, FormatHint } from "./types";
+import { type AccessUserItem, AddUserHint, FormatHint, Label } from "./types";
 
 /**
  * Build the ACTIVE_USER object from active username and current share state
@@ -50,25 +50,6 @@ export const getHints = (
 });
 
 /**
- * Remove a user from the share model state
- */
-export const removeUser = (
-  userValue: number | string,
-  shareModelWith: Record<string, string>,
-  activeUserName: string | undefined,
-): Record<string, string> => {
-  const { [userValue]: _removedUser, ...nextShareModelWith } = shareModelWith;
-
-  // If only one user remains after removal, set them to admin
-  if (Object.keys(nextShareModelWith).length === 1 && activeUserName) {
-    // Since the active user cannot be removed, the last user will always be the active user
-    nextShareModelWith[activeUserName] = AccessLevel.ADMIN;
-  }
-
-  return nextShareModelWith;
-};
-
-/**
  * Check if there is at least one other admin besides the given user
  */
 export const hasOtherAdmin = (
@@ -84,6 +65,34 @@ export const hasOtherAdmin = (
   return Object.entries(effectiveShareModelWith).some(
     ([user, access]) => user !== userValue && access === AccessLevel.ADMIN,
   );
+};
+
+/**
+ * Remove a user from the share model state
+ */
+export const removeUser = (
+  userValue: number | string,
+  shareModelWith: Record<string, string>,
+  activeUserName: string | undefined,
+): Record<string, string> => {
+  const { [userValue]: _removedUser, ...nextShareModelWith } = shareModelWith;
+
+  if (activeUserName) {
+    const activeUserIsAdmin =
+      nextShareModelWith[activeUserName] === AccessLevel.ADMIN;
+    const hasOtherAdmins = hasOtherAdmin(
+      nextShareModelWith,
+      activeUserName,
+      activeUserName,
+    );
+
+    // Ensure at least one admin remains after a removal.
+    if (!activeUserIsAdmin && !hasOtherAdmins) {
+      nextShareModelWith[activeUserName] = AccessLevel.ADMIN;
+    }
+  }
+
+  return nextShareModelWith;
 };
 
 /**
@@ -110,7 +119,7 @@ export const getAccessLevelDisabledReason = (
 
   // Disable when this row is the only admin left.
   if (currentUserAccess === AccessLevel.ADMIN && !hasOtherAdmins) {
-    return "At least one admin must remain with admin access.";
+    return Label.ONE_ADMIN_WARNING;
   }
 
   if (userValue === activeUserName) {
@@ -118,11 +127,11 @@ export const getAccessLevelDisabledReason = (
     // TODO: enable the option for JIMM once the JIMM issue has been fixed:
     // https://warthogs.atlassian.net/browse/JUJU-9822.
     if (!isJuju) {
-      return "Model owner access cannot be changed.";
+      return Label.ACCESS_CANNOT_BE_CHANGED;
     }
     // Always disable for controller superusers
     else if (activeUserControllerAccess === "superuser") {
-      return "Controller superusers cannot change their own model access.";
+      return Label.SUPERUSER_ACCESS_CANNOT_BE_CHANGED;
     } else {
       return undefined;
     }

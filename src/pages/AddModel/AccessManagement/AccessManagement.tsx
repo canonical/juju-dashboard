@@ -126,7 +126,7 @@ const AccessManagement = (): JSX.Element => {
           <MultiSelect
             variant="search"
             searchButtonType="button"
-            inputClassName="access-management__dropdown-input u-no-margin--bottom u-sv1--top"
+            inputClassName="u-no-margin--bottom u-sv1--top"
             footerClassName="access-management__dropdown-footer u-no-padding--left u-no-padding--right"
             placeholder={Label.MULTI_SELECT_PLACEHOLDER}
             label={Label.MULTI_SELECT_LABEL}

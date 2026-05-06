@@ -332,6 +332,67 @@ describe("AccessManagement", () => {
     expect(updatedActiveUserButton).toHaveTextContent("Admin");
   });
 
+  it("restores active user to admin when the only admin is removed and readers remain", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          isJuju: true,
+        }),
+        controllerConnections: {
+          "wss://controller.example.com": {
+            user: authUserInfoFactory.build(),
+          },
+        },
+      }),
+    });
+
+    renderComponent(
+      <Formik
+        initialValues={{
+          shareModelWith: {
+            "test@example.com": "admin",
+            "reader@example.com": "read",
+          },
+        }}
+        onSubmit={vi.fn()}
+      >
+        <AccessManagement />
+      </Formik>,
+      { state },
+    );
+
+    const table = screen.getByRole("table");
+    const rows = within(table).getAllByRole("row");
+    const activeUserAccessCell = customWithin(rows[1]).getCellByHeader(
+      Label.HEADER_ACCESS_LEVEL,
+    );
+    const activeUserButton = within(activeUserAccessCell).getByRole("button", {
+      name: "Admin",
+    });
+
+    await userEvent.click(activeUserButton);
+    await userEvent.click(screen.getByRole("option", { name: "Read" }));
+
+    await userEvent.click(
+      within(rows[2]).getByRole("button", {
+        name: Label.BUTTON_DELETE,
+      }),
+    );
+
+    const updatedRows = within(table).getAllByRole("row");
+    const updatedActiveUserAccessCell = customWithin(
+      updatedRows[1],
+    ).getCellByHeader(Label.HEADER_ACCESS_LEVEL);
+    const updatedActiveUserButton = within(
+      updatedActiveUserAccessCell,
+    ).getByRole("button", {
+      name: "Admin",
+    });
+
+    expect(updatedActiveUserButton).toHaveTextContent("Admin");
+    expect(updatedActiveUserButton).toHaveAttribute("aria-disabled", "true");
+  });
+
   it("disables the other admin after active user is demoted", async () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.build({

@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 
 import { AccessLevel } from "types";
 
-import { AddUserHint, FormatHint } from "./types";
+import { AddUserHint, FormatHint, Label } from "./types";
 import {
   buildActiveUser,
   buildSelectedItems,
@@ -186,6 +186,23 @@ describe("AccessManagement utils", () => {
         "user2@example.com": AccessLevel.ADMIN,
       });
     });
+
+    it("restores active user to admin when removing the only admin and others remain", () => {
+      const shareModelWith = {
+        "owner@example.com": AccessLevel.READ,
+        "admin@example.com": AccessLevel.ADMIN,
+        "reader@example.com": AccessLevel.READ,
+      };
+      const result = removeUser(
+        "admin@example.com",
+        shareModelWith,
+        "owner@example.com",
+      );
+      expect(result).toEqual({
+        "owner@example.com": AccessLevel.ADMIN,
+        "reader@example.com": AccessLevel.READ,
+      });
+    });
   });
 
   describe("getAccessLevelDisabledReason (disabled state)", () => {
@@ -282,7 +299,7 @@ describe("AccessManagement utils", () => {
         "owner@example.com",
       );
 
-      expect(result).toBe("At least one admin must remain with admin access.");
+      expect(result).toBe(Label.ONE_ADMIN_WARNING);
     });
 
     it("does not treat another admin as sole when owner is implicit admin", () => {
@@ -313,7 +330,7 @@ describe("AccessManagement utils", () => {
         "user@example.com",
       );
 
-      expect(result).toBe("At least one admin must remain with admin access.");
+      expect(result).toBe(Label.ONE_ADMIN_WARNING);
     });
 
     it("returns undefined when dropdown is enabled", () => {
