@@ -1,6 +1,5 @@
 import {
   Button,
-  CustomSelect,
   Icon,
   MultiSelect,
   Tooltip,
@@ -23,6 +22,7 @@ import { getUserName } from "utils";
 
 import type { AddModelFormState } from "../types";
 
+import AccessLevelDropdown from "./AccessLeveLDropdown";
 import { Label, TestId } from "./types";
 import {
   buildActiveUser,
@@ -32,12 +32,6 @@ import {
   removeUser,
   getUserAccess,
 } from "./utils";
-
-const ACCESS_LEVEL_OPTIONS = [
-  { label: "Admin", value: AccessLevel.ADMIN },
-  { label: "Read", value: AccessLevel.READ },
-  { label: "Write", value: AccessLevel.WRITE },
-];
 
 const AccessManagement = (): JSX.Element => {
   const isJuju = useAppSelector(getIsJuju);
@@ -92,28 +86,6 @@ const AccessManagement = (): JSX.Element => {
       AccessLevel.READ,
     );
   };
-
-  const accessLevelDropdown = (
-    userValue: number | string,
-    accessLevelDisabledReason: string | undefined,
-  ): JSX.Element => (
-    <CustomSelect
-      id={`access-level-${userValue}`}
-      toggleClassName="controller-select__toggle"
-      dropdownClassName="controller-select__dropdown"
-      value={getUserAccess(
-        userValue,
-        activeUserName,
-        ACTIVE_USER?.access,
-        shareModelWith,
-      )}
-      disabled={!!accessLevelDisabledReason}
-      onChange={(accessLevel) => {
-        void setFieldValue(`shareModelWith["${userValue}"]`, accessLevel);
-      }}
-      options={ACCESS_LEVEL_OPTIONS}
-    />
-  );
 
   return (
     <div
@@ -207,13 +179,28 @@ const AccessManagement = (): JSX.Element => {
                       position="top-center"
                       positionElementClassName="u-full-width"
                     >
-                      {accessLevelDropdown(
-                        userValue,
-                        accessLevelDisabledReason,
-                      )}
+                      <AccessLevelDropdown
+                        value={getUserAccess(
+                          userValue,
+                          activeUserName,
+                          ACTIVE_USER?.access,
+                          shareModelWith,
+                        )}
+                        userName={userValue}
+                        accessLevelDisabledReason={accessLevelDisabledReason}
+                      />
                     </Tooltip>
                   ) : (
-                    accessLevelDropdown(userValue, accessLevelDisabledReason)
+                    <AccessLevelDropdown
+                      value={getUserAccess(
+                        userValue,
+                        activeUserName,
+                        ACTIVE_USER?.access,
+                        shareModelWith,
+                      )}
+                      userName={userValue}
+                      accessLevelDisabledReason={accessLevelDisabledReason}
+                    />
                   )}
                 </td>
                 <td className="access-management__delete-col">
