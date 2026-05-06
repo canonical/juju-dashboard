@@ -45,7 +45,10 @@ export function createProcess<Payload, Status, Result>(
         return true;
       } else {
         // Status update.
-        dispatch(processActions.setStatus(payload, result.value));
+        const action = processActions.setStatus?.(payload, result.value);
+        if (action) {
+          dispatch(action);
+        }
         return false;
       }
     }
