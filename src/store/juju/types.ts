@@ -19,6 +19,7 @@ import type { FullStatusWithAnnotations, ModelInfo } from "juju/types";
 import type { DisableType } from "pages/AddModel/ConfigsConstraints/types";
 import type { ProcessOutcome } from "store/middleware/process";
 import type { GenericItemsState, GenericState } from "store/types";
+import type { AccessLevel } from "types";
 
 /**
  * Data derived from a `Source`.
@@ -149,7 +150,7 @@ export type AddModel = {
   credential: string;
   cloudTag: string;
   userTag: string;
-  shareModelWith?: Record<string, string>;
+  shareModelWith?: Record<string, AccessLevel>;
   disabledCommands: DisableType;
   region?: string;
   config?: Record<string, string>;

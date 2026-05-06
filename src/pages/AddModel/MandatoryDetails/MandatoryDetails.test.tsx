@@ -105,6 +105,36 @@ describe("MandatoryDetails", () => {
     );
   });
 
+  it("does not overwrite an existing credential", () => {
+    state.juju.userCredentials = userCredentialsStateFactory.build({
+      credentials: {
+        "cloud-aws": [
+          "cloudcred-aws_admin_aws-cred",
+          "cloudcred-aws_user_secondary-cred",
+        ],
+      },
+    });
+
+    renderComponent(
+      <Formik
+        initialValues={{
+          modelName: "",
+          cloud: "cloud-aws",
+          region: "",
+          credential: "cloudcred-aws_user_secondary-cred",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <MandatoryDetails />
+      </Formik>,
+      { state },
+    );
+
+    expect(screen.getByLabelText(Label.CREDENTIAL)).toHaveValue(
+      "cloudcred-aws_user_secondary-cred",
+    );
+  });
+
   it("fetches credentials on initial load when cloud is set", async () => {
     state.juju.userCredentials = userCredentialsStateFactory.build();
     const [store, actions] = createStore(state, { trackActions: true });

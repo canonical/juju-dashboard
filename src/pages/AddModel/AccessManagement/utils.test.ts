@@ -6,10 +6,10 @@ import { AddUserHint, FormatHint } from "./types";
 import {
   buildActiveUser,
   buildSelectedItems,
+  getAccessLevelDisabledReason,
   getHints,
   getUserAccess,
-  hasNonActiveUserAdmin,
-  isAccessLevelDisabled,
+  hasOtherAdmin,
   removeUser,
 } from "./utils";
 
@@ -83,14 +83,14 @@ describe("AccessManagement utils", () => {
     });
   });
 
-  describe("hasNonActiveUserAdmin", () => {
+  describe("hasOtherAdmin", () => {
     it("returns false when shareModelWith is empty", () => {
-      expect(hasNonActiveUserAdmin({}, "user@example.com")).toBe(false);
+      expect(hasOtherAdmin({}, "user@example.com")).toBe(false);
     });
 
     it("returns true when another user has admin access", () => {
       expect(
-        hasNonActiveUserAdmin(
+        hasOtherAdmin(
           {
             "user@example.com": AccessLevel.READ,
             "other@example.com": AccessLevel.ADMIN,
@@ -102,7 +102,7 @@ describe("AccessManagement utils", () => {
 
     it("returns false when other users have non-admin access", () => {
       expect(
-        hasNonActiveUserAdmin(
+        hasOtherAdmin(
           {
             "user@example.com": AccessLevel.ADMIN,
             "other1@example.com": AccessLevel.READ,
@@ -111,6 +111,18 @@ describe("AccessManagement utils", () => {
           "user@example.com",
         ),
       ).toBe(false);
+    });
+
+    it("returns true for non-active admin when active owner is implicit admin", () => {
+      expect(
+        hasOtherAdmin(
+          {
+            "other@example.com": AccessLevel.ADMIN,
+          },
+          "other@example.com",
+          "owner@example.com",
+        ),
+      ).toBe(true);
     });
   });
 
@@ -176,9 +188,23 @@ describe("AccessManagement utils", () => {
     });
   });
 
-  describe("isAccessLevelDisabled", () => {
+  describe("getAccessLevelDisabledReason (disabled state)", () => {
+    it("returns true when userValue is the only admin", () => {
+      const result = getAccessLevelDisabledReason(
+        "other@example.com",
+        {
+          "user@example.com": AccessLevel.READ,
+          "other@example.com": AccessLevel.ADMIN,
+        },
+        "login",
+        true,
+        "user@example.com",
+      );
+      expect(result).toBeDefined();
+    });
+
     it("returns true when active user is controller superuser", () => {
-      const result = isAccessLevelDisabled(
+      const result = getAccessLevelDisabledReason(
         "user@example.com",
         {
           "user@example.com": AccessLevel.READ,
@@ -188,11 +214,11 @@ describe("AccessManagement utils", () => {
         true,
         "user@example.com",
       );
-      expect(result).toBe(true);
+      expect(result).toBeDefined();
     });
 
-    it("returns true when active user is not superuser and no other admin exists", () => {
-      const result = isAccessLevelDisabled(
+    it("returns false when active user is not admin and no other admin exists", () => {
+      const result = getAccessLevelDisabledReason(
         "user@example.com",
         {
           "user@example.com": AccessLevel.READ,
@@ -202,11 +228,11 @@ describe("AccessManagement utils", () => {
         true,
         "user@example.com",
       );
-      expect(result).toBe(true);
+      expect(result).toBeUndefined();
     });
 
     it("returns false when active user is not superuser and another admin exists", () => {
-      const result = isAccessLevelDisabled(
+      const result = getAccessLevelDisabledReason(
         "user@example.com",
         {
           "user@example.com": AccessLevel.READ,
@@ -216,11 +242,11 @@ describe("AccessManagement utils", () => {
         true,
         "user@example.com",
       );
-      expect(result).toBe(false);
+      expect(result).toBeUndefined();
     });
 
     it("returns true for active user on JIMM, even when another admin exists", () => {
-      const result = isAccessLevelDisabled(
+      const result = getAccessLevelDisabledReason(
         "user@example.com",
         {
           "user@example.com": AccessLevel.READ,
@@ -230,11 +256,11 @@ describe("AccessManagement utils", () => {
         false,
         "user@example.com",
       );
-      expect(result).toBe(true);
+      expect(result).toBeDefined();
     });
 
     it("returns false when user is not active", () => {
-      const result = isAccessLevelDisabled(
+      const result = getAccessLevelDisabledReason(
         "other@example.com",
         {
           "user@example.com": AccessLevel.ADMIN,
@@ -244,7 +270,65 @@ describe("AccessManagement utils", () => {
         true,
         "user@example.com",
       );
-      expect(result).toBe(false);
+      expect(result).toBeUndefined();
+    });
+
+    it("returns sole-admin message for implicit active model owner", () => {
+      const result = getAccessLevelDisabledReason(
+        "owner@example.com",
+        {},
+        "admin",
+        true,
+        "owner@example.com",
+      );
+
+      expect(result).toBe("At least one admin must remain with admin access.");
+    });
+
+    it("does not treat another admin as sole when owner is implicit admin", () => {
+      const result = getAccessLevelDisabledReason(
+        "other@example.com",
+        {
+          "other@example.com": AccessLevel.ADMIN,
+        },
+        "admin",
+        true,
+        "owner@example.com",
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe("getAccessLevelDisabledReason", () => {
+    it("returns a sole-admin message when userValue is the only admin", () => {
+      const result = getAccessLevelDisabledReason(
+        "other@example.com",
+        {
+          "user@example.com": AccessLevel.READ,
+          "other@example.com": AccessLevel.ADMIN,
+        },
+        "login",
+        true,
+        "user@example.com",
+      );
+
+      expect(result).toBe("At least one admin must remain with admin access.");
+    });
+
+    it("returns undefined when dropdown is enabled", () => {
+      const result = getAccessLevelDisabledReason(
+        "user@example.com",
+        {
+          "user@example.com": AccessLevel.READ,
+          "other@example.com": AccessLevel.ADMIN,
+        },
+        "admin",
+        true,
+        "user@example.com",
+      );
+
+      expect(result).toBeUndefined();
     });
   });
 

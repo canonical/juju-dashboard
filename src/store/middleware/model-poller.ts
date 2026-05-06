@@ -568,8 +568,7 @@ function runModelPoller(
               try {
                 for (const [user, targetAccessLevel] of usersToShare) {
                   if (user === activeUser) {
-                    activeUserTargetAccessLevel =
-                      targetAccessLevel as AccessLevel;
+                    activeUserTargetAccessLevel = targetAccessLevel;
                     continue;
                   }
 

@@ -40,17 +40,6 @@ export const buildSelectedItems = (
 };
 
 /**
- * Check if there's any non-active user with admin access
- */
-export const hasNonActiveUserAdmin = (
-  shareModelWith: Record<string, string>,
-  activeUserName?: string,
-): boolean =>
-  Object.entries(shareModelWith).some(
-    ([user, access]) => user !== activeUserName && access === AccessLevel.ADMIN,
-  );
-
-/**
  * Get the appropriate hints for the current environment
  */
 export const getHints = (
@@ -80,29 +69,66 @@ export const removeUser = (
 };
 
 /**
- * Determine if a user's access level dropdown should be disabled
- * (disabled if they are the active user and no other user has admin access)
+ * Check if there is at least one other admin besides the given user
  */
-export const isAccessLevelDisabled = (
+export const hasOtherAdmin = (
+  shareModelWith: Record<string, string>,
+  userValue: number | string,
+  activeUserName?: string,
+): boolean => {
+  const effectiveShareModelWith =
+    activeUserName && !(activeUserName in shareModelWith)
+      ? { ...shareModelWith, [activeUserName]: AccessLevel.ADMIN }
+      : shareModelWith;
+
+  return Object.entries(effectiveShareModelWith).some(
+    ([user, access]) => user !== userValue && access === AccessLevel.ADMIN,
+  );
+};
+
+/**
+ * Determine if a user's access level dropdown should be disabled and return an appropriate message
+ */
+export const getAccessLevelDisabledReason = (
   userValue: number | string,
   shareModelWith: Record<string, string>,
   activeUserControllerAccess: null | string,
   isJuju?: boolean,
   activeUserName?: string,
-): boolean => {
-  // Always enable for other users
-  if (userValue !== activeUserName) {
-    return false;
+): string | undefined => {
+  const activeUserAccess = activeUserName
+    ? (shareModelWith[activeUserName] ?? AccessLevel.ADMIN)
+    : undefined;
+  const currentUserAccess =
+    userValue === activeUserName ? activeUserAccess : shareModelWith[userValue];
+
+  const hasOtherAdmins = hasOtherAdmin(
+    shareModelWith,
+    userValue,
+    activeUserName,
+  );
+
+  // Disable when this row is the only admin left.
+  if (currentUserAccess === AccessLevel.ADMIN && !hasOtherAdmins) {
+    return "At least one admin must remain with admin access.";
   }
-  // Always disable for controller superusers
-  // Temporarily disable for JIMM as access reduction for active user needs correction
-  // TODO: enable the option for JIMM once the JIMM issue has been fixed:
-  // https://warthogs.atlassian.net/browse/JUJU-9822.
-  if (!isJuju || activeUserControllerAccess === "superuser") {
-    return true;
+
+  if (userValue === activeUserName) {
+    // Temporarily disable for JIMM as access reduction for active user needs correction
+    // TODO: enable the option for JIMM once the JIMM issue has been fixed:
+    // https://warthogs.atlassian.net/browse/JUJU-9822.
+    if (!isJuju) {
+      return "Model owner access cannot be changed.";
+    }
+    // Always disable for controller superusers
+    else if (activeUserControllerAccess === "superuser") {
+      return "Controller superusers cannot change their own model access.";
+    } else {
+      return undefined;
+    }
   }
-  // Enable for active user if other admins have been added
-  return !hasNonActiveUserAdmin(shareModelWith, activeUserName);
+
+  return undefined;
 };
 
 /**
@@ -114,6 +140,6 @@ export const getUserAccess = (
   activeUserAccess: string | undefined,
   shareModelWith: Record<string, string>,
 ): string =>
-  userValue === activeUserName
-    ? (activeUserAccess ?? AccessLevel.READ)
-    : (shareModelWith[userValue] ?? AccessLevel.READ);
+  (userValue === activeUserName
+    ? activeUserAccess
+    : shareModelWith[userValue]) ?? AccessLevel.READ;

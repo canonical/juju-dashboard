@@ -1,3 +1,5 @@
+import type { AccessLevel } from "types";
+
 import type { FormFields } from "./ConfigsConstraints/types";
 
 export enum TestId {
@@ -17,7 +19,7 @@ export type AddModelFormState = {
   cloud: string;
   region: string;
   credential: string;
-  shareModelWith?: Record<string, string>;
+  shareModelWith?: Record<string, AccessLevel>;
 } & FormFields &
   Record<string, string>;
 

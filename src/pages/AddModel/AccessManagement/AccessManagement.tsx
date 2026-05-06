@@ -3,6 +3,7 @@ import {
   CustomSelect,
   Icon,
   MultiSelect,
+  Tooltip,
   type MultiSelectItem,
 } from "@canonical/react-components";
 import { useFormikContext } from "formik";
@@ -26,8 +27,8 @@ import { Label, TestId } from "./types";
 import {
   buildActiveUser,
   buildSelectedItems,
+  getAccessLevelDisabledReason,
   getHints,
-  isAccessLevelDisabled,
   removeUser,
   getUserAccess,
 } from "./utils";
@@ -92,6 +93,28 @@ const AccessManagement = (): JSX.Element => {
     );
   };
 
+  const accessLevelDropdown = (
+    userValue: number | string,
+    accessLevelDisabledReason: string | undefined,
+  ): JSX.Element => (
+    <CustomSelect
+      id={`access-level-${userValue}`}
+      toggleClassName="controller-select__toggle"
+      dropdownClassName="controller-select__dropdown"
+      value={getUserAccess(
+        userValue,
+        activeUserName,
+        ACTIVE_USER?.access,
+        shareModelWith,
+      )}
+      disabled={!!accessLevelDisabledReason}
+      onChange={(accessLevel) => {
+        void setFieldValue(`shareModelWith["${userValue}"]`, accessLevel);
+      }}
+      options={ACCESS_LEVEL_OPTIONS}
+    />
+  );
+
   return (
     <div
       {...testId(TestId.ACCESS_MANAGEMENT_FORM)}
@@ -155,65 +178,64 @@ const AccessManagement = (): JSX.Element => {
           </tr>
         </thead>
         <tbody>
-          {selectedItems.map(({ label: userLabel, value: userValue }) => (
-            <tr key={userValue}>
-              <td>
-                <span className="u-sh1--right u-truncate" title={userLabel}>
-                  {userLabel === activeUserName ? (
-                    <>
-                      <b>{`${userLabel}`}</b> (you)
-                    </>
+          {selectedItems.map(({ label: userLabel, value: userValue }) => {
+            const accessLevelDisabledReason = getAccessLevelDisabledReason(
+              userValue,
+              shareModelWith,
+              activeUserControllerAccess,
+              isJuju,
+              activeUserName,
+            );
+
+            return (
+              <tr key={userValue}>
+                <td>
+                  <span className="u-sh1--right u-truncate" title={userLabel}>
+                    {userLabel === activeUserName ? (
+                      <>
+                        <b>{`${userLabel}`}</b> (you)
+                      </>
+                    ) : (
+                      userLabel
+                    )}
+                  </span>
+                </td>
+                <td className="controller-select__cell access-management__access-col">
+                  {accessLevelDisabledReason ? (
+                    <Tooltip
+                      message={accessLevelDisabledReason}
+                      position="top-center"
+                      positionElementClassName="u-full-width"
+                    >
+                      {accessLevelDropdown(
+                        userValue,
+                        accessLevelDisabledReason,
+                      )}
+                    </Tooltip>
                   ) : (
-                    userLabel
+                    accessLevelDropdown(userValue, accessLevelDisabledReason)
                   )}
-                </span>
-              </td>
-              <td className="controller-select__cell access-management__access-col">
-                <CustomSelect
-                  id={`access-level-${userValue}`}
-                  toggleClassName="controller-select__toggle"
-                  dropdownClassName="controller-select__dropdown"
-                  value={getUserAccess(
-                    userValue,
-                    activeUserName,
-                    ACTIVE_USER?.access,
-                    shareModelWith,
-                  )}
-                  disabled={isAccessLevelDisabled(
-                    userValue,
-                    shareModelWith,
-                    activeUserControllerAccess,
-                    isJuju,
-                    activeUserName,
-                  )}
-                  onChange={(accessLevel) => {
-                    void setFieldValue(
-                      `shareModelWith["${userValue}"]`,
-                      accessLevel,
-                    );
-                  }}
-                  options={ACCESS_LEVEL_OPTIONS}
-                />
-              </td>
-              <td className="access-management__delete-col">
-                <Button
-                  hasIcon
-                  appearance="base"
-                  className="u-no-margin--bottom u-no-padding--top u-no-padding--bottom"
-                  disabled={userValue === activeUserName}
-                  onClick={() => {
-                    void setFieldValue(
-                      "shareModelWith",
-                      removeUser(userValue, shareModelWith, activeUserName),
-                    );
-                  }}
-                  aria-label={Label.BUTTON_DELETE}
-                >
-                  <Icon name="delete" />
-                </Button>
-              </td>
-            </tr>
-          ))}
+                </td>
+                <td className="access-management__delete-col">
+                  <Button
+                    hasIcon
+                    appearance="base"
+                    className="u-no-margin--bottom u-no-padding--top u-no-padding--bottom"
+                    disabled={userValue === activeUserName}
+                    onClick={() => {
+                      void setFieldValue(
+                        "shareModelWith",
+                        removeUser(userValue, shareModelWith, activeUserName),
+                      );
+                    }}
+                    aria-label={Label.BUTTON_DELETE}
+                  >
+                    <Icon name="delete" />
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       <hr />

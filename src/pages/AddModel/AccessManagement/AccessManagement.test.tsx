@@ -308,7 +308,8 @@ describe("AccessManagement", () => {
       </Formik>,
       { state },
     );
-    const rows = screen.getAllByRole("row");
+    const table = screen.getByRole("table");
+    const rows = within(table).getAllByRole("row");
     const activeUserButton = within(rows[1]).getByRole("button", {
       name: "Admin",
     });
@@ -321,7 +322,53 @@ describe("AccessManagement", () => {
         name: Label.BUTTON_DELETE,
       }),
     );
-    expect(activeUserButton).toHaveAttribute("aria-disabled", "true");
-    expect(activeUserButton).toHaveTextContent("Admin");
+
+    const updatedRows = within(table).getAllByRole("row");
+    const updatedActiveUserButton = within(updatedRows[1]).getByRole("button", {
+      name: "Admin",
+    });
+
+    expect(updatedActiveUserButton).toHaveAttribute("aria-disabled", "true");
+    expect(updatedActiveUserButton).toHaveTextContent("Admin");
+  });
+
+  it("disables the other admin after active user is demoted", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({
+          isJuju: true,
+        }),
+        controllerConnections: {
+          "wss://controller.example.com": {
+            user: authUserInfoFactory.build(),
+          },
+        },
+      }),
+    });
+
+    renderComponent(
+      <Formik
+        initialValues={{ shareModelWith: { "test@example.com": "admin" } }}
+        onSubmit={vi.fn()}
+      >
+        <AccessManagement />
+      </Formik>,
+      { state },
+    );
+
+    const table = screen.getByRole("table");
+    const rows = within(table).getAllByRole("row");
+    const activeUserAdminButton = within(rows[1]).getByRole("button", {
+      name: "Admin",
+    });
+
+    await userEvent.click(activeUserAdminButton);
+    await userEvent.click(screen.getByRole("option", { name: "Read" }));
+
+    const updatedRows = within(table).getAllByRole("row");
+    const otherAdminButton = within(updatedRows[2]).getByRole("button", {
+      name: "Admin",
+    });
+    expect(otherAdminButton).toHaveAttribute("aria-disabled", "true");
   });
 });

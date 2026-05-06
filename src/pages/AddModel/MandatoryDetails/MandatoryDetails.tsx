@@ -78,12 +78,14 @@ const MandatoryDetails = (): JSX.Element => {
     values.cloud || defaultCloud,
   );
 
+  // Set default cloud, if not set, and update selectedCloud state.
   useEffect(() => {
     if (!values.cloud && defaultCloud) {
       void setFieldValue("cloud", defaultCloud);
     }
   }, [values.cloud, defaultCloud, setFieldValue]);
 
+  // Set default credential when cloud is selected and credentials are available.
   useEffect(() => {
     if (!values.credential && userCredentials && values.cloud) {
       void setFieldValue(
@@ -93,6 +95,7 @@ const MandatoryDetails = (): JSX.Element => {
     }
   }, [values.credential, values.cloud, userCredentials, setFieldValue]);
 
+  // Start polling for credentials when a cloud is selected and credentials are not yet loaded.
   useEffect(() => {
     if (
       wsControllerURL &&
