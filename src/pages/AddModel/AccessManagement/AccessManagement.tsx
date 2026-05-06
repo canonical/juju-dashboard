@@ -187,7 +187,7 @@ const AccessManagement = (): JSX.Element => {
                           shareModelWith,
                         )}
                         userName={userValue}
-                        accessLevelDisabledReason={accessLevelDisabledReason}
+                        isDisabled
                       />
                     </Tooltip>
                   ) : (
@@ -199,7 +199,6 @@ const AccessManagement = (): JSX.Element => {
                         shareModelWith,
                       )}
                       userName={userValue}
-                      accessLevelDisabledReason={accessLevelDisabledReason}
                     />
                   )}
                 </td>

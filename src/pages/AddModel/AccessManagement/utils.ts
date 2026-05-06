@@ -73,7 +73,7 @@ export const hasOtherAdmin = (
 export const removeUser = (
   userValue: number | string,
   shareModelWith: Record<string, string>,
-  activeUserName: string | undefined,
+  activeUserName?: string,
 ): Record<string, string> => {
   const { [userValue]: _removedUser, ...nextShareModelWith } = shareModelWith;
 
@@ -108,19 +108,12 @@ export const getAccessLevelDisabledReason = (
   const activeUserAccess = activeUserName
     ? (shareModelWith[activeUserName] ?? AccessLevel.ADMIN)
     : undefined;
-  const currentUserAccess =
-    userValue === activeUserName ? activeUserAccess : shareModelWith[userValue];
 
   const hasOtherAdmins = hasOtherAdmin(
     shareModelWith,
     userValue,
     activeUserName,
   );
-
-  // Disable when this row is the only admin left.
-  if (currentUserAccess === AccessLevel.ADMIN && !hasOtherAdmins) {
-    return Label.ONE_ADMIN_WARNING;
-  }
 
   if (userValue === activeUserName) {
     // Temporarily disable for JIMM as access reduction for active user needs correction
@@ -132,9 +125,18 @@ export const getAccessLevelDisabledReason = (
     // Always disable for controller superusers
     else if (activeUserControllerAccess === "superuser") {
       return Label.SUPERUSER_ACCESS_CANNOT_BE_CHANGED;
+    }
+    // Disable if active user is admin and there are no other admins to prevent locking themselves out.
+    else if (activeUserAccess === AccessLevel.ADMIN && !hasOtherAdmins) {
+      return Label.ONE_ADMIN_REQUIRED;
     } else {
       return undefined;
     }
+  }
+
+  // Disable when this row is the only admin left.
+  if (shareModelWith[userValue] === AccessLevel.ADMIN && !hasOtherAdmins) {
+    return Label.ONE_ADMIN_REQUIRED;
   }
 
   return undefined;

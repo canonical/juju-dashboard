@@ -21,7 +21,7 @@ export enum Label {
   HEADER_USER_NAME = "User Name",
   HEADER_ACCESS_LEVEL = "Access Level",
   BUTTON_DELETE = "Delete",
-  ONE_ADMIN_WARNING = "At least one admin must remain with admin access.",
+  ONE_ADMIN_REQUIRED = "You cannot change access. At least one admin required per model.",
   ACCESS_CANNOT_BE_CHANGED = "Model owner access cannot be changed.",
   SUPERUSER_ACCESS_CANNOT_BE_CHANGED = "Controller superusers cannot change their own model access.",
 }

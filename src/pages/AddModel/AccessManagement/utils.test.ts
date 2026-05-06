@@ -299,7 +299,7 @@ describe("AccessManagement utils", () => {
         "owner@example.com",
       );
 
-      expect(result).toBe(Label.ONE_ADMIN_WARNING);
+      expect(result).toBe(Label.ONE_ADMIN_REQUIRED);
     });
 
     it("does not treat another admin as sole when owner is implicit admin", () => {
@@ -330,7 +330,7 @@ describe("AccessManagement utils", () => {
         "user@example.com",
       );
 
-      expect(result).toBe(Label.ONE_ADMIN_WARNING);
+      expect(result).toBe(Label.ONE_ADMIN_REQUIRED);
     });
 
     it("returns undefined when dropdown is enabled", () => {

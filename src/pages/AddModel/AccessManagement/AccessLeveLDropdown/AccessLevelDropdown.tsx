@@ -8,7 +8,7 @@ import { AccessLevel } from "types";
 type Props = {
   value: string;
   userName: number | string;
-  accessLevelDisabledReason: string | undefined;
+  isDisabled?: boolean;
 };
 
 const ACCESS_LEVEL_OPTIONS = [
@@ -20,7 +20,7 @@ const ACCESS_LEVEL_OPTIONS = [
 const AccessLevelDropdown = ({
   value,
   userName,
-  accessLevelDisabledReason,
+  isDisabled = false,
 }: Props): JSX.Element => {
   const { setFieldValue } = useFormikContext<AddModelFormState>();
 
@@ -30,7 +30,7 @@ const AccessLevelDropdown = ({
       toggleClassName="controller-select__toggle"
       dropdownClassName="controller-select__dropdown"
       value={value}
-      disabled={!!accessLevelDisabledReason}
+      disabled={isDisabled}
       onChange={(accessLevel) => {
         void setFieldValue(`shareModelWith["${userName}"]`, accessLevel);
       }}
