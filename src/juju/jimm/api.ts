@@ -7,10 +7,12 @@ import type {
   CheckRelationResponse,
   CheckRelationsResponse,
   CrossModelQueryResponse,
+  JobInfoResponse,
   ListControllersResponse,
   MigrateModelInfo,
   RelationshipTuple,
   SupportedJujuVersionsResponse,
+  UpgradeToResponse,
 } from "./JIMMV4";
 
 export enum Label {
@@ -133,9 +135,19 @@ export const upgradeTo = async (
   conn: ConnectionWithFacades,
   modelTag: string,
   targetController: string,
-): Promise<boolean> => {
+): Promise<UpgradeToResponse> => {
   return withJimmCheck(
     conn,
-    async (jimm) => (await jimm.upgradeTo(modelTag, targetController)) ?? false,
+    async (jimm) => await jimm.upgradeTo(modelTag, targetController),
   );
+};
+
+/*
+ * Get info about a job.
+ */
+export const jobInfo = async (
+  conn: ConnectionWithFacades,
+  jobId: string,
+): Promise<JobInfoResponse> => {
+  return withJimmCheck(conn, async (jimm) => await jimm.jobInfo(jobId));
 };

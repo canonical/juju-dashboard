@@ -1,10 +1,14 @@
 import type { Mock, MockInstance } from "vitest";
 
 import type { Source } from "data";
+import { JobStatus, type JobInfoResponse } from "juju/jimm/JIMMV4";
 import * as jimmApi from "juju/jimm/api";
 import type { ManagedConnection } from "store/middleware/connection/connection-manager";
+import { jobInfoFactory } from "testing/factories/juju/jimm";
 
+import * as jobInfoSourceModule from "./job-info-source";
 import * as modelConnectionRetrySourceModule from "./model-connection-retry-source";
+import type { ConnectionRetryResult } from "./model-connection-retry-source";
 import { upgradeTo, default as upgradeToProcess } from "./upgrade-to";
 
 describe("upgradeTo", () => {
@@ -14,9 +18,10 @@ describe("upgradeTo", () => {
   let upgradeToMock: MockInstance;
   let modelStatusSourceDoneMock: Mock;
   let modelStatusSource: MockInstance;
-  let modelStatusSourceImplementation: Source<
-    { reconnecting: true } | { version: string }
-  >;
+  let modelStatusSourceImplementation: Source<ConnectionRetryResult>;
+  let jobInfoSourceDoneMock: Mock;
+  let jobInfoSource: MockInstance;
+  let jobInfoSourceImplementation: Source<JobInfoResponse>;
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -24,17 +29,29 @@ describe("upgradeTo", () => {
     controllerConnection = {} as ManagedConnection;
     modelConnection = {} as ManagedConnection;
 
-    upgradeToMock = vi.spyOn(jimmApi, "upgradeTo").mockResolvedValue(true);
+    upgradeToMock = vi
+      .spyOn(jimmApi, "upgradeTo")
+      .mockResolvedValue({ success: true, "job-id": 1 });
     modelStatusSourceDoneMock = vi.fn();
     modelStatusSourceImplementation = {
       done: modelStatusSourceDoneMock,
       [Symbol.asyncIterator]: async function* () {
         yield { version: "1.2.3" };
       },
-    } as unknown as Source<{ reconnecting: true } | { version: string }>;
+    } as unknown as Source<ConnectionRetryResult>;
     modelStatusSource = vi
       .spyOn(modelConnectionRetrySourceModule, "default")
       .mockReturnValue(modelStatusSourceImplementation);
+    jobInfoSourceDoneMock = vi.fn();
+    jobInfoSourceImplementation = {
+      done: jobInfoSourceDoneMock,
+      [Symbol.asyncIterator]: async function* () {
+        yield jobInfoFactory.build();
+      },
+    } as unknown as Source<JobInfoResponse>;
+    jobInfoSource = vi
+      .spyOn(jobInfoSourceModule, "default")
+      .mockReturnValue(jobInfoSourceImplementation);
   });
 
   describe("JIMM `upgradeTo` request", () => {
@@ -63,7 +80,7 @@ describe("upgradeTo", () => {
 
     it("throws an error if request isn't successful", async ({ expect }) => {
       expect.assertions(3);
-      upgradeToMock.mockResolvedValue(false);
+      upgradeToMock.mockResolvedValue({ success: false, "job-id": 1 });
       const progress = upgradeTo(
         "abc123",
         "some-controller",
@@ -90,7 +107,7 @@ describe("upgradeTo", () => {
 
   describe("model `fullStatus` polling", () => {
     it("begins polling model after success", async ({ expect }) => {
-      expect.assertions(1);
+      expect.assertions(2);
       const progress = upgradeTo(
         "abc123",
         "some-controller",
@@ -106,22 +123,36 @@ describe("upgradeTo", () => {
       expect(modelStatusSource).toHaveBeenCalledExactlyOnceWith(
         modelConnection,
       );
+      expect(jobInfoSource).toHaveBeenCalledExactlyOnceWith(
+        controllerConnection,
+        "1",
+      );
     });
 
     describe("while polling", () => {
-      let promises: PromiseWithResolvers<
-        { reconnecting: true } | { version: string }
-      >[];
+      let modelStatusPromises: PromiseWithResolvers<ConnectionRetryResult>[];
+      let jobInfoPromises: PromiseWithResolvers<JobInfoResponse>[];
 
       beforeEach(() => {
-        promises = new Array(10).fill(null).map(() => Promise.withResolvers());
+        modelStatusPromises = new Array(10)
+          .fill(null)
+          .map(() => Promise.withResolvers());
+        jobInfoPromises = new Array(10)
+          .fill(null)
+          .map(() => Promise.withResolvers());
         modelStatusSourceImplementation[Symbol.asyncIterator] =
           async function* (): AsyncGenerator<
-            { reconnecting: true } | { version: string },
+            ConnectionRetryResult,
             void,
             void
           > {
-            for (const { promise } of promises) {
+            for (const { promise } of modelStatusPromises) {
+              yield await promise;
+            }
+          };
+        jobInfoSourceImplementation[Symbol.asyncIterator] =
+          async function* (): AsyncGenerator<JobInfoResponse, void, void> {
+            for (const { promise } of jobInfoPromises) {
               yield await promise;
             }
           };
@@ -145,19 +176,43 @@ describe("upgradeTo", () => {
           .next()
           .then(statusResolvedMock.mockImplementation((value) => value));
 
-        promises[0].resolve({ version: "0.0.0" });
+        modelStatusPromises[0].resolve({ version: "0.0.0" });
         await vi.runOnlyPendingTimersAsync();
         expect(statusResolvedMock).not.toHaveBeenCalled();
 
-        promises[1].resolve({ version: "0.0.0" });
+        modelStatusPromises[1].resolve({ version: "0.0.0" });
         await vi.runOnlyPendingTimersAsync();
         expect(statusResolvedMock).not.toHaveBeenCalled();
 
-        promises[2].resolve({ version: "1.2.3" });
+        modelStatusPromises[2].resolve({ version: "1.2.3" });
         await vi.runOnlyPendingTimersAsync();
         expect(statusResolvedMock).toHaveBeenCalledOnce();
 
         await expect(nextStatus).resolves.toEqual({ done: true });
+      });
+
+      it("exits with an error if the job failed", async ({ expect }) => {
+        expect.assertions(1);
+        const progress = upgradeTo(
+          "abc123",
+          "some-controller",
+          "1.2.3",
+          controllerConnection,
+          modelConnection,
+        );
+
+        await progress.next(); // Pending
+        await progress.next(); // Initiating
+
+        const statusResolvedMock = vi.fn();
+        const nextStatus = progress
+          .next()
+          .then(statusResolvedMock.mockImplementation((value) => value));
+
+        jobInfoPromises[0].resolve(
+          jobInfoFactory.build({ status: JobStatus.FAILED }),
+        );
+        await expect(nextStatus).rejects.toThrow(new Error("Upgrade failed"));
       });
 
       it("calls `done` on source after completion", async ({ expect }) => {
@@ -170,7 +225,7 @@ describe("upgradeTo", () => {
           modelConnection,
         );
 
-        promises[0].resolve({ version: "1.2.3" });
+        modelStatusPromises[0].resolve({ version: "1.2.3" });
 
         await progress.next(); // Pending
         await progress.next(); // Initiating
@@ -197,11 +252,11 @@ describe("upgradeTo", () => {
           .next()
           .then(statusResolvedMock.mockImplementation((value) => value));
 
-        promises[0].resolve({ version: "0.0.0" });
+        modelStatusPromises[0].resolve({ version: "0.0.0" });
         await vi.runOnlyPendingTimersAsync();
         expect(statusResolvedMock).not.toHaveBeenCalled();
 
-        promises[1].resolve({ reconnecting: true });
+        modelStatusPromises[1].resolve({ reconnecting: true });
         await vi.runOnlyPendingTimersAsync();
         expect(statusResolvedMock).toHaveBeenCalled();
 
@@ -224,10 +279,14 @@ describe("upgradeTo", () => {
         await progress.next(); // Pending
         await progress.next(); // Initiating
 
-        promises.slice(0, promises.length - 1).map(({ resolve }) => {
-          resolve({ version: "0.0.0" });
+        modelStatusPromises
+          .slice(0, modelStatusPromises.length - 1)
+          .map(({ resolve }) => {
+            resolve({ version: "0.0.0" });
+          });
+        modelStatusPromises[modelStatusPromises.length - 1].resolve({
+          version: "1.2.3",
         });
-        promises[promises.length - 1].resolve({ version: "1.2.3" });
 
         await expect(progress.next()).resolves.toEqual({
           value: { status: "loading" },

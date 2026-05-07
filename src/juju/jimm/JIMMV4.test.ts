@@ -195,4 +195,21 @@ describe("JIMMV4", () => {
       expect.any(Function),
     );
   });
+
+  it("jobInfo", async () => {
+    const jimm = new JIMMV4(transport, connectionInfo);
+    void jimm.jobInfo("123");
+    expect(transport.write).toHaveBeenCalledWith(
+      {
+        type: "JIMM",
+        request: "JobInfo",
+        version: 4,
+        params: {
+          "job-id": "123",
+        },
+      },
+      expect.any(Function),
+      expect.any(Function),
+    );
+  });
 });

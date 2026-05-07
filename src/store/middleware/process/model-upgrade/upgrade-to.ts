@@ -1,3 +1,5 @@
+import createSourceRaceIterator from "data/sourceRaceIterator";
+import { JobStatus, type JobInfoResponse } from "juju/jimm/JIMMV4";
 import * as jimmApi from "juju/jimm/api";
 import { createToast } from "store/app/actions";
 import { actions as jujuActions } from "store/juju";
@@ -8,6 +10,8 @@ import { logger } from "utils/logger";
 
 import { createProcess } from "../createProcess";
 
+import createJobInfoSource from "./job-info-source";
+import type { ConnectionRetryResult } from "./model-connection-retry-source";
 import createModelConnectionRetrySource from "./model-connection-retry-source";
 
 enum UpgradeStatus {
@@ -54,18 +58,32 @@ export async function* upgradeTo(
   yield { status: UpgradeStatus.PENDING };
   const result = await request;
 
-  if (!result) {
+  if (!result.success) {
     throw new Error("migration request rejected");
   }
 
   yield { status: UpgradeStatus.INITIATED };
 
   // Poll for model version.
-  const source = createModelConnectionRetrySource(modelConnection);
+  const versionSource = createModelConnectionRetrySource(modelConnection);
+  const jobInfoSource = createJobInfoSource(
+    controllerConnection,
+    result["job-id"].toString(),
+  );
   let statusCount = 0;
-  for await (const retry of source) {
-    if ("version" in retry) {
-      if (retry.version === targetVersion) {
+  const sources = createSourceRaceIterator<
+    ConnectionRetryResult | JobInfoResponse
+  >([versionSource, jobInfoSource], true);
+  for await (const response of sources) {
+    if ("status" in response) {
+      if (response.status === JobStatus.FAILED) {
+        versionSource.done();
+        jobInfoSource.done();
+        throw new Error("Upgrade failed");
+      }
+    }
+    if ("version" in response) {
+      if (response.version === targetVersion) {
         // The model has reached the target version so the source can now finish.
         break;
       }
@@ -79,7 +97,8 @@ export async function* upgradeTo(
       yield { status: UpgradeStatus.RECONNECTING };
     }
   }
-  source.done();
+  versionSource.done();
+  jobInfoSource.done();
 }
 
 export default createProcess<Params, UpgradeState, void>(
@@ -114,7 +133,7 @@ export default createProcess<Params, UpgradeState, void>(
           outcome.error,
         );
         return createToast({
-          message: `Error during upgrade of "${modelName}": ${outcome.error.message}`,
+          message: `Failed to upgrade. Model "${modelName}" has not been migrated or upgraded. Try again or contact support.`,
           severity: "negative",
         });
       } else {

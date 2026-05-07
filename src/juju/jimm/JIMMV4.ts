@@ -83,6 +83,35 @@ export type SupportedJujuVersionsResponse = {
   versions: VersionElem[];
 };
 
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/4434cb03a24b96c493e861d3dd990c1ff37fff3b/pkg/api/params/params.go#L394
+export type UpgradeToResponse = {
+  success: boolean;
+  "job-id": number;
+};
+
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/4434cb03a24b96c493e861d3dd990c1ff37fff3b/pkg/api/params/params.go#L733
+export enum JobStatus {
+  RUNNING = "running",
+  SUCCESSFUL = "successful",
+  PENDING = "pending",
+  FAILED = "failed",
+  UNKNOWN = "unknown",
+}
+
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/4434cb03a24b96c493e861d3dd990c1ff37fff3b/pkg/api/params/params.go#L845
+export type JobInfoResponse = {
+  id: number;
+  status: JobStatus;
+  kind: string;
+  current_attempt: number;
+  max_attempts: number;
+  finished_at?: string;
+  errors?: string;
+};
+
 class JIMMV4 extends JIMMV3 {
   static NAME: string;
   static VERSION: number;
@@ -205,7 +234,7 @@ class JIMMV4 extends JIMMV3 {
   async upgradeTo(
     modelTag: string,
     targetController: string,
-  ): Promise<boolean | undefined> {
+  ): Promise<UpgradeToResponse> {
     return new Promise((resolve, reject) => {
       const req = {
         type: "JIMM",
@@ -214,6 +243,27 @@ class JIMMV4 extends JIMMV3 {
         params: {
           "model-tag": modelTag,
           "target-controller-name": targetController,
+        },
+      };
+      this._transport.write(req, resolve, reject);
+    });
+  }
+
+  /**
+   * Get info about a job.
+   *
+   * @param jobId The id of a job.
+   *
+   * @see {@link https://github.com/canonical/jimm/blob/4434cb03a24b96c493e861d3dd990c1ff37fff3b/pkg/api/client.go#L406}
+   */
+  async jobInfo(jobId: string): Promise<JobInfoResponse> {
+    return new Promise((resolve, reject) => {
+      const req = {
+        type: "JIMM",
+        request: "JobInfo",
+        version: 4,
+        params: {
+          "job-id": jobId,
         },
       };
       this._transport.write(req, resolve, reject);

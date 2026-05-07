@@ -19,6 +19,7 @@ import {
   listMigrationTargets,
   supportedJujuVersions,
   upgradeTo,
+  jobInfo,
 } from "./api";
 
 describe("JIMM API", () => {
@@ -487,6 +488,41 @@ describe("JIMM API", () => {
       await expect(
         upgradeTo(conn, "model-abc123", "controller123"),
       ).rejects.toThrow(new Error("Uh oh!"));
+    });
+  });
+
+  describe("jobInfo", () => {
+    it("makes and upgrade call", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            jobInfo: vi.fn().mockResolvedValue(true),
+          },
+        },
+      } as unknown as Connection;
+      const response = await jobInfo(conn, "123");
+      expect(conn.facades.jimM.jobInfo).toHaveBeenCalledExactlyOnceWith("123");
+      expect(response).toBe(true);
+    });
+
+    it("handles no JIMM connection", async () => {
+      const conn = {
+        facades: {},
+      } as unknown as Connection;
+      await expect(jobInfo(conn, "123")).rejects.toThrow(
+        new Error(Label.NO_JIMM),
+      );
+    });
+
+    it("should handle exceptions", async () => {
+      const conn = {
+        facades: {
+          jimM: {
+            jobInfo: vi.fn().mockRejectedValue(new Error("Uh oh!")),
+          },
+        },
+      } as unknown as Connection;
+      await expect(jobInfo(conn, "123")).rejects.toThrow(new Error("Uh oh!"));
     });
   });
 });
