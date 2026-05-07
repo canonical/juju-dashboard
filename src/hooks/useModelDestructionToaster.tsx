@@ -8,6 +8,7 @@ import { getDestructionState } from "store/juju/selectors";
 import modelListSource from "store/middleware/source/model-list";
 import { useAppSelector } from "store/store";
 import { externalURLs } from "urls";
+import { toErrorString } from "utils";
 import { toastNotification } from "utils/toastNotification";
 
 export default function useModelDestructionToaster(): void {
@@ -74,8 +75,8 @@ export default function useModelDestructionToaster(): void {
             toastNotification(
               <>
                 <b>Destroying model "{destructionStatus.modelName}" failed</b>
-                <div>
-                  Retry or consult{" "}
+                <div className="u-capitalise--first-letter">
+                  {toErrorString(destructionStatus.errors)}. Retry or consult{" "}
                   <Link to={externalURLs.destroyModel} target="_blank">
                     documentation
                   </Link>
