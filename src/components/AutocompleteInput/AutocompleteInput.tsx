@@ -1,13 +1,13 @@
 import type { InputProps, PropsWithSpread } from "@canonical/react-components";
 import { ContextualMenu, Input } from "@canonical/react-components";
 import type { FC, HTMLProps } from "react";
-import { useId, useMemo, useState } from "react";
+import { useCallback, useId, useMemo, useState } from "react";
 
 import AutocompleteInputDropdown from "./AutocompleteInputDropdown";
 
 type AutocompleteInputItem = {
   label: string;
-  value: number | string;
+  value: string;
 };
 
 type Props = PropsWithSpread<
@@ -19,12 +19,108 @@ type Props = PropsWithSpread<
   InputProps
 >;
 
+const getNextOptionIndex = (
+  options: Props["options"],
+  goingUp: boolean,
+  prevIndex: null | number,
+): number => {
+  if (prevIndex === null) {
+    return goingUp ? options.length - 1 : 0;
+  }
+  const increment = goingUp ? -1 : 1;
+  const nextIndex = prevIndex + increment;
+
+  if (increment > 0) {
+    return nextIndex < options.length ? nextIndex : 0;
+  }
+
+  return nextIndex >= 0 ? nextIndex : options.length - 1;
+};
+
+const updateDropdown = (
+  setIsDropdownOpen: (isDropdownOpen: boolean) => void,
+  filteredOptions: Props["options"],
+  setHighlightedOptionIndex: React.Dispatch<
+    React.SetStateAction<null | number>
+  >,
+  visible: boolean,
+): void => {
+  // Only show the dropdown if there are options.
+  setIsDropdownOpen(visible && !!filteredOptions.length);
+  // Clear the selected item when it closes.
+  if (!visible) {
+    setHighlightedOptionIndex(null);
+  }
+};
+
+const handleKeyDown = (
+  isDropdownOpen: boolean,
+  setIsDropdownOpen: (isDropdownOpen: boolean) => void,
+  filteredOptions: Props["options"],
+  setHighlightedOptionIndex: React.Dispatch<
+    React.SetStateAction<null | number>
+  >,
+  highlightedOptionIndex: null | number,
+  onSelectItem: (item: string) => void,
+  event: React.KeyboardEvent<HTMLInputElement>,
+): void => {
+  const isUp = event.key === "ArrowUp";
+  const isDown = event.key === "ArrowDown";
+  const isUpDown = isUp || isDown;
+  const isEnter = event.key === "Enter";
+  if (isUpDown) {
+    // Don't move the cursor in the input.
+    event.preventDefault();
+
+    // Pressing an up/down key should open the menu.
+    if (!isDropdownOpen) {
+      updateDropdown(
+        setIsDropdownOpen,
+        filteredOptions,
+        setHighlightedOptionIndex,
+        true,
+      );
+    }
+  }
+  if (isEnter && isDropdownOpen) {
+    // When the menu is open then pressing enter should not do the default action (e.g. submitting a form).
+    event.preventDefault();
+  }
+  if (
+    isEnter &&
+    highlightedOptionIndex !== null &&
+    filteredOptions[highlightedOptionIndex]
+  ) {
+    // Select the highlighted item in the menu.
+    onSelectItem(filteredOptions[highlightedOptionIndex].value);
+  }
+  // Pressing up/down should move the selected item up/down.
+  if (isUpDown) {
+    setHighlightedOptionIndex((prevIndex) => {
+      return getNextOptionIndex(filteredOptions, isUp, prevIndex);
+    });
+  }
+  // If escape is pressed and the dropdown is open then close it, otherwise let the key behave as normal.
+  if (isDropdownOpen && event.key === "Escape") {
+    event.stopPropagation();
+    updateDropdown(
+      setIsDropdownOpen,
+      filteredOptions,
+      setHighlightedOptionIndex,
+      false,
+    );
+  }
+};
+
 const AutocompleteInput: FC<Props> = ({
   autocompleteStyle,
   options,
   onValueChanged,
   ...props
 }) => {
+  const [highlightedOptionIndex, setHighlightedOptionIndex] = useState<
+    null | number
+  >(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>(
     props.value?.toString() ?? "",
@@ -43,15 +139,29 @@ const AutocompleteInput: FC<Props> = ({
     });
     // If there are no options to display then close the dropdown.
     if (!filtered.length) {
-      setIsDropdownOpen(false);
+      updateDropdown(
+        setIsDropdownOpen,
+        filtered,
+        setHighlightedOptionIndex,
+        false,
+      );
     }
     return filtered;
   }, [inputValue, options]);
 
-  const updateDropdown = (visible: boolean): void => {
-    // Only show the dropdown if there are options.
-    setIsDropdownOpen(visible && !!filteredOptions.length);
-  };
+  const onSelectItem = useCallback(
+    (value: string) => {
+      onValueChanged?.(value);
+      setInputValue(value);
+      updateDropdown(
+        setIsDropdownOpen,
+        filteredOptions,
+        setHighlightedOptionIndex,
+        false,
+      );
+    },
+    [filteredOptions, onValueChanged],
+  );
 
   return (
     <ContextualMenu
@@ -61,12 +171,18 @@ const AutocompleteInput: FC<Props> = ({
         // Handle syncing the state when toggling the menu from within the
         // contextual menu component e.g. when clicking outside.
         if (isOpen !== isDropdownOpen) {
-          updateDropdown(isOpen);
+          updateDropdown(
+            setIsDropdownOpen,
+            filteredOptions,
+            setHighlightedOptionIndex,
+            isOpen,
+          );
         }
       }}
       position="left"
       positionNode={document.getElementById(inputId)}
       constrainPanelWidth
+      scrollOverflow
       toggle={
         <Input
           {...props}
@@ -79,15 +195,46 @@ const AutocompleteInput: FC<Props> = ({
             const { value } = event.target;
             setInputValue(value);
             // Reopen if dropdown has been closed via ESC.
-            updateDropdown(true);
+            updateDropdown(
+              setIsDropdownOpen,
+              filteredOptions,
+              setHighlightedOptionIndex,
+              true,
+            );
             onValueChanged?.(value);
             // Call any parent onChange handlers.
             props.onChange?.(event);
           }}
           onFocus={(event) => {
-            updateDropdown(true);
+            updateDropdown(
+              setIsDropdownOpen,
+              filteredOptions,
+              setHighlightedOptionIndex,
+              true,
+            );
             // Call any parent onFocus handlers.
             props.onFocus?.(event);
+          }}
+          onBlur={(event) => {
+            updateDropdown(
+              setIsDropdownOpen,
+              filteredOptions,
+              setHighlightedOptionIndex,
+              false,
+            );
+            // Call any parent onBlur handlers.
+            props.onBlur?.(event);
+          }}
+          onKeyDown={(event) => {
+            handleKeyDown(
+              isDropdownOpen,
+              setIsDropdownOpen,
+              filteredOptions,
+              setHighlightedOptionIndex,
+              highlightedOptionIndex,
+              onSelectItem,
+              event,
+            );
           }}
           type="text"
           value={inputValue}
@@ -96,14 +243,12 @@ const AutocompleteInput: FC<Props> = ({
       visible={isDropdownOpen}
     >
       <AutocompleteInputDropdown
+        highlightedOptionIndex={highlightedOptionIndex}
         id={dropdownId}
         isOpen={isDropdownOpen}
         options={filteredOptions}
-        onSelectItem={(value) => {
-          onValueChanged?.(value);
-          setInputValue(value);
-          setIsDropdownOpen(false);
-        }}
+        onSelectItem={onSelectItem}
+        setHighlightedOptionIndex={setHighlightedOptionIndex}
       />
     </ContextualMenu>
   );

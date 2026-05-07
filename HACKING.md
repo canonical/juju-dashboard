@@ -110,7 +110,7 @@ yq -i ".services.jimm-base.environment.CORS_ALLOWED_ORIGINS = \"$DASHBOARD_ADDRE
 Now you can restart the Multipass container or running the following commands to reload the Docker environment
 
 ```shell
-cd /home/ubuntu/jimm && INSECURE_SECRET_STORAGE=true docker compose --profile dev up -d && docker restart jimm && juju show-controller qa-lxd | yq '.[].controller-machines.[].instance-id' | xargs lxc restart
+sudo systemctl restart jimm.service
 ```
 
 #### Dashboard setup
@@ -596,12 +596,6 @@ export CONTROLLER_NAME=jimm3
 ```
 - Now we want to add a model to the jimm2 controller but running an older version of Juju than the controller:
 ```
-multipass shell jimm-oidc
-juju switch qa-lxd
-juju upgrade-controller --agent-version 3.6.20
-```
-- We also need a controller that has a higher version that the model's current controller version, so add a second controller, this time running 3.6.21:
-```
 ~/jimm/jaas add-model --target-controller jimm2 test2 --config="agent-version=3.6.19"
 ```
 - Lastly, if you want to use a local dashboard with this JIMM env then [update the config](#configure-jimm-for-localhost) and [configure your local dashboard](#controller-configuration) to point to the new controller, just as you would normally.
@@ -622,5 +616,5 @@ juju switch jimm-dev
 If you need to test with a model that has a Juju version that is older than its controller's version you can do:
 
 ```bash
-juju add-model test --config="agent-version=3.6.18"
+juju add-model test --config="agent-version=3.6.19"
 ```
