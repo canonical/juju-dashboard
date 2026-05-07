@@ -31,7 +31,6 @@ export default function useModelDestructionToaster(): void {
             toastNotification(
               <b>Destroying model "{destructionStatus.modelName}"...</b>,
               "information",
-              toastId,
             );
             shownToastIds.current.push(toastId);
           }
@@ -48,7 +47,6 @@ export default function useModelDestructionToaster(): void {
                 Model "{destructionStatus.modelName}" destroyed successfully
               </b>,
               "positive",
-              toastId,
             );
             shownToastIds.current.push(toastId);
           }
@@ -83,7 +81,6 @@ export default function useModelDestructionToaster(): void {
                 </div>
               </>,
               "negative",
-              toastId,
             );
             shownToastIds.current.push(toastId);
           }

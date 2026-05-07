@@ -11,13 +11,12 @@ export type NotificationSeverity = NotificationProps["severity"];
 export const toastNotification = (
   message: React.ReactElement | string,
   severity: NotificationSeverity = "information",
-  id?: string,
 ): void => {
   toast(
     message,
     // React Hot Toast doesn't officially support custom toast types, but we manually
     // handle these types in our custom renderer. This might not be necessary once this
     // issue is fixed: https://github.com/timolins/react-hot-toast/issues/29.
-    { type: severity, ...(id ? { id } : {}) } as ToastOptions,
+    { type: severity } as ToastOptions,
   );
 };
