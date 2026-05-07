@@ -1,19 +1,23 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router";
 
 import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
-import { getDestructionState, getModelList } from "store/juju/selectors";
+import { getDestructionState } from "store/juju/selectors";
+import modelListSource from "store/middleware/source/model-list";
 import { useAppSelector } from "store/store";
 import { externalURLs } from "urls";
+import { toErrorString } from "utils";
 import { toastNotification } from "utils/toastNotification";
 
 export default function useModelDestructionToaster(): void {
   const destructionState = useAppSelector(getDestructionState);
-  const modelsList = useAppSelector(getModelList);
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const dispatch = useDispatch();
+
+  // Track shown toast IDs to prevent duplicates on re-renders
+  const shownToastIds = useRef<string[]>([]);
 
   useEffect(() => {
     // Iterate over all entries in the destruction state.
@@ -22,21 +26,32 @@ export default function useModelDestructionToaster(): void {
         // Check if the destruction is in a loading state.
         if (destructionStatus.loading) {
           // Handle an initiated destruction
-          toastNotification(
-            <b>Destroying model "{destructionStatus.modelName}"...</b>,
-            "information",
-          );
+          const toastId = `destroy-loading-${modelUUID}`;
+          if (!shownToastIds.current.includes(toastId)) {
+            toastNotification(
+              <b>Destroying model "{destructionStatus.modelName}"...</b>,
+              "information",
+            );
+            shownToastIds.current.push(toastId);
+          }
         } else if (
           wsControllerURL &&
           destructionStatus.loaded &&
-          destructionStatus.errors === null &&
-          !Object.keys(modelsList).includes(modelUUID)
+          destructionStatus.errors === null
         ) {
           // Handle a successful destruction (model is no longer in modelsList)
-          toastNotification(
-            <b>Model "{destructionStatus.modelName}" destroyed successfully</b>,
-            "positive",
-          );
+          const toastId = `destroy-success-${modelUUID}`;
+          if (!shownToastIds.current.includes(toastId)) {
+            toastNotification(
+              <b>
+                Model "{destructionStatus.modelName}" destroyed successfully
+              </b>,
+              "positive",
+            );
+            shownToastIds.current.push(toastId);
+          }
+          // Invalidate the model list to ensure we have the most up-to-date information.
+          dispatch(modelListSource.actions.invalidate({ wsControllerURL }));
 
           // Dispatch the clear action to remove this entry from the state.
           dispatch(
@@ -44,23 +59,33 @@ export default function useModelDestructionToaster(): void {
               modelUUID,
               wsControllerURL,
             }),
+          );
+          // Remove the loading and success toasts from tracking for future cycles
+          shownToastIds.current = shownToastIds.current.filter(
+            (id) => id !== `destroy-loading-${modelUUID}` && id !== toastId,
           );
         }
 
         if (wsControllerURL && destructionStatus.errors) {
           // Handle a failed destruction
-          toastNotification(
-            <>
-              <b>Destroying model "{destructionStatus.modelName}" failed</b>
-              <div>
-                Retry or consult{" "}
-                <Link to={externalURLs.destroyModel} target="_blank">
-                  documentation
-                </Link>
-              </div>
-            </>,
-            "negative",
-          );
+          const toastId = `destroy-error-${modelUUID}`;
+          if (!shownToastIds.current.includes(toastId)) {
+            toastNotification(
+              <>
+                <b>Destroying model "{destructionStatus.modelName}" failed</b>
+                <div className="u-capitalise--first-letter">
+                  {toErrorString(destructionStatus.errors)}. Retry or consult{" "}
+                  <Link to={externalURLs.destroyModel} target="_blank">
+                    documentation
+                  </Link>
+                </div>
+              </>,
+              "negative",
+            );
+            shownToastIds.current.push(toastId);
+          }
+          // Invalidate the model list to ensure we have the most up-to-date information.
+          dispatch(modelListSource.actions.invalidate({ wsControllerURL }));
 
           // Dispatch the clear action to remove this entry from the state.
           dispatch(
@@ -69,8 +94,12 @@ export default function useModelDestructionToaster(): void {
               wsControllerURL,
             }),
           );
+          // Remove the loading and error toasts from tracking for future cycles
+          shownToastIds.current = shownToastIds.current.filter(
+            (id) => id !== `destroy-loading-${modelUUID}` && id !== toastId,
+          );
         }
       },
     );
-  }, [wsControllerURL, modelsList, destructionState, dispatch]);
+  }, [wsControllerURL, destructionState, dispatch]);
 }
