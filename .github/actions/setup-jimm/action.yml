@@ -119,10 +119,10 @@ runs:
       shell: bash
       run: |
         juju add-model jimm
-        juju deploy juju-jimm-k8s --channel=${{ inputs.jimm-channel }} jimm --config postgres-secret-storage=true
-        juju deploy openfga-k8s --channel=edge openfga
-        juju deploy postgresql-k8s --channel=16/edge postgresql
-        juju deploy nginx-ingress-integrator --channel=latest/stable --trust ingress
+        juju deploy juju-jimm-k8s --channel=3/edge jimm --config postgres-secret-storage=true
+        juju deploy openfga-k8s --channel=2.0/stable openfga
+        juju deploy postgresql-k8s --channel=14/stable postgresql
+        juju deploy traefik-k8s --channel=latest/stable --trust ingress
         juju trust postgresql --scope=cluster
     - name: Wait for Postgres
       uses: ./.github/actions/juju-wait-for
@@ -133,7 +133,7 @@ runs:
     - name: Add JIMM relations
       shell: bash
       run: |
-        juju relate jimm:nginx-route ingress
+        juju relate jimm:ingress ingress
         juju relate jimm:openfga openfga
         juju relate jimm:database postgresql
     - name: Wait for Postgres (before openfga)
@@ -149,9 +149,9 @@ runs:
       with:
         timeout_minutes: 5
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
-        command: |
+        on_retry_command: |
           STATUS=$(juju status --format json | yq .applications.openfga.application-status.current)
-          if [ "$STATUS" == "waiting" ]; then
+          if [ "$STATUS" == "blocked" ]; then
             # Sometimes the postgresql unit has a PrematureDataAccessError error so remove the relation and try again.
             juju remove-relation openfga:database postgresql
             # The unit will be blocked when it is waiting for the relation
@@ -159,6 +159,7 @@ runs:
             TYPE=application NAME=openfga TIMEOUT_MINUTES=1 EXPECTED_STATUS=blocked ./scripts/wait-for
             juju relate openfga:database postgresql
           fi
+        command: |
           TYPE=application NAME=openfga TIMEOUT_MINUTES=5 EXPECTED_STATUS=active ./scripts/wait-for
     - name: Add JIMM relations and certs
       shell: bash
@@ -173,7 +174,6 @@ runs:
         # Give the user admin permissions so that they can add the workload controller.
         juju config jimm controller-admins="${{ inputs.admin-username }}@example.com"
         juju config jimm uuid=3f4d142b-732e-4e99-80e7-5899b7e67e59
-        juju config jimm dns-name=test-jimm.local
         KEYS=$(go run github.com/go-macaroon-bakery/macaroon-bakery/cmd/bakery-keygen/v3@latest)
         juju config jimm public-key=$(echo $KEYS | yq .public)
         juju config jimm private-key=$(echo $KEYS | yq .private)
@@ -193,8 +193,12 @@ runs:
       shell: bash
       run: |
         # Point the test-jimm.local hostname to the ingress address.
-        echo "$(juju status ingress/0 --format=json | yq '.applications.ingress.units.ingress/0.workload-status.message | sub("Ingress IP\\(s\\): ", "")') test-jimm.local" | sudo tee -a /etc/hosts
-        juju run --wait=2m jimm-cert/0 get-ca-certificate --quiet | yq .ca-certificate | sudo tee /usr/local/share/ca-certificates/jimm-test.crt
+        ingress_status=$(juju status --format json | yq '.applications.ingress.units."ingress/0"."workload-status".message')
+        metallb_ip=$(echo $ingress_status | cut -d' ' -f3 | cut -d'/' -f3)
+        echo "$metallb_ip test-jimm.local" | sudo tee -a /etc/hosts
+        juju config jimm dns-name=test-jimm.local
+        juju config ingress external_hostname=test-jimm.local
+        juju run jimm-cert/0 get-ca-certificate --quiet | yq .ca-certificate | sudo tee /usr/local/share/ca-certificates/jimm-test.crt
         sudo update-ca-certificates --fresh
     - name: Wait for JIMM
       uses: ./.github/actions/juju-wait-for
@@ -210,7 +214,7 @@ runs:
           STATUS=$(juju status --format json | yq .applications.jimm.application-status.current)
           if [ "$STATUS" == "blocked" | "$STATUS" == "error" ]; then
             if [ "$STATUS" == "error" ]; then
-              juju resolve jimm
+              juju resolve jimm/0
             fi
 
             juju remove-relation jimm:openfga openfga
@@ -219,7 +223,7 @@ runs:
             juju relate jimm:openfga openfga
 
             if [ "$STATUS" == "error" ]; then
-              juju resolve jimm
+              juju resolve jimm/0
             fi
           fi
           TYPE=application NAME=jimm TIMEOUT_MINUTES=1 EXPECTED_STATUS=active ./scripts/wait-for
