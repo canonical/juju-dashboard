@@ -452,7 +452,7 @@ describe("JIMM API", () => {
   });
 
   describe("upgradeTo", () => {
-    it("makes and upgrade call", async () => {
+    it("makes an upgrade call", async () => {
       const conn = {
         facades: {
           jimM: {
@@ -492,7 +492,7 @@ describe("JIMM API", () => {
   });
 
   describe("jobInfo", () => {
-    it("makes and upgrade call", async () => {
+    it("makes a job info call", async () => {
       const conn = {
         facades: {
           jimM: {

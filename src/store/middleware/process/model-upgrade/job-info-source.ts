@@ -12,9 +12,7 @@ const JOB_INFO_POLL_S = 5;
 /**
  * Internal logic for `createJobInfoSource`.
  *
- * Saves a connection, and whenever the returned function is called, it will try to call the
- * `fullStatus` facade method. If the call fails, it will clear the connection, and attempt to
- * reconnect on the next call.
+ * Fetches job info from JIMM.
  */
 export function getJobInfo(
   controllerConnection: ManagedConnection,
@@ -25,7 +23,7 @@ export function getJobInfo(
 }
 
 /**
- * A source which will produce the version of a model, or an indication that it's being reconnected
+ * A source which will produce the job info for the provided id.
  * to.
  */
 export default function createJobInfoSource(
