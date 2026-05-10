@@ -1,8 +1,12 @@
 import { Factory } from "fishery";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
-import type { RelationshipTuple, VersionElem } from "juju/jimm/JIMMV4";
-import { JIMMRelation } from "juju/jimm/JIMMV4";
+import type {
+  JobInfoResponse,
+  RelationshipTuple,
+  VersionElem,
+} from "juju/jimm/JIMMV4";
+import { JIMMRelation, JobStatus } from "juju/jimm/JIMMV4";
 import type {
   ModelMigrationTargetsState,
   ReBACAllowed,
@@ -209,4 +213,12 @@ export const modelMigrationTargetFactory = Factory.define<
   data: null,
   error: null,
   loading: false,
+}));
+
+export const jobInfoFactory = Factory.define<JobInfoResponse>(() => ({
+  id: 1,
+  status: JobStatus.RUNNING,
+  kind: "migrate-model",
+  current_attempt: 1,
+  max_attempts: 3,
 }));

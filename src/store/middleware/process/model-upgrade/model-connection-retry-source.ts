@@ -10,7 +10,9 @@ import { logger } from "utils/logger";
  */
 const MODEL_STATUS_POLL_S = 5;
 
-type ConnectionRetryResult = { reconnecting: true } | { version: string };
+export type ConnectionRetryResult =
+  | { reconnecting: true }
+  | { version: string };
 
 /**
  * Internal logic for `createModelConnectionRetrySource`.
