@@ -9339,7 +9339,7 @@ __metadata:
     stylelint-order: "npm:8.1.1"
     typescript: "npm:5.9.3"
     typescript-eslint: "npm:8.59.2"
-    vanilla-framework: "npm:4.46.0"
+    vanilla-framework: "npm:4.51.0"
     vite: "npm:7.3.2"
     vite-plugin-html: "npm:3.2.2"
     vite-tsconfig-paths: "npm:6.1.1"
@@ -13505,12 +13505,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-framework@npm:4.46.0":
-  version: 4.46.0
-  resolution: "vanilla-framework@npm:4.46.0"
+"vanilla-framework@npm:4.51.0":
+  version: 4.51.0
+  resolution: "vanilla-framework@npm:4.51.0"
   peerDependencies:
     sass: ^1.79.0
-  checksum: 10c0/d2ba0c5f6df8fb481b9453bf949aebf153e7b9ce6109052f636ec3653bc81826aad3fc286c6587f8b5da158db2d29d625e84efe30d61ab5e1a78620335535692
+  checksum: 10c0/9a3e950e28c1e79c4c9b02507e889f71f7e2e37d75d2fffa1a9b64aed5a78e4938ec364241cf57bf674700d8d2db94abcf1ef6bb6af52f005e7c294f99a83008
   languageName: node
   linkType: hard
 
