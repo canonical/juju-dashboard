@@ -28,7 +28,7 @@ RUN if [ -n "$BUILD_ID" ]; then \
     fi
 RUN yarn run build
 
-FROM ubuntu:noble
+FROM ubuntu:resolute
 
 RUN apt update && apt install --yes nginx python3-jinja2
 

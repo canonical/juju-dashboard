@@ -74,7 +74,7 @@ runs:
       run: juju integrate '${{ inputs.controller-app }}' dashboard
       shell: bash
     - name: Wait for charm to be ready
-      uses: nick-fields/retry@v3
+      uses: nick-fields/retry@v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.

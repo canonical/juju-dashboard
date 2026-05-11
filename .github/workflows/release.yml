@@ -111,7 +111,7 @@ jobs:
           fi
       - name: Log in to GitHub Container Registry
         if: ${{ matrix.charm-kind == 'k8s' }}
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -133,7 +133,7 @@ jobs:
           echo "charm-dir=$CHARM_DIR" | tee -a "$GITHUB_OUTPUT"
           echo "built-charm-path=$BUILT_CHARM_PATHS" | tee -a "$GITHUB_OUTPUT"
       - name: Save charm artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: juju-dashboard-${{ matrix.charm-kind }}
           path: ${{ steps.post-build.outputs.charm-dir }}/*.charm
@@ -231,12 +231,12 @@ jobs:
           echo "version-tag=$version_tag" | tee -a "$GITHUB_OUTPUT"
 
       - name: "Download k8s charm artifact"
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: juju-dashboard-k8s
           path: release-artifacts
       - name: "Download machine charm artifact"
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: juju-dashboard-machine
           path: release-artifacts
