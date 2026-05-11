@@ -128,7 +128,7 @@ runs:
       shell: bash
       run: juju relate openfga:database postgresql
     - name: Wait for openfga
-      uses: nick-fields/retry@v3
+      uses: nick-fields/retry@v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
@@ -161,7 +161,7 @@ runs:
         juju config jimm public-key=$(echo $KEYS | yq .public)
         juju config jimm private-key=$(echo $KEYS | yq .private)
     - name: Wait for ingress
-      uses: nick-fields/retry@v3
+      uses: nick-fields/retry@v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
@@ -226,7 +226,7 @@ runs:
       shell: bash
       run: sudo microk8s kubectl delete pod jimm-0 -n jimm # Fix ListModels issue:
     - name: Wait for JIMM pod to be recreated
-      uses: nick-fields/retry@v3
+      uses: nick-fields/retry@v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.

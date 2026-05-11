@@ -23,7 +23,7 @@ jobs:
       - run: yarn test --coverage.enabled true
       - name: Upload coverage report
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: juju-dashboard-coverage
           path: coverage
