@@ -5,7 +5,7 @@ import { Label as ModelLabel } from "pages/EntityDetails/Model/types";
 import { Label as EntityDetailsLabel } from "pages/EntityDetails/types";
 import urls from "urls";
 
-import { JujuEnv, test } from "../fixtures/setup";
+import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import { AddModel, GiveModelAccess } from "../helpers/actions";
 import type { User } from "../helpers/auth";
@@ -59,18 +59,16 @@ test.describe("Models", () => {
     await expect(page.getByText(EntityDetailsLabel.NOT_FOUND)).toBeVisible();
   });
 
-  test("model list disables access button to non-admins", async ({
-    page,
-    testOptions,
-  }) => {
+  test("model list disables access button to non-admins", async ({ page }) => {
     await user2.dashboardLogin(page, urls.models.index);
+    // Wait for the models to have loaded to prevent content shifts from causing the click to happen on the wrong item.
+    await expect(page.locator("tr")).toHaveCount(3);
     await page
       .locator("tr", { hasText: sharedModel.name })
       .getByRole("button", { name: ModelActionsLabel.TOGGLE })
       .click();
     await expect(
-      // In JIMM, this element is rendered as a link.
-      page.getByRole(testOptions.jujuEnv === JujuEnv.JIMM ? "link" : "button", {
+      page.getByRole("menuitem", {
         name: ModelActionsLabel.ACCESS,
       }),
     ).toHaveAttribute("aria-disabled", "true");

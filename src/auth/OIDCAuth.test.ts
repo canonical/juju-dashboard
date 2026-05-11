@@ -2,10 +2,10 @@ import type { Mock } from "vitest";
 
 import * as jimmListeners from "juju/jimm/listeners";
 import * as jimmThunks from "juju/jimm/thunks";
-import { actions as generalActions } from "store/general";
 
 import { Auth } from "./Auth";
 import { OIDCAuth } from "./OIDCAuth";
+import { OIDCAuthLabel } from "./types";
 
 describe("OIDCAuth", () => {
   let dispatch: Mock;
@@ -44,7 +44,6 @@ describe("OIDCAuth", () => {
     it("with user", async () => {
       const whoamiThunkMock = vi.spyOn(jimmThunks, "whoami");
       const pollWhoamiStartMock = vi.spyOn(jimmListeners, "pollWhoamiStart");
-      const storeLoginErrorMock = vi.spyOn(generalActions, "storeLoginError");
       dispatch
         // whoami
         .mockResolvedValueOnce({ payload: {} });
@@ -55,13 +54,11 @@ describe("OIDCAuth", () => {
       expect(whoamiThunkMock).toHaveBeenCalledOnce();
       expect(pollWhoamiStartMock).toHaveBeenCalledOnce();
       expect(connectionContinue).to.equal(true);
-      expect(storeLoginErrorMock).not.toHaveBeenCalledOnce();
     });
 
     it("without user", async () => {
       const whoamiThunkMock = vi.spyOn(jimmThunks, "whoami");
       const pollWhoamiStartMock = vi.spyOn(jimmListeners, "pollWhoamiStart");
-      const storeLoginErrorMock = vi.spyOn(generalActions, "storeLoginError");
       dispatch
         // whoami
         .mockResolvedValueOnce({ payload: null });
@@ -72,27 +69,20 @@ describe("OIDCAuth", () => {
       expect(whoamiThunkMock).toHaveBeenCalledOnce();
       expect(pollWhoamiStartMock).not.toHaveBeenCalled();
       expect(connectionContinue).to.equal(false);
-      expect(storeLoginErrorMock).not.toHaveBeenCalledOnce();
     });
 
     it("with user error", async () => {
-      const whoamiThunkMock = vi.spyOn(jimmThunks, "whoami");
-      const pollWhoamiStartMock = vi.spyOn(jimmListeners, "pollWhoamiStart");
-      const storeLoginErrorMock = vi.spyOn(generalActions, "storeLoginError");
       dispatch
         // whoami
         .mockResolvedValueOnce({
           payload: undefined,
           error: new Error("some error"),
         });
-      const connectionContinue = await Auth.instance.beforeControllerConnect({
-        wsControllerURL: "wss://1.2.3.4/api",
-      });
-      expect(dispatch).toBeCalledTimes(2);
-      expect(whoamiThunkMock).toHaveBeenCalledOnce();
-      expect(pollWhoamiStartMock).not.toHaveBeenCalled();
-      expect(connectionContinue).to.equal(false);
-      expect(storeLoginErrorMock).toHaveBeenCalledOnce();
+      await expect(
+        Auth.instance.beforeControllerConnect({
+          wsControllerURL: "wss://1.2.3.4/api",
+        }),
+      ).rejects.toThrowError(OIDCAuthLabel.WHOAMI);
     });
   });
 

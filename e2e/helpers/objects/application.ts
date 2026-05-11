@@ -9,25 +9,29 @@ import type { Model } from "../objects";
  */
 export enum CharmName {
   // spell
-  localhost = "anbox-cloud-dashboard",
-  microk8s = "pgbouncer-k8s",
+  localhost = "any-charm",
+  microk8s = "any-charm",
 }
 
 /**
  * Action to run.
  */
 export enum ActionName {
-  "anbox-cloud-dashboard" = "backup",
-  "pgbouncer-k8s" = "pre-upgrade-check",
+  "any-charm" = "get-relation-data",
 }
 
 /**
  * Config property to change.
  */
 export enum ConfigName {
-  "anbox-cloud-dashboard" = "location",
-  "pgbouncer-k8s" = "pool_mode",
+  "any-charm" = "python-packages",
 }
+
+export const CHARM_DEPLOY_ARGS = {
+  localhost: "--channel beta",
+  // --trust is required for the k8s charm to access secrets.
+  microk8s: "--channel beta --trust",
+};
 
 export class Application {
   public action: string;
