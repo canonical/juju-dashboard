@@ -39,7 +39,7 @@ test.describe("Destroy Model", () => {
       .getByRole("button", { name: ModelActionsLabel.TOGGLE })
       .click();
     await expect(
-      page.getByRole("button", {
+      page.getByRole("menuitem", {
         name: ModelActionsLabel.DESTROY,
       }),
     ).toHaveAttribute("aria-disabled", "true");
@@ -56,7 +56,7 @@ test.describe("Destroy Model", () => {
       .getByRole("button", { name: ModelActionsLabel.TOGGLE })
       .click();
     await page
-      .getByRole("button", {
+      .getByRole("menuitem", {
         name: ModelActionsLabel.DESTROY,
       })
       .click();

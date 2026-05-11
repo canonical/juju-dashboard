@@ -41,7 +41,6 @@ import { ModelsError } from "./types";
 export enum LoginError {
   LOG = "Unable to log into controller.",
   NO_INFO = "Unable to retrieve controller details.",
-  WHOAMI = "Unable to check authentication status. You can attempt to log in anyway.",
 }
 
 function runModelPoller(

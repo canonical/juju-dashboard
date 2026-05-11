@@ -86,9 +86,13 @@ test.describe("Actions", () => {
     // Go to the action logs and verify that the action was executed
     await page.getByRole("link", { name: AppLabel.VIEW_LOGS }).click();
     await expect(
-      page
-        .locator("tr", { hasText: application.name })
-        .and(page.locator("tr", { hasText: `1/${application.action}` })),
+      page.locator("tr", { hasText: application.name }).and(
+        page.locator("tr", {
+          // Juju 4 actions are zero indexed, while Juju 3 starts at 1. We don't really need to
+          // check the number, just the action so this uses a regex to match any number.
+          hasText: new RegExp(`\\d\\/${application.action}`),
+        }),
+      ),
     ).toBeInViewport();
   });
 
