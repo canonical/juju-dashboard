@@ -3,7 +3,7 @@ import { exec, generateRandomName } from "../../utils";
 import type { Action } from "../action";
 import type { JujuCLI } from "../juju-cli";
 import { Application, type Model } from "../objects";
-import { CharmName } from "../objects/application";
+import { CHARM_DEPLOY_ARGS, CharmName } from "../objects/application";
 
 /**
  * Deploy a new application.
@@ -12,7 +12,7 @@ export class DeployApplication implements Action<Application> {
   public application: Application;
   constructor(
     private model: Model,
-    provider: Provider,
+    private provider: Provider,
   ) {
     const charm = CharmName[provider];
     const name = generateRandomName(charm);
@@ -27,7 +27,7 @@ export class DeployApplication implements Action<Application> {
     }
     await exec(`juju switch '${this.model.name}'`);
     await exec(
-      `juju deploy '${this.application.charm}' '${this.application.name}'`,
+      `juju deploy '${this.application.charm}' '${this.application.name}' ${CHARM_DEPLOY_ARGS[this.provider]}`,
     );
     await exec(
       `TYPE=application NAME='${this.application.name}' TIMEOUT_MINUTES=10 EXPECTED_STATUS=active,blocked,error ./scripts/wait-for`,
