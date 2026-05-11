@@ -1,4 +1,4 @@
-import type { FC, FormEvent } from "react";
+import type { FC } from "react";
 
 import { getWSControllerURL } from "store/general/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
@@ -17,7 +17,7 @@ const UserPassForm: FC = () => {
   const wsControllerURL = useAppSelector(getWSControllerURL);
 
   function handleSubmit(
-    ev: FormEvent<{ elements: LoginElements } & HTMLFormElement>,
+    ev: React.SubmitEvent<{ elements: LoginElements } & HTMLFormElement>,
   ): void {
     ev.preventDefault();
     const { elements } = ev.currentTarget;

@@ -29,7 +29,7 @@ const SearchResults: FC = () => {
     Record<string, ApplicationStatus>
   >({});
   const [fuse, setFuse] = useState<Fuse<{ name: string; charm: string }>>(
-    new Fuse([]),
+    new Fuse<{ name: string; charm: string }>([]),
   );
   const [{ filterQuery }] = useQueryParams<{
     filterQuery: string;
