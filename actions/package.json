@@ -11,16 +11,16 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@actions/core": "2.0.3",
-    "@actions/exec": "2.0.0",
-    "@actions/github": "6.0.1"
+    "@actions/core": "3.0.1",
+    "@actions/exec": "3.0.0",
+    "@actions/github": "9.1.1"
   },
   "devDependencies": {
     "@octokit/types": "16.0.0",
     "@vercel/ncc": "0.38.4",
-    "eslint": "9.39.4",
-    "typescript": "5.9.3",
-    "vite": "7.3.2",
+    "eslint": "10.4.0",
+    "typescript": "6.0.3",
+    "vite": "8.0.13",
     "vite-tsconfig-paths": "6.1.1",
     "vitest": "4.1.5"
   }
