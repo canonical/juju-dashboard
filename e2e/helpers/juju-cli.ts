@@ -1,5 +1,7 @@
 import type { Browser } from "@playwright/test";
 
+import getMajorMinorVersion from "utils/getMajorMinorVersion";
+
 import { JujuEnv } from "../fixtures/setup";
 import { CloudAccessType } from "../fixtures/setup";
 import { getEnv, exec } from "../utils";
@@ -76,12 +78,20 @@ class BootstrapAction implements Action<User> {
   async rollback(jujuCLI: JujuCLI): Promise<void> {
     if (this.giveCredentials) {
       const user = this.result();
+      let credentialName = user.cliUsername;
+      const majorMinor = getMajorMinorVersion(jujuCLI.jujuVersion);
+      // Juju 4 requires the credential to be removed by the user and the credential is named after the provider.
+      if (jujuCLI.jujuEnv === JujuEnv.JUJU && majorMinor && majorMinor >= 4) {
+        await user.cliLogin(jujuCLI.browser);
+        credentialName = jujuCLI.provider;
+      }
       // Remove the user's credential
       await exec(
-        `juju remove-credential --force -c '${jujuCLI.controller}' '${jujuCLI.provider}' '${user.cliUsername}'`,
+        `juju remove-credential -c '${jujuCLI.controller}' '${jujuCLI.provider}' '${credentialName}'`,
       );
 
       if (jujuCLI.jujuEnv !== JujuEnv.JIMM) {
+        await jujuCLI.loginIdentityCLIAdmin();
         // Remove the user's access to the cloud
         await exec(
           `juju revoke-cloud -c '${jujuCLI.controller}' ${user.cliUsername} ${CloudAccessType.ADD_MODEL} ${jujuCLI.provider}`,
@@ -117,6 +127,7 @@ export class JujuCLI {
     public jujuEnv: JujuEnv,
     public controller: string,
     public provider: string,
+    public jujuVersion: string,
     public browser: Browser,
   ) {
     this.users = new Users(browser);

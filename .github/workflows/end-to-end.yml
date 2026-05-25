@@ -46,6 +46,11 @@ on:
 
 permissions: read-all
 
+# Ensure only one e2e job runs at a time.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   juju-machine-local:
     name: Test Juju, machine-charm and local-auth
@@ -92,7 +97,7 @@ jobs:
     uses: ./.github/workflows/e2e-juju-machine-charm-local-auth.yml
     secrets: inherit
     with:
-      juju-channel: "4.0/stable"
+      juju-channel: "4.0/candidate" # Use the candidate channel while Juju 4.0 is in development.
       send-notification: false
     if: |
       github.event_name != 'pull_request' || (
@@ -103,7 +108,7 @@ jobs:
     uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml
     secrets: inherit
     with:
-      juju-channel: "4.0/stable"
+      juju-channel: "4.0/candidate" # Use the candidate channel while Juju 4.0 is in development.
       send-notification: false
     if: |
       github.event_name != 'pull_request' || (
@@ -114,7 +119,7 @@ jobs:
     uses: ./.github/workflows/e2e-jimm-k8s-charm-oidc-auth.yml
     secrets: inherit
     with:
-      juju-channel: "4.0/stable"
+      juju-channel: "4.0/candidate" # Use the candidate channel while Juju 4.0 is in development.
       send-notification: false
     if: |
       github.event_name != 'pull_request' || (

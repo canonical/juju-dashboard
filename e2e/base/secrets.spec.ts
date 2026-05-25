@@ -72,12 +72,13 @@ test.describe("secrets", () => {
       .getByRole("button", { name: SecretFormPanelLabel.SUBMIT_ADD })
       .click();
 
-    // Verify the secret was added and copy the URI
-    await expect(
-      page.getByRole("dialog", {
+    // Wait for the panel close animation to finish so that it doesn't block clicking on the application tab.
+    await page
+      .getByRole("dialog", {
         name: SecretFormPanelLabel.TITLE_ADD,
-      }),
-    ).not.toBeInViewport();
+      })
+      .waitFor({ state: "detached" });
+    // Verify the secret was added and copy the URI
     await expect(page.locator("tr", { hasText: secret })).toBeInViewport();
     const secretID = await page
       .locator("tr", { hasText: secret })

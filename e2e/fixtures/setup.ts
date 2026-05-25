@@ -1,7 +1,7 @@
 import { test as base } from "@playwright/test";
 
 import { JujuCLI } from "../helpers/juju-cli";
-import { getEnv } from "../utils";
+import { exec, getEnv } from "../utils";
 
 export enum JujuEnv {
   JIMM = "jimm",
@@ -70,11 +70,13 @@ export const test = base.extend<Fixtures>({
     { option: true },
   ],
   jujuCLI: async ({ testOptions, browser }, use) => {
+    const versionOutput = await exec("juju --version");
     await use(
       new JujuCLI(
         testOptions.jujuEnv,
         testOptions.controllerName,
         testOptions.provider,
+        versionOutput.stdout.trim().split("-")?.[0],
         browser,
       ),
     );
