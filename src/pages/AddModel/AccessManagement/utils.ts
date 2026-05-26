@@ -116,15 +116,8 @@ export const getAccessLevelDisabledReason = (
   );
 
   if (userValue === activeUserName) {
-    // Temporarily disable for JIMM as access reduction for active user needs correction
-    // TODO: enable the option for JIMM once the JIMM issue has been fixed:
-    // https://warthogs.atlassian.net/browse/JUJU-9822.
-    // https://github.com/canonical/jimm/issues/1978
-    if (!isJuju) {
-      return Label.ACCESS_CANNOT_BE_CHANGED;
-    }
     // Always disable for controller superusers
-    else if (activeUserControllerAccess === "superuser") {
+    if (activeUserControllerAccess === "superuser") {
       return Label.SUPERUSER_ACCESS_CANNOT_BE_CHANGED;
     }
     // Disable if active user is admin and there are no other admins to prevent locking themselves out.

@@ -259,7 +259,7 @@ describe("AccessManagement", () => {
     expect(adminButtons[0]).not.toHaveAttribute("aria-disabled", "true");
   });
 
-  it("does not enable the active user dropdown when another user has admin access for JIMM", async () => {
+  it("enables the active user dropdown when another user has admin access for JIMM", async () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -283,7 +283,7 @@ describe("AccessManagement", () => {
     );
 
     const adminButtons = screen.getAllByRole("button", { name: "Admin" });
-    expect(adminButtons[0]).toHaveAttribute("aria-disabled", "true");
+    expect(adminButtons[0]).not.toHaveAttribute("aria-disabled", "true");
   });
 
   it("returns the active user's permission to 'admin' if all other admins are removed", async () => {
