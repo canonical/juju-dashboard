@@ -231,6 +231,86 @@ describe("AccessManagement", () => {
     expect(screen.getByText(FormatHint.JIMM)).toBeInTheDocument();
   });
 
+  it("shows incorrect email format only after an invalid add click for JIMM", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({ isJuju: false }),
+      }),
+    });
+    renderComponent(
+      <Formik initialValues={{ shareModelWith: {} }} onSubmit={vi.fn()}>
+        <AccessManagement />
+      </Formik>,
+      { state },
+    );
+
+    const input = screen.getByRole("combobox", {
+      name: Label.MULTI_SELECT_LABEL,
+    });
+    await userEvent.type(input, "not-an-email");
+    expect(screen.getByText(FormatHint.JIMM)).toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByRole("button", { name: /not-an-email/i }),
+    );
+    expect(screen.getByText(Label.INCORRECT_EMAIL_FORMAT)).toBeInTheDocument();
+  });
+
+  it("restores the JIMM format hint when the user keeps typing after an invalid add click", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({ isJuju: false }),
+      }),
+    });
+    renderComponent(
+      <Formik initialValues={{ shareModelWith: {} }} onSubmit={vi.fn()}>
+        <AccessManagement />
+      </Formik>,
+      { state },
+    );
+
+    const input = screen.getByRole("combobox", {
+      name: Label.MULTI_SELECT_LABEL,
+    });
+
+    await userEvent.type(input, "not-an-email");
+    await userEvent.click(
+      screen.getByRole("button", { name: /not-an-email/i }),
+    );
+    expect(screen.getByText(Label.INCORRECT_EMAIL_FORMAT)).toBeInTheDocument();
+
+    await userEvent.type(input, "x");
+    expect(screen.getByText(FormatHint.JIMM)).toBeInTheDocument();
+  });
+
+  it("restores the JIMM format hint when the search is cleared", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.build({
+        config: configFactory.build({ isJuju: false }),
+      }),
+    });
+    renderComponent(
+      <Formik initialValues={{ shareModelWith: {} }} onSubmit={vi.fn()}>
+        <AccessManagement />
+      </Formik>,
+      { state },
+    );
+
+    const input = screen.getByRole("combobox", {
+      name: Label.MULTI_SELECT_LABEL,
+    });
+
+    await userEvent.type(input, "not-an-email");
+    await userEvent.click(
+      screen.getByRole("button", { name: /not-an-email/i }),
+    );
+    expect(screen.getByText(Label.INCORRECT_EMAIL_FORMAT)).toBeInTheDocument();
+
+    await userEvent.clear(input);
+    await userEvent.click(input);
+    expect(screen.getByText(AddUserHint.JIMM)).toBeInTheDocument();
+  });
+
   it("enables active user dropdown when another user has admin access for Juju", async () => {
     const state = rootStateFactory.build({
       general: generalStateFactory.build({

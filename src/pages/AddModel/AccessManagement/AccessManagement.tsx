@@ -5,6 +5,7 @@ import {
   Tooltip,
   type MultiSelectItem,
 } from "@canonical/react-components";
+import classNames from "classnames";
 import { useFormikContext } from "formik";
 import type { JSX } from "react";
 import { useState } from "react";
@@ -33,6 +34,8 @@ import {
   getUserAccess,
 } from "./utils";
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const AccessManagement = (): JSX.Element => {
   const isJuju = useAppSelector(getIsJuju);
   const wsControllerURL = useAppSelector(getWSControllerURL);
@@ -44,6 +47,7 @@ const AccessManagement = (): JSX.Element => {
   );
   const { values, setFieldValue } = useFormikContext<AddModelFormState>();
   const [searchInput, setSearchInput] = useState("");
+  const [showInvalidEmailHint, setShowInvalidEmailHint] = useState(false);
 
   const activeUserName = userName ? getUserName(userName) : undefined;
   const shareModelWith = values.shareModelWith ?? {};
@@ -81,6 +85,13 @@ const AccessManagement = (): JSX.Element => {
       return;
     }
 
+    if (!isJuju && !EMAIL_PATTERN.test(trimmedSearchInput)) {
+      setShowInvalidEmailHint(true);
+      return;
+    }
+
+    setShowInvalidEmailHint(false);
+
     void setFieldValue(
       `shareModelWith["${trimmedSearchInput}"]`,
       AccessLevel.READ,
@@ -117,8 +128,20 @@ const AccessManagement = (): JSX.Element => {
                   >
                     <Icon name="plus" className="u-sh1--right" />
                     {trimmedSearchInput}
-                    <p className="u-text--muted p-text--small u-sh3 u-sv-1">
-                      {formatHint}
+                    <p
+                      className={classNames(
+                        "u-text--muted",
+                        "p-text--small",
+                        "u-sh3",
+                        "u-sv-1",
+                        {
+                          "is-negative": showInvalidEmailHint,
+                        },
+                      )}
+                    >
+                      {showInvalidEmailHint
+                        ? Label.INCORRECT_EMAIL_FORMAT
+                        : formatHint}
                     </p>
                   </Button>
                 ) : (
@@ -131,9 +154,13 @@ const AccessManagement = (): JSX.Element => {
             disabledItems={ACTIVE_USER ? [ACTIVE_USER] : []}
             items={selectedItems}
             selectedItems={selectedItems}
-            onSearchChange={setSearchInput}
+            onSearchChange={(value) => {
+              setSearchInput(value);
+              setShowInvalidEmailHint(false);
+            }}
             onClose={() => {
               setSearchInput("");
+              setShowInvalidEmailHint(false);
             }}
             onItemsUpdate={handleItemsUpdate}
           />

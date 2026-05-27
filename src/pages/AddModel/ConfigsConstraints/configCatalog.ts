@@ -19,6 +19,40 @@ const BOOLEAN_OPTIONS = [
 
 export const CONFIG_CATEGORIES: CategoryDefinition[] = [
   {
+    category: "Cloud-specific configurations",
+    fields: [
+      {
+        label: "base-image-path",
+        description: "Base path to look for machine disk images",
+      },
+      {
+        label: "vpc-id",
+        description: "Use a specific VPC network",
+        defaultValue: "false",
+        input: {
+          type: "select",
+          options: [
+            { label: "True", value: "true" },
+            { label: "False", value: "false" },
+          ],
+        },
+      },
+      {
+        label: "vpc-id-force",
+        description:
+          "Force Juju to use the GCE VPC ID specified with vpc-id, when it fails the minimum validation criteria",
+        defaultValue: "false",
+        input: {
+          type: "select",
+          options: [
+            { label: "True", value: "true" },
+            { label: "False", value: "false" },
+          ],
+        },
+      },
+    ],
+  },
+  {
     category: "Networking & Firewall",
     fields: [
       {
@@ -490,40 +524,6 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
-        },
-      },
-    ],
-  },
-  {
-    category: "Cloud-specific configurations",
-    fields: [
-      {
-        label: "base-image-path",
-        description: "Base path to look for machine disk images",
-      },
-      {
-        label: "vpc-id",
-        description: "Use a specific VPC network",
-        defaultValue: "false",
-        input: {
-          type: "select",
-          options: [
-            { label: "True", value: "true" },
-            { label: "False", value: "false" },
-          ],
-        },
-      },
-      {
-        label: "vpc-id-force",
-        description:
-          "Force Juju to use the GCE VPC ID specified with vpc-id, when it fails the minimum validation criteria",
-        defaultValue: "false",
-        input: {
-          type: "select",
-          options: [
-            { label: "True", value: "true" },
-            { label: "False", value: "false" },
-          ],
         },
       },
     ],

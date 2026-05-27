@@ -49,16 +49,21 @@ const stepDefinitions: Array<{
   key: StepType;
   title: string;
   content: JSX.Element;
+  validatedFields?: string[];
+  errorLabel?: string;
 }> = [
   {
     key: StepType.MANDATORY_DETAILS,
     title: "Mandatory Details",
     content: <MandatoryDetails />,
+    validatedFields: ["modelName"],
+    errorLabel: Label.INCORRECT_MODEL_NAME_ERROR,
   },
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
     title: "Configuration & Constraints (optional)",
     content: <ConfigsConstraints />,
+    errorLabel: Label.INCORRECT_CONFIG_ERROR,
   },
   {
     key: StepType.ACCESS_MANAGEMENT,
@@ -149,26 +154,6 @@ const AddModel: FC = () => {
         {...testId(TestId.COMPONENT)}
         stickyHeader
       >
-        <Stepper
-          variant="horizontal"
-          steps={stepDefinitions.map(({ key, title }, index) => {
-            const isPrevious = index < currentStepIndex;
-            const isCurrent = index === currentStepIndex;
-            return (
-              <Step
-                key={key}
-                title={title}
-                index={index + 1}
-                enabled
-                hasProgressLine={isPrevious || isCurrent}
-                iconName={isPrevious ? "success" : "number"}
-                handleClick={() => {
-                  setCurrentStepIndex(index);
-                }}
-              />
-            );
-          })}
-        />
         <div className="add-model__step" {...testId(TestId.ADD_MODEL_CONTENT)}>
           <Formik<AddModelFormState>
             initialValues={{
@@ -184,15 +169,54 @@ const AddModel: FC = () => {
             validationSchema={validationSchema}
             onSubmit={handleCreateClick}
           >
-            <FormikFormData
-              onValidate={setIsValid}
-              id={currentStep.key}
-              {...testId(TestId.ADD_MODEL_FORM)}
-              className={currentStep.key}
-              stacked={currentStep.key === StepType.CONFIGURATION_CONSTRAINTS}
-            >
-              {currentStep.content}
-            </FormikFormData>
+            {({ errors }) => (
+              <>
+                <Stepper
+                  variant="horizontal"
+                  steps={stepDefinitions.map(
+                    ({ key, title, validatedFields, errorLabel }, index) => {
+                      const isPrevious = index < currentStepIndex;
+                      const isCurrent = index === currentStepIndex;
+                      const hasValidatedFieldError =
+                        validatedFields?.some((field) => !!errors[field]) ??
+                        false;
+                      const previousIcon = hasValidatedFieldError
+                        ? "error"
+                        : "success";
+                      return (
+                        <Step
+                          key={key}
+                          title={title}
+                          label={
+                            hasValidatedFieldError && isPrevious
+                              ? errorLabel
+                              : undefined
+                          }
+                          index={index + 1}
+                          enabled
+                          hasProgressLine={isPrevious || isCurrent}
+                          iconName={isPrevious ? previousIcon : "number"}
+                          handleClick={() => {
+                            setCurrentStepIndex(index);
+                          }}
+                        />
+                      );
+                    },
+                  )}
+                />
+                <FormikFormData
+                  onValidate={setIsValid}
+                  id={currentStep.key}
+                  {...testId(TestId.ADD_MODEL_FORM)}
+                  className={currentStep.key}
+                  stacked={
+                    currentStep.key === StepType.CONFIGURATION_CONSTRAINTS
+                  }
+                >
+                  {currentStep.content}
+                </FormikFormData>
+              </>
+            )}
           </Formik>
         </div>
         <div className="add-model__footer">

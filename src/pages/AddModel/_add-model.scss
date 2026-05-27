@@ -14,6 +14,16 @@
 
   &__step {
     flex: 1 0 auto;
+
+    .stepper-horizontal {
+      margin-bottom: $spv--large;
+
+      .step-optional-content {
+        color: $color-negative;
+        font-size: #{map-get($font-sizes, small)}rem;
+        max-width: fit-content;
+      }
+    }
   }
 
   &__footer {

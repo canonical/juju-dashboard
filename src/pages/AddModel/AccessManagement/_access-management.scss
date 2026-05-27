@@ -1,6 +1,10 @@
 .access-management {
   &__dropdown-footer {
     border: none;
+
+    .is-negative {
+      color: $color-negative;
+    }
   }
 
   &__access-col {
