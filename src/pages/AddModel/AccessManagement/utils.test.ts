@@ -262,7 +262,7 @@ describe("AccessManagement utils", () => {
       expect(result).toBeUndefined();
     });
 
-    it("returns true for active user on JIMM, even when another admin exists", () => {
+    it("returns false for active user on JIMM when another admin exists", () => {
       const result = getAccessLevelDisabledReason(
         "user@example.com",
         {
@@ -273,7 +273,7 @@ describe("AccessManagement utils", () => {
         false,
         "user@example.com",
       );
-      expect(result).toBeDefined();
+      expect(result).toBeUndefined();
     });
 
     it("returns false when user is not active", () => {
