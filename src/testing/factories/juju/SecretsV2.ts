@@ -18,6 +18,7 @@ export const secretAccessInfoFactory = Factory.define<AccessInfo>(() => ({
 export const listSecretResultFactory = Factory.define<ListSecretResult>(() => ({
   "create-time": "2024-01-05T05:10:17Z",
   "latest-revision": 1,
+  "latest-revision-checksum": "aabbccdd",
   "owner-tag": "model-ab02a18f-1ea9-49cb-898d-cad17d330b21",
   "update-time": "2024-01-05T05:10:17Z",
   revisions: [],
