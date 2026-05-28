@@ -49,21 +49,16 @@ const stepDefinitions: Array<{
   key: StepType;
   title: string;
   content: JSX.Element;
-  validatedFields?: string[];
-  errorLabel?: string;
 }> = [
   {
     key: StepType.MANDATORY_DETAILS,
     title: "Mandatory Details",
     content: <MandatoryDetails />,
-    validatedFields: ["modelName"],
-    errorLabel: Label.INCORRECT_MODEL_NAME_ERROR,
   },
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
     title: "Configuration & Constraints (optional)",
     content: <ConfigsConstraints />,
-    errorLabel: Label.INCORRECT_CONFIG_ERROR,
   },
   {
     key: StepType.ACCESS_MANAGEMENT,
@@ -173,36 +168,33 @@ const AddModel: FC = () => {
               <>
                 <Stepper
                   variant="horizontal"
-                  steps={stepDefinitions.map(
-                    ({ key, title, validatedFields, errorLabel }, index) => {
-                      const isPrevious = index < currentStepIndex;
-                      const isCurrent = index === currentStepIndex;
-                      const hasValidatedFieldError =
-                        validatedFields?.some((field) => !!errors[field]) ??
-                        false;
-                      const previousIcon = hasValidatedFieldError
-                        ? "error"
-                        : "success";
-                      return (
-                        <Step
-                          key={key}
-                          title={title}
-                          label={
-                            hasValidatedFieldError && isPrevious
-                              ? errorLabel
-                              : undefined
-                          }
-                          index={index + 1}
-                          enabled
-                          hasProgressLine={isPrevious || isCurrent}
-                          iconName={isPrevious ? previousIcon : "number"}
-                          handleClick={() => {
-                            setCurrentStepIndex(index);
-                          }}
-                        />
-                      );
-                    },
-                  )}
+                  steps={stepDefinitions.map(({ key, title }, index) => {
+                    const isPrevious = index < currentStepIndex;
+                    const isCurrent = index === currentStepIndex;
+                    const hasModelNameError =
+                      (index === 0 && errors.modelName) ?? false;
+                    const previousIcon = hasModelNameError
+                      ? "error"
+                      : "success";
+                    return (
+                      <Step
+                        key={key}
+                        title={title}
+                        label={
+                          hasModelNameError && isPrevious
+                            ? Label.INCORRECT_MODEL_NAME_ERROR
+                            : undefined
+                        }
+                        index={index + 1}
+                        enabled
+                        hasProgressLine={isPrevious || isCurrent}
+                        iconName={isPrevious ? previousIcon : "number"}
+                        handleClick={() => {
+                          setCurrentStepIndex(index);
+                        }}
+                      />
+                    );
+                  })}
                 />
                 <FormikFormData
                   onValidate={setIsValid}

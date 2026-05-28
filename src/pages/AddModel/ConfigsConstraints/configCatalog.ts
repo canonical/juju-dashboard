@@ -9,6 +9,7 @@ export type CategoryDefinition = {
     description: string;
     defaultValue?: string;
     input?: { type: "select" } & SelectProps;
+    isNumeric?: boolean;
   }[];
 };
 
@@ -118,6 +119,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "The amount of time in seconds to sleep between ifdown and ifup when bridging",
         defaultValue: "17",
+        isNumeric: true,
       },
       {
         label: "saas-ingress-allow",
@@ -336,11 +338,13 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "The number of container provisioning workers to use per machine",
         defaultValue: "4",
+        isNumeric: true,
       },
       {
         label: "num-provision-workers",
         description: "The number of provisioning workers to use per model",
         defaultValue: "16",
+        isNumeric: true,
       },
       {
         label: "project",

@@ -183,6 +183,25 @@ describe("AddModel page", () => {
     ).not.toHaveAttribute("aria-disabled");
   });
 
+  it("renders an error icon on the stepper after leaving it with invalid input", async () => {
+    renderComponent(<AddModel />, { state });
+    await userEvent.type(
+      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
+      "-model",
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
+
+    const mandatoryDetailsStep = screen
+      .getByText("Mandatory Details")
+      .closest(".step");
+    expect(mandatoryDetailsStep).not.toBeNull();
+    expect(
+      (mandatoryDetailsStep as HTMLElement).querySelector(".p-icon--error"),
+    ).toBeInTheDocument();
+  });
+
   it("navigates to steps when clicking step titles", async () => {
     renderComponent(<AddModel />, { state });
     await userEvent.click(
