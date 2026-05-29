@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type { AccessLevel } from "types";
 
 import type { FormFields } from "./ConfigsConstraints/types";
@@ -22,6 +24,12 @@ export type AddModelFormState = {
   shareModelWith?: Record<string, AccessLevel>;
 } & FormFields &
   Record<string, string>;
+
+export type StepDefinition = {
+  key: StepType;
+  title: string;
+  content: JSX.Element;
+};
 
 export enum Label {
   TITLE = "Add model",

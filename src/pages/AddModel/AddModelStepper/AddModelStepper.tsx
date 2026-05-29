@@ -2,14 +2,10 @@ import { Stepper, Step } from "@canonical/react-components";
 import { useFormikContext } from "formik";
 import type { JSX } from "react";
 
-import { type AddModelFormState, Label, type StepType } from "../types";
+import { type AddModelFormState, Label, type StepDefinition } from "../types";
 
 type Props = {
-  stepDefinitions: Array<{
-    key: StepType;
-    title: string;
-    content: JSX.Element;
-  }>;
+  stepDefinitions: StepDefinition[];
   currentStepIndex: number;
   handleStepClick: (index: number) => void;
 };

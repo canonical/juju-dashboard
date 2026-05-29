@@ -4,34 +4,42 @@ import { Formik } from "formik";
 
 import { InputMode } from "../ConfigsConstraints/ContentSwitcher/types";
 import { DisableType, FieldName } from "../ConfigsConstraints/types";
-import { type AddModelFormState, StepType } from "../types";
+import {
+  type AddModelFormState,
+  type StepDefinition,
+  StepType,
+} from "../types";
 
 import AddModelStepper from "./AddModelStepper";
 
-const stepDefinitions = [
-  {
-    key: StepType.MANDATORY_DETAILS,
-    title: "Mandatory Details",
-    content: <div />,
-  },
-  {
-    key: StepType.CONFIGURATION_CONSTRAINTS,
-    title: "Configuration & Constraints (optional)",
-    content: <div />,
-  },
-];
-
-const initialValues: AddModelFormState = {
-  modelName: "",
-  cloud: "",
-  region: "",
-  credential: "",
-  [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-  [FieldName.CONFIG_YAML]: "",
-  [FieldName.DISABLED_COMMANDS]: DisableType.NONE,
-};
-
 describe("AddModelStepper", () => {
+  let stepDefinitions: StepDefinition[];
+  let initialValues: AddModelFormState;
+  beforeEach(() => {
+    stepDefinitions = [
+      {
+        key: StepType.MANDATORY_DETAILS,
+        title: "Mandatory Details",
+        content: <div />,
+      },
+      {
+        key: StepType.CONFIGURATION_CONSTRAINTS,
+        title: "Configuration & Constraints (optional)",
+        content: <div />,
+      },
+    ];
+
+    initialValues = {
+      modelName: "",
+      cloud: "",
+      region: "",
+      credential: "",
+      [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+      [FieldName.CONFIG_YAML]: "",
+      [FieldName.DISABLED_COMMANDS]: DisableType.NONE,
+    };
+  });
+
   it("renders properly", () => {
     render(
       <Formik<AddModelFormState>

@@ -1,7 +1,7 @@
 import { ActionButton, Button } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import { Formik } from "formik";
-import type { FC, JSX } from "react";
+import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import * as Yup from "yup";
@@ -31,7 +31,13 @@ import {
   getConfigInitialValues,
 } from "./ConfigsConstraints/utils";
 import MandatoryDetails from "./MandatoryDetails";
-import { TestId, StepType, Label, type AddModelFormState } from "./types";
+import {
+  TestId,
+  StepType,
+  Label,
+  type AddModelFormState,
+  type StepDefinition,
+} from "./types";
 
 const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
 
@@ -41,11 +47,7 @@ const validationSchema = Yup.object().shape({
     .required("Required"),
 });
 
-const stepDefinitions: Array<{
-  key: StepType;
-  title: string;
-  content: JSX.Element;
-}> = [
+const stepDefinitions: StepDefinition[] = [
   {
     key: StepType.MANDATORY_DETAILS,
     title: "Mandatory Details",
