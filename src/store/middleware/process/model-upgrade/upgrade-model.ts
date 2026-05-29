@@ -6,6 +6,7 @@ import modelList from "store/middleware/source/model-list";
 import { logger } from "utils/logger";
 
 import { createProcess } from "../createProcess";
+import type { ProcessActions } from "../types";
 
 import createModelConnectionRetrySource from "./model-connection-retry-source";
 
@@ -14,7 +15,7 @@ export enum Label {
   ERROR_INIT_FAILED = "Upgrade failed to start",
 }
 
-enum UpgradeStatus {
+export enum UpgradeStatus {
   INITIATED = "initiated",
   LOADING = "loading",
   PENDING = "pending",
@@ -83,6 +84,66 @@ export async function* upgradeModel(
   versionSource.done();
 }
 
+export const processActions: ProcessActions<Params, UpgradeState, void> = {
+  setOutcome: ({ modelUUID, modelName, targetVersion }, outcome) => {
+    if ("error" in outcome) {
+      logger.error(
+        "An error occurred during model upgrade",
+        modelUUID,
+        outcome.error,
+      );
+      return createToast({
+        message: `Failed to upgrade. Model "${modelName}" has not been migrated or upgraded. Try again or contact support.`,
+        severity: "negative",
+      });
+    } else {
+      return createToast({
+        message: `Model "${modelName}" upgraded to ${targetVersion}`,
+        severity: "positive",
+      });
+    }
+  },
+  setStatus: ({ modelUUID, modelName }, status) => {
+    let message: null | string = null;
+    switch (status.status) {
+      case UpgradeStatus.PENDING:
+        logger.debug(`${modelName} (${modelUUID}) upgrade pending`);
+        message = `Upgrading model "${modelName}"…`;
+        break;
+      case UpgradeStatus.INITIATED:
+        logger.debug(`${modelName} (${modelUUID}) upgrade initiated`);
+        break;
+      case UpgradeStatus.LOADING:
+        logger.debug(`${modelName} (${modelUUID}) upgrade loading`);
+        break;
+      case UpgradeStatus.RECONNECTING:
+        logger.debug(`Attempting to reconnect to ${modelName} (${modelUUID})`);
+        break;
+      default:
+        logger.warn("An unknown status was emitted", modelUUID, status);
+        break;
+    }
+
+    if (!message) {
+      // Don't display a toast if there is no message.
+      return;
+    }
+
+    return createToast({ message, severity: "information" });
+  },
+  setRunning: ({ modelUUID, targetVersion, currentVersion }, running) => {
+    if (running) {
+      return jujuActions.addModelUpgrade({
+        modelUUID,
+        currentVersion,
+        upgradeVersion: targetVersion,
+      });
+    } else {
+      return jujuActions.removeModelUpgrade({ modelUUID });
+    }
+  },
+};
+
 export default createProcess<Params, UpgradeState, void>(
   "model-upgrade/upgrade-model",
   async function* ({
@@ -104,67 +165,7 @@ export default createProcess<Params, UpgradeState, void>(
       modelConnection,
     );
   },
-  {
-    setOutcome: ({ modelUUID, modelName, targetVersion }, outcome) => {
-      if ("error" in outcome) {
-        logger.error(
-          "An error occurred during model upgrade",
-          modelUUID,
-          outcome.error,
-        );
-        return createToast({
-          message: `Failed to upgrade. Model "${modelName}" has not been migrated or upgraded. Try again or contact support.`,
-          severity: "negative",
-        });
-      } else {
-        return createToast({
-          message: `Model "${modelName}" upgraded to ${targetVersion}`,
-          severity: "positive",
-        });
-      }
-    },
-    setStatus: ({ modelUUID, modelName }, status) => {
-      let message: null | string = null;
-      switch (status.status) {
-        case UpgradeStatus.PENDING:
-          logger.debug(`${modelName} (${modelUUID}) upgrade pending`);
-          message = `Upgrading model "${modelName}"…`;
-          break;
-        case UpgradeStatus.INITIATED:
-          logger.debug(`${modelName} (${modelUUID}) upgrade initiated`);
-          break;
-        case UpgradeStatus.LOADING:
-          logger.debug(`${modelName} (${modelUUID}) upgrade loading`);
-          break;
-        case UpgradeStatus.RECONNECTING:
-          logger.debug(
-            `Attempting to reconnect to ${modelName} (${modelUUID})`,
-          );
-          break;
-        default:
-          logger.warn("An unknown status was emitted", modelUUID, status);
-          break;
-      }
-
-      if (!message) {
-        // Don't display a toast if there is no message.
-        return;
-      }
-
-      return createToast({ message, severity: "information" });
-    },
-    setRunning: ({ modelUUID, targetVersion, currentVersion }, running) => {
-      if (running) {
-        return jujuActions.addModelUpgrade({
-          modelUUID,
-          currentVersion,
-          upgradeVersion: targetVersion,
-        });
-      } else {
-        return jujuActions.removeModelUpgrade({ modelUUID });
-      }
-    },
-  },
+  processActions,
   {
     addActionMeta: () => ({
       withConnection: true,

@@ -1,14 +1,18 @@
 import type { Mock, MockInstance } from "vitest";
 
 import type { Source } from "data";
+import { createToast } from "store/app/actions";
+import { actions as jujuActions } from "store/juju";
 import type { ManagedConnection } from "store/middleware/connection/connection-manager";
 
 import * as modelConnectionRetrySourceModule from "./model-connection-retry-source";
 import type { ConnectionRetryResult } from "./model-connection-retry-source";
 import {
   Label,
+  processActions,
   upgradeModel,
   default as upgradeModelProcess,
+  UpgradeStatus,
 } from "./upgrade-model";
 
 describe("upgradeModel", () => {
@@ -261,6 +265,118 @@ describe("action", () => {
           withConnection: true,
           connectionList: ["wsControllerURL", "modelURL"],
         },
+      }),
+    );
+  });
+});
+
+describe("process actions", () => {
+  it("creates a toast if the outcome is an error", ({ expect }) => {
+    const payload = {
+      wsControllerURL: "wss://example.com/api",
+      modelName: "some-model",
+      modelUUID: "abc123",
+      modelURL: "wss://example.com/model/abc123/api",
+      currentVersion: "0.0.0",
+      targetVersion: "1.2.3",
+    };
+    expect(
+      processActions.setOutcome(payload, {
+        error: { message: "Uh oh", source: "none" },
+      }),
+    ).toEqual(
+      createToast({
+        message:
+          'Failed to upgrade. Model "some-model" has not been migrated or upgraded. Try again or contact support.',
+        severity: "negative",
+      }),
+    );
+  });
+
+  it("creates a toast if the outcome is successful", ({ expect }) => {
+    const payload = {
+      wsControllerURL: "wss://example.com/api",
+      modelName: "some-model",
+      modelUUID: "abc123",
+      modelURL: "wss://example.com/model/abc123/api",
+      currentVersion: "0.0.0",
+      targetVersion: "1.2.3",
+    };
+    expect(
+      processActions.setOutcome(payload, {
+        result: undefined,
+      }),
+    ).toEqual(
+      createToast({
+        message: 'Model "some-model" upgraded to 1.2.3',
+        severity: "positive",
+      }),
+    );
+  });
+
+  it("creates a toast when pending", ({ expect }) => {
+    const payload = {
+      wsControllerURL: "wss://example.com/api",
+      modelName: "some-model",
+      modelUUID: "abc123",
+      modelURL: "wss://example.com/model/abc123/api",
+      currentVersion: "0.0.0",
+      targetVersion: "1.2.3",
+    };
+    expect(
+      processActions.setStatus(payload, { status: UpgradeStatus.PENDING }),
+    ).toEqual(
+      createToast({
+        message: 'Upgrading model "some-model"…',
+        severity: "information",
+      }),
+    );
+  });
+
+  it("does not create a toast for other statuses", ({ expect }) => {
+    const payload = {
+      wsControllerURL: "wss://example.com/api",
+      modelName: "some-model",
+      modelUUID: "abc123",
+      modelURL: "wss://example.com/model/abc123/api",
+      currentVersion: "0.0.0",
+      targetVersion: "1.2.3",
+    };
+    expect(
+      processActions.setStatus(payload, { status: UpgradeStatus.LOADING }),
+    ).toBeUndefined();
+  });
+
+  it("adds the upgrade when it starts running", ({ expect }) => {
+    const payload = {
+      wsControllerURL: "wss://example.com/api",
+      modelName: "some-model",
+      modelUUID: "abc123",
+      modelURL: "wss://example.com/model/abc123/api",
+      currentVersion: "0.0.0",
+      targetVersion: "1.2.3",
+    };
+    expect(processActions.setRunning(payload, true)).toEqual(
+      jujuActions.addModelUpgrade({
+        modelUUID: "abc123",
+        currentVersion: "0.0.0",
+        upgradeVersion: "1.2.3",
+      }),
+    );
+  });
+
+  it("removes the upgrade when it stops running", ({ expect }) => {
+    const payload = {
+      wsControllerURL: "wss://example.com/api",
+      modelName: "some-model",
+      modelUUID: "abc123",
+      modelURL: "wss://example.com/model/abc123/api",
+      currentVersion: "0.0.0",
+      targetVersion: "1.2.3",
+    };
+    expect(processActions.setRunning(payload, false)).toEqual(
+      jujuActions.removeModelUpgrade({
+        modelUUID: "abc123",
       }),
     );
   });
