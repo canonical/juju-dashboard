@@ -239,15 +239,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@canonical/jujulib@npm:8.1.0":
-  version: 8.1.0
-  resolution: "@canonical/jujulib@npm:8.1.0"
+"@canonical/jujulib@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@canonical/jujulib@npm:9.0.0"
   dependencies:
     "@canonical/macaroon-bakery": "npm:1.3.2"
     btoa: "npm:1.2.1"
     websocket: "npm:1.0.34"
     xhr2: "npm:0.2.1"
-  checksum: 10c0/456856fd7a8eb75c5989544ea486f998e98329f4d283b42ce550440d436d0b39399fc3944a9b7d88f6e30a770deae1390cee973d643d2b2c00cd63fffe872a56
+  checksum: 10c0/f8f93231924d136c69d018ac6b200bc9a785b22628be042c568583120a8570c187ce9893d84b49ba750dd9498078dfbab551b0ff9620d31effd008a1e140dfba
   languageName: node
   linkType: hard
 
@@ -9258,7 +9258,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "juju-dashboard@workspace:."
   dependencies:
-    "@canonical/jujulib": "npm:8.1.0"
+    "@canonical/jujulib": "npm:9.0.0"
     "@canonical/macaroon-bakery": "npm:1.3.2"
     "@canonical/react-components": "npm:4.5.2"
     "@canonical/rebac-admin": "npm:0.0.1-alpha.12"
