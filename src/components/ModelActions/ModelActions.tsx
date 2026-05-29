@@ -56,28 +56,29 @@ const generateLinks = (
   nextVersion: string | undefined,
   handleClose: NonNullable<ContextualMenuDropdownProps["handleClose"]>,
 ): React.JSX.Element => {
-  const upgradeButton: ReactNode = isJuju ? null : (
-    <Button
-      className="p-contextual-menu__link"
-      disabled={!isJIMMControllerAdmin || !hasUpgrades}
-      role="menuitem"
-      onClick={(event) => {
-        event.stopPropagation();
-        handleClose(event);
-        setPanelQs(
-          {
-            modelName,
-            panel: "upgrade-model",
-            qualifier,
-          },
-          { replace: true },
-        );
-      }}
-    >
-      {Label.UPGRADE}
-      {upgradeDataLoaded ? null : <Spinner className="u-sh1" />}
-    </Button>
-  );
+  const upgradeButton: ReactNode =
+    isJuju || !isJIMMControllerAdmin ? null : (
+      <Button
+        className="p-contextual-menu__link"
+        disabled={!isJIMMControllerAdmin || !hasUpgrades}
+        role="menuitem"
+        onClick={(event) => {
+          event.stopPropagation();
+          handleClose(event);
+          setPanelQs(
+            {
+              modelName,
+              panel: "upgrade-model",
+              qualifier,
+            },
+            { replace: true },
+          );
+        }}
+      >
+        {Label.UPGRADE}
+        {upgradeDataLoaded ? null : <Spinner className="u-sh1" />}
+      </Button>
+    );
   let upgradeTooltip: null | string = null;
   if (upgradeDataLoaded && !hasUpgrades) {
     if (isLatest) {

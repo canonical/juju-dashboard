@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 
+import { useIsJIMMAdmin } from "juju/api-hooks/permissions";
 import { getIsJIMM, getWSControllerURL } from "store/general/selectors";
 import { getModelUUIDFromList } from "store/juju/selectors";
 import jimmSupportedVersions from "store/middleware/source/jimm-supported-versions";
@@ -20,9 +21,10 @@ const useModelMigrationData = (
     getModelUUIDFromList(state, modelName, qualifier),
   );
   const isJIMM = useAppSelector(getIsJIMM);
+  const { permitted: isJIMMControllerAdmin } = useIsJIMMAdmin();
 
   useEffect(() => {
-    if (wsControllerURL && fetchData && isJIMM) {
+    if (wsControllerURL && fetchData && isJIMM && isJIMMControllerAdmin) {
       dispatch(jimmSupportedVersions.actions.start({ wsControllerURL }));
       if (modelUUID) {
         dispatch(
@@ -31,7 +33,7 @@ const useModelMigrationData = (
       }
     }
     return (): void => {
-      if (wsControllerURL && isJIMM) {
+      if (wsControllerURL && isJIMM && isJIMMControllerAdmin) {
         dispatch(jimmSupportedVersions.actions.stop({ wsControllerURL }));
         if (modelUUID) {
           dispatch(
@@ -40,7 +42,14 @@ const useModelMigrationData = (
         }
       }
     };
-  }, [dispatch, fetchData, isJIMM, modelUUID, wsControllerURL]);
+  }, [
+    dispatch,
+    fetchData,
+    isJIMM,
+    isJIMMControllerAdmin,
+    modelUUID,
+    wsControllerURL,
+  ]);
 };
 
 export default useModelMigrationData;

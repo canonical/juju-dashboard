@@ -39,6 +39,7 @@ contribute and what kinds of contributions are welcome.
       - [Vanilla React Components](#vanilla-react-components)
   - [Deployed JIMM controller](#deployed-jimm-controller)
     - [Adding users](#adding-users)
+      - [Add model permissions](#add-model-permissions)
     - [Self signed certificates](#self-signed-certificates)
     - [Juju on M1 Macs](#juju-on-m1-macs)
   - [Building the Docker image](#building-the-docker-image)
@@ -369,9 +370,31 @@ form.
 
 On the user details page click on the 'Credentials' tab and set a password.
 
-You can now give the user access in all the normal ways such as `juju
-grant-cloud [user@email] add-model localhost` and you can log in as the user with `juju
-login` and enter the details you set above.
+#### Add model permissions
+
+To be able to add models, first as the admin user give them permission to add models on the cloud and controller, substituting the user's email address and controller name (for the microk8s setup it would be controller-qa-microk8s).
+
+```shell
+~/jimm/jaas add-permission user-test@example.com can_addmodel cloud-localhost
+~/jimm/jaas add-permission user-test@example.com can_addmodel controller-qa-lxd
+```
+
+Next you will need to log out of the admin account and log in as the user you just created.
+
+NOTE: when logging in as the new user you may need to use another browser or private window if you've previously logged in as jimm-test otherwise you'll get logged in as the admin.
+
+```shell
+juju unregister jimm-dev
+juju login jimm.localhost -c jimm-dev
+```
+
+Confirm that you've logged in as the new user with `juju whoami`.
+
+Finally, update your credentials. This will use the credentials that have been stored in your local credentials.yaml
+
+```shell
+juju update-credentials localhost --controller jimm-dev
+```
 
 ### Self signed certificates
 

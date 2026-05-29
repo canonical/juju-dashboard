@@ -1,7 +1,16 @@
+import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
 import jimmSupportedVersions from "store/middleware/source/jimm-supported-versions";
 import migrationTargets from "store/middleware/source/migration-targets";
 import type { RootState } from "store/store";
-import { generalStateFactory, configFactory } from "testing/factories/general";
+import {
+  generalStateFactory,
+  configFactory,
+  authUserInfoFactory,
+} from "testing/factories/general";
+import {
+  rebacAllowedFactory,
+  relationshipTupleFactory,
+} from "testing/factories/juju/jimm";
 import {
   jujuStateFactory,
   modelListInfoFactory,
@@ -20,6 +29,13 @@ describe("useModelMigrationData", () => {
         config: configFactory.build({
           controllerAPIEndpoint: "wss://example.com/api",
         }),
+        controllerConnections: {
+          "wss://example.com/api": {
+            user: authUserInfoFactory.build({
+              identity: "user-eggman@external",
+            }),
+          },
+        },
       }),
       juju: jujuStateFactory.build({
         models: {
@@ -27,6 +43,18 @@ describe("useModelMigrationData", () => {
             uuid: "abc123",
             name: "test1",
           }),
+        },
+        rebac: {
+          allowed: [
+            rebacAllowedFactory.build({
+              tuple: relationshipTupleFactory.build({
+                object: "user-eggman@external",
+                relation: JIMMRelation.ADMINISTRATOR,
+                target_object: JIMMTarget.JIMM_CONTROLLER,
+              }),
+              allowed: true,
+            }),
+          ],
         },
       }),
     });
@@ -38,6 +66,31 @@ describe("useModelMigrationData", () => {
     } else {
       assert.fail("Config not defined");
     }
+    const [store, actions] = createStore(state, {
+      trackActions: true,
+    });
+    renderWrappedHook(
+      () => {
+        useModelMigrationData("test1", "eggman@external");
+      },
+      {
+        store,
+      },
+    );
+    expect(
+      actions.find((dispatch) =>
+        jimmSupportedVersions.actions.start.match(dispatch),
+      ),
+    ).toBeUndefined();
+    expect(
+      actions.find((dispatch) =>
+        migrationTargets.actions.start.match(dispatch),
+      ),
+    ).toBeUndefined();
+  });
+
+  it("does not poll for data if the user is not a JIMM admin", () => {
+    state.juju.rebac.allowed = [];
     const [store, actions] = createStore(state, {
       trackActions: true,
     });
