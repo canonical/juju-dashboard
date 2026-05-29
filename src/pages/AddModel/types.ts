@@ -30,4 +30,5 @@ export enum Label {
   BACK_BUTTON = "Back",
   CREATE_BUTTON = "Add model",
   INCORRECT_MODEL_NAME_ERROR = "Incorrect model name format.",
+  REQUIRED_MODEL_NAME_ERROR = "Model name is required.",
 }

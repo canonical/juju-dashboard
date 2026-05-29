@@ -193,7 +193,6 @@ export default function Models(): JSX.Element {
           <span>
             <span className="p-text--default">Group by: </span>
             <SegmentedControl
-              className="u-display--inline-block"
               activeButton={queryParams.groupedby}
               buttons={["Status", "Cloud", "Owner"].map((group) => ({
                 children: group,

@@ -1,9 +1,4 @@
-import {
-  ActionButton,
-  Button,
-  Step,
-  Stepper,
-} from "@canonical/react-components";
+import { ActionButton, Button } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import { Formik } from "formik";
 import type { FC, JSX } from "react";
@@ -25,6 +20,7 @@ import { toErrorString } from "utils";
 import { toastNotification } from "utils/toastNotification";
 
 import AccessManagement from "./AccessManagement";
+import AddModelStepper from "./AddModelStepper";
 import ConfigsConstraints from "./ConfigsConstraints";
 import { InputMode } from "./ConfigsConstraints/ContentSwitcher/types";
 import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
@@ -164,51 +160,22 @@ const AddModel: FC = () => {
             validationSchema={validationSchema}
             onSubmit={handleCreateClick}
           >
-            {({ errors }) => (
-              <>
-                <Stepper
-                  variant="horizontal"
-                  steps={stepDefinitions.map(({ key, title }, index) => {
-                    const isPrevious = index < currentStepIndex;
-                    const isCurrent = index === currentStepIndex;
-                    const hasModelNameError =
-                      (index === 0 && errors.modelName) ?? false;
-                    const previousIcon = hasModelNameError
-                      ? "error"
-                      : "success";
-                    return (
-                      <Step
-                        key={key}
-                        title={title}
-                        label={
-                          hasModelNameError && isPrevious
-                            ? Label.INCORRECT_MODEL_NAME_ERROR
-                            : undefined
-                        }
-                        index={index + 1}
-                        enabled
-                        hasProgressLine={isPrevious || isCurrent}
-                        iconName={isPrevious ? previousIcon : "number"}
-                        handleClick={() => {
-                          setCurrentStepIndex(index);
-                        }}
-                      />
-                    );
-                  })}
-                />
-                <FormikFormData
-                  onValidate={setIsValid}
-                  id={currentStep.key}
-                  {...testId(TestId.ADD_MODEL_FORM)}
-                  className={currentStep.key}
-                  stacked={
-                    currentStep.key === StepType.CONFIGURATION_CONSTRAINTS
-                  }
-                >
-                  {currentStep.content}
-                </FormikFormData>
-              </>
-            )}
+            <>
+              <AddModelStepper
+                stepDefinitions={stepDefinitions}
+                currentStepIndex={currentStepIndex}
+                handleStepClick={setCurrentStepIndex}
+              />
+              <FormikFormData
+                onValidate={setIsValid}
+                id={currentStep.key}
+                {...testId(TestId.ADD_MODEL_FORM)}
+                className={currentStep.key}
+                stacked={currentStep.key === StepType.CONFIGURATION_CONSTRAINTS}
+              >
+                {currentStep.content}
+              </FormikFormData>
+            </>
           </Formik>
         </div>
         <div className="add-model__footer">

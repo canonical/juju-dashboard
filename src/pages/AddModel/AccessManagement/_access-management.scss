@@ -2,6 +2,10 @@
   &__dropdown-footer {
     border: none;
 
+    .add-user-button {
+      display: grid;
+    }
+
     .is-negative {
       color: $color-negative;
     }

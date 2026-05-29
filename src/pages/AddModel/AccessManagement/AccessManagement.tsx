@@ -110,6 +110,7 @@ const AccessManagement = (): JSX.Element => {
             variant="search"
             searchButtonType="button"
             inputClassName="u-no-margin--bottom u-sv1--top"
+            dropdownClassName="u-overflow--scroll"
             footerClassName="access-management__dropdown-footer u-no-padding--left u-no-padding--right"
             placeholder={Label.MULTI_SELECT_PLACEHOLDER}
             label={Label.MULTI_SELECT_LABEL}
@@ -123,11 +124,13 @@ const AccessManagement = (): JSX.Element => {
                   <Button
                     appearance="base"
                     type="button"
-                    className="u-align--left u-full-width u-no-margin--bottom u-sv-1--top"
+                    className="u-align--left u-full-width u-no-margin--bottom u-sv-1--top add-user-button"
                     onClick={handleAddUser}
                   >
-                    <Icon name="plus" className="u-sh1--right" />
-                    {trimmedSearchInput}
+                    <span className="u-truncate">
+                      <Icon name="plus" className="u-sh1--right" />
+                      {trimmedSearchInput}
+                    </span>
                     <p
                       className={classNames(
                         "u-text--muted",
