@@ -6,6 +6,7 @@ import { InputMode } from "../ConfigsConstraints/ContentSwitcher/types";
 import { DisableType, FieldName } from "../ConfigsConstraints/types";
 import {
   type AddModelFormState,
+  Label,
   type StepDefinition,
   StepType,
 } from "../types";
@@ -15,6 +16,13 @@ import AddModelStepper from "./AddModelStepper";
 describe("AddModelStepper", () => {
   let stepDefinitions: StepDefinition[];
   let initialValues: AddModelFormState;
+
+  const getMandatoryDetailsStep = (): HTMLElement => {
+    const step = screen.getByText("Mandatory Details").closest(".step");
+    expect(step).not.toBeNull();
+    return step as HTMLElement;
+  };
+
   beforeEach(() => {
     stepDefinitions = [
       {
@@ -80,5 +88,107 @@ describe("AddModelStepper", () => {
     );
     expect(handleStepClick).toHaveBeenCalledWith(1);
     expect(handleStepClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows the required model name label and an error icon when model name is empty", () => {
+    render(
+      <Formik<AddModelFormState>
+        initialValues={initialValues}
+        initialErrors={{ modelName: Label.REQUIRED_MODEL_NAME_ERROR }}
+        onSubmit={vi.fn()}
+      >
+        <AddModelStepper
+          stepDefinitions={stepDefinitions}
+          currentStepIndex={1}
+          handleStepClick={vi.fn()}
+        />
+      </Formik>,
+    );
+
+    const mandatoryDetailsStep = getMandatoryDetailsStep();
+    expect(
+      mandatoryDetailsStep.querySelector(".p-icon--error"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(Label.REQUIRED_MODEL_NAME_ERROR),
+    ).toBeInTheDocument();
+  });
+
+  it("shows the incorrect model name label and an error icon when model name is invalid", () => {
+    render(
+      <Formik<AddModelFormState>
+        initialValues={
+          { ...initialValues, modelName: "-model" } as AddModelFormState
+        }
+        initialErrors={{ modelName: Label.INCORRECT_MODEL_NAME_ERROR }}
+        onSubmit={vi.fn()}
+      >
+        <AddModelStepper
+          stepDefinitions={stepDefinitions}
+          currentStepIndex={1}
+          handleStepClick={vi.fn()}
+        />
+      </Formik>,
+    );
+
+    const mandatoryDetailsStep = getMandatoryDetailsStep();
+    expect(
+      mandatoryDetailsStep.querySelector(".p-icon--error"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(Label.INCORRECT_MODEL_NAME_ERROR),
+    ).toBeInTheDocument();
+  });
+
+  it("shows the credential label and an error icon when only credential has an error", () => {
+    render(
+      <Formik<AddModelFormState>
+        initialValues={initialValues}
+        initialErrors={{ credential: Label.REQUIRED_CREDENTIAL_ERROR }}
+        onSubmit={vi.fn()}
+      >
+        <AddModelStepper
+          stepDefinitions={stepDefinitions}
+          currentStepIndex={1}
+          handleStepClick={vi.fn()}
+        />
+      </Formik>,
+    );
+
+    const mandatoryDetailsStep = getMandatoryDetailsStep();
+    expect(
+      mandatoryDetailsStep.querySelector(".p-icon--error"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(Label.REQUIRED_CREDENTIAL_ERROR),
+    ).toBeInTheDocument();
+  });
+
+  it("shows a combined error label when model name and credential both have errors", () => {
+    render(
+      <Formik<AddModelFormState>
+        initialValues={initialValues}
+        initialErrors={{
+          modelName: Label.REQUIRED_MODEL_NAME_ERROR,
+          credential: Label.REQUIRED_CREDENTIAL_ERROR,
+        }}
+        onSubmit={vi.fn()}
+      >
+        <AddModelStepper
+          stepDefinitions={stepDefinitions}
+          currentStepIndex={1}
+          handleStepClick={vi.fn()}
+        />
+      </Formik>,
+    );
+
+    const mandatoryDetailsStep = getMandatoryDetailsStep();
+
+    expect(
+      mandatoryDetailsStep.querySelector(".p-icon--error"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(`${Label.REQUIRED_MODEL_NAME_ERROR} + 1 issue`),
+    ).toBeInTheDocument();
   });
 });
