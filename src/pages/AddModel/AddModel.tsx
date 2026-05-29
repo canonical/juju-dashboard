@@ -1,12 +1,7 @@
-import {
-  ActionButton,
-  Button,
-  Step,
-  Stepper,
-} from "@canonical/react-components";
+import { ActionButton, Button } from "@canonical/react-components";
 import VanillaPanel from "@canonical/react-components/dist/components/Panel";
 import { Formik } from "formik";
-import type { FC, JSX } from "react";
+import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import * as Yup from "yup";
@@ -25,6 +20,7 @@ import { toErrorString } from "utils";
 import { toastNotification } from "utils/toastNotification";
 
 import AccessManagement from "./AccessManagement";
+import AddModelStepper from "./AddModelStepper";
 import ConfigsConstraints from "./ConfigsConstraints";
 import { InputMode } from "./ConfigsConstraints/ContentSwitcher/types";
 import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
@@ -35,7 +31,13 @@ import {
   getConfigInitialValues,
 } from "./ConfigsConstraints/utils";
 import MandatoryDetails from "./MandatoryDetails";
-import { TestId, StepType, Label, type AddModelFormState } from "./types";
+import {
+  TestId,
+  StepType,
+  Label,
+  type AddModelFormState,
+  type StepDefinition,
+} from "./types";
 
 const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
 
@@ -45,11 +47,7 @@ const validationSchema = Yup.object().shape({
     .required("Required"),
 });
 
-const stepDefinitions: Array<{
-  key: StepType;
-  title: string;
-  content: JSX.Element;
-}> = [
+const stepDefinitions: StepDefinition[] = [
   {
     key: StepType.MANDATORY_DETAILS,
     title: "Mandatory Details",
@@ -149,26 +147,6 @@ const AddModel: FC = () => {
         {...testId(TestId.COMPONENT)}
         stickyHeader
       >
-        <Stepper
-          variant="horizontal"
-          steps={stepDefinitions.map(({ key, title }, index) => {
-            const isPrevious = index < currentStepIndex;
-            const isCurrent = index === currentStepIndex;
-            return (
-              <Step
-                key={key}
-                title={title}
-                index={index + 1}
-                enabled
-                hasProgressLine={isPrevious || isCurrent}
-                iconName={isPrevious ? "success" : "number"}
-                handleClick={() => {
-                  setCurrentStepIndex(index);
-                }}
-              />
-            );
-          })}
-        />
         <div className="add-model__step" {...testId(TestId.ADD_MODEL_CONTENT)}>
           <Formik<AddModelFormState>
             initialValues={{
@@ -184,15 +162,22 @@ const AddModel: FC = () => {
             validationSchema={validationSchema}
             onSubmit={handleCreateClick}
           >
-            <FormikFormData
-              onValidate={setIsValid}
-              id={currentStep.key}
-              {...testId(TestId.ADD_MODEL_FORM)}
-              className={currentStep.key}
-              stacked={currentStep.key === StepType.CONFIGURATION_CONSTRAINTS}
-            >
-              {currentStep.content}
-            </FormikFormData>
+            <>
+              <AddModelStepper
+                stepDefinitions={stepDefinitions}
+                currentStepIndex={currentStepIndex}
+                handleStepClick={setCurrentStepIndex}
+              />
+              <FormikFormData
+                onValidate={setIsValid}
+                id={currentStep.key}
+                {...testId(TestId.ADD_MODEL_FORM)}
+                className={currentStep.key}
+                stacked={currentStep.key === StepType.CONFIGURATION_CONSTRAINTS}
+              >
+                {currentStep.content}
+              </FormikFormData>
+            </>
           </Formik>
         </div>
         <div className="add-model__footer">

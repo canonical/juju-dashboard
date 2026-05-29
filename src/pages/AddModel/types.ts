@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type { AccessLevel } from "types";
 
 import type { FormFields } from "./ConfigsConstraints/types";
@@ -23,6 +25,12 @@ export type AddModelFormState = {
 } & FormFields &
   Record<string, string>;
 
+export type StepDefinition = {
+  key: StepType;
+  title: string;
+  content: JSX.Element;
+};
+
 export enum Label {
   TITLE = "Add model",
   CANCEL_BUTTON = "Cancel",
@@ -30,4 +38,5 @@ export enum Label {
   BACK_BUTTON = "Back",
   CREATE_BUTTON = "Add model",
   INCORRECT_MODEL_NAME_ERROR = "Incorrect model name format.",
+  REQUIRED_MODEL_NAME_ERROR = "Model name is required.",
 }

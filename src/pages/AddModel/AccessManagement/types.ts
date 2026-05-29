@@ -18,6 +18,7 @@ export enum Label {
   MULTI_SELECT_LABEL = "Add users",
   MULTI_SELECT_PLACEHOLDER = "Search and add users",
   MULTI_SELECT_NO_USERS = "No users found",
+  INCORRECT_EMAIL_FORMAT = "Incorrect email format",
   HEADER_USER_NAME = "User Name",
   HEADER_ACCESS_LEVEL = "Access Level",
   BUTTON_DELETE = "Delete",

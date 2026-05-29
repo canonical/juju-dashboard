@@ -26,7 +26,10 @@ const StackList = ({ visibleConfigs }: Props): JSX.Element => {
             <FormikField
               {...(config.input?.type === "select"
                 ? { component: Select }
-                : { type: "text", placeholder: config.defaultValue })}
+                : {
+                    type: config.isNumeric ? "number" : "text",
+                    placeholder: config.defaultValue,
+                  })}
               label={
                 <>
                   {changed ? (
