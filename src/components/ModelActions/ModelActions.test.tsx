@@ -547,7 +547,7 @@ describe("ModelActions", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("disables the option if the user is not a JIMM admin", async () => {
+    it("does not display the option if the user is not a JIMM admin", async () => {
       state.juju.rebac.allowed = [];
       renderComponent(
         <ModelActions
@@ -561,8 +561,8 @@ describe("ModelActions", () => {
       );
       await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
       expect(
-        screen.getByRole("menuitem", { name: Label.UPGRADE }),
-      ).toHaveAttribute("aria-disabled");
+        screen.queryByRole("menuitem", { name: Label.UPGRADE }),
+      ).not.toBeInTheDocument();
     });
   });
 });
