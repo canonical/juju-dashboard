@@ -1,6 +1,7 @@
 import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { upgradeModel, upgradeTo } from "store/middleware/process";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -24,7 +25,7 @@ import {
   modelMigrationTargetsStateFactory,
   supportedJujuVersionsStateFactory,
 } from "testing/factories/juju/juju";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import { Label as FieldsLabel } from "./Fields/types";
@@ -75,6 +76,7 @@ describe("UpgradeModelController", () => {
         modelData: {
           abc123: modelDataFactory.build({
             info: modelInfoFactory.build({
+              "agent-version": "1.2.1",
               uuid: "abc123",
               name: "test1",
               "controller-uuid": "controller123",
@@ -188,5 +190,82 @@ describe("UpgradeModelController", () => {
     // Vanilla doesn't display validation until the field loses focus.
     await act(() => fireEvent.blur(confirm));
     expect(submit).not.toHaveAttribute("aria-disabled");
+  });
+
+  it("starts an upgrade", async () => {
+    const [store, actions] = createStore(state, {
+      trackActions: true,
+    });
+    renderComponent(
+      <UpgradeModelController
+        back={vi.fn}
+        onRemovePanelQueryParams={vi.fn}
+        version={versionElemFactory.build({ version: "1.2.3" })}
+        modelName="test1"
+        qualifier="eggman@external"
+      />,
+      { store, url, path },
+    );
+    const confirm = screen.getByRole("checkbox", { name: FieldsLabel.CONFIRM });
+    await userEvent.click(confirm);
+    // Vanilla doesn't display validation until the field loses focus.
+    await act(() => fireEvent.blur(confirm));
+    await userEvent.click(
+      await screen.findByRole("button", {
+        name: Label.SUBMIT,
+      }),
+    );
+    const action = upgradeModel.run({
+      currentVersion: "1.2.1",
+      modelName: "test1",
+      modelURL: "wss://example.com/model/abc123/api",
+      modelUUID: "abc123",
+      targetVersion: "1.2.3",
+      wsControllerURL: "wss://example.com/api",
+    });
+    expect(
+      actions.find((dispatch) => dispatch.type === action.type),
+    ).toMatchObject(action);
+  });
+
+  it("starts a migration", async () => {
+    const [store, actions] = createStore(state, {
+      trackActions: true,
+    });
+    renderComponent(
+      <UpgradeModelController
+        back={vi.fn}
+        onRemovePanelQueryParams={vi.fn}
+        version={versionElemFactory.build({ version: "4.6.14" })}
+        modelName="test1"
+        qualifier="eggman@external"
+      />,
+      { store, url, path },
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: FieldsLabel.TARGET_CONTROLLER }),
+    );
+    await userEvent.click(screen.getByRole("option", { name: /controller2/ }));
+    const confirm = screen.getByRole("checkbox", { name: FieldsLabel.CONFIRM });
+    await userEvent.click(confirm);
+    // Vanilla doesn't display validation until the field loses focus.
+    await act(() => fireEvent.blur(confirm));
+    await userEvent.click(
+      await screen.findByRole("button", {
+        name: Label.SUBMIT,
+      }),
+    );
+    const action = upgradeTo.run({
+      currentVersion: "1.2.1",
+      modelName: "test1",
+      modelURL: "wss://example.com/model/abc123/api",
+      modelUUID: "abc123",
+      targetController: "controller2",
+      targetVersion: "4.6.14",
+      wsControllerURL: "wss://example.com/api",
+    });
+    expect(
+      actions.find((dispatch) => dispatch.type === action.type),
+    ).toMatchObject(action);
   });
 });

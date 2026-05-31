@@ -42,6 +42,7 @@
         "jujucharms",
         "jujulib",
         "microk8s",
+        "upgrader",
         "rebac",
         "snapstore",
 

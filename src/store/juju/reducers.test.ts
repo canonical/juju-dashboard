@@ -38,10 +38,6 @@ const status = fullStatusFactory.build({
   model: {
     "available-version": "",
     "cloud-tag": "",
-    "meter-status": {
-      color: "",
-      message: "",
-    },
     "model-status": {
       data: {},
       info: "",
@@ -52,7 +48,6 @@ const status = fullStatusFactory.build({
       version: "",
     },
     name: "",
-    sla: "",
     type: "",
     version: "",
     region: "west",

@@ -15,9 +15,10 @@ import {
 } from "store/juju/selectors";
 import { getControllerVersion } from "store/juju/utils/controllers";
 import { requiresMigration } from "store/juju/utils/upgrades";
-import { upgradeTo } from "store/middleware/process";
+import { upgradeTo, upgradeModel } from "store/middleware/process";
 import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
+import getModelURL from "utils/getModelURL";
 
 import UpgradeModelPanelHeader from "../UpgradeModelPanelHeader";
 
@@ -90,9 +91,17 @@ const UpgradeModelController: FC<Props> = ({
         currentVersion,
         wsControllerURL,
         modelUUID,
-        // TODO: Use the getModelURL util here once it lands:
-        // https://github.com/canonical/juju-dashboard/pull/2285/changes#diff-b8618585b6c69654e35b6b6a0f188d72b59777badd2798cfd1d027a396ed0566R1
-        modelURL: wsControllerURL.replace("/api", `/model/${modelUUID}/api`),
+        modelURL: getModelURL(wsControllerURL, modelUUID),
+        modelName: modelName,
+      });
+      dispatch(action);
+    } else {
+      const action = upgradeModel.run({
+        targetVersion: version.version,
+        currentVersion,
+        wsControllerURL,
+        modelUUID,
+        modelURL: getModelURL(wsControllerURL, modelUUID),
         modelName: modelName,
       });
       dispatch(action);
