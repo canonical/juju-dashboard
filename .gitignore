@@ -17,6 +17,7 @@ pkg/
 public/config.local.js
 .nfs.*
 /charms/machine-charm/src/dist
+network-cache
 
 .yarn/*
 !.yarn/patches

@@ -381,7 +381,7 @@ To be able to add models, first as the admin user give them permission to add mo
 
 Next you will need to log out of the admin account and log in as the user you just created.
 
-NOTE: when logging in as the new user you may need to use another browser or private window if you've previously logged in as jimm-test otherwise you'll get logged in as the admin.
+NOTE: when logging in as the new user you may need to clear your cookies or use another browser or private window if you've previously logged in as jimm-test otherwise you'll get logged in as the admin.
 
 ```shell
 juju unregister jimm-dev

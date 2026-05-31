@@ -60,7 +60,7 @@ const generateLinks = (
     isJuju || !isJIMMControllerAdmin ? null : (
       <Button
         className="p-contextual-menu__link"
-        disabled={!isJIMMControllerAdmin || !hasUpgrades}
+        disabled={!hasUpgrades}
         role="menuitem"
         onClick={(event) => {
           event.stopPropagation();
