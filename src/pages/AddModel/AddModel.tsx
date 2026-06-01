@@ -38,6 +38,7 @@ import {
   type AddModelFormState,
   type StepDefinition,
 } from "./types";
+import { getCredentialError } from "./utils";
 
 const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
 
@@ -45,6 +46,16 @@ const validationSchema = Yup.object().shape({
   modelName: Yup.string()
     .matches(MODEL_NAME_PATTERN, Label.INCORRECT_MODEL_NAME_ERROR)
     .required("Required"),
+  credential: Yup.string().test({
+    test: function (value) {
+      if (value !== undefined && value !== "") {
+        return true;
+      }
+      return this.createError({
+        message: getCredentialError(this.parent.cloud),
+      });
+    },
+  }),
 });
 
 const stepDefinitions: StepDefinition[] = [
@@ -160,6 +171,8 @@ const AddModel: FC = () => {
               ...getConfigInitialValues(CONFIG_CATEGORIES),
             }}
             validationSchema={validationSchema}
+            // Mark credential as touched on mount as Vanilla doesn't display validation until the field loses focus.
+            initialTouched={{ credential: true }}
             onSubmit={handleCreateClick}
           >
             <>

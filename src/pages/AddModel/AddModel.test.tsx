@@ -10,6 +10,7 @@ import {
   jujuStateFactory,
   controllerFactory,
   cloudInfoStateFactory,
+  userCredentialsStateFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { createStore, renderComponent } from "testing/utils";
@@ -52,6 +53,11 @@ describe("AddModel page", () => {
           clouds: {
             "cloud-aws": { type: "ec2" },
             "cloud-gce": { type: "gce" },
+          },
+        }),
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: {
+            "cloud-aws": ["cloudcred-aws_admin_aws-cred"],
           },
         }),
         controllers: {
@@ -169,6 +175,26 @@ describe("AddModel page", () => {
     ).toHaveAttribute("aria-disabled");
   });
 
+  it("disables Add model button on no credential", async () => {
+    state.juju.userCredentials = userCredentialsStateFactory.build({
+      credentials: {},
+    });
+    renderComponent(<AddModel />, { state });
+    await userEvent.type(
+      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
+      "model",
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.NEXT_BUTTON }),
+    );
+    expect(
+      screen.getByRole("button", { name: Label.CREATE_BUTTON }),
+    ).toHaveAttribute("aria-disabled");
+  });
+
   it("enables Add model button on valid input", async () => {
     renderComponent(<AddModel />, { state });
     expect(
@@ -263,7 +289,7 @@ describe("AddModel page", () => {
 
     const addModelAction = jujuActions.addModel({
       cloudTag: "cloud-aws",
-      credential: "",
+      credential: "cloudcred-aws_admin_aws-cred",
       modelName: "my-model",
       userTag: "user-eggman@external",
       wsControllerURL: "wss://controller.example.com",
@@ -291,7 +317,7 @@ describe("AddModel page", () => {
 
     const addModelAction = jujuActions.addModel({
       cloudTag: "cloud-aws",
-      credential: "",
+      credential: "cloudcred-aws_admin_aws-cred",
       modelName: "my-model",
       userTag: "user-eggman@external",
       wsControllerURL: "wss://controller.example.com",
@@ -327,7 +353,7 @@ describe("AddModel page", () => {
 
     const addModelAction = jujuActions.addModel({
       cloudTag: "cloud-aws",
-      credential: "",
+      credential: "cloudcred-aws_admin_aws-cred",
       config: {
         "default-space": "my-space",
       },
