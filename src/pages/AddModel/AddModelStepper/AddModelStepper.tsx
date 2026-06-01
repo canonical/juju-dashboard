@@ -22,26 +22,27 @@ const AddModelStepper = ({
       steps={stepDefinitions.map(({ key, title }, index) => {
         const isPrevious = index < currentStepIndex;
         const isCurrent = index === currentStepIndex;
-        let hasModelNameError = false;
-        let hasCredentialError = false;
         let label = undefined;
+        const labels = [];
         if (index === 0) {
           if (errors.modelName) {
-            hasModelNameError = true;
-            label =
+            labels.push(
               values.modelName !== ""
                 ? Label.INCORRECT_MODEL_NAME_ERROR
-                : Label.REQUIRED_MODEL_NAME_ERROR;
+                : Label.REQUIRED_MODEL_NAME_ERROR,
+            );
           }
           if (errors.credential) {
-            hasCredentialError = true;
-            label = hasModelNameError
-              ? `${label} + 1 issue`
-              : Label.REQUIRED_CREDENTIAL_ERROR;
+            labels.push(Label.REQUIRED_CREDENTIAL_ERROR);
+          }
+          if (labels.length > 0) {
+            [label] = labels;
+            if (labels.length > 1) {
+              label = `${label} + ${labels.length - 1} issue`;
+            }
           }
         }
-        const previousIcon =
-          hasModelNameError || hasCredentialError ? "error" : "success";
+        const previousIcon = label ? "error" : "success";
         return (
           <Step
             key={key}

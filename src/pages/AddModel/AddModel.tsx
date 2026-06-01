@@ -171,6 +171,8 @@ const AddModel: FC = () => {
               ...getConfigInitialValues(CONFIG_CATEGORIES),
             }}
             validationSchema={validationSchema}
+            // Mark credential as touched on mount as Vanilla doesn't display validation until the field loses focus.
+            initialTouched={{ credential: true }}
             onSubmit={handleCreateClick}
           >
             <>
