@@ -1172,6 +1172,123 @@ describe("model poller", () => {
     );
   });
 
+  it("batches models already destroying outside the dashboard by controller", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    vi.spyOn(jujuModule, "fetchAndStoreModelStatus").mockResolvedValue();
+    vi.spyOn(jujuModule, "fetchModelInfo")
+      .mockResolvedValueOnce({
+        results: [
+          {
+            result: modelInfoFactory.build({
+              life: "dying",
+              name: "a model",
+              uuid: "abc123",
+            }),
+          },
+        ],
+      })
+      .mockResolvedValueOnce({
+        results: [
+          {
+            result: modelInfoFactory.build({
+              life: "dying",
+              name: "another model",
+              uuid: "xyz456",
+            }),
+          },
+        ],
+      });
+
+    const middleware = await runMiddleware();
+    vi.spyOn(fakeStore, "getState").mockImplementation(() =>
+      rootStateFactory.build({
+        juju: jujuStateFactory.build({
+          models: {
+            abc123: {
+              name: "a model",
+              qualifier: "eggman@external",
+              type: "model",
+              uuid: "abc123",
+              wsControllerURL,
+            },
+            xyz456: {
+              name: "another model",
+              qualifier: "eggman@external",
+              type: "model",
+              uuid: "xyz456",
+              wsControllerURL,
+            },
+          },
+        }),
+        general: storeState.general,
+      }),
+    );
+
+    await middleware(next)(updateModelStatuses());
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.destroyModels({
+        models: [
+          {
+            "model-tag": "model-abc123",
+            modelUUID: "abc123",
+            modelName: "a model",
+          },
+          {
+            "model-tag": "model-xyz456",
+            modelUUID: "xyz456",
+            modelName: "another model",
+          },
+        ],
+        cliTriggered: true,
+        wsControllerURL,
+      }),
+    );
+  });
+
+  it("tracks completion for cli-triggered destroy models without calling destroy api", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    const fetchModelInfo = vi
+      .spyOn(jujuModule, "fetchModelInfo")
+      .mockResolvedValue({ results: [{ result: undefined }] });
+    const middleware = await runMiddleware();
+    const action = jujuActions.destroyModels({
+      wsControllerURL: "wss://example.com/api",
+      models: [
+        {
+          "model-tag": "model-123abc",
+          modelUUID: "123abc",
+          modelName: "model123",
+        },
+      ],
+      cliTriggered: true,
+    });
+
+    await middleware(next)(action);
+
+    expect(conn.facades.modelManager.destroyModels).not.toHaveBeenCalled();
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateDestroyModelsLoading({
+        modelUUIDs: ["123abc"],
+        wsControllerURL: "wss://example.com/api",
+      }),
+    );
+    expect(fetchModelInfo).toHaveBeenCalledWith(conn, ["123abc"]);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.updateModelsDestroyed({
+        modelUUIDs: ["123abc"],
+        wsControllerURL: "wss://example.com/api",
+      }),
+    );
+  });
+
   it("handles no controller when destroying models", async () => {
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       error: Label.CONTROLLER_LOGIN_ERROR,

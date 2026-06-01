@@ -1,7 +1,6 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
-import type { DestroyModelParams } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
   ListSecretResult,
   SecretValueResult,
@@ -36,6 +35,7 @@ import type {
   ModelUpgrade,
   AddModel,
   BlockEntry,
+  ModelDestructionParams,
 } from "./types";
 import { getModelQualifier } from "./utils/models";
 
@@ -283,10 +283,8 @@ const slice = createSlice({
       state,
       action: PayloadAction<
         {
-          models: ({
-            modelUUID: string;
-            modelName: string;
-          } & DestroyModelParams)[];
+          models: ModelDestructionParams[];
+          cliTriggered?: boolean;
         } & WsControllerURLParam
       >,
     ) => {
@@ -296,7 +294,7 @@ const slice = createSlice({
             loading: false,
             errors: null,
             loaded: false,
-            modelName: modelName,
+            modelName,
           }),
       );
     },

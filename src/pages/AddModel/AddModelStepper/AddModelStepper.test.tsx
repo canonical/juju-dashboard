@@ -86,8 +86,7 @@ describe("AddModelStepper", () => {
     await userEvent.click(
       screen.getByText("Configuration & Constraints (optional)"),
     );
-    expect(handleStepClick).toHaveBeenCalledWith(1);
-    expect(handleStepClick).toHaveBeenCalledTimes(1);
+    expect(handleStepClick).toHaveBeenCalledExactlyOnceWith(1);
   });
 
   it("shows the required model name label and an error icon when model name is empty", () => {

@@ -20,8 +20,9 @@ import { updateModelStatuses } from "store/app/actions";
 import { actions as generalActions } from "store/general";
 import { isLoggedIn } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
-import { getModelList } from "store/juju/selectors";
+import { getDestructionState, getModelList } from "store/juju/selectors";
 import { addControllerCloudRegion } from "store/juju/thunks";
+import type { ModelDestructionParams } from "store/juju/types";
 import type { RootState, Store } from "store/store";
 import { AccessLevel, isSpecificAction } from "types";
 import { getUserName, toErrorString } from "utils";
@@ -107,6 +108,8 @@ function runModelPoller(
       const modelList = Object.entries(getModelList(reduxStore.getState()));
       let errorCount = 0;
       let lastErrorWSController = null;
+      const cliTriggeredDestructions: Record<string, ModelDestructionParams[]> =
+        {};
       for (const [modelUUID, { wsControllerURL }] of modelList) {
         const conn = await connections.get(wsControllerURL);
         if (!conn || !isLoggedIn(reduxStore.getState(), wsControllerURL)) {
@@ -134,12 +137,26 @@ function runModelPoller(
               wsControllerURL,
             }),
           );
+          const updatedModelInfo = modelInfo.results[0]?.result;
+          if (
+            updatedModelInfo?.life === "dying" &&
+            !getDestructionState(reduxStore.getState())[modelUUID] // This makes sure we are not picking up a destruction already keyed into the store.
+          ) {
+            cliTriggeredDestructions[wsControllerURL] = [
+              ...(cliTriggeredDestructions[wsControllerURL] ?? []),
+              {
+                modelUUID,
+                modelName: updatedModelInfo.name,
+                "model-tag": `model-${modelUUID}`,
+              },
+            ];
+          }
           if (!isLoggedIn(reduxStore.getState(), wsControllerURL)) {
             // The user may have logged out while the previous call was in
             // progress.
             continue;
           }
-          if (modelInfo?.results[0].result?.["is-controller"]) {
+          if (updatedModelInfo?.["is-controller"]) {
             // If this is a controller model then update the
             // controller data with this model data.
             reduxStore
@@ -160,6 +177,18 @@ function runModelPoller(
         } catch (error) {
           errorCount += 1;
           lastErrorWSController = wsControllerURL;
+        }
+      }
+      // Trigger batch `destroyModels` action controller-wise.
+      if (Object.entries(cliTriggeredDestructions).length > 0) {
+        for (const wsControllerURL in cliTriggeredDestructions) {
+          reduxStore.dispatch(
+            jujuActions.destroyModels({
+              models: cliTriggeredDestructions[wsControllerURL],
+              cliTriggered: true,
+              wsControllerURL,
+            }),
+          );
         }
       }
 
@@ -390,7 +419,7 @@ function runModelPoller(
     ) {
       // Intercept destroyModel actions and fetch and store
       // the models via the controller connection.
-      const { wsControllerURL, models } = action.payload;
+      const { wsControllerURL, models, cliTriggered = false } = action.payload;
       // Immediately pass the action along so that it can be handled by the
       // reducer to update the loading state.
       next(action);
@@ -403,32 +432,37 @@ function runModelPoller(
       let remainingModels: string[] = [];
       const destroyModelErrors: DestroyModelErrors = [];
 
-      try {
-        const result = await conn.facades.modelManager?.destroyModels({
-          models,
-        });
-        result?.results.forEach((errorResult, index) => {
-          if (errorResult.error) {
-            destroyModelErrors.push([
-              models[index].modelUUID,
-              errorResult.error.message,
-            ]);
-          } else {
-            remainingModels.push(models[index].modelUUID);
-          }
-        });
-      } catch (error) {
-        logger.error("Could not destroy model", error);
-        const errorMessages = models.map(({ modelUUID }) => [
-          modelUUID,
-          "Something went wrong during the model destruction process",
-        ]);
+      // Check if the operation was triggered from the CLI. If yes, don't call the facade.
+      if (cliTriggered) {
+        remainingModels = models.map(({ modelUUID }) => modelUUID);
+      } else {
+        try {
+          const result = await conn.facades.modelManager?.destroyModels({
+            models,
+          });
+          result?.results.forEach((errorResult, index) => {
+            if (errorResult.error) {
+              destroyModelErrors.push([
+                models[index].modelUUID,
+                errorResult.error.message,
+              ]);
+            } else {
+              remainingModels.push(models[index].modelUUID);
+            }
+          });
+        } catch (error) {
+          logger.error("Could not destroy model", error);
+          const errorMessages = models.map(({ modelUUID }) => [
+            modelUUID,
+            "Something went wrong during the model destruction process",
+          ]);
 
-        reduxStore.dispatch(
-          jujuActions.destroyModelErrors({
-            errors: errorMessages,
-          }),
-        );
+          reduxStore.dispatch(
+            jujuActions.destroyModelErrors({
+              errors: errorMessages,
+            }),
+          );
+        }
       }
 
       // Dispatch partial errors, if any, and continue with successful destructions

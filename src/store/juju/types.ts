@@ -1,7 +1,10 @@
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
-import type { ErrorResult } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
+import type {
+  DestroyModelParams,
+  ErrorResult,
+} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
   ListSecretResult,
   SecretValueResult,
@@ -170,6 +173,11 @@ export type BlockEntry = {
 };
 
 export type BlockState = Record<string, BlockEntry>;
+
+export type ModelDestructionParams = {
+  modelUUID: string;
+  modelName: string;
+} & DestroyModelParams;
 
 export type JujuState = {
   auditEvents: AuditEventsState;
