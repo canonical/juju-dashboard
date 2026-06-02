@@ -26,6 +26,7 @@ import {
 import {
   controllerFactory,
   jujuStateFactory,
+  modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { createStore } from "testing/utils";
 import { AccessLevel } from "types";
@@ -1208,20 +1209,16 @@ describe("model poller", () => {
       rootStateFactory.build({
         juju: jujuStateFactory.build({
           models: {
-            abc123: {
-              name: "a model",
-              qualifier: "eggman@external",
-              type: "model",
+            abc123: modelListInfoFactory.build({
               uuid: "abc123",
-              wsControllerURL,
-            },
-            xyz456: {
-              name: "another model",
-              qualifier: "eggman@external",
-              type: "model",
+              name: "test-model",
+              qualifier: "user-eggman@external",
+            }),
+            xyz456: modelListInfoFactory.build({
               uuid: "xyz456",
-              wsControllerURL,
-            },
+              name: "test-model2",
+              qualifier: "user-eggman@external",
+            }),
           },
         }),
         general: storeState.general,
