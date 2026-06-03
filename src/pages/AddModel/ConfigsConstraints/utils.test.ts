@@ -1,15 +1,47 @@
-import type { CategoryDefinition } from "./configCatalog";
+import type { CategoryDefinition } from "./types";
 import {
   buildChangedConfigPayload,
-  buildConfigYAML,
-  filterConfigsBySearch,
+  buildYAML,
+  filterCategoriesBySearch,
   getChangedFields,
-  getCategoriesWithVisibleConfigs,
+  getCategoriesWithVisibleFields,
   getConfigInitialValues,
   isConfigChanged,
 } from "./utils";
 
 describe("utils", () => {
+  let categories: CategoryDefinition[];
+
+  beforeEach(() => {
+    categories = [
+      {
+        category: "Networking",
+        fields: [
+          {
+            label: "default-space",
+            defaultValue: "alpha",
+            description: "Default space",
+          },
+          {
+            label: "container-networking-method",
+            defaultValue: "provider",
+            description: "Networking method",
+          },
+        ],
+      },
+      {
+        category: "Logging",
+        fields: [
+          {
+            label: "logging-config",
+            defaultValue: "",
+            description: "Logging config",
+          },
+        ],
+      },
+    ];
+  });
+
   describe("isConfigChanged", () => {
     it("returns false when value is undefined", () => {
       const result = isConfigChanged("some-label", {}, "default-value");
@@ -45,6 +77,22 @@ describe("utils", () => {
       );
 
       expect(result).toBe(true);
+    });
+
+    it("returns true when a numeric value has no default", () => {
+      const result = isConfigChanged(
+        "some-label",
+        { "some-label": 0 },
+        undefined,
+      );
+
+      expect(result).toBe(true);
+    });
+
+    it("returns false when a numeric value matches a numeric default", () => {
+      const result = isConfigChanged("some-label", { "some-label": "0" }, 0);
+
+      expect(result).toBe(false);
     });
   });
 
@@ -95,48 +143,15 @@ describe("utils", () => {
     });
   });
 
-  describe("buildConfigYAML", () => {
-    const categories: CategoryDefinition[] = [
-      {
-        category: "Networking",
-        fields: [
-          {
-            label: "default-space",
-            defaultValue: "alpha",
-            description: "Default space",
-          },
-          {
-            label: "container-networking-method",
-            defaultValue: "provider",
-            description: "Networking method",
-          },
-        ],
-      },
-      {
-        category: "Logging",
-        fields: [
-          {
-            label: "logging-config",
-            defaultValue: "",
-            description: "Logging config",
-          },
-          {
-            label: "logging-level",
-            defaultValue: "warning",
-            description: "Logging level",
-          },
-        ],
-      },
-    ];
-
+  describe("buildYAML", () => {
     it("returns empty string when no fields have changed", () => {
-      const result = buildConfigYAML(categories, {});
+      const result = buildYAML(categories, {});
 
       expect(result).toBe("");
     });
 
     it("builds YAML with category headers and field values", () => {
-      const result = buildConfigYAML(categories, {
+      const result = buildYAML(categories, {
         "default-space": "custom-space",
       });
 
@@ -146,7 +161,7 @@ describe("utils", () => {
     });
 
     it("includes multiple categories separated by blank lines", () => {
-      const result = buildConfigYAML(categories, {
+      const result = buildYAML(categories, {
         "default-space": "custom-space",
         "logging-config": "debug",
       });
@@ -158,7 +173,7 @@ describe("utils", () => {
     });
 
     it("includes only changed fields in the output", () => {
-      const result = buildConfigYAML(categories, {
+      const result = buildYAML(categories, {
         "default-space": "custom-space",
         "container-networking-method": "provider",
         "logging-config": "debug",
@@ -173,34 +188,6 @@ describe("utils", () => {
   });
 
   describe("buildChangedConfigPayload", () => {
-    const categories: CategoryDefinition[] = [
-      {
-        category: "Networking",
-        fields: [
-          {
-            label: "default-space",
-            defaultValue: "alpha",
-            description: "Default space",
-          },
-          {
-            label: "container-networking-method",
-            defaultValue: "provider",
-            description: "Networking method",
-          },
-        ],
-      },
-      {
-        category: "Logging",
-        fields: [
-          {
-            label: "logging-config",
-            defaultValue: "",
-            description: "Logging config",
-          },
-        ],
-      },
-    ];
-
     it("returns empty object when no fields have changed", () => {
       const result = buildChangedConfigPayload(categories, {
         "default-space": "alpha",
@@ -225,43 +212,15 @@ describe("utils", () => {
     });
   });
 
-  describe("getCategoriesWithVisibleConfigs", () => {
-    const categories: CategoryDefinition[] = [
-      {
-        category: "Networking",
-        fields: [
-          {
-            label: "default-space",
-            defaultValue: "alpha",
-            description: "Default space",
-          },
-          {
-            label: "container-networking-method",
-            defaultValue: "provider",
-            description: "Networking method",
-          },
-        ],
-      },
-      {
-        category: "Logging",
-        fields: [
-          {
-            label: "logging-config",
-            defaultValue: "",
-            description: "Logging config",
-          },
-        ],
-      },
-    ];
-
+  describe("getCategoriesWithVisibleFields", () => {
     it("returns empty array when no fields have changed", () => {
-      const result = getCategoriesWithVisibleConfigs(categories, {});
+      const result = getCategoriesWithVisibleFields(categories, {});
 
       expect(result).toHaveLength(0);
     });
 
     it("returns categories with only changed fields visible", () => {
-      const result = getCategoriesWithVisibleConfigs(categories, {
+      const result = getCategoriesWithVisibleFields(categories, {
         "default-space": "modified-space",
       });
 
@@ -273,34 +232,6 @@ describe("utils", () => {
   });
 
   describe("getConfigInitialValues", () => {
-    const categories: CategoryDefinition[] = [
-      {
-        category: "Networking",
-        fields: [
-          {
-            label: "default-space",
-            defaultValue: "alpha",
-            description: "Default space",
-          },
-          {
-            label: "container-networking-method",
-            defaultValue: "provider",
-            description: "Networking method",
-          },
-        ],
-      },
-      {
-        category: "Logging",
-        fields: [
-          {
-            label: "logging-config",
-            defaultValue: "",
-            description: "Logging config",
-          },
-        ],
-      },
-    ];
-
     it("returns object with all fields and their default values", () => {
       const result = getConfigInitialValues(categories);
 
@@ -337,27 +268,27 @@ describe("utils", () => {
     });
   });
 
-  describe("filterConfigsBySearch", () => {
+  describe("filterCategoriesBySearch", () => {
     it("returns all categories when query is empty", () => {
-      const result = filterConfigsBySearch("");
+      const result = filterCategoriesBySearch("", categories);
 
       expect(result.length).toBeGreaterThan(0);
     });
 
     it("filters fields by label", () => {
-      const result = filterConfigsBySearch("proxy");
+      const result = filterCategoriesBySearch("network", categories);
 
       expect(result.length).toBeGreaterThan(0);
       const allLabels = result.flatMap((cat) =>
         cat.fields.map((field) => field.label.toLowerCase()),
       );
 
-      const hasMatch = allLabels.some((label) => label.includes("proxy"));
+      const hasMatch = allLabels.some((label) => label.includes("network"));
       expect(hasMatch).toBe(true);
     });
 
     it("filters fields by description", () => {
-      const result = filterConfigsBySearch("method");
+      const result = filterCategoriesBySearch("method", categories);
 
       expect(result.length).toBeGreaterThan(0);
       const allDescriptions = result.flatMap((cat) =>
@@ -369,20 +300,23 @@ describe("utils", () => {
     });
 
     it("returns empty array when no fields match", () => {
-      const result = filterConfigsBySearch("non-existent-query123456");
+      const result = filterCategoriesBySearch(
+        "non-existent-query123456",
+        categories,
+      );
 
       expect(result).toEqual([]);
     });
 
     it("filters out categories with no matching fields", () => {
-      const result = filterConfigsBySearch("proxy");
+      const result = filterCategoriesBySearch("network", categories);
 
       // All returned categories should have at least one field matching the query
       result.forEach((category) => {
         const hasMatch = category.fields.some(
           (field) =>
-            field.label.toLowerCase().includes("proxy") ||
-            field.description.toLowerCase().includes("proxy"),
+            field.label.toLowerCase().includes("network") ||
+            field.description.toLowerCase().includes("network"),
         );
         expect(hasMatch).toBe(true);
       });

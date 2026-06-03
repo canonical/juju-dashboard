@@ -41,3 +41,8 @@ export enum Label {
   REQUIRED_MODEL_NAME_ERROR = "Model name is required",
   REQUIRED_CREDENTIAL_ERROR = "No cloud credentials",
 }
+
+export enum InputMode {
+  LIST = "List",
+  YAML = "YAML",
+}

@@ -4,7 +4,7 @@ import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
 
-import type { CategoryDefinition } from "../configCatalog";
+import type { CategoryDefinition } from "../types";
 
 import StackList from "./StackList";
 
@@ -41,7 +41,7 @@ describe("StackList", () => {
   it("renders properly", () => {
     renderComponent(
       <Formik initialValues={{}} onSubmit={vi.fn()}>
-        <StackList visibleConfigs={mockCategory.fields} />
+        <StackList visibleFields={mockCategory.fields} />
       </Formik>,
     );
 
@@ -58,7 +58,7 @@ describe("StackList", () => {
         }}
         onSubmit={vi.fn()}
       >
-        <StackList visibleConfigs={mockCategory.fields} />
+        <StackList visibleFields={mockCategory.fields} />
       </Formik>,
     );
 
@@ -75,7 +75,7 @@ describe("StackList", () => {
         }}
         onSubmit={vi.fn()}
       >
-        <StackList visibleConfigs={mockCategory.fields} />
+        <StackList visibleFields={mockCategory.fields} />
       </Formik>,
     );
 

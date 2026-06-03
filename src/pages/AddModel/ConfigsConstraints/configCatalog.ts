@@ -1,17 +1,5 @@
 /* eslint-disable @cspell/spellchecker -- This file contains values as they come from Juju */
-
-import type { SelectProps } from "@canonical/react-components";
-
-export type CategoryDefinition = {
-  category: string;
-  fields: {
-    label: string;
-    description: string;
-    defaultValue?: string;
-    input?: { type: "select" } & SelectProps;
-    isNumeric?: boolean;
-  }[];
-};
+import type { CategoryDefinition } from "./types";
 
 const BOOLEAN_OPTIONS = [
   { label: "True", value: "true" },
@@ -118,7 +106,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "net-bond-reconfigure-delay",
         description:
           "The amount of time in seconds to sleep between ifdown and ifup when bridging",
-        defaultValue: "17",
+        defaultValue: 17,
         isNumeric: true,
       },
       {
@@ -337,13 +325,13 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "num-container-provision-workers",
         description:
           "The number of container provisioning workers to use per machine",
-        defaultValue: "4",
+        defaultValue: 4,
         isNumeric: true,
       },
       {
         label: "num-provision-workers",
         description: "The number of provisioning workers to use per model",
-        defaultValue: "16",
+        defaultValue: 16,
         isNumeric: true,
       },
       {
@@ -414,7 +402,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
       {
         label: "agent-version",
         description: "The desired Juju agent version to use",
-        defaultValue: "3.6.20",
+        // This value is the same as the controller version that the model will be on. Leaving it blank by default allows the UI to send any value explicitly set by the user.
+        // This is important to avoid the need for constant updates to this list and to support JIMM-cases where we don't know what the default would be ahead of time.
+        defaultValue: "",
       },
       {
         label: "automatically-retry-hooks",

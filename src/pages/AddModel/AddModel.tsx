@@ -22,7 +22,6 @@ import { toastNotification } from "utils/toastNotification";
 import AccessManagement from "./AccessManagement";
 import AddModelStepper from "./AddModelStepper";
 import ConfigsConstraints from "./ConfigsConstraints";
-import { InputMode } from "./ConfigsConstraints/ContentSwitcher/types";
 import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
 import { FieldName as ConfigFieldName } from "./ConfigsConstraints/types";
 import { DisableType } from "./ConfigsConstraints/types";
@@ -35,6 +34,7 @@ import {
   TestId,
   StepType,
   Label,
+  InputMode,
   type AddModelFormState,
   type StepDefinition,
 } from "./types";
@@ -166,7 +166,9 @@ const AddModel: FC = () => {
               region: "",
               credential: "",
               [ConfigFieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+              [ConfigFieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
               [ConfigFieldName.CONFIG_YAML]: "",
+              [ConfigFieldName.CONSTRAINT_YAML]: "",
               [ConfigFieldName.DISABLED_COMMANDS]: DisableType.NONE,
               ...getConfigInitialValues(CONFIG_CATEGORIES),
             }}

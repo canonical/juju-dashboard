@@ -1,11 +1,12 @@
-import { CONFIG_CATEGORIES, type CategoryDefinition } from "./configCatalog";
+import type { CategoryDefinition } from "./types";
 
 export const isConfigChanged = (
   label: string,
-  values: Record<string, string>,
-  defaultValue: string | undefined,
+  values: Record<string, number | string>,
+  defaultValue: number | string | undefined,
 ): boolean => {
-  const currentValue = values[label];
+  // Casting numeric fields for standardized comparison, as form values are strings.
+  const currentValue = values[label]?.toString();
 
   // If value is undefined, it hasn't been set - not changed
   if (currentValue === undefined) {
@@ -15,7 +16,7 @@ export const isConfigChanged = (
   // If there's a default value, check if current differs from it
   // This includes catching empty string ("") vs default
   if (defaultValue !== undefined) {
-    return currentValue !== defaultValue;
+    return currentValue !== defaultValue.toString();
   }
 
   // No default value: only changed if non-empty
@@ -30,7 +31,7 @@ export const getChangedFields = (
     isConfigChanged(field.label, values, field.defaultValue),
   );
 
-export const getCategoriesWithVisibleConfigs = (
+export const getCategoriesWithVisibleFields = (
   categories: CategoryDefinition[],
   values: Record<string, string>,
 ): Array<{ category: string; fields: CategoryDefinition["fields"] }> =>
@@ -41,7 +42,7 @@ export const getCategoriesWithVisibleConfigs = (
     }))
     .filter(({ fields }) => fields.length > 0);
 
-export const buildConfigYAML = (
+export const buildYAML = (
   categories: CategoryDefinition[],
   values: Record<string, string>,
 ): string => {
@@ -80,22 +81,27 @@ export const getConfigInitialValues = (
 ): Record<string, string> =>
   categories.reduce<Record<string, string>>((values, category) => {
     category.fields.forEach((field) => {
-      values[field.label] = field.defaultValue ?? "";
+      values[field.label] = field.defaultValue?.toString() ?? "";
     });
     return values;
   }, {});
 
-export const filterConfigsBySearch = (query: string): CategoryDefinition[] => {
+export const filterCategoriesBySearch = (
+  query: string,
+  categoryList: CategoryDefinition[],
+): CategoryDefinition[] => {
   const lowerQuery = query.toLowerCase().trim();
   if (!lowerQuery) {
-    return CONFIG_CATEGORIES;
+    return categoryList;
   }
-  return CONFIG_CATEGORIES.map((category) => ({
-    ...category,
-    fields: category.fields.filter(
-      (field) =>
-        field.label.toLowerCase().includes(lowerQuery) ||
-        field.description.toLowerCase().includes(lowerQuery),
-    ),
-  })).filter((category) => category.fields.length > 0);
+  return categoryList
+    .map((category) => ({
+      ...category,
+      fields: category.fields.filter(
+        (field) =>
+          field.label.toLowerCase().includes(lowerQuery) ||
+          field.description.toLowerCase().includes(lowerQuery),
+      ),
+    }))
+    .filter((category) => category.fields.length > 0);
 };
