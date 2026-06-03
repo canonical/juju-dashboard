@@ -1,15 +1,11 @@
 .categories__form-scroll {
   margin-bottom: 1rem;
-  max-height: min(40rem, calc(100dvh - 26rem));
+  max-height: min(27vh, calc(100vh - 26rem));
   min-height: 10rem;
   overflow-y: auto;
 
-  @media (min-height >= 900px) {
-    max-height: min(40rem, calc(100dvh - 25rem));
-  }
-
-  @media (min-height >= 1100px) {
-    max-height: min(40rem, calc(100dvh - 23rem));
+  @media (max-width: $breakpoint-large) {
+    max-height: min(20rem, calc(100vh - 26rem));
   }
 }
 
