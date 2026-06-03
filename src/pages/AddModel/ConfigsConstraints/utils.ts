@@ -1,3 +1,5 @@
+import { CONFIG_CATEGORIES } from "./configCatalog";
+import { CONSTRAINT_CATEGORIES } from "./constraintsCatalog";
 import type { CategoryDefinition } from "./types";
 
 export const isConfigChanged = (
@@ -65,11 +67,12 @@ export const buildYAML = (
   return yamlSections.join("\n\n");
 };
 
-export const buildChangedConfigPayload = (
-  categories: CategoryDefinition[],
+export const buildConfigsConstraintsPayload = (
   values: Record<string, string>,
 ): Record<string, string> =>
-  categories.reduce<Record<string, string>>((config, category) => {
+  [...CONFIG_CATEGORIES, ...CONSTRAINT_CATEGORIES].reduce<
+    Record<string, string>
+  >((config, category) => {
     getChangedFields(category, values).forEach((field) => {
       config[field.label] = values[field.label];
     });

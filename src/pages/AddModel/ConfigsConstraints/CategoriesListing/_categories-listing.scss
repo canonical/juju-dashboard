@@ -5,15 +5,11 @@
   overflow-y: auto;
 
   @media (min-height >= 900px) {
-    .categories__form-scroll {
-      max-height: min(40rem, calc(100dvh - 25rem));
-    }
+    max-height: min(40rem, calc(100dvh - 25rem));
   }
 
   @media (min-height >= 1100px) {
-    .categories__form-scroll {
-      max-height: min(40rem, calc(100dvh - 23rem));
-    }
+    max-height: min(40rem, calc(100dvh - 23rem));
   }
 }
 

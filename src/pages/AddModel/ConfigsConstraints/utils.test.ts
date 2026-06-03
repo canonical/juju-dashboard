@@ -1,6 +1,6 @@
 import type { CategoryDefinition } from "./types";
 import {
-  buildChangedConfigPayload,
+  buildConfigsConstraintsPayload,
   buildYAML,
   filterCategoriesBySearch,
   getChangedFields,
@@ -187,27 +187,29 @@ describe("utils", () => {
     });
   });
 
-  describe("buildChangedConfigPayload", () => {
+  describe("buildConfigsConstraintsPayload", () => {
     it("returns empty object when no fields have changed", () => {
-      const result = buildChangedConfigPayload(categories, {
-        "default-space": "alpha",
-        "container-networking-method": "provider",
-        "logging-config": "",
+      const result = buildConfigsConstraintsPayload({
+        "container-networking-method": "local",
+        "logging-config": "<root>=INFO",
+        arch: "",
       });
 
       expect(result).toEqual({});
     });
 
     it("returns only changed field labels and values", () => {
-      const result = buildChangedConfigPayload(categories, {
+      const result = buildConfigsConstraintsPayload({
         "default-space": "custom-space",
-        "container-networking-method": "provider",
-        "logging-config": "debug",
+        "container-networking-method": "local",
+        "logging-config": "<root>=DEBUG",
+        arch: "amd64",
       });
 
       expect(result).toEqual({
         "default-space": "custom-space",
-        "logging-config": "debug",
+        "logging-config": "<root>=DEBUG",
+        arch: "amd64",
       });
     });
   });

@@ -26,7 +26,7 @@ import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
 import { FieldName as ConfigFieldName } from "./ConfigsConstraints/types";
 import { DisableType } from "./ConfigsConstraints/types";
 import {
-  buildChangedConfigPayload,
+  buildConfigsConstraintsPayload,
   getConfigInitialValues,
 } from "./ConfigsConstraints/utils";
 import MandatoryDetails from "./MandatoryDetails";
@@ -102,7 +102,7 @@ const AddModel: FC = () => {
       return;
     }
 
-    const config = buildChangedConfigPayload(CONFIG_CATEGORIES, values);
+    const config = buildConfigsConstraintsPayload(values);
     const shareModelWith = values.shareModelWith ?? {};
 
     dispatch(
