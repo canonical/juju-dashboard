@@ -131,6 +131,41 @@ describe("CategoriesListing", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("regenerates YAML to include newly changed fields", async () => {
+    render(
+      <Formik
+        initialValues={{
+          "default-space": "my-space",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <CategoriesListing {...defaultProps} />
+      </Formik>,
+    );
+
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
+    let textarea = screen.getByPlaceholderText(
+      Label.MODEL_CONFIG_PLACEHOLDER,
+    ) as HTMLTextAreaElement;
+    expect(textarea.value).toContain("# Networking & Firewall");
+    expect(textarea.value).not.toContain("# Proxy & Mirror");
+
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.LIST }));
+    const aptHttpProxyInput = document.querySelector(
+      'input[name="apt-http-proxy"]',
+    ) as HTMLInputElement;
+    await userEvent.type(aptHttpProxyInput, "http://proxy.example");
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
+
+    textarea = screen.getByPlaceholderText(
+      Label.MODEL_CONFIG_PLACEHOLDER,
+    ) as HTMLTextAreaElement;
+    expect(textarea.value).toContain("# Networking & Firewall");
+    expect(textarea.value).toContain("default-space: my-space");
+    expect(textarea.value).toContain("# Proxy & Mirror");
+    expect(textarea.value).toContain("apt-http-proxy: http://proxy.example");
+  });
+
   it("filters categories by field name", () => {
     vi.useFakeTimers();
     render(
@@ -139,12 +174,9 @@ describe("CategoriesListing", () => {
       </Formik>,
     );
 
-    fireEvent.change(
-      screen.getByRole("searchbox", {
-        name: "Search configurations",
-      }),
-      { target: { value: "default-space" } },
-    );
+    fireEvent.change(screen.getByRole("searchbox"), {
+      target: { value: "default-space" },
+    });
     act(() => {
       vi.advanceTimersByTime(250);
     });
@@ -163,10 +195,7 @@ describe("CategoriesListing", () => {
       </Formik>,
     );
 
-    const searchInput = screen.getByRole("searchbox", {
-      name: defaultProps.searchPlaceholder,
-    });
-
+    const searchInput = screen.getByRole("searchbox");
     fireEvent.change(searchInput, {
       target: { value: "network firewalling" },
     });
@@ -202,47 +231,17 @@ describe("CategoriesListing", () => {
       </Formik>,
     );
 
-    await userEvent.click(screen.getByLabelText(Label.CHANGED_CONFIGS_ONLY));
+    const changedOnlySwitch = screen.getByRole("switch", {
+      name: Label.CHANGED_CONFIGS_ONLY,
+    });
+    expect(changedOnlySwitch).not.toBeChecked();
+    await userEvent.click(changedOnlySwitch);
 
+    expect(changedOnlySwitch).toBeChecked();
     expect(screen.getByLabelText("default-space")).toBeInTheDocument();
     expect(
       screen.queryByLabelText("container-networking-method"),
     ).not.toBeInTheDocument();
-  });
-
-  it("regenerates YAML to include newly changed categories", async () => {
-    render(
-      <Formik
-        initialValues={{
-          "default-space": "my-space",
-        }}
-        onSubmit={vi.fn()}
-      >
-        <CategoriesListing {...defaultProps} />
-      </Formik>,
-    );
-
-    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
-    let textarea = screen.getByPlaceholderText(
-      Label.MODEL_CONFIG_PLACEHOLDER,
-    ) as HTMLTextAreaElement;
-    expect(textarea.value).toContain("# Networking & Firewall");
-    expect(textarea.value).not.toContain("# Proxy & Mirror");
-
-    await userEvent.click(screen.getByRole("radio", { name: InputMode.LIST }));
-    const aptHttpProxyInput = document.querySelector(
-      'input[name="apt-http-proxy"]',
-    ) as HTMLInputElement;
-    await userEvent.type(aptHttpProxyInput, "http://proxy.example");
-    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
-
-    textarea = screen.getByPlaceholderText(
-      Label.MODEL_CONFIG_PLACEHOLDER,
-    ) as HTMLTextAreaElement;
-    expect(textarea.value).toContain("# Networking & Firewall");
-    expect(textarea.value).toContain("default-space: my-space");
-    expect(textarea.value).toContain("# Proxy & Mirror");
-    expect(textarea.value).toContain("apt-http-proxy: http://proxy.example");
   });
 
   it("does not toggle and shows a tooltip when there are no changed fields", async () => {
@@ -252,12 +251,14 @@ describe("CategoriesListing", () => {
       </Formik>,
     );
 
-    expect(
-      screen.getByLabelText("container-networking-method"),
-    ).toBeInTheDocument();
-    await userEvent.click(screen.getByLabelText(Label.CHANGED_CONFIGS_ONLY));
+    const changedOnlySwitch = screen.getByRole("switch", {
+      name: Label.CHANGED_CONFIGS_ONLY,
+    });
+    expect(changedOnlySwitch).not.toBeChecked();
 
-    expect(screen.getByText(Label.CHANGED_CONFIGS_ONLY)).toBeInTheDocument();
+    await userEvent.click(changedOnlySwitch);
+    expect(changedOnlySwitch).not.toBeChecked();
+    expect(screen.getByText(Label.NO_CHANGED_CONFIGS)).toBeInTheDocument();
   });
 
   it("clears the search and restores the full list", () => {
@@ -268,14 +269,12 @@ describe("CategoriesListing", () => {
       </Formik>,
     );
 
-    const searchInput = screen.getByRole("searchbox", {
-      name: defaultProps.searchPlaceholder,
-    });
+    const searchInput = screen.getByRole("searchbox");
     fireEvent.change(searchInput, { target: { value: "default-space" } });
+
     act(() => {
       vi.advanceTimersByTime(250);
     });
-
     expect(
       screen.queryByLabelText("container-networking-method"),
     ).not.toBeInTheDocument();

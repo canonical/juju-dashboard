@@ -52,41 +52,47 @@ describe("ConfigsConstraints", () => {
       </Formik>,
     );
 
-    const configSearchInput = screen.getByRole("searchbox", {
-      name: "Search configurations",
+    const configsSection = screen.getByRole("region", {
+      name: Label.CONFIGS_TITLE,
     });
-    fireEvent.change(configSearchInput, {
-      target: { value: "default-space" },
-    });
-    act(() => {
-      vi.advanceTimersByTime(250);
-    });
+    expect(
+      within(configsSection).getByLabelText("default-space"),
+    ).toBeInTheDocument();
+    expect(
+      within(configsSection).getByLabelText("container-networking-method"),
+    ).toBeInTheDocument();
 
     const constraintsSection = screen.getByRole("region", {
       name: Label.CONSTRAINTS_TITLE,
     });
-    expect(screen.getByLabelText("default-space")).toBeInTheDocument();
-    expect(
-      screen.queryByLabelText("container-networking-method"),
-    ).not.toBeInTheDocument();
     expect(
       within(constraintsSection).getByLabelText("cores"),
     ).toBeInTheDocument();
+    expect(
+      within(constraintsSection).getByLabelText("zones"),
+    ).toBeInTheDocument();
 
-    const constraintSearchInput = screen.getByRole("searchbox", {
-      name: "Search constraints",
+    const configsSearchInput = within(configsSection).getByRole("searchbox");
+    const constraintsSearchInput =
+      within(constraintsSection).getByRole("searchbox");
+
+    fireEvent.change(configsSearchInput, {
+      target: { value: "default-space" },
     });
-    fireEvent.change(constraintSearchInput, {
+    fireEvent.change(constraintsSearchInput, {
       target: { value: "cores" },
     });
     act(() => {
-      vi.advanceTimersByTime(250);
+      vi.advanceTimersByTime(500);
     });
 
-    expect(screen.getByLabelText("default-space")).toBeInTheDocument();
     expect(
-      screen.queryByLabelText("container-networking-method"),
+      within(configsSection).getByLabelText("default-space"),
+    ).toBeInTheDocument();
+    expect(
+      within(configsSection).queryByLabelText("container-networking-method"),
     ).not.toBeInTheDocument();
+
     expect(
       within(constraintsSection).getByLabelText("cores"),
     ).toBeInTheDocument();
