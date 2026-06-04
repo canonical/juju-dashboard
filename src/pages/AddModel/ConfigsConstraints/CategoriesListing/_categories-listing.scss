@@ -1,14 +1,17 @@
-.categories__form-scroll {
-  margin-bottom: 1rem;
-  max-height: min(27vh, calc(100vh - 26rem));
-  min-height: 10rem;
-  overflow-y: auto;
+.categories-listing {
+  display: flex;
+  flex-direction: column;
+  height: 52vh;
+  max-height: 70vh;
+  min-height: 20rem;
 
-  @media (max-width: $breakpoint-large) {
-    max-height: min(20rem, calc(100vh - 26rem));
+  .categories__form-scroll {
+    flex: 1;
+    margin-bottom: 1rem;
+    overflow-y: auto;
   }
-}
 
-.categories__yaml-input {
-  min-height: 10rem;
+  .categories__yaml-input {
+    min-height: 10rem;
+  }
 }

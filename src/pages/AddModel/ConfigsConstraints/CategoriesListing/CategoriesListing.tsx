@@ -86,7 +86,7 @@ const CategoriesListing = ({
 
   return (
     <section
-      className="p-section u-no-padding--bottom"
+      className="p-section u-no-padding--bottom categories-listing"
       aria-labelledby={`title-${id}`}
     >
       <h5 id={`title-${id}`} className="u-no-padding--top u-no-margin--bottom">

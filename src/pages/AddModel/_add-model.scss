@@ -1,7 +1,7 @@
 .add-model {
   display: flex;
   flex-direction: column;
-  height: 100dvh;
+  height: 100svh;
 
   &__content {
     display: flex;
@@ -46,14 +46,6 @@
     @include mobile {
       padding-left: 0;
       padding-right: 0;
-    }
-  }
-
-  .mandatory-details {
-    max-width: 40%;
-
-    @include mobile {
-      max-width: 100%;
     }
   }
 }
