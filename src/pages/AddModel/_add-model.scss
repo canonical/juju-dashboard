@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   height: 100svh;
+  position: fixed;
+  width: stretch;
 
   &__content {
     display: flex;
