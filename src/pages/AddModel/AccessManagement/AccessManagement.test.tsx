@@ -95,6 +95,51 @@ describe("AccessManagement", () => {
     expect(readButtons.length).toBeGreaterThan(0);
   });
 
+  it("updates the list when a user item is deselected from the multiselect dropdown", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.withConfig().build({
+        controllerConnections: {
+          "wss://controller.example.com": {
+            user: authUserInfoFactory.build({
+              identity: "user-eggman@external",
+            }),
+          },
+        },
+      }),
+    });
+
+    renderComponent(
+      <Formik
+        initialValues={{
+          shareModelWith: {
+            "eggman@external": "admin",
+            "reader@example.com": "read",
+          },
+        }}
+        onSubmit={vi.fn()}
+      >
+        <AccessManagement />
+      </Formik>,
+      { state },
+    );
+
+    await userEvent.click(
+      screen.getByRole("combobox", {
+        name: Label.MULTI_SELECT_LABEL,
+      }),
+    );
+    await userEvent.click(
+      screen.getByRole("checkbox", {
+        name: "reader@example.com",
+      }),
+    );
+
+    expect(screen.queryByText("reader@example.com")).not.toBeInTheDocument();
+    expect(screen.getByRole("table")).toHaveTextContent(
+      "eggman@external (you)",
+    );
+  });
+
   it("updates access level when changed from custom select", async () => {
     renderComponent(
       <Formik initialValues={{ shareModelWith: {} }} onSubmit={vi.fn()}>
