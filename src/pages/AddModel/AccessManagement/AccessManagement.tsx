@@ -20,6 +20,7 @@ import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import { AccessLevel } from "types";
 import { getUserName } from "utils";
+import { toastNotification } from "utils/toastNotification";
 
 import type { AddModelFormState } from "../types";
 
@@ -239,10 +240,24 @@ const AccessManagement = (): JSX.Element => {
                     className="u-no-margin--bottom u-no-padding--top u-no-padding--bottom"
                     disabled={userValue === activeUserName}
                     onClick={() => {
-                      void setFieldValue(
-                        "shareModelWith",
-                        removeUser(userValue, shareModelWith, activeUserName),
-                      );
+                      const { nextShareModelWith, showAccessRevertToast } =
+                        removeUser(userValue, shareModelWith, activeUserName);
+                      void setFieldValue("shareModelWith", nextShareModelWith);
+
+                      // Show a toast for when the active user's access is reverted
+                      if (showAccessRevertToast) {
+                        toastNotification(
+                          <>
+                            <b>Admin access set for {activeUserName}</b>
+                            <div>
+                              There needs to be at least 1 admin per model. Your
+                              role was reset to admin. To change your role add
+                              another admin user.
+                            </div>
+                          </>,
+                          "caution",
+                        );
+                      }
                     }}
                     aria-label={Label.BUTTON_DELETE}
                   >

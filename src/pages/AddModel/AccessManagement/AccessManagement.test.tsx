@@ -2,6 +2,7 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 
+import { ToastCardTestId } from "components/ToastCard";
 import {
   authUserInfoFactory,
   configFactory,
@@ -410,6 +411,12 @@ describe("AccessManagement", () => {
 
     expect(updatedActiveUserButton).toHaveAttribute("aria-disabled", "true");
     expect(updatedActiveUserButton).toHaveTextContent("Admin");
+
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
+    expect(card).toHaveAttribute("data-type", "caution");
+    expect(
+      await within(card).findByText("Admin access set for eggman@external"),
+    ).toBeInTheDocument();
   });
 
   it("restores active user to admin when the only admin is removed and readers remain", async () => {
