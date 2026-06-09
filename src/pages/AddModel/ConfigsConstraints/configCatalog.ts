@@ -1,10 +1,7 @@
 /* eslint-disable @cspell/spellchecker -- This file contains values as they come from Juju */
-import type { CategoryDefinition } from "./types";
+import { BOOLEAN_OPTIONS } from "consts";
 
-const BOOLEAN_OPTIONS = [
-  { label: "True", value: "true" },
-  { label: "False", value: "false" },
-];
+import type { CategoryDefinition } from "./types";
 
 export const CONFIG_CATEGORIES: CategoryDefinition[] = [
   {

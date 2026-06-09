@@ -45,7 +45,7 @@ const CategoriesListing = ({
   const [searchQuery, setSearchQuery] = useDebounce("", 250);
   const [changedOnly, setChangedOnly] = useState(false);
 
-  const isListMode = values[inputMode] !== InputMode.YAML;
+  const isListMode = values[inputMode] === InputMode.LIST;
   const handleModeChange = (isListModeSelected: boolean): void => {
     if (!isListModeSelected) {
       void setFieldValue(yamlKey, buildYAML(categoriesList, values));

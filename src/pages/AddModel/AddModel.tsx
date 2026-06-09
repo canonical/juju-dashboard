@@ -23,6 +23,7 @@ import AccessManagement from "./AccessManagement";
 import AddModelStepper from "./AddModelStepper";
 import ConfigsConstraints from "./ConfigsConstraints";
 import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
+import { CONSTRAINT_CATEGORIES } from "./ConfigsConstraints/constraintsCatalog";
 import { FieldName as ConfigFieldName } from "./ConfigsConstraints/types";
 import { DisableType } from "./ConfigsConstraints/types";
 import {
@@ -170,7 +171,10 @@ const AddModel: FC = () => {
               [ConfigFieldName.CONFIG_YAML]: "",
               [ConfigFieldName.CONSTRAINT_YAML]: "",
               [ConfigFieldName.DISABLED_COMMANDS]: DisableType.NONE,
-              ...getConfigInitialValues(CONFIG_CATEGORIES),
+              ...getConfigInitialValues([
+                ...CONFIG_CATEGORIES,
+                ...CONSTRAINT_CATEGORIES,
+              ]),
             }}
             validationSchema={validationSchema}
             // Mark credential as touched on mount as Vanilla doesn't display validation until the field loses focus.
