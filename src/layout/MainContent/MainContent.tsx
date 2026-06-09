@@ -28,28 +28,26 @@ const MainContent: FC<Props> = ({
         "l-main__content--has-secondary-nav": hasSecondaryNav,
       })}
     >
-      <>
-        {hasSecondaryNav && !loading ? (
-          <SecondaryNavigation
-            items={secondaryNav.items}
-            title={secondaryNav.title}
-          />
-        ) : null}
-        <Panel
-          className="l-main__panel"
-          {...testId(TestId.MAIN)}
-          titleClassName={titleClassName}
-          titleComponent={titleComponent}
-          stickyHeader
-          title={title}
-        >
-          <div className={classNames("l-content", contentClassName)} {...props}>
-            <FadeIn isActive={true}>
-              {loading ? <LoadingSpinner /> : children}
-            </FadeIn>
-          </div>
-        </Panel>
-      </>
+      {hasSecondaryNav && !loading ? (
+        <SecondaryNavigation
+          items={secondaryNav.items}
+          title={secondaryNav.title}
+        />
+      ) : null}
+      <Panel
+        className="l-main__panel"
+        {...testId(TestId.MAIN)}
+        titleClassName={titleClassName}
+        titleComponent={titleComponent}
+        stickyHeader
+        title={title}
+      >
+        <div className={classNames("l-content", contentClassName)} {...props}>
+          <FadeIn isActive={true}>
+            {loading ? <LoadingSpinner /> : children}
+          </FadeIn>
+        </div>
+      </Panel>
     </div>
   );
 };

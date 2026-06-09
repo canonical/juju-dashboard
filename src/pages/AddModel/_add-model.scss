@@ -3,6 +3,7 @@
   flex-direction: column;
   height: 100svh;
   position: fixed;
+  width: -webkit-fill-available;
   width: stretch;
 
   &__content {
