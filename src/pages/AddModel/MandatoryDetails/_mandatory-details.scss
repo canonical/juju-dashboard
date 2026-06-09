@@ -1,4 +1,7 @@
-.model-name-description {
-  color: $color-mid-dark;
-  margin-top: $spv--small;
+.mandatory-details {
+  max-width: 40%;
+
+  @include mobile {
+    max-width: 100%;
+  }
 }

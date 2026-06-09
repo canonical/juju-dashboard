@@ -100,10 +100,7 @@ const AccessManagement = (): JSX.Element => {
   };
 
   return (
-    <div
-      {...testId(TestId.ACCESS_MANAGEMENT_FORM)}
-      className="access-management"
-    >
+    <div {...testId(TestId.ACCESS_MANAGEMENT_FORM)}>
       {Label.MULTI_SELECT_LABEL}
       <div className="row u-no-padding">
         <div className="col-4">

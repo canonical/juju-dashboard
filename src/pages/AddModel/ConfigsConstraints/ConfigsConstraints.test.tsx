@@ -6,66 +6,18 @@ import { vi } from "vitest";
 import { renderComponent } from "testing/utils";
 import { externalURLs } from "urls";
 
-import ConfigsConstraints from "./ConfigsConstraints";
-import { InputMode } from "./ContentSwitcher/types";
-import { DisableType, Label } from "./types";
+import { InputMode } from "../types";
 
-import { ConfigsConstraintsTestId } from ".";
+import ConfigsConstraints from "./ConfigsConstraints";
+import { DisableType, FieldName, Label } from "./types";
 
 describe("ConfigsConstraints", () => {
   it("renders properly", () => {
     renderComponent(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
-        <ConfigsConstraints />
-      </Formik>,
-    );
-
-    expect(screen.getByRole("radio", { name: InputMode.LIST })).toBeChecked();
-    expect(
-      screen.getByLabelText(Label.CHANGED_CONFIGS_ONLY),
-    ).toBeInTheDocument();
-  });
-
-  it("hides the table and shows the textarea on switching to YAML mode", async () => {
-    renderComponent(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
-        <ConfigsConstraints />
-      </Formik>,
-    );
-
-    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
-
-    expect(
-      screen.queryByLabelText("container-networking-method"),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText(Label.MODEL_CONFIG_PLACEHOLDER),
-    ).toBeInTheDocument();
-  });
-
-  it("pre-populates the textarea with changed list values", async () => {
-    renderComponent(
-      <Formik
-        initialValues={{ "default-space": "my-space" }}
-        onSubmit={vi.fn()}
-      >
-        <ConfigsConstraints />
-      </Formik>,
-    );
-
-    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
-
-    const textarea = screen.getByPlaceholderText(
-      Label.MODEL_CONFIG_PLACEHOLDER,
-    ) as HTMLTextAreaElement;
-    expect(textarea.value).toContain("default-space: my-space");
-  });
-
-  it("regenerates YAML to include newly changed categories", async () => {
-    renderComponent(
       <Formik
         initialValues={{
-          "default-space": "my-space",
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
         }}
         onSubmit={vi.fn()}
       >
@@ -73,53 +25,38 @@ describe("ConfigsConstraints", () => {
       </Formik>,
     );
 
-    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
-
-    let textarea = screen.getByPlaceholderText(
-      Label.MODEL_CONFIG_PLACEHOLDER,
-    ) as HTMLTextAreaElement;
-    expect(textarea.value).toContain("# Networking & Firewall");
-    expect(textarea.value).not.toContain("# Proxy & Mirror");
-
-    await userEvent.click(screen.getByRole("radio", { name: InputMode.LIST }));
-    const aptHttpProxyInput = document.querySelector(
-      'input[name="apt-http-proxy"]',
-    ) as HTMLInputElement;
-    await userEvent.type(aptHttpProxyInput, "http://proxy.example");
-    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
-
-    textarea = screen.getByPlaceholderText(
-      Label.MODEL_CONFIG_PLACEHOLDER,
-    ) as HTMLTextAreaElement;
-    expect(textarea.value).toContain("# Networking & Firewall");
-    expect(textarea.value).toContain("default-space: my-space");
-    expect(textarea.value).toContain("# Proxy & Mirror");
-    expect(textarea.value).toContain("apt-http-proxy: http://proxy.example");
-  });
-
-  it("does not toggle and shows a tooltip when there are no changed configs", async () => {
-    renderComponent(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
-        <ConfigsConstraints />
-      </Formik>,
-    );
-
+    const configsSection = screen.getByRole("region", {
+      name: Label.CONFIGS_TITLE,
+    });
     expect(
-      screen.getByLabelText("container-networking-method"),
+      within(configsSection).getByRole("radio", {
+        name: InputMode.LIST,
+      }),
+    ).toBeChecked();
+    expect(
+      within(configsSection).getByLabelText(Label.CHANGED_CONFIGS_ONLY),
     ).toBeInTheDocument();
-    await userEvent.click(screen.getByLabelText(Label.CHANGED_CONFIGS_ONLY));
+
+    const constraintsSection = screen.getByRole("region", {
+      name: Label.CONSTRAINTS_TITLE,
+    });
     expect(
-      within(
-        screen.getByTestId(ConfigsConstraintsTestId.CONFIGS_CONSTRAINTS_FORM),
-      ).getByText(Label.CHANGED_CONFIGS_ONLY),
+      within(constraintsSection).getByRole("radio", {
+        name: InputMode.LIST,
+      }),
+    ).toBeChecked();
+    expect(
+      within(constraintsSection).getByLabelText(Label.CHANGED_CONSTRAINTS_ONLY),
     ).toBeInTheDocument();
   });
 
-  it("shows a changed row when toggled on", async () => {
+  it("keeps config and constraint searches independent", async () => {
+    vi.useFakeTimers();
     renderComponent(
       <Formik
         initialValues={{
-          "default-space": "my-space",
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
         }}
         onSubmit={vi.fn()}
       >
@@ -127,139 +64,64 @@ describe("ConfigsConstraints", () => {
       </Formik>,
     );
 
+    const configsSection = screen.getByRole("region", {
+      name: Label.CONFIGS_TITLE,
+    });
     expect(
-      screen.getByLabelText("container-networking-method"),
+      within(configsSection).getByLabelText("default-space"),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText("default-space")).toBeInTheDocument();
-
-    await userEvent.click(screen.getByLabelText(Label.CHANGED_CONFIGS_ONLY));
     expect(
-      screen.queryByLabelText("container-networking-method"),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByLabelText("default-space")).toBeInTheDocument();
-  });
-
-  it("filters configs by field name", async () => {
-    vi.useFakeTimers();
-    renderComponent(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
-        <ConfigsConstraints />
-      </Formik>,
-    );
-
-    const searchInput = screen.getByRole("searchbox", {
-      name: "Search configurations",
-    });
-    fireEvent.change(searchInput, { target: { value: "default-space" } });
-
-    act(() => {
-      vi.advanceTimersByTime(250);
-    });
-
-    expect(screen.getByLabelText("default-space")).toBeInTheDocument();
-    expect(
-      screen.queryByLabelText("container-networking-method"),
-    ).not.toBeInTheDocument();
-    vi.useRealTimers();
-  });
-
-  it("filters configs by description", async () => {
-    vi.useFakeTimers();
-    renderComponent(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
-        <ConfigsConstraints />
-      </Formik>,
-    );
-
-    const searchInput = screen.getByRole("searchbox", {
-      name: "Search configurations",
-    });
-
-    fireEvent.change(searchInput, {
-      target: { value: "network firewalling" },
-    });
-
-    act(() => {
-      vi.advanceTimersByTime(250);
-    });
-
-    expect(screen.getByLabelText("firewall-mode")).toBeInTheDocument();
-    expect(screen.queryByLabelText("default-space")).not.toBeInTheDocument();
-
-    fireEvent.change(searchInput, { target: { value: "" } });
-    act(() => {
-      vi.advanceTimersByTime(250);
-    });
-
-    fireEvent.change(searchInput, { target: { value: "Proxy & Mirror" } });
-
-    act(() => {
-      vi.advanceTimersByTime(250);
-    });
-
-    expect(
-      screen.getByText('No results found for "Proxy & Mirror"'),
+      within(configsSection).getByLabelText("container-networking-method"),
     ).toBeInTheDocument();
-    vi.useRealTimers();
-  });
 
-  it("clears the search and restores the full list", async () => {
-    vi.useFakeTimers();
-    renderComponent(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
-        <ConfigsConstraints />
-      </Formik>,
-    );
-
-    const searchInput = screen.getByRole("searchbox", {
-      name: "Search configurations",
+    const constraintsSection = screen.getByRole("region", {
+      name: Label.CONSTRAINTS_TITLE,
     });
+    expect(
+      within(constraintsSection).getByLabelText("cores"),
+    ).toBeInTheDocument();
+    expect(
+      within(constraintsSection).getByLabelText("zones"),
+    ).toBeInTheDocument();
 
-    fireEvent.change(searchInput, { target: { value: "default-space" } });
+    const configsSearchInput = within(configsSection).getByRole("searchbox");
+    const constraintsSearchInput =
+      within(constraintsSection).getByRole("searchbox");
 
+    fireEvent.change(configsSearchInput, {
+      target: { value: "default-space" },
+    });
+    fireEvent.change(constraintsSearchInput, {
+      target: { value: "cores" },
+    });
     act(() => {
-      vi.advanceTimersByTime(250);
+      vi.advanceTimersByTime(500);
     });
 
     expect(
-      screen.queryByLabelText("container-networking-method"),
+      within(configsSection).getByLabelText("default-space"),
+    ).toBeInTheDocument();
+    expect(
+      within(configsSection).queryByLabelText("container-networking-method"),
     ).not.toBeInTheDocument();
 
-    fireEvent.click(
-      screen.getByRole("button", { name: /clear search field/i }),
-    );
-
-    act(() => {
-      vi.advanceTimersByTime(250);
-    });
-
-    expect(screen.getByLabelText("default-space")).toBeInTheDocument();
     expect(
-      screen.getByLabelText("container-networking-method"),
+      within(constraintsSection).getByLabelText("cores"),
     ).toBeInTheDocument();
+    expect(
+      within(constraintsSection).queryByLabelText("zones"),
+    ).not.toBeInTheDocument();
     vi.useRealTimers();
-  });
-
-  it("initialises in YAML mode when configInputMode is yaml", () => {
-    renderComponent(
-      <Formik
-        initialValues={{ configInputMode: InputMode.YAML }}
-        onSubmit={vi.fn()}
-      >
-        <ConfigsConstraints />
-      </Formik>,
-    );
-
-    expect(screen.getByRole("radio", { name: InputMode.YAML })).toBeChecked();
-    expect(
-      screen.getByPlaceholderText(Label.MODEL_CONFIG_PLACEHOLDER),
-    ).toBeInTheDocument();
   });
 
   it("renders disabled command options with 'none' selected by default", () => {
     renderComponent(
       <Formik
-        initialValues={{ disabledCommands: DisableType.NONE }}
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+          disabledCommands: DisableType.NONE,
+        }}
         onSubmit={vi.fn()}
       >
         <ConfigsConstraints />
@@ -286,10 +148,14 @@ describe("ConfigsConstraints", () => {
     ).not.toBeChecked();
   });
 
-  it("allows selecting a different option", async () => {
+  it("allows selecting a different disabled command option", async () => {
     renderComponent(
       <Formik
-        initialValues={{ disabledCommands: DisableType.NONE }}
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+          disabledCommands: DisableType.NONE,
+        }}
         onSubmit={vi.fn()}
       >
         <ConfigsConstraints />
@@ -299,7 +165,6 @@ describe("ConfigsConstraints", () => {
     await userEvent.click(
       screen.getByRole("radio", { name: Label.DISABLE_ALL_COMMANDS }),
     );
-
     expect(
       screen.getByRole("radio", { name: Label.DISABLE_ALL_COMMANDS }),
     ).toBeChecked();

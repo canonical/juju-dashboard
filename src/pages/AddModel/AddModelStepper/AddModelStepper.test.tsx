@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 
-import { InputMode } from "../ConfigsConstraints/ContentSwitcher/types";
 import { DisableType, FieldName } from "../ConfigsConstraints/types";
 import {
+  InputMode,
   type AddModelFormState,
   Label,
   type StepDefinition,
@@ -43,7 +43,9 @@ describe("AddModelStepper", () => {
       region: "",
       credential: "",
       [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+      [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
       [FieldName.CONFIG_YAML]: "",
+      [FieldName.CONSTRAINT_YAML]: "",
       [FieldName.DISABLED_COMMANDS]: DisableType.NONE,
     };
   });

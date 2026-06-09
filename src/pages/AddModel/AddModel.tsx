@@ -22,12 +22,12 @@ import { toastNotification } from "utils/toastNotification";
 import AccessManagement from "./AccessManagement";
 import AddModelStepper from "./AddModelStepper";
 import ConfigsConstraints from "./ConfigsConstraints";
-import { InputMode } from "./ConfigsConstraints/ContentSwitcher/types";
 import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
+import { CONSTRAINT_CATEGORIES } from "./ConfigsConstraints/constraintsCatalog";
 import { FieldName as ConfigFieldName } from "./ConfigsConstraints/types";
 import { DisableType } from "./ConfigsConstraints/types";
 import {
-  buildChangedConfigPayload,
+  buildConfigsConstraintsPayload,
   getConfigInitialValues,
 } from "./ConfigsConstraints/utils";
 import MandatoryDetails from "./MandatoryDetails";
@@ -35,6 +35,7 @@ import {
   TestId,
   StepType,
   Label,
+  InputMode,
   type AddModelFormState,
   type StepDefinition,
 } from "./types";
@@ -102,7 +103,7 @@ const AddModel: FC = () => {
       return;
     }
 
-    const config = buildChangedConfigPayload(CONFIG_CATEGORIES, values);
+    const config = buildConfigsConstraintsPayload(values);
     const shareModelWith = values.shareModelWith ?? {};
 
     dispatch(
@@ -166,9 +167,14 @@ const AddModel: FC = () => {
               region: "",
               credential: "",
               [ConfigFieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+              [ConfigFieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
               [ConfigFieldName.CONFIG_YAML]: "",
+              [ConfigFieldName.CONSTRAINT_YAML]: "",
               [ConfigFieldName.DISABLED_COMMANDS]: DisableType.NONE,
-              ...getConfigInitialValues(CONFIG_CATEGORIES),
+              ...getConfigInitialValues([
+                ...CONFIG_CATEGORIES,
+                ...CONSTRAINT_CATEGORIES,
+              ]),
             }}
             validationSchema={validationSchema}
             // Mark credential as touched on mount as Vanilla doesn't display validation until the field loses focus.
