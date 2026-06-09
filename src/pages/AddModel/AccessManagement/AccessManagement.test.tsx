@@ -9,6 +9,7 @@ import {
   generalStateFactory,
 } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
+import { findNotificationByText } from "testing/queries/notifications";
 import { customWithin } from "testing/queries/within";
 import { renderComponent } from "testing/utils";
 
@@ -458,9 +459,15 @@ describe("AccessManagement", () => {
     expect(updatedActiveUserButton).toHaveTextContent("Admin");
 
     const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
-    expect(card).toHaveAttribute("data-type", "caution");
     expect(
-      await within(card).findByText("Admin access set for eggman@external"),
+      await findNotificationByText(
+        card,
+        "Admin access set for eggman@external",
+        {
+          appearance: "toast",
+          severity: "caution",
+        },
+      ),
     ).toBeInTheDocument();
   });
 

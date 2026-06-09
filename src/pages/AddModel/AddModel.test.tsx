@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ToastCardTestId } from "components/ToastCard";
@@ -13,6 +13,7 @@ import {
   userCredentialsStateFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
+import { findNotificationByText } from "testing/queries/notifications";
 import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
@@ -392,9 +393,11 @@ describe("AddModel page", () => {
     renderComponent(<AddModel />, { state });
 
     const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
-    expect(card).toHaveAttribute("data-type", "positive");
     expect(
-      await within(card).findByText('Model "" added successfully'),
+      await findNotificationByText(card, 'Model "" added successfully', {
+        appearance: "toast",
+        severity: "positive",
+      }),
     ).toBeInTheDocument();
   });
 
@@ -408,9 +411,11 @@ describe("AddModel page", () => {
     renderComponent(<AddModel />, { state });
 
     const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
-    expect(card).toHaveAttribute("data-type", "negative");
     expect(
-      await within(card).findByText('Adding model "" failed'),
+      await findNotificationByText(card, 'Adding model "" failed', {
+        appearance: "toast",
+        severity: "negative",
+      }),
     ).toBeInTheDocument();
   });
 
