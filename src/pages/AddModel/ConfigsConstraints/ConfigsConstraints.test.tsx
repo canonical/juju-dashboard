@@ -9,12 +9,18 @@ import { externalURLs } from "urls";
 import { InputMode } from "../types";
 
 import ConfigsConstraints from "./ConfigsConstraints";
-import { DisableType, Label } from "./types";
+import { DisableType, FieldName, Label } from "./types";
 
 describe("ConfigsConstraints", () => {
   it("renders properly", () => {
     renderComponent(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
+      <Formik
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+        }}
+        onSubmit={vi.fn()}
+      >
         <ConfigsConstraints />
       </Formik>,
     );
@@ -47,7 +53,13 @@ describe("ConfigsConstraints", () => {
   it("keeps config and constraint searches independent", async () => {
     vi.useFakeTimers();
     renderComponent(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
+      <Formik
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+        }}
+        onSubmit={vi.fn()}
+      >
         <ConfigsConstraints />
       </Formik>,
     );
@@ -105,7 +117,11 @@ describe("ConfigsConstraints", () => {
   it("renders disabled command options with 'none' selected by default", () => {
     renderComponent(
       <Formik
-        initialValues={{ disabledCommands: DisableType.NONE }}
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+          disabledCommands: DisableType.NONE,
+        }}
         onSubmit={vi.fn()}
       >
         <ConfigsConstraints />
@@ -135,7 +151,11 @@ describe("ConfigsConstraints", () => {
   it("allows selecting a different disabled command option", async () => {
     renderComponent(
       <Formik
-        initialValues={{ disabledCommands: DisableType.NONE }}
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+          disabledCommands: DisableType.NONE,
+        }}
         onSubmit={vi.fn()}
       >
         <ConfigsConstraints />

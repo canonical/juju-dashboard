@@ -37,7 +37,10 @@ describe("CategoriesListing", () => {
 
   it("renders properly", () => {
     render(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
+      <Formik
+        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
+        onSubmit={vi.fn()}
+      >
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
@@ -59,7 +62,10 @@ describe("CategoriesListing", () => {
 
   it("shows list mode content by default", () => {
     render(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
+      <Formik
+        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
+        onSubmit={vi.fn()}
+      >
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
@@ -95,7 +101,10 @@ describe("CategoriesListing", () => {
   it("switches to yaml mode and builds yaml from changed values", async () => {
     render(
       <Formik
-        initialValues={{ "default-space": "my-space" }}
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          "default-space": "my-space",
+        }}
         onSubmit={vi.fn()}
       >
         <CategoriesListing {...defaultProps} />
@@ -135,6 +144,7 @@ describe("CategoriesListing", () => {
     render(
       <Formik
         initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
           "default-space": "my-space",
         }}
         onSubmit={vi.fn()}
@@ -169,7 +179,10 @@ describe("CategoriesListing", () => {
   it("filters categories by field name", () => {
     vi.useFakeTimers();
     render(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
+      <Formik
+        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
+        onSubmit={vi.fn()}
+      >
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
@@ -190,7 +203,10 @@ describe("CategoriesListing", () => {
   it("filters categories by description", () => {
     vi.useFakeTimers();
     render(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
+      <Formik
+        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
+        onSubmit={vi.fn()}
+      >
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
@@ -224,7 +240,10 @@ describe("CategoriesListing", () => {
   it("shows only changed fields when toggled on", async () => {
     render(
       <Formik
-        initialValues={{ "default-space": "my-space" }}
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          "default-space": "my-space",
+        }}
         onSubmit={vi.fn()}
       >
         <CategoriesListing {...defaultProps} />
@@ -246,7 +265,10 @@ describe("CategoriesListing", () => {
 
   it("does not toggle and shows a tooltip when there are no changed fields", async () => {
     render(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
+      <Formik
+        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
+        onSubmit={vi.fn()}
+      >
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
@@ -264,7 +286,10 @@ describe("CategoriesListing", () => {
   it("clears the search and restores the full list", () => {
     vi.useFakeTimers();
     render(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
+      <Formik
+        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
+        onSubmit={vi.fn()}
+      >
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
