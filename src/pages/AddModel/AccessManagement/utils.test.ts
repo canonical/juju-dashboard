@@ -153,8 +153,11 @@ describe("AccessManagement utils", () => {
         "user@example.com",
       );
       expect(result).toEqual({
-        "user@example.com": AccessLevel.ADMIN,
-        "user2@example.com": AccessLevel.READ,
+        nextShareModelWith: {
+          "user@example.com": AccessLevel.ADMIN,
+          "user2@example.com": AccessLevel.READ,
+        },
+        showAccessRevertToast: false,
       });
     });
 
@@ -168,7 +171,10 @@ describe("AccessManagement utils", () => {
         "user1@example.com",
       );
       expect(result).toEqual({
-        "user1@example.com": AccessLevel.ADMIN,
+        nextShareModelWith: {
+          "user1@example.com": AccessLevel.ADMIN,
+        },
+        showAccessRevertToast: false,
       });
     });
 
@@ -183,7 +189,26 @@ describe("AccessManagement utils", () => {
         "user2@example.com",
       );
       expect(result).toEqual({
-        "user2@example.com": AccessLevel.ADMIN,
+        nextShareModelWith: {
+          "user2@example.com": AccessLevel.ADMIN,
+        },
+        showAccessRevertToast: true,
+      });
+    });
+
+    it("treats the active user as implicit admin when the key is missing", () => {
+      const shareModelWith = {
+        "other-admin@example.com": AccessLevel.ADMIN,
+      };
+      const result = removeUser(
+        "other-admin@example.com",
+        shareModelWith,
+        "owner@example.com",
+      );
+
+      expect(result).toEqual({
+        nextShareModelWith: {},
+        showAccessRevertToast: false,
       });
     });
 
@@ -199,8 +224,11 @@ describe("AccessManagement utils", () => {
         "owner@example.com",
       );
       expect(result).toEqual({
-        "owner@example.com": AccessLevel.ADMIN,
-        "reader@example.com": AccessLevel.READ,
+        nextShareModelWith: {
+          "owner@example.com": AccessLevel.ADMIN,
+          "reader@example.com": AccessLevel.READ,
+        },
+        showAccessRevertToast: true,
       });
     });
   });

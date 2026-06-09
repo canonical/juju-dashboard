@@ -74,25 +74,32 @@ export const removeUser = (
   userValue: number | string,
   shareModelWith: Record<string, string>,
   activeUserName?: string,
-): Record<string, string> => {
+): {
+  nextShareModelWith: Record<string, string>;
+  showAccessRevertToast: boolean;
+} => {
   const { [userValue]: _removedUser, ...nextShareModelWith } = shareModelWith;
+  let showAccessRevertToast = false;
 
   if (activeUserName) {
-    const activeUserIsAdmin =
-      nextShareModelWith[activeUserName] === AccessLevel.ADMIN;
     const hasOtherAdmins = hasOtherAdmin(
       nextShareModelWith,
       activeUserName,
       activeUserName,
     );
 
+    // Missing key means the active user is implicit admin.
+    const activeUserIsAdmin =
+      (nextShareModelWith[activeUserName] ?? AccessLevel.ADMIN) ===
+      AccessLevel.ADMIN;
     // Ensure at least one admin remains after a removal.
     if (!activeUserIsAdmin && !hasOtherAdmins) {
       nextShareModelWith[activeUserName] = AccessLevel.ADMIN;
+      showAccessRevertToast = true;
     }
   }
 
-  return nextShareModelWith;
+  return { nextShareModelWith, showAccessRevertToast };
 };
 
 /**

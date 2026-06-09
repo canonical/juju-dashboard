@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import type { JSX } from "react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
@@ -9,6 +9,7 @@ import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
+import { findNotificationByText } from "testing/queries/notifications";
 import { createStore, renderComponent } from "testing/utils";
 
 import useModelDestructionToaster from "./useModelDestructionToaster";
@@ -70,9 +71,11 @@ describe("useModelDestructionToaster", () => {
     renderComponent(<TestComponent />, { state });
 
     const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
-    expect(card).toHaveAttribute("data-type", "information");
     expect(
-      await within(card).findByText('Destroying model "enterprise"...'),
+      await findNotificationByText(card, 'Destroying model "enterprise"...', {
+        appearance: "toast",
+        severity: "information",
+      }),
     ).toBeInTheDocument();
   });
 
@@ -110,9 +113,15 @@ describe("useModelDestructionToaster", () => {
     });
 
     const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
-    expect(card).toHaveAttribute("data-type", "negative");
     expect(
-      await within(card).findByText('Destroying model "enterprise" failed'),
+      await findNotificationByText(
+        card,
+        'Destroying model "enterprise" failed',
+        {
+          appearance: "toast",
+          severity: "negative",
+        },
+      ),
     ).toBeInTheDocument();
 
     await waitFor(() => {
@@ -144,10 +153,14 @@ describe("useModelDestructionToaster", () => {
     });
 
     const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
-    expect(card).toHaveAttribute("data-type", "positive");
     expect(
-      await within(card).findByText(
+      await findNotificationByText(
+        card,
         'Model "enterprise" destroyed successfully',
+        {
+          appearance: "toast",
+          severity: "positive",
+        },
       ),
     ).toBeInTheDocument();
 

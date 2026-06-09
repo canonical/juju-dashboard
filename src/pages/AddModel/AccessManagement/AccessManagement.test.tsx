@@ -2,12 +2,14 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 
+import { ToastCardTestId } from "components/ToastCard";
 import {
   authUserInfoFactory,
   configFactory,
   generalStateFactory,
 } from "testing/factories/general";
 import { rootStateFactory } from "testing/factories/root";
+import { findNotificationByText } from "testing/queries/notifications";
 import { customWithin } from "testing/queries/within";
 import { renderComponent } from "testing/utils";
 
@@ -92,6 +94,51 @@ describe("AccessManagement", () => {
 
     const readButtons = screen.getAllByRole("button", { name: "Read" });
     expect(readButtons.length).toBeGreaterThan(0);
+  });
+
+  it("updates the list when a user item is deselected from the multiselect dropdown", async () => {
+    const state = rootStateFactory.build({
+      general: generalStateFactory.withConfig().build({
+        controllerConnections: {
+          "wss://controller.example.com": {
+            user: authUserInfoFactory.build({
+              identity: "user-eggman@external",
+            }),
+          },
+        },
+      }),
+    });
+
+    renderComponent(
+      <Formik
+        initialValues={{
+          shareModelWith: {
+            "eggman@external": "admin",
+            "reader@example.com": "read",
+          },
+        }}
+        onSubmit={vi.fn()}
+      >
+        <AccessManagement />
+      </Formik>,
+      { state },
+    );
+
+    await userEvent.click(
+      screen.getByRole("combobox", {
+        name: Label.MULTI_SELECT_LABEL,
+      }),
+    );
+    await userEvent.click(
+      screen.getByRole("checkbox", {
+        name: "reader@example.com",
+      }),
+    );
+
+    expect(screen.queryByText("reader@example.com")).not.toBeInTheDocument();
+    expect(screen.getByRole("table")).toHaveTextContent(
+      "eggman@external (you)",
+    );
   });
 
   it("updates access level when changed from custom select", async () => {
@@ -410,6 +457,18 @@ describe("AccessManagement", () => {
 
     expect(updatedActiveUserButton).toHaveAttribute("aria-disabled", "true");
     expect(updatedActiveUserButton).toHaveTextContent("Admin");
+
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
+    expect(
+      await findNotificationByText(
+        card,
+        "Admin access set for eggman@external",
+        {
+          appearance: "toast",
+          severity: "caution",
+        },
+      ),
+    ).toBeInTheDocument();
   });
 
   it("restores active user to admin when the only admin is removed and readers remain", async () => {
