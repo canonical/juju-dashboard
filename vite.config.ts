@@ -9,6 +9,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
+    base: "./",
     build: {
       outDir: "build",
     },
@@ -37,11 +38,21 @@ export default defineConfig(({ mode }) => {
         ? null
         : // The template format is handled by the dev and jaas configs when in development.
           createHtmlPlugin({
-            inject: {
-              data: {
-                injectScript: "",
+            pages: [
+              {
+                filename: "index.html",
+                template: "index.html",
+                injectOptions: {
+                  data: {
+                    injectScript: "",
+                  },
+                },
               },
-            },
+              {
+                filename: "index.charm.html",
+                template: "index.charm.html",
+              },
+            ],
           }),
       {
         // Remove config files that are used for development.
