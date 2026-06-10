@@ -12,20 +12,21 @@ server {
 
     server_name _;
 
-    location / {
+    location {{base_app_url}}/ {
         try_files /index.html =404;
     }
 
-    location /config.js {
+    location {{base_app_url}}/config.js {
         try_files /config.js =404;
     }
 
-    location /assets {
-        try_files $uri =404; 
+    location ~ ^{{base_app_url|replace("/", "\/")}}(\/assets\/.+$) {
+        try_files $1 =404;
     }
 
 {% if is_juju %}
-    location ~ /api$ {
+    location ~ ^{{base_app_url|replace("/", "\/")}}((\/.+)?\/api$) {
+        rewrite ^{{base_app_url|replace("/", "\/")}}((\/.+)?\/api$) $1 break;
         proxy_pass {{controller_ws_api}};
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
@@ -33,7 +34,8 @@ server {
         proxy_set_header Host $host;
     }
 
-    location ~ /commands$ {
+    location ~ ^{{base_app_url|replace("/", "\/")}}((\/.+)?\/commands$) {
+        rewrite ^{{base_app_url|replace("/", "\/")}}((\/.+)?\/commands$) $1 break;
         proxy_pass {{controller_ws_api}};
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
