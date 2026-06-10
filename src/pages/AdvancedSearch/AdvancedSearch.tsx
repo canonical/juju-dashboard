@@ -1,6 +1,7 @@
 import type { JSX } from "react";
 
 import CheckPermissions from "components/CheckPermissions";
+import useWindowTitle from "hooks/useWindowTitle";
 import MainContent from "layout/MainContent";
 import { isCrossModelQueriesEnabled } from "store/general/selectors";
 import { useAppSelector } from "store/store";
@@ -13,6 +14,7 @@ import { Label, TestId } from "./types";
 
 const AdvancedSearch = (): JSX.Element => {
   const crossModelQueriesEnabled = useAppSelector(isCrossModelQueriesEnabled);
+  useWindowTitle(Label.TITLE);
   return (
     <CheckPermissions
       allowed={crossModelQueriesEnabled}

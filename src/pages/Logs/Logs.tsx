@@ -4,6 +4,7 @@ import ActionBar from "components/ActionBar";
 import AuditLogsTable from "components/AuditLogsTable/AuditLogsTable";
 import AuditLogsTableActions from "components/AuditLogsTable/AuditLogsTableActions";
 import CheckPermissions from "components/CheckPermissions";
+import useWindowTitle from "hooks/useWindowTitle";
 import { useAuditLogsPermitted } from "juju/api-hooks/permissions";
 import MainContent from "layout/MainContent";
 import { testId } from "testing/utils";
@@ -12,6 +13,7 @@ import { Label, TestId } from "./types";
 
 const Logs = (): JSX.Element => {
   const { loading, permitted } = useAuditLogsPermitted();
+  useWindowTitle(Label.TITLE);
   return (
     <CheckPermissions
       allowed={permitted}

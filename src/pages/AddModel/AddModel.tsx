@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import CheckPermissions from "components/CheckPermissions";
 import FormikFormData from "components/FormikFormData";
 import { useCanAddModel } from "hooks/useCanAddModel";
+import useWindowTitle from "hooks/useWindowTitle";
 import { getActiveUserTag, getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { getAddModelState } from "store/juju/selectors";
@@ -89,6 +90,7 @@ const AddModel: FC = () => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [modelName, setModelName] = useState<string>("");
+  useWindowTitle(Label.TITLE);
 
   const handleCancel = (): void => {
     void navigate(urls.models.index);

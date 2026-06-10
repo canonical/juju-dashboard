@@ -8,6 +8,7 @@ import { axiosInstance } from "axios-instance";
 import CheckPermissions from "components/CheckPermissions";
 import useCanAccessReBACAdmin from "hooks/useCanAccessReBACAdmin";
 import useLogout from "hooks/useLogout";
+import useWindowTitle from "hooks/useWindowTitle";
 import { useIsJIMMAdmin } from "juju/api-hooks/permissions";
 import { endpoints } from "juju/jimm/api";
 import MainContent from "layout/MainContent";
@@ -43,6 +44,7 @@ const PermissionsPage = (): JSX.Element => {
   const logout = useLogout();
   const { loading } = useIsJIMMAdmin();
   const rebacAllowed = useCanAccessReBACAdmin();
+  useWindowTitle("Manage permissions");
 
   useRef(
     axiosInstance.interceptors.response.use(
