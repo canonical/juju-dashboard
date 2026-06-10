@@ -1,8 +1,8 @@
 import logging
 import os
 from pathlib import Path
-from jinja2 import Environment, FileSystemLoader
 
+from jinja2 import Environment, FileSystemLoader
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +23,7 @@ class Config:
         dashboard_root: str,
         analytics_enabled: bool,
         port: int,
+        base_app_url: str | None = None,
         config_file_name: str | None = None,
         has_external_controller_url=False,
     ):
@@ -35,19 +36,20 @@ class Config:
         self._analytics_enabled = analytics_enabled
         self._port = port
         self._has_external_controller_url = has_external_controller_url
+        self._base_app_url = base_app_url
 
     def generate(self):
         env = Environment(loader=FileSystemLoader(self._config_dir))
         env.filters["bool"] = to_bool
         config_template = env.get_template("config.js.j2")
-        base_url = (
-            ""
+        controller_base_url = (
+            self._base_app_url
             if self._is_juju and not self._has_external_controller_url
             else self._controller_url
         )
         config = config_template.render(
-            base_app_url="/",
-            controller_api_endpoint=f"{base_url}/api",
+            base_app_url=self._base_app_url,
+            controller_api_endpoint=f"{controller_base_url}/api",
             identity_provider_url=self._identity_provider_url or "",
             is_juju=self._is_juju,
             analytics_enabled=self._analytics_enabled,
@@ -58,20 +60,33 @@ class Config:
         if not controller_url.startswith("https://"):
             controller_url = "https://{}".format(controller_url)
         nginx_config = nginx_template.render(
+            base_app_url=self._base_app_url,
             controller_ws_api=controller_url,
             dashboard_root=self._dashboard_root,
             port=self._port,
             is_juju=self._is_juju,
         )
-        return config, nginx_config
+        index_template = env.get_template("index.charm.html")
+        base_app_url = (
+            self._base_app_url
+            if self._base_app_url is None or self._base_app_url.endswith("/")
+            else f"{self._base_app_url}/"
+        )
+        index_html = index_template.render(
+            base_app_url=base_app_url,
+        )
+        return config, nginx_config, index_html
 
-    def write(self, write_config_js=True, write_nginx=True):
-        dashboard_config, nginx_config = self.generate()
+    def write(self, write_config_js=True, write_nginx=True, write_index=True):
+        dashboard_config, nginx_config, index_html = self.generate()
         if write_config_js:
             config_path = Path(self._dashboard_root) / (
                 self._config_file_name or "config.js"
             )
             config_path.write_text(dashboard_config)
+        if write_index:
+            config_path = Path(self._dashboard_root) / "index.html"
+            config_path.write_text(index_html)
         if write_nginx:
             nginx_path = Path("/etc/nginx/sites-available/default")
             nginx_path.write_text(nginx_config)
@@ -105,4 +120,5 @@ if __name__ == "__main__":
         config.write(
             write_config_js=to_bool(os.environ.get("WRITE_CONFIG_JS", True)),
             write_nginx=to_bool(os.environ.get("WRITE_NGINX", True)),
+            write_index=to_bool(os.environ.get("WRITE_INDEX", True)),
         )
