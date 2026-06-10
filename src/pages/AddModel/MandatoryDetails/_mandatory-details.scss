@@ -1,7 +1,8 @@
 .mandatory-details {
-  max-width: 40%;
+  display: grid;
+  grid-template-columns: 0.4fr;
 
   @include mobile {
-    max-width: 100%;
+    grid-template-columns: 1fr;
   }
 }
