@@ -1766,7 +1766,7 @@ describe("reducers", () => {
             update: {
               error: {
                 message: "Something",
-                source: new Error("Something"),
+                source: "Something",
               },
             },
           }),
@@ -1775,7 +1775,7 @@ describe("reducers", () => {
           data: [],
           error: {
             message: "Something",
-            source: new Error("Something"),
+            source: "Something",
           },
           loading: false,
         });
@@ -1845,7 +1845,7 @@ describe("reducers", () => {
             update: {
               error: {
                 message: "Something",
-                source: new Error("Something"),
+                source: "Something",
               },
             },
           }),
@@ -1855,7 +1855,7 @@ describe("reducers", () => {
             data: [],
             error: {
               message: "Something",
-              source: new Error("Something"),
+              source: "Something",
             },
             loading: false,
           },
@@ -1941,7 +1941,7 @@ describe("reducers", () => {
             update: {
               error: {
                 message: "Something went wrong",
-                source: new Error("Something went wrong"),
+                source: "Something went wrong",
               },
             },
           }),
@@ -1950,7 +1950,7 @@ describe("reducers", () => {
           credentials: {},
           errors: {
             message: "Something went wrong",
-            source: new Error("Something went wrong"),
+            source: "Something went wrong",
           },
           loading: false,
         });
@@ -2044,7 +2044,7 @@ describe("reducers", () => {
             update: {
               error: {
                 message: "Something went wrong",
-                source: new Error("Something went wrong"),
+                source: "Something went wrong",
               },
             },
           }),
@@ -2053,7 +2053,7 @@ describe("reducers", () => {
           clouds: null,
           errors: {
             message: "Something went wrong",
-            source: new Error("Something went wrong"),
+            source: "Something went wrong",
           },
           loading: false,
         });

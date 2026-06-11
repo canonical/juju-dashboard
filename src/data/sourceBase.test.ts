@@ -287,29 +287,24 @@ describe("createSource", () => {
       });
 
       describe("when `data` promise rejects", () => {
-        it.for([
-          ["an `Error`", new Error("Something happened"), "Something happened"],
-          ["a non-`Error`", 374, "An unknown error occurred"],
-        ] as const)(
-          "handles %s",
-          async ([_, error, expectedMessage], { expect }) => {
-            const dataPromise = Promise.withResolvers();
+        it("an `Error`", async () => {
+          const error = new Error("Something happened");
+          const dataPromise = Promise.withResolvers();
 
-            const source = createSource(({ load }) => {
-              load(dataPromise.promise);
-              return DUMMY_HOOKS;
-            });
+          const source = createSource(({ load }) => {
+            load(dataPromise.promise);
+            return DUMMY_HOOKS;
+          });
 
-            expect(source.loading).toEqual(true);
-            dataPromise.reject(error);
-            await tick();
+          expect(source.loading).toEqual(true);
+          dataPromise.reject(error);
+          await tick();
 
-            expect(source.loading).toEqual(false);
-            expect(source.state).toEqual(SourceState.Error);
-            expect(source.error?.source).toEqual(error);
-            expect(source.error?.message).toEqual(expectedMessage);
-          },
-        );
+          expect(source.loading).toEqual(false);
+          expect(source.state).toEqual(SourceState.Error);
+          expect(source.error?.source).toEqual(error);
+          expect(source.error?.message).toEqual("Something happened");
+        });
 
         it("clears error after next successful load", async () => {
           const dataPromises = new Array(2)

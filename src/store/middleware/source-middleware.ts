@@ -85,7 +85,7 @@ export function createSourceMiddleware<T, P>(
     setLoading: (args: P, loading: boolean) => PayloadAction<unknown>;
     setError: (
       args: P,
-      error: { message: string; source: unknown } | null,
+      error: { message: string; source: Error } | null,
     ) => PayloadAction<unknown>;
   },
   hooks?: {

@@ -215,7 +215,7 @@ export function createSource<T>(
   /**
    * Helper to correctly format an error.
    */
-  function handleError(error: unknown): NonNullable<Source<unknown>["error"]> {
+  function handleError(error: Error): NonNullable<Source<unknown>["error"]> {
     // Extract the message of the error.
     let message = "An unknown error occurred";
     if (error instanceof Error) {
@@ -274,7 +274,7 @@ export function createSource<T>(
 
           modifySource(loadId, {
             loading: false,
-            error: handleError(error),
+            error: error instanceof Error ? handleError(error) : null,
             state: SourceState.Error,
           });
 
@@ -294,7 +294,7 @@ export function createSource<T>(
   } catch (error) {
     // Handle an error that occurs during setup.
     modifySource(Infinity, {
-      error: handleError(error),
+      error: error instanceof Error ? handleError(error) : null,
       state: SourceState.Error,
       loading: false,
     });

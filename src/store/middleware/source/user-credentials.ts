@@ -1,6 +1,7 @@
 import { createPollingSource } from "data/pollingSource";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as jujuActions } from "store/juju";
+import { toSerializableSourceError } from "store/util";
 
 import { hasConnections } from "../connection/util";
 import { createSourceMiddleware } from "../source-middleware";
@@ -55,7 +56,10 @@ export default createSourceMiddleware<
         update: { data: { [cloudTag]: data } },
       }),
     setError: ({ cloudTag }, error) =>
-      jujuActions.updateUserCredentials({ cloudTag, update: { error } }),
+      jujuActions.updateUserCredentials({
+        cloudTag,
+        update: { error: toSerializableSourceError(error) },
+      }),
     setLoading: ({ cloudTag }, loading) =>
       jujuActions.updateUserCredentials({
         cloudTag,
