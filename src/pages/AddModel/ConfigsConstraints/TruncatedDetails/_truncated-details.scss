@@ -1,0 +1,15 @@
+.truncated-details {
+  &__content {
+    vertical-align: bottom;
+  }
+
+  &__is-collapsed {
+    display: inline-block;
+    max-width: 90%;
+  }
+
+  &__is-expanded {
+    display: inline;
+    max-width: 100%;
+  }
+}
