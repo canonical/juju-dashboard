@@ -27,7 +27,12 @@ import type { AccessLevel } from "types";
 /**
  * Data derived from a `Source`.
  */
-export type SourceData<T> = Pick<Source<T>, "data" | "error" | "loading">;
+export type SourceData<T> = {
+  error: {
+    source: null | string;
+    message: string;
+  } | null;
+} & Pick<Source<T>, "data" | "loading">;
 
 export type ControllerLocation = {
   cloud?: string;

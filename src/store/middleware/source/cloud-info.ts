@@ -3,6 +3,7 @@ import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/Clo
 import { createPollingSource } from "data/pollingSource";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as jujuActions } from "store/juju";
+import { toSerializableSourceError } from "store/util";
 
 import { hasConnections } from "../connection/util";
 import { createSourceMiddleware } from "../source-middleware";
@@ -46,7 +47,10 @@ export default createSourceMiddleware<
       jujuActions.updateCloudInfo({
         update: { data },
       }),
-    setError: (_, error) => jujuActions.updateCloudInfo({ update: { error } }),
+    setError: (_, error) =>
+      jujuActions.updateCloudInfo({
+        update: { error: toSerializableSourceError(error) },
+      }),
     setLoading: (_, loading) =>
       jujuActions.updateCloudInfo({
         update: { loading },

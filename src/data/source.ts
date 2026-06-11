@@ -49,7 +49,7 @@ export type Source<T> = {
     /**
      * Underlying error object.
      */
-    source: unknown;
+    source: Error;
   } | null;
   /**
    * Callback subscription for source events.
@@ -81,7 +81,7 @@ export type Source<T> = {
  */
 export type Events<T> = {
   data: [data: T];
-  error: [message: string, source: unknown];
+  error: [message: string, source: Error];
   errorCleared: [];
   load: [result: Promise<T>];
   loadEnd: [];

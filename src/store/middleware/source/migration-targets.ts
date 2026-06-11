@@ -2,6 +2,7 @@ import { createPollingSource } from "data/pollingSource";
 import { listMigrationTargets } from "juju/jimm/api";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as jujuActions } from "store/juju";
+import { toSerializableSourceError } from "store/util";
 
 import { hasConnections } from "../connection/util";
 import { createSourceMiddleware } from "../source-middleware";
@@ -43,7 +44,10 @@ export default createSourceMiddleware<
         update: { data },
       }),
     setError: ({ modelUUID }, error) =>
-      jujuActions.updateModelMigrationTargets({ modelUUID, update: { error } }),
+      jujuActions.updateModelMigrationTargets({
+        modelUUID,
+        update: { error: toSerializableSourceError(error) },
+      }),
     setLoading: ({ modelUUID }, loading) =>
       jujuActions.updateModelMigrationTargets({
         modelUUID,

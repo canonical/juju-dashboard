@@ -6,6 +6,7 @@ import type {
 import { supportedJujuVersions } from "juju/jimm/api";
 import type { ConnectionWithFacades } from "juju/types";
 import { actions as jujuActions } from "store/juju";
+import { toSerializableSourceError } from "store/util";
 
 import { hasConnections } from "../connection/util";
 import { createSourceMiddleware } from "../source-middleware";
@@ -42,7 +43,7 @@ export default createSourceMiddleware<
     setError: ({ wsControllerURL }, error) =>
       jujuActions.updateSupportedJujuVersions({
         wsControllerURL,
-        update: { error },
+        update: { error: toSerializableSourceError(error) },
       }),
     setLoading: ({ wsControllerURL }, loading) => {
       return jujuActions.updateSupportedJujuVersions({
