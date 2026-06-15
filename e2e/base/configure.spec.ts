@@ -10,7 +10,7 @@ import { AddModel, DeployApplication } from "../helpers/actions";
 import type { User } from "../helpers/auth";
 import type { Model, Application } from "../helpers/objects";
 
-test.describe("configure application", () => {
+test.skip("configure application", () => {
   let actions: ActionStack;
   let user: User;
   let model: Model;

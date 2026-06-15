@@ -3,7 +3,6 @@ import { expect } from "@playwright/test";
 import { Label as ModelActionsLabel } from "components/ModelActions/types";
 import { Label as AccessManagementLabel } from "pages/AddModel/AccessManagement/types";
 import { Label as ConfigsConstraintsLabel } from "pages/AddModel/ConfigsConstraints/types";
-import { Label as MandatoryDetailsLabel } from "pages/AddModel/MandatoryDetails/types";
 import { Label as AddModelLabel } from "pages/AddModel/types";
 import urls from "urls";
 
@@ -12,13 +11,14 @@ import { ActionStack } from "../helpers/action";
 import { AddModel } from "../helpers/actions";
 import type { User } from "../helpers/auth";
 import { Model } from "../helpers/objects";
-import { exec, generateRandomName } from "../utils";
+import { exec, execIfModelExists, generateRandomName } from "../utils";
 
 test.describe("Add model", () => {
   let actions: ActionStack;
   let owner: User;
   let sharedUser: User;
   let currentModel: Model;
+  let shouldEnableDestroyBeforeCleanup: boolean;
 
   test.beforeAll(async ({ jujuCLI }) => {
     actions = new ActionStack(jujuCLI);
@@ -31,9 +31,18 @@ test.describe("Add model", () => {
 
   test.beforeEach(() => {
     currentModel = new Model(generateRandomName("model"), owner);
+    shouldEnableDestroyBeforeCleanup = false;
   });
 
   test.afterEach(async ({ jujuCLI }) => {
+    if (shouldEnableDestroyBeforeCleanup) {
+      await currentModel.owner.cliLogin(jujuCLI.browser);
+      await execIfModelExists(
+        `juju switch '${currentModel.qualifiedName}' && juju enable-command destroy-model`,
+        currentModel.qualifiedName,
+      );
+    }
+
     if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
       await exec(`juju switch '${jujuCLI.controller}'`);
       await jujuCLI.loginIdentityCLIAdmin();
@@ -52,9 +61,7 @@ test.describe("Add model", () => {
 
   test("can add a model", async ({ page }) => {
     await owner.dashboardLogin(page, urls.models.addModel);
-    await page
-      .getByLabel(new RegExp(MandatoryDetailsLabel.MODEL_NAME))
-      .fill(currentModel.name);
+    await page.locator('input[name="modelName"]').fill(currentModel.name);
     await expect(
       page.getByRole("button", { name: AddModelLabel.CREATE_BUTTON }),
     ).toBeEnabled();
@@ -77,9 +84,7 @@ test.describe("Add model", () => {
 
     // Fill in the mandatory details and go to the next step
     await owner.dashboardLogin(page, urls.models.addModel);
-    await page
-      .getByLabel(new RegExp(MandatoryDetailsLabel.MODEL_NAME))
-      .fill(currentModel.name);
+    await page.locator('input[name="modelName"]').fill(currentModel.name);
     await page.getByRole("button", { name: AddModelLabel.NEXT_BUTTON }).click();
 
     // Set default-space config
@@ -136,12 +141,12 @@ test.describe("Add model", () => {
   });
 
   test("disables commands selected during add-model", async ({ page }) => {
+    shouldEnableDestroyBeforeCleanup = true;
+
     await owner.dashboardLogin(page, urls.models.addModel);
 
     // Fill in the mandatory details and go to the next step
-    await page
-      .getByLabel(new RegExp(MandatoryDetailsLabel.MODEL_NAME))
-      .fill(currentModel.name);
+    await page.locator('input[name="modelName"]').fill(currentModel.name);
     await page.getByRole("button", { name: AddModelLabel.NEXT_BUTTON }).click();
 
     // Disable the destroy-model command and create the model
@@ -188,9 +193,7 @@ test.describe("Add model", () => {
     await owner.dashboardLogin(page, urls.models.addModel);
 
     // Fill in the mandatory details and go to Access Management step
-    await page
-      .getByLabel(new RegExp(MandatoryDetailsLabel.MODEL_NAME))
-      .fill(currentModel.name);
+    await page.locator('input[name="modelName"]').fill(currentModel.name);
     await page.getByText("Access Management (optional)").click();
 
     // Add another user to the list

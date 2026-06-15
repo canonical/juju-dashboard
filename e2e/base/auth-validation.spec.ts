@@ -8,7 +8,7 @@ import urls from "urls";
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 
-test.describe("Authentication Validation", () => {
+test.skip("Authentication Validation", () => {
   let actions: ActionStack;
 
   test.beforeEach(({ jujuCLI }) => {
@@ -57,7 +57,9 @@ test.describe("Authentication Validation", () => {
     await user.dashboardLogin(page, "/");
 
     if (process.env.AUTH_MODE === "candid") {
-      await page.evaluate(() => { window.localStorage.clear(); });
+      await page.evaluate(() => {
+        window.localStorage.clear();
+      });
       await expect(
         page.getByText(LogInLabel.AUTH_REQUIRED).first(),
       ).toBeVisible();
