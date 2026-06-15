@@ -55,6 +55,10 @@ export class AddModel implements Action<Model> {
   async rollback(): Promise<void> {
     const modelName = this.model.qualifiedName;
     await execIfModelExists(
+      `juju switch '${modelName}' && juju enable-command destroy-model`,
+      modelName,
+    );
+    await execIfModelExists(
       `juju destroy-model ${modelName} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
       modelName,
     );

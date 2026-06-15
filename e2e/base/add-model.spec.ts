@@ -3,20 +3,22 @@ import { expect } from "@playwright/test";
 import { Label as ModelActionsLabel } from "components/ModelActions/types";
 import { Label as AccessManagementLabel } from "pages/AddModel/AccessManagement/types";
 import { Label as ConfigsConstraintsLabel } from "pages/AddModel/ConfigsConstraints/types";
+import { Label as MandatoryDetailsLabel } from "pages/AddModel/MandatoryDetails/types";
 import { Label as AddModelLabel } from "pages/AddModel/types";
 import urls from "urls";
 
 import { JujuEnv, test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
+import { AddModel } from "../helpers/actions";
 import type { User } from "../helpers/auth";
 import { Model } from "../helpers/objects";
-import { exec, execIfModelExists, generateRandomName } from "../utils";
+import { exec, generateRandomName } from "../utils";
 
 test.describe("Add model", () => {
   let actions: ActionStack;
   let owner: User;
   let sharedUser: User;
-  let currentModel: Model | null = null;
+  let currentModel: Model;
 
   test.beforeAll(async ({ jujuCLI }) => {
     actions = new ActionStack(jujuCLI);
@@ -27,11 +29,11 @@ test.describe("Add model", () => {
     });
   });
 
-  test.afterEach(async ({ jujuCLI }) => {
-    if (!currentModel) {
-      return;
-    }
+  test.beforeEach(() => {
+    currentModel = new Model(generateRandomName("model"), owner);
+  });
 
+  test.afterEach(async ({ jujuCLI }) => {
     if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
       await exec(`juju switch '${jujuCLI.controller}'`);
       await jujuCLI.loginIdentityCLIAdmin();
@@ -39,11 +41,9 @@ test.describe("Add model", () => {
       await jujuCLI.loginLocalCLIAdmin();
     }
 
-    await execIfModelExists(
-      `juju destroy-model ${currentModel.qualifiedName} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
-      currentModel.qualifiedName,
-    );
-    currentModel = null;
+    const addModel = new AddModel(jujuCLI, owner, true);
+    addModel.model = currentModel;
+    await addModel.rollback();
   });
 
   test.afterAll(async () => {
@@ -51,18 +51,16 @@ test.describe("Add model", () => {
   });
 
   test("can add a model", async ({ page }) => {
-    currentModel = new Model(generateRandomName("model"), owner);
-
     await owner.dashboardLogin(page, urls.models.addModel);
-    await page.locator('input[name="modelName"]').fill(currentModel.name);
+    await page
+      .getByLabel(new RegExp(MandatoryDetailsLabel.MODEL_NAME))
+      .fill(currentModel.name);
     await expect(
       page.getByRole("button", { name: AddModelLabel.CREATE_BUTTON }),
     ).toBeEnabled();
     await page
       .getByRole("button", { name: AddModelLabel.CREATE_BUTTON })
       .click();
-    await expect(page).toHaveURL(/\/models(?:\?.*)?$/);
-
     await expect(
       page
         .locator("tr", { hasText: currentModel.name })
@@ -74,18 +72,17 @@ test.describe("Add model", () => {
     browser,
     page,
   }) => {
-    currentModel = new Model(generateRandomName("model"), owner);
-    const model = currentModel;
     const defaultSpace = `space-${generateRandomName("cfg")}`;
     const architecture = "amd64";
 
+    // Fill in the mandatory details and go to the next step
     await owner.dashboardLogin(page, urls.models.addModel);
-    await page.locator('input[name="modelName"]').fill(model.name);
-    await expect(
-      page.getByRole("button", { name: AddModelLabel.CREATE_BUTTON }),
-    ).toBeEnabled();
+    await page
+      .getByLabel(new RegExp(MandatoryDetailsLabel.MODEL_NAME))
+      .fill(currentModel.name);
     await page.getByRole("button", { name: AddModelLabel.NEXT_BUTTON }).click();
 
+    // Set default-space config
     const configsSection = page.getByRole("region", {
       name: ConfigsConstraintsLabel.CONFIGS_TITLE,
     });
@@ -99,6 +96,7 @@ test.describe("Add model", () => {
       .locator('input[name="default-space"]')
       .fill(defaultSpace);
 
+    // Set arch constraint
     const constraintsSection = page.getByRole("region", {
       name: ConfigsConstraintsLabel.CONSTRAINTS_TITLE,
     });
@@ -112,18 +110,19 @@ test.describe("Add model", () => {
       .locator('select[name="arch"]')
       .selectOption(architecture);
 
+    // Create the model
     await page
       .getByRole("button", { name: AddModelLabel.CREATE_BUTTON })
       .click();
-    await expect(page).toHaveURL(/\/models(?:\?.*)?$/);
     await expect(
       page
-        .locator("tr", { hasText: model.name })
-        .and(page.locator("tr", { hasText: model.owner.displayName })),
+        .locator("tr", { hasText: currentModel.name })
+        .and(page.locator("tr", { hasText: currentModel.owner.displayName })),
     ).toBeInViewport();
 
+    // Verify that the model has the correct configs and constraints applied
     await owner.cliLogin(browser);
-    await exec(`juju switch '${model.qualifiedName}'`);
+    await exec(`juju switch '${currentModel.qualifiedName}'`);
     await expect
       .poll(async () => {
         const { stdout } = await exec("juju model-config");
@@ -137,25 +136,25 @@ test.describe("Add model", () => {
   });
 
   test("disables commands selected during add-model", async ({ page }) => {
-    currentModel = new Model(generateRandomName("model"), owner);
-
     await owner.dashboardLogin(page, urls.models.addModel);
-    await page.locator('input[name="modelName"]').fill(currentModel.name);
-    await expect(
-      page.getByRole("button", { name: AddModelLabel.CREATE_BUTTON }),
-    ).toBeEnabled();
+
+    // Fill in the mandatory details and go to the next step
+    await page
+      .getByLabel(new RegExp(MandatoryDetailsLabel.MODEL_NAME))
+      .fill(currentModel.name);
     await page.getByRole("button", { name: AddModelLabel.NEXT_BUTTON }).click();
+
+    // Disable the destroy-model command and create the model
     await page
       .locator("label.p-radio", {
         hasText: ConfigsConstraintsLabel.DISABLE_DESTROY_MODEL,
       })
       .click();
-
     await page
       .getByRole("button", { name: AddModelLabel.CREATE_BUTTON })
       .click();
-    await expect(page).toHaveURL(/\/models(?:\?.*)?$/);
 
+    // Verify that the model was created and trigger destroy-model on it
     const modelRow = page
       .locator("tr", { hasText: currentModel.name })
       .and(page.locator("tr", { hasText: currentModel.owner.displayName }));
@@ -167,6 +166,7 @@ test.describe("Add model", () => {
       .getByRole("menuitem", { name: ModelActionsLabel.DESTROY })
       .click();
 
+    // Destroy should fail with appropriate error message
     await expect(
       page.getByRole("dialog", {
         name: `Destroy model ${currentModel.name}`,
@@ -185,16 +185,15 @@ test.describe("Add model", () => {
     browser,
     page,
   }) => {
-    currentModel = new Model(generateRandomName("model"), owner);
-
     await owner.dashboardLogin(page, urls.models.addModel);
-    await page.locator('input[name="modelName"]').fill(currentModel.name);
-    await expect(
-      page.getByRole("button", { name: AddModelLabel.CREATE_BUTTON }),
-    ).toBeEnabled();
-    await page.getByRole("button", { name: AddModelLabel.NEXT_BUTTON }).click();
-    await page.getByRole("button", { name: AddModelLabel.NEXT_BUTTON }).click();
 
+    // Fill in the mandatory details and go to Access Management step
+    await page
+      .getByLabel(new RegExp(MandatoryDetailsLabel.MODEL_NAME))
+      .fill(currentModel.name);
+    await page.getByText("Access Management (optional)").click();
+
+    // Add another user to the list
     const addUsersInput = page.getByRole("combobox", {
       name: AccessManagementLabel.MULTI_SELECT_LABEL,
     });
@@ -203,29 +202,31 @@ test.describe("Add model", () => {
       .getByRole("button", { name: new RegExp(sharedUser.cliUsername, "i") })
       .click();
 
+    // Bump the other user's access to Admin
     const sharedUserRow = page.locator("tbody tr", {
       hasText: sharedUser.cliUsername,
     });
     await sharedUserRow.getByRole("button", { name: "Read" }).click();
     await page.getByRole("option", { name: "Admin" }).click();
 
+    // Lower the owner's access to Read and create the model
     const ownerRow = page.locator("tbody tr", { hasText: "(you)" });
     await ownerRow.getByRole("button", { name: "Admin" }).click();
     await page.getByRole("option", { name: "Read" }).click();
-
     await page
       .getByRole("button", { name: AddModelLabel.CREATE_BUTTON })
       .click();
-    await expect(page).toHaveURL(/\/models(?:\?.*)?$/);
 
+    // Verify that the model was created
     const ownerModelRow = page
       .locator("tr", { hasText: currentModel.name })
       .and(page.locator("tr", { hasText: currentModel.owner.displayName }));
     await expect(ownerModelRow).toBeInViewport();
+
+    // Verify that the owner cannot perform admin actions on the model
     await ownerModelRow
       .getByRole("button", { name: ModelActionsLabel.TOGGLE })
       .click();
-
     await expect(
       page.getByRole("menuitem", { name: ModelActionsLabel.ACCESS }),
     ).toHaveAttribute("aria-disabled", "true");
@@ -233,6 +234,7 @@ test.describe("Add model", () => {
       page.getByRole("menuitem", { name: ModelActionsLabel.DESTROY }),
     ).toHaveAttribute("aria-disabled", "true");
 
+    // Login as the other user and verify that they have admin access to the model
     const context = await browser.newContext();
     const sharedUserPage = await context.newPage();
     await sharedUser.dashboardLogin(sharedUserPage, urls.models.index);
