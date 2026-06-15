@@ -19,7 +19,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "list",
   use: {
-    video: "on",
+    video: "retain-on-failure",
     baseURL: process.env.DASHBOARD_ADDRESS,
     trace: "on-first-retry",
     screenshot: "on",
