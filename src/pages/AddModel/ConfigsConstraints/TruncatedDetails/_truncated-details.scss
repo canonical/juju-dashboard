@@ -3,13 +3,16 @@
     vertical-align: bottom;
   }
 
-  &__is-collapsed {
-    display: inline-block;
-    max-width: 90%;
+  button.truncated-details__toggle[aria-expanded] {
+    background-color: $color-x-light;
+    text-wrap: nowrap;
   }
 
-  &__is-expanded {
-    display: inline;
-    max-width: 100%;
+  &--is-collapsed {
+    display: flex;
+  }
+
+  &--is-expanded {
+    display: inline-block;
   }
 }

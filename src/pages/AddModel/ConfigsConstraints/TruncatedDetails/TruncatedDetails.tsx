@@ -1,13 +1,8 @@
 import classNames from "classnames";
 import type { FC } from "react";
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useId, useState } from "react";
+
+import useTruncated from "hooks/useTruncated";
 
 type Props = {
   items: string[];
@@ -19,54 +14,22 @@ type Props = {
 const TruncatedDetails: FC<Props> = ({ items }: Props) => {
   const content = items.join(", ");
   const contentId = useId();
-  const truncatedNode = useRef<HTMLSpanElement>(null);
   const [expanded, setExpanded] = useState(false);
-  const [truncated, setTruncated] = useState(false);
-
-  const checkTruncated = useCallback(() => {
-    if (expanded) {
-      return;
-    }
-    // Check to see if the content is larger than the frame, in which case the
-    // CSS will be truncating the element.
-    setTruncated(
-      (truncatedNode.current &&
-        truncatedNode.current.offsetWidth <
-          truncatedNode.current.scrollWidth) ??
-        false,
-    );
-  }, [expanded]);
-
-  const resizeObserver = useMemo(
-    () => new ResizeObserver(checkTruncated),
-    [checkTruncated],
-  );
-
-  useEffect(() => {
-    const element = truncatedNode.current;
-    if (!element || expanded) {
-      return;
-    }
-    // Do an initial check for whether the content is truncated.
-    checkTruncated();
-    // Watch the content for resizes to check if the truncation changes.
-    resizeObserver.observe(element);
-    return (): void => {
-      if (truncatedNode) {
-        resizeObserver.unobserve(element);
-      }
-    };
-  }, [checkTruncated, expanded, resizeObserver]);
+  const { ref: truncatedNode, truncated } = useTruncated(!expanded);
 
   return (
-    <div className="truncated-details">
+    <div
+      className={classNames("truncated-details", {
+        "truncated-details--is-collapsed": !expanded,
+        "truncated-details--is-expanded": expanded,
+      })}
+    >
       <span
         id={contentId}
         ref={truncatedNode}
         className={classNames("truncated-details__content", {
-          "truncated-details__is-collapsed": !expanded,
-          "truncated-details__is-expanded": expanded,
           "u-truncate": !expanded,
+          "u-sh1--right": expanded,
         })}
       >
         <b>Disables commands:</b> {content}
@@ -74,7 +37,7 @@ const TruncatedDetails: FC<Props> = ({ items }: Props) => {
       {truncated ? (
         <button
           type="button"
-          className="p-button--link u-no-margin--bottom u-sh1 p-text--small u-no-padding"
+          className="truncated-details__toggle p-button--link u-no-margin p-text--small u-no-padding"
           aria-controls={contentId}
           aria-expanded={expanded}
           onClick={() => {
