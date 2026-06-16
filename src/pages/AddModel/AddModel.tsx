@@ -156,7 +156,7 @@ const AddModel: FC = () => {
     <CheckPermissions allowed={canCreateModel} {...testId(TestId.COMPONENT)}>
       <VanillaPanel
         className="add-model"
-        contentClassName="add-model__content"
+        contentClassName="add-model__content u-no-padding"
         title={Label.TITLE}
         {...testId(TestId.COMPONENT)}
         stickyHeader
@@ -205,7 +205,7 @@ const AddModel: FC = () => {
           <Button
             onClick={handleCancel}
             appearance="base"
-            className="u-no-margin--right"
+            className="u-no-margin"
           >
             {Label.CANCEL_BUTTON}
           </Button>
@@ -216,6 +216,7 @@ const AddModel: FC = () => {
               }}
               appearance="secondary"
               disabled={isFirstStep}
+              className="u-no-margin--bottom"
             >
               {Label.BACK_BUTTON}
             </Button>
@@ -224,6 +225,7 @@ const AddModel: FC = () => {
               type="button"
               onClick={handleNextClick}
               disabled={isLastStep}
+              className="u-no-margin--bottom"
             >
               {Label.NEXT_BUTTON}
             </Button>
@@ -233,6 +235,7 @@ const AddModel: FC = () => {
             type="submit"
             form={currentStep.key}
             disabled={!isValid}
+            className="u-no-margin--bottom"
           >
             {Label.CREATE_BUTTON}
           </ActionButton>
