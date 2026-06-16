@@ -1,82 +1,72 @@
-import { render, screen } from "@testing-library/react";
-import type { JSX } from "react";
+import { act, renderHook } from "@testing-library/react";
+import type { MockInstance } from "vitest";
 
-import useTruncated from "./useTruncated";
-
-const Harness = ({ enabled = true }): JSX.Element => {
-  const { ref, truncated } = useTruncated(enabled);
-
-  return (
-    <>
-      <span ref={ref}>Some content</span>
-      <span data-testid="truncated-state">{truncated.toString()}</span>
-    </>
-  );
-};
+import useTruncated, { checkTruncated } from "./useTruncated";
 
 describe("useTruncated", () => {
-  const offsetWidth = Object.getOwnPropertyDescriptor(
-    HTMLElement.prototype,
-    "offsetWidth",
-  );
-  const scrollWidth = Object.getOwnPropertyDescriptor(
-    HTMLElement.prototype,
-    "scrollWidth",
-  );
   const resizeObserver = globalThis.ResizeObserver;
+  let observe: MockInstance;
 
   beforeEach(() => {
+    observe = vi.fn();
+
     globalThis.ResizeObserver = vi.fn(() => {
       return {
-        observe: vi.fn(),
+        observe,
         unobserve: vi.fn(),
         disconnect: vi.fn(),
       } as unknown as ResizeObserver;
     }) as unknown as typeof ResizeObserver;
-
-    Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
-      configurable: true,
-      value: 1000,
-    });
-    Object.defineProperty(HTMLElement.prototype, "scrollWidth", {
-      configurable: true,
-      value: 1000,
-    });
   });
 
   afterEach(() => {
     globalThis.ResizeObserver = resizeObserver;
-
-    if (offsetWidth) {
-      Object.defineProperty(HTMLElement.prototype, "offsetWidth", offsetWidth);
-    }
-    if (scrollWidth) {
-      Object.defineProperty(HTMLElement.prototype, "scrollWidth", scrollWidth);
-    }
   });
 
-  it("returns false when the content fits", () => {
-    render(<Harness />);
-    expect(screen.getByTestId("truncated-state")).toHaveTextContent("false");
-  });
+  describe("checkTruncated", () => {
+    it("returns false when the content fits", () => {
+      const element = {
+        offsetWidth: 1000,
+        scrollWidth: 1000,
+      } as HTMLElement;
 
-  it("returns true when the content is truncated", () => {
-    Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
-      configurable: true,
-      value: 200,
+      expect(checkTruncated(element)).toBe(false);
     });
 
-    render(<Harness />);
-    expect(screen.getByTestId("truncated-state")).toHaveTextContent("true");
+    it("returns true when the content is truncated", () => {
+      const element = {
+        offsetWidth: 200,
+        scrollWidth: 1000,
+      } as HTMLElement;
+
+      expect(checkTruncated(element)).toBe(true);
+    });
+  });
+
+  it("sets truncated state from the observed element when enabled", () => {
+    const element = {
+      offsetWidth: 200,
+      scrollWidth: 1000,
+    } as HTMLElement;
+
+    const { result, rerender } = renderHook(
+      ({ enabled }) => useTruncated(enabled),
+      { initialProps: { enabled: false } },
+    );
+
+    act(() => {
+      result.current.ref.current = element;
+    });
+    rerender({ enabled: true });
+
+    expect(result.current.truncated).toBe(true);
+    expect(observe).toHaveBeenCalledTimes(1);
+    expect(observe).toHaveBeenCalledWith(element);
   });
 
   it("does not observe when disabled", () => {
-    Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
-      configurable: true,
-      value: 200,
-    });
-
-    render(<Harness enabled={false} />);
-    expect(screen.getByTestId("truncated-state")).toHaveTextContent("false");
+    const { result } = renderHook(() => useTruncated(false));
+    expect(result.current.truncated).toBe(false);
+    expect(observe).not.toHaveBeenCalled();
   });
 });

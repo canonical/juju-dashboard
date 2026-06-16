@@ -1,9 +1,9 @@
-.truncated-details {
+.truncated-commands {
   &__content {
     vertical-align: bottom;
   }
 
-  button.truncated-details__toggle[aria-expanded] {
+  button.truncated-commands__toggle[aria-expanded] {
     background-color: $color-x-light;
     text-wrap: nowrap;
   }

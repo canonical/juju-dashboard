@@ -5,7 +5,7 @@ import { testId } from "testing/utils";
 import { externalURLs } from "urls";
 
 import CategoriesListing from "./CategoriesListing";
-import TruncatedDetails from "./TruncatedDetails";
+import TruncatedCommands from "./TruncatedCommands";
 import { CONFIG_CATEGORIES } from "./configCatalog";
 import { CONSTRAINT_CATEGORIES } from "./constraintsCatalog";
 import { DISABLED_COMMAND_OPTIONS } from "./disabledCommandOptions";
@@ -59,7 +59,7 @@ const ConfigsConstraints = (): JSX.Element => {
               <div className="p-text--small u-no-margin--bottom">
                 {description}
                 {disabledCommands ? (
-                  <TruncatedDetails items={disabledCommands} />
+                  <TruncatedCommands items={disabledCommands} />
                 ) : null}
               </div>
             </div>

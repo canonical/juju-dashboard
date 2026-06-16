@@ -1,45 +1,32 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { MockInstance } from "vitest";
 
-import TruncatedDetails from "./TruncatedDetails";
+import * as useTruncatedModule from "hooks/useTruncated";
 
-describe("TruncatedDetails", () => {
-  const offsetWidth = Object.getOwnPropertyDescriptor(
-    HTMLElement.prototype,
-    "offsetWidth",
-  );
-  const scrollWidth = Object.getOwnPropertyDescriptor(
-    HTMLElement.prototype,
-    "scrollWidth",
-  );
+import TruncatedCommands from "./TruncatedCommands";
+
+describe("TruncatedCommands", () => {
+  let useTruncatedSpy: MockInstance;
 
   beforeEach(() => {
-    Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
-      configurable: true,
-      value: 1000,
-    });
-    Object.defineProperty(HTMLElement.prototype, "scrollWidth", {
-      configurable: true,
-      value: 1000,
+    useTruncatedSpy = vi.spyOn(useTruncatedModule, "default").mockReturnValue({
+      ref: { current: null },
+      truncated: false,
     });
   });
 
   afterEach(() => {
-    if (offsetWidth) {
-      Object.defineProperty(HTMLElement.prototype, "offsetWidth", offsetWidth);
-    }
-    if (scrollWidth) {
-      Object.defineProperty(HTMLElement.prototype, "scrollWidth", scrollWidth);
-    }
+    vi.restoreAllMocks();
   });
 
   it("does not render a toggle when the text fits", () => {
     render(
-      <TruncatedDetails items={["destroy-controller", "destroy-model"]} />,
+      <TruncatedCommands items={["destroy-controller", "destroy-model"]} />,
     );
 
     expect(
-      screen.queryByRole("button", { name: "Show more" }),
+      screen.queryByTestId("truncated-commands-toggle"),
     ).not.toBeInTheDocument();
     expect(screen.getByText("destroy-controller, destroy-model")).toHaveClass(
       "u-truncate",
@@ -47,13 +34,12 @@ describe("TruncatedDetails", () => {
   });
 
   it("renders a show more toggle when the text is truncated", () => {
-    Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
-      configurable: true,
-      value: 200,
+    useTruncatedSpy.mockReturnValue({
+      ref: { current: null },
+      truncated: true,
     });
-
     render(
-      <TruncatedDetails
+      <TruncatedCommands
         items={[
           "destroy-controller",
           "destroy-model",
@@ -63,19 +49,17 @@ describe("TruncatedDetails", () => {
       />,
     );
 
-    expect(
-      screen.getByRole("button", { name: "Show more" }),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("truncated-commands-toggle")).toBeInTheDocument();
   });
 
   it("toggles between collapsed and expanded text", async () => {
     const user = userEvent.setup();
-    Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
-      configurable: true,
-      value: 200,
+    useTruncatedSpy.mockReturnValue({
+      ref: { current: null },
+      truncated: true,
     });
     render(
-      <TruncatedDetails
+      <TruncatedCommands
         items={[
           "destroy-controller",
           "destroy-model",
@@ -100,5 +84,6 @@ describe("TruncatedDetails", () => {
       "true",
     );
     expect(content).not.toHaveClass("u-truncate");
+    expect(useTruncatedSpy).toHaveBeenLastCalledWith(false);
   });
 });

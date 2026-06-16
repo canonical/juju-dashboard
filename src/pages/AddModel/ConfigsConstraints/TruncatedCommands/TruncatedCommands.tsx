@@ -9,9 +9,9 @@ type Props = {
 };
 
 /**
-   This list has a special power, it only shows the toggle if the collapsed text is truncated.
+   This list of commands has a special power, it only shows the toggle if the collapsed text is truncated.
 */
-const TruncatedDetails: FC<Props> = ({ items }: Props) => {
+const TruncatedCommands: FC<Props> = ({ items }: Props) => {
   const content = items.join(", ");
   const contentId = useId();
   const [expanded, setExpanded] = useState(false);
@@ -19,15 +19,15 @@ const TruncatedDetails: FC<Props> = ({ items }: Props) => {
 
   return (
     <div
-      className={classNames("truncated-details", {
-        "truncated-details--is-collapsed": !expanded,
-        "truncated-details--is-expanded": expanded,
+      className={classNames("truncated-commands", {
+        "truncated-commands--is-collapsed": !expanded,
+        "truncated-commands--is-expanded": expanded,
       })}
     >
       <span
         id={contentId}
         ref={truncatedNode}
-        className={classNames("truncated-details__content", {
+        className={classNames("truncated-commands__content", {
           "u-truncate": !expanded,
           "u-sh1--right": expanded,
         })}
@@ -37,7 +37,8 @@ const TruncatedDetails: FC<Props> = ({ items }: Props) => {
       {truncated ? (
         <button
           type="button"
-          className="truncated-details__toggle p-button--link u-no-margin p-text--small u-no-padding"
+          className="truncated-commands__toggle p-button--link u-no-margin p-text--small u-no-padding"
+          data-testid="truncated-commands-toggle"
           aria-controls={contentId}
           aria-expanded={expanded}
           onClick={() => {
@@ -51,4 +52,4 @@ const TruncatedDetails: FC<Props> = ({ items }: Props) => {
   );
 };
 
-export default TruncatedDetails;
+export default TruncatedCommands;

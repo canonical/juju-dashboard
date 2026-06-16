@@ -1,5 +1,11 @@
 import type { RefObject } from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+export function checkTruncated<T extends HTMLElement>(element: T): boolean {
+  // Check to see if the content is larger than the frame, in which case the
+  // CSS will be truncating the element.
+  return element.offsetWidth < element.scrollWidth;
+}
 
 /**
  * Hook that tracks whether a DOM element is visually truncated.
@@ -12,18 +18,12 @@ export default function useTruncated<T extends HTMLElement>(
   const ref = useRef<T>(null);
   const [truncated, setTruncated] = useState(false);
 
-  const checkTruncated = useCallback(() => {
-    // Check to see if the content is larger than the frame, in which case the
-    // CSS will be truncating the element.
-    setTruncated(
-      (ref.current && ref.current.offsetWidth < ref.current.scrollWidth) ??
-        false,
-    );
-  }, []);
-
   const resizeObserver = useMemo(
-    () => new ResizeObserver(checkTruncated),
-    [checkTruncated],
+    () =>
+      new ResizeObserver(() => {
+        setTruncated(ref.current ? checkTruncated(ref.current) : false);
+      }),
+    [],
   );
 
   useEffect(() => {
@@ -32,13 +32,13 @@ export default function useTruncated<T extends HTMLElement>(
       return;
     }
     // Do an initial check for whether the content is truncated.
-    checkTruncated();
+    setTruncated(checkTruncated(element));
     // Watch the content for resizes to check if the truncation changes.
     resizeObserver.observe(element);
     return (): void => {
       resizeObserver.unobserve(element);
     };
-  }, [checkTruncated, enabled, resizeObserver]);
+  }, [enabled, resizeObserver]);
 
   return { ref, truncated };
 }
