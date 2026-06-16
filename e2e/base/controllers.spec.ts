@@ -5,7 +5,7 @@ import { Label as PrimaryNavLabel } from "components/PrimaryNav/types";
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 
-test.skip("Controllers", () => {
+test.describe("Controllers", () => {
   let actions: ActionStack;
 
   test.beforeEach(({ jujuCLI }) => {

@@ -9,7 +9,7 @@ import { GiveControllerAccess } from "../helpers/actions";
 import type { User } from "../helpers/auth";
 import { ControllerPermission } from "../helpers/objects";
 
-test.skip("ReBAC Admin", () => {
+test.describe("ReBAC Admin", () => {
   let actions: ActionStack;
   let nonAdminUser: User;
 

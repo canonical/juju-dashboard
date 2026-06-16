@@ -17,7 +17,7 @@ import type { User } from "../helpers/auth";
 import type { Model } from "../helpers/objects";
 import { ControllerPermission, ModelPermission } from "../helpers/objects";
 
-test.skip("audit logs", () => {
+test.describe("audit logs", () => {
   let actions: ActionStack;
   let user: User;
   let nonAdminUser: User;

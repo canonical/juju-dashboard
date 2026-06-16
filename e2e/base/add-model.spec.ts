@@ -18,7 +18,6 @@ test.describe("Add model", () => {
   let owner: User;
   let sharedUser: User;
   let currentModel: Model;
-  let shouldEnableDestroyBeforeCleanup: boolean;
 
   test.beforeAll(async ({ jujuCLI }) => {
     actions = new ActionStack(jujuCLI);
@@ -31,18 +30,11 @@ test.describe("Add model", () => {
 
   test.beforeEach(() => {
     currentModel = new Model(generateRandomName("model"), owner);
-    shouldEnableDestroyBeforeCleanup = false;
   });
 
   test.afterEach(async ({ jujuCLI }) => {
-    if (shouldEnableDestroyBeforeCleanup) {
-      await currentModel.owner.cliLogin(jujuCLI.browser);
-      await execIfModelExists(
-        `juju switch '${currentModel.qualifiedName}' && juju enable-command destroy-model`,
-        currentModel.qualifiedName,
-      );
-    }
-
+    // Models in this spec are created through the UI, so clean them up
+    // explicitly by switching back to an admin context and reusing AddModel rollback.
     if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
       await exec(`juju switch '${jujuCLI.controller}'`);
       await jujuCLI.loginIdentityCLIAdmin();
@@ -140,50 +132,62 @@ test.describe("Add model", () => {
       .toMatchObject({ arch: architecture, defaultSpace });
   });
 
-  test("disables commands selected during add-model", async ({ page }) => {
-    shouldEnableDestroyBeforeCleanup = true;
-
+  test("disables commands selected during add-model", async ({
+    browser,
+    page,
+  }) => {
     await owner.dashboardLogin(page, urls.models.addModel);
 
-    // Fill in the mandatory details and go to the next step
-    await page.locator('input[name="modelName"]').fill(currentModel.name);
-    await page.getByRole("button", { name: AddModelLabel.NEXT_BUTTON }).click();
+    try {
+      // Fill in the mandatory details and go to the next step
+      await page.locator('input[name="modelName"]').fill(currentModel.name);
+      await page
+        .getByRole("button", { name: AddModelLabel.NEXT_BUTTON })
+        .click();
 
-    // Disable the destroy-model command and create the model
-    await page
-      .locator("label.p-radio", {
-        hasText: ConfigsConstraintsLabel.DISABLE_DESTROY_MODEL,
-      })
-      .click();
-    await page
-      .getByRole("button", { name: AddModelLabel.CREATE_BUTTON })
-      .click();
+      // Disable the destroy-model command and create the model
+      await page
+        .locator("label.p-radio", {
+          hasText: ConfigsConstraintsLabel.DISABLE_DESTROY_MODEL,
+        })
+        .click();
+      await page
+        .getByRole("button", { name: AddModelLabel.CREATE_BUTTON })
+        .click();
 
-    // Verify that the model was created and trigger destroy-model on it
-    const modelRow = page
-      .locator("tr", { hasText: currentModel.name })
-      .and(page.locator("tr", { hasText: currentModel.owner.displayName }));
-    await expect(modelRow).toBeInViewport();
-    await modelRow
-      .getByRole("button", { name: ModelActionsLabel.TOGGLE })
-      .click();
-    await page
-      .getByRole("menuitem", { name: ModelActionsLabel.DESTROY })
-      .click();
+      // Verify that the model was created and trigger destroy-model on it
+      const modelRow = page
+        .locator("tr", { hasText: currentModel.name })
+        .and(page.locator("tr", { hasText: currentModel.owner.displayName }));
+      await expect(modelRow).toBeInViewport();
+      await modelRow
+        .getByRole("button", { name: ModelActionsLabel.TOGGLE })
+        .click();
+      await page
+        .getByRole("menuitem", { name: ModelActionsLabel.DESTROY })
+        .click();
 
-    // Destroy should fail with appropriate error message
-    await expect(
-      page.getByRole("dialog", {
-        name: `Destroy model ${currentModel.name}`,
-      }),
-    ).toBeInViewport();
-    await page.getByRole("button", { name: "Destroy model" }).click();
-    await expect(
-      page.locator('[role="status"]', {
-        hasText: `Destroying model "${currentModel.name}" failed`,
-      }),
-    ).toBeVisible();
-    await expect(modelRow).toBeInViewport();
+      // Destroy should fail with appropriate error message
+      await expect(
+        page.getByRole("dialog", {
+          name: `Destroy model ${currentModel.name}`,
+        }),
+      ).toBeInViewport();
+      await page.getByRole("button", { name: "Destroy model" }).click();
+      await expect(
+        page.locator('[role="status"]', {
+          hasText: `Destroying model "${currentModel.name}" failed`,
+        }),
+      ).toBeVisible();
+      await expect(modelRow).toBeInViewport();
+    } finally {
+      // Enable the blocked command to aid cleanup
+      await owner.cliLogin(browser);
+      await execIfModelExists(
+        `juju switch '${currentModel.qualifiedName}' && juju enable-command destroy-model`,
+        currentModel.qualifiedName,
+      );
+    }
   });
 
   test("shares the model during add-model and downgrades the owner's access", async ({

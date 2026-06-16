@@ -14,7 +14,7 @@ import type { User } from "../helpers/auth";
 import type { Application } from "../helpers/objects";
 import { ControllerPermission } from "../helpers/objects";
 
-test.skip("cross model queries", () => {
+test.describe("cross model queries", () => {
   let actions: ActionStack;
   let user: User;
   let app: Application;

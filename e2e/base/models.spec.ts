@@ -11,7 +11,7 @@ import { AddModel, GiveModelAccess } from "../helpers/actions";
 import type { User } from "../helpers/auth";
 import { ModelPermission, type Model } from "../helpers/objects";
 
-test.skip("Models", () => {
+test.describe("Models", () => {
   let actions: ActionStack;
   let user1: User;
   let user2: User;
