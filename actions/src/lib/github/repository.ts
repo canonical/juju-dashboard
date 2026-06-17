@@ -1,4 +1,4 @@
-import type { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
+import type { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods";
 
 import { PullRequest } from "./pull-request";
 import type {
