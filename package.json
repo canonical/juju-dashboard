@@ -79,7 +79,7 @@
     "react-hot-toast": "2.6.0",
     "react-json-tree": "0.20.0",
     "react-redux": "9.2.0",
-    "react-router": "7.15.0",
+    "react-router": "7.15.1",
     "redux": "5.0.1",
     "slice-ansi": "7.1.2",
     "strip-ansi": "7.2.0",
