@@ -1,7 +1,9 @@
 import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
-import { vi } from "vitest";
+import type { MockInstance } from "vitest";
+
+import * as useTruncatedModule from "hooks/useTruncated";
 
 import TruncatedTooltip from "./TruncatedTooltip";
 
@@ -9,38 +11,22 @@ import TruncatedTooltip from "./TruncatedTooltip";
 const TOOLTIP_PORTAL_TEST_ID = "tooltip-portal";
 
 describe("TruncatedTooltip", () => {
-  const offsetWidth = Object.getOwnPropertyDescriptor(
-    HTMLElement.prototype,
-    "offsetWidth",
-  );
-  const scrollWidth = Object.getOwnPropertyDescriptor(
-    HTMLElement.prototype,
-    "scrollWidth",
-  );
   let userEventWithTimers: UserEvent;
+  let useTruncatedSpy: MockInstance;
 
   beforeEach(() => {
     vi.useFakeTimers();
     userEventWithTimers = userEvent.setup({
       advanceTimers: vi.advanceTimersByTime,
     });
-    Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
-      configurable: true,
-      value: 1000,
-    });
-    Object.defineProperty(HTMLElement.prototype, "scrollWidth", {
-      configurable: true,
-      value: 1000,
+    useTruncatedSpy = vi.spyOn(useTruncatedModule, "default").mockReturnValue({
+      ref: { current: null },
+      truncated: false,
     });
   });
 
   afterEach(() => {
-    if (offsetWidth) {
-      Object.defineProperty(HTMLElement.prototype, "offsetWidth", offsetWidth);
-    }
-    if (scrollWidth) {
-      Object.defineProperty(HTMLElement.prototype, "scrollWidth", scrollWidth);
-    }
+    vi.restoreAllMocks();
     vi.useRealTimers();
   });
 
@@ -57,14 +43,12 @@ describe("TruncatedTooltip", () => {
   });
 
   it("displays the tooltip if the content is truncated", async () => {
-    const content = "Some content that is too long";
-    // jsdom does not implement the resize observer or element dimensions so the
-    // best we can do is mock the attributes we're using to check if the content
-    // is truncated.
-    Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
-      configurable: true,
-      value: 200,
+    const content = "Some content";
+    useTruncatedSpy.mockReturnValue({
+      ref: { current: null },
+      truncated: true,
     });
+
     render(
       <TruncatedTooltip message="Tooltip content">{content}</TruncatedTooltip>,
     );

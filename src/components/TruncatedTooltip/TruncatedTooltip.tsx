@@ -8,7 +8,8 @@ import type {
   HTMLProps,
   PropsWithChildren,
 } from "react";
-import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+
+import useTruncated from "hooks/useTruncated";
 
 type Props = {
   tooltipClassName?: TooltipProps["tooltipClassName"];
@@ -31,40 +32,7 @@ const TruncatedTooltip: FC<Props> = ({
   elementProps,
   ...tooltipProps
 }: Props) => {
-  const truncatedNode = useRef<HTMLDivElement>(null);
-  const [truncated, setTruncated] = useState(false);
-
-  const checkTruncated = useCallback(() => {
-    // Check to see if the content is larger than the frame, in which case the
-    // CSS will be truncating the element.
-    setTruncated(
-      (truncatedNode.current &&
-        truncatedNode.current.offsetWidth <
-          truncatedNode.current.scrollWidth) ??
-        false,
-    );
-  }, [truncatedNode]);
-
-  const resizeObserver = useMemo(
-    () => new ResizeObserver(checkTruncated),
-    [checkTruncated],
-  );
-
-  useEffect(() => {
-    const element = truncatedNode.current;
-    if (!element) {
-      return;
-    }
-    // Do an initial check for whether the content is truncated.
-    checkTruncated();
-    // Watch the content for resizes to check if the truncation changes.
-    resizeObserver.observe(element);
-    return (): void => {
-      if (truncatedNode) {
-        resizeObserver.unobserve(element);
-      }
-    };
-  }, [checkTruncated, resizeObserver, truncatedNode]);
+  const { ref: truncatedNode, truncated } = useTruncated();
 
   return (
     <div className={classNames("truncated-tooltip", wrapperClassName)}>
