@@ -36,13 +36,13 @@ export default defineConfig(({ mode }) => {
       process.env.NODE_ENV === "development"
         ? null
         : // The template format is handled by the dev and jaas configs when in development.
-        createHtmlPlugin({
-          inject: {
-            data: {
-              injectScript: "",
+          createHtmlPlugin({
+            inject: {
+              data: {
+                injectScript: "",
+              },
             },
-          },
-        }),
+          }),
       {
         // Remove config files that are used for development.
         name: "delete-configs",
@@ -91,7 +91,7 @@ export default defineConfig(({ mode }) => {
         "src/**/*.{test,spec}.?(c|m)[jt]s?(x)",
         "demo/**/*.{test,spec}.?(c|m)[jt]s?(x)",
       ],
-      mockRestore: true,
+      mockReset: true,
       setupFiles: "src/testing/setup.ts",
     },
     resolve: {

@@ -10,7 +10,7 @@ describe("useTruncated", () => {
   beforeEach(() => {
     observe = vi.fn();
 
-    globalThis.ResizeObserver = vi.fn(() => {
+    globalThis.ResizeObserver = vi.fn(function () {
       return {
         observe,
         unobserve: vi.fn(),
