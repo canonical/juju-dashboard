@@ -1534,7 +1534,7 @@ describe("model poller", () => {
       credential: "credential-aws",
       "cloud-tag": "cloud-aws",
       "owner-tag": "user-eggman@external",
-      qualifier: "user-eggman@external",
+      qualifier: "eggman@external",
       region: undefined,
     });
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -1670,7 +1670,7 @@ describe("model poller", () => {
       credential: "credential-aws",
       "cloud-tag": "cloud-aws",
       "owner-tag": "user-eggman@external",
-      qualifier: "user-eggman@external",
+      qualifier: "eggman@external",
       region: undefined,
     });
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
@@ -1713,7 +1713,7 @@ describe("model poller", () => {
       credential: "credential-aws",
       "cloud-tag": "cloud-aws",
       "owner-tag": "user-eggman@external",
-      qualifier: "user-eggman@external",
+      qualifier: "eggman@external",
       region: undefined,
     });
     expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
@@ -1756,7 +1756,7 @@ describe("model poller", () => {
       credential: "credential-aws",
       "cloud-tag": "cloud-aws",
       "owner-tag": "user-eggman@external",
-      qualifier: "user-eggman@external",
+      qualifier: "eggman@external",
       region: undefined,
     });
     expect(fakeStore.dispatch).not.toHaveBeenCalledWith(

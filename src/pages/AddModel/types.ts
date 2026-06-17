@@ -33,6 +33,9 @@ export type StepDefinition = {
 
 export enum Label {
   TITLE = "Add model",
+  MANDATORY_DETAILS_TITLE = "Mandatory Details",
+  CONFIGURATION_CONSTRAINTS_TITLE = "Configuration & Constraints (optional)",
+  ACCESS_MANAGEMENT_TITLE = "Access Management (optional)",
   CANCEL_BUTTON = "Cancel",
   NEXT_BUTTON = "Next",
   BACK_BUTTON = "Back",

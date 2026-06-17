@@ -562,8 +562,9 @@ function runModelPoller(
         if (!conn.facades.modelManager) {
           throw new Error("Unsupported facade: modelManager");
         }
+        const activeUser = getUserName(userTag);
         const response = await conn.facades.modelManager?.createModel({
-          qualifier: userTag, // ModelManagerV11 requires `qualifier`.
+          qualifier: activeUser, // ModelManagerV11 requires `qualifier` without the tag prefix.
           "owner-tag": userTag, // Versions prior to ModelManagerV11 require `owner-tag`.
           name: modelName,
           "cloud-tag": cloudTag,
@@ -594,7 +595,6 @@ function runModelPoller(
             }
 
             if (shareModelWith) {
-              const activeUser = getUserName(userTag);
               const usersToShare = Object.entries(shareModelWith);
               let activeUserTargetAccessLevel = AccessLevel.ADMIN;
 
