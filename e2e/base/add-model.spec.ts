@@ -122,11 +122,15 @@ test.describe("Add model", () => {
     await exec(`juju switch '${currentModel.qualifiedName}'`);
     await expect
       .poll(async () => {
-        const { stdout } = await exec("juju model-config");
+        const { stdout } = await exec("juju model-config --format=json");
+        const config = JSON.parse(stdout) as Record<
+          string,
+          { Source: string; Value: string }
+        >;
 
         return {
-          arch: stdout.match(/^arch\s+\S+\s+(\S+)$/m)?.[1],
-          defaultSpace: stdout.match(/^default-space\s+\S+\s+(\S+)$/m)?.[1],
+          arch: config.arch?.Value,
+          defaultSpace: config["default-space"]?.Value,
         };
       })
       .toMatchObject({ arch: architecture, defaultSpace });
@@ -198,7 +202,7 @@ test.describe("Add model", () => {
 
     // Fill in the mandatory details and go to Access Management step
     await page.locator('input[name="modelName"]').fill(currentModel.name);
-    await page.getByText("Access Management (optional)").click();
+    await page.getByText(AddModelLabel.ACCESS_MANAGEMENT_TITLE).click();
 
     // Add another user to the list
     const addUsersInput = page.getByRole("combobox", {

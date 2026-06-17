@@ -63,17 +63,17 @@ const validationSchema = Yup.object().shape({
 const stepDefinitions: StepDefinition[] = [
   {
     key: StepType.MANDATORY_DETAILS,
-    title: "Mandatory Details",
+    title: Label.MANDATORY_DETAILS_TITLE,
     content: <MandatoryDetails />,
   },
   {
     key: StepType.CONFIGURATION_CONSTRAINTS,
-    title: "Configuration & Constraints (optional)",
+    title: Label.CONFIGURATION_CONSTRAINTS_TITLE,
     content: <ConfigsConstraints />,
   },
   {
     key: StepType.ACCESS_MANAGEMENT,
-    title: "Access Management (optional)",
+    title: Label.ACCESS_MANAGEMENT_TITLE,
     content: <AccessManagement />,
   },
 ];
