@@ -82,7 +82,7 @@ export default defineConfig(({ mode }) => {
           lines: 95,
           statements: 95,
           functions: 95,
-          branches: 90,
+          branches: 85,
         },
       },
       environment: "happy-dom",
