@@ -54,7 +54,6 @@ describe("connectionMiddleware", () => {
     getMock = vi.fn();
     logoutMock = vi.fn();
     vi.spyOn(connectionManagerModule, "ConnectionManager").mockImplementation(
-      // @ts-expect-error Mocking a class
       function (hooks) {
         connectionManagerHooks = hooks;
         // @ts-expect-error Mocking a class
