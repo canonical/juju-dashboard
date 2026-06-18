@@ -111,6 +111,7 @@
     "@vitest/eslint-plugin": "1.6.17",
     "axios-mock-adapter": "2.1.0",
     "dotenv": "17.4.2",
+    "esbuild": "0.28.1",
     "eslint": "9.39.4",
     "eslint-config-prettier": "10.1.8",
     "eslint-import-resolver-typescript": "4.4.4",

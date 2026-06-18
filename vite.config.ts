@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
   return {
     build: {
       outDir: "build",
+      cssMinify: "esbuild",
     },
     css: {
       devSourcemap: true,
