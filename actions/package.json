@@ -1,27 +1,26 @@
 {
-  "name": "juju-dashboard-actions",
-  "version": "0.0.0",
-  "packageManager": "yarn@4.14.1",
-  "type": "module",
-  "scripts": {
-    "build": "./scripts/build.sh",
-    "clean": "rm -rf ./dist",
-    "run-action": "./scripts/run.sh",
-    "test": "vitest",
-    "lint": "eslint src"
-  },
-  "dependencies": {
-    "@actions/core": "3.0.1",
-    "@actions/exec": "3.0.0",
-    "@actions/github": "9.1.1"
-  },
-  "devDependencies": {
-    "@octokit/types": "16.0.0",
-    "@vercel/ncc": "0.38.4",
-    "eslint": "9.39.4",
-    "typescript": "5.9.3",
-    "vite": "8.0.16",
-    "vite-tsconfig-paths": "6.1.1",
-    "vitest": "4.1.9"
-  }
+    "name": "juju-dashboard-actions",
+    "version": "0.0.0",
+    "packageManager": "yarn@4.14.1",
+    "type": "module",
+    "scripts": {
+        "build": "./scripts/build.sh",
+        "clean": "rm -rf ./dist",
+        "run-action": "./scripts/run.sh",
+        "test": "vitest",
+        "lint": "eslint src"
+    },
+    "dependencies": {
+        "@actions/core": "3.0.1",
+        "@actions/exec": "3.0.0",
+        "@actions/github": "9.1.1"
+    },
+    "devDependencies": {
+        "@octokit/types": "16.0.0",
+        "@vercel/ncc": "0.38.4",
+        "eslint": "9.39.4",
+        "typescript": "5.9.3",
+        "vite": "8.0.16",
+        "vitest": "4.1.9"
+    }
 }

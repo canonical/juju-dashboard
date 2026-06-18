@@ -138,7 +138,6 @@
     "typescript-eslint": "8.59.2",
     "vite": "8.0.16",
     "vite-plugin-html": "3.2.2",
-    "vite-tsconfig-paths": "6.1.1",
     "vitest": "4.1.9",
     "vitest-fetch-mock": "0.4.5"
   },
