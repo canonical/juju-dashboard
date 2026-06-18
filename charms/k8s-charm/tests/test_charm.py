@@ -4,7 +4,7 @@
 # Learn more about testing at: https://juju.is/docs/sdk/testing
 
 import unittest
-from unittest.mock import patch
+from unittest.mock import PropertyMock, patch
 
 from ops.model import ActiveStatus, BlockedStatus
 from ops.testing import Harness
@@ -20,6 +20,7 @@ class TestCharm(unittest.TestCase):
         self.harness.set_can_connect("dashboard", True)
         self.container = self.harness.model.unit.get_container("dashboard")
         self.container.make_dir("/srv")
+        self.container.push("/srv/index.charm.html", '<base href="{{base_app_url}}" />')
         self.container.make_dir("/etc/nginx/sites-available/", make_parents=True)
         self.rel_id = self.harness.add_relation("controller", "controller")
         self.harness.add_relation_unit(self.rel_id, "controller/0")
@@ -57,15 +58,24 @@ class TestCharm(unittest.TestCase):
         )
 
     @patch(
+        "charms.traefik_k8s.v2.ingress.IngressPerAppRequirer.url",
+        new_callable=PropertyMock,
+    )
+    @patch(
         "charms.traefik_k8s.v2.ingress.IngressPerAppRequirer.provide_ingress_requirements"
     )
-    def test_config_changed(self, mock_provide_ingress_requirements):
+    def test_config_changed(self, mock_provide_ingress_requirements, mock_url):
+        mock_url.return_value = None
         with self.container.pull("/srv/config.js") as f:
             config = f.read()
         self.assertTrue("analyticsEnabled: true" in config)
         with self.container.pull("/etc/nginx/sites-available/default") as f:
             nginx_config = f.read()
         self.assertTrue("listen 8080" in nginx_config)
+        with self.container.pull("/srv/index.html") as f:
+            index_html = f.read()
+        self.assertTrue('<base href="/" />' in index_html)
+        mock_url.return_value = "/dashboard"
         self.harness.update_config({"analytics-enabled": False, "port": 123})
         with self.container.pull("/srv/config.js") as f:
             config = f.read()
@@ -73,6 +83,9 @@ class TestCharm(unittest.TestCase):
         with self.container.pull("/etc/nginx/sites-available/default") as f:
             nginx_config = f.read()
         self.assertTrue("listen 123" in nginx_config)
+        with self.container.pull("/srv/index.html") as f:
+            index_html = f.read()
+        self.assertTrue('<base href="/dashboard/" />' in index_html)
         mock_provide_ingress_requirements.assert_called_once_with(port=123)
 
     def test_config_changed_no_relation(self):
