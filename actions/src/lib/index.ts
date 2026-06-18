@@ -1,7 +1,6 @@
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as github from "@actions/github";
-import type { Context } from "@actions/github/lib/context";
 import type { GitHub } from "@actions/github/lib/utils";
 
 import Git from "./git";
@@ -16,7 +15,7 @@ export { default as branch } from "./branch";
 export type Ctx = {
   octokit: InstanceType<typeof GitHub>;
   core: typeof core;
-  context: { refName: string } & Context;
+  context: (typeof github)["context"] & { refName: string };
   exec: typeof exec.exec;
   execOutput: typeof exec.getExecOutput;
   repo: Repository;

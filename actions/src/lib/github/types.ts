@@ -1,4 +1,4 @@
-import type github from "@actions/github";
+import type { getOctokit } from "@actions/github";
 import type {
   GetResponseDataTypeFromEndpointMethod,
   RequestInterface,
@@ -7,7 +7,7 @@ import type {
 /**
  * Octokit interface for interfacing with GitHub API.
  */
-export type Octokit = ReturnType<typeof github.getOctokit>;
+export type Octokit = ReturnType<typeof getOctokit>;
 
 /**
  * Pull request on GitHub.
