@@ -87,3 +87,21 @@ The charms are built using the `build.sh` scripts located at
 [`charms/k8s-charm/build.sh`](charms/k8s-charm/build.sh) and
 [`charms/machine-charm/build.sh`](charms/machine-charm/build.sh). These are run within the CI, and can
 also be run manually.
+
+### Prepare a new major or minor release
+
+1. Merge a PR into `main` with the `severity: major` or `severity:minor` label attached.
+2. After a few minutes, an automation will create a PR named `chore(release): cut x.y release`.
+3. Merge the new PR to 'cut' the release, and create a new `release/x.y` branch. From this point
+   onwards, the release has diverged from `main`.
+4. As required, merge additional PRs into `release/x.y` as needed, for release-only functionality.
+5. After a few minutes, an automation will create a PR named `Release x.y.0-beta.0`. The release's
+   changelog will be in the description of the PR, and it can be edited as desired.
+6. When this PR is merged a beta release will be published, and a `Release x.y.0` PR will be
+   created.
+7. If further changes are pushed to `release/x.y`, this PR will be closed in favour for a new
+   `Release x.y.0-beta.1`. Instead if it is merged, a stable released will be published to the
+   `x.y/candidate` channel.
+8. After QA testing, the stable release can be promoted by running the [`Promote release to stable`](https://github.com/canonical/juju-dashboard/actions/workflows/promote-to-stable.yml)
+   action, ensuring that the `release/x.y` branch is seleted from the `Use workflow from`
+   drowpdown.
