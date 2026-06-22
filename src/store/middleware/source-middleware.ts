@@ -1,4 +1,8 @@
-import type { PayloadAction, PayloadActionCreator } from "@reduxjs/toolkit";
+import type {
+  PayloadAction,
+  PayloadActionCreator,
+  PrepareAction,
+} from "@reduxjs/toolkit";
 import { createAction, isAction } from "@reduxjs/toolkit";
 import type { Middleware } from "redux";
 
@@ -65,6 +69,11 @@ export class SourceManager<T, P extends O, O = P> {
   }
 }
 
+type SourceHooks<P> = {
+  addActionMeta?: (payload: P) => Record<string, unknown>;
+  after?: (args: P, store: Pick<Store, "dispatch" | "getState">) => void;
+};
+
 /**
  * Create a redux middleware for a given source. Sources are tracked by the arguments passed to
  * the `start` action.
@@ -88,10 +97,7 @@ export function createSourceMiddleware<T, P>(
       error: { message: string; source: Error } | null,
     ) => PayloadAction<unknown>;
   },
-  hooks?: {
-    addActionMeta?: (payload: P) => Record<string, unknown>;
-    after?: (args: P, store: Pick<Store, "dispatch" | "getState">) => void;
-  },
+  hooks?: SourceHooks<P>,
 ): {
   middleware: Middleware<void, RootState, Store["dispatch"]>;
   actions: Record<
@@ -193,5 +199,141 @@ export function createSourceMiddleware<T, P>(
       };
     },
     actions,
+  };
+}
+
+export type SourceInstance<Payload, T> = {
+  actions: {
+    start: PayloadActionCreator<Payload, string, PrepareAction<Payload>>;
+    stop: PayloadActionCreator<Payload, string, PrepareAction<Payload>>;
+    invalidate: PayloadActionCreator<Payload, string, PrepareAction<Payload>>;
+  };
+  sourceActions: {
+    setData: (args: Payload, data: T) => PayloadAction<unknown>;
+    setLoading: (args: Payload, loading: boolean) => PayloadAction<unknown>;
+    setError: (
+      args: Payload,
+      error: { message: string; source: Error } | null,
+    ) => PayloadAction<unknown>;
+  };
+  hooks: SourceHooks<Payload>;
+  source: SourceManager<
+    T,
+    { meta: Record<string, unknown> } & Payload,
+    Payload
+  >;
+};
+
+export default function createMiddleware<
+  S extends SourceInstance<Payload, T>,
+  Payload,
+  T,
+>(sources: S[]): Middleware<void, RootState, Store["dispatch"]> {
+  return (store) => (next) => {
+    return (action) => {
+      if (!isAction(action)) {
+        return next(action);
+      }
+
+      const source = sources.find(({ actions }) =>
+        [actions.start, actions.stop, actions.invalidate].some((testAction) =>
+          testAction.match(action),
+        ),
+      );
+      if (!source) {
+        return next(action);
+      }
+
+      if (source.actions.start.match(action)) {
+        const actionPayload = action.payload as Payload;
+        const actionMeta = (
+          action as PayloadAction<Payload, string, Record<string, unknown>>
+        ).meta as Record<string, unknown> | undefined;
+        const args = Object.assign(
+          {},
+          actionPayload,
+          actionMeta ? { meta: actionMeta } : undefined,
+        );
+        source.source.start(args, {
+          data: (data) => {
+            store.dispatch(source.sourceActions.setData(args, data));
+            source.hooks.after?.(args, store);
+          },
+          load: () => {
+            store.dispatch(source.sourceActions.setLoading(args, true));
+          },
+          loadEnd: () => {
+            store.dispatch(source.sourceActions.setLoading(args, false));
+          },
+          error: (message, sourceError) => {
+            store.dispatch(
+              source.sourceActions.setError(args, {
+                message,
+                source: sourceError,
+              }),
+            );
+          },
+          errorCleared: () => {
+            store.dispatch(source.sourceActions.setError(args, null));
+          },
+        });
+      } else if (source.actions.stop.match(action)) {
+        const args = action.payload as Payload;
+        source.source.stop(args);
+      } else if (source.actions.invalidate.match(action)) {
+        const args = action.payload as Payload;
+        source.source.invalidate(args);
+      } else {
+        // This shouldn't be possible to reach, but is necessary for when new actions are added.
+        return next(action);
+      }
+      return;
+    };
+  };
+}
+
+export function createSourceInstance<Payload, T>(
+  identifier: string,
+  createSource: (
+    args: { meta: Record<string, unknown> } & Payload,
+  ) => Source<T>,
+  sourceActions: {
+    setData: (args: Payload, data: T) => PayloadAction<unknown>;
+    setLoading: (args: Payload, loading: boolean) => PayloadAction<unknown>;
+    setError: (
+      args: Payload,
+      error: { message: string; source: Error } | null,
+    ) => PayloadAction<unknown>;
+  },
+  hooks?: SourceHooks<Payload>,
+): SourceInstance<Payload, T> {
+  return {
+    actions: {
+      // WARN: Redux doesn't export the types needed to make this play nicely (`BaseActionCreator`),
+      // so manually do the casting.
+      start: createAction(
+        `source/${identifier}/start`,
+        (
+          payload: Payload,
+        ): { payload: Payload; meta?: Record<string, unknown> } =>
+          Object.assign(
+            {
+              payload,
+            },
+            hooks?.addActionMeta
+              ? { meta: hooks.addActionMeta(payload) }
+              : undefined,
+          ),
+      ) as PayloadActionCreator<Payload, string, PrepareAction<Payload>>,
+      stop: createAction<Payload>(
+        `source/${identifier}/stop`,
+      ) as PayloadActionCreator<Payload, string, PrepareAction<Payload>>,
+      invalidate: createAction<Payload>(
+        `source/${identifier}/invalidate`,
+      ) as PayloadActionCreator<Payload, string, PrepareAction<Payload>>,
+    },
+    source: new SourceManager(createSource),
+    sourceActions,
+    hooks: hooks ?? {},
   };
 }
