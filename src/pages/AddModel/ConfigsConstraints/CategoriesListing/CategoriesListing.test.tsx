@@ -28,6 +28,8 @@ describe("CategoriesListing", () => {
       searchPlaceholder: "Search configurations",
       yamlPlaceholder: Label.MODEL_CONFIG_PLACEHOLDER,
       searchName: "configSearch",
+      setYAMLErrors: vi.fn(),
+      yamlErrorLabel: Label.INCORRECT_YAML_CONFIGURATION_ERROR,
     };
   });
 
@@ -178,6 +180,28 @@ describe("CategoriesListing", () => {
     expect(textarea.value).toContain("default-space: my-space");
     expect(textarea.value).toContain("# Proxy & Mirror");
     expect(textarea.value).toContain("apt-http-proxy: http://proxy.example");
+  });
+
+  it("calls setYAMLErrors and stays in YAML mode when YAML has invalid keys", async () => {
+    render(
+      <Formik
+        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML }}
+        onSubmit={vi.fn()}
+      >
+        <CategoriesListing {...defaultProps} />
+      </Formik>,
+    );
+
+    const textarea = screen.getByPlaceholderText(
+      Label.MODEL_CONFIG_PLACEHOLDER,
+    ) as HTMLTextAreaElement;
+    await userEvent.clear(textarea);
+    await userEvent.type(textarea, "unknown-field: value");
+
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.LIST }));
+
+    expect(defaultProps.setYAMLErrors).toHaveBeenCalledOnce();
+    expect(screen.getByRole("radio", { name: InputMode.YAML })).toBeChecked();
   });
 
   it("filters categories by field name", () => {

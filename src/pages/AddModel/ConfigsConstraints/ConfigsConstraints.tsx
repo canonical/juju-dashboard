@@ -1,19 +1,45 @@
 import { FormikField, List } from "@canonical/react-components";
-import type { JSX } from "react";
+import { useFormikContext } from "formik";
+import { useState, type JSX } from "react";
 
 import { testId } from "testing/utils";
 import { externalURLs } from "urls";
 
+import { InputMode } from "../types";
+
 import CategoriesListing from "./CategoriesListing";
 import TruncatedCommands from "./TruncatedCommands";
+import YAMLErrorsModal from "./YAMLErrorsModal";
+import type { YAMLErrorsModalState } from "./YAMLErrorsModal/types";
 import { CONFIG_CATEGORIES } from "./configCatalog";
 import { CONSTRAINT_CATEGORIES } from "./constraintsCatalog";
 import { DISABLED_COMMAND_OPTIONS } from "./disabledCommandOptions";
-import { FieldName, Label, TestId } from "./types";
+import { FieldName, type FormFields, Label, TestId } from "./types";
 
 const ConfigsConstraints = (): JSX.Element => {
+  const { setFieldValue } = useFormikContext<
+    FormFields & Record<string, string>
+  >();
+  const [yamlErrorsModalState, setYAMLErrors] =
+    useState<null | YAMLErrorsModalState>(null);
+
   return (
     <div {...testId(TestId.CONFIGS_CONSTRAINTS_FORM)}>
+      {yamlErrorsModalState ? (
+        <YAMLErrorsModal
+          errors={yamlErrorsModalState.errors}
+          yamlKey={yamlErrorsModalState.yamlKey}
+          onConfirm={() => {
+            const { inputMode, yamlKey } = yamlErrorsModalState;
+            void setFieldValue(yamlKey, "");
+            void setFieldValue(inputMode, InputMode.LIST);
+            setYAMLErrors(null);
+          }}
+          onClose={() => {
+            setYAMLErrors(null);
+          }}
+        />
+      ) : null}
       <CategoriesListing
         title={Label.CONFIGS_TITLE}
         categoriesList={CONFIG_CATEGORIES}
@@ -26,6 +52,8 @@ const ConfigsConstraints = (): JSX.Element => {
         searchPlaceholder="Search configurations"
         yamlPlaceholder={Label.MODEL_CONFIG_PLACEHOLDER}
         searchName="configSearch"
+        setYAMLErrors={setYAMLErrors}
+        yamlErrorLabel={Label.INCORRECT_YAML_CONFIGURATION_ERROR}
       />
       <CategoriesListing
         title={Label.CONSTRAINTS_TITLE}
@@ -39,6 +67,8 @@ const ConfigsConstraints = (): JSX.Element => {
         searchPlaceholder="Search constraints"
         yamlPlaceholder={Label.MODEL_CONSTRAINT_PLACEHOLDER}
         searchName="constraintSearch"
+        setYAMLErrors={setYAMLErrors}
+        yamlErrorLabel={Label.INCORRECT_YAML_CONSTRAINT_ERROR}
       />
       <h5 className="u-no-padding--top u-no-margin--bottom">
         {Label.DISABLED_COMMANDS}

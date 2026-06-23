@@ -7,6 +7,7 @@ import {
   getCategoriesWithVisibleFields,
   getConfigInitialValues,
   isConfigChanged,
+  validateAndParseYAML,
 } from "./utils";
 
 describe("utils", () => {
@@ -26,6 +27,16 @@ describe("utils", () => {
             label: "container-networking-method",
             defaultValue: "provider",
             description: "Networking method",
+          },
+        ],
+      },
+      {
+        category: "Compute",
+        fields: [
+          {
+            label: "cores",
+            description: "Number of cores",
+            isNumeric: true,
           },
         ],
       },
@@ -260,6 +271,7 @@ describe("utils", () => {
       expect(result).toEqual({
         "default-space": "alpha",
         "container-networking-method": "provider",
+        cores: "",
         "logging-config": "",
       });
     });
@@ -357,6 +369,106 @@ describe("utils", () => {
         );
         expect(hasMatch).toBe(true);
       });
+    });
+  });
+
+  describe("validateAndParseYAML", () => {
+    it("parses the YAML into valid key-value pairs", () => {
+      const { validValues, errors } = validateAndParseYAML(
+        "# a comment\n\ndefault-space: custom\nlogging-config: debug\ncores: 4",
+        categories,
+      );
+
+      expect(validValues).toEqual({
+        "default-space": "custom",
+        "logging-config": "debug",
+        cores: "4",
+      });
+      expect(errors.invalidKeys).toHaveLength(0);
+      expect(errors.invalidValues).toHaveLength(0);
+      expect(errors.otherErrors).toHaveLength(0);
+    });
+
+    it("normalizes double-quoted empty string to actual empty string", () => {
+      const { validValues } = validateAndParseYAML(
+        'default-space: ""',
+        categories,
+      );
+
+      expect(validValues["default-space"]).toBe("");
+    });
+
+    it("reports an invalid key for unknown fields", () => {
+      const { errors } = validateAndParseYAML("unknown-key: value", categories);
+
+      expect(errors.invalidKeys).toHaveLength(1);
+      expect(errors.invalidKeys[0].message).toContain(
+        "Unknown key: unknown-key",
+      );
+      expect(errors.invalidKeys[0].line).toBe(1);
+    });
+
+    it("reports other error for lines missing a colon", () => {
+      const { errors } = validateAndParseYAML("no-colon-here", categories);
+
+      expect(errors.otherErrors).toHaveLength(1);
+      expect(errors.otherErrors[0].message).toContain(
+        "Invalid format. Expected <key>: <value>",
+      );
+    });
+
+    it("reports an invalid value for select fields with disallowed values", () => {
+      const selectCategories: CategoryDefinition[] = [
+        {
+          category: "Test",
+          fields: [
+            {
+              label: "my-select",
+              description: "A select field",
+              input: {
+                type: "select",
+                options: [
+                  { label: "A", value: "a" },
+                  { label: "B", value: "b" },
+                ],
+              },
+            },
+          ],
+        },
+      ];
+
+      const { errors } = validateAndParseYAML(
+        "my-select: invalid",
+        selectCategories,
+      );
+
+      expect(errors.invalidValues).toHaveLength(1);
+      expect(errors.invalidValues[0].message).toContain(
+        "Expected one of: a, b",
+      );
+    });
+
+    it("reports an invalid value for numeric fields with non-numeric input", () => {
+      const { errors } = validateAndParseYAML(
+        "cores: not-a-number",
+        categories,
+      );
+
+      expect(errors.invalidValues).toHaveLength(1);
+      expect(errors.invalidValues[0].message).toContain("Expected a number");
+    });
+
+    it("includes catalog default for previously changed fields absent from YAML", () => {
+      const { validValues } = validateAndParseYAML(
+        "logging-config: debug",
+        categories,
+        { "default-space": "my-space" },
+      );
+
+      // logging-config is in the YAML
+      expect(validValues["logging-config"]).toBe("debug");
+      // default-space was changed but absent from YAML — should reset to default
+      expect(validValues["default-space"]).toBe("alpha");
     });
   });
 });

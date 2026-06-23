@@ -21,6 +21,7 @@ import {
   buildYAML,
   filterCategoriesBySearch,
   getCategoriesWithVisibleFields,
+  validateAndParseYAML,
 } from "../utils";
 
 import type { Props } from "./types";
@@ -37,6 +38,8 @@ const CategoriesListing = ({
   searchPlaceholder,
   yamlPlaceholder,
   searchName,
+  setYAMLErrors,
+  yamlErrorLabel,
 }: Props): JSX.Element => {
   const id = useId();
   const { values, setFieldValue } = useFormikContext<
@@ -49,6 +52,32 @@ const CategoriesListing = ({
   const handleModeChange = (isListModeSelected: boolean): void => {
     if (!isListModeSelected) {
       void setFieldValue(yamlKey, buildYAML(categoriesList, values));
+    } else {
+      const { validValues, errors } = validateAndParseYAML(
+        values[yamlKey] ?? "",
+        categoriesList,
+        values,
+      );
+      Object.entries(validValues).forEach(([label, value]) => {
+        void setFieldValue(label, value);
+      });
+
+      if (
+        errors.invalidKeys.length > 0 ||
+        errors.invalidValues.length > 0 ||
+        errors.otherErrors.length > 0
+      ) {
+        void setFieldTouched(yamlKey, true, false);
+        // setFieldError must be called after setFieldTouched to prevent
+        // Formik's internal validation run from wiping the error message.
+        setTimeout(() => {
+          setFieldError(yamlKey, yamlErrorLabel);
+        }, 0);
+        setYAMLErrors({ errors, inputMode, yamlKey });
+        return;
+      }
+
+      setFieldError(yamlKey, undefined);
     }
 
     void setFieldValue(
