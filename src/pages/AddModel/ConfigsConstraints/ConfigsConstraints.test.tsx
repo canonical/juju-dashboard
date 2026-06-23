@@ -169,4 +169,73 @@ describe("ConfigsConstraints", () => {
       screen.getByRole("radio", { name: Label.DISABLE_ALL_COMMANDS }),
     ).toBeChecked();
   });
+
+  it("shows the error modal when switching to list mode with invalid YAML", async () => {
+    renderComponent(
+      <Formik
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML,
+          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+          [FieldName.CONFIG_YAML]: "unknown-field: value",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <ConfigsConstraints />
+      </Formik>,
+    );
+
+    const configsSection = screen.getByRole("region", {
+      name: Label.CONFIGS_TITLE,
+    });
+    await userEvent.click(
+      within(configsSection).getByRole("radio", { name: InputMode.LIST }),
+    );
+
+    const dialog = screen.getByRole("dialog", {
+      name: "Invalid values will be lost",
+    });
+    expect(dialog).toBeInTheDocument();
+    expect(
+      within(dialog).getByText(/invalid configuration values/i),
+    ).toBeInTheDocument();
+  });
+
+  it("wipes invalid YAML entries when switching to list mode forcefully", async () => {
+    renderComponent(
+      <Formik
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML,
+          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+          [FieldName.CONFIG_YAML]:
+            "default-space: my-space\nunknown-field: value",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <ConfigsConstraints />
+      </Formik>,
+    );
+
+    const configsSection = screen.getByRole("region", {
+      name: Label.CONFIGS_TITLE,
+    });
+    await userEvent.click(
+      within(configsSection).getByRole("radio", { name: InputMode.LIST }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: "Switch to list view" }),
+    );
+
+    expect(
+      screen.queryByRole("dialog", { name: "Invalid values will be lost" }),
+    ).not.toBeInTheDocument();
+    expect(
+      within(configsSection).getByRole("radio", { name: InputMode.LIST }),
+    ).toBeChecked();
+
+    // The valid field value was ported over
+    const defaultSpaceInput = within(configsSection).getByLabelText(
+      "default-space",
+    ) as HTMLInputElement;
+    expect(defaultSpaceInput.value).toBe("my-space");
+  });
 });
