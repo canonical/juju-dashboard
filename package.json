@@ -1,6 +1,6 @@
 {
   "name": "juju-dashboard",
-  "version": "0.14.1",
+  "version": "0.16.x",
   "description": "A dashboard for Juju and JAAS (Juju as a service)",
   "bugs": {
     "url": "https://github.com/canonical/juju-dashboard/issues"
