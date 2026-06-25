@@ -1,8 +1,8 @@
 import type { FieldName } from "../types";
 
 export type YAMLValidationError = {
-  line: number;
   message: string;
+  line?: number;
 };
 
 export type YAMLErrors = {
