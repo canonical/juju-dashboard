@@ -33,7 +33,7 @@ import { AccessLevel } from "types";
 
 import { LoginError, modelPollerMiddleware } from "./model-poller";
 import disableCommand from "./process/block/disable-command";
-import sourceMiddleware from "./source";
+import createSourceMiddleware from "./source";
 import cloudInfoSource from "./source/cloud-info";
 import modelListSource from "./source/model-list";
 import { type MockMiddlewareResult, ModelsError } from "./types";
@@ -465,7 +465,7 @@ describe("model poller", () => {
   it("fetches and updates models if logged in to controller", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware, ...sourceMiddleware],
+      middleware: [modelPollerMiddleware, createSourceMiddleware()],
     });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -512,7 +512,7 @@ describe("model poller", () => {
       },
       {
         trackActions: true,
-        middleware: [modelPollerMiddleware, ...sourceMiddleware],
+        middleware: [modelPollerMiddleware, createSourceMiddleware()],
       },
     );
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
@@ -540,7 +540,7 @@ describe("model poller", () => {
   it("should display error when unable to load all models", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware, ...sourceMiddleware],
+      middleware: [modelPollerMiddleware, createSourceMiddleware()],
     });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -570,7 +570,7 @@ describe("model poller", () => {
   it("should display error when unable to load some models", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware, ...sourceMiddleware],
+      middleware: [modelPollerMiddleware, createSourceMiddleware()],
     });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -600,7 +600,7 @@ describe("model poller", () => {
   it("should display error when unable to load latest models", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware, ...sourceMiddleware],
+      middleware: [modelPollerMiddleware, createSourceMiddleware()],
     });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -630,7 +630,7 @@ describe("model poller", () => {
   it("should display error when unable to update model list", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware, ...sourceMiddleware],
+      middleware: [modelPollerMiddleware, createSourceMiddleware()],
     });
     conn.facades.modelManager.listModels = vi
       .fn()
@@ -662,7 +662,7 @@ describe("model poller", () => {
   it("updates models every 30 seconds", async () => {
     const [store, actions] = createStore(storeState, {
       trackActions: true,
-      middleware: [modelPollerMiddleware, ...sourceMiddleware],
+      middleware: [modelPollerMiddleware, createSourceMiddleware()],
     });
     vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
       conn,
@@ -700,7 +700,7 @@ describe("model poller", () => {
       },
       {
         trackActions: true,
-        middleware: [modelPollerMiddleware, ...sourceMiddleware],
+        middleware: [modelPollerMiddleware, createSourceMiddleware()],
       },
     );
     delete conn.info.user;

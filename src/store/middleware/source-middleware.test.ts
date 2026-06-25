@@ -399,7 +399,7 @@ describe("source middleware", () => {
 
       return {
         instance,
-        spies,
+        spies: spies as Required<typeof spies>,
       };
     }
 

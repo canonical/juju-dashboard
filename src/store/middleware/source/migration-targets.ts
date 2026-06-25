@@ -5,7 +5,7 @@ import { actions as jujuActions } from "store/juju";
 import { toSerializableSourceError } from "store/util";
 
 import { hasConnections } from "../connection/util";
-import { createSourceMiddleware } from "../source-middleware";
+import { createSourceInstance } from "../source-middleware";
 
 export async function getMigrationTargets(
   connection: ConnectionWithFacades,
@@ -20,9 +20,9 @@ export async function getMigrationTargets(
   return controllers;
 }
 
-export default createSourceMiddleware<
-  string[],
-  { wsControllerURL: string; modelUUID: string }
+export default createSourceInstance<
+  { wsControllerURL: string; modelUUID: string },
+  string[]
 >(
   "migration-targets",
   ({ wsControllerURL: _, modelUUID, meta }) => {
