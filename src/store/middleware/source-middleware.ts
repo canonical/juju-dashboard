@@ -9,7 +9,6 @@ import type { Middleware } from "redux";
 import type { Source } from "data";
 import type { Events } from "data/source";
 import type { RootState, Store } from "store/store";
-import { isSpecificAction } from "types";
 import { hash } from "utils";
 
 export class SourceManager<T, P extends O, O = P> {
@@ -74,134 +73,6 @@ type SourceHooks<P> = {
   after?: (args: P, store: Pick<Store, "dispatch" | "getState">) => void;
 };
 
-/**
- * Create a redux middleware for a given source. Sources are tracked by the arguments passed to
- * the `start` action.
- *
- * @param identifier A unique identifier for this source.
- * @param createSource A callback function to create a new source with the given arguments.
- * @param sourceActions A collection of actions to propagate the data and source state into the
- * backing store.
- * @param hooks A collection of callback function to run at various times when interacting with
- * the underlying store. **Warning:** This will be removed in the future once there are less
- * interactions between old and new polling implementations, so try not to rely on it.
- */
-export function createSourceMiddleware<T, P>(
-  identifier: string,
-  createSource: (args: { meta: Record<string, unknown> } & P) => Source<T>,
-  sourceActions: {
-    setData: (args: P, data: T) => PayloadAction<unknown>;
-    setLoading: (args: P, loading: boolean) => PayloadAction<unknown>;
-    setError: (
-      args: P,
-      error: { message: string; source: Error } | null,
-    ) => PayloadAction<unknown>;
-  },
-  hooks?: SourceHooks<P>,
-): {
-  middleware: Middleware<void, RootState, Store["dispatch"]>;
-  actions: Record<
-    "invalidate" | "start" | "stop",
-    PayloadActionCreator<P, string>
-  >;
-} {
-  const actions = {
-    // WARN: Redux doesn't export the types needed to make this play nicely (`BaseActionCreator`),
-    // so manually do the casting.
-    start: createAction(
-      `source/${identifier}/start`,
-      (payload: P): { payload: P; meta?: Record<string, unknown> } =>
-        Object.assign(
-          {
-            payload,
-          },
-          hooks?.addActionMeta
-            ? { meta: hooks.addActionMeta(payload) }
-            : undefined,
-        ),
-    ) as unknown as PayloadActionCreator<P, "start">,
-    stop: createAction<P>(`source/${identifier}/stop`) as PayloadActionCreator<
-      P,
-      "stop"
-    >,
-    invalidate: createAction<P>(
-      `source/${identifier}/invalidate`,
-    ) as PayloadActionCreator<P, "invalidate">,
-  };
-
-  return {
-    middleware: (store) => (next) => {
-      const sources = new SourceManager<
-        T,
-        { meta: Record<string, unknown> } & P,
-        P
-      >(createSource);
-
-      return (action) => {
-        if (!isAction(action)) {
-          return next(action);
-        }
-
-        if (actions.start.match(action)) {
-          const actionPayload = action.payload as P;
-          const actionMeta = (
-            action as PayloadAction<P, "start", Record<string, unknown>>
-          ).meta as Record<string, unknown> | undefined;
-          const args = Object.assign(
-            {},
-            actionPayload,
-            actionMeta ? { meta: actionMeta } : undefined,
-          );
-          sources.start(args, {
-            data: (data) => {
-              store.dispatch(sourceActions.setData(args, data));
-              hooks?.after?.(args, store);
-            },
-            load: () => {
-              store.dispatch(sourceActions.setLoading(args, true));
-            },
-            loadEnd: () => {
-              store.dispatch(sourceActions.setLoading(args, false));
-            },
-            error: (message, sourceError) => {
-              store.dispatch(
-                sourceActions.setError(args, {
-                  message,
-                  source: sourceError,
-                }),
-              );
-            },
-            errorCleared: () => {
-              store.dispatch(sourceActions.setError(args, null));
-            },
-          });
-        } else if (
-          isSpecificAction<ReturnType<typeof actions.stop>>(
-            action,
-            actions.stop.type,
-          )
-        ) {
-          const args = action.payload as P;
-          sources.stop(args);
-        } else if (
-          isSpecificAction<ReturnType<typeof actions.invalidate>>(
-            action,
-            actions.invalidate.type,
-          )
-        ) {
-          const args = action.payload as P;
-          sources.invalidate(args);
-        } else {
-          // Pass the action down the handler chain.
-          return next(action);
-        }
-        return;
-      };
-    },
-    actions,
-  };
-}
-
 export type SourceInstance<Payload, T> = {
   actions: {
     start: PayloadActionCreator<Payload, string, PrepareAction<Payload>>;
@@ -217,7 +88,7 @@ export type SourceInstance<Payload, T> = {
     ) => PayloadAction<unknown>;
   };
   hooks: SourceHooks<Payload>;
-  source: SourceManager<
+  createSource: () => SourceManager<
     T,
     { meta: Record<string, unknown> } & Payload,
     Payload
@@ -230,12 +101,16 @@ export default function createMiddleware<
   T,
 >(sources: S[]): Middleware<void, RootState, Store["dispatch"]> {
   return (store) => (next) => {
+    const instances = sources.map(({ createSource, ...rest }) => ({
+      ...rest,
+      source: createSource(),
+    }));
     return (action) => {
       if (!isAction(action)) {
         return next(action);
       }
 
-      const source = sources.find(({ actions }) =>
+      const source = instances.find(({ actions }) =>
         [actions.start, actions.stop, actions.invalidate].some((testAction) =>
           testAction.match(action),
         ),
@@ -292,6 +167,18 @@ export default function createMiddleware<
   };
 }
 
+/**
+ * Wrap source for use in middleware. Sources are tracked by the arguments passed to the `start`
+ * action.
+ *
+ * @param identifier A unique identifier for this source.
+ * @param createSource A callback function to create a new source with the given arguments.
+ * @param sourceActions A collection of actions to propagate the data and source state into the
+ * backing store.
+ * @param hooks A collection of callback function to run at various times when interacting with
+ * the underlying store. **Warning:** This will be removed in the future once there are less
+ * interactions between old and new polling implementations, so try not to rely on it.
+ */
 export function createSourceInstance<Payload, T>(
   identifier: string,
   createSource: (
@@ -332,7 +219,7 @@ export function createSourceInstance<Payload, T>(
         `source/${identifier}/invalidate`,
       ) as PayloadActionCreator<Payload, string, PrepareAction<Payload>>,
     },
-    source: new SourceManager(createSource),
+    createSource: () => new SourceManager(createSource),
     sourceActions,
     hooks: hooks ?? {},
   };

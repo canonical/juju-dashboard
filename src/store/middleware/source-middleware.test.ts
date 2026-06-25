@@ -387,16 +387,21 @@ describe("source middleware", () => {
         },
       );
 
-      const spies = Object.fromEntries(
-        (["start", "stop", "invalidate"] as const).map((action) => [
-          action,
-          vi.spyOn(instance.source, action),
-        ]),
-      ) as { [K in keyof typeof instance.source]: Mock };
+      const spies: Partial<Record<"invalidate" | "start" | "stop", Mock>> = {};
+      const { createSource } = instance;
+      instance.createSource = (): ReturnType<typeof createSource> => {
+        const source = createSource();
+
+        for (const action of ["start", "stop", "invalidate"] as const) {
+          spies[action] = vi.spyOn(source, action);
+        }
+
+        return source;
+      };
 
       return {
         instance,
-        spies,
+        spies: spies as Required<typeof spies>,
       };
     }
 

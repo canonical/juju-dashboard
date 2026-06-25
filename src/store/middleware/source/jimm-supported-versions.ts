@@ -9,7 +9,7 @@ import { actions as jujuActions } from "store/juju";
 import { toSerializableSourceError } from "store/util";
 
 import { hasConnections } from "../connection/util";
-import { createSourceMiddleware } from "../source-middleware";
+import { createSourceInstance } from "../source-middleware";
 
 export async function getSupportedVersions(
   connection: ConnectionWithFacades,
@@ -18,10 +18,7 @@ export async function getSupportedVersions(
   return response.versions;
 }
 
-export default createSourceMiddleware<
-  VersionElem[],
-  { wsControllerURL: string }
->(
+export default createSourceInstance<{ wsControllerURL: string }, VersionElem[]>(
   "jimm-supported-versions",
   ({ wsControllerURL: _, meta }) => {
     if (!hasConnections(meta, ["wsControllerURL"])) {
