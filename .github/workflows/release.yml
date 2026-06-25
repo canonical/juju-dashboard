@@ -140,7 +140,7 @@ jobs:
       - name: Create new tracks, if required
         run: |
           track='${{ needs.pre-release.outputs.track }}'
-          charm_name="$(yq '.name' '${{ steps.post-build.outputs.charm-dir }}/metadata.yaml')"
+          charm_name="$(yq '.name' '${{ steps.post-build.outputs.charm-dir }}/charmcraft.yaml')"
 
           authorization_header="Macaroon $(echo '${{ secrets.CHARMHUB_TOKEN }}' | base64 -d | jq -r .v)"
 
@@ -290,4 +290,3 @@ jobs:
           sourcemaps: "./build"
           ignore_missing: true
           ignore_empty: true
-
