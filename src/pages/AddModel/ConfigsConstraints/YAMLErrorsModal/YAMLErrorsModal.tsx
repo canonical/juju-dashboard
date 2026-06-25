@@ -3,23 +3,25 @@ import type { JSX } from "react";
 
 import { FieldName } from "../types";
 
-import type { YAMLErrors, YAMLErrorsModalProps } from "./types";
+import type { YAMLErrorsModalProps, YAMLValidationError } from "./types";
 
 const ErrorList = ({
   label,
   errors,
 }: {
   label: string;
-  errors: YAMLErrors["invalidKeys" | "invalidValues" | "otherErrors"];
+  errors: YAMLValidationError[];
 }): JSX.Element | null =>
   errors.length > 0 ? (
     <ul className="u-no-padding--left u-no-margin--left">
       {label}:
-      {errors.map((error, index) => (
-        <li className="u-sh3" key={`${label}-${index}`}>
-          Line {error.line}: {error.message}
-        </li>
-      ))}
+      {errors.map(({ line, message }, index) => {
+        return (
+          <li className="u-sh3" key={`${label}-${index}`}>
+            {line ? `Line ${line}: ${message}` : message}
+          </li>
+        );
+      })}
     </ul>
   ) : null;
 

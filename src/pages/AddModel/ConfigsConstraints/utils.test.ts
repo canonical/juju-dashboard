@@ -408,13 +408,14 @@ describe("utils", () => {
       expect(errors.invalidKeys[0].line).toBe(1);
     });
 
-    it("reports other error for lines missing a colon", () => {
-      const { errors } = validateAndParseYAML("no-colon-here", categories);
-
-      expect(errors.otherErrors).toHaveLength(1);
-      expect(errors.otherErrors[0].message).toContain(
-        "Invalid format. Expected <key>: <value>",
+    it("reports other error for malformed YAML syntax", () => {
+      const { errors } = validateAndParseYAML(
+        "key: value\n  bad-indent: oops",
+        categories,
       );
+
+      expect(errors.otherErrors.length).toBeGreaterThanOrEqual(1);
+      expect(errors.otherErrors[0].line).toBeGreaterThan(0);
     });
 
     it("reports an invalid value for select fields with disallowed values", () => {

@@ -1,4 +1,6 @@
-import type { YAMLErrors } from "./YAMLErrorsModal/types";
+import { parseDocument, isMap, isPair, isScalar } from "yaml";
+
+import type { YAMLErrors, YAMLValidationError } from "./YAMLErrorsModal/types";
 import { CONFIG_CATEGORIES } from "./configCatalog";
 import { CONSTRAINT_CATEGORIES } from "./constraintsCatalog";
 import type { CategoryDefinition, ConfigFieldValue } from "./types";
@@ -114,107 +116,101 @@ export const filterCategoriesBySearch = (
 };
 
 export function validateAndParseYAML(
-  yaml: string,
+  yamlString: string,
   categories: CategoryDefinition[],
   currentValues: Record<string, string> = {},
 ): {
   validValues: Record<string, string>;
   errors: YAMLErrors;
 } {
-  const fieldsByLabel = new Map(
-    categories.flatMap((category) =>
-      category.fields.map((field) => [field.label, field] as const),
-    ),
+  const fieldsByLabel = categories.reduce(
+    (acc, { fields }) => {
+      fields.forEach((field) => {
+        acc[field.label] = field;
+      });
+      return acc;
+    },
+    {} as Record<string, CategoryDefinition["fields"][number]>,
   );
 
   const validValues: Record<string, string> = {};
-  const errors: YAMLErrors = {
-    invalidKeys: [],
-    invalidValues: [],
-    otherErrors: [],
-  };
+  const invalidKeys: YAMLValidationError[] = [];
+  const invalidValues: YAMLValidationError[] = [];
 
-  yaml.split("\n").forEach((line, index) => {
-    const lineNumber = index + 1;
-    const trimmedLine = line.trim();
+  const { errors: docErrors, contents } = parseDocument(yamlString);
 
-    // Ignore empty lines and comments
-    if (!trimmedLine || trimmedLine.startsWith("#")) {
-      return;
-    }
-
-    const separatorIndex = trimmedLine.indexOf(":");
-    if (separatorIndex === -1) {
-      errors.otherErrors.push({
-        line: lineNumber,
-        message: "Invalid format. Expected <key>: <value>",
-      });
-      return;
-    }
-
-    const key = trimmedLine.slice(0, separatorIndex).trim();
-    const yamlValue = trimmedLine.slice(separatorIndex + 1).trim();
-    // Handle quoted empty string values correctly. This is done for double quotes only as buildYAML always emits "".
-    const normalizedValue = yamlValue === '""' ? "" : yamlValue;
-
-    if (!key) {
-      errors.invalidKeys.push({
-        line: lineNumber,
-        message: "Invalid key. Key cannot be empty",
-      });
-      return;
-    }
-
-    // Validate the value against the field definitions
-    const field = fieldsByLabel.get(key);
-    if (!field) {
-      errors.invalidKeys.push({
-        line: lineNumber,
-        message: `Unknown key: ${key}`,
-      });
-      return;
-    }
-
-    // If the field has a predefined set of allowed values, check if the value is valid
-    if (field.input?.type === "select") {
-      const allowedValues = (field.input.options ?? []).map(
-        ({ value }) => value,
-      );
-      if (!allowedValues.includes(normalizedValue)) {
-        errors.invalidValues.push({
-          line: lineNumber,
-          message: `Invalid value for ${key}. Expected one of: ${allowedValues.join(", ")}`,
-        });
-        return;
+  // Walk the top-level key-value pairs and validate each against the catalog.
+  if (isMap(contents)) {
+    for (const pair of contents.items) {
+      if (!isPair(pair) || !isScalar(pair.key)) {
+        continue;
       }
-    }
 
-    // If the field is numeric, validate the value
-    if (
-      field.isNumeric &&
-      normalizedValue &&
-      !/^-?\d+(\.\d+)?$/.test(normalizedValue)
-    ) {
-      errors.invalidValues.push({
-        line: lineNumber,
-        message: `Invalid type for ${key}. Expected a number`,
-      });
-      return;
-    }
+      const key = String(pair.key.value);
+      const line = pair.key.range
+        ? yamlString.slice(0, pair.key.range[0]).split("\n").length
+        : 0;
 
-    validValues[key] = normalizedValue;
-  });
+      const field = fieldsByLabel[key];
+      if (!field) {
+        invalidKeys.push({ line, message: `Unknown key: ${key}` });
+        continue;
+      }
+
+      // Coerce parsed value to string as the library already handled booleans,
+      // nulls, numbers, quoted strings etc. correctly.
+      const rawValue = isScalar(pair.value) ? pair.value.value : null;
+      const value =
+        rawValue === null || rawValue === undefined ? "" : rawValue.toString();
+
+      // If the field has a predefined set of allowed values, check if valid.
+      if (field.input?.type === "select") {
+        const allowedValues = (field.input.options ?? []).map(
+          ({ value: optionValue }) => optionValue,
+        );
+        if (!allowedValues.includes(value)) {
+          invalidValues.push({
+            line,
+            message: `Invalid value for ${key}. Expected one of: ${allowedValues.join(", ")}`,
+          });
+          continue;
+        }
+      }
+
+      // If the field is numeric, validate the value.
+      if (field.isNumeric && value && isNaN(Number(value))) {
+        invalidValues.push({
+          line,
+          message: `Invalid type for ${key}. Expected a number`,
+        });
+        continue;
+      }
+
+      validValues[key] = value;
+    }
+  }
 
   // For fields that were previously changed but absent from YAML, include
   // their catalog default so callers can reset them in a single pass.
-  fieldsByLabel.forEach((field) => {
+  for (const label in fieldsByLabel) {
+    const { defaultValue } = fieldsByLabel[label];
     if (
-      !(field.label in validValues) &&
-      isConfigChanged(field.label, currentValues, field.defaultValue)
+      !(label in validValues) &&
+      isConfigChanged(label, currentValues, defaultValue)
     ) {
-      validValues[field.label] = field.defaultValue?.toString() ?? "";
+      validValues[label] = defaultValue?.toString() ?? "";
     }
-  });
+  }
 
-  return { validValues, errors };
+  return {
+    validValues,
+    errors: {
+      invalidKeys,
+      invalidValues,
+      otherErrors: docErrors.map((error) => ({
+        line: error.linePos?.[0]?.line,
+        message: error.message,
+      })),
+    },
+  };
 }
