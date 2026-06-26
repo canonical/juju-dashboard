@@ -104,7 +104,7 @@ jobs:
         working-directory: charms/${{ matrix.charm-kind }}-charm
         id: build
         run: |
-          OUTPUT=$(./build.sh)
+          OUTPUT=$(./build.sh source '' --all)
 
           if [ '${{ matrix.charm-kind }}' = 'k8s' ]; then
               echo "$OUTPUT" | grep '^id=' >> "$GITHUB_OUTPUT"
