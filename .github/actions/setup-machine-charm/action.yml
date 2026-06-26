@@ -52,7 +52,8 @@ runs:
       run: |
         "${{ github.workspace }}/charms/machine-charm/build.sh" \
           "${{ env.build_type }}" \
-          "${{ inputs.dashboard-version }}"
+          "${{ inputs.dashboard-version }}" \
+          "--platform ubuntu@24.04:amd64"
     - name: Switch to controller
       run: juju switch '${{ inputs.controller-model }}'
       shell: bash

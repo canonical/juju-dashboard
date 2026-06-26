@@ -7,6 +7,7 @@ ROOT_DIR="$SCRIPT_PATH/../../"
 
 BUILD_TYPE="${1:-source}"
 DASHBOARD_RESOURCE="${2:-}"
+PACK_ARGS="${3:-}"
 
 DASHBOARD_IMAGE_ID=""
 
@@ -55,7 +56,7 @@ ATTEMPT=1
 SUCCESS=false
 
 while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-    if (cd "$SCRIPT_PATH" && charmcraft pack); then
+    if (cd "$SCRIPT_PATH" && charmcraft pack $PACK_ARGS); then
         SUCCESS=true
         break # Success, exit retry loop
     else
