@@ -1,3 +1,4 @@
+import type { YAMLErrorsModalState } from "../YAMLErrorsModal/types";
 import type { CategoryDefinition, FieldName } from "../types";
 
 export type Props = {
@@ -12,4 +13,6 @@ export type Props = {
   searchPlaceholder: string;
   yamlPlaceholder: string;
   searchName: string;
+  setYAMLErrors: (state: YAMLErrorsModalState) => void;
+  yamlErrorLabel: string;
 };

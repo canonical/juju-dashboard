@@ -23,6 +23,8 @@ export enum Label {
   DISABLE_REMOVE_OBJECT_DESC = "Prevents destruction of the model and removal of applications, machines, units, relations, and storage.",
   DISABLE_ALL_COMMANDS = "Disable all commands",
   DISABLE_ALL_COMMANDS_DESC = "Disables every command that can modify a Juju controller, model, or workload.",
+  INCORRECT_YAML_CONFIGURATION_ERROR = "One or more invalid configuration values",
+  INCORRECT_YAML_CONSTRAINT_ERROR = "One or more invalid constraint values",
   NO_CHANGED_CONFIGS = "No configs were changed from default",
   NO_CHANGED_CONSTRAINTS = "No constraints were changed from default",
 }
