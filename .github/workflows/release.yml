@@ -150,7 +150,7 @@ jobs:
 
           if [ "$matching_track" = '' ]; then
             echo "Creating '$track' track for '$charm_name'"
-            CHARMCRAFT_AUTH='${{ secrets.CHARMHUB_TOKEN }}' charmcraft create-track "$charm_name" "$track"
+            CHARMCRAFT_AUTH='${{ secrets.CHARMHUB_TOKEN }}' charmcraft create-track --name="$charm_name" --track="$track"
           else
             echo "'$track' track for '$charm_name' already created. Continuing..."
           fi
