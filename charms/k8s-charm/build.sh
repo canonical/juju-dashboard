@@ -7,6 +7,7 @@ ROOT_DIR="$SCRIPT_PATH/../../"
 
 BUILD_TYPE="${1:-source}"
 DASHBOARD_RESOURCE="${2:-}"
+ALL_PLATFORMS="${3:-}"
 
 DASHBOARD_IMAGE_ID=""
 
@@ -54,8 +55,13 @@ MAX_ATTEMPTS=3
 ATTEMPT=1
 SUCCESS=false
 
+PACK_ARGS=()
+if [ "$ALL_PLATFORMS" != '--all' ]; then
+    PACK_ARGS+=(--platform 'ubuntu@24.04:amd64')
+fi
+
 while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-    if (cd "$SCRIPT_PATH" && charmcraft pack); then
+    if (cd "$SCRIPT_PATH" && charmcraft pack "${PACK_ARGS[@]}"); then
         SUCCESS=true
         break # Success, exit retry loop
     else
