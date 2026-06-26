@@ -2,7 +2,11 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAction } from "@reduxjs/toolkit";
 import type { Mock } from "vitest";
 
-import { createSourceMiddleware, SourceManager } from "./source-middleware";
+import type { SourceInstance } from "./source-middleware";
+import createMiddleware, {
+  createSourceInstance,
+  SourceManager,
+} from "./source-middleware";
 
 describe("SourceManager", () => {
   describe("start", () => {
@@ -98,88 +102,60 @@ describe("source middleware", () => {
       SET_ERROR_ACTION({ args, error }),
   };
 
-  describe("actions", () => {
-    it("creates unique actions for different sources", () => {
-      const sourceA = createSourceMiddleware(
-        "sourceA",
-        vi.fn(),
-        DUMMY_SOURCE_ACTIONS,
-      );
-      const sourceB = createSourceMiddleware(
-        "sourceB",
-        vi.fn(),
-        DUMMY_SOURCE_ACTIONS,
-      );
+  function createMocks(): {
+    next: Mock;
+    store: { getState: Mock; dispatch: Mock };
+  } {
+    return {
+      next: vi.fn(),
+      store: {
+        getState: vi.fn().mockReturnValue({}),
+        dispatch: vi.fn(),
+      },
+    };
+  }
 
-      expect(sourceA.actions.start.type).not.toEqual(
-        sourceB.actions.start.type,
-      );
-      expect(sourceA.actions.stop.type).not.toEqual(sourceB.actions.stop.type);
-      expect(sourceA.actions.invalidate.type).not.toEqual(
-        sourceB.actions.invalidate.type,
-      );
-    });
+  it.for([
+    ["non-action", { something: true }],
+    ["other action", createAction<void>("someAction")()],
+  ] as const)("ignores %s", ([_, action], { expect }) => {
+    const { next, store } = createMocks();
+    const middleware = createMiddleware([])(store)(next);
+
+    const nextReturn = {};
+    next.mockReturnValue(nextReturn);
+
+    expect(middleware(action)).toEqual(nextReturn);
+    expect(next).toHaveBeenCalledExactlyOnceWith(action);
   });
 
-  describe("middleware", () => {
-    function createMocks(): {
-      next: Mock;
-      store: { getState: Mock; dispatch: Mock };
-    } {
-      return {
-        next: vi.fn(),
-        store: {
-          getState: vi.fn().mockReturnValue({}),
-          dispatch: vi.fn(),
-        },
-      };
-    }
-
-    let { next, store } = createMocks();
-    beforeEach(() => {
-      ({ next, store } = createMocks());
-    });
-
+  describe("single source", () => {
     it.for(["start", "stop", "invalidate"] as const)(
-      "doesn't propagate %s action",
+      "intercepts %s action",
       (action, { expect }) => {
-        const source = createSourceMiddleware(
-          "source",
+        const { next, store } = createMocks();
+        const source = createSourceInstance(
+          "mySource",
           vi.fn().mockReturnValue({ on: vi.fn() }),
           DUMMY_SOURCE_ACTIONS,
         );
-        const middleware = source.middleware(store)(next);
+        const middleware = createMiddleware([source])(store)(next);
 
         middleware(source.actions[action]({}));
-
         expect(next).not.toHaveBeenCalled();
       },
     );
 
-    it("ignores other actions", () => {
-      const source = createSourceMiddleware(
-        "source",
-        vi.fn(),
-        DUMMY_SOURCE_ACTIONS,
-      );
-      const middleware = source.middleware(store)(next);
-
-      const someAction = createAction<void>("someAction");
-
-      middleware(someAction());
-
-      expect(next).toHaveBeenCalledTimes(1);
-    });
-
     describe("start", () => {
       it("starts a source", () => {
+        const { next, store } = createMocks();
         const onFn = vi.fn();
-        const source = createSourceMiddleware(
+        const source = createSourceInstance(
           "source",
           vi.fn().mockReturnValue({ on: onFn }),
           DUMMY_SOURCE_ACTIONS,
         );
-        const middleware = source.middleware(store)(next);
+        const middleware = createMiddleware([source])(store)(next);
 
         middleware(source.actions.start({}));
 
@@ -212,14 +188,15 @@ describe("source middleware", () => {
         ] as const)(
           "%s",
           ([event, handlerArguments, expectedAction], { expect }) => {
+            const { next, store } = createMocks();
             // Start the source via middleware.
             const onFn = vi.fn();
-            const source = createSourceMiddleware(
+            const source = createSourceInstance(
               "source",
               vi.fn().mockReturnValue({ on: onFn }),
               DUMMY_SOURCE_ACTIONS,
             );
-            const middleware = source.middleware(store)(next);
+            const middleware = createMiddleware([source])(store)(next);
             middleware(source.actions.start({}));
 
             // Extract the event handler.
@@ -240,48 +217,51 @@ describe("source middleware", () => {
       });
 
       it("ignores start if source already started", () => {
+        const { next, store } = createMocks();
         const createSourceFn = vi.fn().mockReturnValue({ on: vi.fn() });
-        const source = createSourceMiddleware(
+        const source = createSourceInstance(
           "source",
           createSourceFn,
           DUMMY_SOURCE_ACTIONS,
         );
-        const middleware = source.middleware(store)(next);
-        expect(createSourceFn).toBeCalledTimes(0);
+        const middleware = createMiddleware([source])(store)(next);
+        expect(createSourceFn).toHaveBeenCalledTimes(0);
         middleware(source.actions.start({ id: 123 }));
-        expect(createSourceFn).toBeCalledTimes(1);
+        expect(createSourceFn).toHaveBeenCalledTimes(1);
         middleware(source.actions.start({ id: 123 }));
-        expect(createSourceFn).toBeCalledTimes(1);
+        expect(createSourceFn).toHaveBeenCalledTimes(1);
       });
 
       it("starts source with different arguments", () => {
+        const { next, store } = createMocks();
         const createSourceFn = vi.fn().mockReturnValue({ on: vi.fn() });
-        const source = createSourceMiddleware(
+        const source = createSourceInstance(
           "source",
           createSourceFn,
           DUMMY_SOURCE_ACTIONS,
         );
-        const middleware = source.middleware(store)(next);
-        expect(createSourceFn).toBeCalledTimes(0);
+        const middleware = createMiddleware([source])(store)(next);
+        expect(createSourceFn).toHaveBeenCalledTimes(0);
         middleware(source.actions.start({ id: 123 }));
-        expect(createSourceFn).toBeCalledTimes(1);
+        expect(createSourceFn).toHaveBeenCalledTimes(1);
         middleware(source.actions.start({ id: 456 }));
-        expect(createSourceFn).toBeCalledTimes(2);
+        expect(createSourceFn).toHaveBeenCalledTimes(2);
       });
     });
 
     describe("stop", () => {
       it("stops a source if started", () => {
+        const { next, store } = createMocks();
         const doneFn = vi.fn();
         const createSourceFn = vi
           .fn()
           .mockReturnValue({ on: vi.fn(), done: doneFn });
-        const source = createSourceMiddleware(
+        const source = createSourceInstance(
           "source",
           createSourceFn,
           DUMMY_SOURCE_ACTIONS,
         );
-        const middleware = source.middleware(store)(next);
+        const middleware = createMiddleware([source])(store)(next);
         middleware(source.actions.start({ id: 123 }));
         expect(doneFn).not.toHaveBeenCalled();
         middleware(source.actions.stop({ id: 123 }));
@@ -289,57 +269,60 @@ describe("source middleware", () => {
       });
 
       it("ignores if source not running", () => {
+        const { next, store } = createMocks();
         const doneFn = vi.fn();
         const createSourceFn = vi
           .fn()
           .mockReturnValue({ on: vi.fn(), done: doneFn });
-        const source = createSourceMiddleware(
+        const source = createSourceInstance(
           "source",
           createSourceFn,
           DUMMY_SOURCE_ACTIONS,
         );
-        const middleware = source.middleware(store)(next);
+        const middleware = createMiddleware([source])(store)(next);
         middleware(source.actions.stop({ id: 123 }));
         expect(doneFn).not.toHaveBeenCalled();
       });
 
       it("only stops specified source", () => {
+        const { next, store } = createMocks();
         const doneFns = [vi.fn(), vi.fn()];
         const createSourceFn = vi
           .fn()
           .mockReturnValueOnce({ on: vi.fn(), done: doneFns[0] })
           .mockReturnValueOnce({ on: vi.fn(), done: doneFns[1] });
-        const source = createSourceMiddleware(
+        const source = createSourceInstance(
           "source",
           createSourceFn,
           DUMMY_SOURCE_ACTIONS,
         );
-        const middleware = source.middleware(store)(next);
+        const middleware = createMiddleware([source])(store)(next);
         middleware(source.actions.start({ id: 123 }));
         middleware(source.actions.start({ id: 456 }));
         expect(doneFns[0]).not.toHaveBeenCalled();
         expect(doneFns[1]).not.toHaveBeenCalled();
         middleware(source.actions.stop({ id: 123 }));
-        expect(doneFns[0]).toBeCalledTimes(1);
+        expect(doneFns[0]).toHaveBeenCalledTimes(1);
         expect(doneFns[1]).not.toHaveBeenCalled();
         middleware(source.actions.stop({ id: 456 }));
-        expect(doneFns[0]).toBeCalledTimes(1);
-        expect(doneFns[1]).toBeCalledTimes(1);
+        expect(doneFns[0]).toHaveBeenCalledTimes(1);
+        expect(doneFns[1]).toHaveBeenCalledTimes(1);
       });
     });
 
     describe("invalidate", () => {
       it("invalidates a source if started", () => {
+        const { next, store } = createMocks();
         const invalidateFn = vi.fn();
         const createSourceFn = vi
           .fn()
           .mockReturnValue({ on: vi.fn(), invalidate: invalidateFn });
-        const source = createSourceMiddleware(
+        const source = createSourceInstance(
           "source",
           createSourceFn,
           DUMMY_SOURCE_ACTIONS,
         );
-        const middleware = source.middleware(store)(next);
+        const middleware = createMiddleware([source])(store)(next);
         middleware(source.actions.start({ id: 123 }));
         expect(invalidateFn).not.toHaveBeenCalled();
         middleware(source.actions.invalidate({ id: 123 }));
@@ -347,43 +330,134 @@ describe("source middleware", () => {
       });
 
       it("ignores if source not running", () => {
+        const { next, store } = createMocks();
         const invalidateFn = vi.fn();
         const createSourceFn = vi
           .fn()
           .mockReturnValue({ on: vi.fn(), invalidate: invalidateFn });
-        const source = createSourceMiddleware(
+        const source = createSourceInstance(
           "source",
           createSourceFn,
           DUMMY_SOURCE_ACTIONS,
         );
-        const middleware = source.middleware(store)(next);
+        const middleware = createMiddleware([source])(store)(next);
         middleware(source.actions.invalidate({ id: 123 }));
         expect(invalidateFn).not.toHaveBeenCalled();
       });
 
       it("only invalidates specified source", () => {
+        const { next, store } = createMocks();
         const invalidateFns = [vi.fn(), vi.fn()];
         const createSourceFn = vi
           .fn()
           .mockReturnValueOnce({ on: vi.fn(), invalidate: invalidateFns[0] })
           .mockReturnValueOnce({ on: vi.fn(), invalidate: invalidateFns[1] });
-        const source = createSourceMiddleware(
+        const source = createSourceInstance(
           "source",
           createSourceFn,
           DUMMY_SOURCE_ACTIONS,
         );
-        const middleware = source.middleware(store)(next);
+        const middleware = createMiddleware([source])(store)(next);
         middleware(source.actions.start({ id: 123 }));
         middleware(source.actions.start({ id: 456 }));
         expect(invalidateFns[0]).not.toHaveBeenCalled();
         expect(invalidateFns[1]).not.toHaveBeenCalled();
         middleware(source.actions.invalidate({ id: 123 }));
-        expect(invalidateFns[0]).toBeCalledTimes(1);
+        expect(invalidateFns[0]).toHaveBeenCalledTimes(1);
         expect(invalidateFns[1]).not.toHaveBeenCalled();
         middleware(source.actions.invalidate({ id: 456 }));
-        expect(invalidateFns[0]).toBeCalledTimes(1);
-        expect(invalidateFns[1]).toBeCalledTimes(1);
+        expect(invalidateFns[0]).toHaveBeenCalledTimes(1);
+        expect(invalidateFns[1]).toHaveBeenCalledTimes(1);
       });
+    });
+  });
+
+  describe("multiple sources", () => {
+    function mockInstance(name: string): {
+      instance: SourceInstance<Record<string, never>, number>;
+      spies: { [K in keyof SourceInstance<unknown, unknown>["actions"]]: Mock };
+    } {
+      const instance = createSourceInstance(
+        name,
+        vi.fn().mockImplementation(() => ({ on: vi.fn() })),
+        {
+          setData: vi.fn(),
+          setLoading: vi.fn(),
+          setError: vi.fn(),
+        },
+      );
+
+      const spies: Partial<Record<"invalidate" | "start" | "stop", Mock>> = {};
+      const { createSource } = instance;
+      instance.createSource = (): ReturnType<typeof createSource> => {
+        const source = createSource();
+
+        for (const action of ["start", "stop", "invalidate"] as const) {
+          spies[action] = vi.spyOn(source, action);
+        }
+
+        return source;
+      };
+
+      return {
+        instance,
+        spies: spies as Required<typeof spies>,
+      };
+    }
+
+    it.for([["start"], ["stop"], ["invalidate"]] as const)(
+      "routes %s action",
+      ([action], { expect }) => {
+        const { store, next } = createMocks();
+        const instances = new Array(5)
+          .fill(null)
+          .map((_, i) => mockInstance(`source-${i}`));
+        const middleware = createMiddleware<
+          SourceInstance<Record<string, never>, number>,
+          Record<string, never>,
+          number
+        >(instances.map(({ instance }) => instance))(store)(next);
+
+        // Try each instance
+        for (const { spies, instance } of instances) {
+          // Dispatch the action.
+          middleware(instance.actions[action]());
+
+          expect(spies[action]).toHaveBeenCalledOnce();
+          for (const { spies: otherSpies } of instances) {
+            if (otherSpies === spies) {
+              continue;
+            }
+
+            expect(otherSpies[action]).not.toHaveBeenCalled();
+          }
+
+          vi.clearAllMocks();
+        }
+      },
+    );
+  });
+
+  describe("createSourceInstance", () => {
+    it("creates unique actions for different sources", () => {
+      const sourceA = createSourceInstance(
+        "sourceA",
+        vi.fn(),
+        DUMMY_SOURCE_ACTIONS,
+      );
+      const sourceB = createSourceInstance(
+        "sourceB",
+        vi.fn(),
+        DUMMY_SOURCE_ACTIONS,
+      );
+
+      expect(sourceA.actions.start.type).not.toEqual(
+        sourceB.actions.start.type,
+      );
+      expect(sourceA.actions.stop.type).not.toEqual(sourceB.actions.stop.type);
+      expect(sourceA.actions.invalidate.type).not.toEqual(
+        sourceB.actions.invalidate.type,
+      );
     });
   });
 });
