@@ -24,7 +24,7 @@ jobs:
       destination-channel: ${{ steps.channel.outputs.destination }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -107,7 +107,7 @@ jobs:
       destination: ${{ needs.check-valid-promotion.outputs.destination-channel }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.check-valid-promotion.outputs.tag }}
       - name: Promote charm to stable
@@ -125,7 +125,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-tags: true
           ref: ${{ needs.check-valid-promotion.outputs.tag }}
