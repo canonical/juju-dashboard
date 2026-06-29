@@ -42,9 +42,8 @@ const CategoriesListing = ({
   yamlErrorLabel,
 }: Props): JSX.Element => {
   const id = useId();
-  const { values, setFieldValue } = useFormikContext<
-    FormFields & Record<string, ConfigFieldValue>
-  >();
+  const { values, setFieldError, setFieldTouched, setFieldValue } =
+    useFormikContext<FormFields & Record<string, ConfigFieldValue>>();
   const [searchQuery, setSearchQuery] = useDebounce("", 250);
   const [changedOnly, setChangedOnly] = useState(false);
 
@@ -58,9 +57,9 @@ const CategoriesListing = ({
         categoriesList,
         values,
       );
-      Object.entries(validValues).forEach(([label, value]) => {
+      for (const [label, value] of Object.entries(validValues)) {
         void setFieldValue(label, value);
-      });
+      }
 
       if (
         errors.invalidKeys.length > 0 ||
@@ -122,7 +121,9 @@ const CategoriesListing = ({
         {title}
       </h5>
       <p className="u-no-margin--bottom p-text--small">
-        <a href={docsLink}>{docsLabel}</a>
+        <a href={docsLink} target="_blank">
+          {docsLabel}
+        </a>
       </p>
       <div className="u-flex u-flex--gap">
         <div>

@@ -11,8 +11,12 @@ const ErrorList = ({
 }: {
   label: string;
   errors: YAMLValidationError[];
-}): JSX.Element | null =>
-  errors.length > 0 ? (
+}): JSX.Element | null => {
+  if (errors.length === 0) {
+    return null;
+  }
+
+  return (
     <ul className="u-no-padding--left u-no-margin--left">
       {label}:
       {errors.map(({ line, message }, index) => {
@@ -23,7 +27,8 @@ const ErrorList = ({
         );
       })}
     </ul>
-  ) : null;
+  );
+};
 
 const YAMLErrorsModal = ({
   errors,

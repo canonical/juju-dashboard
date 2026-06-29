@@ -36,7 +36,7 @@ describe("utils", () => {
           {
             label: "cores",
             description: "Number of cores",
-            isNumeric: true,
+            valueType: "number",
           },
         ],
       },
@@ -382,20 +382,11 @@ describe("utils", () => {
       expect(validValues).toEqual({
         "default-space": "custom",
         "logging-config": "debug",
-        cores: "4",
+        cores: 4,
       });
       expect(errors.invalidKeys).toHaveLength(0);
       expect(errors.invalidValues).toHaveLength(0);
       expect(errors.otherErrors).toHaveLength(0);
-    });
-
-    it("normalizes double-quoted empty string to actual empty string", () => {
-      const { validValues } = validateAndParseYAML(
-        'default-space: ""',
-        categories,
-      );
-
-      expect(validValues["default-space"]).toBe("");
     });
 
     it("reports an invalid key for unknown fields", () => {
@@ -457,6 +448,93 @@ describe("utils", () => {
 
       expect(errors.invalidValues).toHaveLength(1);
       expect(errors.invalidValues[0].message).toContain("Expected a number");
+    });
+
+    it("parses boolean YAML scalars as 'true'/'false' strings", () => {
+      const boolCategories: CategoryDefinition[] = [
+        {
+          category: "Test",
+          fields: [
+            {
+              label: "my-bool",
+              description: "A boolean field",
+              defaultValue: "false",
+              valueType: "boolean",
+              input: {
+                type: "select",
+                options: [
+                  { label: "True", value: "true" },
+                  { label: "False", value: "false" },
+                ],
+              },
+            },
+          ],
+        },
+      ];
+
+      const { validValues, errors } = validateAndParseYAML(
+        "my-bool: true",
+        boolCategories,
+      );
+
+      expect(validValues["my-bool"]).toBe(true);
+      expect(errors.invalidValues).toHaveLength(0);
+    });
+
+    it("reports an invalid value for boolean fields with non-boolean input", () => {
+      const boolCategories: CategoryDefinition[] = [
+        {
+          category: "Test",
+          fields: [
+            {
+              label: "my-bool",
+              description: "A boolean field",
+              defaultValue: "false",
+              valueType: "boolean",
+              input: {
+                type: "select",
+                options: [
+                  { label: "True", value: "true" },
+                  { label: "False", value: "false" },
+                ],
+              },
+            },
+          ],
+        },
+      ];
+      const { errors } = validateAndParseYAML(
+        'my-bool: "not-a-bool"',
+        boolCategories,
+      );
+
+      expect(errors.invalidValues).toHaveLength(1);
+      expect(errors.invalidValues[0].message).toContain(
+        "Expected one of: true, false",
+      );
+    });
+
+    it("reports an invalid value when a field has a sequence or mapping value", () => {
+      const { errors } = validateAndParseYAML(
+        "default-space:\n  - item1\n  - item2",
+        categories,
+      );
+
+      expect(errors.invalidValues).toHaveLength(1);
+      expect(errors.invalidValues[0].message).toContain(
+        "Invalid value for default-space",
+      );
+      expect(errors.invalidValues[0].line).toBe(1);
+    });
+
+    it("reports an other error when the top-level YAML is not a key-value map", () => {
+      const { errors } = validateAndParseYAML("- item1\n- item2", categories);
+
+      expect(errors.otherErrors.length).toBeGreaterThanOrEqual(1);
+      expect(
+        errors.otherErrors.some((error) =>
+          error.message.includes("Expected a top-level key-value map"),
+        ),
+      ).toBe(true);
     });
 
     it("includes catalog default for previously changed fields absent from YAML", () => {
