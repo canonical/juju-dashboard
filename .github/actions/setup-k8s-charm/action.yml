@@ -54,6 +54,7 @@ runs:
         "${{ github.workspace }}/charms/k8s-charm/build.sh" \
           "${{ env.build_type }}" \
           "${{ inputs.dashboard-resource }}" \
+          "--platform ubuntu@24.04:amd64" \
           >> "$GITHUB_OUTPUT"
     - name: Import dashboard image to microK8s
       if: ${{ env.build_type == 'source' }}
