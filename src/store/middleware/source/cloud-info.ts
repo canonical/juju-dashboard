@@ -6,7 +6,7 @@ import { actions as jujuActions } from "store/juju";
 import { toSerializableSourceError } from "store/util";
 
 import { hasConnections } from "../connection/util";
-import { createSourceMiddleware } from "../source-middleware";
+import { createSourceInstance } from "../source-middleware";
 
 export const NO_CLOUD_FACADE =
   "Cloud facade is not available on the connection";
@@ -22,9 +22,9 @@ export async function getCloudInfo(
   return response.clouds;
 }
 
-export default createSourceMiddleware<
-  CloudsResult["clouds"],
-  { wsControllerURL: string }
+export default createSourceInstance<
+  { wsControllerURL: string },
+  CloudsResult["clouds"]
 >(
   "cloud-info",
   ({ wsControllerURL: _, meta }) => {
