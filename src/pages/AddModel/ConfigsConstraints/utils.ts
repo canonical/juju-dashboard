@@ -1,11 +1,11 @@
 import { CONFIG_CATEGORIES } from "./configCatalog";
 import { CONSTRAINT_CATEGORIES } from "./constraintsCatalog";
-import type { CategoryDefinition } from "./types";
+import type { CategoryDefinition, ConfigFieldValue } from "./types";
 
 export const isConfigChanged = (
   label: string,
-  values: Record<string, number | string>,
-  defaultValue: number | string | undefined,
+  values: Record<string, ConfigFieldValue>,
+  defaultValue?: ConfigFieldValue,
 ): boolean => {
   const currentValue = values[label];
 
@@ -26,7 +26,7 @@ export const isConfigChanged = (
 
 export const getChangedFields = (
   category: CategoryDefinition,
-  values: Record<string, number | string>,
+  values: Record<string, ConfigFieldValue>,
 ): CategoryDefinition["fields"] =>
   category.fields.filter((field) =>
     isConfigChanged(field.label, values, field.defaultValue),
@@ -34,7 +34,7 @@ export const getChangedFields = (
 
 export const getCategoriesWithVisibleFields = (
   categories: CategoryDefinition[],
-  values: Record<string, number | string>,
+  values: Record<string, ConfigFieldValue>,
 ): Array<{ category: string; fields: CategoryDefinition["fields"] }> =>
   categories
     .map((cat) => ({
@@ -45,7 +45,7 @@ export const getCategoriesWithVisibleFields = (
 
 export const buildYAML = (
   categories: CategoryDefinition[],
-  values: Record<string, number | string>,
+  values: Record<string, ConfigFieldValue>,
 ): string => {
   const yamlSections = categories
     .map((category) => {
@@ -67,22 +67,26 @@ export const buildYAML = (
 };
 
 export const buildConfigsConstraintsPayload = (
-  values: Record<string, number | string>,
+  values: Record<string, ConfigFieldValue>,
 ): Record<string, number | string> =>
   [...CONFIG_CATEGORIES, ...CONSTRAINT_CATEGORIES].reduce<
     Record<string, number | string>
   >((config, category) => {
     getChangedFields(category, values).forEach((field) => {
-      config[field.label] = values[field.label];
+      const value = values[field.label];
+      if (value !== undefined) {
+        config[field.label] = value;
+      }
     });
     return config;
   }, {});
 
 export const getConfigInitialValues = (
   categories: CategoryDefinition[],
-): Record<string, number | string> =>
-  categories.reduce<Record<string, number | string>>((values, category) => {
+): Record<string, ConfigFieldValue> =>
+  categories.reduce<Record<string, ConfigFieldValue>>((values, category) => {
     category.fields.forEach((field) => {
+      // Coerce undefined to '' so the <input> is always controlled.
       values[field.label] = field.defaultValue ?? "";
     });
     return values;
