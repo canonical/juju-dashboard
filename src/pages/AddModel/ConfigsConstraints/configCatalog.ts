@@ -15,6 +15,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "vpc-id",
         description: "Use a specific VPC network",
         defaultValue: "false",
+        valueType: "boolean",
         input: {
           type: "select",
           options: [
@@ -28,6 +29,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Force Juju to use the GCE VPC ID specified with vpc-id, when it fails the minimum validation criteria",
         defaultValue: "false",
+        valueType: "boolean",
         input: {
           type: "select",
           options: [
@@ -62,6 +64,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "disable-network-management",
         description: "Determines whether the provider should control networks",
         defaultValue: "false",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -94,6 +97,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether the machine worker should discover machine addresses on startup",
         defaultValue: "false",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -104,7 +108,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "The amount of time in seconds to sleep between ifdown and ifup when bridging",
         defaultValue: 17,
-        isNumeric: true,
+        valueType: "number",
       },
       {
         label: "saas-ingress-allow",
@@ -122,6 +126,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "ssl-hostname-verification",
         description: "Determines whether SSL hostname verification is enabled",
         defaultValue: "true",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -200,6 +205,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether SSH commands should be proxied through the API server",
         defaultValue: "false",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -240,6 +246,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether default simplestreams sources are used for image metadata with containers",
         defaultValue: "false",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -276,6 +283,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether newly provisioned instances should run their respective OS's update capability",
         defaultValue: "true",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -286,6 +294,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether newly provisioned instances should run their respective OS's upgrade capability",
         defaultValue: "true",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -296,6 +305,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether default simplestreams sources are used for image metadata",
         defaultValue: "false",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -323,13 +333,13 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "The number of container provisioning workers to use per machine",
         defaultValue: 4,
-        isNumeric: true,
+        valueType: "number",
       },
       {
         label: "num-provision-workers",
         description: "The number of provisioning workers to use per model",
         defaultValue: 16,
-        isNumeric: true,
+        valueType: "number",
       },
       {
         label: "project",
@@ -367,6 +377,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "logforward-enabled",
         description: "Determines whether syslog forwarding is enabled",
         defaultValue: "false",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -408,6 +419,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether the uniter should automatically retry failed hooks",
         defaultValue: "true",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -423,6 +435,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether metrics declared by charms deployed into this model are sent for anonymized aggregate analytics",
         defaultValue: "true",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -488,6 +501,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether development mode is enabled for this model",
         defaultValue: "false",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -498,6 +512,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether telemetry collection is disabled for this model",
         defaultValue: "false",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,
@@ -512,6 +527,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "test-mode",
         description: "Determines whether test mode is enabled for this model",
         defaultValue: "false",
+        valueType: "boolean",
         input: {
           type: "select",
           options: BOOLEAN_OPTIONS,

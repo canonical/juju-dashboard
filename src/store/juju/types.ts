@@ -161,7 +161,7 @@ export type AddModel = {
   shareModelWith?: Record<string, AccessLevel>;
   disabledCommands: DisableType;
   region?: string;
-  config?: Record<string, number | string>;
+  config?: Record<string, boolean | number | string>;
 };
 
 export type AddModelState = {

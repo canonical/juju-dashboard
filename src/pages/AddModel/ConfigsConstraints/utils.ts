@@ -14,10 +14,9 @@ export const isConfigChanged = (
     return false;
   }
 
-  // If there's a default value, check if current differs from it
-  // This includes catching empty string ("") vs default
+  // If there's a default value, check if current differs from it.
   if (defaultValue !== undefined) {
-    return currentValue !== defaultValue;
+    return currentValue.toString() !== defaultValue.toString();
   }
 
   // No default value: only changed if non-empty
@@ -68,14 +67,19 @@ export const buildYAML = (
 
 export const buildConfigsConstraintsPayload = (
   values: Record<string, ConfigFieldValue>,
-): Record<string, number | string> =>
+): Record<string, boolean | number | string> =>
   [...CONFIG_CATEGORIES, ...CONSTRAINT_CATEGORIES].reduce<
-    Record<string, number | string>
+    Record<string, boolean | number | string>
   >((config, category) => {
     getChangedFields(category, values).forEach((field) => {
       const value = values[field.label];
       if (value !== undefined) {
-        config[field.label] = value;
+        // Cast boolean string values to actual booleans for the API payload.
+        if (field.valueType === "boolean") {
+          config[field.label] = value === "true" || value === true;
+        } else {
+          config[field.label] = value;
+        }
       }
     });
     return config;

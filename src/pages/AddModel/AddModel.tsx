@@ -40,7 +40,7 @@ import {
   type AddModelFormState,
   type StepDefinition,
 } from "./types";
-import { getCredentialError } from "./utils";
+import { getBooleanSchema, getCredentialError } from "./utils";
 
 const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
 
@@ -58,6 +58,7 @@ const validationSchema = Yup.object().shape({
       });
     },
   }),
+  ...getBooleanSchema(),
 });
 
 const stepDefinitions: StepDefinition[] = [

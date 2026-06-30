@@ -16,7 +16,7 @@ import useDebounce from "hooks/useDebounce";
 
 import { InputMode } from "../../types";
 import StackList from "../StackList";
-import type { FormFields } from "../types";
+import type { ConfigFieldValue, FormFields } from "../types";
 import {
   buildYAML,
   filterCategoriesBySearch,
@@ -40,7 +40,7 @@ const CategoriesListing = ({
 }: Props): JSX.Element => {
   const id = useId();
   const { values, setFieldValue } = useFormikContext<
-    FormFields & Record<string, number | string>
+    FormFields & Record<string, ConfigFieldValue>
   >();
   const [searchQuery, setSearchQuery] = useDebounce("", 250);
   const [changedOnly, setChangedOnly] = useState(false);
