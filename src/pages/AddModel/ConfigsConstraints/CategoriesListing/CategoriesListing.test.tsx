@@ -7,6 +7,7 @@ import { externalURLs } from "urls";
 
 import { InputMode } from "../../types";
 import { CONFIG_CATEGORIES } from "../configCatalog";
+import { CONSTRAINT_CATEGORIES } from "../constraintsCatalog";
 import { FieldName, Label } from "../types";
 
 import CategoriesListing from "./CategoriesListing";
@@ -317,5 +318,89 @@ describe("CategoriesListing", () => {
     expect(
       screen.getByLabelText("container-networking-method"),
     ).toBeInTheDocument();
+  });
+
+  describe("numeric fields", () => {
+    let constraintProps: CategoriesListingProps;
+
+    beforeEach(() => {
+      constraintProps = {
+        title: Label.CONSTRAINTS_TITLE,
+        categoriesList: CONSTRAINT_CATEGORIES,
+        inputMode: FieldName.CONSTRAINT_INPUT_MODE,
+        yamlKey: FieldName.CONSTRAINT_YAML,
+        changedOnlyLabel: Label.CHANGED_CONSTRAINTS_ONLY,
+        docsLabel: Label.MODEL_CONSTRAINT_DOCS,
+        docsLink: externalURLs.constraintModel,
+        tooltipMessage: Label.NO_CHANGED_CONSTRAINTS,
+        searchPlaceholder: "Search constraints",
+        yamlPlaceholder: Label.MODEL_CONSTRAINT_PLACEHOLDER,
+        searchName: "constraintSearch",
+      };
+    });
+
+    it("renders numeric fields correctly", () => {
+      render(
+        <Formik
+          initialValues={{ [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST }}
+          onSubmit={vi.fn()}
+        >
+          <CategoriesListing {...constraintProps} />
+        </Formik>,
+      );
+
+      const coresInput = screen.getByLabelText("cores");
+      expect(coresInput).toHaveAttribute("type", "number");
+
+      const cpuPowerInput = screen.getByLabelText("cpu-power");
+      expect(cpuPowerInput).toHaveAttribute("type", "number");
+    });
+
+    it("treats a filled numeric field as changed and shows it in changed-only view", async () => {
+      render(
+        <Formik
+          initialValues={{
+            [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+            cores: "4",
+          }}
+          onSubmit={vi.fn()}
+        >
+          <CategoriesListing {...constraintProps} />
+        </Formik>,
+      );
+
+      const changedOnlySwitch = screen.getByRole("switch", {
+        name: Label.CHANGED_CONSTRAINTS_ONLY,
+      });
+      await userEvent.click(changedOnlySwitch);
+
+      expect(changedOnlySwitch).toBeChecked();
+      expect(screen.getByLabelText("cores")).toBeInTheDocument();
+      // Non-numeric, unchanged field should be hidden
+      expect(screen.queryByLabelText("spaces")).not.toBeInTheDocument();
+    });
+
+    it("includes numeric field values in YAML output", async () => {
+      render(
+        <Formik
+          initialValues={{
+            [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+            cores: "8",
+          }}
+          onSubmit={vi.fn()}
+        >
+          <CategoriesListing {...constraintProps} />
+        </Formik>,
+      );
+
+      await userEvent.click(
+        screen.getByRole("radio", { name: InputMode.YAML }),
+      );
+      const textarea = screen.getByPlaceholderText(
+        Label.MODEL_CONSTRAINT_PLACEHOLDER,
+      ) as HTMLTextAreaElement;
+
+      expect(textarea.value).toContain("cores: 8");
+    });
   });
 });
