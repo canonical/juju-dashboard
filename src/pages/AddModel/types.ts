@@ -23,7 +23,7 @@ export type AddModelFormState = {
   credential: string;
   shareModelWith?: Record<string, AccessLevel>;
 } & FormFields &
-  Record<string, string>;
+  Record<string, number | string>;
 
 export type StepDefinition = {
   key: StepType;

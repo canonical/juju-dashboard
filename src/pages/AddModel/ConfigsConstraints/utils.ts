@@ -7,8 +7,7 @@ export const isConfigChanged = (
   values: Record<string, number | string>,
   defaultValue: number | string | undefined,
 ): boolean => {
-  // Casting numeric fields for standardized comparison, as form values are strings.
-  const currentValue = values[label]?.toString();
+  const currentValue = values[label];
 
   // If value is undefined, it hasn't been set - not changed
   if (currentValue === undefined) {
@@ -18,16 +17,16 @@ export const isConfigChanged = (
   // If there's a default value, check if current differs from it
   // This includes catching empty string ("") vs default
   if (defaultValue !== undefined) {
-    return currentValue !== defaultValue.toString();
+    return currentValue !== defaultValue;
   }
 
   // No default value: only changed if non-empty
-  return currentValue.length > 0;
+  return currentValue !== "";
 };
 
 export const getChangedFields = (
   category: CategoryDefinition,
-  values: Record<string, string>,
+  values: Record<string, number | string>,
 ): CategoryDefinition["fields"] =>
   category.fields.filter((field) =>
     isConfigChanged(field.label, values, field.defaultValue),
@@ -35,7 +34,7 @@ export const getChangedFields = (
 
 export const getCategoriesWithVisibleFields = (
   categories: CategoryDefinition[],
-  values: Record<string, string>,
+  values: Record<string, number | string>,
 ): Array<{ category: string; fields: CategoryDefinition["fields"] }> =>
   categories
     .map((cat) => ({
@@ -46,7 +45,7 @@ export const getCategoriesWithVisibleFields = (
 
 export const buildYAML = (
   categories: CategoryDefinition[],
-  values: Record<string, string>,
+  values: Record<string, number | string>,
 ): string => {
   const yamlSections = categories
     .map((category) => {
@@ -68,10 +67,10 @@ export const buildYAML = (
 };
 
 export const buildConfigsConstraintsPayload = (
-  values: Record<string, string>,
-): Record<string, string> =>
+  values: Record<string, number | string>,
+): Record<string, number | string> =>
   [...CONFIG_CATEGORIES, ...CONSTRAINT_CATEGORIES].reduce<
-    Record<string, string>
+    Record<string, number | string>
   >((config, category) => {
     getChangedFields(category, values).forEach((field) => {
       config[field.label] = values[field.label];
@@ -81,10 +80,10 @@ export const buildConfigsConstraintsPayload = (
 
 export const getConfigInitialValues = (
   categories: CategoryDefinition[],
-): Record<string, string> =>
-  categories.reduce<Record<string, string>>((values, category) => {
+): Record<string, number | string> =>
+  categories.reduce<Record<string, number | string>>((values, category) => {
     category.fields.forEach((field) => {
-      values[field.label] = field.defaultValue?.toString() ?? "";
+      values[field.label] = field.defaultValue ?? "";
     });
     return values;
   }, {});

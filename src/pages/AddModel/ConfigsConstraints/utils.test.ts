@@ -45,7 +45,6 @@ describe("utils", () => {
   describe("isConfigChanged", () => {
     it("returns false when value is undefined", () => {
       const result = isConfigChanged("some-label", {}, "default-value");
-
       expect(result).toBe(false);
     });
 
@@ -55,7 +54,6 @@ describe("utils", () => {
         { "some-label": "default-value" },
         "default-value",
       );
-
       expect(result).toBe(false);
     });
 
@@ -65,7 +63,6 @@ describe("utils", () => {
         { "some-label": "different-value" },
         "default-value",
       );
-
       expect(result).toBe(true);
     });
 
@@ -75,7 +72,6 @@ describe("utils", () => {
         { "some-label": "some-value" },
         undefined,
       );
-
       expect(result).toBe(true);
     });
 
@@ -85,13 +81,11 @@ describe("utils", () => {
         { "some-label": 0 },
         undefined,
       );
-
       expect(result).toBe(true);
     });
 
     it("returns false when a numeric value matches a numeric default", () => {
-      const result = isConfigChanged("some-label", { "some-label": "0" }, 0);
-
+      const result = isConfigChanged("some-label", { "some-label": 0 }, 0);
       expect(result).toBe(false);
     });
   });
@@ -124,7 +118,6 @@ describe("utils", () => {
         "container-networking-method": "provider",
         "logging-config": "",
       });
-
       expect(result).toEqual([]);
     });
 
@@ -134,7 +127,6 @@ describe("utils", () => {
         "container-networking-method": "provider",
         "logging-config": "debug",
       });
-
       expect(result).toHaveLength(2);
       expect(result.map((field) => field.label)).toEqual([
         "default-space",
@@ -146,7 +138,6 @@ describe("utils", () => {
   describe("buildYAML", () => {
     it("returns empty string when no fields have changed", () => {
       const result = buildYAML(categories, {});
-
       expect(result).toBe("");
     });
 
@@ -194,7 +185,6 @@ describe("utils", () => {
         "logging-config": "<root>=INFO",
         arch: "",
       });
-
       expect(result).toEqual({});
     });
 
@@ -217,7 +207,6 @@ describe("utils", () => {
   describe("getCategoriesWithVisibleFields", () => {
     it("returns empty array when no fields have changed", () => {
       const result = getCategoriesWithVisibleFields(categories, {});
-
       expect(result).toHaveLength(0);
     });
 
@@ -236,7 +225,6 @@ describe("utils", () => {
   describe("getConfigInitialValues", () => {
     it("returns object with all fields and their default values", () => {
       const result = getConfigInitialValues(categories);
-
       expect(result).toEqual({
         "default-space": "alpha",
         "container-networking-method": "provider",
@@ -259,13 +247,30 @@ describe("utils", () => {
       ];
 
       const result = getConfigInitialValues(categoriesWithUndefinedDefaults);
-
       expect(result["test-field"]).toBe("");
+    });
+
+    it("preserves numeric default values without converting to strings", () => {
+      const categoriesWithNumericDefaults: CategoryDefinition[] = [
+        {
+          category: "Test",
+          fields: [
+            {
+              label: "numeric-field",
+              defaultValue: 17,
+              description: "A numeric field",
+              isNumeric: true,
+            },
+          ],
+        },
+      ];
+
+      const result = getConfigInitialValues(categoriesWithNumericDefaults);
+      expect(result["numeric-field"]).toBe(17);
     });
 
     it("returns empty object when categories are empty", () => {
       const result = getConfigInitialValues([]);
-
       expect(result).toEqual({});
     });
   });
@@ -273,7 +278,6 @@ describe("utils", () => {
   describe("filterCategoriesBySearch", () => {
     it("returns all categories when query is empty", () => {
       const result = filterCategoriesBySearch("", categories);
-
       expect(result.length).toBeGreaterThan(0);
     });
 
@@ -306,7 +310,6 @@ describe("utils", () => {
         "non-existent-query123456",
         categories,
       );
-
       expect(result).toEqual([]);
     });
 

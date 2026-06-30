@@ -10,7 +10,9 @@ type Props = {
 };
 
 const StackList = ({ visibleFields }: Props): JSX.Element => {
-  const { values } = useFormikContext<FormFields & Record<string, string>>();
+  const { values } = useFormikContext<
+    FormFields & Record<string, number | string>
+  >();
 
   return (
     <>
