@@ -1,6 +1,10 @@
 import { stringify, parseDocument, isMap, isPair, isScalar } from "yaml";
 
-import type { YAMLErrors, YAMLValidationError } from "./YAMLErrorsModal/types";
+import {
+  type YAMLErrors,
+  YAMLErrorType,
+  type YAMLValidationError,
+} from "./YAMLErrorsModal/types";
 import { CONFIG_CATEGORIES } from "./configCatalog";
 import { CONSTRAINT_CATEGORIES } from "./constraintsCatalog";
 import type { CategoryDefinition, ConfigFieldValue } from "./types";
@@ -121,6 +125,26 @@ export const filterCategoriesBySearch = (
     .filter((category) => category.fields.length > 0);
 };
 
+export const getYAMLErrorMessage = (
+  type: YAMLErrorType,
+  options?: {
+    key?: string;
+    expectedValue?: string;
+    context?: string;
+  },
+): string => {
+  switch (type) {
+    case YAMLErrorType.OTHERS:
+      return `Invalid format. ${options?.context ?? ""}`;
+    case YAMLErrorType.UNKNOWN_KEYS:
+      return `Unknown key: ${options?.key}`;
+    case YAMLErrorType.INVALID_VALUES:
+      return options?.expectedValue
+        ? `Invalid value for ${options?.key}. Expected ${options?.expectedValue}`
+        : `Invalid value for ${options?.key}`;
+  }
+};
+
 export function validateAndParseYAML(
   yamlString: string,
   categories: CategoryDefinition[],
@@ -158,20 +182,26 @@ export function validateAndParseYAML(
     if (contents !== null) {
       otherErrors.push({
         line: 1,
-        message: "Invalid format. Expected a top-level key-value map",
+        message: getYAMLErrorMessage(YAMLErrorType.OTHERS, {
+          context: "Expected a top-level key-value map",
+        }),
       });
     }
   } else {
     for (const pair of contents.items) {
       if (!isPair(pair)) {
         otherErrors.push({
-          message: "Invalid format. Unexpected non-key-value item in map",
+          message: getYAMLErrorMessage(YAMLErrorType.OTHERS, {
+            context: "Unexpected non-key-value item in map",
+          }),
         });
         continue;
       }
       if (!isScalar(pair.key)) {
         otherErrors.push({
-          message: "Invalid format. Unexpected non-scalar key",
+          message: getYAMLErrorMessage(YAMLErrorType.OTHERS, {
+            context: "Unexpected non-scalar key",
+          }),
         });
         continue;
       }
@@ -183,12 +213,22 @@ export function validateAndParseYAML(
 
       const field = fieldsByLabel[key];
       if (!field) {
-        invalidKeys.push({ line, message: `Unknown key: ${key}` });
+        invalidKeys.push({
+          line,
+          message: getYAMLErrorMessage(YAMLErrorType.UNKNOWN_KEYS, {
+            key,
+          }),
+        });
         continue;
       }
 
       if (!isScalar(pair.value)) {
-        invalidValues.push({ line, message: `Invalid value for ${key}` });
+        invalidValues.push({
+          line,
+          message: getYAMLErrorMessage(YAMLErrorType.INVALID_VALUES, {
+            key,
+          }),
+        });
         continue;
       }
 
@@ -198,7 +238,10 @@ export function validateAndParseYAML(
         if (typeof value !== "number") {
           invalidValues.push({
             line,
-            message: `Invalid type for ${key}. Expected a number`,
+            message: getYAMLErrorMessage(YAMLErrorType.INVALID_VALUES, {
+              key,
+              expectedValue: "a number",
+            }),
           });
           continue;
         }
@@ -207,7 +250,10 @@ export function validateAndParseYAML(
         if (typeof value !== "boolean") {
           invalidValues.push({
             line,
-            message: `Invalid type for ${key}. Expected one of: true, false`,
+            message: getYAMLErrorMessage(YAMLErrorType.INVALID_VALUES, {
+              key,
+              expectedValue: "one of: true, false",
+            }),
           });
           continue;
         }
@@ -222,7 +268,10 @@ export function validateAndParseYAML(
           if (!allowedValues.includes(stringValue)) {
             invalidValues.push({
               line,
-              message: `Invalid value for ${key}. Expected one of: ${allowedValues.join(", ")}`,
+              message: getYAMLErrorMessage(YAMLErrorType.INVALID_VALUES, {
+                key,
+                expectedValue: `one of: ${allowedValues.join(", ")}`,
+              }),
             });
             continue;
           }

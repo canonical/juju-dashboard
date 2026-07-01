@@ -25,7 +25,6 @@ describe("YAMLErrorsModal", () => {
         onClose={vi.fn()}
       />,
     );
-
     expect(screen.getByText(/invalid constraint values/i)).toBeInTheDocument();
   });
 
@@ -46,10 +45,12 @@ describe("YAMLErrorsModal", () => {
     );
 
     expect(
+      screen.getByText(/Line 1: Invalid format. Expected <key>: <value>/),
+    ).toBeInTheDocument();
+    expect(
       screen.getByText(/Line 2: Unknown key: bad-key/),
     ).toBeInTheDocument();
     expect(screen.getByText(/Line 3: Expected a number/)).toBeInTheDocument();
-    expect(screen.getByText(/Invalid format/)).toBeInTheDocument();
   });
 
   it("calls onConfirm when confirm button is clicked", async () => {

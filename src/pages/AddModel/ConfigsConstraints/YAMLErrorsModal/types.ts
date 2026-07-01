@@ -5,10 +5,16 @@ export type YAMLValidationError = {
   line?: number;
 };
 
+export enum YAMLErrorType {
+  UNKNOWN_KEYS = "invalidKeys",
+  INVALID_VALUES = "invalidValues",
+  OTHERS = "otherErrors",
+}
+
 export type YAMLErrors = {
-  invalidKeys: YAMLValidationError[];
-  invalidValues: YAMLValidationError[];
-  otherErrors: YAMLValidationError[];
+  [YAMLErrorType.UNKNOWN_KEYS]: YAMLValidationError[];
+  [YAMLErrorType.INVALID_VALUES]: YAMLValidationError[];
+  [YAMLErrorType.OTHERS]: YAMLValidationError[];
 };
 
 export type YAMLErrorsModalState = {

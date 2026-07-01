@@ -16,6 +16,7 @@ import useDebounce from "hooks/useDebounce";
 
 import { InputMode } from "../../types";
 import StackList from "../StackList";
+import { YAMLErrorType } from "../YAMLErrorsModal/types";
 import type { ConfigFieldValue, FormFields } from "../types";
 import {
   buildYAML,
@@ -62,9 +63,9 @@ const CategoriesListing = ({
       }
 
       if (
-        errors.invalidKeys.length > 0 ||
-        errors.invalidValues.length > 0 ||
-        errors.otherErrors.length > 0
+        errors[YAMLErrorType.UNKNOWN_KEYS].length > 0 ||
+        errors[YAMLErrorType.INVALID_VALUES].length > 0 ||
+        errors[YAMLErrorType.OTHERS].length > 0
       ) {
         void setFieldTouched(yamlKey, true, false);
         // setFieldError must be called after setFieldTouched to prevent

@@ -3,6 +3,7 @@ import type { JSX } from "react";
 
 import {
   ENTITY_LABELS,
+  YAMLErrorType,
   type YAMLErrorsModalProps,
   type YAMLValidationError,
 } from "./types";
@@ -55,9 +56,15 @@ const YAMLErrorsModal = ({
           You have one or more invalid {ENTITY_LABELS[yamlKey]} values.{" "}
           <b>If you switch to list view, those values will be lost.</b>
         </p>
-        <ErrorList label="Invalid keys" errors={errors.invalidKeys} />
-        <ErrorList label="Invalid values" errors={errors.invalidValues} />
-        <ErrorList label="Other errors" errors={errors.otherErrors} />
+        <ErrorList
+          label="Invalid keys"
+          errors={errors[YAMLErrorType.UNKNOWN_KEYS]}
+        />
+        <ErrorList
+          label="Invalid values"
+          errors={errors[YAMLErrorType.INVALID_VALUES]}
+        />
+        <ErrorList label="Other errors" errors={errors[YAMLErrorType.OTHERS]} />
       </ConfirmationModal>
     </Portal>
   );
