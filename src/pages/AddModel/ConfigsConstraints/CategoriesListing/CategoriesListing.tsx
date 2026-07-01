@@ -40,7 +40,7 @@ const CategoriesListing = ({
 }: Props): JSX.Element => {
   const id = useId();
   const { values, setFieldValue } = useFormikContext<
-    FormFields & Record<string, string>
+    FormFields & Record<string, number | string>
   >();
   const [searchQuery, setSearchQuery] = useDebounce("", 250);
   const [changedOnly, setChangedOnly] = useState(false);

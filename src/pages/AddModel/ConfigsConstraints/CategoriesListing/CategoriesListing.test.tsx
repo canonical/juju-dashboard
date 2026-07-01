@@ -318,4 +318,63 @@ describe("CategoriesListing", () => {
       screen.getByLabelText("container-networking-method"),
     ).toBeInTheDocument();
   });
+
+  it("renders numeric fields correctly", () => {
+    render(
+      <Formik
+        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
+        onSubmit={vi.fn()}
+      >
+        <CategoriesListing {...defaultProps} />
+      </Formik>,
+    );
+
+    const coresInput = screen.getByLabelText("net-bond-reconfigure-delay");
+    expect(coresInput).toHaveAttribute("type", "number");
+  });
+
+  it("treats a filled numeric field as changed and shows it in changed-only view", async () => {
+    render(
+      <Formik
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          "net-bond-reconfigure-delay": 15,
+        }}
+        onSubmit={vi.fn()}
+      >
+        <CategoriesListing {...defaultProps} />
+      </Formik>,
+    );
+
+    const changedOnlySwitch = screen.getByRole("switch", {
+      name: Label.CHANGED_CONFIGS_ONLY,
+    });
+    await userEvent.click(changedOnlySwitch);
+
+    expect(changedOnlySwitch).toBeChecked();
+    expect(
+      screen.getByLabelText("net-bond-reconfigure-delay"),
+    ).toBeInTheDocument();
+  });
+
+  it("includes numeric field values in YAML output", async () => {
+    render(
+      <Formik
+        initialValues={{
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+          "net-bond-reconfigure-delay": 15,
+        }}
+        onSubmit={vi.fn()}
+      >
+        <CategoriesListing {...defaultProps} />
+      </Formik>,
+    );
+
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
+    const textarea = screen.getByPlaceholderText(
+      Label.MODEL_CONFIG_PLACEHOLDER,
+    ) as HTMLTextAreaElement;
+
+    expect(textarea.value).toContain("net-bond-reconfigure-delay: 15");
+  });
 });

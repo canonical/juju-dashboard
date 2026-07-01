@@ -2,7 +2,11 @@ import { FormikField, Icon, Select } from "@canonical/react-components";
 import { useFormikContext } from "formik";
 import { Fragment, type JSX } from "react";
 
-import type { CategoryDefinition, FormFields } from "../types";
+import type {
+  CategoryDefinition,
+  ConfigFieldValue,
+  FormFields,
+} from "../types";
 import { isConfigChanged } from "../utils";
 
 type Props = {
@@ -10,7 +14,9 @@ type Props = {
 };
 
 const StackList = ({ visibleFields }: Props): JSX.Element => {
-  const { values } = useFormikContext<FormFields & Record<string, string>>();
+  const { values } = useFormikContext<
+    FormFields & Record<string, ConfigFieldValue>
+  >();
 
   return (
     <>
