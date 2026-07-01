@@ -105,7 +105,7 @@ describe("CategoriesListing", () => {
           [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
           "default-space": "my-space",
           "net-bond-reconfigure-delay": 15,
-          "disable-network-management": "true",
+          "disable-network-management": true,
         }}
         onSubmit={vi.fn()}
       >
@@ -366,7 +366,7 @@ describe("CategoriesListing", () => {
       <Formik
         initialValues={{
           [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-          "disable-network-management": "true",
+          "disable-network-management": true,
         }}
         onSubmit={vi.fn()}
       >

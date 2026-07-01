@@ -14,28 +14,16 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
       {
         label: "vpc-id",
         description: "Use a specific VPC network",
-        defaultValue: "false",
-        valueType: "boolean",
-        input: {
-          type: "select",
-          options: [
-            { label: "True", value: "true" },
-            { label: "False", value: "false" },
-          ],
-        },
       },
       {
         label: "vpc-id-force",
         description:
           "Force Juju to use the GCE VPC ID specified with vpc-id, when it fails the minimum validation criteria",
-        defaultValue: "false",
+        defaultValue: false,
         valueType: "boolean",
         input: {
           type: "select",
-          options: [
-            { label: "True", value: "true" },
-            { label: "False", value: "false" },
-          ],
+          options: BOOLEAN_OPTIONS,
         },
       },
     ],
@@ -63,7 +51,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
       {
         label: "disable-network-management",
         description: "Determines whether the provider should control networks",
-        defaultValue: "false",
+        defaultValue: false,
         valueType: "boolean",
         input: {
           type: "select",
@@ -96,7 +84,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "ignore-machine-addresses",
         description:
           "Determines whether the machine worker should discover machine addresses on startup",
-        defaultValue: "false",
+        defaultValue: false,
         valueType: "boolean",
         input: {
           type: "select",
@@ -125,7 +113,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
       {
         label: "ssl-hostname-verification",
         description: "Determines whether SSL hostname verification is enabled",
-        defaultValue: "true",
+        defaultValue: true,
         valueType: "boolean",
         input: {
           type: "select",
@@ -204,7 +192,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "proxy-ssh",
         description:
           "Determines whether SSH commands should be proxied through the API server",
-        defaultValue: "false",
+        defaultValue: false,
         valueType: "boolean",
         input: {
           type: "select",
@@ -245,7 +233,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "container-image-metadata-defaults-disabled",
         description:
           "Determines whether default simplestreams sources are used for image metadata with containers",
-        defaultValue: "false",
+        defaultValue: false,
         valueType: "boolean",
         input: {
           type: "select",
@@ -282,7 +270,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "enable-os-refresh-update",
         description:
           "Determines whether newly provisioned instances should run their respective OS's update capability",
-        defaultValue: "true",
+        defaultValue: true,
         valueType: "boolean",
         input: {
           type: "select",
@@ -293,7 +281,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "enable-os-upgrade",
         description:
           "Determines whether newly provisioned instances should run their respective OS's upgrade capability",
-        defaultValue: "true",
+        defaultValue: true,
         valueType: "boolean",
         input: {
           type: "select",
@@ -304,7 +292,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "image-metadata-defaults-disabled",
         description:
           "Determines whether default simplestreams sources are used for image metadata",
-        defaultValue: "false",
+        defaultValue: false,
         valueType: "boolean",
         input: {
           type: "select",
@@ -376,7 +364,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
       {
         label: "logforward-enabled",
         description: "Determines whether syslog forwarding is enabled",
-        defaultValue: "false",
+        defaultValue: false,
         valueType: "boolean",
         input: {
           type: "select",
@@ -418,7 +406,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "automatically-retry-hooks",
         description:
           "Determines whether the uniter should automatically retry failed hooks",
-        defaultValue: "true",
+        defaultValue: true,
         valueType: "boolean",
         input: {
           type: "select",
@@ -434,7 +422,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "transmit-vendor-metrics",
         description:
           "Determines whether metrics declared by charms deployed into this model are sent for anonymized aggregate analytics",
-        defaultValue: "true",
+        defaultValue: true,
         valueType: "boolean",
         input: {
           type: "select",
@@ -500,7 +488,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "development",
         description:
           "Determines whether development mode is enabled for this model",
-        defaultValue: "false",
+        defaultValue: false,
         valueType: "boolean",
         input: {
           type: "select",
@@ -511,7 +499,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "disable-telemetry",
         description:
           "Determines whether telemetry collection is disabled for this model",
-        defaultValue: "false",
+        defaultValue: false,
         valueType: "boolean",
         input: {
           type: "select",
@@ -526,7 +514,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
       {
         label: "test-mode",
         description: "Determines whether test mode is enabled for this model",
-        defaultValue: "false",
+        defaultValue: false,
         valueType: "boolean",
         input: {
           type: "select",

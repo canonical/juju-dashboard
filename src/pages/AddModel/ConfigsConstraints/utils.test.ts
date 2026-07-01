@@ -89,20 +89,20 @@ describe("utils", () => {
       expect(result).toBe(false);
     });
 
-    it("returns false when a boolean string value matches the string default", () => {
+    it("returns false when a boolean value matches the default", () => {
       const result = isConfigChanged(
         "some-label",
-        { "some-label": "false" },
-        "false",
+        { "some-label": false },
+        false,
       );
       expect(result).toBe(false);
     });
 
-    it("returns true when a boolean string value differs from the string default", () => {
+    it("returns true when a boolean value differs from the default", () => {
       const result = isConfigChanged(
         "some-label",
-        { "some-label": "true" },
-        "false",
+        { "some-label": true },
+        false,
       );
       expect(result).toBe(true);
     });
@@ -221,18 +221,16 @@ describe("utils", () => {
       });
     });
 
-    it("casts boolean string values to actual booleans in the payload", () => {
-      // "disable-network-management" is a boolean field with defaultValue "false"
-      // Setting it to "true" should produce boolean true in the payload
+    it("includes changed boolean fields in the payload", () => {
       const result = buildConfigsConstraintsPayload({
-        "disable-network-management": "true",
+        "disable-network-management": true,
       });
       expect(result["disable-network-management"]).toBe(true);
     });
 
     it("does not include boolean fields that match their default value", () => {
       const result = buildConfigsConstraintsPayload({
-        "disable-network-management": "false",
+        "disable-network-management": false,
       });
       expect(result).not.toHaveProperty("disable-network-management");
     });

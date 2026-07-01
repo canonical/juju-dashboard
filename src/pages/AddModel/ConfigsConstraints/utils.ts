@@ -74,12 +74,7 @@ export const buildConfigsConstraintsPayload = (
     getChangedFields(category, values).forEach((field) => {
       const value = values[field.label];
       if (value !== undefined) {
-        // Cast boolean string values to actual booleans for the API payload.
-        if (field.valueType === "boolean") {
-          config[field.label] = value === "true" || value === true;
-        } else {
-          config[field.label] = value;
-        }
+        config[field.label] = value;
       }
     });
     return config;
