@@ -1,9 +1,11 @@
 import { ConfirmationModal, usePortal } from "@canonical/react-components";
 import type { JSX } from "react";
 
-import { FieldName } from "../types";
-
-import type { YAMLErrorsModalProps, YAMLValidationError } from "./types";
+import {
+  ENTITY_LABELS,
+  type YAMLErrorsModalProps,
+  type YAMLValidationError,
+} from "./types";
 
 const ErrorList = ({
   label,
@@ -50,9 +52,8 @@ const YAMLErrorsModal = ({
         close={onClose}
       >
         <p>
-          You have one or more invalid{" "}
-          {yamlKey === FieldName.CONFIG_YAML ? "configuration" : "constraint"}{" "}
-          values. <b>If you switch to list view, those values will be lost.</b>
+          You have one or more invalid {ENTITY_LABELS[yamlKey]} values.{" "}
+          <b>If you switch to list view, those values will be lost.</b>
         </p>
         <ErrorList label="Invalid keys" errors={errors.invalidKeys} />
         <ErrorList label="Invalid values" errors={errors.invalidValues} />

@@ -1,4 +1,4 @@
-import type { FieldName } from "../types";
+import { FieldName } from "../types";
 
 export type YAMLValidationError = {
   message: string;
@@ -22,4 +22,12 @@ export type YAMLErrorsModalProps = {
   yamlKey: FieldName.CONFIG_YAML | FieldName.CONSTRAINT_YAML;
   onConfirm: () => void;
   onClose: () => void;
+};
+
+export const ENTITY_LABELS: Record<
+  FieldName.CONFIG_YAML | FieldName.CONSTRAINT_YAML,
+  string
+> = {
+  [FieldName.CONFIG_YAML]: "configuration",
+  [FieldName.CONSTRAINT_YAML]: "constraint",
 };
