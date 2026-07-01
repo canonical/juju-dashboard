@@ -23,6 +23,7 @@ import { actions as jujuActions } from "store/juju";
 import { getDestructionState, getModelList } from "store/juju/selectors";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type { ModelDestructionParams } from "store/juju/types";
+import { extractCredentialName } from "store/juju/utils/models";
 import type { RootState, Store } from "store/store";
 import { AccessLevel, isSpecificAction } from "types";
 import { getUserName, toErrorString } from "utils";
@@ -82,6 +83,109 @@ function runModelPoller(
           continue;
         } finally {
           reduxStore.dispatch(generalActions.updateLoginLoading(false));
+        }
+
+        // TEST CREDENTIAL API
+        const clouds = await conn.facades.cloud?.clouds({});
+        const userTag = conn.info.user?.identity;
+        if (userTag) {
+          const cloudTags = Object.keys(clouds?.clouds ?? {});
+          const credentialName = `cred-${Math.ceil(Math.random() * 1000)}`;
+          const addTag = `cloudcred-${cloudTags[0].replace(/^cloud-/, "")}_${userTag.replace(/^user-/, "")}_${credentialName}`;
+          const addCredentialsArgs = {
+            credentials: [
+              {
+                credential: {
+                  "auth-type": "test",
+                },
+                tag: addTag,
+              },
+            ],
+          };
+          const addCredential =
+            await conn.facades.cloud?.addCredentials(addCredentialsArgs);
+          console.log(
+            "-------------------- add a new credential --------------------",
+          );
+          console.log(
+            `cloud.addCredential(${JSON.stringify(addCredentialsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(addCredential, null, 2));
+          const userCredentialsArgs = {
+            "user-clouds": cloudTags.map((tag) => ({
+              "cloud-tag": tag,
+              "user-tag": userTag,
+            })),
+          };
+          const userCredentials =
+            await conn.facades.cloud?.userCredentials(userCredentialsArgs);
+          console.log(
+            "-------------------- list user's credentials --------------------",
+          );
+          console.log(
+            `cloud.userCredentials(${JSON.stringify(userCredentialsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(userCredentials, null, 2));
+          console.log(
+            "-------------------- show credential details --------------------",
+          );
+          const credentialContentsArgs = {
+            credentials: [
+              {
+                "cloud-name": cloudTags[0].replace(/^cloud-/, ""),
+                "credential-name": credentialName,
+              },
+            ],
+            "include-secrets": true,
+          };
+          const contents = await conn.facades.cloud?.credentialContents(
+            credentialContentsArgs,
+          );
+          console.log(
+            `cloud.credentialContents(${JSON.stringify(credentialContentsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(contents, null, 2));
+          const updateCredentialsCheckModelsArgs = {
+            force: false,
+            credentials: [
+              {
+                credential: {
+                  "auth-type": "new auth type",
+                },
+                tag: addTag,
+              },
+            ],
+          };
+          const updateCredentialsCheckModels =
+            await conn.facades.cloud?.updateCredentialsCheckModels(
+              updateCredentialsCheckModelsArgs,
+            );
+          console.log(
+            "-------------------- update credential --------------------",
+          );
+          console.log(
+            `cloud.updateCredentialsCheckModels(${JSON.stringify(updateCredentialsCheckModelsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(updateCredentialsCheckModels, null, 2));
+          const revokeCredentialsCheckModelsArgs = {
+            credentials: [
+              {
+                force: false,
+                tag: addTag,
+              },
+            ],
+          };
+          const revokeCredentialsCheckModels =
+            await conn.facades.cloud?.revokeCredentialsCheckModels(
+              revokeCredentialsCheckModelsArgs,
+            );
+          console.log(
+            "-------------------- remove the new credential --------------------",
+          );
+          console.log(
+            `cloud.revokeCredentialsCheckModels(${JSON.stringify(revokeCredentialsCheckModelsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(revokeCredentialsCheckModels, null, 2));
         }
 
         reduxStore.dispatch(
