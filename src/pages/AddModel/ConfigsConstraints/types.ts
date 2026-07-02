@@ -50,7 +50,7 @@ export enum DisableType {
   ALL = "BlockChange",
 }
 
-export type ConfigFieldValue = number | string | undefined;
+export type ConfigFieldValue = boolean | number | string | undefined;
 
 export type CategoryDefinition = {
   category: string;
@@ -59,6 +59,6 @@ export type CategoryDefinition = {
     description: string;
     defaultValue?: ConfigFieldValue;
     input?: { type: "select" } & SelectProps;
-    isNumeric?: boolean;
+    valueType?: "boolean" | "number";
   }[];
 };

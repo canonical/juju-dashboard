@@ -32,7 +32,7 @@ const StackList = ({ visibleFields }: Props): JSX.Element => {
               {...(field.input?.type === "select"
                 ? { component: Select }
                 : {
-                    type: field.isNumeric ? "number" : "text",
+                    type: field.valueType === "number" ? "number" : "text",
                     placeholder: field.defaultValue,
                   })}
               label={

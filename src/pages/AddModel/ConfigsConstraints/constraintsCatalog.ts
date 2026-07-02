@@ -13,12 +13,12 @@ export const CONSTRAINT_CATEGORIES: CategoryDefinition[] = [
       {
         label: "cores",
         description: "Number of effective CPU cores (alias: cpu-cores)",
-        isNumeric: true,
+        valueType: "number",
       },
       {
         label: "cpu-power",
         description: "Abstract CPU power (100 units ≈ 1 Amazon vCPU)",
-        isNumeric: true,
+        valueType: "number",
       },
       {
         label: "mem",
@@ -47,6 +47,7 @@ export const CONSTRAINT_CATEGORIES: CategoryDefinition[] = [
         label: "allocate-public-ip",
         description:
           "Supplying this constraint will determine whether machines are issued an IP address accessible outside of the cloud’s virtual network",
+        valueType: "boolean",
         input: {
           type: "select",
           options: [EMPTY_OPTION, ...BOOLEAN_OPTIONS],

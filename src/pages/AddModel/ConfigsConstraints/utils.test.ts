@@ -88,6 +88,24 @@ describe("utils", () => {
       const result = isConfigChanged("some-label", { "some-label": 0 }, 0);
       expect(result).toBe(false);
     });
+
+    it("returns false when a boolean value matches the default", () => {
+      const result = isConfigChanged(
+        "some-label",
+        { "some-label": false },
+        false,
+      );
+      expect(result).toBe(false);
+    });
+
+    it("returns true when a boolean value differs from the default", () => {
+      const result = isConfigChanged(
+        "some-label",
+        { "some-label": true },
+        false,
+      );
+      expect(result).toBe(true);
+    });
   });
 
   describe("getChangedFields", () => {
@@ -202,6 +220,20 @@ describe("utils", () => {
         arch: "amd64",
       });
     });
+
+    it("includes changed boolean fields in the payload", () => {
+      const result = buildConfigsConstraintsPayload({
+        "disable-network-management": true,
+      });
+      expect(result["disable-network-management"]).toBe(true);
+    });
+
+    it("does not include boolean fields that match their default value", () => {
+      const result = buildConfigsConstraintsPayload({
+        "disable-network-management": false,
+      });
+      expect(result).not.toHaveProperty("disable-network-management");
+    });
   });
 
   describe("getCategoriesWithVisibleFields", () => {
@@ -259,7 +291,7 @@ describe("utils", () => {
               label: "numeric-field",
               defaultValue: 17,
               description: "A numeric field",
-              isNumeric: true,
+              valueType: "number",
             },
           ],
         },

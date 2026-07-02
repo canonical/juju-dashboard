@@ -104,6 +104,8 @@ describe("CategoriesListing", () => {
         initialValues={{
           [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
           "default-space": "my-space",
+          "net-bond-reconfigure-delay": 15,
+          "disable-network-management": true,
         }}
         onSubmit={vi.fn()}
       >
@@ -117,6 +119,8 @@ describe("CategoriesListing", () => {
     ) as HTMLTextAreaElement;
 
     expect(textarea.value).toContain("default-space: my-space");
+    expect(textarea.value).toContain("net-bond-reconfigure-delay: 15");
+    expect(textarea.value).toContain("disable-network-management: true");
   });
 
   it("switches back to list mode from yaml mode", async () => {
@@ -333,7 +337,7 @@ describe("CategoriesListing", () => {
     expect(coresInput).toHaveAttribute("type", "number");
   });
 
-  it("treats a filled numeric field as changed and shows it in changed-only view", async () => {
+  it("handles changed numeric fields", async () => {
     render(
       <Formik
         initialValues={{
@@ -357,12 +361,12 @@ describe("CategoriesListing", () => {
     ).toBeInTheDocument();
   });
 
-  it("includes numeric field values in YAML output", async () => {
+  it("handles changed boolean fields", async () => {
     render(
       <Formik
         initialValues={{
           [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-          "net-bond-reconfigure-delay": 15,
+          "disable-network-management": true,
         }}
         onSubmit={vi.fn()}
       >
@@ -370,11 +374,14 @@ describe("CategoriesListing", () => {
       </Formik>,
     );
 
-    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
-    const textarea = screen.getByPlaceholderText(
-      Label.MODEL_CONFIG_PLACEHOLDER,
-    ) as HTMLTextAreaElement;
+    const changedOnlySwitch = screen.getByRole("switch", {
+      name: Label.CHANGED_CONFIGS_ONLY,
+    });
+    await userEvent.click(changedOnlySwitch);
 
-    expect(textarea.value).toContain("net-bond-reconfigure-delay: 15");
+    expect(changedOnlySwitch).toBeChecked();
+    expect(
+      document.querySelector('select[name="disable-network-management"]'),
+    ).toBeInTheDocument();
   });
 });
