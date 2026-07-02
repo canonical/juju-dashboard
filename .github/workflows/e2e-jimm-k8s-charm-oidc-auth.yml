@@ -33,6 +33,11 @@ jobs:
       matrix:
         node-version: [22.x]
     steps:
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+          limit-access-to-actor: true
       - name: Free Disk Space (Ubuntu)
         uses: Jayllyz/free-disk-space@fbe203b3788f2bebe2c835a15925da303eaa5efe
         with:
@@ -97,8 +102,10 @@ jobs:
           test-identifier: e2e-jimm-juju-${{ steps.juju-version.outputs.version }}-k8s-charm-oidc-auth
         env:
           JIMM_CONTROLLER_NAME: ${{ steps.jimm.outputs.jimm-controller-name }}
-          CONTROLLER_NAME: ${{ steps.jimm.outputs.workloads-controller-name }}
+          CONTROLLER_NAME: ${{ steps.jimm.outputs.workloads-controller-public-name }}
+          WORKLOAD_CONTROLLER_NAME: ${{ steps.jimm.outputs.workloads-controller-private-name }}
           AUTH_MODE: oidc
+          AUTH_VARIANT: iam
           JUJU_ENV: jimm
           PROVIDER: microk8s
           ADMIN_USERNAME: ${{ inputs.admin-username }}
