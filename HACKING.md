@@ -43,6 +43,10 @@ contribute and what kinds of contributions are welcome.
     - [Self signed certificates](#self-signed-certificates)
     - [Juju on M1 Macs](#juju-on-m1-macs)
   - [Building the Docker image](#building-the-docker-image)
+  - [Debugging charms](#debugging-charms)
+    - [Errors](#errors)
+    - [Accessing built files](#accessing-built-files)
+    - [Relation data](#relation-data)
   - [Deployment configuration guides](#deployment-configuration-guides)
     - [Deploying a local app](#deploying-a-local-app)
     - [Setting up cross model integrations](#setting-up-cross-model-integrations)
@@ -466,6 +470,70 @@ That's it! The Docker image has been built. To see details about the image run:
 ```shell
 docker image inspect juju-dashboard | less
 ```
+
+## Debugging charms
+
+Here are some tips for debugging the Juju Dashboard charms. There are more general suggestions in the Juju [debugging guide](https://canonical.com/juju/docs/ops/latest/howto/debug-your-charm/).
+
+### Errors
+
+If the dashboard application goes into error this is often because of an uncaught exception. When this occurs
+the traceback can usually be found in the Juju debug log.
+
+The debug log for the dashboard application can be viewed with:
+
+_NOTE: substitute `dashboard` with the name of your deployed juju-dashboard or juju-dashboard-k8s application._
+
+```
+juju debug-log --include dashboard
+```
+
+Or for a specific unit:
+
+```
+juju debug-log --include dashboard/0
+```
+
+### Accessing built files
+
+The dashboard builds several files and writes them to disk (an nginx config, the dashboard config.js and in the case of k8s an index.html).
+
+For machine (LXD) controllers, SSH into the unit:
+
+```
+juju ssh dashboard/0
+```
+
+Then you can view the built files, e.g.
+
+```
+cat /etc/nginx/sites-available/default
+cat /var/lib/juju/agents/unit-dashboard-0/charm/src/dist/config.js
+```
+
+For K8s controllers you need to SSH into the workload container rather than the unit. Note that the container name
+is not linked to the app name and will always be `dashboard`.
+
+```
+juju ssh --container dashboard dashboard/0
+```
+
+Then view the files e.g.:
+
+```
+cat /etc/nginx/sites-available/default
+cat /srv/config.js
+```
+
+### Relation data
+
+The dashboard charms use data from controller and ingress/proxy relations to build the config files. It can be helpful to inspect the relation data to check that the charm is getting the data you expect. This can be done with:
+
+```
+juju show-unit dashboard/0
+```
+
+Then look for the relations listed under `relation-info`.
 
 ## Deployment configuration guides
 
