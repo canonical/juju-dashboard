@@ -20,7 +20,6 @@ describe("AddModel utils", () => {
     it("returns an entry for every boolean field in the catalog", () => {
       const schema = getBooleanSchema();
       // Spot-check a known boolean field from each catalog
-      console.log(schema);
       expect(schema).toHaveProperty("disable-network-management");
       expect(schema).toHaveProperty("allocate-public-ip");
     });
