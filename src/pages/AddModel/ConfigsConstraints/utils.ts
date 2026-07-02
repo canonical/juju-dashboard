@@ -1,3 +1,10 @@
+import { stringify, parseDocument, isMap, isPair, isScalar } from "yaml";
+
+import {
+  type YAMLErrors,
+  YAMLErrorType,
+  type YAMLValidationError,
+} from "./YAMLErrorsModal/types";
 import { CONFIG_CATEGORIES } from "./configCatalog";
 import { CONSTRAINT_CATEGORIES } from "./constraintsCatalog";
 import type { CategoryDefinition, ConfigFieldValue } from "./types";
@@ -46,23 +53,30 @@ export const buildYAML = (
   categories: CategoryDefinition[],
   values: Record<string, ConfigFieldValue>,
 ): string => {
-  const yamlSections = categories
-    .map((category) => {
-      const changedFields = getChangedFields(category, values).map((field) => {
-        const value = values[field.label];
-        const quotedValue = value === "" ? '""' : value;
-        return `${field.label}: ${quotedValue}`;
-      });
+  const sections: string[] = [];
 
-      if (changedFields.length === 0) {
-        return null;
-      }
+  for (const category of categories) {
+    const changedFields = getChangedFields(category, values);
+    if (changedFields.length === 0) {
+      continue;
+    }
 
-      return [`# ${category.category}`, ...changedFields].join("\n");
-    })
-    .filter(Boolean);
+    const fieldObject: Record<string, ConfigFieldValue> = {};
+    for (const field of changedFields) {
+      const value = values[field.label];
+      // Coerce boolean string values to actual booleans so stringify
+      // outputs them as unquoted true/false rather than quoted strings.
+      fieldObject[field.label] =
+        field.valueType === "boolean"
+          ? value === "true" || value === true
+          : value;
+    }
 
-  return yamlSections.join("\n\n");
+    // Prepend the category name as a YAML comment, then the stringified fields.
+    sections.push(`# ${category.category}\n${stringify(fieldObject)}`);
+  }
+
+  return sections.join("\n");
 };
 
 export const buildConfigsConstraintsPayload = (
@@ -110,3 +124,174 @@ export const filterCategoriesBySearch = (
     }))
     .filter((category) => category.fields.length > 0);
 };
+
+export const getYAMLErrorMessage = (
+  type: YAMLErrorType,
+  options?: {
+    key?: string;
+    expectedValue?: string;
+    context?: string;
+  },
+): string => {
+  switch (type) {
+    case YAMLErrorType.OTHERS:
+      return `Invalid format. ${options?.context ?? ""}`;
+    case YAMLErrorType.UNKNOWN_KEYS:
+      return `Unknown key: ${options?.key}`;
+    case YAMLErrorType.INVALID_VALUES:
+      return options?.expectedValue
+        ? `Invalid value for ${options?.key}. Expected ${options?.expectedValue}`
+        : `Invalid value for ${options?.key}`;
+  }
+};
+
+export function validateAndParseYAML(
+  yamlString: string,
+  categories: CategoryDefinition[],
+  currentValues: Record<string, ConfigFieldValue> = {},
+): {
+  validValues: Record<string, ConfigFieldValue>;
+  errors: YAMLErrors;
+} {
+  const fieldsByLabel = categories.reduce(
+    (acc, { fields }) => {
+      for (const field of fields) {
+        acc[field.label] = field;
+      }
+      return acc;
+    },
+    {} as Record<string, CategoryDefinition["fields"][number]>,
+  );
+
+  const validValues: Record<string, ConfigFieldValue> = {};
+  const invalidKeys: YAMLValidationError[] = [];
+  const invalidValues: YAMLValidationError[] = [];
+  const otherErrors: YAMLValidationError[] = [];
+
+  const { errors: docErrors, contents } = parseDocument(yamlString);
+
+  otherErrors.push(
+    ...docErrors.map((error) => ({
+      line: error.linePos?.[0]?.line,
+      message: error.message,
+    })),
+  );
+
+  if (!isMap(contents)) {
+    // An empty document is fine; anything else that isn't a map is malformed.
+    if (contents !== null) {
+      otherErrors.push({
+        line: 1,
+        message: getYAMLErrorMessage(YAMLErrorType.OTHERS, {
+          context: "Expected a top-level key-value map",
+        }),
+      });
+    }
+  } else {
+    for (const pair of contents.items) {
+      if (!isPair(pair)) {
+        otherErrors.push({
+          message: getYAMLErrorMessage(YAMLErrorType.OTHERS, {
+            context: "Unexpected non-key-value item in map",
+          }),
+        });
+        continue;
+      }
+      if (!isScalar(pair.key)) {
+        otherErrors.push({
+          message: getYAMLErrorMessage(YAMLErrorType.OTHERS, {
+            context: "Unexpected non-scalar key",
+          }),
+        });
+        continue;
+      }
+
+      const key = pair.key.toString();
+      const line = pair.key.range
+        ? yamlString.slice(0, pair.key.range[0]).split("\n").length
+        : 0;
+
+      const field = fieldsByLabel[key];
+      if (!field) {
+        invalidKeys.push({
+          line,
+          message: getYAMLErrorMessage(YAMLErrorType.UNKNOWN_KEYS, {
+            key,
+          }),
+        });
+        continue;
+      }
+
+      if (!isScalar(pair.value)) {
+        invalidValues.push({
+          line,
+          message: getYAMLErrorMessage(YAMLErrorType.INVALID_VALUES, {
+            key,
+          }),
+        });
+        continue;
+      }
+
+      const { value } = pair.value;
+
+      if (field.valueType === "number") {
+        if (typeof value !== "number") {
+          invalidValues.push({
+            line,
+            message: getYAMLErrorMessage(YAMLErrorType.INVALID_VALUES, {
+              key,
+              expectedValue: "a number",
+            }),
+          });
+          continue;
+        }
+        validValues[key] = value;
+      } else if (field.valueType === "boolean") {
+        if (typeof value !== "boolean") {
+          invalidValues.push({
+            line,
+            message: getYAMLErrorMessage(YAMLErrorType.INVALID_VALUES, {
+              key,
+              expectedValue: "one of: true, false",
+            }),
+          });
+          continue;
+        }
+        validValues[key] = value;
+      } else {
+        // Plain string field. For select fields, validate against allowed values.
+        const stringValue = value?.toString();
+        if (field.input?.type === "select") {
+          const allowedValues = (field.input.options ?? []).map(
+            ({ value: optionValue }) => optionValue,
+          );
+          if (!allowedValues.includes(stringValue)) {
+            invalidValues.push({
+              line,
+              message: getYAMLErrorMessage(YAMLErrorType.INVALID_VALUES, {
+                key,
+                expectedValue: `one of: ${allowedValues.join(", ")}`,
+              }),
+            });
+            continue;
+          }
+        }
+        validValues[key] = stringValue;
+      }
+    }
+  }
+
+  // For fields that were previously changed but absent from the YAML, reset
+  // them to their catalog default so the caller can apply in a single pass.
+  for (const label in fieldsByLabel) {
+    const { defaultValue } = fieldsByLabel[label];
+    if (
+      !(label in validValues) &&
+      isConfigChanged(label, currentValues, defaultValue)
+    ) {
+      validValues[label] = defaultValue;
+    }
+  }
+
+  return { validValues, errors: { invalidKeys, invalidValues, otherErrors } };
+}

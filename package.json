@@ -84,6 +84,7 @@
     "slice-ansi": "7.1.2",
     "strip-ansi": "7.2.0",
     "vanilla-framework": "4.51.0",
+    "yaml": "2.9.0",
     "yup": "1.7.1"
   },
   "devDependencies": {
