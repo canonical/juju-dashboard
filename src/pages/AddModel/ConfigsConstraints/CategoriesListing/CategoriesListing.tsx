@@ -16,11 +16,13 @@ import useDebounce from "hooks/useDebounce";
 
 import { InputMode } from "../../types";
 import StackList from "../StackList";
+import { YAMLErrorType } from "../YAMLErrorsModal/types";
 import type { ConfigFieldValue, FormFields } from "../types";
 import {
   buildYAML,
   filterCategoriesBySearch,
   getCategoriesWithVisibleFields,
+  validateAndParseYAML,
 } from "../utils";
 
 import type { Props } from "./types";
@@ -37,11 +39,12 @@ const CategoriesListing = ({
   searchPlaceholder,
   yamlPlaceholder,
   searchName,
+  setYAMLErrors,
+  yamlErrorLabel,
 }: Props): JSX.Element => {
   const id = useId();
-  const { values, setFieldValue } = useFormikContext<
-    FormFields & Record<string, ConfigFieldValue>
-  >();
+  const { values, setFieldError, setFieldTouched, setFieldValue } =
+    useFormikContext<FormFields & Record<string, ConfigFieldValue>>();
   const [searchQuery, setSearchQuery] = useDebounce("", 250);
   const [changedOnly, setChangedOnly] = useState(false);
 
@@ -49,6 +52,37 @@ const CategoriesListing = ({
   const handleModeChange = (isListModeSelected: boolean): void => {
     if (!isListModeSelected) {
       void setFieldValue(yamlKey, buildYAML(categoriesList, values));
+    } else {
+      const yamlString = values[yamlKey];
+      if (!yamlString) {
+        void setFieldValue(inputMode, InputMode.LIST);
+        return;
+      }
+      const { validValues, errors } = validateAndParseYAML(
+        yamlString,
+        categoriesList,
+        values,
+      );
+      for (const [label, value] of Object.entries(validValues)) {
+        void setFieldValue(label, value);
+      }
+
+      if (
+        errors[YAMLErrorType.UNKNOWN_KEYS].length > 0 ||
+        errors[YAMLErrorType.INVALID_VALUES].length > 0 ||
+        errors[YAMLErrorType.OTHERS].length > 0
+      ) {
+        void setFieldTouched(yamlKey, true, false);
+        // setFieldError must be called after setFieldTouched to prevent
+        // Formik's internal validation run from wiping the error message.
+        setTimeout(() => {
+          setFieldError(yamlKey, yamlErrorLabel);
+        }, 0);
+        setYAMLErrors({ errors, inputMode, yamlKey });
+        return;
+      }
+
+      setFieldError(yamlKey, undefined);
     }
 
     void setFieldValue(
@@ -93,7 +127,9 @@ const CategoriesListing = ({
         {title}
       </h5>
       <p className="u-no-margin--bottom p-text--small">
-        <a href={docsLink}>{docsLabel}</a>
+        <a href={docsLink} target="_blank">
+          {docsLabel}
+        </a>
       </p>
       <div className="u-flex u-flex--gap">
         <div>

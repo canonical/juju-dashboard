@@ -1,3 +1,4 @@
+import { YAMLErrorType } from "./YAMLErrorsModal/types";
 import type { CategoryDefinition } from "./types";
 import {
   buildConfigsConstraintsPayload,
@@ -6,7 +7,9 @@ import {
   getChangedFields,
   getCategoriesWithVisibleFields,
   getConfigInitialValues,
+  getYAMLErrorMessage,
   isConfigChanged,
+  validateAndParseYAML,
 } from "./utils";
 
 describe("utils", () => {
@@ -30,12 +33,33 @@ describe("utils", () => {
         ],
       },
       {
+        category: "Compute",
+        fields: [
+          {
+            label: "cores",
+            description: "Number of cores",
+            valueType: "number",
+          },
+        ],
+      },
+      {
         category: "Logging",
         fields: [
           {
             label: "logging-config",
             defaultValue: "",
             description: "Logging config",
+          },
+        ],
+      },
+      {
+        category: "Cloud-specific configurations",
+        fields: [
+          {
+            label: "vpc-id-force",
+            description: "VPC ID",
+            defaultValue: false,
+            valueType: "boolean",
           },
         ],
       },
@@ -213,7 +237,6 @@ describe("utils", () => {
         "logging-config": "<root>=DEBUG",
         arch: "amd64",
       });
-
       expect(result).toEqual({
         "default-space": "custom-space",
         "logging-config": "<root>=DEBUG",
@@ -260,7 +283,9 @@ describe("utils", () => {
       expect(result).toEqual({
         "default-space": "alpha",
         "container-networking-method": "provider",
+        cores: "",
         "logging-config": "",
+        "vpc-id-force": false,
       });
     });
 
@@ -357,6 +382,232 @@ describe("utils", () => {
         );
         expect(hasMatch).toBe(true);
       });
+    });
+  });
+
+  describe("validateAndParseYAML", () => {
+    it("parses the YAML into valid key-value pairs", () => {
+      const { validValues, errors } = validateAndParseYAML(
+        "# a comment\n\ndefault-space: custom\nvpc-id-force: true\ncores: 4",
+        categories,
+      );
+
+      expect(validValues).toEqual({
+        "default-space": "custom",
+        "vpc-id-force": true,
+        cores: 4,
+      });
+      expect(errors.invalidKeys).toHaveLength(0);
+      expect(errors.invalidValues).toHaveLength(0);
+      expect(errors.otherErrors).toHaveLength(0);
+    });
+
+    it("rejects YAML 1.1 equivalents", () => {
+      // YAML 1.2: true/false are booleans, plain integers are numbers
+      // YAML 1.1 equivalents: 'off' and '1_234' are strings in YAML 1.2
+      const { errors: invalidErrors } = validateAndParseYAML(
+        "vpc-id-force: off\ncores: 1_234",
+        categories,
+      );
+      expect(invalidErrors[YAMLErrorType.INVALID_VALUES]).toHaveLength(2);
+    });
+
+    it("accepts scientific notation for numeric fields", () => {
+      const { validValues, errors } = validateAndParseYAML(
+        "cores: 1.23456e13",
+        categories,
+      );
+
+      expect(errors[YAMLErrorType.INVALID_VALUES]).toHaveLength(0);
+      expect(validValues["cores"]).toBe(1.23456e13);
+    });
+
+    it("reports an invalid key for unknown fields", () => {
+      const { errors } = validateAndParseYAML("unknown-key: value", categories);
+
+      expect(errors.invalidKeys).toHaveLength(1);
+      expect(errors.invalidKeys[0].message).toContain(
+        "Unknown key: unknown-key",
+      );
+      expect(errors.invalidKeys[0].line).toBe(1);
+    });
+
+    it("reports other error for malformed YAML syntax", () => {
+      const { errors } = validateAndParseYAML(
+        "key: value\n  bad-indent: oops",
+        categories,
+      );
+
+      expect(errors.otherErrors.length).toBeGreaterThanOrEqual(1);
+      expect(errors.otherErrors[0].line).toBeGreaterThan(0);
+    });
+
+    it("reports an invalid value for select fields with disallowed values", () => {
+      const selectCategories: CategoryDefinition[] = [
+        {
+          category: "Test",
+          fields: [
+            {
+              label: "my-select",
+              description: "A select field",
+              input: {
+                type: "select",
+                options: [
+                  { label: "A", value: "a" },
+                  { label: "B", value: "b" },
+                ],
+              },
+            },
+          ],
+        },
+      ];
+
+      const { errors } = validateAndParseYAML(
+        "my-select: invalid",
+        selectCategories,
+      );
+      expect(errors.invalidValues).toHaveLength(1);
+      expect(errors.invalidValues[0].message).toContain(
+        "Expected one of: a, b",
+      );
+    });
+
+    it("reports an invalid value for numeric fields with non-numeric input", () => {
+      const { errors } = validateAndParseYAML(
+        "cores: not-a-number",
+        categories,
+      );
+
+      expect(errors.invalidValues).toHaveLength(1);
+      expect(errors.invalidValues[0].message).toContain("Expected a number");
+    });
+
+    it("parses boolean YAML scalars as 'true'/'false' strings", () => {
+      const boolCategories: CategoryDefinition[] = [
+        {
+          category: "Test",
+          fields: [
+            {
+              label: "my-bool",
+              description: "A boolean field",
+              defaultValue: "false",
+              valueType: "boolean",
+              input: {
+                type: "select",
+                options: [
+                  { label: "True", value: "true" },
+                  { label: "False", value: "false" },
+                ],
+              },
+            },
+          ],
+        },
+      ];
+
+      const { validValues, errors } = validateAndParseYAML(
+        "my-bool: true",
+        boolCategories,
+      );
+      expect(validValues["my-bool"]).toBe(true);
+      expect(errors.invalidValues).toHaveLength(0);
+    });
+
+    it("reports an invalid value for boolean fields with non-boolean input", () => {
+      const boolCategories: CategoryDefinition[] = [
+        {
+          category: "Test",
+          fields: [
+            {
+              label: "my-bool",
+              description: "A boolean field",
+              defaultValue: "false",
+              valueType: "boolean",
+              input: {
+                type: "select",
+                options: [
+                  { label: "True", value: "true" },
+                  { label: "False", value: "false" },
+                ],
+              },
+            },
+          ],
+        },
+      ];
+
+      const { errors } = validateAndParseYAML(
+        'my-bool: "not-a-bool"',
+        boolCategories,
+      );
+      expect(errors.invalidValues).toHaveLength(1);
+      expect(errors.invalidValues[0].message).toContain(
+        "Expected one of: true, false",
+      );
+    });
+
+    it("reports an invalid value when a field has a sequence or mapping value", () => {
+      const { errors } = validateAndParseYAML(
+        "default-space:\n  - item1\n  - item2",
+        categories,
+      );
+
+      expect(errors.invalidValues).toHaveLength(1);
+      expect(errors.invalidValues[0].message).toContain(
+        "Invalid value for default-space",
+      );
+      expect(errors.invalidValues[0].line).toBe(1);
+    });
+
+    it("reports an other error when the top-level YAML is not a key-value map", () => {
+      const { errors } = validateAndParseYAML("- item1\n- item2", categories);
+
+      expect(errors.otherErrors.length).toBeGreaterThanOrEqual(1);
+      expect(
+        errors.otherErrors.some((error) =>
+          error.message.includes("Expected a top-level key-value map"),
+        ),
+      ).toBe(true);
+    });
+
+    it("includes catalog default for previously changed fields absent from YAML", () => {
+      const { validValues } = validateAndParseYAML(
+        "logging-config: debug",
+        categories,
+        { "default-space": "my-space" },
+      );
+
+      // logging-config is in the YAML
+      expect(validValues["logging-config"]).toBe("debug");
+      // default-space was changed but absent from YAML — should reset to default
+      expect(validValues["default-space"]).toBe("alpha");
+    });
+  });
+
+  describe("getYAMLErrorMessage", () => {
+    it("returns an invalid format message with the given context", () => {
+      expect(
+        getYAMLErrorMessage(YAMLErrorType.OTHERS, { context: "Error context" }),
+      ).toBe("Invalid format. Error context");
+    });
+
+    it("returns an unknown key message with the given key", () => {
+      expect(
+        getYAMLErrorMessage(YAMLErrorType.UNKNOWN_KEYS, { key: "bad-key" }),
+      ).toBe("Unknown key: bad-key");
+    });
+
+    it("returns an invalid value message", () => {
+      expect(
+        getYAMLErrorMessage(YAMLErrorType.INVALID_VALUES, { key: "my-field" }),
+      ).toBe("Invalid value for my-field");
+    });
+
+    it("returns an invalid value message with expected value", () => {
+      expect(
+        getYAMLErrorMessage(YAMLErrorType.INVALID_VALUES, {
+          key: "my-field",
+          expectedValue: "a number",
+        }),
+      ).toBe("Invalid value for my-field. Expected a number");
     });
   });
 });
