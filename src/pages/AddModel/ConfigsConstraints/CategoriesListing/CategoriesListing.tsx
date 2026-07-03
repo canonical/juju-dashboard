@@ -53,8 +53,13 @@ const CategoriesListing = ({
     if (!isListModeSelected) {
       void setFieldValue(yamlKey, buildYAML(categoriesList, values));
     } else {
+      const yamlString = values[yamlKey];
+      if (!yamlString) {
+        void setFieldValue(inputMode, InputMode.LIST);
+        return;
+      }
       const { validValues, errors } = validateAndParseYAML(
-        values[yamlKey] ?? "",
+        yamlString,
         categoriesList,
         values,
       );

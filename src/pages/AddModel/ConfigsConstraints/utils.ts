@@ -1,4 +1,11 @@
-import { stringify, parseDocument, isMap, isPair, isScalar } from "yaml";
+import {
+  Document as YAMLDocument,
+  YAMLMap,
+  parseDocument,
+  isMap,
+  isPair,
+  isScalar,
+} from "yaml";
 
 import {
   type YAMLErrors,
@@ -53,7 +60,8 @@ export const buildYAML = (
   categories: CategoryDefinition[],
   values: Record<string, ConfigFieldValue>,
 ): string => {
-  const sections: string[] = [];
+  const doc = new YAMLDocument(new YAMLMap());
+  const map = doc.contents as YAMLMap;
 
   for (const category of categories) {
     const changedFields = getChangedFields(category, values);
@@ -61,22 +69,30 @@ export const buildYAML = (
       continue;
     }
 
-    const fieldObject: Record<string, ConfigFieldValue> = {};
-    for (const field of changedFields) {
+    for (const [index, field] of changedFields.entries()) {
       const value = values[field.label];
       // Coerce boolean string values to actual booleans so stringify
       // outputs them as unquoted true/false rather than quoted strings.
-      fieldObject[field.label] =
+      const coerced =
         field.valueType === "boolean"
           ? value === "true" || value === true
           : value;
+      const pair = doc.createPair(field.label, coerced);
+      if (index === 0) {
+        // Attach the category name as a comment before the first key in each
+        // category. spaceBefore inserts a blank line between categories.
+        pair.key.commentBefore = ` ${category.category}`;
+        pair.key.spaceBefore = map.items.length > 0;
+      }
+      map.add(pair);
     }
-
-    // Prepend the category name as a YAML comment, then the stringified fields.
-    sections.push(`# ${category.category}\n${stringify(fieldObject)}`);
   }
 
-  return sections.join("\n");
+  if (map.items.length === 0) {
+    return "";
+  }
+
+  return doc.toString();
 };
 
 export const buildConfigsConstraintsPayload = (
@@ -139,9 +155,11 @@ export const getYAMLErrorMessage = (
     case YAMLErrorType.UNKNOWN_KEYS:
       return `Unknown key: ${options?.key}`;
     case YAMLErrorType.INVALID_VALUES:
-      return options?.expectedValue
-        ? `Invalid value for ${options?.key}. Expected ${options?.expectedValue}`
-        : `Invalid value for ${options?.key}`;
+      const message = `Invalid value for ${options?.key}`;
+      if (options?.expectedValue) {
+        return `${message}. Expected ${options?.expectedValue}`;
+      }
+      return message;
   }
 };
 

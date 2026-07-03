@@ -52,6 +52,17 @@ describe("utils", () => {
           },
         ],
       },
+      {
+        category: "Cloud-specific configurations",
+        fields: [
+          {
+            label: "vpc-id-force",
+            description: "VPC ID",
+            defaultValue: false,
+            valueType: "boolean",
+          },
+        ],
+      },
     ];
   });
 
@@ -274,6 +285,7 @@ describe("utils", () => {
         "container-networking-method": "provider",
         cores: "",
         "logging-config": "",
+        "vpc-id-force": false,
       });
     });
 
@@ -376,18 +388,38 @@ describe("utils", () => {
   describe("validateAndParseYAML", () => {
     it("parses the YAML into valid key-value pairs", () => {
       const { validValues, errors } = validateAndParseYAML(
-        "# a comment\n\ndefault-space: custom\nlogging-config: debug\ncores: 4",
+        "# a comment\n\ndefault-space: custom\nvpc-id-force: true\ncores: 4",
         categories,
       );
 
       expect(validValues).toEqual({
         "default-space": "custom",
-        "logging-config": "debug",
+        "vpc-id-force": true,
         cores: 4,
       });
       expect(errors.invalidKeys).toHaveLength(0);
       expect(errors.invalidValues).toHaveLength(0);
       expect(errors.otherErrors).toHaveLength(0);
+    });
+
+    it("rejects YAML 1.1 equivalents", () => {
+      // YAML 1.2: true/false are booleans, plain integers are numbers
+      // YAML 1.1 equivalents: 'off' and '1_234' are strings in YAML 1.2
+      const { errors: invalidErrors } = validateAndParseYAML(
+        "vpc-id-force: off\ncores: 1_234",
+        categories,
+      );
+      expect(invalidErrors[YAMLErrorType.INVALID_VALUES]).toHaveLength(2);
+    });
+
+    it("accepts scientific notation for numeric fields", () => {
+      const { validValues, errors } = validateAndParseYAML(
+        "cores: 1.23456e13",
+        categories,
+      );
+
+      expect(errors[YAMLErrorType.INVALID_VALUES]).toHaveLength(0);
+      expect(validValues["cores"]).toBe(1.23456e13);
     });
 
     it("reports an invalid key for unknown fields", () => {
