@@ -11,6 +11,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import cloneDeep from "clone-deep";
 import fastDeepEqual from "fast-deep-equal/es6";
 
+import { MODEL_CONFIG_SCHEMA_MIN_VERSION } from "consts";
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type { RelationshipTuple, VersionElem } from "juju/jimm/JIMMV4";
 import type { FullStatusAnnotations, ModelInfo } from "juju/types";
@@ -326,6 +327,27 @@ export const getModelsError = createSelector(
 export const getControllerData = createSelector(
   [slice],
   (sliceState) => sliceState.controllers,
+);
+
+/**
+  Returns whether the given wsControllerURL supports modelConfigSchema.
+*/
+export const getControllerSupportsModelConfigSchema = createSelector(
+  [
+    getControllerData,
+    (_state: RootState, wsControllerURL: string): string => wsControllerURL,
+  ],
+  (controllers, wsControllerURL): boolean => {
+    const controller = controllers?.[wsControllerURL]?.[0];
+    if (!controller) {
+      return false;
+    }
+    const version = getControllerVersion(controller);
+    if (!version) {
+      return false;
+    }
+    return isHigherSemver(version, MODEL_CONFIG_SCHEMA_MIN_VERSION, true);
+  },
 );
 
 export const getControllersCount = createSelector([slice], (sliceState) => {

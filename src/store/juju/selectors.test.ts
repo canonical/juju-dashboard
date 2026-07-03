@@ -157,6 +157,7 @@ import {
   getModelUpgradeDataLoaded,
   getHighestSupportedVersion,
   getNextSupportedVersion,
+  getControllerSupportsModelConfigSchema,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -3329,6 +3330,70 @@ describe("getUserCredentialsState", () => {
       errors: null,
       loading: false,
     });
+  });
+});
+
+describe("getControllerSupportsModelConfigSchema", () => {
+  it("returns false when no controller exists for the given URL", () => {
+    expect(
+      getControllerSupportsModelConfigSchema(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({ controllers: {} }),
+        }),
+        "wss://example.com",
+      ),
+    ).toBe(false);
+  });
+
+  it("returns false for Juju versions below 4.0.12", () => {
+    expect(
+      getControllerSupportsModelConfigSchema(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            controllers: {
+              "wss://example.com": [
+                controllerFactory.build({ version: "3.6.0" }),
+              ],
+            },
+          }),
+        }),
+        "wss://example.com",
+      ),
+    ).toBe(false);
+  });
+
+  it("returns true for exactly the minimum version (4.0.12)", () => {
+    expect(
+      getControllerSupportsModelConfigSchema(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            controllers: {
+              "wss://example.com": [
+                controllerFactory.build({ version: "4.0.12" }),
+              ],
+            },
+          }),
+        }),
+        "wss://example.com",
+      ),
+    ).toBe(true);
+  });
+
+  it("returns true for Juju 4.0 above the minimum (4.0.13)", () => {
+    expect(
+      getControllerSupportsModelConfigSchema(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            controllers: {
+              "wss://example.com": [
+                controllerFactory.build({ version: "4.0.13" }),
+              ],
+            },
+          }),
+        }),
+        "wss://example.com",
+      ),
+    ).toBe(true);
   });
 });
 

@@ -18,3 +18,7 @@ it("handles higher patch version", () => {
 it("handles equal versions", () => {
   expect(isHigherSemver("1.2.30", "1.2.30")).toBe(false);
 });
+
+it("handles equal versions when orEqual is true", () => {
+  expect(isHigherSemver("1.2.30", "1.2.30", true)).toBe(true);
+});

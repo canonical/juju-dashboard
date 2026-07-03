@@ -11,6 +11,9 @@ export const OIDC_POLL_INTERVAL = 5 * 60 * 1000;
 // The local storage key for enabled feature flags list
 export const ENABLED_FLAGS = "flags";
 
+// The minimum Juju version that supports the modelConfigSchema facade method.
+export const MODEL_CONFIG_SCHEMA_MIN_VERSION = "4.0.12";
+
 // The options to build a boolean Select
 export const BOOLEAN_OPTIONS = [
   { label: "True", value: "true" },
