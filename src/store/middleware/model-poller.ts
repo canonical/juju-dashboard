@@ -23,7 +23,6 @@ import { actions as jujuActions } from "store/juju";
 import { getDestructionState, getModelList } from "store/juju/selectors";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import type { ModelDestructionParams } from "store/juju/types";
-import { extractCredentialName } from "store/juju/utils/models";
 import type { RootState, Store } from "store/store";
 import { AccessLevel, isSpecificAction } from "types";
 import { getUserName, toErrorString } from "utils";
@@ -89,9 +88,15 @@ function runModelPoller(
         const clouds = await conn.facades.cloud?.clouds({});
         const userTag = conn.info.user?.identity;
         if (userTag) {
+          const model = await conn.facades.modelManager?.createModel({
+            name: `test-model-${Math.ceil(Math.random() * 1000)}`,
+            "owner-tag": userTag,
+            qualifier: userTag.replace(/^user-/, ""),
+          });
           const cloudTags = Object.keys(clouds?.clouds ?? {});
           const credentialName = `cred-${Math.ceil(Math.random() * 1000)}`;
-          const addTag = `cloudcred-${cloudTags[0].replace(/^cloud-/, "")}_${userTag.replace(/^user-/, "")}_${credentialName}`;
+          const [cloud] = cloudTags;
+          const addTag = `cloudcred-${cloud.replace(/^cloud-/, "")}_${userTag.replace(/^user-/, "")}_${credentialName}`;
           const addCredentialsArgs = {
             credentials: [
               {
@@ -145,6 +150,46 @@ function runModelPoller(
             `cloud.credentialContents(${JSON.stringify(credentialContentsArgs, null, 2)})`,
           );
           console.log(JSON.stringify(contents, null, 2));
+          console.log(
+            "-------------------- check if credential is valid --------------------",
+          );
+          const checkCredentialsModelsArgs = {
+            credentials: [
+              {
+                credential: {
+                  "auth-type": "test",
+                },
+                tag: addTag,
+              },
+            ],
+          };
+          const checkCredentialsModels =
+            await conn.facades.cloud?.checkCredentialsModels(
+              checkCredentialsModelsArgs,
+            );
+          console.log(
+            `cloud.checkCredentialsModels(${JSON.stringify(checkCredentialsModelsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(checkCredentialsModels, null, 2));
+          const changeModelCredentialArgs = {
+            "model-credentials": [
+              {
+                "credential-tag": addTag,
+                "model-tag": `model-${model?.uuid}`,
+              },
+            ],
+          };
+          const changeModelCredential =
+            await conn.facades.modelManager?.changeModelCredential(
+              changeModelCredentialArgs,
+            );
+          console.log(
+            "-------------------- change model credential --------------------",
+          );
+          console.log(
+            `modelManager.changeModelCredential(${JSON.stringify(changeModelCredentialArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(changeModelCredential, null, 2));
           const updateCredentialsCheckModelsArgs = {
             force: false,
             credentials: [
@@ -186,6 +231,16 @@ function runModelPoller(
             `cloud.revokeCredentialsCheckModels(${JSON.stringify(revokeCredentialsCheckModelsArgs, null, 2)})`,
           );
           console.log(JSON.stringify(revokeCredentialsCheckModels, null, 2));
+          // Clean up model.
+          await conn.facades.modelManager?.destroyModels({
+            models: [
+              {
+                force: true,
+                timeout: 0,
+                "model-tag": `model-${model?.uuid}`,
+              },
+            ],
+          });
         }
 
         reduxStore.dispatch(
