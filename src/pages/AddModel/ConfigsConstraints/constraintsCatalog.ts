@@ -4,7 +4,7 @@ import { BOOLEAN_OPTIONS } from "consts";
 
 import type { CategoryDefinition } from "./types";
 
-const EMPTY_OPTION = { label: "Choose an option", value: "" };
+const EMPTY_OPTION = { label: "Unset", value: "" };
 
 export const CONSTRAINT_CATEGORIES: CategoryDefinition[] = [
   {
