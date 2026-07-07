@@ -11,6 +11,9 @@ export const OIDC_POLL_INTERVAL = 5 * 60 * 1000;
 // The local storage key for enabled feature flags list
 export const ENABLED_FLAGS = "flags";
 
+// Sentinel category string used when schema data has no grouping.
+export const FALLBACK_CATEGORY = "";
+
 // The options to build a boolean Select
 export const BOOLEAN_OPTIONS = [
   { label: "True", value: "true" },
