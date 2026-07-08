@@ -5,6 +5,7 @@ import { vi } from "vitest";
 import { renderComponent } from "testing/utils";
 
 import type { CategoryDefinition } from "../types";
+import { InputType } from "../types";
 
 import StackList from "./StackList";
 
@@ -24,7 +25,7 @@ describe("StackList", () => {
         description: "The method of container networking setup",
         defaultValue: "local",
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: [
             { label: "local", value: "local" },
             { label: "fan", value: "fan" },

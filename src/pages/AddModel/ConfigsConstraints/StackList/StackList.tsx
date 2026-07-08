@@ -3,14 +3,15 @@ import { useFormikContext } from "formik";
 import { Fragment, type JSX } from "react";
 
 import type {
-  CategoryDefinition,
+  CategoryDefinitionField,
   ConfigFieldValue,
   FormFields,
 } from "../types";
+import { InputType, ValueType } from "../types";
 import { isConfigChanged } from "../utils";
 
 type Props = {
-  visibleFields: CategoryDefinition["fields"];
+  visibleFields: CategoryDefinitionField[];
 };
 
 const StackList = ({ visibleFields }: Props): JSX.Element => {
@@ -29,10 +30,11 @@ const StackList = ({ visibleFields }: Props): JSX.Element => {
         return (
           <Fragment key={field.label}>
             <FormikField
-              {...(field.input?.type === "select"
+              {...(field.input?.type === InputType.SELECT
                 ? { component: Select }
                 : {
-                    type: field.valueType === "number" ? "number" : "text",
+                    type:
+                      field.valueType === ValueType.NUMBER ? "number" : "text",
                     placeholder: field.defaultValue,
                   })}
               label={

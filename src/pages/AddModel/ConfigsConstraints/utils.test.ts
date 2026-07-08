@@ -1,5 +1,6 @@
 import { YAMLErrorType } from "./YAMLErrorsModal/types";
 import type { CategoryDefinition } from "./types";
+import { InputType, ValueType } from "./types";
 import {
   buildConfigsConstraintsPayload,
   buildYAML,
@@ -38,7 +39,7 @@ describe("utils", () => {
           {
             label: "cores",
             description: "Number of cores",
-            valueType: "number",
+            valueType: ValueType.NUMBER,
           },
         ],
       },
@@ -59,7 +60,7 @@ describe("utils", () => {
             label: "vpc-id-force",
             description: "VPC ID",
             defaultValue: false,
-            valueType: "boolean",
+            valueType: ValueType.BOOLEAN,
           },
         ],
       },
@@ -316,7 +317,7 @@ describe("utils", () => {
               label: "numeric-field",
               defaultValue: 17,
               description: "A numeric field",
-              valueType: "number",
+              valueType: ValueType.NUMBER,
             },
           ],
         },
@@ -355,10 +356,10 @@ describe("utils", () => {
 
       expect(result.length).toBeGreaterThan(0);
       const allDescriptions = result.flatMap((cat) =>
-        cat.fields.map((field) => field.description.toLowerCase()),
+        cat.fields.map((field) => field.description?.toLowerCase()),
       );
 
-      const hasMatch = allDescriptions.some((desc) => desc.includes("method"));
+      const hasMatch = allDescriptions.some((desc) => desc?.includes("method"));
       expect(hasMatch).toBe(true);
     });
 
@@ -378,7 +379,7 @@ describe("utils", () => {
         const hasMatch = category.fields.some(
           (field) =>
             field.label.toLowerCase().includes("network") ||
-            field.description.toLowerCase().includes("network"),
+            field.description?.toLowerCase().includes("network"),
         );
         expect(hasMatch).toBe(true);
       });
@@ -451,7 +452,7 @@ describe("utils", () => {
               label: "my-select",
               description: "A select field",
               input: {
-                type: "select",
+                type: InputType.SELECT,
                 options: [
                   { label: "A", value: "a" },
                   { label: "B", value: "b" },
@@ -491,9 +492,9 @@ describe("utils", () => {
               label: "my-bool",
               description: "A boolean field",
               defaultValue: "false",
-              valueType: "boolean",
+              valueType: ValueType.BOOLEAN,
               input: {
-                type: "select",
+                type: InputType.SELECT,
                 options: [
                   { label: "True", value: "true" },
                   { label: "False", value: "false" },
@@ -521,9 +522,9 @@ describe("utils", () => {
               label: "my-bool",
               description: "A boolean field",
               defaultValue: "false",
-              valueType: "boolean",
+              valueType: ValueType.BOOLEAN,
               input: {
-                type: "select",
+                type: InputType.SELECT,
                 options: [
                   { label: "True", value: "true" },
                   { label: "False", value: "false" },

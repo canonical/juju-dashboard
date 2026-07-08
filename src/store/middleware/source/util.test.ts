@@ -1,15 +1,16 @@
 import type { ModelDefaultsResult } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV11";
 
-import { BOOLEAN_OPTIONS, FALLBACK_CATEGORY } from "consts";
+import { BOOLEAN_OPTIONS } from "consts";
+import { InputType, ValueType } from "pages/AddModel/ConfigsConstraints/types";
 import { modelConfigSchemaFieldFactory } from "testing/factories/juju/CloudV8";
 
 import { generateCategoryDefinitions } from "./util";
 
 describe("generateCategoryDefinitions", () => {
-  it("returns a single category with the FALLBACK_CATEGORY sentinel", () => {
+  it("returns a single null category (no grouping)", () => {
     const result = generateCategoryDefinitions({}, {});
     expect(result).toHaveLength(1);
-    expect(result[0].category).toBe(FALLBACK_CATEGORY);
+    expect(result[0].category).toBeNull();
   });
 
   it("returns an empty fields array for an empty schema", () => {
@@ -40,8 +41,8 @@ describe("generateCategoryDefinitions", () => {
     expect(result[0].fields[0].label).toBe("default-space");
     expect(result[0].fields[0].description).toBe("The default network space");
     expect(result[0].fields[0].defaultValue).toBe("my-space");
-    expect(result[0].fields[1].valueType).toBe("boolean");
-    expect(result[0].fields[2].valueType).toBe("number");
+    expect(result[0].fields[1].valueType).toBe(ValueType.BOOLEAN);
+    expect(result[0].fields[2].valueType).toBe(ValueType.NUMBER);
   });
 
   it("leaves defaultValue undefined when field has no default", () => {
@@ -110,8 +111,8 @@ describe("generateCategoryDefinitions", () => {
       },
       {},
     );
-    expect(result[0].fields[0].valueType).toBe("boolean");
-    expect(result[0].fields[0].input?.type).toBe("select");
+    expect(result[0].fields[0].valueType).toBe(ValueType.BOOLEAN);
+    expect(result[0].fields[0].input?.type).toBe(InputType.SELECT);
     expect(result[0].fields[0].input?.options).toEqual(BOOLEAN_OPTIONS);
   });
 
@@ -120,7 +121,7 @@ describe("generateCategoryDefinitions", () => {
       { "some-field": modelConfigSchemaFieldFactory.build({ type }) },
       {},
     );
-    expect(result[0].fields[0].valueType).toBe("number");
+    expect(result[0].fields[0].valueType).toBe(ValueType.NUMBER);
     expect(result[0].fields[0].input).toBeUndefined();
   });
 
@@ -129,16 +130,36 @@ describe("generateCategoryDefinitions", () => {
       {
         "firewall-mode": modelConfigSchemaFieldFactory.build({
           type: "string",
+          // Values are typed as `object[]` by Juju but are plain primitives
+          //  at runtime, which is why we cast here to reflect the real shape.
           values: ["instance", "global", "none"] as unknown as object[],
         }),
       },
       {},
     );
-    expect(result[0].fields[0].input?.type).toBe("select");
+    expect(result[0].fields[0].input?.type).toBe(InputType.SELECT);
     expect(result[0].fields[0].input?.options).toEqual([
       { label: "instance", value: "instance" },
       { label: "global", value: "global" },
       { label: "none", value: "none" },
+    ]);
+  });
+
+  it("filters out values that do not match the declared field type", () => {
+    const result = generateCategoryDefinitions(
+      {
+        "firewall-mode": modelConfigSchemaFieldFactory.build({
+          type: "string",
+          // Values are typed as `object[]` by Juju but are plain primitives
+          //  at runtime, which is why we cast here to reflect the real shape.
+          values: ["instance", 42, null, "global"] as unknown as object[],
+        }),
+      },
+      {},
+    );
+    expect(result[0].fields[0].input?.options).toEqual([
+      { label: "instance", value: "instance" },
+      { label: "global", value: "global" },
     ]);
   });
 });

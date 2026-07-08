@@ -1,11 +1,16 @@
 import type { ModelConfigSchemaResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV8";
-import type { ModelDefaultsResult } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV11";
+import type {
+  ModelDefaults,
+  ModelDefaultsResult,
+} from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV11";
 
-import { BOOLEAN_OPTIONS, FALLBACK_CATEGORY } from "consts";
+import { BOOLEAN_OPTIONS } from "consts";
 import type {
   CategoryDefinition,
+  CategoryDefinitionField,
   ConfigFieldValue,
 } from "pages/AddModel/ConfigsConstraints/types";
+import { InputType, ValueType } from "pages/AddModel/ConfigsConstraints/types";
 
 /**
   AdditionalProperties is a single-key object where the key name is
@@ -13,13 +18,19 @@ import type {
   Applies the priority hierarchy: controller > region (if known) > juju default.
 */
 const resolveFieldDefault = (
-  defaults: ModelDefaultsResult["config"][string] = {},
+  // `ModelDefaultsResult["config"]` is a `Record<string, ModelDefaults>`, so
+  // a lookup by key is typed as `ModelDefaults` but may be `undefined` at runtime.
+  defaults?: ModelDefaults,
   selectedRegion?: string,
 ): ConfigFieldValue => {
+  if (!defaults) {
+    return undefined;
+  }
+
   const { controller, regions, default: jujuDefaults } = defaults;
 
   if (controller) {
-    return Object.values(controller)[0] as ConfigFieldValue;
+    return Object.values(controller)[0];
   }
 
   if (selectedRegion && regions) {
@@ -27,11 +38,11 @@ const resolveFieldDefault = (
       (region) => region["region-name"] === selectedRegion,
     )?.value;
     if (regionDefaults) {
-      return Object.values(regionDefaults)[0] as ConfigFieldValue;
+      return Object.values(regionDefaults)[0];
     }
   }
 
-  return Object.values(jujuDefaults ?? {})[0] as ConfigFieldValue;
+  return Object.values(jujuDefaults ?? {})[0];
 };
 
 /**
@@ -43,14 +54,21 @@ export const generateCategoryDefinitions = (
   defaultsConfig: ModelDefaultsResult["config"],
   selectedRegion?: string,
 ): CategoryDefinition[] => {
-  const fields: CategoryDefinition["fields"] = Object.entries(schema ?? {}).map(
+  const fields: CategoryDefinitionField[] = Object.entries(schema ?? {}).map(
     ([label, field]) => {
       const isNumeric = field.type === "int" || field.type === "float";
-      const fieldValues = field.values ?? [];
 
-      const entry: CategoryDefinition["fields"][number] = {
+      // The response schema types `values` as `object[]`, but the underlying
+      //  Go type is `[]any` which serializes enum values as primitives on
+      //  the wire. We validate each entry matches the declared field type
+      //  to guard against unexpected API responses.
+      const fieldValues = (field.values ?? []).filter(
+        (fieldValue) => typeof fieldValue === field.type,
+      );
+
+      const entry: CategoryDefinitionField = {
         label,
-        description: field.description ?? "",
+        description: field.description,
         defaultValue: resolveFieldDefault(
           defaultsConfig[label],
           selectedRegion,
@@ -58,13 +76,13 @@ export const generateCategoryDefinitions = (
       };
 
       if (field.type === "bool") {
-        entry.valueType = "boolean";
-        entry.input = { type: "select", options: BOOLEAN_OPTIONS };
+        entry.valueType = ValueType.BOOLEAN;
+        entry.input = { type: InputType.SELECT, options: BOOLEAN_OPTIONS };
       } else if (isNumeric) {
-        entry.valueType = "number";
+        entry.valueType = ValueType.NUMBER;
       } else if (fieldValues.length > 0) {
         entry.input = {
-          type: "select",
+          type: InputType.SELECT,
           options: fieldValues.map((fieldValue) => ({
             label: `${fieldValue}`,
             value: `${fieldValue}`,
@@ -76,5 +94,5 @@ export const generateCategoryDefinitions = (
     },
   );
 
-  return [{ category: FALLBACK_CATEGORY, fields }];
+  return [{ category: null, fields }];
 };

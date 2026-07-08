@@ -3,6 +3,7 @@
 import { BOOLEAN_OPTIONS } from "consts";
 
 import type { CategoryDefinition } from "./types";
+import { InputType, ValueType } from "./types";
 
 const EMPTY_OPTION = { label: "Unset", value: "" };
 
@@ -13,12 +14,12 @@ export const CONSTRAINT_CATEGORIES: CategoryDefinition[] = [
       {
         label: "cores",
         description: "Number of effective CPU cores (alias: cpu-cores)",
-        valueType: "number",
+        valueType: ValueType.NUMBER,
       },
       {
         label: "cpu-power",
         description: "Abstract CPU power (100 units ≈ 1 Amazon vCPU)",
-        valueType: "number",
+        valueType: ValueType.NUMBER,
       },
       {
         label: "mem",
@@ -47,9 +48,9 @@ export const CONSTRAINT_CATEGORIES: CategoryDefinition[] = [
         label: "allocate-public-ip",
         description:
           "Supplying this constraint will determine whether machines are issued an IP address accessible outside of the cloud’s virtual network",
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: [EMPTY_OPTION, ...BOOLEAN_OPTIONS],
         },
       },
@@ -62,7 +63,7 @@ export const CONSTRAINT_CATEGORIES: CategoryDefinition[] = [
         label: "arch",
         description: "CPU architecture (amd64, arm64, ppc64el, s390x, riscv64)",
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: [
             EMPTY_OPTION,
             { label: "amd64", value: "amd64" },
@@ -82,7 +83,7 @@ export const CONSTRAINT_CATEGORIES: CategoryDefinition[] = [
         description:
           "Indicates that a machine must be the specified container type",
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: [
             EMPTY_OPTION,
             { label: "LXD", value: "lxd" },
