@@ -14,7 +14,12 @@ import {
 } from "./YAMLErrorsModal/types";
 import { CONFIG_CATEGORIES } from "./configCatalog";
 import { CONSTRAINT_CATEGORIES } from "./constraintsCatalog";
-import type { CategoryDefinition, ConfigFieldValue } from "./types";
+import type {
+  CategoryDefinition,
+  CategoryDefinitionField,
+  ConfigFieldValue,
+} from "./types";
+import { InputType, ValueType } from "./types";
 
 export const isConfigChanged = (
   label: string,
@@ -40,7 +45,7 @@ export const isConfigChanged = (
 export const getChangedFields = (
   category: CategoryDefinition,
   values: Record<string, ConfigFieldValue>,
-): CategoryDefinition["fields"] =>
+): CategoryDefinitionField[] =>
   category.fields.filter((field) =>
     isConfigChanged(field.label, values, field.defaultValue),
   );
@@ -48,7 +53,7 @@ export const getChangedFields = (
 export const getCategoriesWithVisibleFields = (
   categories: CategoryDefinition[],
   values: Record<string, ConfigFieldValue>,
-): Array<{ category: string; fields: CategoryDefinition["fields"] }> =>
+): CategoryDefinition[] =>
   categories
     .map((cat) => ({
       category: cat.category,
@@ -74,14 +79,16 @@ export const buildYAML = (
       // Coerce boolean string values to actual booleans so stringify
       // outputs them as unquoted true/false rather than quoted strings.
       const coerced =
-        field.valueType === "boolean"
+        field.valueType === ValueType.BOOLEAN
           ? value === "true" || value === true
           : value;
       const pair = doc.createPair(field.label, coerced);
       if (index === 0) {
         // Attach the category name as a comment before the first key in each
         // category. spaceBefore inserts a blank line between categories.
-        pair.key.commentBefore = ` ${category.category}`;
+        if (category.category) {
+          pair.key.commentBefore = ` ${category.category}`;
+        }
         pair.key.spaceBefore = map.items.length > 0;
       }
       map.add(pair);
@@ -135,7 +142,7 @@ export const filterCategoriesBySearch = (
       fields: category.fields.filter(
         (field) =>
           field.label.toLowerCase().includes(lowerQuery) ||
-          field.description.toLowerCase().includes(lowerQuery),
+          field.description?.toLowerCase().includes(lowerQuery),
       ),
     }))
     .filter((category) => category.fields.length > 0);
@@ -178,7 +185,7 @@ export function validateAndParseYAML(
       }
       return acc;
     },
-    {} as Record<string, CategoryDefinition["fields"][number]>,
+    {} as Record<string, CategoryDefinitionField>,
   );
 
   const validValues: Record<string, ConfigFieldValue> = {};
@@ -252,7 +259,7 @@ export function validateAndParseYAML(
 
       const { value } = pair.value;
 
-      if (field.valueType === "number") {
+      if (field.valueType === ValueType.NUMBER) {
         if (typeof value !== "number") {
           invalidValues.push({
             line,
@@ -264,7 +271,7 @@ export function validateAndParseYAML(
           continue;
         }
         validValues[key] = value;
-      } else if (field.valueType === "boolean") {
+      } else if (field.valueType === ValueType.BOOLEAN) {
         if (typeof value !== "boolean") {
           invalidValues.push({
             line,
@@ -279,7 +286,7 @@ export function validateAndParseYAML(
       } else {
         // Plain string field. For select fields, validate against allowed values.
         const stringValue = value?.toString();
-        if (field.input?.type === "select") {
+        if (field.input?.type === InputType.SELECT) {
           const allowedValues = (field.input.options ?? []).map(
             ({ value: optionValue }) => optionValue,
           );

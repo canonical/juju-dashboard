@@ -2,6 +2,7 @@
 import { BOOLEAN_OPTIONS } from "consts";
 
 import type { CategoryDefinition } from "./types";
+import { InputType, ValueType } from "./types";
 
 export const CONFIG_CATEGORIES: CategoryDefinition[] = [
   {
@@ -20,9 +21,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Force Juju to use the GCE VPC ID specified with vpc-id, when it fails the minimum validation criteria",
         defaultValue: false,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -36,7 +37,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description: "The method of container networking setup",
         defaultValue: "local",
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: [
             { label: "local", value: "local" },
             { label: "fan", value: "fan" },
@@ -52,9 +53,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "disable-network-management",
         description: "Determines whether the provider should control networks",
         defaultValue: false,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -72,7 +73,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description: "The mode to use for network firewalling",
         defaultValue: "instance",
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: [
             { label: "Instance", value: "instance" },
             { label: "Global", value: "global" },
@@ -85,9 +86,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether the machine worker should discover machine addresses on startup",
         defaultValue: false,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -96,7 +97,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "The amount of time in seconds to sleep between ifdown and ifup when bridging",
         defaultValue: 17,
-        valueType: "number",
+        valueType: ValueType.NUMBER,
       },
       {
         label: "saas-ingress-allow",
@@ -114,9 +115,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "ssl-hostname-verification",
         description: "Determines whether SSL hostname verification is enabled",
         defaultValue: true,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -193,9 +194,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether SSH commands should be proxied through the API server",
         defaultValue: false,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -234,9 +235,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether default simplestreams sources are used for image metadata with containers",
         defaultValue: false,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -271,9 +272,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether newly provisioned instances should run their respective OS's update capability",
         defaultValue: true,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -282,9 +283,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether newly provisioned instances should run their respective OS's upgrade capability",
         defaultValue: true,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -293,9 +294,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether default simplestreams sources are used for image metadata",
         defaultValue: false,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -321,13 +322,13 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "The number of container provisioning workers to use per machine",
         defaultValue: 4,
-        valueType: "number",
+        valueType: ValueType.NUMBER,
       },
       {
         label: "num-provision-workers",
         description: "The number of provisioning workers to use per model",
         defaultValue: 16,
-        valueType: "number",
+        valueType: ValueType.NUMBER,
       },
       {
         label: "project",
@@ -341,7 +342,7 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
           "Sets what to do with unknown machines. Valid values: all, none, unknown, destroyed",
         defaultValue: "destroyed",
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: [
             { label: "all", value: "all" },
             { label: "none", value: "none" },
@@ -365,9 +366,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "logforward-enabled",
         description: "Determines whether syslog forwarding is enabled",
         defaultValue: false,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -407,9 +408,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether the uniter should automatically retry failed hooks",
         defaultValue: true,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -423,9 +424,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether metrics declared by charms deployed into this model are sent for anonymized aggregate analytics",
         defaultValue: true,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -489,9 +490,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether development mode is enabled for this model",
         defaultValue: false,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -500,9 +501,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         description:
           "Determines whether telemetry collection is disabled for this model",
         defaultValue: false,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },
@@ -515,9 +516,9 @@ export const CONFIG_CATEGORIES: CategoryDefinition[] = [
         label: "test-mode",
         description: "Determines whether test mode is enabled for this model",
         defaultValue: false,
-        valueType: "boolean",
+        valueType: ValueType.BOOLEAN,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: BOOLEAN_OPTIONS,
         },
       },

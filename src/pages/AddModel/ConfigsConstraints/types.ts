@@ -54,13 +54,25 @@ export enum DisableType {
 
 export type ConfigFieldValue = boolean | number | string | undefined;
 
+export enum ValueType {
+  BOOLEAN = "boolean",
+  NUMBER = "number",
+}
+
+export enum InputType {
+  SELECT = "select",
+}
+
+export type CategoryDefinitionField = {
+  label: string;
+  description?: string;
+  defaultValue?: ConfigFieldValue;
+  input?: { type: InputType.SELECT } & SelectProps;
+  valueType?: ValueType;
+};
+
 export type CategoryDefinition = {
-  category: string;
-  fields: {
-    label: string;
-    description: string;
-    defaultValue?: ConfigFieldValue;
-    input?: { type: "select" } & SelectProps;
-    valueType?: "boolean" | "number";
-  }[];
+  // `null` indicates no meaningful grouping (e.g. schema data from the facade).
+  category: null | string;
+  fields: CategoryDefinitionField[];
 };
