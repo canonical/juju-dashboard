@@ -19,10 +19,17 @@ import type {
   VersionElem,
 } from "juju/jimm/JIMMV4";
 import type { FullStatusWithAnnotations, ModelInfo } from "juju/types";
-import type { DisableType } from "pages/AddModel/ConfigsConstraints/types";
 import type { ProcessOutcome } from "store/middleware/process";
+import type { CategoryDefinition } from "store/middleware/source/types";
 import type { GenericItemsState, GenericState } from "store/types";
 import type { AccessLevel } from "types";
+
+export enum DisableType {
+  NONE = "none",
+  DESTROY_MODEL = "BlockDestroy",
+  REMOVE_OBJECT = "BlockRemove",
+  ALL = "BlockChange",
+}
 
 /**
  * Data derived from a `Source`.
@@ -153,6 +160,12 @@ export type SupportedJujuVersionsState = SourceData<VersionElem[]>;
 
 export type ModelMigrationTargetsState = Record<string, SourceData<string[]>>;
 
+export type ModelConfigDefaultsState = {
+  errors: null | string | unknown;
+  loading: boolean;
+  defaults: Record<string, CategoryDefinition[]>;
+};
+
 export type AddModel = {
   modelName: string;
   credential: string;
@@ -203,6 +216,7 @@ export type JujuState = {
   secrets: SecretsState;
   cloudInfo: CloudState;
   userCredentials: UserCredentialsState;
+  modelConfigDefaults: ModelConfigDefaultsState;
   selectedApplications: Record<string, ApplicationStatus>;
   supportedJujuVersions: SupportedJujuVersionsState;
   addModelState: AddModelState;

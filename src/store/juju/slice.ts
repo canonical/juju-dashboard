@@ -22,6 +22,7 @@ import type {
   ModelInfoResults,
   UserModelList,
 } from "juju/types";
+import type { CategoryDefinition } from "store/middleware/source/types";
 
 import type {
   Controllers,
@@ -148,6 +149,11 @@ const slice = createSlice({
     },
     userCredentials: {
       credentials: {},
+      errors: null,
+      loading: false,
+    },
+    modelConfigDefaults: {
+      defaults: {},
       errors: null,
       loading: false,
     },
@@ -781,6 +787,25 @@ const slice = createSlice({
       value.loading = payload.update.loading ?? value.loading;
       if (payload.update.data !== undefined) {
         value.clouds = payload.update.data;
+      }
+      if (payload.update.error !== undefined) {
+        value.errors = payload.update.error;
+      }
+    },
+    updateModelConfigDefaults: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        providerType: string;
+        update: Partial<SourceData<CategoryDefinition[]>>;
+      }>,
+    ) => {
+      const value = state.modelConfigDefaults;
+
+      value.loading = payload.update.loading ?? value.loading;
+      if (payload.update.data !== undefined && payload.update.data !== null) {
+        value.defaults[payload.providerType] = payload.update.data;
       }
       if (payload.update.error !== undefined) {
         value.errors = payload.update.error;
