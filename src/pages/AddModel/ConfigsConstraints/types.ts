@@ -1,6 +1,14 @@
-import type { SelectProps } from "@canonical/react-components";
+import type { DisableType } from "store/juju/types";
 
 import type { InputMode } from "../types";
+
+export type {
+  CategoryDefinition,
+  CategoryDefinitionField,
+  ConfigFieldValue,
+} from "store/middleware/source/types";
+export { InputType, ValueType } from "store/middleware/source/types";
+export { DisableType } from "store/juju/types";
 
 export enum TestId {
   CONFIGS_CONSTRAINTS_FORM = "configs-constraints-form",
@@ -43,36 +51,4 @@ export type FormFields = {
   [FieldName.CONFIG_YAML]: string;
   [FieldName.CONSTRAINT_YAML]: string;
   [FieldName.DISABLED_COMMANDS]: DisableType;
-};
-
-export enum DisableType {
-  NONE = "none",
-  DESTROY_MODEL = "BlockDestroy",
-  REMOVE_OBJECT = "BlockRemove",
-  ALL = "BlockChange",
-}
-
-export type ConfigFieldValue = boolean | number | string | undefined;
-
-export enum ValueType {
-  BOOLEAN = "boolean",
-  NUMBER = "number",
-}
-
-export enum InputType {
-  SELECT = "select",
-}
-
-export type CategoryDefinitionField = {
-  label: string;
-  description?: string;
-  defaultValue?: ConfigFieldValue;
-  input?: { type: InputType.SELECT } & SelectProps;
-  valueType?: ValueType;
-};
-
-export type CategoryDefinition = {
-  // `null` indicates no meaningful grouping (e.g. schema data from the facade).
-  category: null | string;
-  fields: CategoryDefinitionField[];
 };

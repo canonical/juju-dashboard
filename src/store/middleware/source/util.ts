@@ -5,12 +5,14 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV11";
 
 import { BOOLEAN_OPTIONS } from "consts";
-import type {
-  CategoryDefinition,
-  CategoryDefinitionField,
-  ConfigFieldValue,
-} from "pages/AddModel/ConfigsConstraints/types";
-import { InputType, ValueType } from "pages/AddModel/ConfigsConstraints/types";
+
+import {
+  type CategoryDefinition,
+  type CategoryDefinitionField,
+  type ConfigFieldValue,
+  InputType,
+  ValueType,
+} from "./types";
 
 /**
   AdditionalProperties is a single-key object where the key name is

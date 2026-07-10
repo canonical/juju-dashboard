@@ -14,7 +14,6 @@ import {
   findAuditEvents,
 } from "juju/jimm/api";
 import type { DestroyModelErrors } from "juju/types";
-import { DisableType } from "pages/AddModel/ConfigsConstraints/types";
 import { actions as appActions, thunks as appThunks } from "store/app";
 import { updateModelStatuses } from "store/app/actions";
 import { actions as generalActions } from "store/general";
@@ -22,7 +21,7 @@ import { isLoggedIn } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { getDestructionState, getModelList } from "store/juju/selectors";
 import { addControllerCloudRegion } from "store/juju/thunks";
-import type { ModelDestructionParams } from "store/juju/types";
+import { type ModelDestructionParams, DisableType } from "store/juju/types";
 import type { RootState, Store } from "store/store";
 import { AccessLevel, isSpecificAction } from "types";
 import { getUserName, toErrorString } from "utils";

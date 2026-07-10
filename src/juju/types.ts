@@ -8,6 +8,7 @@ import type CharmsV6 from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type ClientV8 from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import type { FullStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import type CloudV7 from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
+import type CloudV8 from "@canonical/jujulib/dist/api/facades/cloud/CloudV8";
 import type ControllerV12 from "@canonical/jujulib/dist/api/facades/controller/ControllerV12";
 import type ModelManagerV10 from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 import type {
@@ -48,7 +49,7 @@ export type Facades = {
   block?: BlockV2;
   charms?: CharmsV6;
   client?: ClientV8;
-  cloud?: CloudV7;
+  cloud?: CloudV7 | CloudV8;
   controller?: ControllerV12;
   modelManager?: ModelManagerV10 | ModelManagerV11;
   modelUpgrader?: ModelUpgraderV1;

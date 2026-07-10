@@ -11,6 +11,7 @@ import type {
   CrossModelQueryState,
   HistoryItem,
   JujuState,
+  ModelConfigDefaultsState,
   ModelData,
   ModelFeatures,
   ModelFeaturesState,
@@ -131,6 +132,13 @@ export const cloudInfoStateFactory = Factory.define<CloudState>(() => ({
   loading: false,
 }));
 
+export const modelConfigDefaultsStateFactory =
+  Factory.define<ModelConfigDefaultsState>(() => ({
+    defaults: {},
+    errors: null,
+    loading: false,
+  }));
+
 export const addModelStateFactory = Factory.define<AddModelState>(() => ({
   loaded: false,
   loading: false,
@@ -187,6 +195,7 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   secrets: {},
   cloudInfo: cloudInfoStateFactory.build(),
   userCredentials: userCredentialsStateFactory.build(),
+  modelConfigDefaults: modelConfigDefaultsStateFactory.build(),
   selectedApplications: {},
   supportedJujuVersions: supportedJujuVersionsStateFactory.build(),
   modelMigrationTargets: modelMigrationTargetsStateFactory.build(),

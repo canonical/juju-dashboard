@@ -290,7 +290,10 @@ export function validateAndParseYAML(
           const allowedValues = (field.input.options ?? []).map(
             ({ value: optionValue }) => optionValue,
           );
-          if (!allowedValues.includes(stringValue)) {
+          if (
+            stringValue === undefined ||
+            !allowedValues.includes(stringValue)
+          ) {
             invalidValues.push({
               line,
               message: getYAMLErrorMessage(YAMLErrorType.INVALID_VALUES, {
