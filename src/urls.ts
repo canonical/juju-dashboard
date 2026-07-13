@@ -10,9 +10,10 @@ export enum ModelTab {
   LOGS = "logs",
   SECRETS = "secrets",
 }
+export const VALID_GROUPINGS = ["status", "cloud", "owner"] as const;
 
 export type AppTab = "machines" | "units";
-export type ModelsGroupedBy = "cloud" | "owner" | "status";
+export type ModelsGroupedBy = (typeof VALID_GROUPINGS)[number];
 
 const urls = {
   index: "/",
