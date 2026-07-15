@@ -1,8 +1,18 @@
-import { act, fireEvent, screen, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
-import { vi } from "vitest";
 
+import {
+  cloudInfoStateFactory,
+  jujuStateFactory,
+} from "testing/factories/juju/juju";
+import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 import { externalURLs } from "urls";
 
@@ -35,6 +45,41 @@ describe("ConfigsConstraints", () => {
       [FieldName.CONSTRAINT_YAML]: "",
       [FieldName.DISABLED_COMMANDS]: DisableType.NONE,
     };
+  });
+
+  it("replaces configFields with live entries when store data arrives", async () => {
+    const liveEntry = {
+      label: "live-field",
+      value: "live-value",
+      defaultValue: "live-value",
+      category: null,
+      arrayIndex: 0,
+    };
+    const state = rootStateFactory.withGeneralConfig().build({
+      juju: jujuStateFactory.build({
+        cloudInfo: cloudInfoStateFactory.build({
+          clouds: { "cloud-aws": { type: "ec2" } },
+        }),
+        modelConfigDefaults: {
+          errors: null,
+          loading: false,
+          defaults: { ec2: [liveEntry] },
+        },
+      }),
+    });
+    renderComponent(
+      <Formik
+        initialValues={{ ...initialValues, cloud: "cloud-aws" }}
+        onSubmit={vi.fn()}
+      >
+        <ConfigsConstraints />
+      </Formik>,
+      { state },
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("live-field")).toBeInTheDocument();
+    });
   });
 
   it("renders properly", () => {
