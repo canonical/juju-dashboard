@@ -1,52 +1,41 @@
 import { FormikField, Icon, Select } from "@canonical/react-components";
-import { useFormikContext } from "formik";
 import { Fragment, type JSX } from "react";
 
-import type {
-  CategoryDefinitionField,
-  ConfigFieldValue,
-  FormFields,
-} from "../types";
+import type { ConfigFieldEntry, FieldName } from "../types";
 import { InputType, ValueType } from "../types";
 import { isConfigChanged } from "../utils";
 
 type Props = {
-  visibleFields: CategoryDefinitionField[];
+  visibleFields: ConfigFieldEntry[];
+  arrayName: FieldName.CONFIG_FIELDS | FieldName.CONSTRAINT_FIELDS;
 };
 
-const StackList = ({ visibleFields }: Props): JSX.Element => {
-  const { values } = useFormikContext<
-    FormFields & Record<string, ConfigFieldValue>
-  >();
-
+const StackList = ({ visibleFields, arrayName }: Props): JSX.Element => {
   return (
     <>
-      {visibleFields.map((field, index) => {
-        const changed = isConfigChanged(
-          field.label,
-          values,
-          field.defaultValue,
-        );
+      {visibleFields.map((entry, index) => {
+        const fieldName = `${arrayName}[${entry.arrayIndex}].value`;
+        const changed = isConfigChanged(entry);
         return (
-          <Fragment key={field.label}>
+          <Fragment key={entry.label}>
             <FormikField
-              {...(field.input?.type === InputType.SELECT
+              {...(entry.input?.type === InputType.SELECT
                 ? { component: Select }
                 : {
                     type:
-                      field.valueType === ValueType.NUMBER ? "number" : "text",
-                    placeholder: field.defaultValue,
+                      entry.valueType === ValueType.NUMBER ? "number" : "text",
+                    placeholder: entry.defaultValue,
                   })}
               label={
                 <>
                   {changed ? (
                     <Icon name="status-in-progress-small u-sh-3 u-sh1--right" />
                   ) : null}
-                  {field.label}
+                  {entry.label}
                 </>
               }
-              name={field.label}
-              help={field.description}
+              name={fieldName}
+              help={entry.description}
               helpAfterLabel
               stacked
               stackedFieldColumns={4}
@@ -55,7 +44,7 @@ const StackList = ({ visibleFields }: Props): JSX.Element => {
               helpClassName="u-no-margin--bottom"
               wrapperClassName="stack__list-row"
               className="u-no-margin--bottom stack__list-field"
-              {...field.input}
+              {...entry.input}
             />
             {index < visibleFields.length - 1 ? (
               <hr className="p-rule--muted u-no-margin--bottom" />

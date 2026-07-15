@@ -3,22 +3,61 @@ import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 import { vi } from "vitest";
 
+import { BOOLEAN_OPTIONS } from "consts";
 import { externalURLs } from "urls";
 
 import { InputMode } from "../../types";
-import { CONFIG_CATEGORIES } from "../configCatalog";
-import { FieldName, Label } from "../types";
+import { ConfigCategory } from "../configCatalog";
+import {
+  type ConfigFieldEntry,
+  FieldName,
+  InputType,
+  Label,
+  ValueType,
+} from "../types";
 
 import CategoriesListing from "./CategoriesListing";
 import type { Props as CategoriesListingProps } from "./types";
 
 describe("CategoriesListing", () => {
   let defaultProps: CategoriesListingProps;
+  let initialValues: {
+    [FieldName.CONFIG_FIELDS]: ConfigFieldEntry[];
+    [FieldName.CONFIG_INPUT_MODE]: InputMode;
+  };
 
   beforeEach(() => {
+    initialValues = {
+      [FieldName.CONFIG_FIELDS]: [
+        {
+          label: "default-space",
+          value: "my-space",
+          defaultValue: "",
+          category: ConfigCategory.NETWORKING,
+          arrayIndex: 0,
+        },
+        {
+          label: "net-bond-reconfigure-delay",
+          value: 15,
+          defaultValue: 17,
+          category: ConfigCategory.NETWORKING,
+          arrayIndex: 1,
+          valueType: ValueType.NUMBER,
+        },
+        {
+          label: "disable-network-management",
+          value: true,
+          defaultValue: false,
+          category: ConfigCategory.NETWORKING,
+          arrayIndex: 2,
+          valueType: ValueType.BOOLEAN,
+        },
+      ],
+      [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+    };
     defaultProps = {
       title: Label.CONFIGS_TITLE,
-      categoriesList: CONFIG_CATEGORIES,
+      arrayName: FieldName.CONFIG_FIELDS,
       inputMode: FieldName.CONFIG_INPUT_MODE,
       yamlKey: FieldName.CONFIG_YAML,
       changedOnlyLabel: Label.CHANGED_CONFIGS_ONLY,
@@ -39,10 +78,7 @@ describe("CategoriesListing", () => {
 
   it("renders properly", () => {
     render(
-      <Formik
-        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
-        onSubmit={vi.fn()}
-      >
+      <Formik initialValues={initialValues} onSubmit={vi.fn()}>
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
@@ -64,10 +100,7 @@ describe("CategoriesListing", () => {
 
   it("shows list mode content by default", () => {
     render(
-      <Formik
-        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
-        onSubmit={vi.fn()}
-      >
+      <Formik initialValues={initialValues} onSubmit={vi.fn()}>
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
@@ -84,7 +117,10 @@ describe("CategoriesListing", () => {
   it("shows yaml mode content when initialised in yaml mode", () => {
     render(
       <Formik
-        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML }}
+        initialValues={{
+          ...initialValues,
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML,
+        }}
         onSubmit={vi.fn()}
       >
         <CategoriesListing {...defaultProps} />
@@ -104,10 +140,32 @@ describe("CategoriesListing", () => {
     render(
       <Formik
         initialValues={{
+          [FieldName.CONFIG_FIELDS]: [
+            {
+              label: "default-space",
+              value: "my-space",
+              defaultValue: "",
+              category: ConfigCategory.NETWORKING,
+              arrayIndex: 0,
+            },
+            {
+              label: "net-bond-reconfigure-delay",
+              value: 15,
+              defaultValue: 17,
+              category: ConfigCategory.NETWORKING,
+              arrayIndex: 1,
+              valueType: ValueType.NUMBER,
+            },
+            {
+              label: "disable-network-management",
+              value: true,
+              defaultValue: false,
+              category: ConfigCategory.NETWORKING,
+              arrayIndex: 2,
+              valueType: ValueType.BOOLEAN,
+            },
+          ],
           [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-          "default-space": "my-space",
-          "net-bond-reconfigure-delay": 15,
-          "disable-network-management": true,
         }}
         onSubmit={vi.fn()}
       >
@@ -128,7 +186,10 @@ describe("CategoriesListing", () => {
   it("switches back to list mode from yaml mode", async () => {
     render(
       <Formik
-        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML }}
+        initialValues={{
+          ...initialValues,
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML,
+        }}
         onSubmit={vi.fn()}
       >
         <CategoriesListing {...defaultProps} />
@@ -150,8 +211,23 @@ describe("CategoriesListing", () => {
     render(
       <Formik
         initialValues={{
+          [FieldName.CONFIG_FIELDS]: [
+            {
+              label: "default-space",
+              value: "my-space",
+              defaultValue: "",
+              category: ConfigCategory.NETWORKING,
+              arrayIndex: 0,
+            },
+            {
+              label: "apt-http-proxy",
+              value: "",
+              defaultValue: "",
+              category: ConfigCategory.PROXY,
+              arrayIndex: 1,
+            },
+          ],
           [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-          "default-space": "my-space",
         }}
         onSubmit={vi.fn()}
       >
@@ -167,8 +243,8 @@ describe("CategoriesListing", () => {
     expect(textarea.value).not.toContain("# Proxy & Mirror");
 
     await userEvent.click(screen.getByRole("radio", { name: InputMode.LIST }));
-    const aptHttpProxyInput = document.querySelector(
-      'input[name="apt-http-proxy"]',
+    const aptHttpProxyInput = screen.getByLabelText(
+      "apt-http-proxy",
     ) as HTMLInputElement;
     await userEvent.type(aptHttpProxyInput, "http://proxy.example");
     await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
@@ -185,7 +261,10 @@ describe("CategoriesListing", () => {
   it("calls setYAMLErrors and stays in YAML mode when YAML has invalid keys", async () => {
     render(
       <Formik
-        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML }}
+        initialValues={{
+          ...initialValues,
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML,
+        }}
         onSubmit={vi.fn()}
       >
         <CategoriesListing {...defaultProps} />
@@ -207,10 +286,7 @@ describe("CategoriesListing", () => {
   it("filters categories by field name", () => {
     vi.useFakeTimers();
     render(
-      <Formik
-        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
-        onSubmit={vi.fn()}
-      >
+      <Formik initialValues={initialValues} onSubmit={vi.fn()}>
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
@@ -231,23 +307,22 @@ describe("CategoriesListing", () => {
   it("filters categories by description", () => {
     vi.useFakeTimers();
     render(
-      <Formik
-        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
-        onSubmit={vi.fn()}
-      >
+      <Formik initialValues={initialValues} onSubmit={vi.fn()}>
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
 
     const searchInput = screen.getByRole("searchbox");
     fireEvent.change(searchInput, {
-      target: { value: "network firewalling" },
+      target: { value: "reconfigure" },
     });
     act(() => {
       vi.advanceTimersByTime(250);
     });
 
-    expect(screen.getByLabelText("firewall-mode")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("net-bond-reconfigure-delay"),
+    ).toBeInTheDocument();
     expect(screen.queryByLabelText("default-space")).not.toBeInTheDocument();
 
     fireEvent.change(searchInput, { target: { value: "" } });
@@ -269,8 +344,23 @@ describe("CategoriesListing", () => {
     render(
       <Formik
         initialValues={{
+          [FieldName.CONFIG_FIELDS]: [
+            {
+              label: "default-space",
+              value: "my-space",
+              defaultValue: "",
+              category: ConfigCategory.NETWORKING,
+              arrayIndex: 0,
+            },
+            {
+              label: "container-networking-method",
+              value: "local",
+              defaultValue: "local",
+              category: ConfigCategory.NETWORKING,
+              arrayIndex: 1,
+            },
+          ],
           [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-          "default-space": "my-space",
         }}
         onSubmit={vi.fn()}
       >
@@ -292,11 +382,28 @@ describe("CategoriesListing", () => {
   });
 
   it("does not toggle and shows a tooltip when there are no changed fields", async () => {
+    const noChangesValues = {
+      [FieldName.CONFIG_FIELDS]: [
+        {
+          label: "default-space",
+          value: "",
+          defaultValue: "",
+          category: ConfigCategory.NETWORKING,
+          arrayIndex: 0,
+        },
+        {
+          label: "net-bond-reconfigure-delay",
+          value: 17,
+          defaultValue: 17,
+          category: ConfigCategory.NETWORKING,
+          arrayIndex: 1,
+          valueType: ValueType.NUMBER,
+        },
+      ],
+      [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+    };
     render(
-      <Formik
-        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
-        onSubmit={vi.fn()}
-      >
+      <Formik initialValues={noChangesValues} onSubmit={vi.fn()}>
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
@@ -314,10 +421,7 @@ describe("CategoriesListing", () => {
   it("clears the search and restores the full list", () => {
     vi.useFakeTimers();
     render(
-      <Formik
-        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
-        onSubmit={vi.fn()}
-      >
+      <Formik initialValues={initialValues} onSubmit={vi.fn()}>
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
@@ -329,7 +433,7 @@ describe("CategoriesListing", () => {
       vi.advanceTimersByTime(250);
     });
     expect(
-      screen.queryByLabelText("container-networking-method"),
+      screen.queryByLabelText("net-bond-reconfigure-delay"),
     ).not.toBeInTheDocument();
 
     fireEvent.click(
@@ -343,16 +447,13 @@ describe("CategoriesListing", () => {
 
     expect(screen.getByLabelText("default-space")).toBeInTheDocument();
     expect(
-      screen.getByLabelText("container-networking-method"),
+      screen.getByLabelText("net-bond-reconfigure-delay"),
     ).toBeInTheDocument();
   });
 
   it("renders numeric fields correctly", () => {
     render(
-      <Formik
-        initialValues={{ [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST }}
-        onSubmit={vi.fn()}
-      >
+      <Formik initialValues={initialValues} onSubmit={vi.fn()}>
         <CategoriesListing {...defaultProps} />
       </Formik>,
     );
@@ -365,8 +466,17 @@ describe("CategoriesListing", () => {
     render(
       <Formik
         initialValues={{
+          [FieldName.CONFIG_FIELDS]: [
+            {
+              label: "net-bond-reconfigure-delay",
+              value: 15,
+              defaultValue: 17,
+              category: ConfigCategory.NETWORKING,
+              arrayIndex: 0,
+              valueType: ValueType.NUMBER,
+            },
+          ],
           [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-          "net-bond-reconfigure-delay": 15,
         }}
         onSubmit={vi.fn()}
       >
@@ -389,8 +499,18 @@ describe("CategoriesListing", () => {
     render(
       <Formik
         initialValues={{
+          [FieldName.CONFIG_FIELDS]: [
+            {
+              label: "disable-network-management",
+              value: true,
+              defaultValue: false,
+              category: ConfigCategory.NETWORKING,
+              arrayIndex: 0,
+              valueType: ValueType.BOOLEAN,
+              input: { type: InputType.SELECT, options: BOOLEAN_OPTIONS },
+            },
+          ],
           [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-          "disable-network-management": true,
         }}
         onSubmit={vi.fn()}
       >
@@ -405,7 +525,7 @@ describe("CategoriesListing", () => {
 
     expect(changedOnlySwitch).toBeChecked();
     expect(
-      document.querySelector('select[name="disable-network-management"]'),
+      document.querySelector('select[name^="configFields"]'),
     ).toBeInTheDocument();
   });
 });

@@ -20,7 +20,7 @@ import type {
 } from "juju/jimm/JIMMV4";
 import type { FullStatusWithAnnotations, ModelInfo } from "juju/types";
 import type { ProcessOutcome } from "store/middleware/process";
-import type { CategoryDefinition } from "store/middleware/source/types";
+import type { ConfigFieldEntry } from "store/middleware/source/types";
 import type { GenericItemsState, GenericState } from "store/types";
 import type { AccessLevel } from "types";
 
@@ -163,7 +163,7 @@ export type ModelMigrationTargetsState = Record<string, SourceData<string[]>>;
 export type ModelConfigDefaultsState = {
   errors: null | string | unknown;
   loading: boolean;
-  defaults: Record<string, CategoryDefinition[]>;
+  defaults: Record<string, ConfigFieldEntry[]>;
 };
 
 export type AddModel = {

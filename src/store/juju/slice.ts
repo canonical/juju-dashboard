@@ -22,7 +22,7 @@ import type {
   ModelInfoResults,
   UserModelList,
 } from "juju/types";
-import type { CategoryDefinition } from "store/middleware/source/types";
+import type { ConfigFieldEntry } from "store/middleware/source/types";
 
 import type {
   Controllers,
@@ -798,7 +798,7 @@ const slice = createSlice({
         payload,
       }: PayloadAction<{
         providerType: string;
-        update: Partial<SourceData<CategoryDefinition[]>>;
+        update: Partial<SourceData<ConfigFieldEntry[]>>;
       }>,
     ) => {
       const value = state.modelConfigDefaults;

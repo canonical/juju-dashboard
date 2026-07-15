@@ -58,7 +58,9 @@ describe("getModelConfigDefaults", () => {
       results: [
         {
           config: {
-            "default-space": { default: { value: "my-space" } },
+            "default-space": {
+              default: "my-space",
+            },
           },
         },
       ],
@@ -74,15 +76,17 @@ describe("getModelConfigDefaults", () => {
 
     const result = await getModelConfigDefaults(connection, "cloud-aws", "ec2");
     expect(result).toHaveLength(1);
-    expect(result[0].fields).toHaveLength(1);
-    expect(result[0].fields[0]).toMatchObject({
+    expect(result[0]).toMatchObject({
       label: "default-space",
       description: "The default network space",
       defaultValue: "my-space",
+      value: "my-space",
+      arrayIndex: 0,
+      category: null,
     });
   });
 
-  it("passes the selected region through to generateCategoryDefinitions", async ({
+  it("passes the selected region through to generateFieldEntries", async ({
     expect,
   }) => {
     mockModelDefaultsForClouds.mockResolvedValue({
@@ -93,7 +97,7 @@ describe("getModelConfigDefaults", () => {
               regions: [
                 {
                   "region-name": "us-east-1",
-                  value: { value: "region-space" },
+                  value: "region-space",
                 },
               ],
             },
@@ -115,7 +119,7 @@ describe("getModelConfigDefaults", () => {
       "ec2",
       "us-east-1",
     );
-    expect(result[0].fields[0].defaultValue).toBe("region-space");
+    expect(result[0].defaultValue).toBe("region-space");
   });
 
   it("throws a combined error if both calls fail", async ({ expect }) => {

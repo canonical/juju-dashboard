@@ -2,8 +2,8 @@ import * as Yup from "yup";
 
 import { extractCloudName } from "store/juju/utils/models";
 
-import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
-import { CONSTRAINT_CATEGORIES } from "./ConfigsConstraints/constraintsCatalog";
+import { CONFIG_DEFINITIONS } from "./ConfigsConstraints/configCatalog";
+import { CONSTRAINT_DEFINITIONS } from "./ConfigsConstraints/constraintsCatalog";
 import { ValueType } from "./ConfigsConstraints/types";
 import { Label } from "./types";
 
@@ -15,13 +15,11 @@ export const getCredentialError = (cloud: unknown): string => {
 };
 
 export const getBooleanSchema = (): Record<string, Yup.BooleanSchema> =>
-  [...CONFIG_CATEGORIES, ...CONSTRAINT_CATEGORIES].reduce<
+  [...CONFIG_DEFINITIONS, ...CONSTRAINT_DEFINITIONS].reduce<
     Record<string, Yup.BooleanSchema>
-  >((schemas, category) => {
-    for (const field of category.fields) {
-      if (field.valueType === ValueType.BOOLEAN) {
-        schemas[field.label] = Yup.boolean();
-      }
+  >((schemas, entry) => {
+    if (entry.valueType === ValueType.BOOLEAN) {
+      schemas[entry.label] = Yup.boolean();
     }
     return schemas;
   }, {});
