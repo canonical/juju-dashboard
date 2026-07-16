@@ -6,8 +6,8 @@ import { toSerializableSourceError } from "store/util";
 import { hasConnections } from "../connection/util";
 import { createSourceInstance } from "../source-middleware";
 
-import type { CategoryDefinition } from "./types";
-import { generateCategoryDefinitions } from "./util";
+import type { ConfigFieldEntry } from "./types";
+import { generateFieldEntries } from "./util";
 
 export const NOT_AUTHENTICATED_ERROR = "not authenticated with controller";
 export const NO_MODEL_MANAGER_FACADE =
@@ -20,7 +20,7 @@ export async function getModelConfigDefaults(
   cloudTag: string,
   providerType: string,
   selectedRegion?: string,
-): Promise<CategoryDefinition[]> {
+): Promise<ConfigFieldEntry[]> {
   if (!connection.facades.modelManager) {
     throw new Error(NO_MODEL_MANAGER_FACADE);
   }
@@ -64,7 +64,7 @@ export async function getModelConfigDefaults(
     );
   }
 
-  return generateCategoryDefinitions(
+  return generateFieldEntries(
     schemaResult.value.schema,
     defaultsResult.value.results[0]?.config,
     selectedRegion,
@@ -78,7 +78,7 @@ export default createSourceInstance<
     providerType: string;
     selectedRegion?: string;
   },
-  CategoryDefinition[]
+  ConfigFieldEntry[]
 >(
   "model-config-defaults",
   ({ wsControllerURL: _, cloudTag, providerType, selectedRegion, meta }) => {

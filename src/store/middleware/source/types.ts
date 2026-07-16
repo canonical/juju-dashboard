@@ -19,8 +19,9 @@ export type CategoryDefinitionField = {
   valueType?: ValueType;
 };
 
-export type CategoryDefinition = {
+export type ConfigFieldEntry = {
   // `null` indicates no meaningful grouping (e.g. schema data from the facade).
   category: null | string;
-  fields: CategoryDefinitionField[];
-};
+  value: ConfigFieldValue;
+  arrayIndex: number;
+} & CategoryDefinitionField;

@@ -42,6 +42,8 @@ describe("AddModelStepper", () => {
       cloud: "",
       region: "",
       credential: "",
+      [FieldName.CONFIG_FIELDS]: [],
+      [FieldName.CONSTRAINT_FIELDS]: [],
       [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
       [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
       [FieldName.CONFIG_YAML]: "",

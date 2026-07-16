@@ -9,18 +9,37 @@ import { externalURLs } from "urls";
 import { InputMode } from "../types";
 
 import ConfigsConstraints from "./ConfigsConstraints";
-import { DisableType, FieldName, Label } from "./types";
+import { DisableType, type FormFields, FieldName, Label } from "./types";
 
 describe("ConfigsConstraints", () => {
+  let initialValues: FormFields;
+
+  beforeEach(() => {
+    initialValues = {
+      [FieldName.CONFIG_FIELDS]: [
+        { label: "default-space", value: "", category: null, arrayIndex: 0 },
+        {
+          label: "container-networking-method",
+          value: "",
+          category: null,
+          arrayIndex: 1,
+        },
+      ],
+      [FieldName.CONSTRAINT_FIELDS]: [
+        { label: "cores", value: "", category: null, arrayIndex: 0 },
+        { label: "zones", value: "", category: null, arrayIndex: 1 },
+      ],
+      [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+      [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+      [FieldName.CONFIG_YAML]: "",
+      [FieldName.CONSTRAINT_YAML]: "",
+      [FieldName.DISABLED_COMMANDS]: DisableType.NONE,
+    };
+  });
+
   it("renders properly", () => {
     renderComponent(
-      <Formik
-        initialValues={{
-          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
-        }}
-        onSubmit={vi.fn()}
-      >
+      <Formik initialValues={initialValues} onSubmit={vi.fn()}>
         <ConfigsConstraints />
       </Formik>,
     );
@@ -53,13 +72,7 @@ describe("ConfigsConstraints", () => {
   it("keeps config and constraint searches independent", async () => {
     vi.useFakeTimers();
     renderComponent(
-      <Formik
-        initialValues={{
-          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
-        }}
-        onSubmit={vi.fn()}
-      >
+      <Formik initialValues={initialValues} onSubmit={vi.fn()}>
         <ConfigsConstraints />
       </Formik>,
     );
@@ -118,8 +131,7 @@ describe("ConfigsConstraints", () => {
     renderComponent(
       <Formik
         initialValues={{
-          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+          ...initialValues,
           disabledCommands: DisableType.NONE,
         }}
         onSubmit={vi.fn()}
@@ -152,8 +164,7 @@ describe("ConfigsConstraints", () => {
     renderComponent(
       <Formik
         initialValues={{
-          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
-          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
+          ...initialValues,
           disabledCommands: DisableType.NONE,
         }}
         onSubmit={vi.fn()}
@@ -174,8 +185,8 @@ describe("ConfigsConstraints", () => {
     renderComponent(
       <Formik
         initialValues={{
+          ...initialValues,
           [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML,
-          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
           [FieldName.CONFIG_YAML]: "unknown-field: value",
         }}
         onSubmit={vi.fn()}
@@ -198,14 +209,16 @@ describe("ConfigsConstraints", () => {
     expect(
       within(dialog).getByText(/invalid configuration values/i),
     ).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(dialog).not.toBeInTheDocument();
   });
 
   it("wipes invalid YAML entries when switching to list mode forcefully", async () => {
     renderComponent(
       <Formik
         initialValues={{
+          ...initialValues,
           [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML,
-          [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
           [FieldName.CONFIG_YAML]:
             "default-space: my-space\nunknown-field: value",
         }}

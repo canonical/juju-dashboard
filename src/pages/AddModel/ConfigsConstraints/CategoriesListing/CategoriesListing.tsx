@@ -17,11 +17,11 @@ import useDebounce from "hooks/useDebounce";
 import { InputMode } from "../../types";
 import StackList from "../StackList";
 import { YAMLErrorType } from "../YAMLErrorsModal/types";
-import type { ConfigFieldValue, FormFields } from "../types";
+import type { ConfigFieldEntry, FormFields } from "../types";
 import {
   buildYAML,
-  filterCategoriesBySearch,
-  getCategoriesWithVisibleFields,
+  filterEntriesBySearch,
+  groupEntriesByCategory,
   validateAndParseYAML,
 } from "../utils";
 
@@ -29,7 +29,7 @@ import type { Props } from "./types";
 
 const CategoriesListing = ({
   title,
-  categoriesList,
+  arrayName,
   inputMode,
   yamlKey,
   changedOnlyLabel,
@@ -44,28 +44,24 @@ const CategoriesListing = ({
 }: Props): JSX.Element => {
   const id = useId();
   const { values, setFieldError, setFieldTouched, setFieldValue } =
-    useFormikContext<FormFields & Record<string, ConfigFieldValue>>();
+    useFormikContext<FormFields>();
   const [searchQuery, setSearchQuery] = useDebounce("", 250);
   const [changedOnly, setChangedOnly] = useState(false);
+
+  const entries: ConfigFieldEntry[] = values[arrayName];
 
   const isListMode = values[inputMode] === InputMode.LIST;
   const handleModeChange = (isListModeSelected: boolean): void => {
     if (!isListModeSelected) {
-      void setFieldValue(yamlKey, buildYAML(categoriesList, values));
+      void setFieldValue(yamlKey, buildYAML(entries));
     } else {
       const yamlString = values[yamlKey];
       if (!yamlString) {
         void setFieldValue(inputMode, InputMode.LIST);
         return;
       }
-      const { validValues, errors } = validateAndParseYAML(
-        yamlString,
-        categoriesList,
-        values,
-      );
-      for (const [label, value] of Object.entries(validValues)) {
-        void setFieldValue(label, value);
-      }
+      const { validValues, errors } = validateAndParseYAML(yamlString, entries);
+      void setFieldValue(arrayName, validValues);
 
       if (
         errors[YAMLErrorType.UNKNOWN_KEYS].length > 0 ||
@@ -91,18 +87,12 @@ const CategoriesListing = ({
     );
   };
 
-  const filteredCategories = filterCategoriesBySearch(
-    searchQuery,
-    categoriesList,
-  );
-  const categoriesWithChangedFields = getCategoriesWithVisibleFields(
-    filteredCategories,
-    values,
-  );
-  const hasChangedFields = categoriesWithChangedFields.length > 0;
-  const visibleCategories = changedOnly
-    ? categoriesWithChangedFields
-    : filteredCategories;
+  const filteredEntries = filterEntriesBySearch(searchQuery, entries);
+  const changedGroups = groupEntriesByCategory(filteredEntries, true);
+  const hasChangedFields = changedGroups.length > 0;
+  const visibleGroups = changedOnly
+    ? changedGroups
+    : groupEntriesByCategory(filteredEntries);
 
   const changedOnlySwitch = (
     <Switch
@@ -180,8 +170,8 @@ const CategoriesListing = ({
             </Tooltip>
           )}
           <div className="categories__form-scroll u-sv-1--top">
-            {visibleCategories.length > 0 ? (
-              visibleCategories.map(({ category, fields }, index) => (
+            {visibleGroups.length > 0 ? (
+              visibleGroups.map(({ category, fields }, index) => (
                 <Row
                   key={category}
                   className={classNames("u-no-padding", {
@@ -192,9 +182,9 @@ const CategoriesListing = ({
                     <h5>{category}</h5>
                   </Col>
                   <Col size={9}>
-                    <StackList visibleFields={fields} />
+                    <StackList visibleFields={fields} arrayName={arrayName} />
                   </Col>
-                  {index < visibleCategories.length - 1 ? (
+                  {index < visibleGroups.length - 1 ? (
                     <hr className="p-rule--muted" />
                   ) : null}
                 </Row>

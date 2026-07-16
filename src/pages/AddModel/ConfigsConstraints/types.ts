@@ -1,10 +1,11 @@
 import type { DisableType } from "store/juju/types";
+import type { ConfigFieldEntry } from "store/middleware/source/types";
 
 import type { InputMode } from "../types";
 
 export type {
-  CategoryDefinition,
   CategoryDefinitionField,
+  ConfigFieldEntry,
   ConfigFieldValue,
 } from "store/middleware/source/types";
 export { InputType, ValueType } from "store/middleware/source/types";
@@ -13,6 +14,11 @@ export { DisableType } from "store/juju/types";
 export enum TestId {
   CONFIGS_CONSTRAINTS_FORM = "configs-constraints-form",
 }
+
+export type CategoryDefinition = {
+  category: null | string;
+  fields: ConfigFieldEntry[];
+};
 
 export enum Label {
   CONFIGS_TITLE = "Configurations (optional)",
@@ -38,6 +44,8 @@ export enum Label {
 }
 
 export enum FieldName {
+  CONFIG_FIELDS = "configFields",
+  CONSTRAINT_FIELDS = "constraintFields",
   CONFIG_INPUT_MODE = "configInputMode",
   CONSTRAINT_INPUT_MODE = "constraintInputMode",
   CONFIG_YAML = "configYAML",
@@ -46,6 +54,8 @@ export enum FieldName {
 }
 
 export type FormFields = {
+  [FieldName.CONFIG_FIELDS]: ConfigFieldEntry[];
+  [FieldName.CONSTRAINT_FIELDS]: ConfigFieldEntry[];
   [FieldName.CONFIG_INPUT_MODE]: InputMode;
   [FieldName.CONSTRAINT_INPUT_MODE]: InputMode;
   [FieldName.CONFIG_YAML]: string;

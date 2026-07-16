@@ -1,9 +1,9 @@
 import type { YAMLErrorsModalState } from "../YAMLErrorsModal/types";
-import type { CategoryDefinition, FieldName } from "../types";
+import type { FieldName } from "../types";
 
 export type Props = {
   title: string;
-  categoriesList: CategoryDefinition[];
+  arrayName: FieldName.CONFIG_FIELDS | FieldName.CONSTRAINT_FIELDS;
   inputMode: FieldName.CONFIG_INPUT_MODE | FieldName.CONSTRAINT_INPUT_MODE;
   yamlKey: FieldName.CONFIG_YAML | FieldName.CONSTRAINT_YAML;
   changedOnlyLabel: string;

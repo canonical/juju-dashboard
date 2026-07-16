@@ -11,15 +11,11 @@ import CategoriesListing from "./CategoriesListing";
 import TruncatedCommands from "./TruncatedCommands";
 import YAMLErrorsModal from "./YAMLErrorsModal";
 import type { YAMLErrorsModalState } from "./YAMLErrorsModal/types";
-import { CONFIG_CATEGORIES } from "./configCatalog";
-import { CONSTRAINT_CATEGORIES } from "./constraintsCatalog";
 import { DISABLED_COMMAND_OPTIONS } from "./disabledCommandOptions";
 import { FieldName, type FormFields, Label, TestId } from "./types";
 
 const ConfigsConstraints = (): JSX.Element => {
-  const { setFieldValue } = useFormikContext<
-    FormFields & Record<string, string>
-  >();
+  const { setFieldValue } = useFormikContext<FormFields>();
   const [yamlErrorsModalState, setYAMLErrors] =
     useState<null | YAMLErrorsModalState>(null);
 
@@ -42,7 +38,7 @@ const ConfigsConstraints = (): JSX.Element => {
       ) : null}
       <CategoriesListing
         title={Label.CONFIGS_TITLE}
-        categoriesList={CONFIG_CATEGORIES}
+        arrayName={FieldName.CONFIG_FIELDS}
         inputMode={FieldName.CONFIG_INPUT_MODE}
         yamlKey={FieldName.CONFIG_YAML}
         changedOnlyLabel={Label.CHANGED_CONFIGS_ONLY}
@@ -57,7 +53,7 @@ const ConfigsConstraints = (): JSX.Element => {
       />
       <CategoriesListing
         title={Label.CONSTRAINTS_TITLE}
-        categoriesList={CONSTRAINT_CATEGORIES}
+        arrayName={FieldName.CONSTRAINT_FIELDS}
         inputMode={FieldName.CONSTRAINT_INPUT_MODE}
         yamlKey={FieldName.CONSTRAINT_YAML}
         changedOnlyLabel={Label.CHANGED_CONSTRAINTS_ONLY}

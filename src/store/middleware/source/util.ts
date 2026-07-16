@@ -7,8 +7,7 @@ import type {
 import { BOOLEAN_OPTIONS } from "consts";
 
 import {
-  type CategoryDefinition,
-  type CategoryDefinitionField,
+  type ConfigFieldEntry,
   type ConfigFieldValue,
   InputType,
   ValueType,
@@ -30,51 +29,62 @@ const resolveFieldDefault = (
   }
 
   const { controller, regions, default: jujuDefaults } = defaults;
+  let fieldDefault = jujuDefaults;
 
-  if (controller) {
-    return Object.values(controller)[0];
+  if (controller !== undefined) {
+    fieldDefault = controller;
   }
 
   if (selectedRegion && regions) {
-    const regionDefaults = regions.find(
+    const regionDefault = regions.find(
       (region) => region["region-name"] === selectedRegion,
     )?.value;
-    if (regionDefaults) {
-      return Object.values(regionDefaults)[0];
+    if (regionDefault !== undefined) {
+      fieldDefault = regionDefault;
     }
   }
 
-  return Object.values(jujuDefaults ?? {})[0];
+  return fieldDefault as ConfigFieldValue;
 };
 
 /**
   Converts modelConfigSchema and modelDefaultsForClouds API responses into a
-  CategoryDefinition array.
+  ConfigFieldEntry array.
 */
-export const generateCategoryDefinitions = (
+export const generateFieldEntries = (
   schema: ModelConfigSchemaResult["schema"],
   defaultsConfig: ModelDefaultsResult["config"],
   selectedRegion?: string,
-): CategoryDefinition[] => {
-  const fields: CategoryDefinitionField[] = Object.entries(schema ?? {}).map(
-    ([label, field]) => {
+): ConfigFieldEntry[] => {
+  return Object.entries(schema ?? {}).reduce<ConfigFieldEntry[]>(
+    (acc, [label, field]) => {
+      // Skip fields that are not user-editable or are handled elsewhere in the UI.
+      if (["name", "type", "uuid"].includes(label)) {
+        return acc;
+      }
+
       const isNumeric = field.type === "int" || field.type === "float";
 
       // The response schema types `values` as `object[]`, but the underlying
-      //  Go type is `[]any` which serializes enum values as primitives on
-      //  the wire. We validate each entry matches the declared field type
-      //  to guard against unexpected API responses.
+      // Go type is `[]any` which serializes enum values as primitives on
+      // the wire. We validate each entry matches the declared field type
+      // to guard against unexpected API responses.
       const fieldValues = (field.values ?? []).filter(
         (fieldValue) => typeof fieldValue === field.type,
       );
 
-      const entry: CategoryDefinitionField = {
+      const defaultValue = resolveFieldDefault(
+        defaultsConfig[label],
+        selectedRegion,
+      );
+
+      const entry: ConfigFieldEntry = {
         label,
         description: field.description,
-        defaultValue: resolveFieldDefault(
-          defaultsConfig[label],
-          selectedRegion,
-        ),
+        defaultValue,
+        category: null,
+        value: defaultValue ?? "",
+        arrayIndex: acc.length,
       };
 
       if (field.type === "bool") {
@@ -92,9 +102,9 @@ export const generateCategoryDefinitions = (
         };
       }
 
-      return entry;
+      acc.push(entry);
+      return acc;
     },
+    [],
   );
-
-  return [{ category: null, fields }];
 };

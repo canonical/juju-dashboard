@@ -23,8 +23,8 @@ import { toastNotification } from "utils/toastNotification";
 import AccessManagement from "./AccessManagement";
 import AddModelStepper from "./AddModelStepper";
 import ConfigsConstraints from "./ConfigsConstraints";
-import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
-import { CONSTRAINT_CATEGORIES } from "./ConfigsConstraints/constraintsCatalog";
+import { CONFIG_DEFINITIONS } from "./ConfigsConstraints/configCatalog";
+import { CONSTRAINT_DEFINITIONS } from "./ConfigsConstraints/constraintsCatalog";
 import { FieldName as ConfigFieldName } from "./ConfigsConstraints/types";
 import { DisableType } from "./ConfigsConstraints/types";
 import {
@@ -106,7 +106,10 @@ const AddModel: FC = () => {
       return;
     }
 
-    const config = buildConfigsConstraintsPayload(values);
+    const config = buildConfigsConstraintsPayload(
+      values[ConfigFieldName.CONFIG_FIELDS],
+      values[ConfigFieldName.CONSTRAINT_FIELDS],
+    );
     const shareModelWith = values.shareModelWith ?? {};
 
     dispatch(
@@ -169,15 +172,16 @@ const AddModel: FC = () => {
               cloud: "",
               region: "",
               credential: "",
+              [ConfigFieldName.CONFIG_FIELDS]:
+                getConfigInitialValues(CONFIG_DEFINITIONS),
+              [ConfigFieldName.CONSTRAINT_FIELDS]: getConfigInitialValues(
+                CONSTRAINT_DEFINITIONS,
+              ),
               [ConfigFieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
               [ConfigFieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
               [ConfigFieldName.CONFIG_YAML]: "",
               [ConfigFieldName.CONSTRAINT_YAML]: "",
               [ConfigFieldName.DISABLED_COMMANDS]: DisableType.NONE,
-              ...getConfigInitialValues([
-                ...CONFIG_CATEGORIES,
-                ...CONSTRAINT_CATEGORIES,
-              ]),
             }}
             validationSchema={validationSchema}
             // Mark credential as touched on mount as Vanilla doesn't display validation until the field loses focus.
