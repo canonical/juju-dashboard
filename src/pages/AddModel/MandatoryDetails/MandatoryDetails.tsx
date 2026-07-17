@@ -131,23 +131,15 @@ const MandatoryDetails = (): JSX.Element => {
     if (!wsControllerURL || !selectedCloud || !providerType) {
       return;
     }
-    dispatch(
-      modelConfigDefaultsSource.actions.start({
-        wsControllerURL,
-        cloudTag: selectedCloud,
-        providerType,
-        selectedRegion: values.region || undefined,
-      }),
-    );
+    const param = {
+      wsControllerURL,
+      cloudTag: selectedCloud,
+      providerType,
+      selectedRegion: values.region || undefined,
+    };
+    dispatch(modelConfigDefaultsSource.actions.start(param));
     return (): void => {
-      dispatch(
-        modelConfigDefaultsSource.actions.stop({
-          wsControllerURL,
-          cloudTag: selectedCloud,
-          providerType,
-          selectedRegion: values.region || undefined,
-        }),
-      );
+      dispatch(modelConfigDefaultsSource.actions.stop(param));
     };
   }, [dispatch, wsControllerURL, selectedCloud, providerType, values.region]);
 

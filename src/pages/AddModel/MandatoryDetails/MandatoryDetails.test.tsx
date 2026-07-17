@@ -248,7 +248,7 @@ describe("MandatoryDetails", () => {
       const starts = actions.filter(
         (dispatch) => dispatch.type === "source/model-config-defaults/start",
       );
-      expect(starts.length).toBeGreaterThanOrEqual(2);
+      expect(starts.length).toEqual(2);
       expect(starts[starts.length - 1]).toMatchObject({
         payload: { selectedRegion: "us-east-1" },
       });
