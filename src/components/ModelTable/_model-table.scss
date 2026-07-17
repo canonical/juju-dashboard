@@ -45,7 +45,7 @@
     }
   }
 
-  .status-group {
+  &.status-group {
     td,
     th {
       @include desktop {
@@ -80,7 +80,7 @@
     }
   }
 
-  .owners-group {
+  &.owner-group {
     td,
     th {
       @include desktop {
@@ -113,7 +113,7 @@
     }
   }
 
-  .cloud-group {
+  &.cloud-group {
     td,
     th {
       @include desktop {

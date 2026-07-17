@@ -5,6 +5,7 @@ import {
   SearchAndFilter,
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
+import classNames from "classnames";
 import type { JSX, ReactNode } from "react";
 import { useId, useMemo } from "react";
 import { Link, useNavigate } from "react-router";
@@ -222,7 +223,7 @@ export default function Models(): JSX.Element {
             />
           </span>
         </span>
-        <div className="models">
+        <div className={classNames("models", `${groupBy}-group`)}>
           <ChipGroup chips={{ blocked, alert, running }} />
           <ModelTable models={models} groupBy={groupBy} />
         </div>
