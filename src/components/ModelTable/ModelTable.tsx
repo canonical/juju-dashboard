@@ -89,7 +89,9 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
             map: ({ model }) => getModelStatusGroupData(model).highestStatus,
             renderCell: (status) => (
               <Status status={status}>
-                <span className="u-capitalise">{status}</span>
+                <TruncatedTooltip message={status} className="u-capitalise">
+                  {status}
+                </TruncatedTooltip>
               </Status>
             ),
           }),
@@ -179,6 +181,15 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
             className: "owner",
             map: ({ qualifier }) =>
               qualifier ? extractOwnerName(qualifier) : null,
+            renderCell: (owner) => {
+              if (owner === null) {
+                return null;
+              }
+
+              return (
+                <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>
+              );
+            },
           }),
           cloud: column({
             header: "Cloud/Region",
@@ -192,6 +203,11 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
             sortable: true,
             className: "credential",
             map: ({ model }) => getCredential(model),
+            renderCell: (credential) => (
+              <TruncatedTooltip message={credential}>
+                {credential}
+              </TruncatedTooltip>
+            ),
           }),
           controller: column({
             header: "Controller",
