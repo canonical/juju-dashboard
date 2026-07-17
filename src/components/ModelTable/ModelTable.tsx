@@ -1,4 +1,5 @@
 import { Chip, Spinner } from "@canonical/react-components";
+import classNames from "classnames";
 import { useMemo } from "react";
 import type { JSX } from "react";
 
@@ -109,36 +110,53 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
 
               return (
                 <>
-                  {isDying ? (
-                    <span className="model-name-column__status u-truncate">
-                      Destroying&hellip;
-                    </span>
-                  ) : null}
-                  {isUpgrading ? (
-                    <span className="model-name-column__status">
-                      <Spinner />
-                    </span>
-                  ) : null}
-                  <ModelDetailsLink modelName={name} qualifier={qualifier}>
-                    {name}
-                  </ModelDetailsLink>
+                  <div className="model-name-column">
+                    {isDying ? (
+                      <span className="model-name-column__status u-truncate">
+                        Destroying&hellip;
+                      </span>
+                    ) : null}
+                    {isUpgrading ? (
+                      <span className="model-name-column__status">
+                        <Spinner />
+                      </span>
+                    ) : null}
+                    <div className="model-name-column__name">
+                      <TruncatedTooltip message={name}>
+                        <ModelDetailsLink
+                          className={classNames({
+                            "u-text--muted": isDying,
+                          })}
+                          modelName={name}
+                          qualifier={qualifier}
+                        >
+                          {model.model.name}
+                        </ModelDetailsLink>
+                        {isUpgrading ? null : (
+                          <ModelVersion
+                            className="models__version"
+                            modelName={name}
+                            qualifier={qualifier}
+                          />
+                        )}
+                      </TruncatedTooltip>
+                    </div>
+                  </div>
                   {isUpgrading ? (
                     <>
                       <ModelVersion
-                        modelName={model.model.name}
+                        modelName={name}
                         qualifier={qualifier}
                         versionOverride={upgrade.currentVersion}
                       />
                       <span className="u-sh1 u-sh1--right">&rarr;</span>
                       <ModelVersion
-                        modelName={model.model.name}
+                        modelName={name}
                         qualifier={qualifier}
                         versionOverride={upgrade.upgradeVersion}
                       />
                     </>
-                  ) : (
-                    <ModelVersion modelName={name} qualifier={qualifier} />
-                  )}
+                  ) : null}
                   <WarningMessage model={model} />
                 </>
               );

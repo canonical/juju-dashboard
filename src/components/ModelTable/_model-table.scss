@@ -1,4 +1,18 @@
-.models .p-main-table {
+.model-table-list_error-message {
+  &,
+  & a,
+  & a:visited {
+    color: $color-negative;
+    display: block;
+    font-size: #{map-get($font-sizes, small)}rem;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.models {
   .model-name-column {
     display: flex;
     overflow: hidden;
@@ -21,23 +35,7 @@
   .models__version {
     margin-left: $sph--small;
   }
-}
 
-.model-table-list_error-message {
-  &,
-  & a,
-  & a:visited {
-    color: $color-negative;
-    display: block;
-    font-size: #{map-get($font-sizes, small)}rem;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
-
-.models {
   .lrg-screen-access-cell {
     button {
       margin-left: auto;
