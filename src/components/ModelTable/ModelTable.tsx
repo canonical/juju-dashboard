@@ -75,193 +75,188 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
   );
 
   return (
-    <>
-      <DataTable
-        getKey={(row) => row.uuid}
-        groupBy={groupBy}
-        data={tableData}
-        noRowsMessage="No models"
-        columns={{
-          status: column({
-            header: "Status",
-            sortable: true,
-            className: "status",
-            map: ({ model }) => getModelStatusGroupData(model).highestStatus,
-            renderCell: (status) => (
-              <Status status={status}>
-                <TruncatedTooltip message={status} className="u-capitalise">
-                  {status}
-                </TruncatedTooltip>
-              </Status>
-            ),
+    <DataTable
+      getKey={(row) => row.uuid}
+      groupBy={groupBy}
+      data={tableData}
+      noRowsMessage="No models"
+      columns={{
+        status: column({
+          header: "Status",
+          sortable: true,
+          className: "status",
+          map: ({ model }) => getModelStatusGroupData(model).highestStatus,
+          renderCell: (status) => (
+            <Status status={status}>
+              <TruncatedTooltip message={status} className="u-capitalise">
+                {status}
+              </TruncatedTooltip>
+            </Status>
+          ),
+        }),
+        name: column({
+          header: "Model",
+          sortable: true,
+          className: "model-info",
+          map: ({ uuid, name, qualifier }) => ({
+            uuid,
+            name,
+            qualifier,
           }),
-          name: column({
-            header: "Model",
-            sortable: true,
-            className: "model-info",
-            map: ({ uuid, name, qualifier }) => ({
-              uuid,
-              name,
-              qualifier,
-            }),
-            renderCell: ({ uuid, name, qualifier }, { model }) => {
-              const isDying = uuid in destructionState;
-              const upgrade =
-                uuid in modelUpgrades ? modelUpgrades[uuid] : null;
-              const isUpgrading = !!upgrade;
+          renderCell: ({ uuid, name, qualifier }, { model }) => {
+            const isDying = uuid in destructionState;
+            const upgrade = uuid in modelUpgrades ? modelUpgrades[uuid] : null;
+            const isUpgrading = !!upgrade;
 
-              return (
-                <>
-                  <div className="model-name-column">
-                    {isDying ? (
-                      <span className="model-name-column__status u-truncate">
-                        Destroying&hellip;
-                      </span>
-                    ) : null}
-                    {isUpgrading ? (
-                      <span className="model-name-column__status">
-                        <Spinner />
-                      </span>
-                    ) : null}
-                    <div className="model-name-column__name">
-                      <TruncatedTooltip message={name}>
-                        <ModelDetailsLink
-                          className={classNames({
-                            "u-text--muted": isDying,
-                          })}
+            return (
+              <>
+                <div className="model-name-column">
+                  {isDying ? (
+                    <span className="model-name-column__status u-truncate">
+                      Destroying&hellip;
+                    </span>
+                  ) : null}
+                  {isUpgrading ? (
+                    <span className="model-name-column__status">
+                      <Spinner />
+                    </span>
+                  ) : null}
+                  <div className="model-name-column__name">
+                    <TruncatedTooltip message={name}>
+                      <ModelDetailsLink
+                        className={classNames({
+                          "u-text--muted": isDying,
+                        })}
+                        modelName={name}
+                        qualifier={qualifier}
+                      >
+                        {model.model.name}
+                      </ModelDetailsLink>
+                      {isUpgrading ? null : (
+                        <ModelVersion
+                          className="models__version"
                           modelName={name}
                           qualifier={qualifier}
-                        >
-                          {model.model.name}
-                        </ModelDetailsLink>
-                        {isUpgrading ? null : (
-                          <ModelVersion
-                            className="models__version"
-                            modelName={name}
-                            qualifier={qualifier}
-                          />
-                        )}
-                      </TruncatedTooltip>
-                    </div>
+                        />
+                      )}
+                    </TruncatedTooltip>
                   </div>
-                  {isUpgrading ? (
-                    <>
-                      <ModelVersion
-                        modelName={name}
-                        qualifier={qualifier}
-                        versionOverride={upgrade.currentVersion}
-                      />
-                      <span className="u-sh1 u-sh1--right">&rarr;</span>
-                      <ModelVersion
-                        modelName={name}
-                        qualifier={qualifier}
-                        versionOverride={upgrade.upgradeVersion}
-                      />
-                    </>
-                  ) : null}
-                  <WarningMessage model={model} />
-                </>
-              );
-            },
-          }),
-          summary: column({
-            header: "Configuration",
-            sortable: true,
-            className: "summary",
-            map: ({ qualifier }) => ({
-              qualifier,
-            }),
-            renderCell: ({ qualifier }, { model }) => (
-              <ModelSummary modelData={model} qualifier={qualifier} />
-            ),
-          }),
-          owner: column({
-            header: "Owner",
-            sortable: true,
-            className: "owner",
-            map: ({ qualifier }) =>
-              qualifier ? extractOwnerName(qualifier) : null,
-            renderCell: (owner) => {
-              if (owner === null) {
-                return null;
-              }
-
-              return (
-                <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>
-              );
-            },
-          }),
-          cloud: column({
-            header: "Cloud/Region",
-            sortable: true,
-            className: "region",
-            map: ({ model }) => model.info?.["cloud-tag"],
-            renderCell: (_cloudTag, { model }) => <CloudCell model={model} />,
-          }),
-          credential: column({
-            header: "Credential",
-            sortable: true,
-            className: "credential",
-            map: ({ model }) => getCredential(model),
-            renderCell: (credential) => (
-              <TruncatedTooltip message={credential}>
-                {credential}
-              </TruncatedTooltip>
-            ),
-          }),
-          controller: column({
-            header: "Controller",
-            sortable: true,
-            className: "controller",
-            map: ({ controller }) =>
-              controller
-                ? {
-                    name: controller.name ?? controller.path ?? controller.uuid,
-                    version: controller.version,
-                  }
-                : null,
-            renderCell: (controller) => {
-              if (!controller) {
-                return null;
-              }
-
-              return (
-                <TruncatedTooltip message={controller.name}>
-                  {controller.name}
-                  {controller.version ? (
-                    <Chip
-                      isReadOnly
-                      isInline
-                      isDense
-                      value={controller.version}
-                      className="models__version"
+                </div>
+                {isUpgrading ? (
+                  <>
+                    <ModelVersion
+                      modelName={name}
+                      qualifier={qualifier}
+                      versionOverride={upgrade.currentVersion}
                     />
-                  ) : null}
-                </TruncatedTooltip>
-              );
-            },
+                    <span className="u-sh1 u-sh1--right">&rarr;</span>
+                    <ModelVersion
+                      modelName={name}
+                      qualifier={qualifier}
+                      versionOverride={upgrade.upgradeVersion}
+                    />
+                  </>
+                ) : null}
+                <WarningMessage model={model} />
+              </>
+            );
+          },
+        }),
+        summary: column({
+          header: "Configuration",
+          sortable: true,
+          className: "summary",
+          map: ({ qualifier }) => ({
+            qualifier,
           }),
-          actions: column({
-            header: "Actions",
-            collapse: true,
-            align: "right",
-            className: "actions",
-            map: ({ qualifier, name, uuid }) => ({
-              qualifier,
-              name,
-              uuid,
-            }),
-            renderCell: ({ qualifier, name, uuid }) =>
-              qualifier ? (
-                <ModelActions
-                  modelUUID={uuid}
-                  modelName={name}
-                  qualifier={qualifier}
-                />
-              ) : null,
+          renderCell: ({ qualifier }, { model }) => (
+            <ModelSummary modelData={model} qualifier={qualifier} />
+          ),
+        }),
+        owner: column({
+          header: "Owner",
+          sortable: true,
+          className: "owner",
+          map: ({ qualifier }) =>
+            qualifier ? extractOwnerName(qualifier) : null,
+          renderCell: (owner) => {
+            if (owner === null) {
+              return null;
+            }
+
+            return <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>;
+          },
+        }),
+        cloud: column({
+          header: "Cloud/Region",
+          sortable: true,
+          className: "region",
+          map: ({ model }) => model.info?.["cloud-tag"],
+          renderCell: (_cloudTag, { model }) => <CloudCell model={model} />,
+        }),
+        credential: column({
+          header: "Credential",
+          sortable: true,
+          className: "credential",
+          map: ({ model }) => getCredential(model),
+          renderCell: (credential) => (
+            <TruncatedTooltip message={credential}>
+              {credential}
+            </TruncatedTooltip>
+          ),
+        }),
+        controller: column({
+          header: "Controller",
+          sortable: true,
+          className: "controller",
+          map: ({ controller }) =>
+            controller
+              ? {
+                  name: controller.name ?? controller.path ?? controller.uuid,
+                  version: controller.version,
+                }
+              : null,
+          renderCell: (controller) => {
+            if (!controller) {
+              return null;
+            }
+
+            return (
+              <TruncatedTooltip message={controller.name}>
+                {controller.name}
+                {controller.version ? (
+                  <Chip
+                    isReadOnly
+                    isInline
+                    isDense
+                    value={controller.version}
+                    className="models__version"
+                  />
+                ) : null}
+              </TruncatedTooltip>
+            );
+          },
+        }),
+        actions: column({
+          header: "Actions",
+          collapse: true,
+          align: "right",
+          className: "actions",
+          map: ({ qualifier, name, uuid }) => ({
+            qualifier,
+            name,
+            uuid,
           }),
-        }}
-      />
-    </>
+          renderCell: ({ qualifier, name, uuid }) =>
+            qualifier ? (
+              <ModelActions
+                modelUUID={uuid}
+                modelName={name}
+                qualifier={qualifier}
+              />
+            ) : null,
+        }),
+      }}
+    />
   );
 }

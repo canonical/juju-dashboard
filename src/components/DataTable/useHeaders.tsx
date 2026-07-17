@@ -5,6 +5,13 @@ import Table from "components/Table";
 
 import type { FlatTableColumn, Sort } from "./types";
 
+type Props<TRow, TValues> = {
+  columns: FlatTableColumn<keyof TValues, TRow, TValues[keyof TValues]>[];
+  groupBy?: keyof TValues;
+  sort: Sort<keyof TValues>;
+  toggleSort: (column: keyof TValues) => void;
+};
+
 /**
  * Render all headers, ensuring that the `groupBy` header is moved to `prefix`.
  */
@@ -13,12 +20,7 @@ export default function useHeaders<TRow, TValues>({
   groupBy,
   sort,
   toggleSort,
-}: {
-  columns: FlatTableColumn<keyof TValues, TRow, TValues[keyof TValues]>[];
-  groupBy?: keyof TValues;
-  sort: Sort<keyof TValues>;
-  toggleSort: (column: keyof TValues) => void;
-}): {
+}: Props<TRow, TValues>): {
   prefix: null | ReactNode;
   headers: ReactNode[];
 } {

@@ -81,7 +81,7 @@ export default function DataTable<
   const columnCount = useMemo(
     () =>
       orderedHeaders.length +
-      (prefixHeader === null ? 1 : 0) +
+      (prefixHeader !== null ? 1 : 0) +
       (selectable ? 1 : 0),
     [orderedHeaders, prefixHeader, selectable],
   );

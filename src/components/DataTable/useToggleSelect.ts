@@ -62,7 +62,7 @@ export default function useToggleSelect<T>(
       }
 
       setSelected((previous) => {
-        // Try remove the value.
+        // Try to remove the value.
         const filtered = previous.filter((value) => key !== value);
         // If nothing was removed, then the key needs to be added.
         if (filtered.length === previous.length) {

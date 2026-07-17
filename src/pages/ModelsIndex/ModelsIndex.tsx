@@ -14,6 +14,7 @@ import ChipGroup from "components/ChipGroup";
 import LoadingSpinner from "components/LoadingSpinner";
 import ModelTable from "components/ModelTable";
 import SegmentedControl from "components/SegmentedControl";
+import { VALID_MODEL_GROUPINGS } from "consts";
 import { useCanAddModel } from "hooks/useCanAddModel";
 import useModelAttributes from "hooks/useModelAttributes";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -35,7 +36,7 @@ import { pluralize } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import type { ModelsGroupedBy } from "urls";
-import urls, { externalURLs, VALID_GROUPINGS } from "urls";
+import urls, { externalURLs } from "urls";
 
 import { Label, TestId } from "./types";
 
@@ -100,7 +101,9 @@ export default function Models(): JSX.Element {
   );
   const groupBy: ModelsGroupedBy = useMemo(() => {
     if (
-      (VALID_GROUPINGS as readonly string[]).includes(queryParams.groupedby)
+      (VALID_MODEL_GROUPINGS as readonly string[]).includes(
+        queryParams.groupedby,
+      )
     ) {
       return queryParams.groupedby as ModelsGroupedBy;
     }
@@ -212,7 +215,7 @@ export default function Models(): JSX.Element {
             <span className="p-text--default">Group by: </span>
             <SegmentedControl
               activeButton={queryParams.groupedby}
-              buttons={VALID_GROUPINGS.map((group) => ({
+              buttons={VALID_MODEL_GROUPINGS.map((group) => ({
                 children: <span className="u-capitalise">{group}</span>,
                 key: group,
                 to: urls.models.group({

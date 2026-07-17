@@ -28,7 +28,7 @@ export type TableColumn<TRow, TValue> = {
    */
   className?: string;
   /**
-   * map operation to extract data for this column from the row.
+   * Map operation to extract data for this column from the row.
    */
   map: (row: NoInfer<TRow>) => TValue;
 } &

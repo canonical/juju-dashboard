@@ -90,7 +90,7 @@ describe("useRows", () => {
   it.for([
     ["adds", true],
     ["doesn't add", false],
-  ] as const)("%s checkbox if selectable", ([_, selectable], { expect }) => {
+  ] as const)("%s checkbox", ([_, selectable], { expect }) => {
     const { result } = renderUseRowsHook(
       createProps([{ key: "abc123", value: 123, otherValue: true }], {
         selectable,
