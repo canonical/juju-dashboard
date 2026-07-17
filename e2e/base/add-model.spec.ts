@@ -96,10 +96,10 @@ test.describe("Add model", () => {
       .getByRole("searchbox", { name: "Search configurations" })
       .fill("default-space");
     await expect(
-      configsSection.locator('input[name="default-space"]'),
+      configsSection.locator('input[aria-label="default-space"]'),
     ).toBeVisible();
     await configsSection
-      .locator('input[name="default-space"]')
+      .locator('input[aria-label="default-space"]')
       .fill(defaultSpace);
 
     // Set arch constraint
@@ -110,10 +110,10 @@ test.describe("Add model", () => {
       .getByRole("searchbox", { name: "Search constraints" })
       .fill("arch");
     await expect(
-      constraintsSection.locator('select[name="arch"]'),
+      constraintsSection.locator('select[aria-label="arch"]'),
     ).toBeVisible();
     await constraintsSection
-      .locator('select[name="arch"]')
+      .locator('select[aria-label="arch"]')
       .selectOption(architecture);
 
     // Create the model
