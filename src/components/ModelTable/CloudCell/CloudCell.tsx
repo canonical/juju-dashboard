@@ -1,5 +1,6 @@
-import type { FC } from "react";
+import { useMemo, type FC } from "react";
 
+import TruncatedTooltip from "components/TruncatedTooltip";
 import awsLogo from "static/images/logo/cloud/aws.svg";
 import azureLogo from "static/images/logo/cloud/azure.svg";
 import gceLogo from "static/images/logo/cloud/gce.svg";
@@ -17,26 +18,34 @@ type Props = {
 
 const CloudCell: FC<Props> = ({ model }: Props) => {
   const provider = model?.info?.["provider-type"];
-  let src: null | string = null;
-  let alt: null | string = null;
-  switch (provider) {
-    case "ec2":
-      src = awsLogo;
-      alt = "AWS logo";
-      break;
-    case "gce":
-      src = gceLogo;
-      alt = "Google Cloud Platform logo";
-      break;
-    case "azure":
-      src = azureLogo;
-      alt = "Azure logo";
-      break;
-    case "kubernetes":
-      src = kubernetesLogo;
-      alt = "Kubernetes logo";
-      break;
-  }
+  const { src, alt } = useMemo(() => {
+    switch (provider) {
+      case "ec2":
+        return {
+          src: awsLogo,
+          alt: "AWS logo",
+        };
+      case "gce":
+        return {
+          src: gceLogo,
+          alt: "Google Cloud Platform logo",
+        };
+      case "azure":
+        return {
+          src: azureLogo,
+          alt: "Azure logo",
+        };
+      case "kubernetes":
+        return {
+          src: kubernetesLogo,
+          alt: "Kubernetes logo",
+        };
+    }
+    return { src: null, alt: null };
+  }, [provider]);
+  const regionText = useMemo(() => {
+    return generateCloudAndRegion(model);
+  }, [model]);
   return (
     <>
       {src && alt ? (
@@ -47,7 +56,8 @@ const CloudCell: FC<Props> = ({ model }: Props) => {
           {...testId(TestId.PROVIDER_LOGO)}
         />
       ) : null}
-      {generateCloudAndRegion(model)}
+
+      <TruncatedTooltip message={regionText}>{regionText}</TruncatedTooltip>
     </>
   );
 };
