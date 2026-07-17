@@ -3,7 +3,7 @@ import { useMemo, type ReactNode } from "react";
 
 import Table from "components/Table";
 
-import type { FlatTableColumn } from "./types";
+import type { FlatTableColumn, Sort } from "./types";
 
 /**
  * Render all headers, ensuring that the `groupBy` header is moved to `prefix`.
@@ -16,7 +16,7 @@ export default function useHeaders<TRow, TValues>({
 }: {
   columns: FlatTableColumn<keyof TValues, TRow, TValues[keyof TValues]>[];
   groupBy?: keyof TValues;
-  sort: { key: keyof TValues; direction: "ascending" | "descending" } | null;
+  sort: Sort<keyof TValues>;
   toggleSort: (column: keyof TValues) => void;
 }): {
   prefix: null | ReactNode;

@@ -5,7 +5,7 @@ import React, { useMemo } from "react";
 import InlineCheckbox from "components/InlineCheckbox";
 import Table from "components/Table";
 
-import type { Cell, FlatTableColumn } from "./types";
+import type { Cell, FlatTableColumn, Sort } from "./types";
 import type { ToggleSelectReturn } from "./useToggleSelect";
 import { calculateSpanSize, compareRow } from "./util";
 
@@ -24,7 +24,7 @@ export default function useRows<TRow, TKey extends React.Key, TValues>({
   }[];
   columns: FlatTableColumn<keyof TValues, TRow, TValues[keyof TValues]>[];
   groupBy?: keyof TValues;
-  sort: { key: keyof TValues; direction: "ascending" | "descending" } | null;
+  sort: Sort<keyof TValues>;
   select: ToggleSelectReturn<TKey>;
   selectable: boolean;
 }): ReactNode[] {

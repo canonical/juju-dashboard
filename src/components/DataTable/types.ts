@@ -93,3 +93,8 @@ export type FlatTableColumn<TKey, TRow, TValue> = { key: TKey } & TableColumn<
  * A cell item, with its `column` and associated `value`.
  */
 export type Cell<C, T> = { column: C; value: T };
+
+/**
+ * Sort configuration.
+ */
+export type Sort<K> = { key: K; direction: "ascending" | "descending" } | null;

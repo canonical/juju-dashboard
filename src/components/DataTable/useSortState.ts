@@ -1,5 +1,7 @@
 import { useCallback, useState } from "react";
 
+import type { Sort } from "./types";
+
 /**
  * Managed state for sorting.
  */
@@ -7,7 +9,7 @@ type SortState<K> = {
   /**
    * Currently selected sort column and direction, or `null` if no sort is active.
    */
-  sort: { key: K; direction: "ascending" | "descending" } | null;
+  sort: Sort<K>;
   /**
    * Toggle sorting on the provided key.
    */
@@ -18,10 +20,7 @@ type SortState<K> = {
  * Track sort state, using `toggle` to switch between ascending/descending sorts on given keys.
  */
 export default function useSortState<K>(): SortState<K> {
-  const [sort, setSort] = useState<{
-    key: K;
-    direction: "ascending" | "descending";
-  } | null>(null);
+  const [sort, setSort] = useState<Sort<K>>(null);
 
   const toggleSort = useCallback((key: K) => {
     setSort((existing) => {
