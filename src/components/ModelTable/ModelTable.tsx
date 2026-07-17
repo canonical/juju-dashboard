@@ -80,6 +80,7 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
       groupBy={groupBy}
       data={tableData}
       noRowsMessage="No models"
+      selectable={false}
       columns={{
         status: column({
           header: "Status",
