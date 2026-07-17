@@ -34,6 +34,7 @@ const StackList = ({ visibleFields, arrayName }: Props): JSX.Element => {
                   {entry.label}
                 </>
               }
+              aria-label={entry.label}
               name={fieldName}
               help={entry.description}
               helpAfterLabel
