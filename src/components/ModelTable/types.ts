@@ -2,6 +2,7 @@ export enum TestId {
   STATUS_GROUP = "status-group",
   OWNER_GROUP = "owner-group",
   CLOUD_GROUP = "cloud-group",
+  COLUMN_SELECT = "column-select",
   COLUMN_NAME = "column-name",
   COLUMN_SUMMARY = "column-summary",
   COLUMN_OWNER = "column-owner",

@@ -5,14 +5,16 @@ import {
   SearchAndFilter,
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
+import classNames from "classnames";
 import type { JSX, ReactNode } from "react";
-import { useId } from "react";
+import { useId, useMemo } from "react";
 import { Link, useNavigate } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
 import LoadingSpinner from "components/LoadingSpinner";
-import ModelTableList from "components/ModelTableList";
+import ModelTable from "components/ModelTable";
 import SegmentedControl from "components/SegmentedControl";
+import { VALID_MODEL_GROUPINGS } from "consts";
 import { useCanAddModel } from "hooks/useCanAddModel";
 import useModelAttributes from "hooks/useModelAttributes";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -22,6 +24,7 @@ import { JIMMRelation } from "juju/jimm/JIMMV4";
 import MainContent from "layout/MainContent";
 import { getControllerUserTag } from "store/general/selectors";
 import {
+  getFilteredModelData,
   getGroupedModelStatusCounts,
   getModelData,
   getModelListLoaded,
@@ -70,6 +73,9 @@ export default function Models(): JSX.Element {
   const modelsLoaded = useAppSelector(getModelListLoaded);
   const hasSomeModels = useAppSelector(hasModels);
   const modelData = useAppSelector(getModelData);
+  const filteredModelData = useAppSelector((state) =>
+    getFilteredModelData(state, filters),
+  );
   const modelUUIDs = useAppSelector(getModelUUIDs);
   const { clouds, regions, owners, credentials } =
     useModelAttributes(modelData);
@@ -88,6 +94,21 @@ export default function Models(): JSX.Element {
       : null;
   useCheckRelations(requestId, relations, true);
   const canCreateModels = useCanAddModel();
+
+  const models = useMemo(
+    () => Object.values(filteredModelData),
+    [filteredModelData],
+  );
+  const groupBy: ModelsGroupedBy = useMemo(() => {
+    if (
+      (VALID_MODEL_GROUPINGS as readonly string[]).includes(
+        queryParams.groupedby,
+      )
+    ) {
+      return queryParams.groupedby as ModelsGroupedBy;
+    }
+    return "status";
+  }, [queryParams.groupedby]);
 
   // Generate chips from available model data
   const generateChips = (
@@ -194,20 +215,20 @@ export default function Models(): JSX.Element {
             <span className="p-text--default">Group by: </span>
             <SegmentedControl
               activeButton={queryParams.groupedby}
-              buttons={["Status", "Cloud", "Owner"].map((group) => ({
-                children: group,
-                key: group.toLowerCase(),
+              buttons={VALID_MODEL_GROUPINGS.map((group) => ({
+                children: <span className="u-capitalise">{group}</span>,
+                key: group,
                 to: urls.models.group({
-                  groupedby: group.toLowerCase() as ModelsGroupedBy,
+                  groupedby: group as ModelsGroupedBy,
                 }),
               }))}
               buttonComponent={Link}
             />
           </span>
         </span>
-        <div className="models">
+        <div className={classNames("models", `${groupBy}-group`)}>
           <ChipGroup chips={{ blocked, alert, running }} />
-          <ModelTableList groupedBy={queryParams.groupedby} filters={filters} />
+          <ModelTable models={models} groupBy={groupBy} />
         </div>
       </>
     );

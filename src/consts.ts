@@ -16,3 +16,8 @@ export const BOOLEAN_OPTIONS = [
   { label: "True", value: "true" },
   { label: "False", value: "false" },
 ];
+
+/**
+ * Valid grouping options for model table. See `ModelsIndex`.
+ */
+export const VALID_MODEL_GROUPINGS = ["status", "cloud", "owner"] as const;

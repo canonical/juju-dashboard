@@ -1,6 +1,7 @@
 // spell-checker:words rebacurls groupedby
 import { urls as generateReBACURLS } from "@canonical/rebac-admin";
 
+import type { VALID_MODEL_GROUPINGS } from "consts";
 import { argPath } from "utils/argPath";
 
 export enum ModelTab {
@@ -12,7 +13,7 @@ export enum ModelTab {
 }
 
 export type AppTab = "machines" | "units";
-export type ModelsGroupedBy = "cloud" | "owner" | "status";
+export type ModelsGroupedBy = (typeof VALID_MODEL_GROUPINGS)[number];
 
 const urls = {
   index: "/",

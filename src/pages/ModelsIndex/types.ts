@@ -5,3 +5,5 @@ export enum Label {
 export enum TestId {
   COMPONENT = "ModelsIndex",
 }
+
+export const VALID_GROUPINGS = ["status", "cloud", "owner"] as const;

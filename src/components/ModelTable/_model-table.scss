@@ -1,4 +1,18 @@
-.models .p-main-table {
+.model-table-list_error-message {
+  &,
+  & a,
+  & a:visited {
+    color: $color-negative;
+    display: block;
+    font-size: #{map-get($font-sizes, small)}rem;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.models {
   .model-name-column {
     display: flex;
     overflow: hidden;
@@ -21,23 +35,7 @@
   .models__version {
     margin-left: $sph--small;
   }
-}
 
-.model-table-list_error-message {
-  &,
-  & a,
-  & a:visited {
-    color: $color-negative;
-    display: block;
-    font-size: #{map-get($font-sizes, small)}rem;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
-
-.models {
   .lrg-screen-access-cell {
     button {
       margin-left: auto;
@@ -47,31 +45,26 @@
     }
   }
 
-  .status-group {
+  &.status-group {
     td,
     th {
       @include desktop {
         // Summary icons
-        &:nth-child(2) {
+        &.summary {
           width: 8rem;
         }
 
-        // Last updated
-        &:nth-child(7) {
-          width: 7rem;
-        }
-
         // Actions
-        &:nth-child(8) {
+        &.actions {
           width: 5rem;
         }
       }
 
       @include mobile-and-medium {
         // Credential
-        &:nth-child(5),
+        &.credential,
         // Controller
-        &:nth-child(6) {
+        &.controller {
           display: none;
         }
       }
@@ -87,94 +80,96 @@
     }
   }
 
-  .owners-group {
+  &.owner-group {
     td,
     th {
       @include desktop {
         // Summary icons
-        &:nth-child(2) {
+        &.summary {
           width: 8rem;
         }
 
-        // Last updated
-        &:nth-child(7) {
-          width: 7rem;
-        }
-
         // Actions
-        &:nth-child(8) {
+        &.actions {
           width: 5rem;
         }
       }
 
       @include mobile-and-medium {
         // Credential
-        &:nth-child(5),
+        &.credential,
         // Controller
-        &:nth-child(6) {
+        &.controller {
           display: none;
         }
       }
 
       @include mobile {
         // Summary icons
-        &:nth-child(2),
-        // Last updated
-        &:nth-child(7) {
+        &.summary {
           display: none;
         }
       }
     }
   }
 
-  .cloud-group {
+  &.cloud-group {
     td,
     th {
+      &.cloud-region {
+        display: none;
+      }
+
       @include desktop {
         // Summary icons
-        &:nth-child(2) {
+        .summary {
           width: 8rem;
         }
 
         // Region
-        &:nth-child(5) {
+        &.region {
           width: 7rem;
         }
 
         // Credential
-        &:nth-child(6) {
-          width: 7rem;
-        }
-
-        // Last updated
-        &:nth-child(8) {
+        &.credential {
           width: 7rem;
         }
 
         // Actions
-        &:nth-child(9) {
+        &.actions {
           width: 5rem;
         }
       }
 
       @include mobile-and-medium {
         // Credential
-        &:nth-child(6),
+        &.credential,
         // Controller
-        &:nth-child(7) {
+        &.controller {
           display: none;
         }
       }
 
       @include mobile {
         // Summary icons
-        &:nth-child(2),
+        &.summary,
         // Status
-        &:nth-child(4),
+        &.status,
         // Last updated
-        &:nth-child(8) {
+        &.last-updated {
           display: none;
         }
+      }
+    }
+  }
+
+  &:not(.cloud-group) {
+    td,
+    th {
+      &.cloud,
+      &.region {
+        display: none;
       }
     }
   }
