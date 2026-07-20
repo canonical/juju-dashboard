@@ -17,6 +17,7 @@ import {
 import type { ModelData } from "store/juju/types";
 import { getControllerByUUID } from "store/juju/utils/controllers";
 import {
+  extractCloudName,
   extractOwnerName,
   getModelQualifier,
   getModelStatusGroupData,
@@ -26,7 +27,7 @@ import { useAppSelector } from "store/store";
 import CloudCell from "./CloudCell";
 import ModelSummary from "./ModelSummary";
 import WarningMessage from "./WarningMessage";
-import { getCredential } from "./shared";
+import { getCredential, getRegion } from "./shared";
 
 type Props = {
   models: ModelData[];
@@ -80,21 +81,7 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
       groupBy={groupBy}
       data={tableData}
       noRowsMessage="No models"
-      selectable={false}
       columns={{
-        status: column({
-          header: "Status",
-          sortable: true,
-          className: "status",
-          map: ({ model }) => getModelStatusGroupData(model).highestStatus,
-          renderCell: (status) => (
-            <Status status={status}>
-              <TruncatedTooltip message={status} className="u-capitalise">
-                {status}
-              </TruncatedTooltip>
-            </Status>
-          ),
-        }),
         name: column({
           header: "Model",
           sortable: true,
@@ -165,7 +152,6 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
         }),
         summary: column({
           header: "Configuration",
-          sortable: true,
           className: "summary",
           map: ({ qualifier }) => ({
             qualifier,
@@ -188,10 +174,41 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
             return <TruncatedTooltip message={owner}>{owner}</TruncatedTooltip>;
           },
         }),
+        status: column({
+          header: "Status",
+          sortable: true,
+          className: "status",
+          map: ({ model }) => getModelStatusGroupData(model).highestStatus,
+          renderCell: (status) => (
+            <Status status={status}>
+              <TruncatedTooltip message={status} className="u-capitalise">
+                {status}
+              </TruncatedTooltip>
+            </Status>
+          ),
+        }),
         cloud: column({
-          header: "Cloud/Region",
+          header: "Cloud",
+          sortable: true,
+          className: "cloud",
+          map: ({ model }) => extractCloudName(model.info?.["cloud-tag"]),
+          renderCell: (cloudName) => (
+            <TruncatedTooltip message={cloudName}>{cloudName}</TruncatedTooltip>
+          ),
+        }),
+        region: column({
+          header: "Region",
           sortable: true,
           className: "region",
+          map: ({ model }) => getRegion(model),
+          renderCell: (region) => (
+            <TruncatedTooltip message={region}>{region}</TruncatedTooltip>
+          ),
+        }),
+        cloud_region: column({
+          header: "Cloud/Region",
+          sortable: true,
+          className: "cloud-region",
           map: ({ model }) => model.info?.["cloud-tag"],
           renderCell: (_cloudTag, { model }) => <CloudCell model={model} />,
         }),
@@ -240,7 +257,6 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
         }),
         actions: column({
           header: "Actions",
-          collapse: true,
           align: "right",
           className: "actions",
           map: ({ qualifier, name, uuid }) => ({

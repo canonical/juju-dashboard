@@ -116,9 +116,13 @@
   &.cloud-group {
     td,
     th {
+      &.cloud-region {
+        display: none;
+      }
+
       @include desktop {
         // Summary icons
-        &.summary {
+        .summary {
           width: 8rem;
         }
 
@@ -156,6 +160,16 @@
         &.last-updated {
           display: none;
         }
+      }
+    }
+  }
+
+  &:not(.cloud-group) {
+    td,
+    th {
+      &.cloud,
+      &.region {
+        display: none;
       }
     }
   }
