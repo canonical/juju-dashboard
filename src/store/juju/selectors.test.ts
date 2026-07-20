@@ -48,6 +48,8 @@ import {
   modelUpgradeFactory,
   supportedJujuVersionsStateFactory,
   modelMigrationTargetsStateFactory,
+  modelConfigDefaultsStateFactory,
+  configFieldEntryFactory,
 } from "testing/factories/juju/juju";
 
 import {
@@ -3318,40 +3320,25 @@ describe("getCloudInfoState", () => {
 
 describe("getModelConfigDefaultsState", () => {
   it("gets the model config defaults slice", () => {
-    const state = rootStateFactory.withGeneralConfig().build({
-      juju: jujuStateFactory.build({
-        modelConfigDefaults: {
-          errors: null,
-          loading: false,
-          defaults: {
-            ec2: [
-              {
-                label: "firewall-mode",
-                category: null,
-                value: "instance",
-                defaultValue: "instance",
-                arrayIndex: 0,
-              },
-            ],
-          },
-        },
-      }),
-    });
-    expect(getModelConfigDefaultsState(state)).toStrictEqual({
-      errors: null,
-      loading: false,
+    const modelConfigDefaults = modelConfigDefaultsStateFactory.build({
       defaults: {
         ec2: [
-          {
+          configFieldEntryFactory.build({
             label: "firewall-mode",
-            category: null,
             value: "instance",
             defaultValue: "instance",
-            arrayIndex: 0,
-          },
+          }),
         ],
       },
     });
+    const state = rootStateFactory.withGeneralConfig().build({
+      juju: jujuStateFactory.build({
+        modelConfigDefaults,
+      }),
+    });
+    expect(getModelConfigDefaultsState(state)).toStrictEqual(
+      modelConfigDefaults,
+    );
   });
 });
 

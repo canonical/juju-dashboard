@@ -98,6 +98,32 @@ describe("CategoriesListing", () => {
     expect(screen.getByRole("radio", { name: InputMode.LIST })).toBeChecked();
   });
 
+  it("renders loading mode properly", async () => {
+    render(
+      <Formik
+        initialValues={{
+          ...initialValues,
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
+        }}
+        onSubmit={vi.fn()}
+      >
+        <CategoriesListing {...defaultProps} isLoading />
+      </Formik>,
+    );
+
+    // Warning banner is visible.
+    expect(screen.getByText("Fetching configurations.")).toBeInTheDocument();
+    // All list-mode inputs are disabled.
+    screen.getAllByRole("textbox").forEach((input) => {
+      expect(input).toBeDisabled();
+    });
+    // Switch to YAML mode — the textarea is also disabled.
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
+    expect(
+      screen.getByPlaceholderText(Label.MODEL_CONFIG_PLACEHOLDER),
+    ).toBeDisabled();
+  });
+
   it("shows list mode content by default", () => {
     render(
       <Formik initialValues={initialValues} onSubmit={vi.fn()}>

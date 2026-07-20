@@ -8,8 +8,10 @@ import {
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 
+import { actions as jujuActions } from "store/juju/slice";
 import {
   cloudInfoStateFactory,
+  configFieldEntryFactory,
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
@@ -27,17 +29,18 @@ describe("ConfigsConstraints", () => {
   beforeEach(() => {
     initialValues = {
       [FieldName.CONFIG_FIELDS]: [
-        { label: "default-space", value: "", category: null, arrayIndex: 0 },
-        {
+        configFieldEntryFactory.build({
+          label: "default-space",
+          arrayIndex: 0,
+        }),
+        configFieldEntryFactory.build({
           label: "container-networking-method",
-          value: "",
-          category: null,
           arrayIndex: 1,
-        },
+        }),
       ],
       [FieldName.CONSTRAINT_FIELDS]: [
-        { label: "cores", value: "", category: null, arrayIndex: 0 },
-        { label: "zones", value: "", category: null, arrayIndex: 1 },
+        configFieldEntryFactory.build({ label: "cores", arrayIndex: 0 }),
+        configFieldEntryFactory.build({ label: "zones", arrayIndex: 1 }),
       ],
       [FieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
       [FieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
@@ -48,26 +51,19 @@ describe("ConfigsConstraints", () => {
   });
 
   it("replaces configFields with live entries when store data arrives", async () => {
-    const liveEntry = {
+    const liveEntry = configFieldEntryFactory.build({
       label: "live-field",
       value: "live-value",
       defaultValue: "live-value",
-      category: null,
-      arrayIndex: 0,
-    };
+    });
     const state = rootStateFactory.withGeneralConfig().build({
       juju: jujuStateFactory.build({
         cloudInfo: cloudInfoStateFactory.build({
           clouds: { "cloud-aws": { type: "ec2" } },
         }),
-        modelConfigDefaults: {
-          errors: null,
-          loading: false,
-          defaults: { ec2: [liveEntry] },
-        },
       }),
     });
-    renderComponent(
+    const { store } = renderComponent(
       <Formik
         initialValues={{ ...initialValues, cloud: "cloud-aws" }}
         onSubmit={vi.fn()}
@@ -76,9 +72,60 @@ describe("ConfigsConstraints", () => {
       </Formik>,
       { state },
     );
+    expect(screen.queryByLabelText("live-field")).not.toBeInTheDocument();
 
+    store.dispatch(
+      jujuActions.updateModelConfigDefaults({
+        providerType: "ec2",
+        update: { data: [liveEntry] },
+      }),
+    );
     await waitFor(() => {
       expect(screen.getByLabelText("live-field")).toBeInTheDocument();
+    });
+  });
+
+  it("shows a warning and disables config fields while the model config defaults are loading", async () => {
+    const state = rootStateFactory.withGeneralConfig().build({
+      juju: jujuStateFactory.build({
+        modelConfigDefaults: {
+          defaults: {},
+          errors: null,
+          loading: true,
+        },
+      }),
+    });
+    const { store } = renderComponent(
+      <Formik initialValues={initialValues} onSubmit={vi.fn()}>
+        <ConfigsConstraints />
+      </Formik>,
+      { state },
+    );
+
+    const configsSection = screen.getByRole("region", {
+      name: Label.CONFIGS_TITLE,
+    });
+    expect(
+      within(configsSection).getByText(/Fetching configurations./),
+    ).toBeInTheDocument();
+    // All config inputs should be disabled while defaults are loading so the
+    // user cannot enter values that will be overwritten on arrival.
+    within(configsSection)
+      .getAllByRole("textbox")
+      .forEach((input) => {
+        expect(input).toBeDisabled();
+      });
+
+    store.dispatch(
+      jujuActions.updateModelConfigDefaults({
+        providerType: "ec2",
+        update: { loading: false },
+      }),
+    );
+    await waitFor(() => {
+      expect(
+        within(configsSection).queryByText(/Fetching configurations./),
+      ).not.toBeInTheDocument();
     });
   });
 

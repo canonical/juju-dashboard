@@ -1,4 +1,9 @@
-import { FormikField, Icon, Select } from "@canonical/react-components";
+import {
+  type ColSize,
+  FormikField,
+  Icon,
+  Select,
+} from "@canonical/react-components";
 import { Fragment, type JSX } from "react";
 
 import type { ConfigFieldEntry, FieldName } from "../types";
@@ -8,9 +13,16 @@ import { isConfigChanged } from "../utils";
 type Props = {
   visibleFields: ConfigFieldEntry[];
   arrayName: FieldName.CONFIG_FIELDS | FieldName.CONSTRAINT_FIELDS;
+  stackedLabelColumns?: ColSize;
+  isLoading?: boolean;
 };
 
-const StackList = ({ visibleFields, arrayName }: Props): JSX.Element => {
+const StackList = ({
+  visibleFields,
+  arrayName,
+  stackedLabelColumns,
+  isLoading = false,
+}: Props): JSX.Element => {
   return (
     <>
       {visibleFields.map((entry, index) => {
@@ -34,13 +46,14 @@ const StackList = ({ visibleFields, arrayName }: Props): JSX.Element => {
                   {entry.label}
                 </>
               }
+              disabled={isLoading}
               aria-label={entry.label}
               name={fieldName}
               help={entry.description}
               helpAfterLabel
               stacked
               stackedFieldColumns={4}
-              stackedLabelColumns={5}
+              stackedLabelColumns={stackedLabelColumns}
               labelClassName="u-no-padding--top u-no-margin--bottom u-sv1"
               helpClassName="u-no-margin--bottom"
               wrapperClassName="stack__list-row"

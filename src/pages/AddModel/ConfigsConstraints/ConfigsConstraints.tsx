@@ -28,6 +28,7 @@ const ConfigsConstraints = (): JSX.Element => {
   const modelConfigDefaults = useAppSelector(getModelConfigDefaultsState);
   const [yamlErrorsModalState, setYAMLErrors] =
     useState<null | YAMLErrorsModalState>(null);
+  const [isConfigLoading, setIsConfigLoading] = useState(true);
 
   const providerType = values.cloud
     ? cloudInfo?.[values.cloud]?.type
@@ -37,6 +38,14 @@ const ConfigsConstraints = (): JSX.Element => {
   const liveEntries = providerType
     ? (modelConfigDefaults.defaults[providerType] ?? null)
     : null;
+
+  useEffect(() => {
+    if (modelConfigDefaults.loading) {
+      setIsConfigLoading(true);
+    } else {
+      setIsConfigLoading(false);
+    }
+  }, [modelConfigDefaults.loading]);
 
   useEffect(() => {
     if (!liveEntries || liveEntries.length === 0) {
@@ -63,6 +72,7 @@ const ConfigsConstraints = (): JSX.Element => {
         />
       ) : null}
       <CategoriesListing
+        isLoading={isConfigLoading}
         title={Label.CONFIGS_TITLE}
         arrayName={FieldName.CONFIG_FIELDS}
         inputMode={FieldName.CONFIG_INPUT_MODE}

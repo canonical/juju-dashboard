@@ -249,8 +249,20 @@ describe("MandatoryDetails", () => {
         (dispatch) => dispatch.type === "source/model-config-defaults/start",
       );
       expect(starts.length).toEqual(2);
-      expect(starts[starts.length - 1]).toMatchObject({
-        payload: { selectedRegion: "us-east-1" },
+      expect(starts[0]).toMatchObject({
+        payload: {
+          wsControllerURL: "wss://controller.example.com",
+          cloudTag: "cloud-aws",
+          providerType: "ec2",
+        },
+      });
+      expect(starts[1]).toMatchObject({
+        payload: {
+          wsControllerURL: "wss://controller.example.com",
+          cloudTag: "cloud-aws",
+          providerType: "ec2",
+          selectedRegion: "us-east-1",
+        },
       });
     });
   });
