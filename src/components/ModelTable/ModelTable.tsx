@@ -77,6 +77,7 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
 
   return (
     <DataTable
+      selectable={false}
       getKey={(row) => row.uuid}
       groupBy={groupBy}
       data={tableData}

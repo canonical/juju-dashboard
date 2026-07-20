@@ -1,7 +1,6 @@
 import {
   Col,
   FormikField,
-  Icon,
   RadioInput,
   Row,
   SearchBox,
@@ -118,14 +117,6 @@ const CategoriesListing = ({
       <h5 id={`title-${id}`} className="u-no-padding--top u-no-margin--bottom">
         {title}
       </h5>
-      {isLoading ? (
-        <span className="categories__warning-text">
-          <Icon name="warning" />
-          <p className="u-no-margin--bottom p-text--small">
-            Fetching configurations.
-          </p>
-        </span>
-      ) : null}
       <p className="u-no-margin--bottom p-text--small">
         <a href={docsLink} target="_blank">
           {docsLabel}

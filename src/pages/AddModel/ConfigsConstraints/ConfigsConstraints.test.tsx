@@ -105,16 +105,11 @@ describe("ConfigsConstraints", () => {
     const configsSection = screen.getByRole("region", {
       name: Label.CONFIGS_TITLE,
     });
+    // Skeleton placeholders are shown instead of real inputs while loading.
     expect(
-      within(configsSection).getByText(/Fetching configurations./),
-    ).toBeInTheDocument();
-    // All config inputs should be disabled while defaults are loading so the
-    // user cannot enter values that will be overwritten on arrival.
-    within(configsSection)
-      .getAllByRole("textbox")
-      .forEach((input) => {
-        expect(input).toBeDisabled();
-      });
+      within(configsSection).getAllByTestId("placeholder").length,
+    ).toBeGreaterThan(0);
+    expect(within(configsSection).queryAllByRole("textbox")).toHaveLength(0);
 
     store.dispatch(
       jujuActions.updateModelConfigDefaults({
@@ -124,8 +119,8 @@ describe("ConfigsConstraints", () => {
     );
     await waitFor(() => {
       expect(
-        within(configsSection).queryByText(/Fetching configurations./),
-      ).not.toBeInTheDocument();
+        within(configsSection).queryAllByTestId("placeholder"),
+      ).toHaveLength(0);
     });
   });
 
