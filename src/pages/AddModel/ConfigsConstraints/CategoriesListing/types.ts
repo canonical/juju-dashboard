@@ -15,4 +15,5 @@ export type Props = {
   searchName: string;
   setYAMLErrors: (state: YAMLErrorsModalState) => void;
   yamlErrorLabel: string;
+  isLoading?: boolean;
 };

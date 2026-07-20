@@ -48,6 +48,8 @@ import {
   modelUpgradeFactory,
   supportedJujuVersionsStateFactory,
   modelMigrationTargetsStateFactory,
+  modelConfigDefaultsStateFactory,
+  configFieldEntryFactory,
 } from "testing/factories/juju/juju";
 
 import {
@@ -147,6 +149,7 @@ import {
   getSupportedJujuVersions,
   getCloudInfoState,
   getUserCredentialsState,
+  getModelConfigDefaultsState,
   getModelUpgrade,
   getModelMigrationTargets,
   getControllerByUUID,
@@ -3312,6 +3315,30 @@ describe("getCloudInfoState", () => {
       errors: null,
       loading: false,
     });
+  });
+});
+
+describe("getModelConfigDefaultsState", () => {
+  it("gets the model config defaults slice", () => {
+    const modelConfigDefaults = modelConfigDefaultsStateFactory.build({
+      defaults: {
+        ec2: [
+          configFieldEntryFactory.build({
+            label: "firewall-mode",
+            value: "instance",
+            defaultValue: "instance",
+          }),
+        ],
+      },
+    });
+    const state = rootStateFactory.withGeneralConfig().build({
+      juju: jujuStateFactory.build({
+        modelConfigDefaults,
+      }),
+    });
+    expect(getModelConfigDefaultsState(state)).toStrictEqual(
+      modelConfigDefaults,
+    );
   });
 });
 

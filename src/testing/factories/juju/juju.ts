@@ -21,10 +21,11 @@ import type {
   ModelUpgrade,
   ReBACState,
   SecretsState,
+  SecretsContent,
   SupportedJujuVersionsState,
   UserCredentialsState,
 } from "store/juju/types";
-import type { SecretsContent } from "store/juju/types";
+import type { ConfigFieldEntry } from "store/middleware/source/types";
 
 import { modelStatusInfoFactory } from "./ClientV8";
 import { modelInfoFactory } from "./ModelManagerV11";
@@ -130,6 +131,14 @@ export const cloudInfoStateFactory = Factory.define<CloudState>(() => ({
   clouds: null,
   errors: null,
   loading: false,
+}));
+
+export const configFieldEntryFactory = Factory.define<ConfigFieldEntry>(() => ({
+  label: "",
+  category: null,
+  value: "",
+  defaultValue: "",
+  arrayIndex: 0,
 }));
 
 export const modelConfigDefaultsStateFactory =

@@ -1,6 +1,7 @@
 import {
   Col,
   FormikField,
+  Icon,
   RadioInput,
   Row,
   SearchBox,
@@ -41,6 +42,7 @@ const CategoriesListing = ({
   searchName,
   setYAMLErrors,
   yamlErrorLabel,
+  isLoading = false,
 }: Props): JSX.Element => {
   const id = useId();
   const { values, setFieldError, setFieldTouched, setFieldValue } =
@@ -116,6 +118,14 @@ const CategoriesListing = ({
       <h5 id={`title-${id}`} className="u-no-padding--top u-no-margin--bottom">
         {title}
       </h5>
+      {isLoading ? (
+        <span className="categories__warning-text">
+          <Icon name="warning" />
+          <p className="u-no-margin--bottom p-text--small">
+            Fetching configurations.
+          </p>
+        </span>
+      ) : null}
       <p className="u-no-margin--bottom p-text--small">
         <a href={docsLink} target="_blank">
           {docsLabel}
@@ -171,24 +181,32 @@ const CategoriesListing = ({
           )}
           <div className="categories__form-scroll u-sv-1--top">
             {visibleGroups.length > 0 ? (
-              visibleGroups.map(({ category, fields }, index) => (
-                <Row
-                  key={category}
-                  className={classNames("u-no-padding", {
-                    "u-sv1--top": index !== 0,
-                  })}
-                >
-                  <Col size={3}>
-                    <h5>{category}</h5>
-                  </Col>
-                  <Col size={9}>
-                    <StackList visibleFields={fields} arrayName={arrayName} />
-                  </Col>
-                  {index < visibleGroups.length - 1 ? (
-                    <hr className="p-rule--muted" />
-                  ) : null}
-                </Row>
-              ))
+              visibleGroups.map(({ category, fields }, index) => {
+                const ungrouped = category === null;
+                return (
+                  <Row
+                    key={category ?? "__ungrouped__"}
+                    className={classNames("u-no-padding", {
+                      "u-sv1--top": index !== 0,
+                    })}
+                  >
+                    <Col size={ungrouped ? 2 : 3}>
+                      {ungrouped ? null : <h5>{category}</h5>}
+                    </Col>
+                    <Col size={ungrouped ? 10 : 9}>
+                      <StackList
+                        isLoading={isLoading}
+                        visibleFields={fields}
+                        arrayName={arrayName}
+                        stackedLabelColumns={ungrouped ? 6 : 5}
+                      />
+                    </Col>
+                    {index < visibleGroups.length - 1 ? (
+                      <hr className="p-rule--muted" />
+                    ) : null}
+                  </Row>
+                );
+              })
             ) : (
               <h5>No results found for {`"${searchQuery}"`}</h5>
             )}
@@ -198,6 +216,7 @@ const CategoriesListing = ({
         <div className="row u-no-padding">
           <div className="col-6">
             <FormikField
+              disabled={isLoading}
               className="categories__yaml-input"
               component={Textarea}
               name={yamlKey}

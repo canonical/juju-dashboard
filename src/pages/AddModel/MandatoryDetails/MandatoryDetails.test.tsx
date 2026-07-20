@@ -135,7 +135,7 @@ describe("MandatoryDetails", () => {
     );
   });
 
-  it("fetches credentials on initial load when cloud is set", async () => {
+  it("fetches credentials and model config defaults on initial load when cloud is set", async () => {
     state.juju.userCredentials = userCredentialsStateFactory.build();
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(
@@ -162,6 +162,17 @@ describe("MandatoryDetails", () => {
         payload: {
           wsControllerURL: "wss://controller.example.com",
           cloudTag: "cloud-aws",
+        },
+      });
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === "source/model-config-defaults/start",
+        ),
+      ).toMatchObject({
+        payload: {
+          wsControllerURL: "wss://controller.example.com",
+          cloudTag: "cloud-aws",
+          providerType: "ec2",
         },
       });
     });
@@ -211,7 +222,52 @@ describe("MandatoryDetails", () => {
     });
   });
 
-  it("stops credential updates on unmount", async () => {
+  it("fetches model config defaults on region change", async () => {
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(
+      <Formik
+        initialValues={{
+          modelName: "",
+          cloud: "cloud-aws",
+          region: "",
+          credential: "",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <MandatoryDetails />
+      </Formik>,
+      { store },
+    );
+
+    await userEvent.selectOptions(
+      screen.getByLabelText(Label.REGION),
+      "us-east-1",
+    );
+
+    await waitFor(() => {
+      const starts = actions.filter(
+        (dispatch) => dispatch.type === "source/model-config-defaults/start",
+      );
+      expect(starts.length).toEqual(2);
+      expect(starts[0]).toMatchObject({
+        payload: {
+          wsControllerURL: "wss://controller.example.com",
+          cloudTag: "cloud-aws",
+          providerType: "ec2",
+        },
+      });
+      expect(starts[1]).toMatchObject({
+        payload: {
+          wsControllerURL: "wss://controller.example.com",
+          cloudTag: "cloud-aws",
+          providerType: "ec2",
+          selectedRegion: "us-east-1",
+        },
+      });
+    });
+  });
+
+  it("stops credential and model config defaults updates on unmount", async () => {
     const [store, actions] = createStore(state, { trackActions: true });
     const { result } = renderComponent(
       <Formik
@@ -239,6 +295,17 @@ describe("MandatoryDetails", () => {
         payload: {
           wsControllerURL: "wss://controller.example.com",
           cloudTag: "cloud-gce",
+        },
+      });
+      expect(
+        actions.find(
+          (dispatch) => dispatch.type === "source/model-config-defaults/stop",
+        ),
+      ).toMatchObject({
+        payload: {
+          wsControllerURL: "wss://controller.example.com",
+          cloudTag: "cloud-gce",
+          providerType: "gce",
         },
       });
     });

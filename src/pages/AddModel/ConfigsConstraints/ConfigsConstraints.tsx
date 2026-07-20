@@ -1,10 +1,16 @@
 import { FormikField, List } from "@canonical/react-components";
 import { useFormikContext } from "formik";
-import { useState, type JSX } from "react";
+import { useEffect, useState, type JSX } from "react";
 
+import {
+  getCloudInfoState,
+  getModelConfigDefaultsState,
+} from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import { externalURLs } from "urls";
 
+import type { AddModelFormState } from "../types";
 import { InputMode } from "../types";
 
 import CategoriesListing from "./CategoriesListing";
@@ -15,9 +21,38 @@ import { DISABLED_COMMAND_OPTIONS } from "./disabledCommandOptions";
 import { FieldName, type FormFields, Label, TestId } from "./types";
 
 const ConfigsConstraints = (): JSX.Element => {
-  const { setFieldValue } = useFormikContext<FormFields>();
+  const { values, setFieldValue } = useFormikContext<
+    AddModelFormState & FormFields
+  >();
+  const cloudInfo = useAppSelector(getCloudInfoState).clouds;
+  const modelConfigDefaults = useAppSelector(getModelConfigDefaultsState);
   const [yamlErrorsModalState, setYAMLErrors] =
     useState<null | YAMLErrorsModalState>(null);
+  const [isConfigLoading, setIsConfigLoading] = useState(true);
+
+  const providerType = values.cloud
+    ? cloudInfo?.[values.cloud]?.type
+    : undefined;
+
+  // When live config fields arrive, atomically replace the configFields array.
+  const liveEntries = providerType
+    ? (modelConfigDefaults.defaults[providerType] ?? null)
+    : null;
+
+  useEffect(() => {
+    if (modelConfigDefaults.loading) {
+      setIsConfigLoading(true);
+    } else {
+      setIsConfigLoading(false);
+    }
+  }, [modelConfigDefaults.loading]);
+
+  useEffect(() => {
+    if (!liveEntries || liveEntries.length === 0) {
+      return;
+    }
+    void setFieldValue(FieldName.CONFIG_FIELDS, liveEntries, false);
+  }, [liveEntries, setFieldValue]);
 
   return (
     <div {...testId(TestId.CONFIGS_CONSTRAINTS_FORM)}>
@@ -37,6 +72,7 @@ const ConfigsConstraints = (): JSX.Element => {
         />
       ) : null}
       <CategoriesListing
+        isLoading={isConfigLoading}
         title={Label.CONFIGS_TITLE}
         arrayName={FieldName.CONFIG_FIELDS}
         inputMode={FieldName.CONFIG_INPUT_MODE}
