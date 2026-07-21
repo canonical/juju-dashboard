@@ -3,16 +3,10 @@ import { render, screen } from "@testing-library/react";
 import SkeletonPlaceholder from "./SkeletonPlaceholder";
 
 describe("SkeletonPlaceholder", () => {
-  beforeEach(() => {
-    vi.spyOn(Math, "floor").mockReturnValue(0);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it("renders", () => {
-    render(<SkeletonPlaceholder>Placeholder text</SkeletonPlaceholder>);
+    render(
+      <SkeletonPlaceholder delay={0}>Placeholder text</SkeletonPlaceholder>,
+    );
     expect(screen.getByTestId("placeholder")).toBeInTheDocument();
   });
 
