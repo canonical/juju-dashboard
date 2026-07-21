@@ -4,8 +4,9 @@ import {
   Icon,
   Select,
 } from "@canonical/react-components";
-import { Fragment, type JSX } from "react";
+import type { JSX } from "react";
 
+import SkeletonPlaceholder from "../SkeletonPlaceholder";
 import type { ConfigFieldEntry, FieldName } from "../types";
 import { InputType, ValueType } from "../types";
 import { isConfigChanged } from "../utils";
@@ -29,7 +30,7 @@ const StackList = ({
         const fieldName = `${arrayName}[${entry.arrayIndex}].value`;
         const changed = isConfigChanged(entry);
         return (
-          <Fragment key={entry.label}>
+          <SkeletonPlaceholder loading={isLoading} key={entry.label}>
             <FormikField
               {...(entry.input?.type === InputType.SELECT
                 ? { component: Select }
@@ -63,7 +64,7 @@ const StackList = ({
             {index < visibleFields.length - 1 ? (
               <hr className="p-rule--muted u-no-margin--bottom" />
             ) : null}
-          </Fragment>
+          </SkeletonPlaceholder>
         );
       })}
     </>

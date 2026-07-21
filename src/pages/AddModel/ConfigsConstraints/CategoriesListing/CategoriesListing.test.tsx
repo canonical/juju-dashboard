@@ -111,12 +111,8 @@ describe("CategoriesListing", () => {
       </Formik>,
     );
 
-    // Warning banner is visible.
-    expect(screen.getByText("Fetching configurations.")).toBeInTheDocument();
-    // All list-mode inputs are disabled.
-    screen.getAllByRole("textbox").forEach((input) => {
-      expect(input).toBeDisabled();
-    });
+    // Skeleton placeholders are shown instead of inputs.
+    expect(screen.getAllByTestId("placeholder").length).toBeGreaterThan(0);
     // Switch to YAML mode — the textarea is also disabled.
     await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
     expect(
