@@ -39,7 +39,9 @@ export default function CharmsPanel({
         <Button
           disabled={!selectedCharm}
           onClick={() => {
-            onCharmURLChange(selectedCharm);
+            setTimeout(() => {
+              onCharmURLChange(selectedCharm);
+            });
           }}
         >
           Next
