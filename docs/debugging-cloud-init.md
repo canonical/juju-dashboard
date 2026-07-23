@@ -14,6 +14,8 @@ cloud-init status --long
 sudo tail -n 200 /var/log/cloud-init-output.log
 ```
 
+Sometimes the initialisation will timeout before completion, particularly on large and complex configurations (JIMM). If the timeout is being reached, increase the timeout and try again.
+
 ## 2. Inspect service logs
 
 Both JIMM and the dashboard run as systemd services.
@@ -34,7 +36,7 @@ The dashboard unit sources `nvm` then runs `yarn start` from `/home/ubuntu/juju-
 
 ## 3. Verify the dashboard process
 
-This step is not required if using port forwarding, and relying on a Juju dashboard instance outside the container.
+This step is not required if you are using port forwarding, and relying on a Juju dashboard instance outside the container.
 
 ```bash
 # Confirm port 8036 is listening.
@@ -130,6 +132,8 @@ ssh -A -L :8082:<hostname>.local:8082 \
 
 Alternatively, use the IP from `multipass list` instead of `<hostname>.local`.
 
+If the IP address was previously used by another container, the previous host may be recorded in `~/.ssh/known_hosts`. It can be removed by deleting the relevant lines, or running `ssh-keygen -R <hostname>`.
+
 ## 8. Common failures
 
 ### Toolchain / Node / Yarn
@@ -158,10 +162,10 @@ Alternatively, use the IP from `multipass list` instead of `<hostname>.local`.
 - If you change the dashboard port or hostname, update these and restart JIMM.
 
 ### Playwright on Ubuntu 24.04 ARM64
-- On `aarch64` the script sets `PLAYWRIGHT_HOST_PLATFORM_OVERRIDE=ubuntu24.04-arm64` before installing browsers; on x64 it uses `ubuntu24.04-x64`. If browser downloads fail, check the override and the Playwright issue linked in the script comments.
+- On `aarch64`, the script sets `PLAYWRIGHT_HOST_PLATFORM_OVERRIDE=ubuntu24.04-arm64` before installing browsers; on x64 it uses `ubuntu24.04-x64`. If browser downloads fail, check the override and the Playwright issue linked in the script comments.
 
 ### Authentication setup
-- For OIDC/Keycloak the script runs `npx tsx .github/actions/setup-jimm/cli-login.ts`. Check that `AUTH_VARIANT`, `CONTROLLER_NAME`, `USERNAME`, and `PASSWORD` match the JIMM configuration.
+- For OIDC/Keycloak, the script runs `npx tsx .github/actions/setup-jimm/cli-login.ts`. Check that `AUTH_VARIANT`, `CONTROLLER_NAME`, `USERNAME`, and `PASSWORD` match the JIMM configuration.
 - For local auth the default credentials are `admin` / `password1`.
 
 ## 9. Re-run parts of the setup

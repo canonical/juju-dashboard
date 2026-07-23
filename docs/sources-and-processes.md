@@ -1,9 +1,10 @@
 # Sources and Processes
 
-The dashboard uses two Redux middleware patterns for asynchronous work:
+The dashboard uses three Redux middleware patterns for asynchronous work:
 
 - **Sources** - one-shot asynchronous workloads, usually a single API request. They can be started, stopped, invalidated, and report `data` / `loading` / `error` state through actions.
 - **Processes** - long-running asynchronous actions that yield status updates and end with either a result or an error.
+- **Model poller** - a legacy middleware implementation containing a large range of data fetching for a model. The long-term goal is to migrate components of this middleware into standalone sources and processes.
 
 Sources live in [`src/store/middleware/source/`](../src/store/middleware/source/) and are setup by `createSourceMiddleware()`. Processes live in [`src/store/middleware/process/`](../src/store/middleware/process/) and are setup by `createMiddleware()`.
 
@@ -239,3 +240,16 @@ Use a **process** when you want:
 - A stateful, long-running operation (upgrade, migration, blocking command, etc.).
 - Progress/status updates delivered while the work runs.
 - A clear final outcome (`result` or `error`).
+
+## Model poller migration
+
+The model-poller is currently broken down into a large collection of `if`/`else` statements, matching against an action dispatched into the store. Most of these actions are one-shot actions that just need access to the model connection (which was historically stored within the model poller). Now, connections are stored within the `ConnectionManager`, which is implemented as its own middleware and it injects connections into actions.
+
+Migration can therefore operate as follows:
+
+1. Select one of the branches from the model poller (eg. `destroyModels`).
+2. Create a new process or source, depending on what is appropriate (eg. `destroyModels` should be a process).
+3. Move the content of the branch into the source/process implementation (see implementation patterns above).
+4. Move action boilerplate (connection checks, parameter verification, etc) into the base of the source/process.
+5. Extract relevant tests from `model-poller.test.ts`, and adapt them into a source/process test.
+6. Migration complete! The actual action does not need to change, so there shouldn't be a need for users of the action to change anything.
