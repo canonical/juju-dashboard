@@ -16,7 +16,7 @@ const ConfirmSwitchModal = ({
   return (
     <Portal>
       <ConfirmationModal
-        title="YAML inputs will be lost"
+        title="YAML configuration will be lost"
         cancelButtonLabel="Keep editing in YAML"
         confirmButtonLabel="Discard and switch"
         confirmButtonAppearance="primary"
@@ -28,9 +28,9 @@ const ConfirmSwitchModal = ({
         close={onClose}
       >
         <p>
-          List view fields are not ready yet. If you switch now, you will lose
-          your current YAML inputs. You can still create a model in the YAML
-          view.
+          Model configuration data has not been loaded. Returning to list view
+          will discard the current YAML configuration. You can still create a
+          model in the YAML view.
         </p>
       </ConfirmationModal>
     </Portal>

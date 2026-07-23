@@ -28,7 +28,9 @@ describe("ConfirmSwitchModal", () => {
         <ConfirmSwitchModal onClose={vi.fn()} />
       </Formik>,
     );
-    expect(screen.getByText("YAML inputs will be lost")).toBeInTheDocument();
+    expect(
+      screen.getByText("YAML configuration will be lost"),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Keep editing in YAML" }),
     ).toBeInTheDocument();
@@ -39,9 +41,19 @@ describe("ConfirmSwitchModal", () => {
 
   it("calls onClose when cancel button is clicked", async () => {
     const onClose = vi.fn();
+    let formValues = null;
     renderComponent(
-      <Formik initialValues={initialValues} onSubmit={vi.fn()}>
-        <ConfirmSwitchModal onClose={onClose} />
+      <Formik
+        initialValues={{
+          ...initialValues,
+          [FieldName.CONFIG_YAML]: "default-space: my-space",
+        }}
+        onSubmit={vi.fn()}
+      >
+        {({ values }) => {
+          formValues = values;
+          return <ConfirmSwitchModal onClose={onClose} />;
+        }}
       </Formik>,
     );
 
@@ -49,6 +61,8 @@ describe("ConfirmSwitchModal", () => {
       screen.getByRole("button", { name: "Keep editing in YAML" }),
     );
     expect(onClose).toHaveBeenCalledOnce();
+    expect(formValues?.[FieldName.CONFIG_YAML]).toBe("default-space: my-space");
+    expect(formValues?.[FieldName.CONFIG_INPUT_MODE]).toBe(InputMode.YAML);
   });
 
   it("clears YAML and switches to list mode when confirm button is clicked", async () => {

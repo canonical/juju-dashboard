@@ -371,13 +371,19 @@ describe("ConfigsConstraints", () => {
     );
 
     const dialog = screen.getByRole("dialog", {
-      name: "YAML inputs will be lost",
+      name: "YAML configuration will be lost",
     });
     expect(dialog).toBeInTheDocument();
     await userEvent.click(
       screen.getByRole("button", { name: "Keep editing in YAML" }),
     );
     expect(dialog).not.toBeInTheDocument();
+    expect(
+      within(configsSection).getByRole("radio", { name: InputMode.YAML }),
+    ).toBeChecked();
+    expect(within(configsSection).getByRole("textbox")).toHaveValue(
+      "default-space: my-space",
+    );
   });
 
   it("does not show the confirmation modal on switching to list mode if no inputs were made", async () => {
@@ -413,7 +419,7 @@ describe("ConfigsConstraints", () => {
 
     expect(
       screen.queryByRole("dialog", {
-        name: "YAML inputs will be lost",
+        name: "YAML configuration will be lost",
       }),
     ).not.toBeInTheDocument();
     expect(
@@ -453,7 +459,7 @@ describe("ConfigsConstraints", () => {
     );
 
     const dialog = screen.getByRole("dialog", {
-      name: "YAML inputs will be lost",
+      name: "YAML configuration will be lost",
     });
     expect(dialog).toBeInTheDocument();
     await userEvent.click(
