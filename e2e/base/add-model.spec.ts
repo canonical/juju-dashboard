@@ -4,6 +4,7 @@ import { Label as ModelActionsLabel } from "components/ModelActions/types";
 import { Label as AccessManagementLabel } from "pages/AddModel/AccessManagement/types";
 import { Label as ConfigsConstraintsLabel } from "pages/AddModel/ConfigsConstraints/types";
 import { Label as AddModelLabel } from "pages/AddModel/types";
+import { ModelsError } from "store/middleware/types";
 import urls from "urls";
 
 import { JujuEnv, test } from "../fixtures/setup";
@@ -69,6 +70,10 @@ test.describe("Add model", () => {
     await page
       .getByRole("button", { name: AddModelLabel.CREATE_BUTTON })
       .click();
+    await expect(page).toHaveURL(urls.models.index);
+
+    // Reloading the page before checking fetches the updated list of models.
+    await owner.reloadDashboard(page);
     await expect(
       page
         .locator("tr", { hasText: currentModel.name })
@@ -120,6 +125,10 @@ test.describe("Add model", () => {
     await page
       .getByRole("button", { name: AddModelLabel.CREATE_BUTTON })
       .click();
+    await expect(page).toHaveURL(urls.models.index);
+
+    // Reloading the page before checking fetches the updated list of models.
+    await owner.reloadDashboard(page);
     await expect(
       page
         .locator("tr", { hasText: currentModel.name })
@@ -167,6 +176,19 @@ test.describe("Add model", () => {
       await page
         .getByRole("button", { name: AddModelLabel.CREATE_BUTTON })
         .click();
+      await expect(page).toHaveURL(urls.models.index);
+
+      // Sometimes after model creation, the models list fails to update and displays a
+      // "Unable to list or update models" error banner. In that case, reload the page to recover.
+      if (
+        await page
+          .locator('[role="alert"]', {
+            hasText: ModelsError.LIST_OR_UPDATE_MODELS,
+          })
+          .isVisible()
+      ) {
+        await owner.reloadDashboard(page);
+      }
 
       // Verify that the model was created and trigger destroy-model on it
       const modelRow = page
@@ -236,6 +258,19 @@ test.describe("Add model", () => {
     await page
       .getByRole("button", { name: AddModelLabel.CREATE_BUTTON })
       .click();
+    await expect(page).toHaveURL(urls.models.index);
+
+    // Sometimes after model creation, the models list fails to update and displays a
+    // "Unable to list or update models" error banner. In that case, reload the page to recover.
+    if (
+      await page
+        .locator('[role="alert"]', {
+          hasText: ModelsError.LIST_OR_UPDATE_MODELS,
+        })
+        .isVisible()
+    ) {
+      await owner.reloadDashboard(page);
+    }
 
     // Verify that the model was created
     const ownerModelRow = page
