@@ -47,7 +47,6 @@ const StackList = ({
                   {entry.label}
                 </>
               }
-              disabled={isLoading}
               aria-label={entry.label}
               name={fieldName}
               help={entry.description}

@@ -14,6 +14,7 @@ import type { AddModelFormState } from "../types";
 import { InputMode } from "../types";
 
 import CategoriesListing from "./CategoriesListing";
+import ConfirmSwitchModal from "./ConfirmSwitchModal";
 import TruncatedCommands from "./TruncatedCommands";
 import YAMLErrorsModal from "./YAMLErrorsModal";
 import type { YAMLErrorsModalState } from "./YAMLErrorsModal/types";
@@ -28,7 +29,7 @@ const ConfigsConstraints = (): JSX.Element => {
   const modelConfigDefaults = useAppSelector(getModelConfigDefaultsState);
   const [yamlErrorsModalState, setYAMLErrors] =
     useState<null | YAMLErrorsModalState>(null);
-  const [isConfigLoading, setIsConfigLoading] = useState(true);
+  const [showConfirmSwitchModal, setShowConfirmSwitchModal] = useState(false);
 
   const providerType = values.cloud
     ? cloudInfo?.[values.cloud]?.type
@@ -38,14 +39,6 @@ const ConfigsConstraints = (): JSX.Element => {
   const liveEntries = providerType
     ? (modelConfigDefaults.defaults[providerType] ?? null)
     : null;
-
-  useEffect(() => {
-    if (modelConfigDefaults.loading) {
-      setIsConfigLoading(true);
-    } else {
-      setIsConfigLoading(false);
-    }
-  }, [modelConfigDefaults.loading]);
 
   useEffect(() => {
     if (!liveEntries || liveEntries.length === 0) {
@@ -71,8 +64,15 @@ const ConfigsConstraints = (): JSX.Element => {
           }}
         />
       ) : null}
+      {showConfirmSwitchModal ? (
+        <ConfirmSwitchModal
+          onClose={() => {
+            setShowConfirmSwitchModal(false);
+          }}
+        />
+      ) : null}
       <CategoriesListing
-        isLoading={isConfigLoading}
+        isLoading={modelConfigDefaults.loading}
         title={Label.CONFIGS_TITLE}
         arrayName={FieldName.CONFIG_FIELDS}
         inputMode={FieldName.CONFIG_INPUT_MODE}
@@ -86,6 +86,9 @@ const ConfigsConstraints = (): JSX.Element => {
         searchName="configSearch"
         setYAMLErrors={setYAMLErrors}
         yamlErrorLabel={Label.INCORRECT_YAML_CONFIGURATION_ERROR}
+        onSwitchWhileLoading={() => {
+          setShowConfirmSwitchModal(true);
+        }}
       />
       <CategoriesListing
         title={Label.CONSTRAINTS_TITLE}

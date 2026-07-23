@@ -42,6 +42,7 @@ const CategoriesListing = ({
   setYAMLErrors,
   yamlErrorLabel,
   isLoading = false,
+  onSwitchWhileLoading,
 }: Props): JSX.Element => {
   const id = useId();
   const { values, setFieldError, setFieldTouched, setFieldValue } =
@@ -129,6 +130,10 @@ const CategoriesListing = ({
             label={InputMode.LIST}
             name={`mode-${id}`}
             onChange={() => {
+              if (isLoading && values[yamlKey]) {
+                onSwitchWhileLoading?.();
+                return;
+              }
               handleModeChange(true);
             }}
             value={InputMode.LIST}
@@ -207,7 +212,6 @@ const CategoriesListing = ({
         <div className="row u-no-padding">
           <div className="col-6">
             <FormikField
-              disabled={isLoading}
               className="categories__yaml-input"
               component={Textarea}
               name={yamlKey}

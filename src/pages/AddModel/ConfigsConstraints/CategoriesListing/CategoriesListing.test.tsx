@@ -113,11 +113,36 @@ describe("CategoriesListing", () => {
 
     // Skeleton placeholders are shown instead of inputs.
     expect(screen.getAllByTestId("placeholder").length).toBeGreaterThan(0);
-    // Switch to YAML mode — the textarea is also disabled.
-    await userEvent.click(screen.getByRole("radio", { name: InputMode.YAML }));
-    expect(
-      screen.getByPlaceholderText(Label.MODEL_CONFIG_PLACEHOLDER),
-    ).toBeDisabled();
+  });
+
+  it("renders loading mode for YAML view properly", async () => {
+    const onSwitchWhileLoading = vi.fn();
+    render(
+      <Formik
+        initialValues={{
+          ...initialValues,
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML,
+        }}
+        onSubmit={vi.fn()}
+      >
+        <CategoriesListing
+          {...defaultProps}
+          isLoading
+          onSwitchWhileLoading={onSwitchWhileLoading}
+        />
+      </Formik>,
+    );
+
+    // The YAML textarea should accept input from user
+    const textarea = screen.getByPlaceholderText(
+      Label.MODEL_CONFIG_PLACEHOLDER,
+    ) as HTMLTextAreaElement;
+    await userEvent.type(textarea, "default-space: my-space");
+    expect(textarea.value).toBe("default-space: my-space");
+
+    // Switching back to list mode should trigger the confirmation callback.
+    await userEvent.click(screen.getByRole("radio", { name: InputMode.LIST }));
+    expect(onSwitchWhileLoading).toHaveBeenCalledOnce();
   });
 
   it("shows list mode content by default", () => {

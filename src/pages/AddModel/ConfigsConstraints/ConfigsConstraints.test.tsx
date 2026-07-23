@@ -338,4 +338,141 @@ describe("ConfigsConstraints", () => {
     ) as HTMLInputElement;
     expect(defaultSpaceInput.value).toBe("my-space");
   });
+
+  it("shows the confirmation modal when switching to list mode while configs are loading", async () => {
+    const state = rootStateFactory.withGeneralConfig().build({
+      juju: jujuStateFactory.build({
+        modelConfigDefaults: {
+          defaults: {},
+          errors: null,
+          loading: true,
+        },
+      }),
+    });
+    renderComponent(
+      <Formik
+        initialValues={{
+          ...initialValues,
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML,
+          [FieldName.CONFIG_YAML]: "default-space: my-space",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <ConfigsConstraints />
+      </Formik>,
+      { state },
+    );
+
+    const configsSection = screen.getByRole("region", {
+      name: Label.CONFIGS_TITLE,
+    });
+    await userEvent.click(
+      within(configsSection).getByRole("radio", { name: InputMode.LIST }),
+    );
+
+    const dialog = screen.getByRole("dialog", {
+      name: "YAML configuration will be lost",
+    });
+    expect(dialog).toBeInTheDocument();
+    await userEvent.click(
+      screen.getByRole("button", { name: "Keep editing in YAML" }),
+    );
+    expect(dialog).not.toBeInTheDocument();
+    expect(
+      within(configsSection).getByRole("radio", { name: InputMode.YAML }),
+    ).toBeChecked();
+    expect(within(configsSection).getByRole("textbox")).toHaveValue(
+      "default-space: my-space",
+    );
+  });
+
+  it("does not show the confirmation modal on switching to list mode if no inputs were made", async () => {
+    const state = rootStateFactory.withGeneralConfig().build({
+      juju: jujuStateFactory.build({
+        modelConfigDefaults: {
+          defaults: {},
+          errors: null,
+          loading: true,
+        },
+      }),
+    });
+    renderComponent(
+      <Formik
+        initialValues={{
+          ...initialValues,
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML,
+          [FieldName.CONFIG_YAML]: "",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <ConfigsConstraints />
+      </Formik>,
+      { state },
+    );
+
+    const configsSection = screen.getByRole("region", {
+      name: Label.CONFIGS_TITLE,
+    });
+    await userEvent.click(
+      within(configsSection).getByRole("radio", { name: InputMode.LIST }),
+    );
+
+    expect(
+      screen.queryByRole("dialog", {
+        name: "YAML configuration will be lost",
+      }),
+    ).not.toBeInTheDocument();
+    expect(
+      within(configsSection).getByRole("radio", { name: InputMode.LIST }),
+    ).toBeChecked();
+  });
+
+  it("wipes YAML entries when switching to list mode forcefully while loading", async () => {
+    const state = rootStateFactory.withGeneralConfig().build({
+      juju: jujuStateFactory.build({
+        modelConfigDefaults: {
+          defaults: {},
+          errors: null,
+          loading: true,
+        },
+      }),
+    });
+    renderComponent(
+      <Formik
+        initialValues={{
+          ...initialValues,
+          [FieldName.CONFIG_INPUT_MODE]: InputMode.YAML,
+          [FieldName.CONFIG_YAML]: "default-space: my-space",
+        }}
+        onSubmit={vi.fn()}
+      >
+        <ConfigsConstraints />
+      </Formik>,
+      { state },
+    );
+
+    const configsSection = screen.getByRole("region", {
+      name: Label.CONFIGS_TITLE,
+    });
+    await userEvent.click(
+      within(configsSection).getByRole("radio", { name: InputMode.LIST }),
+    );
+
+    const dialog = screen.getByRole("dialog", {
+      name: "YAML configuration will be lost",
+    });
+    expect(dialog).toBeInTheDocument();
+    await userEvent.click(
+      screen.getByRole("button", { name: "Discard and switch" }),
+    );
+    expect(
+      within(configsSection).getByRole("radio", { name: InputMode.LIST }),
+    ).toBeChecked();
+
+    // Skeleton placeholders are shown instead of real inputs while loading.
+    expect(
+      within(configsSection).getAllByTestId("placeholder").length,
+    ).toBeGreaterThan(0);
+    expect(within(configsSection).queryAllByRole("textbox")).toHaveLength(0);
+  });
 });

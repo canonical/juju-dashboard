@@ -16,4 +16,5 @@ export type Props = {
   setYAMLErrors: (state: YAMLErrorsModalState) => void;
   yamlErrorLabel: string;
   isLoading?: boolean;
+  onSwitchWhileLoading?: () => void;
 };
