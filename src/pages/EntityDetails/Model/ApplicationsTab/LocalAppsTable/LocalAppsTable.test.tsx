@@ -101,20 +101,20 @@ describe("LocalAppsTable", () => {
     expect(screen.queryAllByRole("row")).toHaveLength(8);
   });
 
-  it.each([
-    { url: url },
-    { url: searchURL }
-  ])("shows the select column regardless of search", ({ url }) => {
-    renderComponent(
-      <LocalAppsTable
-        applications={state.juju.modelData?.test123.applications}
-      />,
-      { path, url, state },
-    );
-    expect(
-      screen.queryAllByRole("columnheader")[0].querySelector("input"),
-    ).toBeInTheDocument();
-  });
+  it.each([{ url: url }, { url: searchURL }])(
+    "shows the select column regardless of search",
+    ({ url: targetUrl }) => {
+      renderComponent(
+        <LocalAppsTable
+          applications={state.juju.modelData?.test123.applications}
+        />,
+        { path, url: targetUrl, state },
+      );
+      expect(
+        screen.queryAllByRole("columnheader")[0].querySelector("input"),
+      ).toBeInTheDocument();
+    },
+  );
 
   it("does not show the select column when the user only has read permissions", () => {
     state.juju.modelData.test123.info = modelInfoFactory.build({
@@ -287,20 +287,20 @@ describe("LocalAppsTable", () => {
     expect(screen.getByTestId(TestId.SELECT_ALL)).not.toBeChecked();
   });
 
-  it.each([
-    { url: url },
-    { url: searchURL }
-  ])("shows the run action button regardless of search", ({ url }) => {
-    renderComponent(
-      <LocalAppsTable
-        applications={state.juju.modelData?.test123.applications}
-      />,
-      { path, url, state },
-    );
-    expect(
-      screen.queryByRole("button", { name: /run action/i }),
-    ).toBeInTheDocument();
-  })
+  it.each([{ url: url }, { url: searchURL }])(
+    "shows the run action button regardless of search",
+    ({ url: targetUrl }) => {
+      renderComponent(
+        <LocalAppsTable
+          applications={state.juju.modelData?.test123.applications}
+        />,
+        { path, url: targetUrl, state },
+      );
+      expect(
+        screen.queryByRole("button", { name: /run action/i }),
+      ).toBeInTheDocument();
+    },
+  );
 
   it("does not show the run action button when the user only has read permissions", () => {
     state.juju.modelData.test123.info = modelInfoFactory.build({
