@@ -2,11 +2,13 @@ import { Factory } from "fishery";
 
 import type { AuditEvent } from "juju/jimm/JIMMV3";
 import type {
-  JobInfoResponse,
+  JobDetail,
+  ModelControllerInfo,
   RelationshipTuple,
+  UpgradeToJobStatus,
   VersionElem,
 } from "juju/jimm/JIMMV4";
-import { JIMMRelation, JobStatus } from "juju/jimm/JIMMV4";
+import { JIMMRelation, UpgradeToJobState } from "juju/jimm/JIMMV4";
 import type {
   ModelMigrationTargetsState,
   ReBACAllowed,
@@ -215,10 +217,23 @@ export const modelMigrationTargetFactory = Factory.define<
   loading: false,
 }));
 
-export const jobInfoFactory = Factory.define<JobInfoResponse>(() => ({
-  id: 1,
-  status: JobStatus.RUNNING,
-  kind: "migrate-model",
-  current_attempt: 1,
+export const jobDetailFactory = Factory.define<JobDetail>(() => ({
+  state: UpgradeToJobState.RUNNING,
+  attempt: 1,
   max_attempts: 3,
 }));
+
+export const upgradeToJobStatusFactory = Factory.define<UpgradeToJobStatus>(
+  () => ({
+    detail: jobDetailFactory.build(),
+  }),
+);
+
+export const modelControllerInfoFactory = Factory.define<ModelControllerInfo>(
+  () => ({
+    "model-name": "test-model",
+    "model-uuid": "abc123",
+    "controller-name": "test-controller",
+    "controller-uuid": "controller123",
+  }),
+);

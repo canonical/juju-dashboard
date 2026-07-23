@@ -180,14 +180,14 @@ describe("JIMMV4", () => {
 
   it("upgradeTo", async () => {
     const jimm = new JIMMV4(transport, connectionInfo);
-    void jimm.upgradeTo("model-abc123", "controller123");
+    void jimm.upgradeTo(["abc123"], "controller123");
     expect(transport.write).toHaveBeenCalledWith(
       {
         type: "JIMM",
         request: "UpgradeTo",
         version: 4,
         params: {
-          "model-tag": "model-abc123",
+          "model-uuids": ["abc123"],
           "target-controller-name": "controller123",
         },
       },
@@ -196,16 +196,16 @@ describe("JIMMV4", () => {
     );
   });
 
-  it("jobInfo", async () => {
+  it("modelControllerInfo", async () => {
     const jimm = new JIMMV4(transport, connectionInfo);
-    void jimm.jobInfo("123");
+    void jimm.modelControllerInfo("abc123");
     expect(transport.write).toHaveBeenCalledWith(
       {
         type: "JIMM",
-        request: "JobInfo",
+        request: "ModelControllerInfo",
         version: 4,
         params: {
-          "job-id": "123",
+          model: "abc123",
         },
       },
       expect.any(Function),

@@ -7,9 +7,9 @@ import type {
   CheckRelationResponse,
   CheckRelationsResponse,
   CrossModelQueryResponse,
-  JobInfoResponse,
   ListControllersResponse,
   MigrateModelInfo,
+  ModelControllerInfo,
   RelationshipTuple,
   SupportedJujuVersionsResponse,
   UpgradeToResponse,
@@ -133,21 +133,24 @@ export const supportedJujuVersions = async (
  */
 export const upgradeTo = async (
   conn: ConnectionWithFacades,
-  modelTag: string,
+  modelUUIDs: string[],
   targetController: string,
 ): Promise<UpgradeToResponse> => {
   return withJimmCheck(
     conn,
-    async (jimm) => await jimm.upgradeTo(modelTag, targetController),
+    async (jimm) => await jimm.upgradeTo(modelUUIDs, targetController),
   );
 };
 
 /*
- * Get info about a job.
+ * Get controller info about a model.
  */
-export const jobInfo = async (
+export const modelControllerInfo = async (
   conn: ConnectionWithFacades,
-  jobId: string,
-): Promise<JobInfoResponse> => {
-  return withJimmCheck(conn, async (jimm) => await jimm.jobInfo(jobId));
+  model: string,
+): Promise<ModelControllerInfo> => {
+  return withJimmCheck(
+    conn,
+    async (jimm) => await jimm.modelControllerInfo(model),
+  );
 };
