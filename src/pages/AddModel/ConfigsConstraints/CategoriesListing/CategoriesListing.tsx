@@ -42,6 +42,7 @@ const CategoriesListing = ({
   setYAMLErrors,
   yamlErrorLabel,
   isLoading = false,
+  listModeDisabled = false,
   onSwitchWhileLoading,
 }: Props): JSX.Element => {
   const id = useId();
@@ -128,35 +129,37 @@ const CategoriesListing = ({
           {docsLabel}
         </a>
       </p>
-      <div className="u-flex u-flex--gap">
-        <div>
-          <RadioInput
-            checked={isListMode}
-            label={InputMode.LIST}
-            name={`mode-${id}`}
-            onChange={() => {
-              if (isLoading && values[yamlKey]) {
-                onSwitchWhileLoading?.();
-                return;
-              }
-              handleModeChange(true);
-            }}
-            value={InputMode.LIST}
-          />
+      {!listModeDisabled && (
+        <div className="u-flex u-flex--gap">
+          <div>
+            <RadioInput
+              checked={isListMode}
+              label={InputMode.LIST}
+              name={`mode-${id}`}
+              onChange={() => {
+                if (isLoading && values[yamlKey]) {
+                  onSwitchWhileLoading?.();
+                  return;
+                }
+                handleModeChange(true);
+              }}
+              value={InputMode.LIST}
+            />
+          </div>
+          <div>
+            <RadioInput
+              checked={!isListMode}
+              label={InputMode.YAML}
+              name={`mode-${id}`}
+              onChange={() => {
+                handleModeChange(false);
+              }}
+              value={InputMode.YAML}
+            />
+          </div>
         </div>
-        <div>
-          <RadioInput
-            checked={!isListMode}
-            label={InputMode.YAML}
-            name={`mode-${id}`}
-            onChange={() => {
-              handleModeChange(false);
-            }}
-            value={InputMode.YAML}
-          />
-        </div>
-      </div>
-      {isListMode ? (
+      )}
+      {!listModeDisabled && isListMode ? (
         <>
           <div className="row u-no-padding">
             <div className="col-4">

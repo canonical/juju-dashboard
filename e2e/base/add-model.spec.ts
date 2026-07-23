@@ -107,14 +107,10 @@ test.describe("Add model", () => {
       name: ConfigsConstraintsLabel.CONSTRAINTS_TITLE,
     });
     await constraintsSection
-      .getByRole("searchbox", { name: "Search constraints" })
-      .fill("arch");
-    await expect(
-      constraintsSection.locator('select[aria-label="arch"]'),
-    ).toBeVisible();
-    await constraintsSection
-      .locator('select[aria-label="arch"]')
-      .selectOption(architecture);
+      .getByRole("textbox", {
+        name: ConfigsConstraintsLabel.MODEL_CONSTRAINT_PLACEHOLDER,
+      })
+      .fill(`arch: ${architecture}`);
 
     // Create the model
     await page
