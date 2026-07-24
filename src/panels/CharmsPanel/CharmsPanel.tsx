@@ -38,10 +38,9 @@ export default function CharmsPanel({
       drawer={
         <Button
           disabled={!selectedCharm}
-          onClick={() => {
-            setTimeout(() => {
-              onCharmURLChange(selectedCharm);
-            });
+          onClick={(ev) => {
+            ev.stopPropagation();
+            onCharmURLChange(selectedCharm);
           }}
         >
           Next
