@@ -23,7 +23,7 @@ class Config:
         dashboard_root: str,
         analytics_enabled: bool,
         port: int,
-        base_app_url: str | None = None,
+        base_app_url: str,
         config_file_name: str | None = None,
         has_external_controller_url=False,
     ):
@@ -36,7 +36,8 @@ class Config:
         self._analytics_enabled = analytics_enabled
         self._port = port
         self._has_external_controller_url = has_external_controller_url
-        self._base_app_url = base_app_url
+        # Treat `/` as equivalent to an empty string, so templates don't end up with `//`.
+        self._base_app_url = "" if base_app_url == "/" else base_app_url
 
     def generate(self):
         env = Environment(loader=FileSystemLoader(self._config_dir))
@@ -113,6 +114,7 @@ if __name__ == "__main__":
             ),
             dashboard_root=os.environ.get("DASHBOARD_ROOT", "/srv"),
             port=int(os.environ.get("DASHBOARD_PORT", 8080)),
+            base_app_url=os.environ.get("DASHBOARD_BASE_APP_URL", ""),
             has_external_controller_url=to_bool(
                 os.environ.get("HAS_EXTERNAL_CONTROLLER_URL", False)
             ),
