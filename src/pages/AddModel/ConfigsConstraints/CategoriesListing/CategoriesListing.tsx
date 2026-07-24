@@ -112,7 +112,12 @@ const CategoriesListing = ({
 
   return (
     <section
-      className="p-section u-no-padding--bottom categories-listing"
+      className={classNames(
+        "p-section u-no-padding--bottom categories-listing",
+        {
+          "categories-listing--list-view": isListMode,
+        },
+      )}
       aria-labelledby={`title-${id}`}
     >
       <h5 id={`title-${id}`} className="u-no-padding--top u-no-margin--bottom">
