@@ -53,7 +53,7 @@ const CategoriesListing = ({
 
   const entries: ConfigFieldEntry[] = values[arrayName];
 
-  const isListMode = values[inputMode] === InputMode.LIST;
+  const isListMode = !listModeDisabled && values[inputMode] === InputMode.LIST;
   const handleModeChange = (isListModeSelected: boolean): void => {
     if (!isListModeSelected) {
       void setFieldValue(yamlKey, buildYAML(entries));
@@ -159,7 +159,7 @@ const CategoriesListing = ({
           </div>
         </div>
       )}
-      {!listModeDisabled && isListMode ? (
+      {isListMode ? (
         <>
           <div className="row u-no-padding">
             <div className="col-4">
