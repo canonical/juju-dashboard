@@ -83,7 +83,7 @@
     "redux": "5.0.1",
     "slice-ansi": "7.1.2",
     "strip-ansi": "7.2.0",
-    "vanilla-framework": "4.55.1",
+    "vanilla-framework": "4.56.0",
     "yaml": "2.9.0",
     "yup": "1.7.1"
   },
