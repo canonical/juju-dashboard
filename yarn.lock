@@ -9153,6 +9153,7 @@ __metadata:
     lodash.mergewith: "npm:4.6.2"
     loglevel: "npm:1.9.2"
     npm-package-json-lint: "npm:10.4.0"
+    postcss: "npm:8.5.19"
     prettier: "npm:3.8.3"
     prism-react-renderer: "npm:2.4.1"
     prismjs: "npm:1.30.0"
@@ -10497,7 +10498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.5.13, postcss@npm:^8.5.14, postcss@npm:^8.5.6, postcss@npm:^8.5.8":
+"postcss@npm:8.5.19, postcss@npm:^8.5.13, postcss@npm:^8.5.14, postcss@npm:^8.5.6, postcss@npm:^8.5.8":
   version: 8.5.19
   resolution: "postcss@npm:8.5.19"
   dependencies:
