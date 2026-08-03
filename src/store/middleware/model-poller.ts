@@ -83,6 +83,165 @@ function runModelPoller(
           reduxStore.dispatch(generalActions.updateLoginLoading(false));
         }
 
+        // TEST CREDENTIAL API
+        const clouds = await conn.facades.cloud?.clouds({});
+        const userTag = conn.info.user?.identity;
+        if (userTag) {
+          const model = await conn.facades.modelManager?.createModel({
+            name: `test-model-${Math.ceil(Math.random() * 1000)}`,
+            "owner-tag": userTag,
+            qualifier: userTag.replace(/^user-/, ""),
+          });
+          const cloudTags = Object.keys(clouds?.clouds ?? {});
+          const credentialName = `cred-${Math.ceil(Math.random() * 1000)}`;
+          const [cloud] = cloudTags;
+          const addTag = `cloudcred-${cloud.replace(/^cloud-/, "")}_${userTag.replace(/^user-/, "")}_${credentialName}`;
+          const addCredentialsArgs = {
+            credentials: [
+              {
+                credential: {
+                  "auth-type": "test",
+                },
+                tag: addTag,
+              },
+            ],
+          };
+          const addCredential =
+            await conn.facades.cloud?.addCredentials(addCredentialsArgs);
+          console.log(
+            "-------------------- add a new credential --------------------",
+          );
+          console.log(
+            `cloud.addCredential(${JSON.stringify(addCredentialsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(addCredential, null, 2));
+          const userCredentialsArgs = {
+            "user-clouds": cloudTags.map((tag) => ({
+              "cloud-tag": tag,
+              "user-tag": userTag,
+            })),
+          };
+          const userCredentials =
+            await conn.facades.cloud?.userCredentials(userCredentialsArgs);
+          console.log(
+            "-------------------- list user's credentials --------------------",
+          );
+          console.log(
+            `cloud.userCredentials(${JSON.stringify(userCredentialsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(userCredentials, null, 2));
+          console.log(
+            "-------------------- show credential details --------------------",
+          );
+          const credentialContentsArgs = {
+            credentials: [
+              {
+                "cloud-name": cloudTags[0].replace(/^cloud-/, ""),
+                "credential-name": credentialName,
+              },
+            ],
+            "include-secrets": true,
+          };
+          const contents = await conn.facades.cloud?.credentialContents(
+            credentialContentsArgs,
+          );
+          console.log(
+            `cloud.credentialContents(${JSON.stringify(credentialContentsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(contents, null, 2));
+          console.log(
+            "-------------------- check if credential is valid --------------------",
+          );
+          const checkCredentialsModelsArgs = {
+            credentials: [
+              {
+                credential: {
+                  "auth-type": "test",
+                },
+                tag: addTag,
+              },
+            ],
+          };
+          const checkCredentialsModels =
+            await conn.facades.cloud?.checkCredentialsModels(
+              checkCredentialsModelsArgs,
+            );
+          console.log(
+            `cloud.checkCredentialsModels(${JSON.stringify(checkCredentialsModelsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(checkCredentialsModels, null, 2));
+          const changeModelCredentialArgs = {
+            "model-credentials": [
+              {
+                "credential-tag": addTag,
+                "model-tag": `model-${model?.uuid}`,
+              },
+            ],
+          };
+          const changeModelCredential =
+            await conn.facades.modelManager?.changeModelCredential(
+              changeModelCredentialArgs,
+            );
+          console.log(
+            "-------------------- change model credential --------------------",
+          );
+          console.log(
+            `modelManager.changeModelCredential(${JSON.stringify(changeModelCredentialArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(changeModelCredential, null, 2));
+          const updateCredentialsCheckModelsArgs = {
+            force: false,
+            credentials: [
+              {
+                credential: {
+                  "auth-type": "new auth type",
+                },
+                tag: addTag,
+              },
+            ],
+          };
+          const updateCredentialsCheckModels =
+            await conn.facades.cloud?.updateCredentialsCheckModels(
+              updateCredentialsCheckModelsArgs,
+            );
+          console.log(
+            "-------------------- update credential --------------------",
+          );
+          console.log(
+            `cloud.updateCredentialsCheckModels(${JSON.stringify(updateCredentialsCheckModelsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(updateCredentialsCheckModels, null, 2));
+          const revokeCredentialsCheckModelsArgs = {
+            credentials: [
+              {
+                force: false,
+                tag: addTag,
+              },
+            ],
+          };
+          const revokeCredentialsCheckModels =
+            await conn.facades.cloud?.revokeCredentialsCheckModels(
+              revokeCredentialsCheckModelsArgs,
+            );
+          console.log(
+            "-------------------- remove the new credential --------------------",
+          );
+          console.log(
+            `cloud.revokeCredentialsCheckModels(${JSON.stringify(revokeCredentialsCheckModelsArgs, null, 2)})`,
+          );
+          console.log(JSON.stringify(revokeCredentialsCheckModels, null, 2));
+          // Clean up model.
+          await conn.facades.modelManager?.destroyModels({
+            models: [
+              {
+                force: true,
+                timeout: 0,
+                "model-tag": `model-${model?.uuid}`,
+              },
+            ],
+          });
+        }
+
         reduxStore.dispatch(
           cloudInfoMiddleware.actions.start({
             wsControllerURL,
