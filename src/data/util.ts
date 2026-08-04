@@ -11,9 +11,7 @@ export type MaybePromise<T> = Promise<T> | T;
  * A duration in time.
  */
 export type Duration =
-  | { milliseconds: number }
-  | { minutes: number }
-  | { seconds: number };
+  { milliseconds: number } | { minutes: number } | { seconds: number };
 
 /**
  * Determine if `K` is an optional key within `T`.
