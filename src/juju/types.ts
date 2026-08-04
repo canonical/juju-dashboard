@@ -65,11 +65,9 @@ export type ConnectionWithFacades = {
 export type DestroyModelErrors = [string, string][];
 
 export type ModelInfoResults =
-  | ModelManagerV10ModelInfoResults
-  | ModelManagerV11ModelInfoResults;
+  ModelManagerV10ModelInfoResults | ModelManagerV11ModelInfoResults;
 
 export type ModelInfo = ModelManagerV10ModelInfo | ModelManagerV11ModelInfo;
 
 export type UserModelList =
-  | ModelManagerV10UserModelList
-  | ModelManagerV11UserModelList;
+  ModelManagerV10UserModelList | ModelManagerV11UserModelList;

@@ -12,8 +12,7 @@ export type Hooks<P> = {
 };
 
 export type ProcessOutcome<Result> =
-  | { error: { message: string; source: unknown } }
-  | { result: Result };
+  { error: { message: string; source: unknown } } | { result: Result };
 
 export type ProcessActions<Payload, Status, Result> = {
   setStatus: (
