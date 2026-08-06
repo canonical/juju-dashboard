@@ -1,9 +1,29 @@
 import fs from "node:fs/promises";
 
-import react from "@vitejs/plugin-react-swc";
-import { defineConfig, loadEnv } from "vite";
+import react from "@vitejs/plugin-react";
+import { createLogger, defineConfig, loadEnv } from "vite";
 import { createHtmlPlugin } from "vite-plugin-html";
-import tsconfigPaths from "vite-tsconfig-paths";
+
+const logger = createLogger();
+const loggerWarn = logger.warn;
+
+logger.warn = logger.warnOnce = (msg, options) => {
+  // Disable warnings about sourcemaps in development. The warnings look like:
+  //
+  // Sourcemap for "/home/ubuntu/code/juju-dashboard/node_modules/@canonical/react-components/dist/components/CustomSelect/CustomSelect.scss"
+  // points to a source file outside its package: "/home/ubuntu/code/juju-dashboard/node_modules/vanilla-framework/scss/_settings_font.scss"
+  //
+  // This override needs to be handled by `logger.warnOnce`, see:
+  // https://github.com/vitejs/vite/blob/06cd77f0c6e92586bb727100785a71e65a9a30c1/packages/vite/src/node/server/sourcemap.ts#L104
+  if (
+    msg.includes("points to a source file outside its package") &&
+    msg.includes("@canonical/react-components") &&
+    msg.includes(".scss")
+  ) {
+    return;
+  }
+  loggerWarn(msg, options);
+};
 
 /// <reference types="vitest" />
 export default defineConfig(({ mode }) => {
@@ -12,6 +32,7 @@ export default defineConfig(({ mode }) => {
     base: "./",
     build: {
       outDir: "build",
+      cssMinify: "esbuild",
     },
     css: {
       devSourcemap: true,
@@ -23,6 +44,7 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    customLogger: logger,
     define: {
       // The `util` package requires `process.env.NODE_DEBUG` to be present: https://github.com/browserify/node-util/blob/ef984721db7150f651800e051de4314c9517d42c/util.js#L109
       // `bakeryjs` imports `util` to treat it as a polyfill for `window.TextDecoder` in node environments: https://github.com/juju/bakeryjs/blob/0c28d6109252eb421fde482fb8d5fd3ddd8e6499/package.json#L61
@@ -33,7 +55,6 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       react(),
-      tsconfigPaths(),
       process.env.NODE_ENV === "development"
         ? null
         : // The template format is handled by the dev and jaas configs when in development.
@@ -106,6 +127,7 @@ export default defineConfig(({ mode }) => {
       setupFiles: "src/testing/setup.ts",
     },
     resolve: {
+      tsconfigPaths: true,
       conditions: ["module-sync"],
     },
   };
