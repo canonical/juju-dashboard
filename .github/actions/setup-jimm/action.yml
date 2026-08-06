@@ -189,13 +189,23 @@ runs:
             juju resolved ingress/0
           fi
           TYPE=unit NAME=ingress/0 TIMEOUT_MINUTES=1 EXPECTED_STATUS=active ./scripts/wait-for
-    - name: Set up ingress hostname and certs
+    - name: Add local hostname
+      uses: nick-fields/retry@v4
+      with:
+        timeout_minutes: 1
+        max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
+        command: |
+          ingress_address=$(kubectl get service ingress-lb -n jimm -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          if [ -z "$ingress_address" ]; then
+            # The IP is not yet available so retry.
+            exit 1
+          else
+            # Point the test-jimm.local hostname to the ingress address.
+            echo "$ingress_address test-jimm.local" | sudo tee -a /etc/hosts
+          fi
+    - name: Set up hostname and certs
       shell: bash
       run: |
-        # Point the test-jimm.local hostname to the ingress address.
-        ingress_status=$(juju status --format json | yq '.applications.ingress.units."ingress/0"."workload-status".message')
-        metallb_ip=$(echo $ingress_status | cut -d' ' -f3 | cut -d'/' -f3)
-        echo "$metallb_ip test-jimm.local" | sudo tee -a /etc/hosts
         juju config jimm dns-name=test-jimm.local
         juju config ingress external_hostname=test-jimm.local
         juju run jimm-cert/0 get-ca-certificate --quiet | yq .ca-certificate | sudo tee /usr/local/share/ca-certificates/jimm-test.crt
