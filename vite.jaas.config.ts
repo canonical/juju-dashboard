@@ -1,7 +1,7 @@
 import { defineConfig, mergeConfig } from "vite";
 import { createHtmlPlugin } from "vite-plugin-html";
 
-import baseConfig from "./vite.config";
+import baseConfig from "./vite.config.ts";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 
 export default defineConfig((env) =>
