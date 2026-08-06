@@ -1,5 +1,8 @@
-import { ActionButton, Button } from "@canonical/react-components";
-import VanillaPanel from "@canonical/react-components/dist/components/Panel";
+import {
+  ActionButton,
+  Button,
+  Panel as VanillaPanel,
+} from "@canonical/react-components";
 import { Formik } from "formik";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
