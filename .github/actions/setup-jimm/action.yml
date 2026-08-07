@@ -56,9 +56,9 @@ runs:
         sudo snap install yq jaas
         sudo snap install terraform --classic
     - name: Setup Go
-      uses: actions/setup-go@v6
+      uses: actions/setup-go@v7
     - name: Checkout IAM repo
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: canonical/iam-bundle-integration
         path: iam-bundle-integration
@@ -206,7 +206,7 @@ runs:
         type: unit
         name: jimm/0 # Wait for JIMM to be ready if it's still making config changes.
     - name: Wait for JIMM
-      uses: nick-fields/retry@v3
+      uses: nick-fields/retry@v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
@@ -237,7 +237,7 @@ runs:
         # Set the name that the workloads controller will be registered as.
         echo "public=jimm-k8s" >> $GITHUB_OUTPUT
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
         node-version: ${{ matrix.node-version }}
         cache: "yarn"
