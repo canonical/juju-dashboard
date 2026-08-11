@@ -35,11 +35,11 @@ jobs:
         run: |
           # Unfortunately, this step is required since GitHub doesn't allow glob filtering on
           # the head branch of a PR
-          if [ -z $(echo '${GITHUB_REF_NAME}' | grep -P '^release/\d+\.\d+$') ]; then
+          if ! echo "${GITHUB_REF_NAME}" | grep -qP '^release/\d+\.\d+$'; then
               echo 'Not running on a full release branch. Cancelling workflow.'
 
-              gh run cancel ${{ github.run_id }}
-              gh run watch ${{ github.run_id }}
+              gh run cancel "${{ github.run_id }}"
+              gh run watch "${{ github.run_id }}"
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,7 +57,7 @@ jobs:
           candidate_tag="$(echo "$tags_on_commit" | ( grep candidate || true ) | head -n 1)"
 
           # Prefer stable tag
-          if [ ! -z "$stable_tag" ]; then
+          if [ -n "$stable_tag" ]; then
             tag="$stable_tag"
           else
             tag="$candidate_tag"
@@ -79,12 +79,12 @@ jobs:
       - name: Generate channel information
         id: channel
         run: |
-          origin='${STEPS_TAG_OUTPUTS_TRACK}/candidate'
-          destination='${STEPS_TAG_OUTPUTS_TRACK}/stable'
+          origin="${STEPS_TAG_OUTPUTS_TRACK}/candidate"
+          destination="${STEPS_TAG_OUTPUTS_TRACK}/stable"
 
-          branch='${STEPS_TAG_OUTPUTS_BRANCH}'
+          branch="${STEPS_TAG_OUTPUTS_BRANCH}"
 
-          if [ ! -z "$branch" ]; then
+          if [ -n "$branch" ]; then
             # Add branch information to the channels
             origin="$origin/$branch"
             destination="$destination/$branch"
@@ -143,7 +143,7 @@ jobs:
       - name: Tag commit
         id: tags
         run: |
-          tag='track/${NEEDS_CHECK_VALID_PROMOTION_OUTPUTS_DESTINATION_CHANNEL}'
+          tag="track/${NEEDS_CHECK_VALID_PROMOTION_OUTPUTS_DESTINATION_CHANNEL}"
 
           echo "Creating tag '$tag' at $(git rev-parse --short HEAD)"
 
@@ -169,7 +169,7 @@ jobs:
 
     steps:
       - run: |
-          echo '::notice title=Candidate was already promoted::The ${NEEDS_CHECK_VALID_PROMOTION_TRACK} track already contains the latest candidate.'
+          echo "::notice title=Candidate was already promoted::The ${NEEDS_CHECK_VALID_PROMOTION_TRACK} track already contains the latest candidate."
         env:
           NEEDS_CHECK_VALID_PROMOTION_TRACK: ${{ needs.check-valid-promotion.outputs.track }}
 
@@ -182,7 +182,7 @@ jobs:
 
     steps:
       - run: |
-          echo '::error title=No candidate to promote::The ${NEEDS_CHECK_VALID_PROMOTION_TRACK} track does not have any candidates to promote.'
+          echo "::error title=No candidate to promote::The ${NEEDS_CHECK_VALID_PROMOTION_TRACK} track does not have any candidates to promote."
           exit 1
         env:
           NEEDS_CHECK_VALID_PROMOTION_TRACK: ${{ needs.check-valid-promotion.outputs.track }}

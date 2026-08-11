@@ -22,13 +22,9 @@ runs:
     - name: Wait for Juju resource
       shell: bash
       run: |
-        export TYPE='${INPUTS_TYPE}'
-        export NAME='${INPUTS_NAME}'
-        export TIMEOUT_MINUTES='${INPUTS_TIMEOUT_MINUTES}'
-        export EXPECTED_STATUS='${INPUTS_STATUS}'
         ./scripts/wait-for
       env:
-        INPUTS_TYPE: ${{ inputs.type }}
-        INPUTS_NAME: ${{ inputs.name }}
-        INPUTS_TIMEOUT_MINUTES: ${{ inputs.timeout_minutes }}
-        INPUTS_STATUS: ${{ inputs.status }}
+        TYPE: ${{ inputs.type }}
+        NAME: ${{ inputs.name }}
+        TIMEOUT_MINUTES: ${{ inputs.timeout_minutes }}
+        EXPECTED_STATUS: ${{ inputs.status }}

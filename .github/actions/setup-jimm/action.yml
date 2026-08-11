@@ -112,7 +112,7 @@ runs:
     - name: Create admin user
       shell: bash
       run: |
-        IDENTITY_ID=$(juju run --wait=2m --format=json kratos/0 create-admin-account email='${INPUTS_ADMIN_USERNAME}@example.com' password='${INPUTS_ADMIN_PASSWORD}' username='${INPUTS_ADMIN_USERNAME}' | yq .kratos/0.results.identity-id)
+        IDENTITY_ID=$(juju run --wait=2m --format=json kratos/0 create-admin-account email="${INPUTS_ADMIN_USERNAME}@example.com" password="${INPUTS_ADMIN_PASSWORD}" username="${INPUTS_ADMIN_USERNAME}" | yq .kratos/0.results.identity-id)
         SECRET_ID=$(juju add-secret password-secret password=test)
         juju grant-secret password-secret kratos
         juju run --wait=2m kratos/0 reset-password identity-id=$IDENTITY_ID password-secret-id=$SECRET_ID
@@ -123,7 +123,7 @@ runs:
       shell: bash
       run: |
         juju add-model jimm
-        juju deploy juju-jimm-k8s --channel=${INPUTS_JIMM_CHANNEL} jimm --config postgres-secret-storage=true
+        juju deploy juju-jimm-k8s --channel="${INPUTS_JIMM_CHANNEL}" jimm --config postgres-secret-storage=true
         juju deploy openfga-k8s --channel=edge openfga
         juju deploy postgresql-k8s --channel=16/edge postgresql
         juju deploy traefik-k8s --channel=latest/stable --trust ingress
@@ -273,14 +273,14 @@ runs:
     - name: Register workload controller with JIMM
       shell: bash
       run: |
-        juju jaas register-controller '${STEPS_WORKLOADS_CONTROLLER_OUTPUTS_NAME}' --local --tls-hostname juju-apiserver
-        juju update-credentials microk8s --controller ${STEPS_WORKLOADS_CONTROLLER_OUTPUTS_PUBLIC}
+        juju jaas register-controller "${STEPS_WORKLOADS_CONTROLLER_OUTPUTS_NAME}" --local --tls-hostname juju-apiserver
+        juju update-credentials microk8s --controller "${STEPS_WORKLOADS_CONTROLLER_OUTPUTS_PUBLIC}"
       env:
         STEPS_WORKLOADS_CONTROLLER_OUTPUTS_NAME: ${{ steps.workloads-controller.outputs.name }}
         STEPS_WORKLOADS_CONTROLLER_OUTPUTS_PUBLIC: ${{ steps.workloads-controller.outputs.public }}
     - name: Switch to JIMM model
       shell: bash
-      run: juju switch '${STEPS_JIMM_CONTROLLER_OUTPUTS_NAME}:jimm'
+      run: juju switch "${STEPS_JIMM_CONTROLLER_OUTPUTS_NAME}:jimm"
       env:
         STEPS_JIMM_CONTROLLER_OUTPUTS_NAME: ${{ steps.jimm-controller.outputs.name }}
     - name: Wait for JIMM
@@ -298,7 +298,7 @@ runs:
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
         continue_on_error: true # Sometimes the error persists after a retry but it seems to work anyway.
         command: |
-          juju switch '${{ steps.jimm-controller.outputs.name }}:jimm'
+          juju switch "${{ steps.jimm-controller.outputs.name }}:jimm"
           STATUS=$(juju status --format json | yq .applications.jimm.application-status.current)
           if [ "$STATUS" == "error" ]; then
             # Sometimes the jimm unit will get into an error state, so resolve and try again.

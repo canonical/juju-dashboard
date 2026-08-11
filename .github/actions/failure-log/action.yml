@@ -37,7 +37,7 @@ runs:
         echo "-------------------------------------"
         echo "Juju debug-log"
         echo "-------------------------------------"
-        juju debug-log -m ${INPUTS_CONTROLLER}:controller --limit 200 --no-tail
+        juju debug-log -m "${INPUTS_CONTROLLER}":controller --limit 200 --no-tail
       env:
         INPUTS_CONTROLLER: ${{ inputs.controller }}
     - name: JIMM logs
@@ -55,7 +55,7 @@ runs:
         echo "-------------------------------------"
         echo "JIMM status"
         echo "-------------------------------------"
-        juju status -m ${INPUTS_CONTROLLER}:jimm || true
+        juju status -m "${INPUTS_CONTROLLER}":jimm || true
         echo "-------------------------------------"
         echo "JIMM debug-log"
         echo "-------------------------------------"

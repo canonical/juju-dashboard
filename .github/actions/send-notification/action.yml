@@ -24,7 +24,7 @@ runs:
             -F 'workflow=${GITHUB_WORKFLOW}' \
             -F 'repo_name=${{ github.repository }}' \
             -F 'action_id=${{ github.run_id }}' \
-            '${INPUTS_WEBHOOK_URL}?room=${INPUTS_CHANNEL}'
+            "${INPUTS_WEBHOOK_URL}?room=${INPUTS_CHANNEL}"
       env:
         INPUTS_WEBHOOK_URL: ${{ inputs.webhook-url }}
         INPUTS_CHANNEL: ${{ inputs.channel }}
@@ -33,7 +33,7 @@ runs:
       if: inputs.message != ''
       run: |
         # URI encode the mesage using JQ
-        message="$(echo -n '${INPUTS_MESSAGE}' | jq -sRr @uri)"
+        message="$(echo -n "${INPUTS_MESSAGE}" | jq -sRr @uri)"
 
         curl -X POST \
             "${INPUTS_WEBHOOK_URL}?room=${INPUTS_CHANNEL}&custom_message=$message"

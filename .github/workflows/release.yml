@@ -30,7 +30,7 @@ jobs:
         run: |
           # Unfortunately, this step is required since GitHub doesn't allow glob filtering on
           # the head branch of a PR.
-          if [ -z $(echo '${GITHUB_HEAD_REF}' | grep -P '^release/\d+\.\d+\.\d+') ]; then
+          if ! echo "${GITHUB_HEAD_REF}" | grep -qP '^release/\d+\.\d+\.\d+'; then
               echo 'Not running on a full release branch. Exiting workflow.'
               exit 0
           else
@@ -69,7 +69,7 @@ jobs:
 
           is_pre_release="true"
 
-          if echo $version | grep -P '^\d+\.\d+\.\d+$' ; then
+          if echo "$version" | grep -P '^\d+\.\d+\.\d+$' ; then
             # Can promote from beta to candidate immediately
             promote_channel="$track/candidate"
 
@@ -110,7 +110,7 @@ jobs:
         run: |
           OUTPUT=$(./build.sh)
 
-          if [ '${{ matrix.charm-kind }}' = 'k8s' ]; then
+          if [ "${{ matrix.charm-kind }}" = 'k8s' ]; then
               echo "$OUTPUT" | grep '^id=' >> "$GITHUB_OUTPUT"
           fi
       - name: Log in to GitHub Container Registry
@@ -123,8 +123,8 @@ jobs:
       - name: Upload docker image
         if: ${{ matrix.charm-kind == 'k8s' }}
         run: |
-          FINAL_TAG='ghcr.io/canonical/juju-dashboard:${NEEDS_PRE_RELEASE_OUTPUTS_VERSION}'
-          docker image tag '${STEPS_BUILD_OUTPUTS_ID}' "$FINAL_TAG"
+          FINAL_TAG="ghcr.io/canonical/juju-dashboard:${NEEDS_PRE_RELEASE_OUTPUTS_VERSION}"
+          docker image tag "${STEPS_BUILD_OUTPUTS_ID}" "$FINAL_TAG"
           docker image push "$FINAL_TAG"
         env:
           NEEDS_PRE_RELEASE_OUTPUTS_VERSION: ${{ needs.pre-release.outputs.version }}
@@ -135,7 +135,7 @@ jobs:
           CHARM_DIR='charms/${{ matrix.charm-kind }}-charm'
 
           # Concatenate charm paths into a single line with commas
-          BUILT_CHARM_PATHS=$(ls -1 $CHARM_DIR/*.charm | xargs -L1 basename | paste -sd ',' -)
+          BUILT_CHARM_PATHS=$(find $CHARM_DIR/*.charm -maxdepth 1 -print0 | xargs -0 -L1 basename | paste -sd ',' -)
 
           echo "charm-dir=$CHARM_DIR" | tee -a "$GITHUB_OUTPUT"
           echo "built-charm-path=$BUILT_CHARM_PATHS" | tee -a "$GITHUB_OUTPUT"
@@ -146,10 +146,10 @@ jobs:
           path: ${{ steps.post-build.outputs.charm-dir }}/*.charm
       - name: Create new tracks, if required
         run: |
-          track='${NEEDS_PRE_RELEASE_OUTPUTS_TRACK}'
-          charm_name="$(yq '.name' '${STEPS_POST_BUILD_OUTPUTS_CHARM_DIR}/charmcraft.yaml')"
+          track="${NEEDS_PRE_RELEASE_OUTPUTS_TRACK}"
+          charm_name="$(yq '.name' "${STEPS_POST_BUILD_OUTPUTS_CHARM_DIR}/charmcraft.yaml")"
 
-          authorization_header="Macaroon $(echo '${{ secrets.CHARMHUB_TOKEN }}' | base64 -d | jq -r .v)"
+          authorization_header="Macaroon $(echo "${{ secrets.CHARMHUB_TOKEN }}" | base64 -d | jq -r .v)"
 
           jq_filter=".metadata.tracks[].name | select(. == \"$track\")"
 
@@ -157,7 +157,7 @@ jobs:
 
           if [ "$matching_track" = '' ]; then
             echo "Creating '$track' track for '$charm_name'"
-            CHARMCRAFT_AUTH='${{ secrets.CHARMHUB_TOKEN }}' charmcraft create-track --name="$charm_name" --track="$track"
+            CHARMCRAFT_AUTH="${{ secrets.CHARMHUB_TOKEN }}" charmcraft create-track --name="$charm_name" --track="$track"
           else
             echo "'$track' track for '$charm_name' already created. Continuing..."
           fi
@@ -229,15 +229,15 @@ jobs:
           }
 
           # Tag original channel
-          create_or_update_tag 'track/${NEEDS_PRE_RELEASE_OUTPUTS_CHANNEL}'
+          create_or_update_tag "track/${NEEDS_PRE_RELEASE_OUTPUTS_CHANNEL}"
 
           # Tag promoted channel, if required
-          if [ ! -z '${NEEDS_PRE_RELEASE_OUTPUTS_PROMOTE_CHANNEL}' ]; then
-            create_or_update_tag 'track/${NEEDS_PRE_RELEASE_OUTPUTS_PROMOTE_CHANNEL}'
+          if [ -n "${NEEDS_PRE_RELEASE_OUTPUTS_PROMOTE_CHANNEL}" ]; then
+            create_or_update_tag "track/${NEEDS_PRE_RELEASE_OUTPUTS_PROMOTE_CHANNEL}"
           fi
 
           # Tag version
-          version_tag='v${NEEDS_PRE_RELEASE_OUTPUTS_VERSION}'
+          version_tag="v${NEEDS_PRE_RELEASE_OUTPUTS_VERSION}"
           create_or_update_tag "$version_tag"
 
           git push --tags --force

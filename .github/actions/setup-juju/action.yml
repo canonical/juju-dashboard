@@ -1,6 +1,6 @@
 name: Set up Juju
 description: Install the Juju snap.
-inputs: 
+inputs:
   juju-channel:
     description: Juju snap channel to install.
     required: false
@@ -27,12 +27,12 @@ runs:
       run: lxc network set lxdbr0 ipv6.address none
       shell: bash
     - name: Install snap
-      run: sudo snap install juju --channel '${INPUTS_JUJU_CHANNEL}'
+      run: sudo snap install juju --channel "${INPUTS_JUJU_CHANNEL}"
       shell: bash
       env:
         INPUTS_JUJU_CHANNEL: ${{ inputs.juju-channel}}
     - name: Bootstrap Juju
-      run: juju bootstrap '${INPUTS_PROVIDER}' '${INPUTS_CONTROLLER_NAME}' ${INPUTS_BOOTSTRAP_OPTIONS}
+      run: juju bootstrap ${INPUTS_PROVIDER:+"$INPUTS_PROVIDER"} ${INPUTS_CONTROLLER_NAME:+"$INPUTS_CONTROLLER_NAME"} $INPUTS_BOOTSTRAP_OPTIONS
       shell: bash
       env:
         INPUTS_PROVIDER: ${{ inputs.provider }}

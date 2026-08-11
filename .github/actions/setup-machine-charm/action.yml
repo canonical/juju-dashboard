@@ -56,13 +56,13 @@ runs:
       env:
         INPUTS_DASHBOARD_VERSION: ${{ inputs.dashboard-version }}
     - name: Switch to controller
-      run: juju switch '${INPUTS_CONTROLLER_MODEL}'
+      run: juju switch "${INPUTS_CONTROLLER_MODEL}"
       shell: bash
       env:
         INPUTS_CONTROLLER_MODEL: ${{ inputs.controller-model }}
     - name: Deploy charm from channel
       if: ${{ env.build_type == 'charm-release' }}
-      run: juju deploy juju-dashboard dashboard --channel '${INPUTS_CHARM_CHANNEL}'
+      run: juju deploy juju-dashboard dashboard --channel "${INPUTS_CHARM_CHANNEL}"
       shell: bash
       env:
         INPUTS_CHARM_CHANNEL: ${{ inputs.charm-channel }}
@@ -77,7 +77,7 @@ runs:
         name: dashboard
         status: blocked
     - name: Integrate charm
-      run: juju integrate '${INPUTS_CONTROLLER_APP}' dashboard
+      run: juju integrate "${INPUTS_CONTROLLER_APP}" dashboard
       shell: bash
       env:
         INPUTS_CONTROLLER_APP: ${{ inputs.controller-app }}

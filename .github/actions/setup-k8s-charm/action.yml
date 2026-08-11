@@ -60,28 +60,28 @@ runs:
     - name: Import dashboard image to microK8s
       if: ${{ env.build_type == 'source' }}
       shell: bash
-      run: docker image save '${STEPS_DASHBOARD_IMAGE_OUTPUTS_ID}' | sudo microk8s ctr image import -
+      run: docker image save "${STEPS_DASHBOARD_IMAGE_OUTPUTS_ID}" | sudo microk8s ctr image import -
       env:
         STEPS_DASHBOARD_IMAGE_OUTPUTS_ID: ${{ steps.dashboard-image.outputs.id }}
     - name: Switch to controller
-      run: juju switch '${INPUTS_CONTROLLER_MODEL}'
+      run: juju switch "${INPUTS_CONTROLLER_MODEL}"
       shell: bash
       env:
         INPUTS_CONTROLLER_MODEL: ${{ inputs.controller-model }}
     - name: Deploy charm from channel
       if: ${{ env.build_type == 'charm-release' }}
-      run: juju deploy juju-dashboard-k8s dashboard --channel '${INPUTS_CHARM_CHANNEL}'
+      run: juju deploy juju-dashboard-k8s dashboard --channel "${INPUTS_CHARM_CHANNEL}"
       shell: bash
       env:
         INPUTS_CHARM_CHANNEL: ${{ inputs.charm-channel }}
     - name: Deploy built charm
       if: ${{ env.build_type != 'charm-release' }}
-      run: juju deploy ${{ github.workspace }}/charms/k8s-charm/juju-dashboard*.charm dashboard --resource 'dashboard-image=${STEPS_DASHBOARD_IMAGE_OUTPUTS_ID}'
+      run: juju deploy ${{ github.workspace }}/charms/k8s-charm/juju-dashboard*.charm dashboard --resource "dashboard-image=${STEPS_DASHBOARD_IMAGE_OUTPUTS_ID}"
       shell: bash
       env:
         STEPS_DASHBOARD_IMAGE_OUTPUTS_ID: ${{ steps.dashboard-image.outputs.id }}
     - name: Integrate charm
-      run: juju integrate '${INPUTS_CONTROLLER_APP}' dashboard
+      run: juju integrate "${INPUTS_CONTROLLER_APP}" dashboard
       shell: bash
       env:
         INPUTS_CONTROLLER_APP: ${{ inputs.controller-app }}
@@ -103,5 +103,5 @@ runs:
     - name: Clean up
       run: |
         # Delete build files to save space. Pass `|| true` so that an error is not thrown if the directories don't exist.
-        rm -rf '${{ github.workspace }}/juju-dashboard-release' || true
+        rm -rf "${{ github.workspace }}/juju-dashboard-release" || true
       shell: bash
