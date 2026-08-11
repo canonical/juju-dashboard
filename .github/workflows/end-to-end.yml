@@ -18,12 +18,7 @@ on:
       dashboard-source:
         description: Source of the dashboard to run the test suite for.
         required: true
-        type: choice
-        options:
-          - branch
-          - release
-          - charm
-          - bundled
+        type: string
       source-identifier:
         description: |
           Identifier for the dashboard source:
@@ -44,8 +39,9 @@ on:
         type: string
         default: 3/stable
 
-permissions: {}
-  contents: pull-requests
+permissions:
+  contents: read
+  pull-requests: read
 
 # Ensure only one e2e job runs at a time.
 concurrency:

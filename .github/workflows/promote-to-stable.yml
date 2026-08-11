@@ -171,7 +171,7 @@ jobs:
       - run: |
           echo '::notice title=Candidate was already promoted::The ${NEEDS_CHECK_VALID_PROMOTION_TRACK} track already contains the latest candidate.'
         env:
-          NEEDS_CHECK_VALID_PROMOTION_TRACK: ${{ needs.check-valid-promotion.track }}
+          NEEDS_CHECK_VALID_PROMOTION_TRACK: ${{ needs.check-valid-promotion.outputs.track }}
 
   no-candidate:
     name: No candidate
@@ -185,4 +185,4 @@ jobs:
           echo '::error title=No candidate to promote::The ${NEEDS_CHECK_VALID_PROMOTION_TRACK} track does not have any candidates to promote.'
           exit 1
         env:
-          NEEDS_CHECK_VALID_PROMOTION_TRACK: ${{ needs.check-valid-promotion.track }}
+          NEEDS_CHECK_VALID_PROMOTION_TRACK: ${{ needs.check-valid-promotion.outputs.track }}

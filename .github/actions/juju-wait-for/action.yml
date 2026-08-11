@@ -4,11 +4,6 @@ inputs:
   type:
     description: "The type of resource to wait for"
     required: true
-    type: choice
-    options:
-      - application
-      - unit
-      - model
   name:
     description: "The name of the resource to wait for"
     required: true

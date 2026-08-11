@@ -13,11 +13,6 @@ inputs:
   charm-channel:
     description: If set and this is not called from a PR this will run the e2e tests against a published charm. All other options will be ignored.
     required: false
-    type: choice
-    options:
-      - latest/stable
-      - latest/beta
-      - latest/edge
   controller-app:
     required: false
     description: The Juju controller application.

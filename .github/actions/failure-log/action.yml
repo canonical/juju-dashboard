@@ -4,10 +4,6 @@ inputs:
   juju-env:
     description: The type of Juju environment.
     required: true
-    type: choice
-    options:
-      - jimm
-      - juju
   controller:
     description: The bootstrapped controller
     required: true
