@@ -24,10 +24,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Download actionlint
         id: get_actionlint
         run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
         shell: bash
       - name: Check workflow files
-        run: ${{ steps.get_actionlint.outputs.executable }} -color
+        run: ${STEPS_GET_ACTIONLINT_OUTPUTS_EXECUTABLE} -color
         shell: bash
+        env:
+          STEPS_GET_ACTIONLINT_OUTPUTS_EXECUTABLE: ${{ steps.get_actionlint.outputs.executable }}

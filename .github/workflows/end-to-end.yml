@@ -52,7 +52,8 @@ jobs:
   juju-machine-local:
     name: Test Juju, machine-charm and local-auth
     uses: ./.github/workflows/e2e-juju-machine-charm-local-auth.yml
-    secrets: inherit
+    secrets:
+      webbot-url: ${{ secrets.WEBBOT_URL }}
     if: |
       github.event_name != 'pull_request' || (
         (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
@@ -60,7 +61,8 @@ jobs:
   juju-machine-candid:
     name: Test Juju, machine-charm and candid-auth
     uses: ./.github/workflows/e2e-juju-machine-charm-candid-auth.yml
-    secrets: inherit
+    secrets:
+      webbot-url: ${{ secrets.WEBBOT_URL }}
     if: |
       github.event_name != 'pull_request' || (
         (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
@@ -68,7 +70,8 @@ jobs:
   juju-k8s-local:
     name: Test Juju, k8s-charm and local-auth
     uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml
-    secrets: inherit
+    secrets:
+      webbot-url: ${{ secrets.WEBBOT_URL }}
     if: |
       github.event_name != 'pull_request' || (
         (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
@@ -76,7 +79,8 @@ jobs:
   jimm-k8s-oidc:
     name: Test JIMM, k8s-charm and oidc-auth
     uses: ./.github/workflows/e2e-jimm-k8s-charm-oidc-auth.yml
-    secrets: inherit
+    secrets:
+      webbot-url: ${{ secrets.WEBBOT_URL }}
     if: |
       github.event_name != 'pull_request' || (
         (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
@@ -84,7 +88,9 @@ jobs:
   jimm-docker-keycloak:
     name: Test JIMM, Docker dashboard and Keycloak OIDC auth
     uses: ./.github/workflows/e2e-jimm-docker-keycloak.yml
-    secrets: inherit
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      webbot-url: ${{ secrets.WEBBOT_URL }}
     if: |
       github.event_name != 'pull_request' || (
         (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
@@ -92,7 +98,8 @@ jobs:
   juju-4-machine-local:
     name: Test Juju 4.0, machine-charm and local-auth
     uses: ./.github/workflows/e2e-juju-machine-charm-local-auth.yml
-    secrets: inherit
+    secrets:
+      webbot-url: ${{ secrets.WEBBOT_URL }}
     with:
       juju-channel: "4.0/candidate" # Use the candidate channel while Juju 4.0 is in development.
       send-notification: false
@@ -103,7 +110,8 @@ jobs:
   juju-4-k8s-local:
     name: Test Juju 4.0, k8s-charm and local-auth
     uses: ./.github/workflows/e2e-juju-k8s-charm-local-auth.yml
-    secrets: inherit
+    secrets:
+      webbot-url: ${{ secrets.WEBBOT_URL }}
     with:
       juju-channel: "4.0/candidate" # Use the candidate channel while Juju 4.0 is in development.
       send-notification: false
@@ -114,7 +122,8 @@ jobs:
   jimm-juju-4-k8s-oidc:
     name: Test JIMM with Juju 4.0, k8s-charm and oidc-auth
     uses: ./.github/workflows/e2e-jimm-k8s-charm-oidc-auth.yml
-    secrets: inherit
+    secrets:
+      webbot-url: ${{ secrets.WEBBOT_URL }}
     with:
       juju-channel: "4.0/candidate" # Use the candidate channel while Juju 4.0 is in development.
       send-notification: false

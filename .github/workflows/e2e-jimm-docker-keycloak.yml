@@ -13,6 +13,11 @@ on:
         type: string
         description: The password to use when logging in as the admin user.
         default: test
+    secrets:
+      github-token:
+        required: true
+      webbot-url:
+        required: true
 
 permissions: {}
 
@@ -64,7 +69,7 @@ jobs:
         with:
           jimm-version: v3.4.0
           juju-channel: "3.6/stable"
-          ghcr-pat: ${{ secrets.GITHUB_TOKEN }}
+          ghcr-pat: ${{ secrets.github-token }}
           dump-logs: true
       - name: Set the CLI admin's password
         run: |
@@ -108,4 +113,4 @@ jobs:
         if: steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification
         with:
-          webhook-url: ${{ secrets.WEBBOT_URL }}
+          webhook-url: ${{ secrets.webbot-url }}

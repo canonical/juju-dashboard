@@ -8,6 +8,9 @@ on:
         type: string
         description: The password to use when logging in as the admin user.
         default: password1
+    secrets:
+      webbot-url:
+        required: true
 
 permissions: {}
 
@@ -62,4 +65,4 @@ jobs:
         if: steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification
         with:
-          webhook-url: ${{ secrets.WEBBOT_URL }}
+          webhook-url: ${{ secrets.webbot-url }}
