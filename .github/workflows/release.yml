@@ -56,7 +56,7 @@ jobs:
       changelog: ${{ steps.changelog.outputs.changelog }}
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - name: Determine release Charmhub parameters
@@ -99,11 +99,11 @@ jobs:
         charm-kind: [k8s, machine]
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - name: Install LXD
-        uses: canonical/setup-lxd@main
+        uses: canonical/setup-lxd@da2ac84e727dc534215fd14cd088b9209d65893b # main
       - name: Build dashboard
         working-directory: charms/${{ matrix.charm-kind }}-charm
         id: build
@@ -115,7 +115,7 @@ jobs:
           fi
       - name: Log in to GitHub Container Registry
         if: ${{ matrix.charm-kind == 'k8s' }}
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -140,7 +140,7 @@ jobs:
           echo "charm-dir=$CHARM_DIR" | tee -a "$GITHUB_OUTPUT"
           echo "built-charm-path=$BUILT_CHARM_PATHS" | tee -a "$GITHUB_OUTPUT"
       - name: Save charm artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: juju-dashboard-${{ matrix.charm-kind }}
           path: ${{ steps.post-build.outputs.charm-dir }}/*.charm
@@ -165,7 +165,7 @@ jobs:
           NEEDS_PRE_RELEASE_OUTPUTS_TRACK: ${{ needs.pre-release.outputs.track }}
           STEPS_POST_BUILD_OUTPUTS_CHARM_DIR: ${{ steps.post-build.outputs.charm-dir }}
       - name: Upload charm
-        uses: canonical/charming-actions/upload-charm@main
+        uses: canonical/charming-actions/upload-charm@9180b22741d2349858e35e1dcc2fe4e11c3ebf2d # main
         with:
           credentials: "${{ secrets.CHARMHUB_TOKEN }}"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
@@ -178,7 +178,8 @@ jobs:
           github-tag: false
       - name: Promote charm
         if: needs.pre-release.outputs.promote-channel != ''
-        uses: andogq/charming-actions/promote-charm@fix/promote-charm-branch # TODO: Replace this once canonical/charming-actions#162 merges
+        # TODO: Replace this once canonical/charming-actions#162 merges
+        uses: andogq/charming-actions/promote-charm@3b1b538aabfc419dc27328c3c0e649bbd1b55be7 # fix/promote-charm-branch
         with:
           credentials: "${{ secrets.CHARMHUB_TOKEN }}"
           origin-channel: "${{ needs.pre-release.outputs.channel }}"
@@ -209,7 +210,7 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-tags: true
           persist-credentials: false
@@ -246,18 +247,18 @@ jobs:
           NEEDS_PRE_RELEASE_OUTPUTS_VERSION: ${{ needs.pre-release.outputs.version }}
 
       - name: "Download k8s charm artifact"
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: juju-dashboard-k8s
           path: release-artifacts
       - name: "Download machine charm artifact"
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: juju-dashboard-machine
           path: release-artifacts
 
       - name: "Create release"
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1
         with:
           name: "Juju Dashboard ${{ needs.pre-release.outputs.version }}"
           tag: ${{ steps.tags.outputs.version-tag }}
@@ -285,7 +286,7 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
 
@@ -296,7 +297,7 @@ jobs:
         run: yarn run vite build --sourcemap=hidden
 
       - name: "Create Sentry release"
-        uses: getsentry/action-release@v3
+        uses: getsentry/action-release@ff07929a6537bac57790c3451cf4d364aca38528 # v3
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: canonical-ax

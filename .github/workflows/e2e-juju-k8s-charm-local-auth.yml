@@ -29,14 +29,14 @@ jobs:
         node-version: [22.x]
     steps:
       - name: Checkout Juju Dashboard repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action
       - name: Setup Juju controller on k8s
-        uses: charmed-kubernetes/actions-operator@main
+        uses: charmed-kubernetes/actions-operator@d8217ad61c15f746727a9d41563c13e9b9fe56e3 # main
         with:
           provider: "microk8s"
           channel: 1.36-strict/stable

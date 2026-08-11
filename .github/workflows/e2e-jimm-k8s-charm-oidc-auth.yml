@@ -34,7 +34,7 @@ jobs:
         node-version: [22.x]
     steps:
       - name: Free Disk Space (Ubuntu)
-        uses: Jayllyz/free-disk-space@fbe203b3788f2bebe2c835a15925da303eaa5efe
+        uses: Jayllyz/free-disk-space@fbe203b3788f2bebe2c835a15925da303eaa5efe # fbe203b3788f2bebe2c835a15925da303eaa5efe
         with:
           tool-cache: false
           android: true
@@ -51,7 +51,7 @@ jobs:
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"/Ruby
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"/Java_Temurin-Hotspot_jdk
       - name: Checkout Juju Dashboard repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - name: Configure action

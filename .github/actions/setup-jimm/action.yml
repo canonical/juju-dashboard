@@ -39,7 +39,7 @@ runs:
         echo "net.ipv6.conf.lo.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
         sudo sysctl -p
     - name: Setup operator environment
-      uses: charmed-kubernetes/actions-operator@main
+      uses: charmed-kubernetes/actions-operator@d8217ad61c15f746727a9d41563c13e9b9fe56e3 # main
       with:
         channel: 1.35-strict/stable
         juju-channel: ${{ inputs.juju-channel }}
@@ -56,9 +56,9 @@ runs:
         sudo snap install yq jaas
         sudo snap install terraform --classic
     - name: Setup Go
-      uses: actions/setup-go@v7
+      uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
     - name: Checkout IAM repo
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         repository: canonical/iam-bundle-integration
         path: iam-bundle-integration
@@ -151,7 +151,7 @@ runs:
       shell: bash
       run: juju relate openfga:database postgresql
     - name: Wait for openfga
-      uses: nick-fields/retry@v4
+      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
       with:
         timeout_minutes: 5
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
@@ -186,7 +186,7 @@ runs:
       env:
         INPUTS_ADMIN_USERNAME: ${{ inputs.admin-username }}
     - name: Wait for ingress
-      uses: nick-fields/retry@v4
+      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
@@ -198,7 +198,7 @@ runs:
           fi
           TYPE=unit NAME=ingress/0 TIMEOUT_MINUTES=1 EXPECTED_STATUS=active ./scripts/wait-for
     - name: Add local hostname
-      uses: nick-fields/retry@v4
+      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
@@ -224,7 +224,7 @@ runs:
         type: unit
         name: jimm/0 # Wait for JIMM to be ready if it's still making config changes.
     - name: Wait for JIMM
-      uses: nick-fields/retry@v4
+      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
@@ -255,7 +255,7 @@ runs:
         # Set the name that the workloads controller will be registered as.
         echo "public=jimm-k8s" >> $GITHUB_OUTPUT
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v7
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
       with:
         node-version: ${{ matrix.node-version }}
         cache: "yarn"
@@ -292,7 +292,7 @@ runs:
       shell: bash
       run: sudo microk8s kubectl delete pod jimm-0 -n jimm # Fix ListModels issue:
     - name: Wait for JIMM pod to be recreated
-      uses: nick-fields/retry@v4
+      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.

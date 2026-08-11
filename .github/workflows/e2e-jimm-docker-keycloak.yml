@@ -25,7 +25,7 @@ jobs:
         node-version: [22.x]
     steps:
       - name: Checkout Juju Dashboard repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - name: Configure action
@@ -40,7 +40,7 @@ jobs:
           is-juju: false
           controller-ws-address: ws://jimm.localhost:17070
       - name: Checkout JIMM repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           repository: canonical/jimm
           path: jimm
@@ -54,7 +54,7 @@ jobs:
         env:
           STEPS_DOCKER_DASHBOARD_OUTPUTS_ADDRESS: ${{ steps.docker-dashboard.outputs.address }}
       - name: Setup Go
-        uses: actions/setup-go@v7
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
         with:
           go-version-file: "jimm/go.mod"
       - name: Go vendor to speed up docker build
@@ -75,7 +75,7 @@ jobs:
       - name: Restart JIMM
         run: docker restart jimm-test # Fixes a context cancelled issue when fetching models from the dashboard.
       - name: Wait for JIMM container to be ready
-        uses: nick-fields/retry@v4
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
         with:
           timeout_minutes: 1
           max_attempts: 2

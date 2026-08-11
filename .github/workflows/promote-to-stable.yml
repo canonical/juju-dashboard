@@ -24,7 +24,7 @@ jobs:
       destination-channel: ${{ steps.channel.outputs.destination }}
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -111,12 +111,13 @@ jobs:
       destination: ${{ needs.check-valid-promotion.outputs.destination-channel }}
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ needs.check-valid-promotion.outputs.tag }}
           persist-credentials: false
       - name: Promote charm to stable
-        uses: andogq/charming-actions/promote-charm@fix/promote-charm-branch # TODO: Replace this once canonical/charming-actions#162 merges
+        # TODO: Replace this once canonical/charming-actions#162 merges
+        uses: andogq/charming-actions/promote-charm@3b1b538aabfc419dc27328c3c0e649bbd1b55be7 # fix/promote-charm-branch
         with:
           credentials: "${{ secrets.CHARMHUB_TOKEN }}"
           origin-channel: "${{ needs.check-valid-promotion.outputs.origin-channel }}"
@@ -130,7 +131,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-tags: true
           ref: ${{ needs.check-valid-promotion.outputs.tag }}

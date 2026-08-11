@@ -21,7 +21,7 @@ runs:
   steps:
     - name: Install LXD
       if: ${{ inputs.provider == 'localhost' }}
-      uses: canonical/setup-lxd@main
+      uses: canonical/setup-lxd@da2ac84e727dc534215fd14cd088b9209d65893b # main
     - name: Disable LXD IPv6
       if: ${{ inputs.provider == 'localhost' }}
       run: lxc network set lxdbr0 ipv6.address none

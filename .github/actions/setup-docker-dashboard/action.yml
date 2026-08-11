@@ -23,7 +23,7 @@ runs:
   using: "composite"
   steps:
     - name: Set up Juju Dashboard release
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         ref: ${{ inputs.dashboard-ref }}
         path: juju-dashboard-release
@@ -42,7 +42,7 @@ runs:
         INPUTS_IS_JUJU: ${{ inputs.is-juju }}
     - name: Wait for container to be ready
       if: ${{ inputs.run == 'true' }}
-      uses: nick-fields/retry@v4
+      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
       with:
         timeout_minutes: 1
         max_attempts: 2
