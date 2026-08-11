@@ -1,6 +1,6 @@
 name: Report Coverage
 on:
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers]
     workflows: ["Test"]
     types:
       - completed

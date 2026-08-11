@@ -1,13 +1,14 @@
 name: Create release PR
 
 on:
-  pull_request_target:
+  pull_request:
     types:
       - closed
     branches:
       - release/*
 
-permissions: write-all
+permissions:
+  pull-requests: write
 
 jobs:
   create-release-pr:

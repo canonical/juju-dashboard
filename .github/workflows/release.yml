@@ -7,7 +7,7 @@ on:
     branches:
       - "release/*"
 
-permissions: write-all
+permissions: {}
 
 defaults:
   run:
@@ -201,6 +201,8 @@ jobs:
 
   post-release:
     name: "Create tags and releases"
+    permissions:
+      contents: write
     runs-on: ubuntu-24.04
 
     needs: [pre-release, release]
@@ -257,7 +259,7 @@ jobs:
           name: juju-dashboard-machine
           path: release-artifacts
 
-      - name: "Create release"
+      - name: "Create release" # zizmor: ignore[superfluous-actions]
         uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1
         with:
           name: "Juju Dashboard ${{ needs.pre-release.outputs.version }}"

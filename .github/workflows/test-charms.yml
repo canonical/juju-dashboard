@@ -7,7 +7,7 @@ on:
     paths:
       - "charms/**"
 
-permissions: read-all
+permissions: {}
 
 jobs:
   test-charm:

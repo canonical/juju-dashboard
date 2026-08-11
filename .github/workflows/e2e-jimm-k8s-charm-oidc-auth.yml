@@ -23,7 +23,7 @@ on:
         description: Whether to send a notification on failure.
         default: true
 
-permissions: read-all
+permissions: {}
 
 jobs:
   test:
@@ -92,10 +92,11 @@ jobs:
       - name: Compute Juju version for test identifier
         id: juju-version
         run: |
-          CHANNEL="${{ inputs.juju-channel || steps.config.outputs.juju-channel }}"
           VERSION=$(echo "$CHANNEL" | cut -d'/' -f1)
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
         shell: bash
+        env:
+          CHANNEL: ${{ inputs.juju-channel || steps.config.outputs.juju-channel }}
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:

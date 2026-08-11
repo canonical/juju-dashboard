@@ -12,7 +12,7 @@ on:
     paths:
       - "actions/**"
 
-permissions: read-all
+permissions: {}
 
 jobs:
   test:

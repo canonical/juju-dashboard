@@ -44,7 +44,8 @@ on:
         type: string
         default: 3/stable
 
-permissions: read-all
+permissions: {}
+  contents: pull-requests
 
 # Ensure only one e2e job runs at a time.
 concurrency:

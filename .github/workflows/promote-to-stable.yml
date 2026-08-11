@@ -7,11 +7,13 @@ defaults:
   run:
     shell: bash
 
-permissions: write-all
+permissions: {}
 
 jobs:
   check-valid-promotion:
     name: Check promotion conditions
+    permissions:
+      contents: write
     runs-on: ubuntu-24.04
 
     outputs:
@@ -128,6 +130,8 @@ jobs:
   post-promotion:
     name: Post promotion operations
     needs: [check-valid-promotion, promote-candidate]
+    permissions:
+      contents: write
     runs-on: ubuntu-24.04
 
     steps:

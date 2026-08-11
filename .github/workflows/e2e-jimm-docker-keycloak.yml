@@ -14,7 +14,7 @@ on:
         description: The password to use when logging in as the admin user.
         default: test
 
-permissions: read-all
+permissions: {}
 
 jobs:
   test:
