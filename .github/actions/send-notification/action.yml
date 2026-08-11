@@ -21,16 +21,23 @@ runs:
       if: inputs.message == ''
       run: |
         curl -X POST \
-            -F 'workflow=${{ github.workflow }}' \
+            -F 'workflow=${GITHUB_WORKFLOW}' \
             -F 'repo_name=${{ github.repository }}' \
             -F 'action_id=${{ github.run_id }}' \
-            '${{ inputs.webhook-url }}?room=${{ inputs.channel }}'
+            '${INPUTS_WEBHOOK_URL}?room=${INPUTS_CHANNEL}'
+      env:
+        INPUTS_WEBHOOK_URL: ${{ inputs.webhook-url }}
+        INPUTS_CHANNEL: ${{ inputs.channel }}
     - name: Send notification with custom message
       shell: bash
       if: inputs.message != ''
       run: |
         # URI encode the mesage using JQ
-        message="$(echo -n '${{ inputs.message }}' | jq -sRr @uri)"
+        message="$(echo -n '${INPUTS_MESSAGE}' | jq -sRr @uri)"
 
         curl -X POST \
-            "${{ inputs.webhook-url }}?room=${{ inputs.channel }}&custom_message=$message"
+            "${INPUTS_WEBHOOK_URL}?room=${INPUTS_CHANNEL}&custom_message=$message"
+      env:
+        INPUTS_MESSAGE: ${{ inputs.message }}
+        INPUTS_WEBHOOK_URL: ${{ inputs.webhook-url }}
+        INPUTS_CHANNEL: ${{ inputs.channel }}

@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action
@@ -42,12 +44,15 @@ jobs:
         with:
           repository: canonical/jimm
           path: jimm
+          persist-credentials: false
       - name: Update JIMM with the dashboard address
         run: |
           sudo snap install yq
-          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_FINAL_REDIRECT_URL = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
-          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_LOCATION = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
-          yq -i '.services.jimm-base.environment.CORS_ALLOWED_ORIGINS = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
+          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_FINAL_REDIRECT_URL = "http://${STEPS_DOCKER_DASHBOARD_OUTPUTS_ADDRESS}"' jimm/docker-compose.common.yaml
+          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_LOCATION = "http://${STEPS_DOCKER_DASHBOARD_OUTPUTS_ADDRESS}"' jimm/docker-compose.common.yaml
+          yq -i '.services.jimm-base.environment.CORS_ALLOWED_ORIGINS = "http://${STEPS_DOCKER_DASHBOARD_OUTPUTS_ADDRESS}"' jimm/docker-compose.common.yaml
+        env:
+          STEPS_DOCKER_DASHBOARD_OUTPUTS_ADDRESS: ${{ steps.docker-dashboard.outputs.address }}
       - name: Setup Go
         uses: actions/setup-go@v7
         with:
@@ -63,8 +68,10 @@ jobs:
           dump-logs: true
       - name: Set the CLI admin's password
         run: |
-          juju switch ${{ env.CONTROLLER_NAME }}
-          echo '${{ inputs.admin-password }}' | juju change-user-password --no-prompt
+          juju switch ${CONTROLLER_NAME}
+          echo '${INPUTS_ADMIN_PASSWORD}' | juju change-user-password --no-prompt
+        env:
+          INPUTS_ADMIN_PASSWORD: ${{ inputs.admin-password }}
       - name: Restart JIMM
         run: docker restart jimm-test # Fixes a context cancelled issue when fetching models from the dashboard.
       - name: Wait for JIMM container to be ready

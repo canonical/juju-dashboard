@@ -30,6 +30,8 @@ jobs:
     steps:
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action
@@ -45,7 +47,9 @@ jobs:
         run: echo "name=$CONTROLLER_NAME" >> "$GITHUB_OUTPUT"
         shell: bash
       - name: Set up access
-        run: echo '${{ inputs.admin-password }}' | juju change-user-password --no-prompt
+        run: echo '${INPUTS_ADMIN_PASSWORD}' | juju change-user-password --no-prompt
+        env:
+          INPUTS_ADMIN_PASSWORD: ${{ inputs.admin-password }}
       - name: Compute Juju version for test identifier
         id: juju-version
         run: |

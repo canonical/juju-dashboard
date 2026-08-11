@@ -27,6 +27,7 @@ runs:
       with:
         ref: ${{ inputs.dashboard-ref }}
         path: juju-dashboard-release
+        persist-credentials: false
     - name: Build Juju Dashboard image
       shell: bash
       run: |
@@ -34,8 +35,11 @@ runs:
         DOCKER_BUILDKIT=1 docker build -t juju-dashboard:local .
     - name: Run the Docker image
       if: ${{ inputs.run == 'true' }}
-      run: docker run --name juju-dashboard --detach -e DASHBOARD_PORT=80 -e DASHBOARD_CONTROLLER_URL="${{ inputs.controller-ws-address }}" -e DASHBOARD_IS_JUJU="${{ inputs.is-juju }}" -e DASHBOARD_ANALYTICS_ENABLED=false juju-dashboard:local
+      run: docker run --name juju-dashboard --detach -e DASHBOARD_PORT=80 -e DASHBOARD_CONTROLLER_URL="${INPUTS_CONTROLLER_WS_ADDRESS}" -e DASHBOARD_IS_JUJU="${INPUTS_IS_JUJU}" -e DASHBOARD_ANALYTICS_ENABLED=false juju-dashboard:local
       shell: bash
+      env:
+        INPUTS_CONTROLLER_WS_ADDRESS: ${{ inputs.controller-ws-address }}
+        INPUTS_IS_JUJU: ${{ inputs.is-juju }}
     - name: Wait for container to be ready
       if: ${{ inputs.run == 'true' }}
       uses: nick-fields/retry@v4

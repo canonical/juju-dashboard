@@ -115,3 +115,4 @@ runs:
       with:
         ref: ${{ steps.config.outputs.repo-ref }}
         clean: false
+        persist-credentials: false

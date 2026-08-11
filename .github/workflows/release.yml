@@ -30,7 +30,7 @@ jobs:
         run: |
           # Unfortunately, this step is required since GitHub doesn't allow glob filtering on
           # the head branch of a PR.
-          if [ -z $(echo '${{ github.head_ref }}' | grep -P '^release/\d+\.\d+\.\d+') ]; then
+          if [ -z $(echo '${GITHUB_HEAD_REF}' | grep -P '^release/\d+\.\d+\.\d+') ]; then
               echo 'Not running on a full release branch. Exiting workflow.'
               exit 0
           else
@@ -57,6 +57,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Determine release Charmhub parameters
         id: params
         run: |
@@ -98,6 +100,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Install LXD
         uses: canonical/setup-lxd@main
       - name: Build dashboard
@@ -119,9 +123,12 @@ jobs:
       - name: Upload docker image
         if: ${{ matrix.charm-kind == 'k8s' }}
         run: |
-          FINAL_TAG='ghcr.io/canonical/juju-dashboard:${{ needs.pre-release.outputs.version }}'
-          docker image tag '${{ steps.build.outputs.id }}' "$FINAL_TAG"
+          FINAL_TAG='ghcr.io/canonical/juju-dashboard:${NEEDS_PRE_RELEASE_OUTPUTS_VERSION}'
+          docker image tag '${STEPS_BUILD_OUTPUTS_ID}' "$FINAL_TAG"
           docker image push "$FINAL_TAG"
+        env:
+          NEEDS_PRE_RELEASE_OUTPUTS_VERSION: ${{ needs.pre-release.outputs.version }}
+          STEPS_BUILD_OUTPUTS_ID: ${{ steps.build.outputs.id }}
       - name: Get charm path
         id: post-build
         run: |
@@ -139,8 +146,8 @@ jobs:
           path: ${{ steps.post-build.outputs.charm-dir }}/*.charm
       - name: Create new tracks, if required
         run: |
-          track='${{ needs.pre-release.outputs.track }}'
-          charm_name="$(yq '.name' '${{ steps.post-build.outputs.charm-dir }}/charmcraft.yaml')"
+          track='${NEEDS_PRE_RELEASE_OUTPUTS_TRACK}'
+          charm_name="$(yq '.name' '${STEPS_POST_BUILD_OUTPUTS_CHARM_DIR}/charmcraft.yaml')"
 
           authorization_header="Macaroon $(echo '${{ secrets.CHARMHUB_TOKEN }}' | base64 -d | jq -r .v)"
 
@@ -154,6 +161,9 @@ jobs:
           else
             echo "'$track' track for '$charm_name' already created. Continuing..."
           fi
+        env:
+          NEEDS_PRE_RELEASE_OUTPUTS_TRACK: ${{ needs.pre-release.outputs.track }}
+          STEPS_POST_BUILD_OUTPUTS_CHARM_DIR: ${{ steps.post-build.outputs.charm-dir }}
       - name: Upload charm
         uses: canonical/charming-actions/upload-charm@main
         with:
@@ -202,6 +212,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-tags: true
+          persist-credentials: false
       - name: Tag commits
         id: tags
         run: |
@@ -215,20 +226,24 @@ jobs:
           }
 
           # Tag original channel
-          create_or_update_tag 'track/${{ needs.pre-release.outputs.channel }}'
+          create_or_update_tag 'track/${NEEDS_PRE_RELEASE_OUTPUTS_CHANNEL}'
 
           # Tag promoted channel, if required
-          if [ ! -z '${{ needs.pre-release.outputs.promote-channel }}' ]; then
-            create_or_update_tag 'track/${{ needs.pre-release.outputs.promote-channel }}'
+          if [ ! -z '${NEEDS_PRE_RELEASE_OUTPUTS_PROMOTE_CHANNEL}' ]; then
+            create_or_update_tag 'track/${NEEDS_PRE_RELEASE_OUTPUTS_PROMOTE_CHANNEL}'
           fi
 
           # Tag version
-          version_tag='v${{ needs.pre-release.outputs.version }}'
+          version_tag='v${NEEDS_PRE_RELEASE_OUTPUTS_VERSION}'
           create_or_update_tag "$version_tag"
 
           git push --tags --force
 
           echo "version-tag=$version_tag" | tee -a "$GITHUB_OUTPUT"
+        env:
+          NEEDS_PRE_RELEASE_OUTPUTS_CHANNEL: ${{ needs.pre-release.outputs.channel }}
+          NEEDS_PRE_RELEASE_OUTPUTS_PROMOTE_CHANNEL: ${{ needs.pre-release.outputs.promote-channel }}
+          NEEDS_PRE_RELEASE_OUTPUTS_VERSION: ${{ needs.pre-release.outputs.version }}
 
       - name: "Download k8s charm artifact"
         uses: actions/download-artifact@v8
@@ -271,6 +286,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Install dependencies
         run: yarn install

@@ -29,10 +29,10 @@ runs:
   steps:
     - name: Set build type
       run: |
-        if [ -n "${{ inputs.charm-channel }}" ]; then
+        if [ -n "${INPUTS_CHARM_CHANNEL}" ]; then
           # Use the provided charm version.
           echo 'build_type=charm-release' >> "$GITHUB_ENV"
-        elif [ -n "${{ inputs.dashboard-resource }}" ]; then
+        elif [ -n "${INPUTS_DASHBOARD_RESOURCE}" ]; then
           # Use the provided dashboard image when building the charm.
           echo 'build_type=dashboard-resource' >> "$GITHUB_ENV"
         else
@@ -40,40 +40,56 @@ runs:
           echo 'build_type=source' >> "$GITHUB_ENV"
         fi
       shell: bash
+      env:
+        INPUTS_CHARM_CHANNEL: ${{ inputs.charm-channel }}
+        INPUTS_DASHBOARD_RESOURCE: ${{ inputs.dashboard-resource }}
     - name: Set up Juju Dashboard release
       if: ${{ env.build_type == 'source' }}
       uses: actions/checkout@v7
       with:
         ref: ${{ inputs.dashboard-ref }}
         path: juju-dashboard-release
+        persist-credentials: false
     - name: Get the image and build the charm
       id: dashboard-image
       if: ${{ env.build_type != 'charm-release' }}
       shell: bash
       run: |
         "${{ github.workspace }}/charms/k8s-charm/build.sh" \
-          "${{ env.build_type }}" \
-          "${{ inputs.dashboard-resource }}" \
+          "${build_type}" \
+          "${INPUTS_DASHBOARD_RESOURCE}" \
           "--platform ubuntu@24.04:amd64" \
           >> "$GITHUB_OUTPUT"
+      env:
+        INPUTS_DASHBOARD_RESOURCE: ${{ inputs.dashboard-resource }}
     - name: Import dashboard image to microK8s
       if: ${{ env.build_type == 'source' }}
       shell: bash
-      run: docker image save '${{ steps.dashboard-image.outputs.id }}' | sudo microk8s ctr image import -
+      run: docker image save '${STEPS_DASHBOARD_IMAGE_OUTPUTS_ID}' | sudo microk8s ctr image import -
+      env:
+        STEPS_DASHBOARD_IMAGE_OUTPUTS_ID: ${{ steps.dashboard-image.outputs.id }}
     - name: Switch to controller
-      run: juju switch '${{ inputs.controller-model }}'
+      run: juju switch '${INPUTS_CONTROLLER_MODEL}'
       shell: bash
+      env:
+        INPUTS_CONTROLLER_MODEL: ${{ inputs.controller-model }}
     - name: Deploy charm from channel
       if: ${{ env.build_type == 'charm-release' }}
-      run: juju deploy juju-dashboard-k8s dashboard --channel '${{ inputs.charm-channel }}'
+      run: juju deploy juju-dashboard-k8s dashboard --channel '${INPUTS_CHARM_CHANNEL}'
       shell: bash
+      env:
+        INPUTS_CHARM_CHANNEL: ${{ inputs.charm-channel }}
     - name: Deploy built charm
       if: ${{ env.build_type != 'charm-release' }}
-      run: juju deploy ${{ github.workspace }}/charms/k8s-charm/juju-dashboard*.charm dashboard --resource 'dashboard-image=${{ steps.dashboard-image.outputs.id }}'
+      run: juju deploy ${{ github.workspace }}/charms/k8s-charm/juju-dashboard*.charm dashboard --resource 'dashboard-image=${STEPS_DASHBOARD_IMAGE_OUTPUTS_ID}'
       shell: bash
+      env:
+        STEPS_DASHBOARD_IMAGE_OUTPUTS_ID: ${{ steps.dashboard-image.outputs.id }}
     - name: Integrate charm
-      run: juju integrate '${{ inputs.controller-app }}' dashboard
+      run: juju integrate '${INPUTS_CONTROLLER_APP}' dashboard
       shell: bash
+      env:
+        INPUTS_CONTROLLER_APP: ${{ inputs.controller-app }}
     - name: Wait for charm to be ready
       uses: nick-fields/retry@v4
       with:

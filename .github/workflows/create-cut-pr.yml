@@ -16,6 +16,8 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/create-cut-pr
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

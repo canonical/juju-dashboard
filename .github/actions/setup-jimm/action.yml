@@ -62,6 +62,7 @@ runs:
       with:
         repository: canonical/iam-bundle-integration
         path: iam-bundle-integration
+        persist-credentials: false
     - name: Set up IAM
       shell: bash
       run: |
@@ -111,19 +112,24 @@ runs:
     - name: Create admin user
       shell: bash
       run: |
-        IDENTITY_ID=$(juju run --wait=2m --format=json kratos/0 create-admin-account email='${{ inputs.admin-username }}@example.com' password='${{ inputs.admin-password }}' username='${{ inputs.admin-username }}' | yq .kratos/0.results.identity-id)
+        IDENTITY_ID=$(juju run --wait=2m --format=json kratos/0 create-admin-account email='${INPUTS_ADMIN_USERNAME}@example.com' password='${INPUTS_ADMIN_PASSWORD}' username='${INPUTS_ADMIN_USERNAME}' | yq .kratos/0.results.identity-id)
         SECRET_ID=$(juju add-secret password-secret password=test)
         juju grant-secret password-secret kratos
         juju run --wait=2m kratos/0 reset-password identity-id=$IDENTITY_ID password-secret-id=$SECRET_ID
+      env:
+        INPUTS_ADMIN_USERNAME: ${{ inputs.admin-username }}
+        INPUTS_ADMIN_PASSWORD: ${{ inputs.admin-password }}
     - name: Add JIMM model and apps
       shell: bash
       run: |
         juju add-model jimm
-        juju deploy juju-jimm-k8s --channel=${{ inputs.jimm-channel }} jimm --config postgres-secret-storage=true
+        juju deploy juju-jimm-k8s --channel=${INPUTS_JIMM_CHANNEL} jimm --config postgres-secret-storage=true
         juju deploy openfga-k8s --channel=edge openfga
         juju deploy postgresql-k8s --channel=16/edge postgresql
         juju deploy traefik-k8s --channel=latest/stable --trust ingress
         juju trust postgresql --scope=cluster
+      env:
+        INPUTS_JIMM_CHANNEL: ${{ inputs.jimm-channel }}
     - name: Wait for Postgres
       uses: ./.github/actions/juju-wait-for
       with:
@@ -172,11 +178,13 @@ runs:
       shell: bash
       run: |
         # Give the user admin permissions so that they can add the workload controller.
-        juju config jimm controller-admins="${{ inputs.admin-username }}@example.com"
+        juju config jimm controller-admins="${INPUTS_ADMIN_USERNAME}@example.com"
         juju config jimm uuid=3f4d142b-732e-4e99-80e7-5899b7e67e59
         KEYS=$(go run github.com/go-macaroon-bakery/macaroon-bakery/cmd/bakery-keygen/v3@latest)
         juju config jimm public-key=$(echo $KEYS | yq .public)
         juju config jimm private-key=$(echo $KEYS | yq .private)
+      env:
+        INPUTS_ADMIN_USERNAME: ${{ inputs.admin-username }}
     - name: Wait for ingress
       uses: nick-fields/retry@v4
       with:
@@ -265,11 +273,16 @@ runs:
     - name: Register workload controller with JIMM
       shell: bash
       run: |
-        juju jaas register-controller '${{ steps.workloads-controller.outputs.name }}' --local --tls-hostname juju-apiserver
-        juju update-credentials microk8s --controller ${{ steps.workloads-controller.outputs.public }}
+        juju jaas register-controller '${STEPS_WORKLOADS_CONTROLLER_OUTPUTS_NAME}' --local --tls-hostname juju-apiserver
+        juju update-credentials microk8s --controller ${STEPS_WORKLOADS_CONTROLLER_OUTPUTS_PUBLIC}
+      env:
+        STEPS_WORKLOADS_CONTROLLER_OUTPUTS_NAME: ${{ steps.workloads-controller.outputs.name }}
+        STEPS_WORKLOADS_CONTROLLER_OUTPUTS_PUBLIC: ${{ steps.workloads-controller.outputs.public }}
     - name: Switch to JIMM model
       shell: bash
-      run: juju switch '${{ steps.jimm-controller.outputs.name }}:jimm'
+      run: juju switch '${STEPS_JIMM_CONTROLLER_OUTPUTS_NAME}:jimm'
+      env:
+        STEPS_JIMM_CONTROLLER_OUTPUTS_NAME: ${{ steps.jimm-controller.outputs.name }}
     - name: Wait for JIMM
       uses: ./.github/actions/juju-wait-for
       with:

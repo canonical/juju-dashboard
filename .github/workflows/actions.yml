@@ -16,6 +16,8 @@ jobs:
         node-version: [22.x]
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v7
         with:
@@ -32,6 +34,8 @@ jobs:
         node-version: [22.x]
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v7
         with:
@@ -48,6 +52,8 @@ jobs:
         node-version: [22.x]
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v7
         with:
@@ -64,6 +70,8 @@ jobs:
         node-version: [22.x]
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Validate Renovate Configuration with renovate-config-validator
         uses: suzuki-shunsuke/github-action-renovate-config-validator@v2.1.0
   types:
@@ -75,6 +83,8 @@ jobs:
         project: [tsconfig.json, tsconfig.node.json]
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v7
         with:
@@ -91,6 +101,8 @@ jobs:
         node-version: [22.x]
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v7
         with:
@@ -103,6 +115,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Install dotrun
         run: sudo pip3 install dotrun requests==2.31.0 # requests version is pinned to avoid breaking changes, can be removed once issue is resolved: https://github.com/docker/docker-py/issues/3256
       - name: Install dependencies

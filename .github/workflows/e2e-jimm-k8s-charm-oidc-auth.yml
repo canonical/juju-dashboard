@@ -52,6 +52,8 @@ jobs:
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"/Java_Temurin-Hotspot_jdk
       - name: Checkout Juju Dashboard repo
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action
@@ -71,10 +73,12 @@ jobs:
       - name: Configure JIMM with dashboard address
         shell: bash
         run: |
-          juju switch '${{ steps.jimm.outputs.jimm-controller-name }}':jimm
+          juju switch '${STEPS_JIMM_OUTPUTS_JIMM_CONTROLLER_NAME}':jimm
           DASHBOARD_ADDRESS=http://$(juju show-unit dashboard/0 | yq .dashboard/0.address):8080
           juju config jimm cors-allowed-origins="$DASHBOARD_ADDRESS"
           juju config jimm juju-dashboard-location="$DASHBOARD_ADDRESS"/models
+        env:
+          STEPS_JIMM_OUTPUTS_JIMM_CONTROLLER_NAME: ${{ steps.jimm.outputs.jimm-controller-name }}
       - name: Wait for JIMM to finish configuring
         uses: ./.github/actions/juju-wait-for
         with:
@@ -82,7 +86,9 @@ jobs:
           name: jimm/0
           timeout_minutes: 1
       - name: Set the CLI admin's password
-        run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
+        run: echo ${INPUTS_ADMIN_PASSWORD} | juju change-user-password --no-prompt
+        env:
+          INPUTS_ADMIN_PASSWORD: ${{ inputs.admin-password }}
       - name: Compute Juju version for test identifier
         id: juju-version
         run: |

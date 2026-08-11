@@ -32,13 +32,13 @@ runs:
   steps:
     - name: Set build type
       run: |
-        if [ -n "${{ inputs.charm-channel }}" ]; then
+        if [ -n "${INPUTS_CHARM_CHANNEL}" ]; then
           # Use the provided charm version.
           echo 'build_type=charm-release' >> "$GITHUB_ENV"
-        elif [ -n "${{ inputs.dashboard-version }}" ]; then
+        elif [ -n "${INPUTS_DASHBOARD_VERSION}" ]; then
           # Use a specific dashboard version.
           echo 'build_type=dashboard-version' >> "$GITHUB_ENV"
-        elif [ "${{ inputs.bundled-dashboard }}" == "true" ]; then
+        elif [ "${INPUTS_BUNDLED_DASHBOARD}" == "true" ]; then
           # Use the version of the dashboard that's bundled in the repository.
           echo 'build_type=bundled-dashboard' >> "$GITHUB_ENV"
         else
@@ -46,21 +46,31 @@ runs:
           echo 'build_type=source' >> "$GITHUB_ENV"
         fi
       shell: bash
+      env:
+        INPUTS_CHARM_CHANNEL: ${{ inputs.charm-channel }}
+        INPUTS_DASHBOARD_VERSION: ${{ inputs.dashboard-version }}
+        INPUTS_BUNDLED_DASHBOARD: ${{ inputs.bundled-dashboard }}
     - name: Set up Juju Dashboard release
       if: ${{ env.build_type != 'charm-release' }}
       shell: bash
       run: |
         "${{ github.workspace }}/charms/machine-charm/build.sh" \
-          "${{ env.build_type }}" \
-          "${{ inputs.dashboard-version }}" \
+          "${build_type}" \
+          "${INPUTS_DASHBOARD_VERSION}" \
           "--platform ubuntu@24.04:amd64"
+      env:
+        INPUTS_DASHBOARD_VERSION: ${{ inputs.dashboard-version }}
     - name: Switch to controller
-      run: juju switch '${{ inputs.controller-model }}'
+      run: juju switch '${INPUTS_CONTROLLER_MODEL}'
       shell: bash
+      env:
+        INPUTS_CONTROLLER_MODEL: ${{ inputs.controller-model }}
     - name: Deploy charm from channel
       if: ${{ env.build_type == 'charm-release' }}
-      run: juju deploy juju-dashboard dashboard --channel '${{ inputs.charm-channel }}'
+      run: juju deploy juju-dashboard dashboard --channel '${INPUTS_CHARM_CHANNEL}'
       shell: bash
+      env:
+        INPUTS_CHARM_CHANNEL: ${{ inputs.charm-channel }}
     - name: Deploy built charm
       if: ${{ env.build_type != 'charm-release' }}
       run: juju deploy ${{ github.workspace }}/charms/machine-charm/juju-dashboard*.charm dashboard
@@ -72,8 +82,10 @@ runs:
         name: dashboard
         status: blocked
     - name: Integrate charm
-      run: juju integrate '${{ inputs.controller-app }}' dashboard
+      run: juju integrate '${INPUTS_CONTROLLER_APP}' dashboard
       shell: bash
+      env:
+        INPUTS_CONTROLLER_APP: ${{ inputs.controller-app }}
     - name: Wait for charm to be ready
       uses: ./.github/actions/juju-wait-for
       with:
