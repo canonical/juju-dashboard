@@ -29,6 +29,8 @@ export default function DataTable<
   data,
   selectable = true,
   groupBy,
+  isRowDisabled,
+  isRowLoading,
   noRowsMessage = "No rows",
 }: DataTableProps<TRow, TKeyValue, TValues>): JSX.Element {
   const { sort, toggleSort } = useSortState<keyof TValues>();
@@ -64,8 +66,17 @@ export default function DataTable<
     }));
   }, [data, flatColumns, getKey]);
 
-  // Build selection state off of the rows.
-  const rowKeys = useMemo(() => keyedRows.map(({ key }) => key), [keyedRows]);
+  // Build selection state off of the rows, excluding disabled and loading rows
+  // so that "select all" and aggregate state only account for selectable rows.
+  const rowKeys = useMemo(
+    () =>
+      keyedRows
+        .filter(
+          ({ data: row }) => !isRowDisabled?.(row) && !isRowLoading?.(row),
+        )
+        .map(({ key }) => key),
+    [keyedRows, isRowDisabled, isRowLoading],
+  );
   const select = useToggleSelect(rowKeys);
 
   // Render rows.
@@ -76,6 +87,8 @@ export default function DataTable<
     sort,
     select,
     selectable,
+    isRowDisabled,
+    isRowLoading,
   });
 
   const columnCount = useMemo(
@@ -90,16 +103,16 @@ export default function DataTable<
     <Table>
       <Table.Header>
         {prefixHeader}
-        {selectable ? (
-          <Table.Header.Cell collapse>
+        <Table.Header.Cell className="icon-column icon-column-header">
+          {selectable ? (
             <InlineCheckbox
               label={select.state === "all" ? "Deselect all" : "Select all"}
               checked={select.state === "all"}
               indeterminate={select.state === "partial"}
               onChange={select.toggleAll}
             />
-          </Table.Header.Cell>
-        ) : null}
+          ) : null}
+        </Table.Header.Cell>
         {orderedHeaders}
       </Table.Header>
       <Table.Body>

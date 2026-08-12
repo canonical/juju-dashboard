@@ -1,3 +1,5 @@
+import { Spinner } from "@canonical/react-components";
+import classNames from "classnames";
 import fastDeepEqual from "fast-deep-equal/es6";
 import type { ReactNode } from "react";
 import React, { useMemo } from "react";
@@ -9,14 +11,7 @@ import type { Cell, FlatTableColumn, Sort } from "./types";
 import type { ToggleSelectReturn } from "./useToggleSelect";
 import { calculateSpanSize, compareRow } from "./util";
 
-export default function useRows<TRow, TKey extends React.Key, TValues>({
-  rows,
-  columns,
-  groupBy,
-  sort,
-  select,
-  selectable,
-}: {
+type UseRowsParams<TRow, TKey extends React.Key, TValues> = {
   rows: {
     key: TKey;
     values: Cell<keyof TValues, TValues[keyof TValues]>[];
@@ -27,10 +22,25 @@ export default function useRows<TRow, TKey extends React.Key, TValues>({
   sort: Sort<keyof TValues>;
   select: ToggleSelectReturn<TKey>;
   selectable: boolean;
-}): ReactNode[] {
+  isRowDisabled?: (row: TRow) => boolean;
+  isRowLoading?: (row: TRow) => boolean;
+};
+
+export default function useRows<TRow, TKey extends React.Key, TValues>({
+  rows,
+  columns,
+  groupBy,
+  sort,
+  select,
+  selectable,
+  isRowDisabled = (): boolean => false,
+  isRowLoading = (): boolean => false,
+}: UseRowsParams<TRow, TKey, TValues>): ReactNode[] {
   // Render cells individually.
   const renderedRows = useMemo(() => {
     return rows.map((row) => ({
+      disabled: isRowDisabled(row.data),
+      loading: isRowLoading(row.data),
       key: row.key,
       cells: columns.map((column, columnI) => {
         const { value } = row.values[columnI];
@@ -48,7 +58,7 @@ export default function useRows<TRow, TKey extends React.Key, TValues>({
         };
       }),
     }));
-  }, [columns, rows]);
+  }, [columns, rows, isRowDisabled, isRowLoading]);
 
   // Sort rows.
   const sortedRows = useMemo(() => {
@@ -95,7 +105,8 @@ export default function useRows<TRow, TKey extends React.Key, TValues>({
   const fullRows = useMemo(
     () =>
       sortedRows.map((row, i) => {
-        const checked = select.selected.includes(row.key);
+        const { disabled, loading, key } = row;
+        const checked = select.selected.includes(key);
 
         let prefixColumn = null;
 
@@ -123,22 +134,27 @@ export default function useRows<TRow, TKey extends React.Key, TValues>({
           }
         }
 
-        const label = checked ? `Select ${row.key}` : `Deselect ${row.key}`;
+        const label = checked ? `Select ${key}` : `Deselect ${key}`;
 
         return (
-          <Table.Row key={row.key}>
+          <Table.Row
+            key={key}
+            aria-disabled={disabled || undefined}
+            className={classNames({ "is-disabled": disabled })}
+          >
             {prefixColumn}
-            {selectable ? (
-              <Table.Cell>
+            <Table.Cell className="icon-column">
+              {selectable && !loading ? (
                 <InlineCheckbox
                   label={label}
                   checked={checked}
                   onChange={() => {
-                    select.toggle(row.key);
+                    select.toggle(key);
                   }}
                 />
-              </Table.Cell>
-            ) : null}
+              ) : null}
+              {loading ? <Spinner /> : null}
+            </Table.Cell>
             {row.cells
               .filter(({ column }) => groupBy !== column)
               .map(({ column, collapse, className, rendered, align }) => (

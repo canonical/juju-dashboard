@@ -13,19 +13,21 @@
 }
 
 .models {
-  .model-name-column {
-    display: flex;
-    overflow: hidden;
+  .icon-column {
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+    vertical-align: top;
+    width: 2rem;
+  }
 
-    &__status {
-      flex-shrink: 0;
-      margin-right: $sph--small;
-    }
+  .icon-column-header {
+    padding-top: 0.9rem;
+  }
 
-    &__name {
-      flex-shrink: 1;
-      overflow: hidden;
-    }
+  tr.is-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
   }
 
   caption {

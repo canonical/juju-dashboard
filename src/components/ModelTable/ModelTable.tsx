@@ -1,5 +1,4 @@
-import { Chip, Spinner } from "@canonical/react-components";
-import classNames from "classnames";
+import { Chip } from "@canonical/react-components";
 import { useMemo } from "react";
 import type { JSX } from "react";
 
@@ -14,7 +13,7 @@ import {
   getDestructionState,
   getModelUpgrades,
 } from "store/juju/selectors";
-import type { ModelData } from "store/juju/types";
+import type { ModelData, ModelUpgrade } from "store/juju/types";
 import { getControllerByUUID } from "store/juju/utils/controllers";
 import {
   extractCloudName,
@@ -75,12 +74,18 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
     [],
   );
 
+  const isDying = (uuid: string): boolean => uuid in destructionState;
+  const getUpgrade = (uuid: string): ModelUpgrade | null =>
+    uuid in modelUpgrades ? modelUpgrades[uuid] : null;
+
   return (
     <DataTable
       selectable={false}
       getKey={(row) => row.uuid}
       groupBy={groupBy}
       data={tableData}
+      isRowDisabled={({ uuid }) => isDying(uuid)}
+      isRowLoading={({ uuid }) => isDying(uuid) || !!getUpgrade(uuid)}
       noRowsMessage="No models"
       columns={{
         name: column({
@@ -93,44 +98,27 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
             qualifier,
           }),
           renderCell: ({ uuid, name, qualifier }, { model }) => {
-            const isDying = uuid in destructionState;
-            const upgrade = uuid in modelUpgrades ? modelUpgrades[uuid] : null;
+            const isModelDying = isDying(uuid);
+            const upgrade = getUpgrade(uuid);
             const isUpgrading = !!upgrade;
 
             return (
               <>
-                <div className="model-name-column">
-                  {isDying ? (
-                    <span className="model-name-column__status u-truncate">
-                      Destroying&hellip;
-                    </span>
-                  ) : null}
-                  {isUpgrading ? (
-                    <span className="model-name-column__status">
-                      <Spinner />
-                    </span>
-                  ) : null}
-                  <div className="model-name-column__name">
-                    <TruncatedTooltip message={name}>
-                      <ModelDetailsLink
-                        className={classNames({
-                          "u-text--muted": isDying,
-                        })}
-                        modelName={name}
-                        qualifier={qualifier}
-                      >
-                        {model.model.name}
-                      </ModelDetailsLink>
-                      {isUpgrading ? null : (
-                        <ModelVersion
-                          className="models__version"
-                          modelName={name}
-                          qualifier={qualifier}
-                        />
-                      )}
-                    </TruncatedTooltip>
-                  </div>
-                </div>
+                <TruncatedTooltip message={name}>
+                  <ModelDetailsLink modelName={name} qualifier={qualifier}>
+                    {model.model.name}
+                  </ModelDetailsLink>
+                  {isUpgrading ? null : (
+                    <ModelVersion
+                      className="models__version"
+                      modelName={name}
+                      qualifier={qualifier}
+                    />
+                  )}
+                </TruncatedTooltip>
+                {isModelDying ? (
+                  <div className="p-text-small">Destroying model...</div>
+                ) : null}
                 {isUpgrading ? (
                   <>
                     <ModelVersion
@@ -271,6 +259,7 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
                 modelUUID={uuid}
                 modelName={name}
                 qualifier={qualifier}
+                disabled={!!getUpgrade(uuid)}
               />
             ) : null,
         }),
