@@ -1,6 +1,7 @@
 {
   "dependencyDashboard": true,
   "extends": ["github>canonical/renovate-apps"],
+  "minimumReleaseAge": "7 days",
   "packageRules": [
     {
       "matchDatasources": ["docker"],
