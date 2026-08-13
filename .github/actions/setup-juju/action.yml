@@ -32,7 +32,7 @@ runs:
       env:
         INPUTS_JUJU_CHANNEL: ${{ inputs.juju-channel}}
     - name: Bootstrap Juju
-      run: juju bootstrap ${INPUTS_PROVIDER:+"$INPUTS_PROVIDER"} ${INPUTS_CONTROLLER_NAME:+"$INPUTS_CONTROLLER_NAME"} $INPUTS_BOOTSTRAP_OPTIONS
+      run: juju bootstrap "$INPUTS_PROVIDER" "$INPUTS_CONTROLLER_NAME" $INPUTS_BOOTSTRAP_OPTIONS
       shell: bash
       env:
         INPUTS_PROVIDER: ${{ inputs.provider }}

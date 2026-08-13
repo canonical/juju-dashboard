@@ -21,7 +21,7 @@ runs:
       if: inputs.message == ''
       run: |
         curl -X POST \
-            -F 'workflow=${GITHUB_WORKFLOW}' \
+            -F 'workflow=${{ github.workflow }}' \
             -F 'repo_name=${{ github.repository }}' \
             -F 'action_id=${{ github.run_id }}' \
             "${INPUTS_WEBHOOK_URL}?room=${INPUTS_CHANNEL}"

@@ -2,8 +2,12 @@ name: GitHub Actions Analysis
 on:
   push:
     branches: ["main"]
+    paths:
+      - ".github/**/*"
   pull_request:
     branches: ["**"]
+    paths:
+      - ".github/**/*"
 
 permissions: {}
 
@@ -28,10 +32,10 @@ jobs:
           persist-credentials: false
       - name: Download actionlint
         id: get_actionlint
-        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/62c50a97a146fe36a8951a2a365158c4a4795ba8/scripts/download-actionlint.bash)
         shell: bash
       - name: Check workflow files
-        run: ${STEPS_GET_ACTIONLINT_OUTPUTS_EXECUTABLE} -color
+        run: "${STEPS_GET_ACTIONLINT_OUTPUTS_EXECUTABLE}" -color
         shell: bash
         env:
           STEPS_GET_ACTIONLINT_OUTPUTS_EXECUTABLE: ${{ steps.get_actionlint.outputs.executable }}

@@ -54,6 +54,7 @@ contribute and what kinds of contributions are welcome.
     - [Setting up model migrations](#setting-up-model-migrations)
     - [Add a model to a specific JAAS controller](#add-a-model-to-a-specific-jaas-controller)
     - [Add a model with a version older than the controller](#add-a-model-with-a-version-older-than-the-controller)
+  - [Pinning GitHub Actions](#pinning-github-actions)
 
 ## Setting up the dashboard for development
 
@@ -708,4 +709,12 @@ If you need to test with a model that has a Juju version that is older than its 
 
 ```bash
 juju add-model test --config="agent-version=3.6.19"
+```
+
+## Pinning GitHub Actions
+
+For increased security, actions in GitHub workflows are pinned to a specific commit SHA. Action versions (e.g. actions/checkout@1.2) can be converted to SHAs with:
+
+```
+npx pin-github-action .github --allow-empty --recursive --continue-on-error
 ```

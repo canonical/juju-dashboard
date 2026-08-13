@@ -35,14 +35,16 @@ runs:
     - name: Configure candid
       shell: bash
       run: |
-        sudo yq -i ".location = \"${INPUTS_CANDID_LOCATION}\"" /var/snap/candid/current/config.yaml
+        CONFIG_FILE='/var/snap/candid/current/config.yaml'
+        yq ".location = \"${INPUTS_CANDID_LOCATION}\"" "${CONFIG_FILE}" | sudo tee "${CONFIG_FILE}" >/dev/null
       env:
         INPUTS_CANDID_LOCATION: ${{ inputs.candid-location }}
     - name: Merge candid config
       shell: bash
       if: inputs.merge-config != ''
       run: |
-        sudo yq eval-all '. as $item ireduce ({}; . * $item)' -i /var/snap/candid/current/config.yaml "${INPUTS_MERGE_CONFIG}"
+        CONFIG_FILE='/var/snap/candid/current/config.yaml'
+        sudo yq eval-all '. as $item ireduce ({}; . * $item)' "${INPUTS_MERGE_CONFIG}" | sudo tee "${CONFIG_FILE}" >/dev/null
       env:
         INPUTS_MERGE_CONFIG: ${{ inputs.merge-config }}
     - name: Wait for candid snap

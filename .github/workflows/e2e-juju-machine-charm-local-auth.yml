@@ -51,7 +51,7 @@ jobs:
       - name: Compute Juju version for test identifier
         id: juju-version
         run: |
-          VERSION=$(echo "$CHANNEL" | cut -d'/' -f1)
+          VERSION="$(echo "$CHANNEL" | cut -d'/' -f1)"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
         shell: bash
         env:

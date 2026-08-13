@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
     inputs:
       dashboard-source:
-        description: Source of the dashboard to run the test suite for.
+        description: Source of the dashboard to run the test suite for (`branch`, `release`, `charm`, or `bundled`).
         required: true
         type: string
       source-identifier:

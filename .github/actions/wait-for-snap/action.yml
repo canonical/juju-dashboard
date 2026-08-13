@@ -1,6 +1,6 @@
 name: Wait for snap changes
 description: Wait for a snap to finish changes.
-inputs: 
+inputs:
   snap:
     description: The name of the snap to wait for.
     required: true
@@ -11,7 +11,7 @@ runs:
     - name: Wait for snap
       shell: bash
       run: |
-        while [ -n "$(snap changes ${INPUTS_SNAP} 2>/dev/null | awk '/^[0-9]+/ {if ($2 != "Done") print $2 }')" ]; do
+        while [ -n "$(snap changes "${INPUTS_SNAP}" 2>/dev/null | awk '/^[0-9]+/ {if ($2 != "Done") print $2 }')" ]; do
           echo "Waiting for snap changes on ${INPUTS_SNAP} to finish"
           sleep 1
         done

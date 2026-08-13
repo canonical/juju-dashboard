@@ -77,7 +77,7 @@ jobs:
         shell: bash
         run: |
           juju switch "${STEPS_JIMM_OUTPUTS_JIMM_CONTROLLER_NAME}":jimm
-          DASHBOARD_ADDRESS=http://$(juju show-unit dashboard/0 | yq .dashboard/0.address):8080
+          DASHBOARD_ADDRESS="http://$(juju show-unit dashboard/0 | yq .dashboard/0.address):8080"
           juju config jimm cors-allowed-origins="$DASHBOARD_ADDRESS"
           juju config jimm juju-dashboard-location="$DASHBOARD_ADDRESS"/models
         env:

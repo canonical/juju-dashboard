@@ -181,8 +181,8 @@ runs:
         juju config jimm controller-admins="${INPUTS_ADMIN_USERNAME}@example.com"
         juju config jimm uuid=3f4d142b-732e-4e99-80e7-5899b7e67e59
         KEYS=$(go run github.com/go-macaroon-bakery/macaroon-bakery/cmd/bakery-keygen/v3@latest)
-        juju config jimm public-key=$(echo $KEYS | yq .public)
-        juju config jimm private-key=$(echo $KEYS | yq .private)
+        juju config jimm public-key="$(echo $KEYS | yq .public)"
+        juju config jimm private-key="$(echo $KEYS | yq .private)"
       env:
         INPUTS_ADMIN_USERNAME: ${{ inputs.admin-username }}
     - name: Wait for ingress
@@ -293,12 +293,14 @@ runs:
       run: sudo microk8s kubectl delete pod jimm-0 -n jimm # Fix ListModels issue:
     - name: Wait for JIMM pod to be recreated
       uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
+      env:
+        STEPS_JIMM_CONTROLLER_OUTPUTS_NAME: ${{ steps.jimm-controller.outputs.name }}
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
         continue_on_error: true # Sometimes the error persists after a retry but it seems to work anyway.
         command: |
-          juju switch "${{ steps.jimm-controller.outputs.name }}:jimm"
+          juju switch "${STEPS_JIMM_CONTROLLER_OUTPUTS_NAME}:jimm"
           STATUS=$(juju status --format json | yq .applications.jimm.application-status.current)
           if [ "$STATUS" == "error" ]; then
             # Sometimes the jimm unit will get into an error state, so resolve and try again.
