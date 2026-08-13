@@ -124,7 +124,7 @@ const CategoriesListing = ({
         {title}
       </h5>
       <p className="u-no-margin--bottom p-text--small">
-        <a href={docsLink} target="_blank">
+        <a href={docsLink} target="_blank" rel="noreferrer">
           {docsLabel}
         </a>
       </p>

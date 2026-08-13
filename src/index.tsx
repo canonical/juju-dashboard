@@ -51,7 +51,7 @@ export const getControllerAPIEndpointErrors = (
   } else if (!controllerAPIEndpoint?.startsWith("/")) {
     if (
       !controllerAPIEndpoint.startsWith("wss://") &&
-      !controllerAPIEndpoint.startsWith("ws://")
+      !controllerAPIEndpoint.startsWith("ws://") // eslint-disable-line @microsoft/sdl/no-insecure-url
     ) {
       return `controllerAPIEndpoint (${controllerAPIEndpoint}) must be an absolute path or begin with ws:// or wss://.`;
     } else if (!addressRegex.test(controllerAPIEndpoint)) {

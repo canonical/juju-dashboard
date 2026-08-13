@@ -30,7 +30,7 @@ export const endpoints = (): Endpoints => {
   const jimmEndpoint =
     window.jujuDashboardConfig?.controllerAPIEndpoint
       .replace("wss://", "https://")
-      .replace("ws://", "http://")
+      .replace("ws://", "http://") // eslint-disable-line @microsoft/sdl/no-insecure-url
       .replace(/\/api$/, "") ?? "";
   return {
     login: `${jimmEndpoint}/auth/login`,
