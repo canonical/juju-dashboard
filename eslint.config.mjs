@@ -15,6 +15,8 @@ import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
 import { includeIgnoreFile } from "@eslint/compat";
 import cspellPlugin from "@cspell/eslint-plugin";
+import sdl from "@microsoft/eslint-plugin-sdl";
+import pluginSecurity from "eslint-plugin-security";
 
 const gitignorePath = fileURLToPath(new URL(".gitignore", import.meta.url));
 const __filename = fileURLToPath(import.meta.url);
@@ -33,6 +35,7 @@ export default defineConfig(
       "konf/",
     ],
   },
+  sdl.configs.common,
   {
     files: ["src/**/*.ts", "src/**/*.tsx", "e2e/**/*.ts", "actions/**/*.ts"],
     extends: [
@@ -51,6 +54,7 @@ export default defineConfig(
       "@stylistic": stylistic,
       perfectionist,
       "@cspell": cspellPlugin,
+      security: pluginSecurity
     },
     languageOptions: {
       globals: {
@@ -115,6 +119,8 @@ export default defineConfig(
       "init-declarations": "off",
       "@typescript-eslint/init-declarations": "error",
       "@typescript-eslint/promise-function-async": "error",
+      "@typescript-eslint/no-implied-eval": "error",
+      "no-implied-eval": "off",
       "react/jsx-filename-extension": [1, { extensions: [".js", ".tsx"] }],
       "import/prefer-default-export": 0,
       "import/first": ["error"],
@@ -153,6 +159,16 @@ export default defineConfig(
       "@stylistic/no-multiple-empty-lines": ["error", { max: 1 }],
       "react/no-unescaped-entities": 0,
       "react/display-name": 0,
+      "react/no-danger": "error",
+      "react/jsx-no-target-blank": [
+        "error",
+        {
+          allowReferrer: false,
+          enforceDynamicLinks: "always",
+          warnOnSpreadAttributes: true
+        }
+      ],
+      "react/iframe-missing-sandbox": "error",
       "@typescript-eslint/no-duplicate-enum-values": 0,
       "promise/catch-or-return": ["error", { allowFinally: true }],
       "react-refresh/only-export-components": ["error"],
@@ -183,6 +199,7 @@ export default defineConfig(
       "@typescript-eslint/require-await": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/init-declarations": "off",
+      "@microsoft/sdl/no-insecure-url": "off",
     },
   },
   {
