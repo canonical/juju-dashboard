@@ -4,11 +4,6 @@ inputs:
   type:
     description: "The type of resource to wait for"
     required: true
-    type: choice
-    options:
-      - application
-      - unit
-      - model
   name:
     description: "The name of the resource to wait for"
     required: true
@@ -27,8 +22,9 @@ runs:
     - name: Wait for Juju resource
       shell: bash
       run: |
-        export TYPE='${{ inputs.type }}'
-        export NAME='${{ inputs.name }}'
-        export TIMEOUT_MINUTES='${{ inputs.timeout_minutes }}'
-        export EXPECTED_STATUS='${{ inputs.status }}'
         ./scripts/wait-for
+      env:
+        TYPE: ${{ inputs.type }}
+        NAME: ${{ inputs.name }}
+        TIMEOUT_MINUTES: ${{ inputs.timeout_minutes }}
+        EXPECTED_STATUS: ${{ inputs.status }}

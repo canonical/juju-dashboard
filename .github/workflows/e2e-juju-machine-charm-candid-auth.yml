@@ -8,8 +8,11 @@ on:
         type: string
         description: The password to use when logging in as the admin user.
         default: password1
+    secrets:
+      webbot-url:
+        required: true
 
-permissions: read-all
+permissions: {}
 
 jobs:
   test:
@@ -20,7 +23,9 @@ jobs:
         node-version: [22.x]
     steps:
       - name: Checkout Juju Dashboard repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action
@@ -30,7 +35,9 @@ jobs:
           juju-channel: ${{ steps.config.outputs.juju-channel }}
           merge-config: ./e2e/candid-config.yaml
       - name: Set up access
-        run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
+        run: echo "${INPUTS_ADMIN_PASSWORD}" | juju change-user-password --no-prompt
+        env:
+          INPUTS_ADMIN_PASSWORD: ${{ inputs.admin-password }}
       - name: Set up Juju Dashboard machine charm
         uses: ./.github/actions/setup-machine-charm
         with:
@@ -58,4 +65,4 @@ jobs:
         if: steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification
         with:
-          webhook-url: ${{ secrets.WEBBOT_URL }}
+          webhook-url: ${{ secrets.webbot-url }}

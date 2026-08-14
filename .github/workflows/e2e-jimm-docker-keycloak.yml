@@ -13,8 +13,13 @@ on:
         type: string
         description: The password to use when logging in as the admin user.
         default: test
+    secrets:
+      github-token:
+        required: true
+      webbot-url:
+        required: true
 
-permissions: read-all
+permissions: {}
 
 jobs:
   test:
@@ -25,7 +30,9 @@ jobs:
         node-version: [22.x]
     steps:
       - name: Checkout Juju Dashboard repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action
@@ -38,18 +45,21 @@ jobs:
           is-juju: false
           controller-ws-address: ws://jimm.localhost:17070
       - name: Checkout JIMM repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           repository: canonical/jimm
           path: jimm
+          persist-credentials: false
       - name: Update JIMM with the dashboard address
         run: |
           sudo snap install yq
-          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_FINAL_REDIRECT_URL = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
-          yq -i '.services.jimm-base.environment.JIMM_DASHBOARD_LOCATION = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
-          yq -i '.services.jimm-base.environment.CORS_ALLOWED_ORIGINS = "http://${{ steps.docker-dashboard.outputs.address }}"' jimm/docker-compose.common.yaml
+          yq -i ".services.jimm-base.environment.JIMM_DASHBOARD_FINAL_REDIRECT_URL = \"http://${STEPS_DOCKER_DASHBOARD_OUTPUTS_ADDRESS}\"" jimm/docker-compose.common.yaml
+          yq -i ".services.jimm-base.environment.JIMM_DASHBOARD_LOCATION = \"http://${STEPS_DOCKER_DASHBOARD_OUTPUTS_ADDRESS}\"" jimm/docker-compose.common.yaml
+          yq -i ".services.jimm-base.environment.CORS_ALLOWED_ORIGINS = \"http://${STEPS_DOCKER_DASHBOARD_OUTPUTS_ADDRESS}\"" jimm/docker-compose.common.yaml
+        env:
+          STEPS_DOCKER_DASHBOARD_OUTPUTS_ADDRESS: ${{ steps.docker-dashboard.outputs.address }}
       - name: Setup Go
-        uses: actions/setup-go@v7
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
         with:
           go-version-file: "jimm/go.mod"
       - name: Go vendor to speed up docker build
@@ -59,16 +69,18 @@ jobs:
         with:
           jimm-version: v3.4.0
           juju-channel: "3.6/stable"
-          ghcr-pat: ${{ secrets.GITHUB_TOKEN }}
+          ghcr-pat: ${{ secrets.github-token }}
           dump-logs: true
       - name: Set the CLI admin's password
         run: |
-          juju switch ${{ env.CONTROLLER_NAME }}
-          echo '${{ inputs.admin-password }}' | juju change-user-password --no-prompt
+          juju switch "${CONTROLLER_NAME}"
+          echo "${INPUTS_ADMIN_PASSWORD}" | juju change-user-password --no-prompt
+        env:
+          INPUTS_ADMIN_PASSWORD: ${{ inputs.admin-password }}
       - name: Restart JIMM
         run: docker restart jimm-test # Fixes a context cancelled issue when fetching models from the dashboard.
       - name: Wait for JIMM container to be ready
-        uses: nick-fields/retry@v4
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
         with:
           timeout_minutes: 1
           max_attempts: 2
@@ -101,4 +113,4 @@ jobs:
         if: steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification
         with:
-          webhook-url: ${{ secrets.WEBBOT_URL }}
+          webhook-url: ${{ secrets.webbot-url }}

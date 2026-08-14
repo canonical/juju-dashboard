@@ -7,11 +7,13 @@ defaults:
   run:
     shell: bash
 
-permissions: write-all
+permissions: {}
 
 jobs:
   check-valid-promotion:
     name: Check promotion conditions
+    permissions:
+      contents: write
     runs-on: ubuntu-24.04
 
     outputs:
@@ -24,19 +26,20 @@ jobs:
       destination-channel: ${{ steps.channel.outputs.destination }}
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
           fetch-tags: true
+          persist-credentials: false
       - name: Only run on `release/x.y` branches
         run: |
           # Unfortunately, this step is required since GitHub doesn't allow glob filtering on
           # the head branch of a PR
-          if [ -z $(echo '${{ github.ref_name }}' | grep -P '^release/\d+\.\d+$') ]; then
+          if ! echo "${GITHUB_REF_NAME}" | grep -qP '^release/\d+\.\d+$'; then
               echo 'Not running on a full release branch. Cancelling workflow.'
 
-              gh run cancel ${{ github.run_id }}
-              gh run watch ${{ github.run_id }}
+              gh run cancel "${{ github.run_id }}"
+              gh run watch "${{ github.run_id }}"
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -54,7 +57,7 @@ jobs:
           candidate_tag="$(echo "$tags_on_commit" | ( grep candidate || true ) | head -n 1)"
 
           # Prefer stable tag
-          if [ ! -z "$stable_tag" ]; then
+          if [ -n "$stable_tag" ]; then
             tag="$stable_tag"
           else
             tag="$candidate_tag"
@@ -76,12 +79,12 @@ jobs:
       - name: Generate channel information
         id: channel
         run: |
-          origin='${{ steps.tag.outputs.track }}/candidate'
-          destination='${{ steps.tag.outputs.track }}/stable'
+          origin="${STEPS_TAG_OUTPUTS_TRACK}/candidate"
+          destination="${STEPS_TAG_OUTPUTS_TRACK}/stable"
 
-          branch='${{ steps.tag.outputs.branch }}'
+          branch="${STEPS_TAG_OUTPUTS_BRANCH}"
 
-          if [ ! -z "$branch" ]; then
+          if [ -n "$branch" ]; then
             # Add branch information to the channels
             origin="$origin/$branch"
             destination="$destination/$branch"
@@ -89,6 +92,9 @@ jobs:
 
           echo "origin=$origin" | tee -a "$GITHUB_OUTPUT"
           echo "destination=$destination" | tee -a "$GITHUB_OUTPUT"
+        env:
+          STEPS_TAG_OUTPUTS_TRACK: ${{ steps.tag.outputs.track }}
+          STEPS_TAG_OUTPUTS_BRANCH: ${{ steps.tag.outputs.branch }}
 
   promote-candidate:
     name: Promote to stable
@@ -107,11 +113,13 @@ jobs:
       destination: ${{ needs.check-valid-promotion.outputs.destination-channel }}
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ needs.check-valid-promotion.outputs.tag }}
+          persist-credentials: false
       - name: Promote charm to stable
-        uses: andogq/charming-actions/promote-charm@fix/promote-charm-branch # TODO: Replace this once canonical/charming-actions#162 merges
+        # TODO: Replace this once canonical/charming-actions#162 merges
+        uses: andogq/charming-actions/promote-charm@3b1b538aabfc419dc27328c3c0e649bbd1b55be7 # fix/promote-charm-branch
         with:
           credentials: "${{ secrets.CHARMHUB_TOKEN }}"
           origin-channel: "${{ needs.check-valid-promotion.outputs.origin-channel }}"
@@ -122,17 +130,20 @@ jobs:
   post-promotion:
     name: Post promotion operations
     needs: [check-valid-promotion, promote-candidate]
+    permissions:
+      contents: write
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-tags: true
           ref: ${{ needs.check-valid-promotion.outputs.tag }}
+          persist-credentials: false
       - name: Tag commit
         id: tags
         run: |
-          tag='track/${{ needs.check-valid-promotion.outputs.destination-channel }}'
+          tag="track/${NEEDS_CHECK_VALID_PROMOTION_OUTPUTS_DESTINATION_CHANNEL}"
 
           echo "Creating tag '$tag' at $(git rev-parse --short HEAD)"
 
@@ -140,6 +151,8 @@ jobs:
           git tag -f "$tag"
 
           git push --tags --force
+        env:
+          NEEDS_CHECK_VALID_PROMOTION_OUTPUTS_DESTINATION_CHANNEL: ${{ needs.check-valid-promotion.outputs.destination-channel }}
       - name: Send notification
         uses: ./.github/actions/send-notification
         with:
@@ -156,7 +169,9 @@ jobs:
 
     steps:
       - run: |
-          echo '::notice title=Candidate was already promoted::The ${{ needs.check-valid-promotion.track }} track already contains the latest candidate.'
+          echo "::notice title=Candidate was already promoted::The ${NEEDS_CHECK_VALID_PROMOTION_TRACK} track already contains the latest candidate."
+        env:
+          NEEDS_CHECK_VALID_PROMOTION_TRACK: ${{ needs.check-valid-promotion.outputs.track }}
 
   no-candidate:
     name: No candidate
@@ -167,5 +182,7 @@ jobs:
 
     steps:
       - run: |
-          echo '::error title=No candidate to promote::The ${{ needs.check-valid-promotion.track }} track does not have any candidates to promote.'
+          echo "::error title=No candidate to promote::The ${NEEDS_CHECK_VALID_PROMOTION_TRACK} track does not have any candidates to promote."
           exit 1
+        env:
+          NEEDS_CHECK_VALID_PROMOTION_TRACK: ${{ needs.check-valid-promotion.outputs.track }}

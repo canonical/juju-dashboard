@@ -39,7 +39,7 @@ runs:
         echo "net.ipv6.conf.lo.disable_ipv6=1" | sudo tee -a /etc/sysctl.conf
         sudo sysctl -p
     - name: Setup operator environment
-      uses: charmed-kubernetes/actions-operator@main
+      uses: charmed-kubernetes/actions-operator@d8217ad61c15f746727a9d41563c13e9b9fe56e3 # main
       with:
         channel: 1.35-strict/stable
         juju-channel: ${{ inputs.juju-channel }}
@@ -56,12 +56,13 @@ runs:
         sudo snap install yq jaas
         sudo snap install terraform --classic
     - name: Setup Go
-      uses: actions/setup-go@v7
+      uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
     - name: Checkout IAM repo
-      uses: actions/checkout@v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         repository: canonical/iam-bundle-integration
         path: iam-bundle-integration
+        persist-credentials: false
     - name: Set up IAM
       shell: bash
       run: |
@@ -111,19 +112,24 @@ runs:
     - name: Create admin user
       shell: bash
       run: |
-        IDENTITY_ID=$(juju run --wait=2m --format=json kratos/0 create-admin-account email='${{ inputs.admin-username }}@example.com' password='${{ inputs.admin-password }}' username='${{ inputs.admin-username }}' | yq .kratos/0.results.identity-id)
+        IDENTITY_ID=$(juju run --wait=2m --format=json kratos/0 create-admin-account email="${INPUTS_ADMIN_USERNAME}@example.com" password="${INPUTS_ADMIN_PASSWORD}" username="${INPUTS_ADMIN_USERNAME}" | yq .kratos/0.results.identity-id)
         SECRET_ID=$(juju add-secret password-secret password=test)
         juju grant-secret password-secret kratos
         juju run --wait=2m kratos/0 reset-password identity-id=$IDENTITY_ID password-secret-id=$SECRET_ID
+      env:
+        INPUTS_ADMIN_USERNAME: ${{ inputs.admin-username }}
+        INPUTS_ADMIN_PASSWORD: ${{ inputs.admin-password }}
     - name: Add JIMM model and apps
       shell: bash
       run: |
         juju add-model jimm
-        juju deploy juju-jimm-k8s --channel=${{ inputs.jimm-channel }} jimm --config postgres-secret-storage=true
+        juju deploy juju-jimm-k8s --channel="${INPUTS_JIMM_CHANNEL}" jimm --config postgres-secret-storage=true
         juju deploy openfga-k8s --channel=edge openfga
         juju deploy postgresql-k8s --channel=16/edge postgresql
         juju deploy traefik-k8s --channel=latest/stable --trust ingress
         juju trust postgresql --scope=cluster
+      env:
+        INPUTS_JIMM_CHANNEL: ${{ inputs.jimm-channel }}
     - name: Wait for Postgres
       uses: ./.github/actions/juju-wait-for
       with:
@@ -145,7 +151,7 @@ runs:
       shell: bash
       run: juju relate openfga:database postgresql
     - name: Wait for openfga
-      uses: nick-fields/retry@v4
+      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
       with:
         timeout_minutes: 5
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
@@ -172,13 +178,15 @@ runs:
       shell: bash
       run: |
         # Give the user admin permissions so that they can add the workload controller.
-        juju config jimm controller-admins="${{ inputs.admin-username }}@example.com"
+        juju config jimm controller-admins="${INPUTS_ADMIN_USERNAME}@example.com"
         juju config jimm uuid=3f4d142b-732e-4e99-80e7-5899b7e67e59
         KEYS=$(go run github.com/go-macaroon-bakery/macaroon-bakery/cmd/bakery-keygen/v3@latest)
-        juju config jimm public-key=$(echo $KEYS | yq .public)
-        juju config jimm private-key=$(echo $KEYS | yq .private)
+        juju config jimm public-key="$(echo $KEYS | yq .public)"
+        juju config jimm private-key="$(echo $KEYS | yq .private)"
+      env:
+        INPUTS_ADMIN_USERNAME: ${{ inputs.admin-username }}
     - name: Wait for ingress
-      uses: nick-fields/retry@v4
+      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
@@ -190,7 +198,7 @@ runs:
           fi
           TYPE=unit NAME=ingress/0 TIMEOUT_MINUTES=1 EXPECTED_STATUS=active ./scripts/wait-for
     - name: Add local hostname
-      uses: nick-fields/retry@v4
+      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
@@ -216,7 +224,7 @@ runs:
         type: unit
         name: jimm/0 # Wait for JIMM to be ready if it's still making config changes.
     - name: Wait for JIMM
-      uses: nick-fields/retry@v4
+      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
@@ -247,7 +255,7 @@ runs:
         # Set the name that the workloads controller will be registered as.
         echo "public=jimm-k8s" >> $GITHUB_OUTPUT
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v7
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
       with:
         node-version: ${{ matrix.node-version }}
         cache: "yarn"
@@ -265,11 +273,16 @@ runs:
     - name: Register workload controller with JIMM
       shell: bash
       run: |
-        juju jaas register-controller '${{ steps.workloads-controller.outputs.name }}' --local --tls-hostname juju-apiserver
-        juju update-credentials microk8s --controller ${{ steps.workloads-controller.outputs.public }}
+        juju jaas register-controller "${STEPS_WORKLOADS_CONTROLLER_OUTPUTS_NAME}" --local --tls-hostname juju-apiserver
+        juju update-credentials microk8s --controller "${STEPS_WORKLOADS_CONTROLLER_OUTPUTS_PUBLIC}"
+      env:
+        STEPS_WORKLOADS_CONTROLLER_OUTPUTS_NAME: ${{ steps.workloads-controller.outputs.name }}
+        STEPS_WORKLOADS_CONTROLLER_OUTPUTS_PUBLIC: ${{ steps.workloads-controller.outputs.public }}
     - name: Switch to JIMM model
       shell: bash
-      run: juju switch '${{ steps.jimm-controller.outputs.name }}:jimm'
+      run: juju switch "${STEPS_JIMM_CONTROLLER_OUTPUTS_NAME}:jimm"
+      env:
+        STEPS_JIMM_CONTROLLER_OUTPUTS_NAME: ${{ steps.jimm-controller.outputs.name }}
     - name: Wait for JIMM
       uses: ./.github/actions/juju-wait-for
       with:
@@ -279,13 +292,15 @@ runs:
       shell: bash
       run: sudo microk8s kubectl delete pod jimm-0 -n jimm # Fix ListModels issue:
     - name: Wait for JIMM pod to be recreated
-      uses: nick-fields/retry@v4
+      uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
+      env:
+        STEPS_JIMM_CONTROLLER_OUTPUTS_NAME: ${{ steps.jimm-controller.outputs.name }}
       with:
         timeout_minutes: 1
         max_attempts: 5 # Retry the wait-for with a short timeout in case it gets stuck and times out. If it fails after multiple tries it's probably a real error.
         continue_on_error: true # Sometimes the error persists after a retry but it seems to work anyway.
         command: |
-          juju switch '${{ steps.jimm-controller.outputs.name }}:jimm'
+          juju switch "${STEPS_JIMM_CONTROLLER_OUTPUTS_NAME}:jimm"
           STATUS=$(juju status --format json | yq .applications.jimm.application-status.current)
           if [ "$STATUS" == "error" ]; then
             # Sometimes the jimm unit will get into an error state, so resolve and try again.

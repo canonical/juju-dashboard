@@ -1,0 +1,26 @@
+name: Renovate
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "renovate.json"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "renovate.json"
+permissions: {}
+jobs:
+  renovate:
+    name: Validate config
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Validate Renovate Configuration with renovate-config-validator
+        uses: suzuki-shunsuke/github-action-renovate-config-validator@ee9f69e1f683ed0d08225086482b34fc9abe9300 # v2.1.0

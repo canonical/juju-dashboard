@@ -1,6 +1,6 @@
 name: Set up Juju
 description: Install the Juju snap.
-inputs: 
+inputs:
   juju-channel:
     description: Juju snap channel to install.
     required: false
@@ -21,14 +21,20 @@ runs:
   steps:
     - name: Install LXD
       if: ${{ inputs.provider == 'localhost' }}
-      uses: canonical/setup-lxd@main
+      uses: canonical/setup-lxd@da2ac84e727dc534215fd14cd088b9209d65893b # main
     - name: Disable LXD IPv6
       if: ${{ inputs.provider == 'localhost' }}
       run: lxc network set lxdbr0 ipv6.address none
       shell: bash
     - name: Install snap
-      run: sudo snap install juju --channel '${{ inputs.juju-channel}}'
+      run: sudo snap install juju --channel "${INPUTS_JUJU_CHANNEL}"
       shell: bash
+      env:
+        INPUTS_JUJU_CHANNEL: ${{ inputs.juju-channel}}
     - name: Bootstrap Juju
-      run: juju bootstrap '${{ inputs.provider }}' '${{ inputs.controller-name }}' ${{ inputs.bootstrap-options }}
+      run: juju bootstrap "$INPUTS_PROVIDER" "$INPUTS_CONTROLLER_NAME" $INPUTS_BOOTSTRAP_OPTIONS
       shell: bash
+      env:
+        INPUTS_PROVIDER: ${{ inputs.provider }}
+        INPUTS_CONTROLLER_NAME: ${{ inputs.controller-name }}
+        INPUTS_BOOTSTRAP_OPTIONS: ${{ inputs.bootstrap-options }}

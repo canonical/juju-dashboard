@@ -1,0 +1,41 @@
+name: GitHub Actions Analysis
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/**/*"
+  pull_request:
+    branches: ["**"]
+    paths:
+      - ".github/**/*"
+
+permissions: {}
+
+jobs:
+  zizmor:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Download actionlint
+        id: get_actionlint
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/62c50a97a146fe36a8951a2a365158c4a4795ba8/scripts/download-actionlint.bash)
+        shell: bash
+      - name: Check workflow files
+        run: "${STEPS_GET_ACTIONLINT_OUTPUTS_EXECUTABLE}" -color
+        shell: bash
+        env:
+          STEPS_GET_ACTIONLINT_OUTPUTS_EXECUTABLE: ${{ steps.get_actionlint.outputs.executable }}
