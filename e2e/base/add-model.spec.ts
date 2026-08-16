@@ -8,7 +8,7 @@ import urls from "urls";
 
 import { JujuEnv, test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
-import { GiveControllerAccess } from "../helpers/actions";
+import { AddModel, GiveControllerAccess } from "../helpers/actions";
 import type { User } from "../helpers/auth";
 import { ControllerPermission, Model } from "../helpers/objects";
 import { exec, execIfModelExists, generateRandomName } from "../utils";
@@ -50,11 +50,9 @@ test.describe("Add model", () => {
     } else {
       await jujuCLI.loginLocalCLIAdmin();
     }
-
-    await execIfModelExists(
-      `juju destroy-model ${currentModel.qualifiedName} --no-prompt --destroy-storage`,
-      currentModel.qualifiedName,
-    );
+    const addModel = new AddModel(jujuCLI, owner);
+    addModel.model = currentModel;
+    await addModel.rollback();
   });
 
   test.afterAll(async () => {
