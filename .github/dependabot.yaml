@@ -9,7 +9,8 @@ updates:
       semver-minor-days: 7
       semver-patch-days: 3
   - package-ecosystem: "pip"
-    directories: "/charms/*-charm"
+    directories:
+      - "/charms/*-charm"
     schedule:
       interval: "weekly"
     cooldown:
