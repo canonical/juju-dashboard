@@ -140,7 +140,7 @@ export default function useRows<TRow, TKey extends React.Key, TValues>({
           <Table.Row
             key={key}
             aria-disabled={disabled || undefined}
-            className={classNames({ "is-disabled": disabled })}
+            className={classNames({ "is-row-disabled": disabled })}
           >
             {prefixColumn}
             <Table.Cell className="icon-column">

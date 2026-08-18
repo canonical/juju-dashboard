@@ -1,0 +1,22 @@
+.data-table {
+  .icon-column {
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+    vertical-align: top;
+    width: 2rem;
+  }
+
+  .icon-column-header {
+    padding-top: 0.9rem;
+  }
+
+  .is-row-disabled {
+    opacity: 0.5;
+  }
+
+  // Apply to interactive elements within a disabled row via renderCell.
+  .is-disabled {
+    pointer-events: none;
+    user-select: none;
+  }
+}

@@ -100,7 +100,7 @@ export default function DataTable<
   );
 
   return (
-    <Table>
+    <Table className="data-table">
       <Table.Header>
         {prefixHeader}
         <Table.Header.Cell className="icon-column icon-column-header">
