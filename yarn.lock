@@ -9058,6 +9058,7 @@ __metadata:
     typescript: "npm:6.0.3"
     typescript-eslint: "npm:8.66.0"
     vanilla-framework: "npm:4.56.0"
+    vite: "npm:8.2.1"
     vite-plugin-html: "npm:3.2.2"
     vitest: "npm:4.1.10"
     vitest-fetch-mock: "npm:0.4.5"
