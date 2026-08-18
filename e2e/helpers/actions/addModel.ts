@@ -76,6 +76,9 @@ export class AddModel implements Action<Model> {
       `juju destroy-model ${modelName} --force --no-prompt --no-wait --destroy-storage --timeout 0`,
       modelName,
     );
+    await exec(
+      `TYPE=model NAME='${modelName}' TIMEOUT_MINUTES=5 EXPECTED_STATUS=REMOVED ./scripts/wait-for`,
+    );
   }
 
   result(): Model {

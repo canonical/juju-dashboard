@@ -6,8 +6,15 @@ set -euo pipefail
 TIMEOUT_SECONDS=$(($TIMEOUT_MINUTES * 60))
 echo "Polling juju status"
 echo "Waiting for $TYPE: $NAME"
+MODEL_NAME=${MODEL_NAME:-}
 
 START_TIME=$(date +%s)
+
+removed() {
+  echo "$TYPE $NAME has been removed"
+  exit 0
+}
+
 while true; do
   CURRENT_TIME=$(date +%s)
   ELAPSED=$((CURRENT_TIME - START_TIME))
@@ -18,26 +25,49 @@ while true; do
     exit 1
   fi
 
+  # If checking a model then explicitly set the model for the status command.
+  MODEL_ARG=''
+  if [ ! -z $"$MODEL_NAME" ] || [ "$TYPE" == "model" ]; then
+    MODEL_ARG="-m ${MODEL_NAME:-$NAME}"
+  fi
   # Get status - disable exit on error temporarily for this command
   set +e
-  STATUS_OUTPUT=$(juju status --format=json 2>/dev/null)
+  STATUS_OUTPUT=$(juju status $MODEL_ARG --format=json 2>/dev/null)
   STATUS_EXIT_CODE=$?
   set -e
 
   if [ $STATUS_EXIT_CODE -ne 0 ]; then
-    echo "juju status command failed (elapsed: ${ELAPSED}s)"
-    echo "Output: $STATUS_OUTPUT"
-    sleep 5
-    continue
+    # The status command will fail if the model has been removed.
+    if [ "$TYPE" == "model" ] && [ "$EXPECTED_STATUS" == "REMOVED" ]; then
+      removed
+    else 
+      echo "juju status command failed (elapsed: ${ELAPSED}s)"
+      echo "Output: $STATUS_OUTPUT"
+      sleep 5
+      continue
+    fi
+  fi
+
+  ENTITY=''
+  if [ "$TYPE" == "application" ]; then
+    ENTITY=$(echo "$STATUS_OUTPUT" | jq -r ".applications.\"$NAME\" // empty")
+  elif [ "$TYPE" == "unit" ]; then
+    ENTITY=$(echo "$STATUS_OUTPUT" | jq -r ".applications.\"${NAME%%/*}\".units.\"$NAME\" // empty")
+  elif [ "$TYPE" == "model" ]; then
+    ENTITY=$(echo "$STATUS_OUTPUT" | jq -r ".model // empty")
+  fi
+  
+  if [ "$EXPECTED_STATUS" == "REMOVED" ] && [ -z "$ENTITY" ]; then
+    removed
   fi
 
   # Extract status based on resource type
   if [ "$TYPE" == "application" ]; then
-    STATUS=$(echo "$STATUS_OUTPUT" | jq -r ".applications.\"$NAME\".\"application-status\".current // empty")
+    STATUS=$(echo "$ENTITY" | jq -r ".\"application-status\".current // empty")
   elif [ "$TYPE" == "unit" ]; then
-    STATUS=$(echo "$STATUS_OUTPUT" | jq -r ".applications.\"${NAME%%/*}\".units.\"$NAME\".\"workload-status\".current // empty")
+    STATUS=$(echo "$ENTITY" | jq -r ".\"workload-status\".current // empty")
   elif [ "$TYPE" == "model" ]; then
-    STATUS=$(echo "$STATUS_OUTPUT" | jq -r ".model.\"model-status\".current // empty")
+    STATUS=$(echo "$ENTITY" | jq -r ".\"model-status\".current // empty")
   fi
 
   if [ -z "$STATUS" ]; then

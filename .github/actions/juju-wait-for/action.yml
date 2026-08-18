@@ -7,6 +7,9 @@ inputs:
   name:
     description: "The name of the resource to wait for"
     required: true
+  model-name:
+    description: "The resource's model. The current model will be used if not provided. Not required if the type is set to 'model'"
+    required: false
   timeout_minutes:
     description: "Timeout duration in minutes"
     required: false
@@ -26,5 +29,6 @@ runs:
       env:
         TYPE: ${{ inputs.type }}
         NAME: ${{ inputs.name }}
+        MODEL_NAME: ${{ inputs.model-name }}
         TIMEOUT_MINUTES: ${{ inputs.timeout_minutes }}
         EXPECTED_STATUS: ${{ inputs.status }}
