@@ -1,5 +1,6 @@
 import { Icon, Tooltip } from "@canonical/react-components";
 import type { FC } from "react";
+import classNames from "classnames";
 
 import ModelDetailsLink from "components/ModelDetailsLink";
 import type { ModelData } from "store/juju/types";
@@ -10,9 +11,14 @@ import { Label } from "./types";
 type Props = {
   modelData: ModelData;
   qualifier?: null | string;
+  className?: string;
 };
 
-const ModelSummary: FC<Props> = ({ modelData, qualifier }: Props) => {
+const ModelSummary: FC<Props> = ({
+  modelData,
+  qualifier,
+  className,
+}: Props) => {
   const applicationKeys = Object.keys(modelData.applications);
   const applicationCount = applicationKeys.length;
   const machineCount = Object.keys(modelData.machines).length;
@@ -21,7 +27,7 @@ const ModelSummary: FC<Props> = ({ modelData, qualifier }: Props) => {
     return prev + Object.keys(units).length;
   }, 0);
   return (
-    <div className="u-flex">
+    <div className={classNames("u-flex", className)}>
       <Tooltip
         message="See applications"
         position="top-center"

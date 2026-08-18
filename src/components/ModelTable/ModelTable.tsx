@@ -27,6 +27,7 @@ import CloudCell from "./CloudCell";
 import ModelSummary from "./ModelSummary";
 import WarningMessage from "./WarningMessage";
 import { getCredential, getRegion } from "./shared";
+import classNames from "classnames";
 
 type Props = {
   models: ModelData[];
@@ -104,7 +105,12 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
 
             return (
               <>
-                <TruncatedTooltip message={name}>
+                <TruncatedTooltip
+                  message={name}
+                  className={classNames({
+                    "is-disabled": isDying(uuid) || !!getUpgrade(uuid),
+                  })}
+                >
                   <ModelDetailsLink modelName={name} qualifier={qualifier}>
                     {model.model.name}
                   </ModelDetailsLink>
@@ -142,11 +148,18 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
         summary: column({
           header: "Configuration",
           className: "summary",
-          map: ({ qualifier }) => ({
+          map: ({ uuid, qualifier }) => ({
+            uuid,
             qualifier,
           }),
-          renderCell: ({ qualifier }, { model }) => (
-            <ModelSummary modelData={model} qualifier={qualifier} />
+          renderCell: ({ uuid, qualifier }, { model }) => (
+            <ModelSummary
+              modelData={model}
+              qualifier={qualifier}
+              className={classNames({
+                "is-disabled": isDying(uuid) || !!getUpgrade(uuid),
+              })}
+            />
           ),
         }),
         owner: column({
@@ -259,7 +272,7 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
                 modelUUID={uuid}
                 modelName={name}
                 qualifier={qualifier}
-                disabled={!!getUpgrade(uuid)}
+                disabled={isDying(uuid) || !!getUpgrade(uuid)}
               />
             ) : null,
         }),
