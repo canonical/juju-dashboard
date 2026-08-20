@@ -1,5 +1,4 @@
 import { Spinner } from "@canonical/react-components";
-import classNames from "classnames";
 import fastDeepEqual from "fast-deep-equal/es6";
 import type { ReactNode } from "react";
 import React, { useMemo } from "react";
@@ -39,9 +38,8 @@ export default function useRows<TRow, TKey extends React.Key, TValues>({
   // Render cells individually.
   const renderedRows = useMemo(() => {
     return rows.map((row) => ({
-      disabled: isRowDisabled(row.data),
-      loading: isRowLoading(row.data),
       key: row.key,
+      data: row.data,
       cells: columns.map((column, columnI) => {
         const { value } = row.values[columnI];
 
@@ -58,7 +56,7 @@ export default function useRows<TRow, TKey extends React.Key, TValues>({
         };
       }),
     }));
-  }, [columns, rows, isRowDisabled, isRowLoading]);
+  }, [columns, rows]);
 
   // Sort rows.
   const sortedRows = useMemo(() => {
@@ -105,7 +103,9 @@ export default function useRows<TRow, TKey extends React.Key, TValues>({
   const fullRows = useMemo(
     () =>
       sortedRows.map((row, i) => {
-        const { disabled, loading, key } = row;
+        const { key, data } = row;
+        const disabled = isRowDisabled(data);
+        const loading = isRowLoading(data);
         const checked = select.selected.includes(key);
 
         let prefixColumn = null;
@@ -140,7 +140,7 @@ export default function useRows<TRow, TKey extends React.Key, TValues>({
           <Table.Row
             key={key}
             aria-disabled={disabled || undefined}
-            className={classNames({ "is-row-disabled": disabled })}
+            inert={disabled || undefined}
           >
             {prefixColumn}
             <Table.Cell className="icon-column">
@@ -178,6 +178,8 @@ export default function useRows<TRow, TKey extends React.Key, TValues>({
       select,
       groupByColumnIndex,
       groupByValues,
+      isRowDisabled,
+      isRowLoading,
     ],
   );
 

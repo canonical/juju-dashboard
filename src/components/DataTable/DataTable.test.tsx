@@ -68,8 +68,9 @@ describe("DataTable", () => {
 
     it("shows 'Deselect all' label when all rows are selected", async () => {
       renderComponent(<DataTable {...initialProps} />);
-      const selectAll = screen.getByRole("checkbox", { name: "Select all" });
-      await userEvent.click(selectAll);
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Select all" }),
+      );
       expect(
         screen.getByRole("checkbox", { name: "Deselect all" }),
       ).toBeInTheDocument();
@@ -77,11 +78,10 @@ describe("DataTable", () => {
 
     it("shows indeterminate state when some rows are selected", async () => {
       renderComponent(<DataTable {...initialProps} />);
-      const rowCheckboxes = screen.getAllByRole("checkbox", {
-        name: /Select|Deselect/,
-      });
-      // Click a single row checkbox (skip the select-all at index 0)
-      await userEvent.click(rowCheckboxes[1]);
+      // Click a single row checkbox — initially unchecked rows have "Deselect <key>" label.
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect 1" }),
+      );
       const selectAll = screen.getByRole("checkbox", { name: "Select all" });
       expect((selectAll as HTMLInputElement).indeterminate).toBe(true);
     });
@@ -122,6 +122,10 @@ describe("DataTable", () => {
       const selectAll = screen.getByRole("checkbox", { name: "Select all" });
       await userEvent.click(selectAll);
       expect(screen.getByRole("checkbox", { name: "Select 2" })).toBeChecked();
+      // Loading rows show a spinner instead of a checkbox, so no checkbox exists for row 1.
+      expect(
+        screen.queryByRole("checkbox", { name: /1$/ }),
+      ).not.toBeInTheDocument();
     });
   });
 });
@@ -133,8 +137,10 @@ describe("DataTable.columnBuilder", () => {
       name: string;
       age: number;
     }>();
-    const col = builder({ header: "Name", map: (row) => row.name });
+    const mapFn = (row: { id: string; name: string; age: number }): string =>
+      row.name;
+    const col = builder({ header: "Name", map: mapFn });
     expect(col.header).toBe("Name");
-    expect(col.map({ id: "1", name: "Alice", age: 30 })).toBe("Alice");
+    expect(col.map).toBe(mapFn);
   });
 });
