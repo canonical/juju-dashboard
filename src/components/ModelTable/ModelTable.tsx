@@ -1,6 +1,5 @@
 import { Chip } from "@canonical/react-components";
-import { useMemo } from "react";
-import type { JSX } from "react";
+import { useMemo, type JSX } from "react";
 
 import DataTable from "components/DataTable";
 import ModelActions from "components/ModelActions";
@@ -27,7 +26,6 @@ import CloudCell from "./CloudCell";
 import ModelSummary from "./ModelSummary";
 import WarningMessage from "./WarningMessage";
 import { getCredential, getRegion } from "./shared";
-import classNames from "classnames";
 
 type Props = {
   models: ModelData[];
@@ -105,14 +103,9 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
 
             return (
               <>
-                <TruncatedTooltip
-                  message={name}
-                  className={classNames({
-                    "is-disabled": isDying(uuid) || !!getUpgrade(uuid),
-                  })}
-                >
+                <TruncatedTooltip message={`${name} (${model.model.version})`}>
                   <ModelDetailsLink modelName={name} qualifier={qualifier}>
-                    {model.model.name}
+                    {name}
                   </ModelDetailsLink>
                   {isUpgrading ? null : (
                     <ModelVersion
@@ -148,18 +141,9 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
         summary: column({
           header: "Configuration",
           className: "summary",
-          map: ({ uuid, qualifier }) => ({
-            uuid,
-            qualifier,
-          }),
-          renderCell: ({ uuid, qualifier }, { model }) => (
-            <ModelSummary
-              modelData={model}
-              qualifier={qualifier}
-              className={classNames({
-                "is-disabled": isDying(uuid) || !!getUpgrade(uuid),
-              })}
-            />
+          map: ({ qualifier }) => ({ qualifier }),
+          renderCell: ({ qualifier }, { model }) => (
+            <ModelSummary modelData={model} qualifier={qualifier} />
           ),
         }),
         owner: column({

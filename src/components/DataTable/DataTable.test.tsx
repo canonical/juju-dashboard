@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { renderComponent } from "testing/utils";
@@ -68,8 +68,9 @@ describe("DataTable", () => {
 
     it("shows 'Deselect all' label when all rows are selected", async () => {
       renderComponent(<DataTable {...initialProps} />);
-      const selectAll = screen.getByRole("checkbox", { name: "Select all" });
-      await userEvent.click(selectAll);
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Select all" }),
+      );
       expect(
         screen.getByRole("checkbox", { name: "Deselect all" }),
       ).toBeInTheDocument();
@@ -77,13 +78,72 @@ describe("DataTable", () => {
 
     it("shows indeterminate state when some rows are selected", async () => {
       renderComponent(<DataTable {...initialProps} />);
-      const rowCheckboxes = screen.getAllByRole("checkbox", {
-        name: /Select|Deselect/,
-      });
-      // Click a single row checkbox (skip the select-all at index 0)
-      await userEvent.click(rowCheckboxes[1]);
+      // Click a single row checkbox — initially unchecked rows have "Deselect <key>" label.
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect 1" }),
+      );
       const selectAll = screen.getByRole("checkbox", { name: "Select all" });
       expect((selectAll as HTMLInputElement).indeterminate).toBe(true);
+    });
+
+    it("clearing select-all does not affect a disabled row's checkbox", async () => {
+      renderComponent(
+        <DataTable {...initialProps} isRowDisabled={(row) => row.id === "1"} />,
+      );
+      // Select all selectable rows (only row 2).
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Select all" }),
+      );
+      expect(screen.getByRole("checkbox", { name: "Select 2" })).toBeChecked();
+
+      // Now deselect all — row 1's checkbox should still be unchecked, unchanged.
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect all" }),
+      );
+      expect(
+        screen.getByRole("checkbox", { name: "Deselect 2" }),
+      ).not.toBeChecked();
+      expect(
+        screen.getByRole("checkbox", { name: "Deselect 1" }),
+      ).not.toBeChecked();
+    });
+
+    it("'Select all' does nothing when all rows are disabled", async () => {
+      renderComponent(
+        <DataTable {...initialProps} isRowDisabled={() => true} />,
+      );
+      // Clicking it does nothing — both row checkboxes remain unchecked.
+      await userEvent.click(
+        screen.getByRole("checkbox", {
+          name: "Select all",
+        }),
+      );
+      expect(
+        screen.getByRole("checkbox", { name: "Select all" }),
+      ).toBeInTheDocument();
+      const rowCheckboxes = screen.getAllByRole("checkbox", {
+        name: /Deselect [^a]/,
+      });
+      rowCheckboxes.forEach((checkbox) => expect(checkbox).not.toBeChecked());
+    });
+
+    it("deselects a previously selected row when it becomes disabled", async () => {
+      const { rerender } = render(
+        <DataTable {...initialProps} isRowDisabled={() => false} />,
+      );
+      // Select row 1.
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect 1" }),
+      );
+      expect(screen.getByRole("checkbox", { name: "Select 1" })).toBeChecked();
+
+      // Now disable row 1 — it should be removed from the selection.
+      rerender(
+        <DataTable {...initialProps} isRowDisabled={(row) => row.id === "1"} />,
+      );
+      expect(
+        screen.getByRole("checkbox", { name: "Deselect 1" }),
+      ).not.toBeChecked();
     });
   });
 
@@ -122,6 +182,10 @@ describe("DataTable", () => {
       const selectAll = screen.getByRole("checkbox", { name: "Select all" });
       await userEvent.click(selectAll);
       expect(screen.getByRole("checkbox", { name: "Select 2" })).toBeChecked();
+      // Loading rows show a spinner instead of a checkbox, so no checkbox exists for row 1.
+      expect(
+        screen.queryByRole("checkbox", { name: /1$/ }),
+      ).not.toBeInTheDocument();
     });
   });
 });
@@ -133,8 +197,11 @@ describe("DataTable.columnBuilder", () => {
       name: string;
       age: number;
     }>();
-    const col = builder({ header: "Name", map: (row) => row.name });
-    expect(col.header).toBe("Name");
-    expect(col.map({ id: "1", name: "Alice", age: 30 })).toBe("Alice");
+    const colRaw = {
+      header: "Name",
+      map: (row: { id: string; name: string; age: number }): string => row.name,
+    };
+    const col = builder(colRaw);
+    expect(col).toBe(colRaw);
   });
 });

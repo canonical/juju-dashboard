@@ -54,8 +54,6 @@ export type DataTableProps<
   getKey: (row: TRow) => TKeyValue;
   /**
    * Optional function returning `true` for rows that should be disabled.
-   * Disabled rows are rendered with `aria-disabled="true"` and a
-   * `is-disabled` CSS class, and their interactive content is inert.
    */
   isRowDisabled?: (row: TRow) => boolean;
   /**

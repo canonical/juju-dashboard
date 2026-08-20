@@ -10,13 +10,7 @@
     padding-top: 0.9rem;
   }
 
-  .is-row-disabled {
+  [inert] > * {
     opacity: 0.5;
-  }
-
-  // Apply to interactive elements within a disabled row via renderCell.
-  .is-disabled {
-    pointer-events: none;
-    user-select: none;
   }
 }

@@ -137,7 +137,7 @@ describe("useRows", () => {
       const row = result.current[0] as React.ReactElement<{
         children: React.ReactNode[];
       }>;
-      const [, childSelectable] = row.props.children;
+      const [_unused, childSelectable] = row.props.children;
       const [checkbox, spinner] = (
         childSelectable as React.ReactElement<{ children: React.ReactNode[] }>
       ).props.children;
