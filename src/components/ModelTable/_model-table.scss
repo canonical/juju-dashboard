@@ -13,21 +13,6 @@
 }
 
 .models {
-  .model-name-column {
-    display: flex;
-    overflow: hidden;
-
-    &__status {
-      flex-shrink: 0;
-      margin-right: $sph--small;
-    }
-
-    &__name {
-      flex-shrink: 1;
-      overflow: hidden;
-    }
-  }
-
   caption {
     margin-top: 0.5rem;
   }

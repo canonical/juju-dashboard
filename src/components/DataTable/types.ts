@@ -53,6 +53,15 @@ export type DataTableProps<
    */
   getKey: (row: TRow) => TKeyValue;
   /**
+   * Optional function returning `true` for rows that should be disabled.
+   */
+  isRowDisabled?: (row: TRow) => boolean;
+  /**
+   * Optional function returning `true` for rows that should be in loading state.
+   * Loading rows are rendered with a loading indicator.
+   */
+  isRowLoading?: (row: TRow) => boolean;
+  /**
    * If `true`, a column of checkboxes will be rendered for each row.
    */
   selectable?: boolean;

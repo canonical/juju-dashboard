@@ -120,6 +120,21 @@ describe("ModelActions", () => {
     ).toBeInTheDocument();
   });
 
+  it("displays the actions menu in disabled state", () => {
+    renderComponent(
+      <ModelActions
+        qualifier="eggman@external"
+        modelUUID="abc123"
+        modelName="test-model"
+        disabled
+      />,
+    );
+    expect(screen.getByRole("button", { name: Label.TOGGLE })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+  });
+
   it("shows option to manage access if user has permission", async () => {
     renderComponent(
       <ModelActions

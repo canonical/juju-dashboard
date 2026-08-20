@@ -1,0 +1,16 @@
+.data-table {
+  .icon-column {
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+    vertical-align: top;
+    width: 2rem;
+  }
+
+  .icon-column-header {
+    padding-top: 0.9rem;
+  }
+
+  [inert] > * {
+    opacity: 0.5;
+  }
+}
