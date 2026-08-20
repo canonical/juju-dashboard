@@ -17,7 +17,6 @@ pkg/
 public/config.local.js
 .nfs.*
 /charms/machine-charm/src/dist
-charms/k8s-charm/src/index.charm.html
 network-cache
 
 .yarn/*
@@ -34,6 +33,7 @@ venv
 
 __pycache__
 *.py[cod]
+*.egg-info
 
 # Playwright
 /test-results/

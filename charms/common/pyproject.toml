@@ -1,0 +1,18 @@
+[project]
+name = "common"
+version = "0.0.0"
+dependencies = [
+  "jinja2 == 3.1.6",
+  "ops == 3.8.1",
+]
+
+[project.optional-dependencies]
+test = [
+  "coverage",
+  "flake8",
+  "ops[testing]",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

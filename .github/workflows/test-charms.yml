@@ -11,15 +11,15 @@ permissions: {}
 
 jobs:
   test-charm:
-    name: Test ${{ matrix.charm-type }} charm
+    name: Test ${{ matrix.charm-type }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        charm-type: [machine, k8s]
+        charm-type: [machine-charm, k8s-charm, shared]
     defaults:
       run:
-        working-directory: "charms/${{ matrix.charm-type }}-charm"
+        working-directory: "charms/${{ matrix.charm-type }}"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -31,6 +31,10 @@ jobs:
         run: |
           python3 -m venv venv
           source venv/bin/activate
-          pip install -r requirements-dev.txt
+          if [ -f pyproject.toml ]; then
+            pip install .[test]
+          else
+            pip install -r requirements-dev.txt
+          fi
       - name: Run tests
         run: ./run_tests
