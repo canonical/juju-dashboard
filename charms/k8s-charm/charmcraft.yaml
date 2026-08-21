@@ -66,5 +66,15 @@ requires:
     interface: ingress
     limit: 1
 parts:
-  charm:
-    charm-python-packages: [setuptools>80.0]
+  poetry-deps:
+    plugin: nil
+    override-build: |
+      pipx install charmcraftlocal charmcraftcache
+  charm-poetry:
+    plugin: poetry
+    after:
+      - poetry-deps
+    override-build: |
+      "$HOME/.local/bin/charmcraftlocal" update-lock -v
+
+      craftctl default

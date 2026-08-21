@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        charm-type: [machine-charm, k8s-charm, shared]
+        charm-type: [machine-charm, k8s-charm, common]
     defaults:
       run:
         working-directory: "charms/${{ matrix.charm-type }}"
@@ -29,12 +29,11 @@ jobs:
           python-version: "3.14"
       - name: Install requirements
         run: |
+          sudo apt install -y pipx
+          pipx ensurepath
+          pipx install poetry
           python3 -m venv venv
           source venv/bin/activate
-          if [ -f pyproject.toml ]; then
-            pip install .[test]
-          else
-            pip install -r requirements-dev.txt
-          fi
+          poetry install -E test
       - name: Run tests
         run: ./run_tests

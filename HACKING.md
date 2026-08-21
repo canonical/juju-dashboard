@@ -563,16 +563,16 @@ Enter the charm directory:
 cd postgresql-operator/
 ```
 
-Install charmcraft so you can build the charm:
+Install [charmcraftlocal](https://github.com/canonical/charmcraftlocal) so you can build the charm:
 
 ```shell
-sudo snap install charmcraft --classic
+pipx install charmcraftlocal charmcraftcache
 ```
 
 Build the charm with:
 
 ```shell
-charmcraft pack
+charmcraftlocal pack
 ```
 
 Finally, you can deploy the charm to the current model (you may wish to `juju

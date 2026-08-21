@@ -34,17 +34,14 @@ fi
 echo "id=$DASHBOARD_IMAGE_ID"
 
 # 2. Install charmcraft if required
-if [ ! $(which charmcraft) ]; then
-    echo "Charmcraft CLI not detected, installing with snap." >&2
+if [ ! $(which pipx) ] || [ ! $(which charmcraftlocal) ] || [ ! $(which charmcraftcache) ]; then
+    echo "Charmcraftlocal CLI not detected, installing dependencies." >&2
 
-    sudo snap install charmcraft --classic
-
-    # 2.5. Wait for snap changes
-    while [ -n "$(snap changes charmcraft 2>/dev/null | awk '/^[0-9]+/ {if ($2 != "Done") print $2 }')" ]; do
-        echo "Waiting for 'charmcraft' snap changes on host to finish..." >&2
-        sleep 1
-    done
-    sleep 1
+    sudo apt install -y pipx
+    pipx ensurepath
+    pipx install charmcraftlocal
+    pipx install charmcraftcache
+    source ~/.bashrc
 fi
 
 # 3. Try to pack the charm with retries
@@ -56,16 +53,16 @@ ATTEMPT=1
 SUCCESS=false
 
 while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-    if (cd "$SCRIPT_PATH" && charmcraft pack "${PACK_ARGS[@]}"); then
+    if (cd "$SCRIPT_PATH" && charmcraftlocal pack "${PACK_ARGS[@]}"); then
         SUCCESS=true
         break # Success, exit retry loop
     else
-        echo "Charmcraft pack failed on attempt $ATTEMPT." >&2
+        echo "Charmcraftlocal pack failed on attempt $ATTEMPT." >&2
         ATTEMPT=$((ATTEMPT + 1))
     fi
 done
 
 if [ "$SUCCESS" = 'false' ]; then
     echo "Error: All $MAX_ATTEMPTS attempts to pack the charm failed." >&2
-    exit 1 # Fail the script if charmcraft pack never succeeds
+    exit 1 # Fail the script if charmcraftlocal pack never succeeds
 fi
