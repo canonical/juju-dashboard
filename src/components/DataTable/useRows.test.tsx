@@ -1,3 +1,4 @@
+import { Spinner } from "@canonical/react-components";
 import type { RenderHookResult } from "@testing-library/react";
 import { renderHook } from "@testing-library/react";
 
@@ -103,21 +104,59 @@ describe("useRows", () => {
     }>;
     const [childPrefix, childSelectable, _cells] = row.props.children;
     expect(childPrefix).toEqual(null);
+    expect(childSelectable).toEqual(
+      expect.objectContaining({ type: Table.Cell }),
+    );
+    const [checkbox] = (
+      childSelectable as React.ReactElement<{ children: React.ReactNode[] }>
+    ).props.children;
     if (selectable) {
-      expect(childSelectable).toEqual(
-        expect.objectContaining({
-          type: Table.Cell,
-          props: expect.objectContaining({
-            children: expect.objectContaining({
-              type: InlineCheckbox,
-            }),
-          }),
-        }),
+      expect(checkbox).toEqual(
+        expect.objectContaining({ type: InlineCheckbox }),
       );
     } else {
-      expect(childSelectable).toEqual(null);
+      expect(checkbox).toEqual(null);
     }
   });
+
+  it.for([
+    ["shows", true, true],
+    ["shows", true, false],
+    ["doesn't show", false, true],
+    ["doesn't show", false, false],
+  ] as const)(
+    "%s spinner when loading=%s selectable=%s",
+    ([_, loading, selectable], { expect }) => {
+      const { result } = renderUseRowsHook(
+        createProps([{ key: "abc123", value: 123, otherValue: true }], {
+          selectable,
+          isRowLoading: () => loading,
+        }),
+      );
+
+      const row = result.current[0] as React.ReactElement<{
+        children: React.ReactNode[];
+      }>;
+      const [_unused, childSelectable] = row.props.children;
+      const [checkbox, spinner] = (
+        childSelectable as React.ReactElement<{ children: React.ReactNode[] }>
+      ).props.children;
+
+      if (loading) {
+        expect(spinner).toEqual(expect.objectContaining({ type: Spinner }));
+        expect(checkbox).toEqual(null);
+      } else {
+        expect(spinner).toEqual(null);
+        if (selectable) {
+          expect(checkbox).toEqual(
+            expect.objectContaining({ type: InlineCheckbox }),
+          );
+        } else {
+          expect(checkbox).toEqual(null);
+        }
+      }
+    },
+  );
 
   it("moves group column to prefix", ({ expect }) => {
     const { result } = renderUseRowsHook(
@@ -146,6 +185,12 @@ describe("useRows", () => {
         }),
       }),
     );
-    expect(childSelectable).toEqual(null);
+    expect(childSelectable).toEqual(
+      expect.objectContaining({ type: Table.Cell }),
+    );
+    const [checkbox] = (
+      childSelectable as React.ReactElement<{ children: React.ReactNode[] }>
+    ).props.children;
+    expect(checkbox).toEqual(null);
   });
 });

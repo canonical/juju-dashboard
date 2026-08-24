@@ -33,7 +33,7 @@ export default function InlineCheckbox<L extends string>({
   }, [indeterminate]);
 
   return (
-    <label className="p-checkbox">
+    <label className="p-checkbox u-no-padding--top">
       <input
         {...props}
         ref={input}

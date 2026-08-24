@@ -140,6 +140,7 @@ const generateLinks = (
 const ModelActions: FC<Props> = ({
   modelName,
   modelUUID,
+  disabled = false,
   redirectOnDestroy,
   position,
   qualifier,
@@ -204,6 +205,7 @@ const ModelActions: FC<Props> = ({
         toggleProps={{
           hasIcon: true,
           "aria-label": Label.TOGGLE,
+          disabled,
         }}
         onToggleMenu={setFetchUpgrades}
         children={(handleClose) =>
