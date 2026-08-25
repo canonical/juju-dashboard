@@ -76,7 +76,7 @@ test.describe("Destroy Model", () => {
       page.getByRole("dialog", { name: `Destroy model ${model.name}` }),
     ).not.toBeInViewport();
     await expect(
-      page.locator("tr", { hasText: "Destroying…" }),
+      page.locator("tr", { hasText: "Destroying model..." }),
     ).toBeInViewport();
 
     // Confirm successful destruction
