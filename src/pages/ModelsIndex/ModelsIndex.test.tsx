@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import { LoadingSpinnerTestId } from "components/LoadingSpinner";
-import { ModelTableListTestId } from "components/ModelTableList";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
@@ -105,7 +104,7 @@ describe("Models Index page", () => {
   it("renders without crashing", () => {
     renderComponent(<ModelsIndex />, { state });
     expect(screen.getByText(/3 models/)).toBeInTheDocument();
-    expect(screen.getAllByRole("grid")).toHaveLength(3);
+    expect(screen.getAllByRole("table")).toHaveLength(1);
     expect(document.querySelector(".chip-group")).toBeInTheDocument();
   });
 
@@ -132,16 +131,19 @@ describe("Models Index page", () => {
       url: urls.models.group({ groupedby: "status" }),
     });
 
-    expect(screen.getByRole("tab", { name: "Status" })).toHaveAttribute(
+    expect(screen.getByRole("tab", { name: "status" })).toHaveAttribute(
       "aria-selected",
       "true",
     );
-    const ownerButton = screen.getByRole("tab", { name: "Owner" });
+    const ownerButton = screen.getByRole("tab", { name: "owner" });
     await userEvent.click(ownerButton);
     expect(ownerButton).toHaveAttribute("aria-selected", "true");
     const searchParams = new URLSearchParams(router.state.location.search);
     expect(searchParams.get("groupedby")).toEqual("owner");
-    expect(document.querySelector(".owners-group")).toBeInTheDocument();
+
+    // Find the header, and ensure that it's the first child.
+    const header = screen.getByRole("columnheader", { name: "Owner" });
+    expect(header.parentElement?.children[0]).toEqual(header);
   });
 
   it("should display the correct window title", () => {
@@ -150,49 +152,39 @@ describe("Models Index page", () => {
     expect(pageTitle).toEqual("Models | Juju Dashboard");
   });
 
-  it("can filter models via the URL", () => {
-    const params = new URLSearchParams({
-      cloud: "aws",
-    });
-    renderComponent(<ModelsIndex />, { state, url: `?${params.toString()}` });
-    // There should be two tables, one for each status:
-    expect(screen.getAllByRole("grid")).toHaveLength(2);
-    // There will be one extra row for each table header:
-    expect(screen.getAllByRole("row")).toHaveLength(4);
-    expect(
-      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD),
-    ).toHaveLength(2);
-    expect(
-      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD)[0],
-    ).toHaveTextContent("aws/us-east1");
-    expect(
-      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD)[1],
-    ).toHaveTextContent("aws/us-east1");
-  });
+  it.for([
+    ["aws", 2],
+    ["gce", 1],
+  ] as const)(
+    "can filter models via the URL (cloud = %s)",
+    ([cloud, count], { expect }) => {
+      const params = new URLSearchParams({
+        cloud,
+      });
+      renderComponent(<ModelsIndex />, { state, url: `?${params.toString()}` });
+      expect(screen.getAllByRole("table")).toHaveLength(1);
+      expect(screen.getAllByRole("row")).toHaveLength(count + 1);
+      expect(
+        screen.getAllByRole("cell", { name: `${cloud}/us-east1` }),
+      ).toHaveLength(count);
+    },
+  );
 
   it("can change model filters", async () => {
     const { router } = renderComponent(<ModelsIndex />, { state });
-    // There should be three tables, one for each status:
-    expect(screen.getAllByRole("grid")).toHaveLength(3);
-    // There will be one extra row for each table header:
-    expect(screen.getAllByRole("row")).toHaveLength(6);
+    expect(screen.getAllByRole("table")).toHaveLength(1);
+    // 3 values + header
+    expect(screen.getAllByRole("row")).toHaveLength(4);
     await userEvent.click(
       screen.getByRole("searchbox", { name: "Search and filter" }),
     );
     await userEvent.click(screen.getByRole("button", { name: "CLOUD aws" }));
-    // There should now be two tables, one for each status:
-    expect(screen.getAllByRole("grid")).toHaveLength(2);
-    // There will be one extra row for each table header:
-    expect(screen.getAllByRole("row")).toHaveLength(4);
-    expect(
-      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD),
-    ).toHaveLength(2);
-    expect(
-      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD)[0],
-    ).toHaveTextContent("aws/us-east1");
-    expect(
-      screen.getAllByTestId(ModelTableListTestId.COLUMN_CLOUD)[1],
-    ).toHaveTextContent("aws/us-east1");
+    expect(screen.getAllByRole("table")).toHaveLength(1);
+    // 2 values + header
+    expect(screen.getAllByRole("row")).toHaveLength(3);
+    expect(screen.getAllByRole("cell", { name: `aws/us-east1` })).toHaveLength(
+      2,
+    );
     const params = new URLSearchParams({
       cloud: "aws",
       owner: "",
@@ -208,7 +200,7 @@ describe("Models Index page", () => {
     renderComponent(<ModelsIndex />, { state });
     expect(screen.getByText(/Oops!/)).toBeInTheDocument();
     expect(screen.getByText(/3 models/)).toBeInTheDocument();
-    expect(screen.getAllByRole("grid")).toHaveLength(3);
+    expect(screen.getAllByRole("table")).toHaveLength(1);
   });
 
   it("clears spinner if initial error occurs", async () => {

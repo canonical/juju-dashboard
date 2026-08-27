@@ -22,8 +22,11 @@ on:
         type: boolean
         description: Whether to send a notification on failure.
         default: true
+    secrets:
+      webbot-url:
+        required: true
 
-permissions: read-all
+permissions: {}
 
 jobs:
   test:
@@ -34,7 +37,7 @@ jobs:
         node-version: [22.x]
     steps:
       - name: Free Disk Space (Ubuntu)
-        uses: Jayllyz/free-disk-space@fbe203b3788f2bebe2c835a15925da303eaa5efe
+        uses: Jayllyz/free-disk-space@fbe203b3788f2bebe2c835a15925da303eaa5efe # main
         with:
           tool-cache: false
           android: true
@@ -51,7 +54,9 @@ jobs:
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"/Ruby
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"/Java_Temurin-Hotspot_jdk
       - name: Checkout Juju Dashboard repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Configure action
         id: config
         uses: ./.github/actions/prepare-action
@@ -71,10 +76,12 @@ jobs:
       - name: Configure JIMM with dashboard address
         shell: bash
         run: |
-          juju switch '${{ steps.jimm.outputs.jimm-controller-name }}':jimm
-          DASHBOARD_ADDRESS=http://$(juju show-unit dashboard/0 | yq .dashboard/0.address):8080
+          juju switch "${STEPS_JIMM_OUTPUTS_JIMM_CONTROLLER_NAME}":jimm
+          DASHBOARD_ADDRESS="http://$(juju show-unit dashboard/0 | yq .dashboard/0.address):8080"
           juju config jimm cors-allowed-origins="$DASHBOARD_ADDRESS"
           juju config jimm juju-dashboard-location="$DASHBOARD_ADDRESS"/models
+        env:
+          STEPS_JIMM_OUTPUTS_JIMM_CONTROLLER_NAME: ${{ steps.jimm.outputs.jimm-controller-name }}
       - name: Wait for JIMM to finish configuring
         uses: ./.github/actions/juju-wait-for
         with:
@@ -82,14 +89,17 @@ jobs:
           name: jimm/0
           timeout_minutes: 1
       - name: Set the CLI admin's password
-        run: echo ${{ inputs.admin-password }} | juju change-user-password --no-prompt
+        run: echo "${INPUTS_ADMIN_PASSWORD}" | juju change-user-password --no-prompt
+        env:
+          INPUTS_ADMIN_PASSWORD: ${{ inputs.admin-password }}
       - name: Compute Juju version for test identifier
         id: juju-version
         run: |
-          CHANNEL="${{ inputs.juju-channel || steps.config.outputs.juju-channel }}"
           VERSION=$(echo "$CHANNEL" | cut -d'/' -f1)
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
         shell: bash
+        env:
+          CHANNEL: ${{ inputs.juju-channel || steps.config.outputs.juju-channel }}
       - name: Run tests
         uses: ./.github/actions/run-playwright
         with:
@@ -97,8 +107,10 @@ jobs:
           test-identifier: e2e-jimm-juju-${{ steps.juju-version.outputs.version }}-k8s-charm-oidc-auth
         env:
           JIMM_CONTROLLER_NAME: ${{ steps.jimm.outputs.jimm-controller-name }}
-          CONTROLLER_NAME: ${{ steps.jimm.outputs.workloads-controller-name }}
+          CONTROLLER_NAME: ${{ steps.jimm.outputs.workloads-controller-public-name }}
+          WORKLOAD_CONTROLLER_NAME: ${{ steps.jimm.outputs.workloads-controller-private-name }}
           AUTH_MODE: oidc
+          AUTH_VARIANT: iam
           JUJU_ENV: jimm
           PROVIDER: microk8s
           ADMIN_USERNAME: ${{ inputs.admin-username }}
@@ -113,4 +125,4 @@ jobs:
         if: inputs.send-notification && steps.config.outputs.send-failure-notification && failure()
         uses: ./.github/actions/send-notification
         with:
-          webhook-url: ${{ secrets.WEBBOT_URL }}
+          webhook-url: ${{ secrets.webbot-url }}

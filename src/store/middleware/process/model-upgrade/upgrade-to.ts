@@ -1,31 +1,26 @@
-import createSourceRaceIterator from "data/sourceRaceIterator";
-import { JobStatus, type JobInfoResponse } from "juju/jimm/JIMMV4";
+import { UpgradeToJobState } from "juju/jimm/JIMMV4";
 import * as jimmApi from "juju/jimm/api";
 import { createToast } from "store/app/actions";
 import { actions as jujuActions } from "store/juju";
 import type { ManagedConnection } from "store/middleware/connection/connection-manager";
 import { hasConnections } from "store/middleware/connection/util";
+import createModelControllerInfoSource from "store/middleware/source/model-controller-info";
 import modelList from "store/middleware/source/model-list";
 import { logger } from "utils/logger";
 
 import { createProcess } from "../createProcess";
 
-import createJobInfoSource from "./job-info-source";
-import type { ConnectionRetryResult } from "./model-connection-retry-source";
-import createModelConnectionRetrySource from "./model-connection-retry-source";
-
 enum UpgradeStatus {
   INITIATED = "initiated",
   LOADING = "loading",
   PENDING = "pending",
-  RECONNECTING = "reconnecting",
 }
 
 type UpgradeState = {
   status: UpgradeStatus;
 };
 
-const REQUIRED_CONNECTIONS = ["wsControllerURL", "modelURL"];
+const REQUIRED_CONNECTIONS = ["wsControllerURL"];
 /**
  * Number of poll requests between each toast.
  */
@@ -35,7 +30,6 @@ type Params = {
   wsControllerURL: string;
   modelName: string;
   modelUUID: string;
-  modelURL: string;
   currentVersion: string;
   targetVersion: string;
   targetController: string;
@@ -44,61 +38,49 @@ type Params = {
 export async function* upgradeTo(
   modelUUID: string,
   targetController: string,
-  targetVersion: string,
   controllerConnection: ManagedConnection,
-  modelConnection: ManagedConnection,
 ): AsyncGenerator<UpgradeState, void, void> {
-  const modelTag = `model-${modelUUID}`;
-
   const request = jimmApi.upgradeTo(
     controllerConnection,
-    modelTag,
+    [modelUUID],
     targetController,
   );
   yield { status: UpgradeStatus.PENDING };
   const result = await request;
 
-  if (!result.success) {
+  if (result.results[0]?.error) {
     throw new Error("migration request rejected");
   }
 
   yield { status: UpgradeStatus.INITIATED };
 
-  // Poll for model version.
-  const versionSource = createModelConnectionRetrySource(modelConnection);
-  const jobInfoSource = createJobInfoSource(
+  // Poll the model controller info for the upgrade-to job status.
+  const infoSource = createModelControllerInfoSource(
     controllerConnection,
-    result["job-id"].toString(),
+    modelUUID,
   );
   let statusCount = 0;
-  const sources = createSourceRaceIterator<
-    ConnectionRetryResult | JobInfoResponse
-  >([versionSource, jobInfoSource], true);
-  for await (const response of sources) {
-    if ("status" in response) {
-      if (response.status === JobStatus.FAILED) {
-        versionSource.done();
-        jobInfoSource.done();
-        throw new Error("Upgrade failed");
-      }
+  for await (const response of infoSource) {
+    const state = response["upgrade-to-job-status"]?.detail.state;
+    if (
+      state === UpgradeToJobState.CANCELLED ||
+      state === UpgradeToJobState.DISCARDED
+    ) {
+      infoSource.done();
+      throw new Error("Upgrade failed");
     }
-    if ("version" in response) {
-      if (response.version === targetVersion) {
-        // The model has reached the target version so the source can now finish.
-        break;
-      }
-      // Send a toast to to inform the user that it's in progress.
-      statusCount += 1;
-      if (statusCount % STATUS_TOAST_INTERVAL === 0) {
-        yield { status: UpgradeStatus.LOADING };
-      }
-    } else {
-      statusCount = 0;
-      yield { status: UpgradeStatus.RECONNECTING };
+    if (state === UpgradeToJobState.COMPLETED) {
+      // The upgrade job finished successfully so the source can now finish.
+      break;
+    }
+    // In-progress (or the job hasn't appeared yet) — send a toast to inform the
+    // user that it's still running.
+    statusCount += 1;
+    if (statusCount % STATUS_TOAST_INTERVAL === 0) {
+      yield { status: UpgradeStatus.LOADING };
     }
   }
-  versionSource.done();
-  jobInfoSource.done();
+  infoSource.done();
 }
 
 export default createProcess<Params, UpgradeState, void>(
@@ -106,7 +88,6 @@ export default createProcess<Params, UpgradeState, void>(
   async function* ({
     modelUUID,
     targetController,
-    targetVersion,
     meta,
   }): AsyncGenerator<UpgradeState, void, void> {
     if (!hasConnections(meta, REQUIRED_CONNECTIONS)) {
@@ -114,15 +95,7 @@ export default createProcess<Params, UpgradeState, void>(
     }
 
     const controllerConnection = meta.connections.wsControllerURL;
-    const modelConnection = meta.connections.modelURL;
-
-    return yield* upgradeTo(
-      modelUUID,
-      targetController,
-      targetVersion,
-      controllerConnection,
-      modelConnection,
-    );
+    return yield* upgradeTo(modelUUID, targetController, controllerConnection);
   },
   {
     setOutcome: ({ modelUUID, modelName, targetVersion }, outcome) => {
@@ -155,11 +128,6 @@ export default createProcess<Params, UpgradeState, void>(
           break;
         case UpgradeStatus.LOADING:
           logger.debug(`${modelName} (${modelUUID}) upgrade loading`);
-          break;
-        case UpgradeStatus.RECONNECTING:
-          logger.debug(
-            `Attempting to reconnect to ${modelName} (${modelUUID})`,
-          );
           break;
         default:
           logger.warn("An unknown status was emitted", modelUUID, status);

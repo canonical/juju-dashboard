@@ -1,6 +1,10 @@
 import type { PropsWithSpread } from "@canonical/react-components";
-import { Button, Icon, useListener } from "@canonical/react-components";
-import VanillaPanel from "@canonical/react-components/dist/components/Panel";
+import {
+  Button,
+  Icon,
+  Panel as VanillaPanel,
+  useListener,
+} from "@canonical/react-components";
 import classNames from "classnames";
 import type { ReactNode } from "react";
 import { forwardRef, useId, useRef } from "react";

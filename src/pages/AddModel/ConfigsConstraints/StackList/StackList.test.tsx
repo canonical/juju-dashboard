@@ -4,27 +4,36 @@ import { vi } from "vitest";
 
 import { renderComponent } from "testing/utils";
 
-import type { CategoryDefinition } from "../types";
+import { ConfigCategory } from "../configCatalog";
+import type { ConfigFieldEntry } from "../types";
+import { FieldName, InputType } from "../types";
 
 import StackList from "./StackList";
 
 const iconClass = ".p-icon--status-in-progress-small";
 
 describe("StackList", () => {
-  const mockCategory: CategoryDefinition = {
-    category: "Networking",
-    fields: [
+  let mockFields: ConfigFieldEntry[];
+
+  beforeEach(() => {
+    mockFields = [
       {
         label: "default-space",
         description: "The default network space",
         defaultValue: "alpha",
+        category: ConfigCategory.NETWORKING,
+        value: "alpha",
+        arrayIndex: 0,
       },
       {
         label: "container-networking-method",
         description: "The method of container networking setup",
         defaultValue: "local",
+        category: ConfigCategory.NETWORKING,
+        value: "local",
+        arrayIndex: 1,
         input: {
-          type: "select",
+          type: InputType.SELECT,
           options: [
             { label: "local", value: "local" },
             { label: "fan", value: "fan" },
@@ -34,14 +43,23 @@ describe("StackList", () => {
       {
         label: "egress-subnets",
         description: "Subnets to use for egress",
+        category: ConfigCategory.NETWORKING,
+        value: "",
+        arrayIndex: 2,
       },
-    ],
-  };
+    ];
+  });
 
   it("renders properly", () => {
     renderComponent(
-      <Formik initialValues={{}} onSubmit={vi.fn()}>
-        <StackList visibleFields={mockCategory.fields} />
+      <Formik
+        initialValues={{ [FieldName.CONFIG_FIELDS]: mockFields }}
+        onSubmit={vi.fn()}
+      >
+        <StackList
+          visibleFields={mockFields}
+          arrayName={FieldName.CONFIG_FIELDS}
+        />
       </Formik>,
     );
 
@@ -52,13 +70,13 @@ describe("StackList", () => {
   it("does not show a changed indicator when fields have default values", () => {
     renderComponent(
       <Formik
-        initialValues={{
-          "default-space": "alpha",
-          "container-networking-method": "local",
-        }}
+        initialValues={{ [FieldName.CONFIG_FIELDS]: mockFields }}
         onSubmit={vi.fn()}
       >
-        <StackList visibleFields={mockCategory.fields} />
+        <StackList
+          visibleFields={mockFields}
+          arrayName={FieldName.CONFIG_FIELDS}
+        />
       </Formik>,
     );
 
@@ -67,15 +85,16 @@ describe("StackList", () => {
   });
 
   it("shows a changed indicator when field value differs from default", () => {
+    mockFields[0].value = "modified-space";
     renderComponent(
       <Formik
-        initialValues={{
-          "default-space": "modified-space",
-          "container-networking-method": "local",
-        }}
+        initialValues={{ [FieldName.CONFIG_FIELDS]: mockFields }}
         onSubmit={vi.fn()}
       >
-        <StackList visibleFields={mockCategory.fields} />
+        <StackList
+          visibleFields={mockFields}
+          arrayName={FieldName.CONFIG_FIELDS}
+        />
       </Formik>,
     );
 

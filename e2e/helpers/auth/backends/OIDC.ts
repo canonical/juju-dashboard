@@ -22,7 +22,7 @@ export class OIDC {
       user,
       IAM_DEVICE_CODE_REGEX,
       OIDC.uiLogin,
-      registerController ? "test-jimm.local:443" : null,
+      registerController ? "test-jimm.local:443/jimm-jimm" : null,
     );
   }
 

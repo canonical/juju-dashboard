@@ -13,7 +13,7 @@ import { logger } from "utils/logger";
 
 import { listenerMiddleware } from "./listenerMiddleware";
 import processMiddleware from "./middleware/process";
-import sourceMiddleware from "./middleware/source";
+import createSourceMiddleware from "./middleware/source";
 
 type PreloadedState = Record<string, unknown>;
 
@@ -48,7 +48,7 @@ const store = configureStore({
     middleware.push(listenerMiddleware.middleware);
     middleware.push(notificationsMiddleware);
     middleware.push(modelPollerMiddleware);
-    middleware.push(...sourceMiddleware);
+    middleware.push(createSourceMiddleware());
     middleware.push(processMiddleware);
     return middleware;
   },

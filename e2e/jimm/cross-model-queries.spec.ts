@@ -25,9 +25,13 @@ test.describe("cross model queries", () => {
     actions = new ActionStack(jujuCLI);
     await actions.prepare((add) => {
       user = add(jujuCLI.createUser());
+      if (!jujuCLI.jimmControllerInstance) {
+        test.fail(true, "JIMM controller not defined");
+        return;
+      }
       add(
         new GiveControllerAccess(
-          jujuCLI.controllerInstance,
+          jujuCLI.jimmControllerInstance,
           user,
           ControllerPermission.SUPERUSER,
         ),

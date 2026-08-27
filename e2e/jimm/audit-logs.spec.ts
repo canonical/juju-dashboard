@@ -29,9 +29,13 @@ test.describe("audit logs", () => {
       user = add(jujuCLI.createUser());
       nonAdminUser = add(jujuCLI.createUser());
       model = add(new AddModel(jujuCLI, user));
+      if (!jujuCLI.jimmControllerInstance) {
+        test.fail(true, "JIMM controller not defined");
+        return;
+      }
       add(
         new GiveControllerAccess(
-          jujuCLI.controllerInstance,
+          jujuCLI.jimmControllerInstance,
           user,
           ControllerPermission.SUPERUSER,
         ),

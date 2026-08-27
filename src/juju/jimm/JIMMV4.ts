@@ -1,5 +1,8 @@
 import type { ConnectionInfo, Transport } from "@canonical/jujulib";
-import type { InitiateMigrationResults } from "@canonical/jujulib/dist/api/facades/controller/ControllerV12";
+import type {
+  Error as JujuError,
+  InitiateMigrationResults,
+} from "@canonical/jujulib/dist/api/facades/controller/ControllerV12";
 import { autoBind } from "@canonical/jujulib/dist/api/utils";
 
 import JIMMV3, { type ControllerInfo } from "./JIMMV3";
@@ -84,33 +87,66 @@ export type SupportedJujuVersionsResponse = {
 };
 
 // As typed in JIMM:
-// https://github.com/canonical/jimm/blob/4434cb03a24b96c493e861d3dd990c1ff37fff3b/pkg/api/params/params.go#L394
+// https://github.com/canonical/jimm/blob/afb7d6a9c9f726a91f46d19e9daf55e1484e2c2f/pkg/api/params/params.go#L463
+export type UpgradeToResult = {
+  error?: JujuError;
+};
+
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/afb7d6a9c9f726a91f46d19e9daf55e1484e2c2f/pkg/api/params/params.go#L458
 export type UpgradeToResponse = {
-  success: boolean;
-  "job-id": number;
+  results: UpgradeToResult[];
 };
 
 // As typed in JIMM:
-// https://github.com/canonical/jimm/blob/4434cb03a24b96c493e861d3dd990c1ff37fff3b/pkg/api/params/params.go#L733
-export enum JobStatus {
-  RUNNING = "running",
-  SUCCESSFUL = "successful",
-  PENDING = "pending",
-  FAILED = "failed",
-  UNKNOWN = "unknown",
-}
+// https://github.com/canonical/jimm/blob/afb7d6a9c9f726a91f46d19e9daf55e1484e2c2f/pkg/api/params/params.go#L1056
+export type JobAttemptError = {
+  attempt: number;
+  at: string;
+  error: string;
+};
 
 // As typed in JIMM:
-// https://github.com/canonical/jimm/blob/4434cb03a24b96c493e861d3dd990c1ff37fff3b/pkg/api/params/params.go#L845
-export type JobInfoResponse = {
-  id: number;
-  status: JobStatus;
-  kind: string;
-  current_attempt: number;
+// https://github.com/canonical/jimm/blob/afb7d6a9c9f726a91f46d19e9daf55e1484e2c2f/pkg/api/params/params.go#L1067
+export type JobDetail = {
+  state: string;
+  attempt: number;
   max_attempts: number;
-  finished_at?: string;
-  errors?: string;
+  attempted_at?: string;
+  finalized_at?: string;
+  errors?: JobAttemptError[];
 };
+
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/afb7d6a9c9f726a91f46d19e9daf55e1484e2c2f/pkg/api/params/params.go#L1086
+export type UpgradeToJobStatus = {
+  detail: JobDetail;
+  info?: string;
+};
+
+// As typed in JIMM:
+// https://github.com/canonical/jimm/blob/afb7d6a9c9f726a91f46d19e9daf55e1484e2c2f/pkg/api/params/params.go#L932
+export type ModelControllerInfo = {
+  "model-name": string;
+  "model-uuid": string;
+  "controller-name": string;
+  "controller-uuid": string;
+  "upgrade-to-job-status"?: UpgradeToJobStatus;
+};
+
+// river job states surfaced by JIMM's upgrade-to job (rivertype.JobState), // spell-checker:disable-line
+// grouped into active/finalized states by JIMM:
+// https://github.com/canonical/jimm/blob/afb7d6a9c9f726a91f46d19e9daf55e1484e2c2f/internal/jimm/jobs/jobs.go#L21-L32
+export enum UpgradeToJobState {
+  AVAILABLE = "available",
+  PENDING = "pending",
+  RUNNING = "running",
+  RETRYABLE = "retryable",
+  SCHEDULED = "scheduled",
+  CANCELLED = "cancelled",
+  COMPLETED = "completed",
+  DISCARDED = "discarded",
+}
 
 class JIMMV4 extends JIMMV3 {
   static NAME: string;
@@ -226,48 +262,48 @@ class JIMMV4 extends JIMMV3 {
   /**
    * Initiate a model upgrade.
    *
-   * @param modelTag Tag of the model which will be upgraded.
-   * @param targetController Name of controller to migrate the model to.
+   * @param modelUUIDs UUIDs of the models which will be upgraded.
+   * @param targetController Name of controller to migrate the models to.
    *
-   * @see {@link https://github.com/canonical/jimm/blob/53c606aa41ae6339c7b6cf430c7051bf489b9238/internal/jujuapi/jimm.go#L738}
+   * @see {@link https://github.com/canonical/jimm/blob/afb7d6a9c9f726a91f46d19e9daf55e1484e2c2f/internal/jujuapi/jimm.go#L857}
    */
   async upgradeTo(
-    modelTag: string,
+    modelUUIDs: string[],
     targetController: string,
   ): Promise<UpgradeToResponse> {
-    return new Promise((resolve, reject) => {
-      const req = {
-        type: "JIMM",
-        request: "UpgradeTo",
-        version: 4,
-        params: {
-          "model-tag": modelTag,
-          "target-controller-name": targetController,
-        },
-      };
-      this._transport.write(req, resolve, reject);
-    });
+    const { promise, resolve, reject } =
+      Promise.withResolvers<UpgradeToResponse>();
+    const req = {
+      type: "JIMM",
+      request: "UpgradeTo",
+      version: 4,
+      params: {
+        "model-uuids": modelUUIDs,
+        "target-controller-name": targetController,
+      },
+    };
+    this._transport.write(req, resolve, reject);
+    return promise;
   }
 
   /**
-   * Get info about a job.
+   * Get controller info about a model, including any active/recent upgrade-to job status.
    *
-   * @param jobId The id of a job.
-   *
-   * @see {@link https://github.com/canonical/jimm/blob/4434cb03a24b96c493e861d3dd990c1ff37fff3b/pkg/api/client.go#L406}
+   * @param model The model UUID or fully-qualified "owner/name" identifier.
    */
-  async jobInfo(jobId: string): Promise<JobInfoResponse> {
-    return new Promise((resolve, reject) => {
-      const req = {
-        type: "JIMM",
-        request: "JobInfo",
-        version: 4,
-        params: {
-          "job-id": jobId,
-        },
-      };
-      this._transport.write(req, resolve, reject);
-    });
+  async modelControllerInfo(model: string): Promise<ModelControllerInfo> {
+    const { promise, resolve, reject } =
+      Promise.withResolvers<ModelControllerInfo>();
+    const req = {
+      type: "JIMM",
+      request: "ModelControllerInfo",
+      version: 4,
+      params: {
+        model,
+      },
+    };
+    this._transport.write(req, resolve, reject);
+    return promise;
   }
 }
 

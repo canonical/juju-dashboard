@@ -60,8 +60,7 @@ const LocalAppsTable: FC<Props> = ({ applications }: Props) => {
   const { handleSelect, handleSelectAll, selectAll } = useTableSelect(
     applications ?? {},
   );
-  const selectable =
-    queryParams.filterQuery && applications && canConfigureModel;
+  const selectable = applications && canConfigureModel;
 
   let headers: Header | MainTableCell[] =
     generateLocalApplicationTableHeaders();

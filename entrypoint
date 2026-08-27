@@ -10,6 +10,7 @@
 # DASHBOARD_IS_JUJU - equivalent to the charm's is-juju config option.
 # DASHBOARD_ANALYTICS_ENABLED - equivalent to the charm's analytics-enabled config option.
 # DASHBOARD_PORT - equivalent to the charm's port config option.
+# DASHBOARD_BASE_APP_URL - base URL that the dashboard is hosted at, useful if it's behind a reverse proxy.
 
 python3 /srv/config.py
 

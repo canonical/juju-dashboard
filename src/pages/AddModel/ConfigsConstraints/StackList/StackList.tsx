@@ -1,58 +1,69 @@
-import { FormikField, Icon, Select } from "@canonical/react-components";
-import { useFormikContext } from "formik";
-import { Fragment, type JSX } from "react";
+import {
+  type ColSize,
+  FormikField,
+  Icon,
+  Select,
+} from "@canonical/react-components";
+import type { JSX } from "react";
 
-import type { CategoryDefinition, FormFields } from "../types";
+import SkeletonPlaceholder from "../SkeletonPlaceholder";
+import type { ConfigFieldEntry, FieldName } from "../types";
+import { InputType, ValueType } from "../types";
 import { isConfigChanged } from "../utils";
 
 type Props = {
-  visibleFields: CategoryDefinition["fields"];
+  visibleFields: ConfigFieldEntry[];
+  arrayName: FieldName.CONFIG_FIELDS | FieldName.CONSTRAINT_FIELDS;
+  stackedLabelColumns?: ColSize;
+  isLoading?: boolean;
 };
 
-const StackList = ({ visibleFields }: Props): JSX.Element => {
-  const { values } = useFormikContext<FormFields & Record<string, string>>();
-
+const StackList = ({
+  visibleFields,
+  arrayName,
+  stackedLabelColumns,
+  isLoading = false,
+}: Props): JSX.Element => {
   return (
     <>
-      {visibleFields.map((field, index) => {
-        const changed = isConfigChanged(
-          field.label,
-          values,
-          field.defaultValue,
-        );
+      {visibleFields.map((entry, index) => {
+        const fieldName = `${arrayName}[${entry.arrayIndex}].value`;
+        const changed = isConfigChanged(entry);
         return (
-          <Fragment key={field.label}>
+          <SkeletonPlaceholder loading={isLoading} key={entry.label}>
             <FormikField
-              {...(field.input?.type === "select"
+              {...(entry.input?.type === InputType.SELECT
                 ? { component: Select }
                 : {
-                    type: field.isNumeric ? "number" : "text",
-                    placeholder: field.defaultValue,
+                    type:
+                      entry.valueType === ValueType.NUMBER ? "number" : "text",
+                    placeholder: entry.defaultValue,
                   })}
               label={
                 <>
                   {changed ? (
                     <Icon name="status-in-progress-small u-sh-3 u-sh1--right" />
                   ) : null}
-                  {field.label}
+                  {entry.label}
                 </>
               }
-              name={field.label}
-              help={field.description}
+              aria-label={entry.label}
+              name={fieldName}
+              help={entry.description}
               helpAfterLabel
               stacked
               stackedFieldColumns={4}
-              stackedLabelColumns={5}
+              stackedLabelColumns={stackedLabelColumns}
               labelClassName="u-no-padding--top u-no-margin--bottom u-sv1"
               helpClassName="u-no-margin--bottom"
               wrapperClassName="stack__list-row"
               className="u-no-margin--bottom stack__list-field"
-              {...field.input}
+              {...entry.input}
             />
             {index < visibleFields.length - 1 ? (
               <hr className="p-rule--muted u-no-margin--bottom" />
             ) : null}
-          </Fragment>
+          </SkeletonPlaceholder>
         );
       })}
     </>

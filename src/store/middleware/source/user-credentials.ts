@@ -4,7 +4,7 @@ import { actions as jujuActions } from "store/juju";
 import { toSerializableSourceError } from "store/util";
 
 import { hasConnections } from "../connection/util";
-import { createSourceMiddleware } from "../source-middleware";
+import { createSourceInstance } from "../source-middleware";
 
 export const NOT_AUTHENTICATED_ERROR = "not authenticated with controller";
 export const NO_CLOUD_FACADE =
@@ -32,9 +32,9 @@ export async function getUserCredentials(
   return response?.results[0]?.result ?? [];
 }
 
-export default createSourceMiddleware<
-  string[],
-  { wsControllerURL: string; cloudTag: string }
+export default createSourceInstance<
+  { wsControllerURL: string; cloudTag: string },
+  string[]
 >(
   "user-credentials",
   ({ wsControllerURL: _, cloudTag, meta }) => {

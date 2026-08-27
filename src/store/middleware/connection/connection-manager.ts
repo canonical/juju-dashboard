@@ -230,10 +230,14 @@ export class ConnectionManager {
       );
     }
 
-    // Select an appropriate connection handler.
-    const connectionHandler =
-      CONNECTION_HANDLERS_BY_PATH[path] ??
-      CONNECTION_HANDLERS_BY_PATH[DefaultHandler];
+    // Select an appropriate connection handler. JIMM APIs may be deployed at a base path e.g. /jimm-jimm/api
+    // so this matches the trailing segment rather than the full path.
+    const [_key, connectionHandler] = Object.entries(
+      CONNECTION_HANDLERS_BY_PATH,
+    ).find(
+      ([handlerPath, _handler]) =>
+        typeof handlerPath === "string" && path.endsWith(handlerPath),
+    ) ?? [DefaultHandler, CONNECTION_HANDLERS_BY_PATH[DefaultHandler]];
 
     let connectionResult = null;
     try {

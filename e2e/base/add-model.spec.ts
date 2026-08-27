@@ -8,9 +8,9 @@ import urls from "urls";
 
 import { JujuEnv, test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
-import { AddModel } from "../helpers/actions";
+import { AddModel, GiveControllerAccess } from "../helpers/actions";
 import type { User } from "../helpers/auth";
-import { Model } from "../helpers/objects";
+import { ControllerPermission, Model } from "../helpers/objects";
 import { exec, execIfModelExists, generateRandomName } from "../utils";
 
 test.describe("Add model", () => {
@@ -25,6 +25,15 @@ test.describe("Add model", () => {
     await actions.prepare((add) => {
       owner = add(jujuCLI.createUser(true));
       sharedUser = add(jujuCLI.createUser());
+      if (jujuCLI.jujuEnv === JujuEnv.JIMM) {
+        add(
+          new GiveControllerAccess(
+            jujuCLI.controllerInstance,
+            owner,
+            ControllerPermission.ADD_MODEL,
+          ),
+        );
+      }
     });
   });
 
@@ -41,8 +50,7 @@ test.describe("Add model", () => {
     } else {
       await jujuCLI.loginLocalCLIAdmin();
     }
-
-    const addModel = new AddModel(jujuCLI, owner, true);
+    const addModel = new AddModel(jujuCLI, owner);
     addModel.model = currentModel;
     await addModel.rollback();
   });
@@ -87,10 +95,10 @@ test.describe("Add model", () => {
       .getByRole("searchbox", { name: "Search configurations" })
       .fill("default-space");
     await expect(
-      configsSection.locator('input[name="default-space"]'),
+      configsSection.locator('input[aria-label="default-space"]'),
     ).toBeVisible();
     await configsSection
-      .locator('input[name="default-space"]')
+      .locator('input[aria-label="default-space"]')
       .fill(defaultSpace);
 
     // Set arch constraint
@@ -101,10 +109,10 @@ test.describe("Add model", () => {
       .getByRole("searchbox", { name: "Search constraints" })
       .fill("arch");
     await expect(
-      constraintsSection.locator('select[name="arch"]'),
+      constraintsSection.locator('select[aria-label="arch"]'),
     ).toBeVisible();
     await constraintsSection
-      .locator('select[name="arch"]')
+      .locator('select[aria-label="arch"]')
       .selectOption(architecture);
 
     // Create the model

@@ -216,6 +216,7 @@ export default function DestroyModelDialog({
           actions={[
             <a
               href={externalURLs.removingOffers}
+              rel="noreferrer"
               target="_blank"
               className="p-notification__action"
             >
@@ -223,6 +224,7 @@ export default function DestroyModelDialog({
             </a>,
             <a
               href={externalURLs.crossModelRelations}
+              rel="noreferrer"
               target="_blank"
               className="p-notification__action"
             >

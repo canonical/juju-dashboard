@@ -1,5 +1,8 @@
-import { ActionButton, Button } from "@canonical/react-components";
-import VanillaPanel from "@canonical/react-components/dist/components/Panel";
+import {
+  ActionButton,
+  Button,
+  Panel as VanillaPanel,
+} from "@canonical/react-components";
 import { Formik } from "formik";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
@@ -23,8 +26,8 @@ import { toastNotification } from "utils/toastNotification";
 import AccessManagement from "./AccessManagement";
 import AddModelStepper from "./AddModelStepper";
 import ConfigsConstraints from "./ConfigsConstraints";
-import { CONFIG_CATEGORIES } from "./ConfigsConstraints/configCatalog";
-import { CONSTRAINT_CATEGORIES } from "./ConfigsConstraints/constraintsCatalog";
+import { CONFIG_DEFINITIONS } from "./ConfigsConstraints/configCatalog";
+import { CONSTRAINT_DEFINITIONS } from "./ConfigsConstraints/constraintsCatalog";
 import { FieldName as ConfigFieldName } from "./ConfigsConstraints/types";
 import { DisableType } from "./ConfigsConstraints/types";
 import {
@@ -40,7 +43,7 @@ import {
   type AddModelFormState,
   type StepDefinition,
 } from "./types";
-import { getCredentialError } from "./utils";
+import { getBooleanSchema, getCredentialError } from "./utils";
 
 const MODEL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
 
@@ -58,6 +61,7 @@ const validationSchema = Yup.object().shape({
       });
     },
   }),
+  ...getBooleanSchema(),
 });
 
 const stepDefinitions: StepDefinition[] = [
@@ -105,7 +109,10 @@ const AddModel: FC = () => {
       return;
     }
 
-    const config = buildConfigsConstraintsPayload(values);
+    const config = buildConfigsConstraintsPayload(
+      values[ConfigFieldName.CONFIG_FIELDS],
+      values[ConfigFieldName.CONSTRAINT_FIELDS],
+    );
     const shareModelWith = values.shareModelWith ?? {};
 
     dispatch(
@@ -168,15 +175,16 @@ const AddModel: FC = () => {
               cloud: "",
               region: "",
               credential: "",
+              [ConfigFieldName.CONFIG_FIELDS]:
+                getConfigInitialValues(CONFIG_DEFINITIONS),
+              [ConfigFieldName.CONSTRAINT_FIELDS]: getConfigInitialValues(
+                CONSTRAINT_DEFINITIONS,
+              ),
               [ConfigFieldName.CONFIG_INPUT_MODE]: InputMode.LIST,
               [ConfigFieldName.CONSTRAINT_INPUT_MODE]: InputMode.LIST,
               [ConfigFieldName.CONFIG_YAML]: "",
               [ConfigFieldName.CONSTRAINT_YAML]: "",
               [ConfigFieldName.DISABLED_COMMANDS]: DisableType.NONE,
-              ...getConfigInitialValues([
-                ...CONFIG_CATEGORIES,
-                ...CONSTRAINT_CATEGORIES,
-              ]),
             }}
             validationSchema={validationSchema}
             // Mark credential as touched on mount as Vanilla doesn't display validation until the field loses focus.

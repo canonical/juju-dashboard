@@ -1,0 +1,161 @@
+.model-table-list_error-message {
+  &,
+  & a,
+  & a:visited {
+    color: $color-negative;
+    display: block;
+    font-size: #{map-get($font-sizes, small)}rem;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.models {
+  caption {
+    margin-top: 0.5rem;
+  }
+
+  .models__version {
+    margin-left: $sph--small;
+  }
+
+  .lrg-screen-access-cell {
+    button {
+      margin-left: auto;
+      margin-right: 0;
+      max-width: 100px;
+      text-align: center;
+    }
+  }
+
+  &.status-group {
+    td,
+    th {
+      @include desktop {
+        // Summary icons
+        &.summary {
+          width: 8rem;
+        }
+
+        // Actions
+        &.actions {
+          width: 5rem;
+        }
+      }
+
+      @include mobile-and-medium {
+        // Credential
+        &.credential,
+        // Controller
+        &.controller {
+          display: none;
+        }
+      }
+
+      @include mobile {
+        // Summary icons
+        &:nth-child(2),
+        // Last updated
+        &:nth-child(7) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &.owner-group {
+    td,
+    th {
+      @include desktop {
+        // Summary icons
+        &.summary {
+          width: 8rem;
+        }
+
+        // Actions
+        &.actions {
+          width: 5rem;
+        }
+      }
+
+      @include mobile-and-medium {
+        // Credential
+        &.credential,
+        // Controller
+        &.controller {
+          display: none;
+        }
+      }
+
+      @include mobile {
+        // Summary icons
+        &.summary {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &.cloud-group {
+    td,
+    th {
+      &.cloud-region {
+        display: none;
+      }
+
+      @include desktop {
+        // Summary icons
+        .summary {
+          width: 8rem;
+        }
+
+        // Region
+        &.region {
+          width: 7rem;
+        }
+
+        // Credential
+        &.credential {
+          width: 7rem;
+        }
+
+        // Actions
+        &.actions {
+          width: 5rem;
+        }
+      }
+
+      @include mobile-and-medium {
+        // Credential
+        &.credential,
+        // Controller
+        &.controller {
+          display: none;
+        }
+      }
+
+      @include mobile {
+        // Summary icons
+        &.summary,
+        // Status
+        &.status,
+        // Last updated
+        &.last-updated {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &:not(.cloud-group) {
+    td,
+    th {
+      &.cloud,
+      &.region {
+        display: none;
+      }
+    }
+  }
+}

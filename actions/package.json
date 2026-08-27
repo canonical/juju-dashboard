@@ -1,7 +1,7 @@
 {
   "name": "juju-dashboard-actions",
   "version": "0.0.0",
-  "packageManager": "yarn@4.14.1",
+  "packageManager": "yarn@4.18.0",
   "type": "module",
   "scripts": {
     "build": "./scripts/build.sh",
@@ -16,12 +16,11 @@
     "@actions/github": "9.1.1"
   },
   "devDependencies": {
-    "@octokit/types": "16.0.0",
-    "@vercel/ncc": "0.38.4",
-    "eslint": "9.39.4",
-    "typescript": "5.9.3",
-    "vite": "7.3.2",
-    "vite-tsconfig-paths": "6.1.1",
-    "vitest": "4.1.9"
+    "@octokit/types": "17.0.0",
+    "@vercel/ncc": "0.44.1",
+    "eslint": "9.39.5",
+    "typescript": "6.0.3",
+    "vite": "8.2.1",
+    "vitest": "4.1.10"
   }
 }

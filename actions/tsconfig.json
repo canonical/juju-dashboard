@@ -1,20 +1,19 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
     "paths": {
       "@/lib": [
-        "./lib/index.ts"
+        "./src/lib/index.ts"
       ],
       "@/lib/*": [
-        "./lib/*"
+        "./src/lib/*"
       ]
     },
     "moduleResolution": "bundler",
     "strictNullChecks": true,
   },
   "include": [
-    "src",
-    "vite.config.ts"
+    "./src",
+    "./vite.config.ts"
   ],
   "references": [
     {

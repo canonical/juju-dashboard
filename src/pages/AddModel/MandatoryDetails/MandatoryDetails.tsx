@@ -18,6 +18,7 @@ import {
   extractCloudName,
   extractCredentialName,
 } from "store/juju/utils/models";
+import modelConfigDefaultsSource from "store/middleware/source/model-config-defaults";
 import userCredentialsMiddleware from "store/middleware/source/user-credentials";
 import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
@@ -120,6 +121,27 @@ const MandatoryDetails = (): JSX.Element => {
       }
     };
   }, [dispatch, wsControllerURL, selectedCloud, userCredentials.credentials]);
+
+  // Start polling for live model config defaults when a cloud is selected.
+  const providerType = selectedCloud
+    ? cloudInfo?.[selectedCloud]?.type
+    : undefined;
+
+  useEffect(() => {
+    if (!wsControllerURL || !selectedCloud || !providerType) {
+      return;
+    }
+    const param = {
+      wsControllerURL,
+      cloudTag: selectedCloud,
+      providerType,
+      selectedRegion: values.region || undefined,
+    };
+    dispatch(modelConfigDefaultsSource.actions.start(param));
+    return (): void => {
+      dispatch(modelConfigDefaultsSource.actions.stop(param));
+    };
+  }, [dispatch, wsControllerURL, selectedCloud, providerType, values.region]);
 
   const credentialsOptions = useMemo(
     () => toCredentialOptions(userCredentials.credentials[values.cloud] || []),

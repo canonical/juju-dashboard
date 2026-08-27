@@ -123,7 +123,7 @@ const JujuCLI: FC = () => {
   );
   const controllerWSHost =
     primaryControllerData?.[0]
-      .replace("ws://", "")
+      .replace("ws://", "") // eslint-disable-line @microsoft/sdl/no-insecure-url
       .replace("wss://", "")
       .replace("/api", "") || null;
   const wsProtocol = primaryControllerData?.[0].split("://")[0] || "wss";
@@ -164,7 +164,7 @@ const JujuCLI: FC = () => {
                     }),
                   }),
                   Address: (column): TableLinksLink => ({
-                    externalLink: `http://${column.value}`,
+                    externalLink: `http://${column.value}`, // eslint-disable-line @microsoft/sdl/no-insecure-url
                   }),
                 },
                 Model: {
@@ -200,7 +200,7 @@ const JujuCLI: FC = () => {
                     }),
                   }),
                   "Public address": (column): TableLinksLink => ({
-                    externalLink: `http://${column.value}`,
+                    externalLink: `http://${column.value}`, // eslint-disable-line @microsoft/sdl/no-insecure-url
                   }),
                 },
               },

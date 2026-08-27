@@ -91,7 +91,6 @@ const UpgradeModelController: FC<Props> = ({
         currentVersion,
         wsControllerURL,
         modelUUID,
-        modelURL: getModelURL(wsControllerURL, modelUUID),
         modelName: modelName,
       });
       dispatch(action);

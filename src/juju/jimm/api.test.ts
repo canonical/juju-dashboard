@@ -19,7 +19,7 @@ import {
   listMigrationTargets,
   supportedJujuVersions,
   upgradeTo,
-  jobInfo,
+  modelControllerInfo,
 } from "./api";
 
 describe("JIMM API", () => {
@@ -460,9 +460,9 @@ describe("JIMM API", () => {
           },
         },
       } as unknown as Connection;
-      const response = await upgradeTo(conn, "model-abc123", "controller123");
+      const response = await upgradeTo(conn, ["abc123"], "controller123");
       expect(conn.facades.jimM.upgradeTo).toHaveBeenCalledExactlyOnceWith(
-        "model-abc123",
+        ["abc123"],
         "controller123",
       );
       expect(response).toBe(true);
@@ -473,7 +473,7 @@ describe("JIMM API", () => {
         facades: {},
       } as unknown as Connection;
       await expect(
-        upgradeTo(conn, "model-abc123", "controller123"),
+        upgradeTo(conn, ["abc123"], "controller123"),
       ).rejects.toThrow(new Error(Label.NO_JIMM));
     });
 
@@ -486,22 +486,24 @@ describe("JIMM API", () => {
         },
       } as unknown as Connection;
       await expect(
-        upgradeTo(conn, "model-abc123", "controller123"),
+        upgradeTo(conn, ["abc123"], "controller123"),
       ).rejects.toThrow(new Error("Uh oh!"));
     });
   });
 
-  describe("jobInfo", () => {
-    it("makes a job info call", async () => {
+  describe("modelControllerInfo", () => {
+    it("makes a model controller info call", async () => {
       const conn = {
         facades: {
           jimM: {
-            jobInfo: vi.fn().mockResolvedValue(true),
+            modelControllerInfo: vi.fn().mockResolvedValue(true),
           },
         },
       } as unknown as Connection;
-      const response = await jobInfo(conn, "123");
-      expect(conn.facades.jimM.jobInfo).toHaveBeenCalledExactlyOnceWith("123");
+      const response = await modelControllerInfo(conn, "abc123");
+      expect(
+        conn.facades.jimM.modelControllerInfo,
+      ).toHaveBeenCalledExactlyOnceWith("abc123");
       expect(response).toBe(true);
     });
 
@@ -509,7 +511,7 @@ describe("JIMM API", () => {
       const conn = {
         facades: {},
       } as unknown as Connection;
-      await expect(jobInfo(conn, "123")).rejects.toThrow(
+      await expect(modelControllerInfo(conn, "abc123")).rejects.toThrow(
         new Error(Label.NO_JIMM),
       );
     });
@@ -518,11 +520,13 @@ describe("JIMM API", () => {
       const conn = {
         facades: {
           jimM: {
-            jobInfo: vi.fn().mockRejectedValue(new Error("Uh oh!")),
+            modelControllerInfo: vi.fn().mockRejectedValue(new Error("Uh oh!")),
           },
         },
       } as unknown as Connection;
-      await expect(jobInfo(conn, "123")).rejects.toThrow(new Error("Uh oh!"));
+      await expect(modelControllerInfo(conn, "abc123")).rejects.toThrow(
+        new Error("Uh oh!"),
+      );
     });
   });
 });

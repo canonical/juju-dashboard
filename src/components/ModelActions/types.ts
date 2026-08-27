@@ -7,6 +7,7 @@ import type { PropsWithChildren } from "react";
 export type Props = {
   modelName: string;
   modelUUID: string;
+  disabled?: boolean;
   position?: ContextualMenuProps<void>["position"];
   redirectOnDestroy?: boolean;
   qualifier: string;

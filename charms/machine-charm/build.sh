@@ -9,6 +9,7 @@ CHARM_DIST_PATH="$SCRIPT_PATH/src/dist"
 
 BUILD_TYPE="${1:-source}"
 DASHBOARD_VERSION="${2:-}"
+IFS=' ' read -r -a PACK_ARGS <<< "${3:-}"
 
 # 1. Build or reuse the Juju Dashboard assets
 mkdir -p "$CHARM_DIST_PATH"
@@ -68,7 +69,7 @@ ATTEMPT=1
 SUCCESS=false
 
 while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-    if (cd "$SCRIPT_PATH" && charmcraft pack); then
+    if (cd "$SCRIPT_PATH" && charmcraft pack "${PACK_ARGS[@]}"); then
         SUCCESS=true
         break # Success, exit retry loop
     else

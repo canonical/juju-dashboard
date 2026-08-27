@@ -35,12 +35,18 @@ runs:
     - name: Configure candid
       shell: bash
       run: |
-        sudo yq -i '.location = "${{ inputs.candid-location }}"' /var/snap/candid/current/config.yaml
+        CONFIG_FILE='/var/snap/candid/current/config.yaml'
+        cat $CONFIG_FILE | yq ".location = \"${INPUTS_CANDID_LOCATION}\"" | sudo tee "${CONFIG_FILE}" >/dev/null
+      env:
+        INPUTS_CANDID_LOCATION: ${{ inputs.candid-location }}
     - name: Merge candid config
       shell: bash
       if: inputs.merge-config != ''
       run: |
-        sudo yq eval-all '. as $item ireduce ({}; . * $item)' -i /var/snap/candid/current/config.yaml '${{ inputs.merge-config }}'
+        CONFIG_FILE='/var/snap/candid/current/config.yaml'
+        cat $CONFIG_FILE | yq eval-all '. as $item ireduce ({}; . * $item)' - "${INPUTS_MERGE_CONFIG}" | sudo tee "${CONFIG_FILE}" >/dev/null
+      env:
+        INPUTS_MERGE_CONFIG: ${{ inputs.merge-config }}
     - name: Wait for candid snap
       if: inputs.merge-config != ''
       uses: ./.github/actions/wait-for-snap
@@ -67,5 +73,5 @@ runs:
       with:
         provider: localhost
         controller-name: ${{ inputs.controller-name }}
-        bootstrap-options: --config 'identity-url=${{ inputs.candid-location }}' --config 'identity-public-key=${{ steps.candid-key-capture.outputs.identity-public-key }}' --config allow-model-access=true
+        bootstrap-options: --config identity-url=${{ inputs.candid-location }} --config identity-public-key=${{ steps.candid-key-capture.outputs.identity-public-key }} --config allow-model-access=true
         juju-channel: ${{ inputs.juju-channel }}

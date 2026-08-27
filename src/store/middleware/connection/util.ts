@@ -23,13 +23,11 @@ export function hasConnections<K extends string>(
   string,
   unknown
 > {
-  if (
-    !(
-      "connections" in meta &&
-      typeof meta.connections === "object" &&
-      meta.connections !== null
-    )
-  ) {
+  if (!(
+    "connections" in meta &&
+    typeof meta.connections === "object" &&
+    meta.connections !== null
+  )) {
     return false;
   }
   const connections = meta.connections as Record<string, unknown>;

@@ -258,7 +258,6 @@ describe("UpgradeModelController", () => {
     const action = upgradeTo.run({
       currentVersion: "1.2.1",
       modelName: "test1",
-      modelURL: "wss://example.com/model/abc123/api",
       modelUUID: "abc123",
       targetController: "controller2",
       targetVersion: "4.6.14",

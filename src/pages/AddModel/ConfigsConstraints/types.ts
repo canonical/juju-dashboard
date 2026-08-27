@@ -1,10 +1,24 @@
-import type { SelectProps } from "@canonical/react-components";
+import type { DisableType } from "store/juju/types";
+import type { ConfigFieldEntry } from "store/middleware/source/types";
 
 import type { InputMode } from "../types";
+
+export type {
+  CategoryDefinitionField,
+  ConfigFieldEntry,
+  ConfigFieldValue,
+} from "store/middleware/source/types";
+export { InputType, ValueType } from "store/middleware/source/types";
+export { DisableType } from "store/juju/types";
 
 export enum TestId {
   CONFIGS_CONSTRAINTS_FORM = "configs-constraints-form",
 }
+
+export type CategoryDefinition = {
+  category: null | string;
+  fields: ConfigFieldEntry[];
+};
 
 export enum Label {
   CONFIGS_TITLE = "Configurations (optional)",
@@ -23,11 +37,15 @@ export enum Label {
   DISABLE_REMOVE_OBJECT_DESC = "Prevents destruction of the model and removal of applications, machines, units, relations, and storage.",
   DISABLE_ALL_COMMANDS = "Disable all commands",
   DISABLE_ALL_COMMANDS_DESC = "Disables every command that can modify a Juju controller, model, or workload.",
+  INCORRECT_YAML_CONFIGURATION_ERROR = "One or more invalid configuration values",
+  INCORRECT_YAML_CONSTRAINT_ERROR = "One or more invalid constraint values",
   NO_CHANGED_CONFIGS = "No configs were changed from default",
   NO_CHANGED_CONSTRAINTS = "No constraints were changed from default",
 }
 
 export enum FieldName {
+  CONFIG_FIELDS = "configFields",
+  CONSTRAINT_FIELDS = "constraintFields",
   CONFIG_INPUT_MODE = "configInputMode",
   CONSTRAINT_INPUT_MODE = "constraintInputMode",
   CONFIG_YAML = "configYAML",
@@ -36,27 +54,11 @@ export enum FieldName {
 }
 
 export type FormFields = {
+  [FieldName.CONFIG_FIELDS]: ConfigFieldEntry[];
+  [FieldName.CONSTRAINT_FIELDS]: ConfigFieldEntry[];
   [FieldName.CONFIG_INPUT_MODE]: InputMode;
   [FieldName.CONSTRAINT_INPUT_MODE]: InputMode;
   [FieldName.CONFIG_YAML]: string;
   [FieldName.CONSTRAINT_YAML]: string;
   [FieldName.DISABLED_COMMANDS]: DisableType;
-};
-
-export enum DisableType {
-  NONE = "none",
-  DESTROY_MODEL = "BlockDestroy",
-  REMOVE_OBJECT = "BlockRemove",
-  ALL = "BlockChange",
-}
-
-export type CategoryDefinition = {
-  category: string;
-  fields: {
-    label: string;
-    description: string;
-    defaultValue?: number | string;
-    input?: { type: "select" } & SelectProps;
-    isNumeric?: boolean;
-  }[];
 };

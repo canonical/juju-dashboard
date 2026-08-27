@@ -5,7 +5,7 @@ import { actions as jujuActions } from "store/juju";
 import { logger } from "utils/logger";
 
 import { hasConnections } from "../connection/util";
-import { createSourceMiddleware } from "../source-middleware";
+import { createSourceInstance } from "../source-middleware";
 import { ModelsError } from "../types";
 
 export const NOT_AUTHENTICATED_ERROR = "not authenticated with controller";
@@ -34,10 +34,7 @@ export async function getModelList(
   }
 }
 
-export default createSourceMiddleware<
-  UserModelList,
-  { wsControllerURL: string }
->(
+export default createSourceInstance<{ wsControllerURL: string }, UserModelList>(
   "model-list",
   ({ meta }) => {
     if (!hasConnections(meta, ["wsControllerURL"])) {

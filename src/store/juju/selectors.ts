@@ -1613,3 +1613,11 @@ export const getAddModelState = createSelector(
   [slice],
   (sliceState) => sliceState.addModelState,
 );
+
+/**
+Fetches the model config defaults state.
+*/
+export const getModelConfigDefaultsState = createSelector(
+  [slice],
+  (sliceState) => sliceState.modelConfigDefaults,
+);

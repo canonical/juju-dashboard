@@ -16,18 +16,20 @@ import useDebounce from "hooks/useDebounce";
 
 import { InputMode } from "../../types";
 import StackList from "../StackList";
-import type { FormFields } from "../types";
+import { YAMLErrorType } from "../YAMLErrorsModal/types";
+import type { ConfigFieldEntry, FormFields } from "../types";
 import {
   buildYAML,
-  filterCategoriesBySearch,
-  getCategoriesWithVisibleFields,
+  filterEntriesBySearch,
+  groupEntriesByCategory,
+  validateAndParseYAML,
 } from "../utils";
 
 import type { Props } from "./types";
 
 const CategoriesListing = ({
   title,
-  categoriesList,
+  arrayName,
   inputMode,
   yamlKey,
   changedOnlyLabel,
@@ -37,18 +39,48 @@ const CategoriesListing = ({
   searchPlaceholder,
   yamlPlaceholder,
   searchName,
+  setYAMLErrors,
+  yamlErrorLabel,
+  isLoading = false,
+  onSwitchWhileLoading,
 }: Props): JSX.Element => {
   const id = useId();
-  const { values, setFieldValue } = useFormikContext<
-    FormFields & Record<string, string>
-  >();
+  const { values, setFieldError, setFieldTouched, setFieldValue } =
+    useFormikContext<FormFields>();
   const [searchQuery, setSearchQuery] = useDebounce("", 250);
   const [changedOnly, setChangedOnly] = useState(false);
+
+  const entries: ConfigFieldEntry[] = values[arrayName];
 
   const isListMode = values[inputMode] === InputMode.LIST;
   const handleModeChange = (isListModeSelected: boolean): void => {
     if (!isListModeSelected) {
-      void setFieldValue(yamlKey, buildYAML(categoriesList, values));
+      void setFieldValue(yamlKey, buildYAML(entries));
+    } else {
+      const yamlString = values[yamlKey];
+      if (!yamlString) {
+        void setFieldValue(inputMode, InputMode.LIST);
+        return;
+      }
+      const { validValues, errors } = validateAndParseYAML(yamlString, entries);
+      void setFieldValue(arrayName, validValues);
+
+      if (
+        errors[YAMLErrorType.UNKNOWN_KEYS].length > 0 ||
+        errors[YAMLErrorType.INVALID_VALUES].length > 0 ||
+        errors[YAMLErrorType.OTHERS].length > 0
+      ) {
+        void setFieldTouched(yamlKey, true, false);
+        // setFieldError must be called after setFieldTouched to prevent
+        // Formik's internal validation run from wiping the error message.
+        setTimeout(() => {
+          setFieldError(yamlKey, yamlErrorLabel);
+        }, 0);
+        setYAMLErrors({ errors, inputMode, yamlKey });
+        return;
+      }
+
+      setFieldError(yamlKey, undefined);
     }
 
     void setFieldValue(
@@ -57,18 +89,12 @@ const CategoriesListing = ({
     );
   };
 
-  const filteredCategories = filterCategoriesBySearch(
-    searchQuery,
-    categoriesList,
-  );
-  const categoriesWithChangedFields = getCategoriesWithVisibleFields(
-    filteredCategories,
-    values,
-  );
-  const hasChangedFields = categoriesWithChangedFields.length > 0;
-  const visibleCategories = changedOnly
-    ? categoriesWithChangedFields
-    : filteredCategories;
+  const filteredEntries = filterEntriesBySearch(searchQuery, entries);
+  const changedGroups = groupEntriesByCategory(filteredEntries, true);
+  const hasChangedFields = changedGroups.length > 0;
+  const visibleGroups = changedOnly
+    ? changedGroups
+    : groupEntriesByCategory(filteredEntries);
 
   const changedOnlySwitch = (
     <Switch
@@ -86,14 +112,21 @@ const CategoriesListing = ({
 
   return (
     <section
-      className="p-section u-no-padding--bottom categories-listing"
+      className={classNames(
+        "p-section u-no-padding--bottom categories-listing",
+        {
+          "categories-listing--list-view": isListMode,
+        },
+      )}
       aria-labelledby={`title-${id}`}
     >
       <h5 id={`title-${id}`} className="u-no-padding--top u-no-margin--bottom">
         {title}
       </h5>
       <p className="u-no-margin--bottom p-text--small">
-        <a href={docsLink}>{docsLabel}</a>
+        <a href={docsLink} target="_blank" rel="noreferrer">
+          {docsLabel}
+        </a>
       </p>
       <div className="u-flex u-flex--gap">
         <div>
@@ -102,6 +135,10 @@ const CategoriesListing = ({
             label={InputMode.LIST}
             name={`mode-${id}`}
             onChange={() => {
+              if (isLoading && values[yamlKey]) {
+                onSwitchWhileLoading?.();
+                return;
+              }
               handleModeChange(true);
             }}
             value={InputMode.LIST}
@@ -144,25 +181,33 @@ const CategoriesListing = ({
             </Tooltip>
           )}
           <div className="categories__form-scroll u-sv-1--top">
-            {visibleCategories.length > 0 ? (
-              visibleCategories.map(({ category, fields }, index) => (
-                <Row
-                  key={category}
-                  className={classNames("u-no-padding", {
-                    "u-sv1--top": index !== 0,
-                  })}
-                >
-                  <Col size={3}>
-                    <h5>{category}</h5>
-                  </Col>
-                  <Col size={9}>
-                    <StackList visibleFields={fields} />
-                  </Col>
-                  {index < visibleCategories.length - 1 ? (
-                    <hr className="p-rule--muted" />
-                  ) : null}
-                </Row>
-              ))
+            {visibleGroups.length > 0 ? (
+              visibleGroups.map(({ category, fields }, index) => {
+                const ungrouped = category === null;
+                return (
+                  <Row
+                    key={category ?? "__ungrouped__"}
+                    className={classNames("u-no-padding", {
+                      "u-sv1--top": index !== 0,
+                    })}
+                  >
+                    <Col size={ungrouped ? 2 : 3}>
+                      {ungrouped ? null : <h5>{category}</h5>}
+                    </Col>
+                    <Col size={ungrouped ? 10 : 9}>
+                      <StackList
+                        isLoading={isLoading}
+                        visibleFields={fields}
+                        arrayName={arrayName}
+                        stackedLabelColumns={ungrouped ? 6 : 5}
+                      />
+                    </Col>
+                    {index < visibleGroups.length - 1 ? (
+                      <hr className="p-rule--muted" />
+                    ) : null}
+                  </Row>
+                );
+              })
             ) : (
               <h5>No results found for {`"${searchQuery}"`}</h5>
             )}

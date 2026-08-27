@@ -15,8 +15,7 @@ declare global {
  * props from either A or B, but prevent a mix of both.
  */
 export type ExclusiveProps<A, B> =
-  | (A & Partial<Record<keyof B, never>>)
-  | (B & Partial<Record<keyof A, never>>);
+  (A & Partial<Record<keyof B, never>>) | (B & Partial<Record<keyof A, never>>);
 
 /*
   This type guard can be used to check if a Redux action includes a payload.

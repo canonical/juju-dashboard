@@ -5,7 +5,9 @@ import { ControllerPermission } from "../objects";
 import { GiveAccess } from "./utils/give-access";
 
 const jimmAccess = {
-  [ControllerPermission.LOGIN]: "loginer",
+  // spell-checker:disable-next-line
+  [ControllerPermission.ADD_MODEL]: "can_addmodel",
+  [ControllerPermission.AUDIT_LOG_VIEWER]: "audit_log_viewer",
   [ControllerPermission.SUPERUSER]: "administrator",
 };
 
