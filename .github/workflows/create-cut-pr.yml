@@ -1,15 +1,13 @@
 name: Create cut PR
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - closed
     branches:
       - main
 
-permissions:
-  pull-requests: write
-  contents: write
+permissions: write-all
 
 jobs:
   create-cut-pr:
