@@ -90,9 +90,6 @@ jobs:
   release:
     name: "Release Juju Dashboard"
     runs-on: ubuntu-24.04
-    permissions:
-      packages: write
-      actions: write
 
     needs: [pre-release]
 

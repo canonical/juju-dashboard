@@ -9,7 +9,6 @@ on:
 
 permissions:
   pull-requests: write
-  contents: write
 
 jobs:
   create-release-pr:
@@ -20,6 +19,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.base_ref }}
+          persist-credentials: false
       - uses: ./.github/actions/create-release-pr
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
