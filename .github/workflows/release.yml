@@ -90,6 +90,9 @@ jobs:
   release:
     name: "Release Juju Dashboard"
     runs-on: ubuntu-24.04
+    permissions:
+      packages: write
+      actions: write
 
     needs: [pre-release]
 
@@ -215,7 +218,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-tags: true
-          persist-credentials: false
       - name: Tag commits
         id: tags
         run: |
