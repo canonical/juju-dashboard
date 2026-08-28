@@ -1,3 +1,0 @@
-ops ==3.8.1
-pydantic ==2.13.4
--e file:../common

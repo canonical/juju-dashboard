@@ -1,11 +1,14 @@
 [project]
-name = "common"
+name = "juju-dashboard-k8s"
 version = "0.1.0"
+description = ""
+readme = "README.md"
 requires-python = ">=3.10"
 authors = []
 dependencies = [
-  "jinja2 == 3.1.6",
   "ops == 3.8.1",
+  "pydantic == 2.13.4",
+  "common"
 ]
 
 [dependency-groups]
@@ -18,3 +21,9 @@ dev = [
 [build-system]
 requires = ["uv_build>=0.12.6,<0.13"]
 build-backend = "uv_build"
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+common = {path = "common", editable = true}

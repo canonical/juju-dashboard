@@ -3,7 +3,8 @@
 set -euo pipefail # Exit on error, unset variables, or pipeline failure
 SCRIPT_PATH=$(dirname "$(realpath "$0")")
 
-ROOT_DIR="$SCRIPT_PATH/../../"
+ROOT_DIR="$SCRIPT_PATH/../"
+CHARM_DIR="$SCRIPT_PATH/k8s-charm"
 
 BUILD_TYPE="${1:-source}"
 DASHBOARD_RESOURCE="${2:-}"
@@ -55,8 +56,12 @@ MAX_ATTEMPTS=3
 ATTEMPT=1
 SUCCESS=false
 
+cd "$SCRIPT_PATH"
+# The charm is built from the parent directory so that charmcraft has access to the charm and common files.
+cp $CHARM_DIR/charmcraft.yaml charmcraft.yaml
+
 while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-    if (cd "$SCRIPT_PATH" && charmcraft pack "${PACK_ARGS[@]}"); then
+    if (charmcraft pack "${PACK_ARGS[@]}"); then
         SUCCESS=true
         break # Success, exit retry loop
     else
@@ -64,6 +69,8 @@ while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
         ATTEMPT=$((ATTEMPT + 1))
     fi
 done
+
+rm "$SCRIPT_PATH/charmcraft.yaml"
 
 if [ "$SUCCESS" = 'false' ]; then
     echo "Error: All $MAX_ATTEMPTS attempts to pack the charm failed." >&2

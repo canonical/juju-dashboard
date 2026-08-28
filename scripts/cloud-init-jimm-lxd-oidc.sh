@@ -46,7 +46,7 @@ export WRITE_NGINX=false
 export DASHBOARD_ROOT=/home/ubuntu/juju-dashboard/public
 export DASHBOARD_CONTROLLER_URL="ws://jimm.localhost:17070"
 export DASHBOARD_ANALYTICS_ENABLED=false
-python3 ./charms/common/common/config.py
+python3 ./charms/common/src/common/config.py
 
 # Set up LXD controller
 sudo iptables -I FORWARD -i lxdbr0 -j ACCEPT

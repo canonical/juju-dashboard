@@ -17,6 +17,7 @@ pkg/
 public/config.local.js
 .nfs.*
 /charms/machine-charm/src/dist
+/charms/charmcraft.yaml
 network-cache
 
 .yarn/*

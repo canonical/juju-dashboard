@@ -78,7 +78,7 @@ juju controllers
 
 ## 5. Check dashboard controller reachability
 
-The dashboard connects to the controller over WebSocket. The cloud-init scripts configure the URL via `python3 charms/common/common/config.py` using these variables:
+The dashboard connects to the controller over WebSocket. The cloud-init scripts configure the URL via `python3 charms/common/src/common/config.py` using these variables:
 
 - `DASHBOARD_CONTROLLER_URL` (e.g. `ws://jimm.localhost:17070`, `wss://<hostname>.local:17070`)
 - `DASHBOARD_IS_JUJU` (`true` for Juju, `false` for JIMM)
@@ -93,7 +93,7 @@ WRITE_NGINX=false \
 DASHBOARD_ROOT=/home/ubuntu/juju-dashboard/public \
 DASHBOARD_CONTROLLER_URL="ws://jimm.localhost:17070" \
 DASHBOARD_ANALYTICS_ENABLED=false \
-python3 ./charms/common/common/config.py
+python3 ./charms/common/src/common/config.py
 ```
 
 Then restart the dashboard service or re-run `yarn start` to load the new `config.local.js`.

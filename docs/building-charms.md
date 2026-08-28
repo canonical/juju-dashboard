@@ -14,8 +14,8 @@ Building the machine charm is fairly straightforward. You need a machine with Ju
 # From the root directory of this repo
 
 # Build the charm
-cd ./charms/machine-charm
-./build.sh
+cd ./charms
+./build-machine.sh
 
 # Bootstrap a test controller. Make a make a model, and deploy an application, so that the dashboard has things to show.
 juju bootstrap localhost localhost-test
@@ -38,10 +38,10 @@ Once you login following the instructions in the output of `juju dashboard` you 
 
 This script can be used to pull the intended Github release of the dashboard as well as pack the charm:
 
-Note: you can optionally pass a dashboard release tag to the script e.g. `./charms/machine-charm/build.sh dashboard-version 1.2.3`
+Note: you can optionally pass a dashboard release tag to the script e.g. `./charms/build-machine.sh dashboard-version 1.2.3`
 
 ```sh
-./charms/machine-charm/build.sh dashboard-version latest
+./charms/build-machine.sh dashboard-version latest
 ```
 
 # Building and Testing the k8s charm
@@ -105,8 +105,8 @@ You're finally ready to build the charm! Change to the root directory of this re
 
 ```sh
 # Build the charm
-cd ./charms/k8s-charm
-./build.sh
+cd ./charms
+./build-k8s.sh
 
 # Switch to the controller model and deploy the dashboard
 juju switch controller
@@ -151,7 +151,7 @@ You must tell your browser to trust the controller's cert in order to get a work
 ```sh
 charmcraft login
 # This will build the assets from source
-./charms/machine-charm/build.sh
+./charms/build-machine.sh
 charmcraft upload juju-dashboard*.charm
 # If upload fails with "No keyring found to store or retrieve credentials from."
 # Run charmcraft login --export ~/secrets.auth
@@ -166,7 +166,7 @@ charmcraft release juju-dashboard --channel=... --revision=[output-from-upload]
 ```sh
 charmcraft login
 # This will build the image and pack the charm. It also prints the Docker image ID.
-./charms/k8s-charm/build.sh
+./charms/build-k8s.sh
 charmcraft upload-resource juju-dashboard-k8s dashboard-image --image=[image-id]
 charmcraft upload juju-dashboard-k8s*.charm
 charmcraft release juju-dashboard-k8s --channel=... --revision=[output-from-upload] --resource=dashboard-image:[resource-revision-number]

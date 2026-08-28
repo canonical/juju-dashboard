@@ -2,16 +2,12 @@
 # Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-if [ -z "$VIRTUAL_ENV" -a -d venv/ ]; then
-    . venv/bin/activate
-fi
-
 if [ -z "$PYTHONPATH" ]; then
     export PYTHONPATH="lib:src"
 else
     export PYTHONPATH="lib:src:$PYTHONPATH"
 fi
 
-flake8
-coverage run --branch --source=src -m unittest -v "$@"
-coverage report -m
+uv run flake8
+uv run coverage run --branch --source=src -m unittest -v "$@"
+uv run coverage report -m
