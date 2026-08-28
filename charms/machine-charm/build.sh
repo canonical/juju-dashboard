@@ -50,7 +50,7 @@ fi
 if ! which charmcraft ; then
     echo "Charmcraft CLI not detected, installing with snap."
 
-    sudo snap install charmcraft --classic
+    sudo snap install charmcraft --classic --channel 4.x/stable
 
     # 2.5. Wait for snap changes
     while [ -n "$(snap changes charmcraft 2>/dev/null | awk '/^[0-9]+/ {if ($2 != "Done") print $2 }')" ]; do

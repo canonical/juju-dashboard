@@ -100,7 +100,7 @@ jobs:
           built-charm-path: "${{ steps.post-build.outputs.built-charm-path }}"
           upload-image: true
           pull-image: false
-          charmcraft-channel: latest/stable
+          charmcraft-channel: 4.x/stable
           github-tag: false
 
       - name: Upload charmcraft logs on failure
@@ -118,7 +118,7 @@ jobs:
           origin-channel: "${{ steps.track.outputs.value }}/beta"
           destination-channel: "${{ steps.track.outputs.value }}/candidate"
           charm-path: ${{ steps.post-build.outputs.charm-dir }}
-          charmcraft-channel: latest/stable
+          charmcraft-channel: 4.x/stable
 
       - name: Promote charm to stable
         uses: andogq/charming-actions/promote-charm@fix/promote-charm-branch
@@ -127,7 +127,7 @@ jobs:
           origin-channel: "${{ steps.track.outputs.value }}/candidate"
           destination-channel: "${{ steps.track.outputs.value }}/stable"
           charm-path: ${{ steps.post-build.outputs.charm-dir }}
-          charmcraft-channel: latest/stable
+          charmcraft-channel: 4.x/stable
 
       - name: Send notification
         uses: ./.github/actions/send-notification
@@ -135,11 +135,6 @@ jobs:
           webhook-url: "${{ secrets.WEBBOT_URL }}"
           message: |
             Successfully published Juju Dashboard ${{ matrix.charm-kind }} charm `${{ inputs.version }}` to stable
-      - name: Send notification on failure
-        if: failure()
-        uses: ./.github/actions/send-notification
-        with:
-          webhook-url: "${{ secrets.WEBBOT_URL }}"
 
   post-release:
     name: "Create tags and GitHub release"
