@@ -1,11 +1,10 @@
 name: Release Juju Dashboard
 
 on:
-  pull_request:
-    types:
-      - closed
+  push:
     branches:
       - "release/*"
+  workflow_dispatch:
 
 permissions: {}
 
@@ -18,47 +17,21 @@ jobs:
     name: "Determine if workflow should run"
     runs-on: ubuntu-24.04
 
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.head_commit.author.email != '41898282+github-actions[bot]@users.noreply.github.com'
 
     outputs:
       should-run: ${{ steps.check.outputs.should-run }}
-
-    steps:
-      - name: Only run on `release/x.y.z[-suffix]` branches
-        if: github.event_name == 'pull_request'
-        id: check
-        run: |
-          # Unfortunately, this step is required since GitHub doesn't allow glob filtering on
-          # the head branch of a PR.
-          if ! echo "${GITHUB_HEAD_REF}" | grep -qP '^release/\d+\.\d+\.\d+'; then
-              echo 'Not running on a full release branch. Exiting workflow.'
-              exit 0
-          else
-              echo 'Running on release branch, continuing workflow.'
-              echo 'should-run=true' | tee -a "$GITHUB_OUTPUT"
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  pre-release:
-    name: "Determine release parameters"
-    runs-on: ubuntu-24.04
-
-    needs: [run-check]
-    if: needs.run-check.outputs.should-run
-
-    outputs:
       version: ${{ steps.params.outputs.version }}
       channel: ${{ steps.params.outputs.channel }}
       promote-channel: ${{ steps.params.outputs.promote-channel }}
       track: ${{ steps.params.outputs.track }}
       is-pre-release: ${{ steps.params.outputs.is-pre-release }}
-      changelog: ${{ steps.changelog.outputs.changelog }}
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
+
       - name: Determine release Charmhub parameters
         id: params
         run: |
@@ -66,13 +39,12 @@ jobs:
           track=$(echo "$version" | grep -Po '^\d+\.\d+')
 
           channel="$track/beta"
-
           is_pre_release="true"
+          promote_channel=""
 
           if echo "$version" | grep -P '^\d+\.\d+\.\d+$' ; then
             # Can promote from beta to candidate immediately
             promote_channel="$track/candidate"
-
             is_pre_release="false"
           fi
 
@@ -81,17 +53,50 @@ jobs:
           echo "promote-channel=$promote_channel" | tee -a "$GITHUB_OUTPUT"
           echo "track=$track" | tee -a "$GITHUB_OUTPUT"
           echo "is-pre-release=$is_pre_release" | tee -a "$GITHUB_OUTPUT"
-      - name: Extract changelog
-        uses: ./.github/actions/extract-changelog
-        id: changelog
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check branch and release state
+        id: check
+        run: |
+          version="${{ steps.params.outputs.version }}"
+          channel="${{ steps.params.outputs.promote-channel }}"
+          if [ -z "$channel" ]; then
+            channel="${{ steps.params.outputs.channel }}"
+          fi
+
+          # This workflow should only act on the long-lived release/x.y branch.
+          if [[ ! "${{ github.ref_name }}" =~ ^release/[0-9]+\.[0-9]+$ ]]; then
+            echo "Not running on a release/x.y branch (${{ github.ref_name }}). Skipping release."
+            echo "should-run=false" | tee -a "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Don't publish a freshly cut release/x.y branch; its patch component
+          # is still a placeholder.
+          if echo "$version" | grep -qP '\.x$'; then
+            echo "Placeholder version $version prevents release; skipping."
+            echo "should-run=false" | tee -a "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Per-charm idempotence is checked inside the release matrix so a
+          # partial failure can retry independently. We still provide a
+          # workflow-level fallback using the post-release GitHub tag.
+          existing_tag="$(git ls-remote origin "refs/tags/v$version" 2>/dev/null || true)"
+          if [ -n "$existing_tag" ]; then
+            echo "Version $version tag already exists; skipping."
+            echo "should-run=false" | tee -a "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "should-run=true" | tee -a "$GITHUB_OUTPUT"
+
 
   release:
     name: "Release Juju Dashboard"
     runs-on: ubuntu-24.04
 
-    needs: [pre-release]
+    needs: [run-check]
+    if: needs.run-check.outputs.should-run == 'true'
 
     strategy:
       fail-fast: false
@@ -106,10 +111,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
       - name: Install LXD
         uses: canonical/setup-lxd@da2ac84e727dc534215fd14cd088b9209d65893b # main
+      - name: Set charm version
+        working-directory: charms/${{ matrix.charm-kind }}-charm
+        run: |
+          version="${{ needs.run-check.outputs.version }}"
+          yq -i ".version = \"$version\"" charmcraft.yaml
       - name: Build dashboard
         working-directory: charms/${{ matrix.charm-kind }}-charm
         id: build
@@ -129,18 +137,17 @@ jobs:
       - name: Upload docker image
         if: ${{ matrix.charm-kind == 'k8s' }}
         run: |
-          FINAL_TAG="ghcr.io/canonical/juju-dashboard:${NEEDS_PRE_RELEASE_OUTPUTS_VERSION}"
+          FINAL_TAG="ghcr.io/canonical/juju-dashboard:${NEEDS_RUN_CHECK_OUTPUTS_VERSION}"
           docker image tag "${STEPS_BUILD_OUTPUTS_ID}" "$FINAL_TAG"
           docker image push "$FINAL_TAG"
         env:
-          NEEDS_PRE_RELEASE_OUTPUTS_VERSION: ${{ needs.pre-release.outputs.version }}
+          NEEDS_RUN_CHECK_OUTPUTS_VERSION: ${{ needs.run-check.outputs.version }}
           STEPS_BUILD_OUTPUTS_ID: ${{ steps.build.outputs.id }}
       - name: Get charm path
         id: post-build
         run: |
           CHARM_DIR='charms/${{ matrix.charm-kind }}-charm'
 
-          # Concatenate charm paths into a single line with commas
           BUILT_CHARM_PATHS=$(find $CHARM_DIR/*.charm -maxdepth 1 -print0 | xargs -0 -L1 basename | paste -sd ',' -)
 
           echo "charm-dir=$CHARM_DIR" | tee -a "$GITHUB_OUTPUT"
@@ -152,7 +159,7 @@ jobs:
           path: ${{ steps.post-build.outputs.charm-dir }}/*.charm
       - name: Create new tracks, if required
         run: |
-          track="${NEEDS_PRE_RELEASE_OUTPUTS_TRACK}"
+          track="${NEEDS_RUN_CHECK_OUTPUTS_TRACK}"
           charm_name="$(yq '.name' "${STEPS_POST_BUILD_OUTPUTS_CHARM_DIR}/charmcraft.yaml")"
 
           authorization_header="Macaroon $(echo "${{ secrets.CHARMHUB_TOKEN }}" | base64 -d | jq -r .v)"
@@ -168,14 +175,51 @@ jobs:
             echo "'$track' track for '$charm_name' already created. Continuing..."
           fi
         env:
-          NEEDS_PRE_RELEASE_OUTPUTS_TRACK: ${{ needs.pre-release.outputs.track }}
+          NEEDS_RUN_CHECK_OUTPUTS_TRACK: ${{ needs.run-check.outputs.track }}
           STEPS_POST_BUILD_OUTPUTS_CHARM_DIR: ${{ steps.post-build.outputs.charm-dir }}
+      - name: Skip if version already published for this charm
+        id: idempotence
+        env:
+          CHANNEL: ${{ needs.run-check.outputs.channel }}
+          PROMOTE_CHANNEL: ${{ needs.run-check.outputs.promote-channel }}
+          VERSION: ${{ needs.run-check.outputs.version }}
+          CHARMHUB_TOKEN: ${{ secrets.CHARMHUB_TOKEN }}
+        run: |
+          charm_name="$(yq '.name' "${{ steps.post-build.outputs.charm-dir }}/charmcraft.yaml")"
+          authorization_header="Macaroon $(echo "$CHARMHUB_TOKEN" | base64 -d | jq -r .v)"
+          charm_status_json="$(curl -s -H "Authorization: ${authorization_header}" -H 'Content-type: application/json' "https://api.charmhub.io/v1/charm/${charm_name}/releases" || true)"
+          already_published="false"
+          already_promoted="false"
+          if [ -n "$charm_status_json" ]; then
+            release_revision="$(echo "$charm_status_json" | jq -r --arg ch "$CHANNEL" '.["channel-map"][] | select(.channel == $ch) | .revision' 2>/dev/null | head -n1)"
+            if [ -n "$release_revision" ] && [ "$release_revision" != "null" ]; then
+              matched_version="$(echo "$charm_status_json" | jq -r --argjson rev "$release_revision" '.revisions[] | select(.revision == $rev) | .version' 2>/dev/null | head -n1)"
+              if [ "$matched_version" = "$VERSION" ]; then
+                echo "Version $VERSION already published in $CHANNEL for $charm_name; skipping upload."
+                already_published="true"
+              fi
+            fi
+
+            if [ -n "$PROMOTE_CHANNEL" ]; then
+              promote_revision="$(echo "$charm_status_json" | jq -r --arg ch "$PROMOTE_CHANNEL" '.["channel-map"][] | select(.channel == $ch) | .revision' 2>/dev/null | head -n1)"
+              if [ -n "$promote_revision" ] && [ "$promote_revision" != "null" ]; then
+                promoted_version="$(echo "$charm_status_json" | jq -r --argjson rev "$promote_revision" '.revisions[] | select(.revision == $rev) | .version' 2>/dev/null | head -n1)"
+                if [ "$promoted_version" = "$VERSION" ]; then
+                  echo "Version $VERSION already promoted to $PROMOTE_CHANNEL for $charm_name; skipping promotion."
+                  already_promoted="true"
+                fi
+              fi
+            fi
+          fi
+          echo "already-published=${already_published}" | tee -a "$GITHUB_OUTPUT"
+          echo "already-promoted=${already_promoted}" | tee -a "$GITHUB_OUTPUT"
       - name: Upload charm
+        if: steps.idempotence.outputs.already-published != 'true'
         uses: canonical/charming-actions/upload-charm@9180b22741d2349858e35e1dcc2fe4e11c3ebf2d # main
         with:
           credentials: "${{ secrets.CHARMHUB_TOKEN }}"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          channel: "${{ needs.pre-release.outputs.channel }}"
+          channel: "${{ needs.run-check.outputs.channel }}"
           charm-path: "${{ steps.post-build.outputs.charm-dir }}"
           built-charm-path: "${{ steps.post-build.outputs.built-charm-path }}"
           upload-image: true
@@ -183,22 +227,29 @@ jobs:
           charmcraft-channel: latest/stable
           github-tag: false
       - name: Promote charm
-        if: needs.pre-release.outputs.promote-channel != ''
-        # TODO: Replace this once canonical/charming-actions#162 merges
+        if: |
+          steps.idempotence.outputs.already-promoted != 'true' &&
+          needs.run-check.outputs.promote-channel != ''
         uses: andogq/charming-actions/promote-charm@3b1b538aabfc419dc27328c3c0e649bbd1b55be7 # fix/promote-charm-branch
         with:
           credentials: "${{ secrets.CHARMHUB_TOKEN }}"
-          origin-channel: "${{ needs.pre-release.outputs.channel }}"
-          destination-channel: "${{ needs.pre-release.outputs.promote-channel }}"
+          origin-channel: "${{ needs.run-check.outputs.channel }}"
+          destination-channel: "${{ needs.run-check.outputs.promote-channel }}"
           charm-path: ${{ steps.post-build.outputs.charm-dir }}
           charmcraft-channel: latest/stable
 
       - name: Send notification
+        if: |
+          steps.idempotence.outputs.already-published != 'true' ||
+          (
+            needs.run-check.outputs.promote-channel != '' &&
+            steps.idempotence.outputs.already-promoted != 'true'
+          )
         uses: ./.github/actions/send-notification
         with:
           webhook-url: "${{ secrets.WEBBOT_URL }}"
           message: |
-            Successfully published Juju Dashboard ${{ matrix.charm-kind }} charm `${{ needs.pre-release.outputs.version }}` to `${{ needs.pre-release.outputs.promote-channel || needs.pre-release.outputs.channel }}`
+            Successfully published Juju Dashboard ${{ matrix.charm-kind }} charm `${{ needs.run-check.outputs.version }}` to `${{ needs.run-check.outputs.promote-channel || needs.run-check.outputs.channel }}`
       - name: Send notification on failure
         if: failure()
         uses: ./.github/actions/send-notification
@@ -211,7 +262,7 @@ jobs:
       contents: write
     runs-on: ubuntu-24.04
 
-    needs: [pre-release, release]
+    needs: [run-check, release]
 
     defaults:
       run:
@@ -221,7 +272,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-tags: true
-          persist-credentials: false
       - name: Tag commits
         id: tags
         run: |
@@ -230,29 +280,25 @@ jobs:
 
             echo "Creating tag '$tag' at $(git rev-parse --short HEAD)"
 
-            # Tag the current commit, force updating if required
             git tag -f "$tag"
           }
 
-          # Tag original channel
-          create_or_update_tag "track/${NEEDS_PRE_RELEASE_OUTPUTS_CHANNEL}"
+          create_or_update_tag "track/${NEEDS_RUN_CHECK_OUTPUTS_CHANNEL}"
 
-          # Tag promoted channel, if required
-          if [ -n "${NEEDS_PRE_RELEASE_OUTPUTS_PROMOTE_CHANNEL}" ]; then
-            create_or_update_tag "track/${NEEDS_PRE_RELEASE_OUTPUTS_PROMOTE_CHANNEL}"
+          if [ -n "${NEEDS_RUN_CHECK_OUTPUTS_PROMOTE_CHANNEL}" ]; then
+            create_or_update_tag "track/${NEEDS_RUN_CHECK_OUTPUTS_PROMOTE_CHANNEL}"
           fi
 
-          # Tag version
-          version_tag="v${NEEDS_PRE_RELEASE_OUTPUTS_VERSION}"
+          version_tag="v${NEEDS_RUN_CHECK_OUTPUTS_VERSION}"
           create_or_update_tag "$version_tag"
 
           git push --tags --force
 
           echo "version-tag=$version_tag" | tee -a "$GITHUB_OUTPUT"
         env:
-          NEEDS_PRE_RELEASE_OUTPUTS_CHANNEL: ${{ needs.pre-release.outputs.channel }}
-          NEEDS_PRE_RELEASE_OUTPUTS_PROMOTE_CHANNEL: ${{ needs.pre-release.outputs.promote-channel }}
-          NEEDS_PRE_RELEASE_OUTPUTS_VERSION: ${{ needs.pre-release.outputs.version }}
+          NEEDS_RUN_CHECK_OUTPUTS_CHANNEL: ${{ needs.run-check.outputs.channel }}
+          NEEDS_RUN_CHECK_OUTPUTS_PROMOTE_CHANNEL: ${{ needs.run-check.outputs.promote-channel }}
+          NEEDS_RUN_CHECK_OUTPUTS_VERSION: ${{ needs.run-check.outputs.version }}
 
       - name: "Download k8s charm artifact"
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -265,29 +311,23 @@ jobs:
           name: juju-dashboard-machine
           path: release-artifacts
 
-      - name: "Create release" # zizmor: ignore[superfluous-actions]
+      - name: "Create release"
         uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1
         with:
-          name: "Juju Dashboard ${{ needs.pre-release.outputs.version }}"
+          name: "Juju Dashboard ${{ needs.run-check.outputs.version }}"
           tag: ${{ steps.tags.outputs.version-tag }}
           allowUpdates: true
           replacesArtifacts: true
-          prerelease: ${{ needs.pre-release.outputs.is-pre-release }}
+          prerelease: ${{ needs.run-check.outputs.is-pre-release }}
           artifacts: release-artifacts/**/*.charm
           body: |
-            Published `${{ steps.tags.outputs.version-tag }}` to Charmhub on `${{ needs.pre-release.outputs.promote-channel || needs.pre-release.outputs.channel }}` channel.
-
-            ---
-
-            # Changelog
-
-            ${{ needs.pre-release.outputs.changelog }}
+            Published `${{ steps.tags.outputs.version-tag }}` to Charmhub on `${{ needs.run-check.outputs.promote-channel || needs.run-check.outputs.channel }}` channel.
 
   sentry-release:
     name: "Create Sentry release"
     runs-on: ubuntu-24.04
 
-    needs: [pre-release]
+    needs: [run-check, release]
 
     defaults:
       run:
@@ -295,8 +335,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
 
       - name: Install dependencies
         run: yarn install
@@ -312,7 +350,7 @@ jobs:
           SENTRY_PROJECT: juju-dashboard
         with:
           environment: production
-          release: ${{ needs.pre-release.outputs.version }}
+          release: ${{ needs.run-check.outputs.version }}
           sourcemaps: "./build"
           ignore_missing: true
           ignore_empty: true
