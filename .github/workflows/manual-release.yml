@@ -1,0 +1,190 @@
+name: Manual Release (Temporary)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (e.g. 0.16.0)"
+        required: true
+        type: string
+      track:
+        description: "Charmhub track (e.g. 0.16). Defaults to major.minor of version."
+        required: false
+        type: string
+
+permissions: write-all
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  release:
+    name: "Release ${{ matrix.charm-kind }} charm"
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        charm-kind: [k8s, machine]
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install LXD
+        uses: canonical/setup-lxd@main
+
+      - name: Build dashboard
+        working-directory: charms/${{ matrix.charm-kind }}-charm
+        id: build
+        run: |
+          OUTPUT=$(./build.sh)
+
+          if [ '${{ matrix.charm-kind }}' = 'k8s' ]; then
+              echo "$OUTPUT" | grep '^id=' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Log in to GitHub Container Registry
+        if: ${{ matrix.charm-kind == 'k8s' }}
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload docker image
+        if: ${{ matrix.charm-kind == 'k8s' }}
+        run: |
+          FINAL_TAG='ghcr.io/canonical/juju-dashboard:${{ inputs.version }}'
+          docker image tag '${{ steps.build.outputs.id }}' "$FINAL_TAG"
+          docker image push "$FINAL_TAG"
+
+      - name: Get charm path
+        id: post-build
+        run: |
+          CHARM_DIR='charms/${{ matrix.charm-kind }}-charm'
+          BUILT_CHARM_PATHS=$(ls -1 $CHARM_DIR/*.charm | xargs -L1 basename | paste -sd ',' -)
+          echo "charm-dir=$CHARM_DIR" | tee -a "$GITHUB_OUTPUT"
+          echo "built-charm-path=$BUILT_CHARM_PATHS" | tee -a "$GITHUB_OUTPUT"
+
+      - name: Save charm artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: juju-dashboard-${{ matrix.charm-kind }}
+          path: ${{ steps.post-build.outputs.charm-dir }}/*.charm
+
+      - name: Compute track
+        id: track
+        run: |
+          track="${INPUT_TRACK:-$(echo "$INPUT_VERSION" | grep -Po '^\d+\.\d+')}"
+          echo "value=$track" >> "$GITHUB_OUTPUT"
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+          INPUT_TRACK: ${{ inputs.track }}
+
+      - name: Debug token
+        run: |
+          echo "Token length: ${#CHARMHUB_TOKEN}"
+          echo "Token first 10 chars: ${CHARMHUB_TOKEN:0:10}"
+          CHARMCRAFT_AUTH="$CHARMHUB_TOKEN" charmcraft whoami
+        env:
+          CHARMHUB_TOKEN: ${{ secrets.CHARMHUB_TOKEN }}
+
+      - name: Upload charm to beta
+        uses: canonical/charming-actions/upload-charm@main
+        with:
+          credentials: "${{ secrets.CHARMHUB_TOKEN }}"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          channel: "${{ steps.track.outputs.value }}/beta"
+          charm-path: "${{ steps.post-build.outputs.charm-dir }}"
+          built-charm-path: "${{ steps.post-build.outputs.built-charm-path }}"
+          upload-image: true
+          pull-image: false
+          charmcraft-channel: latest/stable
+          github-tag: false
+
+      - name: Upload charmcraft logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: charmcraft-logs-${{ matrix.charm-kind }}
+          path: /home/runner/.local/state/charmcraft/log/
+          if-no-files-found: ignore
+
+      - name: Promote charm to candidate
+        uses: andogq/charming-actions/promote-charm@fix/promote-charm-branch
+        with:
+          credentials: "${{ secrets.CHARMHUB_TOKEN }}"
+          origin-channel: "${{ steps.track.outputs.value }}/beta"
+          destination-channel: "${{ steps.track.outputs.value }}/candidate"
+          charm-path: ${{ steps.post-build.outputs.charm-dir }}
+          charmcraft-channel: latest/stable
+
+      - name: Promote charm to stable
+        uses: andogq/charming-actions/promote-charm@fix/promote-charm-branch
+        with:
+          credentials: "${{ secrets.CHARMHUB_TOKEN }}"
+          origin-channel: "${{ steps.track.outputs.value }}/candidate"
+          destination-channel: "${{ steps.track.outputs.value }}/stable"
+          charm-path: ${{ steps.post-build.outputs.charm-dir }}
+          charmcraft-channel: latest/stable
+
+      - name: Send notification
+        uses: ./.github/actions/send-notification
+        with:
+          webhook-url: "${{ secrets.WEBBOT_URL }}"
+          message: |
+            Successfully published Juju Dashboard ${{ matrix.charm-kind }} charm `${{ inputs.version }}` to stable
+      - name: Send notification on failure
+        if: failure()
+        uses: ./.github/actions/send-notification
+        with:
+          webhook-url: "${{ secrets.WEBBOT_URL }}"
+
+  post-release:
+    name: "Create tags and GitHub release"
+    runs-on: ubuntu-24.04
+    needs: [release]
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-tags: true
+
+      - name: Tag commits
+        id: tags
+        run: |
+          track="${INPUT_TRACK:-$(echo "$INPUT_VERSION" | grep -Po '^\d+\.\d+')}"
+          git tag -f "track/$track/beta"
+          git tag -f "track/$track/candidate"
+          git tag -f "track/$track/stable"
+          git tag -f "v${INPUT_VERSION}"
+          git push --tags --force
+          echo "version-tag=v${INPUT_VERSION}" >> "$GITHUB_OUTPUT"
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+          INPUT_TRACK: ${{ inputs.track }}
+
+      - name: Download k8s charm artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: juju-dashboard-k8s
+          path: release-artifacts
+
+      - name: Download machine charm artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: juju-dashboard-machine
+          path: release-artifacts
+
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          name: "Juju Dashboard ${{ inputs.version }}"
+          tag: "v${{ inputs.version }}"
+          allowUpdates: true
+          replacesArtifacts: true
+          prerelease: false
+          artifacts: release-artifacts/**/*.charm
+          body: |
+            Published `v${{ inputs.version }}` to Charmhub on `${{ inputs.track || format('{0}', inputs.version) }}/stable` channel.
