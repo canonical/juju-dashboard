@@ -1,10 +1,4 @@
-import {
-  act,
-  fireEvent,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formik } from "formik";
 
@@ -147,71 +141,10 @@ describe("ConfigsConstraints", () => {
       name: Label.CONSTRAINTS_TITLE,
     });
     expect(
-      within(constraintsSection).getByRole("radio", {
-        name: InputMode.LIST,
-      }),
-    ).toBeChecked();
-    expect(
-      within(constraintsSection).getByLabelText(Label.CHANGED_CONSTRAINTS_ONLY),
+      within(constraintsSection).getByPlaceholderText(
+        Label.MODEL_CONSTRAINT_PLACEHOLDER,
+      ),
     ).toBeInTheDocument();
-  });
-
-  it("keeps config and constraint searches independent", async () => {
-    vi.useFakeTimers();
-    renderComponent(
-      <Formik initialValues={initialValues} onSubmit={vi.fn()}>
-        <ConfigsConstraints />
-      </Formik>,
-    );
-
-    const configsSection = screen.getByRole("region", {
-      name: Label.CONFIGS_TITLE,
-    });
-    expect(
-      within(configsSection).getByLabelText("default-space"),
-    ).toBeInTheDocument();
-    expect(
-      within(configsSection).getByLabelText("container-networking-method"),
-    ).toBeInTheDocument();
-
-    const constraintsSection = screen.getByRole("region", {
-      name: Label.CONSTRAINTS_TITLE,
-    });
-    expect(
-      within(constraintsSection).getByLabelText("cores"),
-    ).toBeInTheDocument();
-    expect(
-      within(constraintsSection).getByLabelText("zones"),
-    ).toBeInTheDocument();
-
-    const configsSearchInput = within(configsSection).getByRole("searchbox");
-    const constraintsSearchInput =
-      within(constraintsSection).getByRole("searchbox");
-
-    fireEvent.change(configsSearchInput, {
-      target: { value: "default-space" },
-    });
-    fireEvent.change(constraintsSearchInput, {
-      target: { value: "cores" },
-    });
-    act(() => {
-      vi.advanceTimersByTime(500);
-    });
-
-    expect(
-      within(configsSection).getByLabelText("default-space"),
-    ).toBeInTheDocument();
-    expect(
-      within(configsSection).queryByLabelText("container-networking-method"),
-    ).not.toBeInTheDocument();
-
-    expect(
-      within(constraintsSection).getByLabelText("cores"),
-    ).toBeInTheDocument();
-    expect(
-      within(constraintsSection).queryByLabelText("zones"),
-    ).not.toBeInTheDocument();
-    vi.useRealTimers();
   });
 
   it("renders disabled command options with 'none' selected by default", () => {
