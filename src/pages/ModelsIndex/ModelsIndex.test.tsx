@@ -238,4 +238,48 @@ describe("Models Index page", () => {
     await userEvent.click(addButton);
     expect(router.state.location.pathname).toEqual(urls.models.addModel);
   });
+
+  describe("Review & destroy button", () => {
+    it("is disabled when no models are selected", () => {
+      renderComponent(<ModelsIndex />, { state });
+      const button = screen.getByRole("button", {
+        name: `${Label.REVIEW_AND_DESTROY} 0 models`,
+      });
+      expect(button).toHaveAttribute("aria-disabled", "true");
+    });
+
+    it("shows count after selecting a model", async () => {
+      renderComponent(<ModelsIndex />, { state });
+      // Select the first row checkbox.
+      const checkboxes = screen.getAllByRole("checkbox", {
+        name: /Deselect /,
+      });
+      await userEvent.click(checkboxes[0]);
+      expect(
+        screen.getByRole("button", {
+          name: `${Label.REVIEW_AND_DESTROY} 1 model`,
+        }),
+      ).toBeInTheDocument();
+    });
+
+    it("updates count as more models are selected", async () => {
+      renderComponent(<ModelsIndex />, { state });
+      const checkboxes = screen.getAllByRole("checkbox", {
+        name: /Deselect /,
+      });
+      await userEvent.click(checkboxes[0]);
+      expect(
+        screen.getByRole("button", {
+          name: `${Label.REVIEW_AND_DESTROY} 1 model`,
+        }),
+      ).toBeInTheDocument();
+
+      await userEvent.click(checkboxes[1]);
+      expect(
+        screen.getByRole("button", {
+          name: `${Label.REVIEW_AND_DESTROY} 2 models`,
+        }),
+      ).toBeInTheDocument();
+    });
+  });
 });

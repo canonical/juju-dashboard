@@ -32,6 +32,7 @@ export default function DataTable<
   isRowDisabled,
   isRowLoading,
   noRowsMessage = "No rows",
+  onSelectionChange,
 }: DataTableProps<TRow, TKeyValue, TValues>): JSX.Element {
   const { sort, toggleSort } = useSortState<keyof TValues>();
 
@@ -77,7 +78,7 @@ export default function DataTable<
         .map(({ key }) => key),
     [keyedRows, isRowDisabled, isRowLoading],
   );
-  const select = useToggleSelect(rowKeys);
+  const select = useToggleSelect(rowKeys, onSelectionChange);
 
   // Render rows.
   const fullRows = useRows({
