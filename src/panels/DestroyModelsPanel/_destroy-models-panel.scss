@@ -1,0 +1,17 @@
+.destroy-models-panel {
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: $spv--small;
+  }
+
+  &__review-warning {
+    margin-bottom: $spv--x-large;
+  }
+
+  &__accordion {
+    .p-accordion__tab {
+      padding-left: 0;
+    }
+  }
+}

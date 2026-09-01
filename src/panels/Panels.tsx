@@ -13,6 +13,7 @@ import { useAppSelector } from "store/store";
 import AuditLogsFilterPanel from "./AuditLogsFilterPanel";
 import CharmsAndActionsPanel from "./CharmsAndActionsPanel/CharmsAndActionsPanel";
 import ConfigPanel from "./ConfigPanel/ConfigPanel";
+import DestroyModelsPanel from "./DestroyModelsPanel";
 import GrantSecretPanel from "./GrantSecretPanel";
 import RemoveSecretPanel from "./RemoveSecretPanel";
 import UpgradeModelPanel from "./UpgradeModelPanel";
@@ -47,6 +48,8 @@ export default function Panels(): JSX.Element {
         return canManageSecrets ? <RemoveSecretPanel /> : null;
       case "upgrade-model":
         return isJIMM && isJIMMControllerAdmin ? <UpgradeModelPanel /> : null;
+      case "destroy-models":
+        return <DestroyModelsPanel />;
       default:
         return null;
     }

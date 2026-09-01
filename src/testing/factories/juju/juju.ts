@@ -206,6 +206,7 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   userCredentials: userCredentialsStateFactory.build(),
   modelConfigDefaults: modelConfigDefaultsStateFactory.build(),
   selectedApplications: {},
+  modelsSelectedForDestruction: [],
   supportedJujuVersions: supportedJujuVersionsStateFactory.build(),
   modelMigrationTargets: modelMigrationTargetsStateFactory.build(),
   addModelState: addModelStateFactory.build(),

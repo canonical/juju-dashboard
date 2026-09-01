@@ -439,6 +439,52 @@ describe("reducers", () => {
     });
   });
 
+  it("selectModelsForDestruction", () => {
+    const state = jujuStateFactory.build({
+      modelsSelectedForDestruction: [],
+    });
+    expect(
+      reducer(
+        state,
+        actions.selectModelsForDestruction({
+          wsControllerURL: "wss://example.com",
+          models: [
+            { modelUUID: "abc123", modelName: "test-model-1" },
+            { modelUUID: "def456", modelName: "test-model-2" },
+          ],
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelsSelectedForDestruction: [
+        { modelUUID: "abc123", modelName: "test-model-1" },
+        { modelUUID: "def456", modelName: "test-model-2" },
+      ],
+    });
+  });
+
+  it("selectModelsForDestruction replaces previous selection", () => {
+    const state = jujuStateFactory.build({
+      modelsSelectedForDestruction: [
+        { modelUUID: "old123", modelName: "old-model" },
+      ],
+    });
+    expect(
+      reducer(
+        state,
+        actions.selectModelsForDestruction({
+          wsControllerURL: "wss://example.com",
+          models: [{ modelUUID: "new456", modelName: "new-model" }],
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelsSelectedForDestruction: [
+        { modelUUID: "new456", modelName: "new-model" },
+      ],
+    });
+  });
+
   it("destroyModelErrors", () => {
     const state = jujuStateFactory.build({
       destroyModel: {

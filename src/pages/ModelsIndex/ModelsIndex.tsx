@@ -3,14 +3,16 @@ import {
   Icon,
   Notification as ReactNotification,
   SearchAndFilter,
+  usePortal,
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import classNames from "classnames";
 import type { JSX, ReactNode } from "react";
-import { useId, useMemo, useState } from "react";
+import { useCallback, useId, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
+import DestroyModelDialog from "components/DestroyModelDialog";
 import LoadingSpinner from "components/LoadingSpinner";
 import ModelTable from "components/ModelTable";
 import SegmentedControl from "components/SegmentedControl";
@@ -22,7 +24,11 @@ import useWindowTitle from "hooks/useWindowTitle";
 import { useCheckRelations } from "juju/api-hooks/permissions";
 import { JIMMRelation } from "juju/jimm/JIMMV4";
 import MainContent from "layout/MainContent";
-import { getControllerUserTag } from "store/general/selectors";
+import {
+  getControllerUserTag,
+  getWSControllerURL,
+} from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
 import {
   getFilteredModelData,
   getGroupedModelStatusCounts,
@@ -33,7 +39,7 @@ import {
   hasModels,
 } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
-import { useAppSelector } from "store/store";
+import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import type { ModelsGroupedBy } from "urls";
 import urls, { externalURLs } from "urls";
@@ -45,7 +51,17 @@ import { Label, TestId } from "./types";
 export default function Models(): JSX.Element {
   useWindowTitle("Models");
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [selectedModelUUIDs, setSelectedModelUUIDs] = useState<string[]>([]);
+  const [, setPanelQs] = useQueryParams<{ panel: null | string }>({
+    panel: null,
+  });
+  const {
+    openPortal,
+    closePortal,
+    isOpen: showDestroyDialog,
+    Portal,
+  } = usePortal();
 
   const [queryParams, setQueryParams] = useQueryParams<{
     groupedby: string;
@@ -74,6 +90,7 @@ export default function Models(): JSX.Element {
   const modelsLoaded = useAppSelector(getModelListLoaded);
   const hasSomeModels = useAppSelector(hasModels);
   const modelData = useAppSelector(getModelData);
+  const wsControllerURL = useAppSelector(getWSControllerURL);
   const filteredModelData = useAppSelector((state) =>
     getFilteredModelData(state, filters),
   );
@@ -100,6 +117,34 @@ export default function Models(): JSX.Element {
     () => Object.values(filteredModelData),
     [filteredModelData],
   );
+
+  const handleReviewAndDestroy = useCallback(() => {
+    if (selectedModelUUIDs.length === 1) {
+      // Single model: open the existing per-model dialog directly.
+      openPortal();
+    } else {
+      // Multiple models: seed the store and open the destroy models panel.
+      if (wsControllerURL) {
+        dispatch(
+          jujuActions.selectModelsForDestruction({
+            models: selectedModelUUIDs.map((modelUUID) => ({
+              modelUUID,
+              modelName: modelData[modelUUID]?.model.name ?? modelUUID,
+            })),
+            wsControllerURL,
+          }),
+        );
+      }
+      setPanelQs({ panel: "destroy-models" }, { replace: true });
+    }
+  }, [
+    selectedModelUUIDs,
+    openPortal,
+    dispatch,
+    setPanelQs,
+    wsControllerURL,
+    modelData,
+  ]);
   const groupBy: ModelsGroupedBy = useMemo(() => {
     if (
       (VALID_MODEL_GROUPINGS as readonly string[]).includes(
@@ -253,7 +298,8 @@ export default function Models(): JSX.Element {
               appearance="secondary"
               className="u-no-margin--bottom"
               hasIcon
-              disabled
+              disabled={selectedModelUUIDs.length === 0}
+              onClick={handleReviewAndDestroy}
             >
               <Icon name="delete" />
               <span>
@@ -276,6 +322,18 @@ export default function Models(): JSX.Element {
       titleComponent="div"
       titleClassName="u-no-max-width u-full-width"
     >
+      {showDestroyDialog && selectedModelUUIDs.length === 1 && (
+        <Portal>
+          <DestroyModelDialog
+            modelUUID={selectedModelUUIDs[0]}
+            modelName={
+              modelData[selectedModelUUIDs[0]]?.model.name ??
+              selectedModelUUIDs[0]
+            }
+            closePortal={closePortal}
+          />
+        </Portal>
+      )}
       {modelsError ? (
         <ReactNotification severity="negative" title="Error">
           {modelsError} Try{" "}
