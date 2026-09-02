@@ -33,6 +33,7 @@ import {
   jujuStateFactory,
   modelDataFactory,
   modelListInfoFactory,
+  modelSelectionParamsFactory,
   auditEventsStateFactory,
   crossModelQueryStateFactory,
   secretsStateFactory,
@@ -1191,8 +1192,14 @@ describe("selectors", () => {
 
   it("getSelectedModelsForDestruction", () => {
     const selectedModels = [
-      { modelUUID: "abc123", modelName: "test-model-1" },
-      { modelUUID: "def456", modelName: "test-model-2" },
+      modelSelectionParamsFactory.build({
+        modelUUID: "abc123",
+        modelName: "test-model-1",
+      }),
+      modelSelectionParamsFactory.build({
+        modelUUID: "def456",
+        modelName: "test-model-2",
+      }),
     ];
     expect(
       getSelectedModelsForDestruction(

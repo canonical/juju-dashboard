@@ -7,6 +7,7 @@ import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
   jujuStateFactory,
   modelListInfoFactory,
+  modelSelectionParamsFactory,
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
@@ -35,8 +36,14 @@ describe("DestroyModelsPanel", () => {
           }),
         },
         modelsSelectedForDestruction: [
-          { modelUUID: "abc123", modelName: "test-model-1" },
-          { modelUUID: "def456", modelName: "test-model-2" },
+          modelSelectionParamsFactory.build({
+            modelUUID: "abc123",
+            modelName: "test-model-1",
+          }),
+          modelSelectionParamsFactory.build({
+            modelUUID: "def456",
+            modelName: "test-model-2",
+          }),
         ],
       }),
     });
