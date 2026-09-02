@@ -21,6 +21,28 @@
     margin-left: $sph--small;
   }
 
+  // Logo + region text on one line: the truncated-tooltip wrapper is a block
+  // div, without this flex row it drops under the provider logo when the
+  // cloud/region column is narrow (juju-dashboard#2455).
+  .models__cloud-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: $sph--small;
+
+    .p-table__logo {
+      flex-shrink: 0;
+    }
+
+    .truncated-tooltip {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  .models__version {
+    margin-left: $sph--small;
+  }
+
   .lrg-screen-access-cell {
     button {
       margin-left: auto;
