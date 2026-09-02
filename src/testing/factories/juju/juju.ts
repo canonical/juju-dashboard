@@ -17,6 +17,7 @@ import type {
   ModelFeaturesState,
   ModelListInfo,
   ModelMigrationTargetsState,
+  ModelSelectionParams,
   ModelSecrets,
   ModelUpgrade,
   ReBACState,
@@ -63,6 +64,14 @@ export const controllerInfoFactory = Factory.define<Controller>(() => ({
   username: "eggman@external",
   uuid: "def456",
 }));
+
+export const modelSelectionParamsFactory = Factory.define<ModelSelectionParams>(
+  () => ({
+    // spell-checker:disable-next-line
+    modelUUID: "84e872ff-9171-46be-829b-70f0ffake18d",
+    modelName: "test-model",
+  }),
+);
 
 export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({
   name: "test-model",
@@ -206,6 +215,7 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   userCredentials: userCredentialsStateFactory.build(),
   modelConfigDefaults: modelConfigDefaultsStateFactory.build(),
   selectedApplications: {},
+  modelsSelectedForDestruction: [],
   supportedJujuVersions: supportedJujuVersionsStateFactory.build(),
   modelMigrationTargets: modelMigrationTargetsStateFactory.build(),
   addModelState: addModelStateFactory.build(),

@@ -789,6 +789,14 @@ export const getDestructionState = createSelector(
 );
 
 /**
+ * Returns the UUIDs of models currently staged for bulk destruction in the UI.
+ */
+export const getSelectedModelsForDestruction = createSelector(
+  [slice],
+  (sliceState) => sliceState.modelsSelectedForDestruction,
+);
+
+/**
   Gets the model UUID from the supplied name using a memoized selector
   Usage:
     const getModelUUIDMemo = useMemo(getModelUUID.bind(null, modelName), [

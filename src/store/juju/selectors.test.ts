@@ -33,6 +33,7 @@ import {
   jujuStateFactory,
   modelDataFactory,
   modelListInfoFactory,
+  modelSelectionParamsFactory,
   auditEventsStateFactory,
   crossModelQueryStateFactory,
   secretsStateFactory,
@@ -160,6 +161,7 @@ import {
   getModelUpgradeDataLoaded,
   getHighestSupportedVersion,
   getNextSupportedVersion,
+  getSelectedModelsForDestruction,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -1186,6 +1188,28 @@ describe("selectors", () => {
         }),
       ),
     ).toStrictEqual(destroyModelData);
+  });
+
+  it("getSelectedModelsForDestruction", () => {
+    const selectedModels = [
+      modelSelectionParamsFactory.build({
+        modelUUID: "abc123",
+        modelName: "test-model-1",
+      }),
+      modelSelectionParamsFactory.build({
+        modelUUID: "def456",
+        modelName: "test-model-2",
+      }),
+    ];
+    expect(
+      getSelectedModelsForDestruction(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelsSelectedForDestruction: selectedModels,
+          }),
+        }),
+      ),
+    ).toStrictEqual(selectedModels);
   });
 
   it("getModelUUID from model name", () => {

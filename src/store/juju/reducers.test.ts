@@ -29,6 +29,7 @@ import {
   commandHistoryItem,
   userCredentialsStateFactory,
   modelUpgradeFactory,
+  modelSelectionParamsFactory,
 } from "testing/factories/juju/juju";
 
 import { actions, reducer } from "./slice";
@@ -436,6 +437,70 @@ describe("reducers", () => {
           loading: true,
         },
       },
+    });
+  });
+
+  it("selectModelsForDestruction", () => {
+    const model1 = modelSelectionParamsFactory.build({
+      modelUUID: "abc123",
+      modelName: "test-model-1",
+    });
+    const model2 = modelSelectionParamsFactory.build({
+      modelUUID: "def456",
+      modelName: "test-model-2",
+    });
+    const state = jujuStateFactory.build({
+      modelsSelectedForDestruction: [],
+    });
+    expect(
+      reducer(
+        state,
+        actions.selectModelsForDestruction({
+          wsControllerURL: "wss://example.com",
+          models: [model1, model2],
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelsSelectedForDestruction: [model1, model2],
+    });
+  });
+
+  it("selectModelsForDestruction replaces previous selection", () => {
+    const oldModel = modelSelectionParamsFactory.build({
+      modelUUID: "old123",
+      modelName: "old-model",
+    });
+    const newModel = modelSelectionParamsFactory.build({
+      modelUUID: "new456",
+      modelName: "new-model",
+    });
+    const state = jujuStateFactory.build({
+      modelsSelectedForDestruction: [oldModel],
+    });
+    expect(
+      reducer(
+        state,
+        actions.selectModelsForDestruction({
+          wsControllerURL: "wss://example.com",
+          models: [newModel],
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelsSelectedForDestruction: [newModel],
+    });
+  });
+
+  it("clearSelectedModelsForDestruction", () => {
+    const state = jujuStateFactory.build({
+      modelsSelectedForDestruction: modelSelectionParamsFactory.buildList(2),
+    });
+    expect(
+      reducer(state, actions.clearSelectedModelsForDestruction()),
+    ).toStrictEqual({
+      ...state,
+      modelsSelectedForDestruction: [],
     });
   });
 

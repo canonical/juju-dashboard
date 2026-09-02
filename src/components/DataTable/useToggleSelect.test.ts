@@ -137,6 +137,58 @@ describe("useToggleSelect", () => {
     });
   });
 
+  describe("onChange callback", () => {
+    it("is called with the new selection when a key is toggled on", ({
+      expect,
+    }) => {
+      const onChange = vi.fn();
+      const { result } = renderHook(() => useToggleSelect(KEYS, onChange));
+      act(() => {
+        result.current.toggle("one");
+      });
+      expect(onChange).toHaveBeenCalledWith(["one"]);
+    });
+
+    it("is called with the new selection when a key is toggled off", ({
+      expect,
+    }) => {
+      const onChange = vi.fn();
+      const { result } = renderHook(() => useToggleSelect(KEYS, onChange));
+      act(() => {
+        result.current.toggle("one");
+      });
+      act(() => {
+        result.current.toggle("one");
+      });
+      expect(onChange).toHaveBeenLastCalledWith([]);
+    });
+
+    it("is called with all keys when toggleAll selects all", ({ expect }) => {
+      const onChange = vi.fn();
+      const { result } = renderHook(() => useToggleSelect(KEYS, onChange));
+      act(() => {
+        result.current.toggleAll();
+      });
+      expect(onChange).toHaveBeenCalledWith([...KEYS]);
+    });
+
+    it("is called with an empty array when toggleAll deselects all", ({
+      expect,
+    }) => {
+      const onChange = vi.fn();
+      const { result } = renderHook(() => useToggleSelect(KEYS, onChange));
+      act(() => {
+        for (const key of KEYS) {
+          result.current.toggle(key);
+        }
+      });
+      act(() => {
+        result.current.toggleAll();
+      });
+      expect(onChange).toHaveBeenLastCalledWith([]);
+    });
+  });
+
   it("survives rerender", ({ expect }) => {
     const { result, rerender } = renderHook((keys) => useToggleSelect(keys), {
       initialProps: KEYS,

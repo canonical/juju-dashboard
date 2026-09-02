@@ -192,10 +192,12 @@ export type BlockEntry = {
 
 export type BlockState = Record<string, BlockEntry>;
 
-export type ModelDestructionParams = {
+export type ModelSelectionParams = {
   modelUUID: string;
   modelName: string;
-} & DestroyModelParams;
+};
+
+export type ModelDestructionParams = DestroyModelParams & ModelSelectionParams;
 
 export type JujuState = {
   auditEvents: AuditEventsState;
@@ -218,6 +220,7 @@ export type JujuState = {
   userCredentials: UserCredentialsState;
   modelConfigDefaults: ModelConfigDefaultsState;
   selectedApplications: Record<string, ApplicationStatus>;
+  modelsSelectedForDestruction: ModelSelectionParams[];
   supportedJujuVersions: SupportedJujuVersionsState;
   addModelState: AddModelState;
   blockState: BlockState;

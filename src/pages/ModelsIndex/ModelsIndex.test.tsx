@@ -2,6 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
+import { DestroyModelDialogTestId } from "components/DestroyModelDialog";
 import { LoadingSpinnerTestId } from "components/LoadingSpinner";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
@@ -280,6 +281,38 @@ describe("Models Index page", () => {
           name: `${Label.REVIEW_AND_DESTROY} 2 models`,
         }),
       ).toBeInTheDocument();
+    });
+
+    it("opens DestroyModelDialog when exactly one model is selected and button is clicked", async () => {
+      renderComponent(<ModelsIndex />, { state });
+      const checkboxes = screen.getAllByRole("checkbox", {
+        name: /Deselect /,
+      });
+      await userEvent.click(checkboxes[0]);
+      await userEvent.click(
+        screen.getByRole("button", {
+          name: `${Label.REVIEW_AND_DESTROY} 1 model`,
+        }),
+      );
+      expect(
+        screen.getByTestId(DestroyModelDialogTestId.DIALOG),
+      ).toBeInTheDocument();
+    });
+
+    it("sets the panel query param when multiple models are selected and button is clicked", async () => {
+      const { router } = renderComponent(<ModelsIndex />, { state });
+      const checkboxes = screen.getAllByRole("checkbox", {
+        name: /Deselect /,
+      });
+      await userEvent.click(checkboxes[0]);
+      await userEvent.click(checkboxes[1]);
+      await userEvent.click(
+        screen.getByRole("button", {
+          name: `${Label.REVIEW_AND_DESTROY} 2 models`,
+        }),
+      );
+      const params = new URLSearchParams(router.state.location.search);
+      expect(params.get("panel")).toBe("destroy-models");
     });
   });
 });

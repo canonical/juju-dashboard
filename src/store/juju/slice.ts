@@ -37,6 +37,7 @@ import type {
   AddModel,
   BlockEntry,
   ModelDestructionParams,
+  ModelSelectionParams,
 } from "./types";
 import { getModelQualifier } from "./utils/models";
 
@@ -158,6 +159,7 @@ const slice = createSlice({
       loading: false,
     },
     selectedApplications: {},
+    modelsSelectedForDestruction: [],
     supportedJujuVersions: {
       data: null,
       error: null,
@@ -347,6 +349,17 @@ const slice = createSlice({
       >,
     ) => {
       delete state.destroyModel[action.payload.modelUUID];
+    },
+    selectModelsForDestruction: (
+      state,
+      action: PayloadAction<
+        { models: ModelSelectionParams[] } & WsControllerURLParam
+      >,
+    ) => {
+      state.modelsSelectedForDestruction = action.payload.models;
+    },
+    clearSelectedModelsForDestruction: (state) => {
+      state.modelsSelectedForDestruction = [];
     },
     destroyModelErrors: (
       state,
