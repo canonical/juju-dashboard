@@ -30,9 +30,13 @@ export type ToggleSelectReturn<T> = {
 
 /**
  * Track selection over a collection of `keys`.
+ *
+ * @param onChange - Optional callback fired synchronously whenever the
+ * selection changes, receiving the new selected keys array.
  */
 export default function useToggleSelect<T>(
   keys: readonly T[],
+  onChange?: (selected: T[]) => void,
 ): ToggleSelectReturn<T> {
   const [selected, setSelected] = useState<T[]>([]);
 
@@ -70,8 +74,13 @@ export default function useToggleSelect<T>(
         }
         return filtered;
       });
+      onChange?.(
+        selected.includes(key)
+          ? selected.filter((value) => key !== value)
+          : [...selected, key],
+      );
     },
-    [keys],
+    [keys, onChange, selected],
   );
 
   const toggleAll = useCallback(() => {
@@ -79,14 +88,10 @@ export default function useToggleSelect<T>(
       return;
     }
 
-    setSelected((previous) => {
-      if (previous.length === keys.length) {
-        return [];
-      }
-
-      return [...keys];
-    });
-  }, [keys]);
+    const next = selected.length === keys.length ? [] : [...keys];
+    setSelected(next);
+    onChange?.(next);
+  }, [keys, onChange, selected]);
 
   return { selected, state, toggle, toggleAll };
 }

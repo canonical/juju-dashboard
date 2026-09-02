@@ -7,7 +7,7 @@ import {
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import classNames from "classnames";
 import type { JSX, ReactNode } from "react";
-import { useId, useMemo } from "react";
+import { useId, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
@@ -45,6 +45,7 @@ import { Label, TestId } from "./types";
 export default function Models(): JSX.Element {
   useWindowTitle("Models");
   const navigate = useNavigate();
+  const [selectedModelUUIDs, setSelectedModelUUIDs] = useState<string[]>([]);
 
   const [queryParams, setQueryParams] = useQueryParams<{
     groupedby: string;
@@ -228,7 +229,11 @@ export default function Models(): JSX.Element {
         </span>
         <div className={classNames("models", `${groupBy}-group`)}>
           <ChipGroup chips={{ blocked, alert, running }} />
-          <ModelTable models={models} groupBy={groupBy} />
+          <ModelTable
+            models={models}
+            groupBy={groupBy}
+            onSelectionChange={setSelectedModelUUIDs}
+          />
         </div>
       </>
     );
@@ -243,16 +248,29 @@ export default function Models(): JSX.Element {
           <span className="u-show--large">
             {modelCount} {pluralize(modelCount, "model")}
           </span>
-          <Button
-            appearance="positive"
-            className="u-no-margin--bottom"
-            hasIcon
-            disabled={!canCreateModels}
-            onClick={() => void navigate(urls.models.addModel)}
-          >
-            <Icon name="plus" light />
-            <span>Add model</span>
-          </Button>
+          <span>
+            <Button
+              appearance="secondary"
+              className="u-no-margin--bottom"
+              hasIcon
+              disabled
+            >
+              <Icon name="delete" />
+              <span>
+                {`${Label.REVIEW_AND_DESTROY} ${selectedModelUUIDs.length} ${pluralize(selectedModelUUIDs.length, "model")}`}
+              </span>
+            </Button>
+            <Button
+              appearance="positive"
+              className="u-no-margin--bottom"
+              hasIcon
+              disabled={!canCreateModels}
+              onClick={() => void navigate(urls.models.addModel)}
+            >
+              <Icon name="plus" light />
+              <span>Add model</span>
+            </Button>
+          </span>
         </div>
       }
       titleComponent="div"

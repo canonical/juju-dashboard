@@ -30,9 +30,14 @@ import { getCredential, getRegion } from "./shared";
 type Props = {
   models: ModelData[];
   groupBy?: "cloud" | "owner" | "status";
+  onSelectionChange?: (selectedUUIDs: string[]) => void;
 };
 
-export default function ModelTable({ models, groupBy }: Props): JSX.Element {
+export default function ModelTable({
+  models,
+  groupBy,
+  onSelectionChange,
+}: Props): JSX.Element {
   const controllers = useAppSelector(getControllerData);
   const destructionState = useAppSelector(getDestructionState);
   const modelUpgrades = useAppSelector(getModelUpgrades);
@@ -79,13 +84,14 @@ export default function ModelTable({ models, groupBy }: Props): JSX.Element {
 
   return (
     <DataTable
-      selectable={false}
+      selectable
       getKey={(row) => row.uuid}
       groupBy={groupBy}
       data={tableData}
       isRowDisabled={({ uuid }) => isDying(uuid)}
       isRowLoading={({ uuid }) => isDying(uuid) || !!getUpgrade(uuid)}
       noRowsMessage="No models"
+      onSelectionChange={onSelectionChange}
       columns={{
         name: column({
           header: "Model",

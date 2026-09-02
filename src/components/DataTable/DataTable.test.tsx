@@ -188,6 +188,43 @@ describe("DataTable", () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  describe("onSelectionChange", () => {
+    it("calls onSelectionChange with the selected key when a row is toggled", async () => {
+      const onSelectionChange = vi.fn();
+      renderComponent(
+        <DataTable {...initialProps} onSelectionChange={onSelectionChange} />,
+      );
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect 1" }),
+      );
+      expect(onSelectionChange).toHaveBeenCalledWith(["1"]);
+    });
+
+    it("calls onSelectionChange with all keys when select-all is toggled", async () => {
+      const onSelectionChange = vi.fn();
+      renderComponent(
+        <DataTable {...initialProps} onSelectionChange={onSelectionChange} />,
+      );
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Select all" }),
+      );
+      expect(onSelectionChange).toHaveBeenCalledWith(["1", "2"]);
+    });
+
+    it("calls onSelectionChange with an empty array when the last selected row is deselected", async () => {
+      const onSelectionChange = vi.fn();
+      renderComponent(
+        <DataTable {...initialProps} onSelectionChange={onSelectionChange} />,
+      );
+      // Select row 1 then deselect it.
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect 1" }),
+      );
+      await userEvent.click(screen.getByRole("checkbox", { name: "Select 1" }));
+      expect(onSelectionChange).toHaveBeenLastCalledWith([]);
+    });
+  });
 });
 
 describe("DataTable.columnBuilder", () => {

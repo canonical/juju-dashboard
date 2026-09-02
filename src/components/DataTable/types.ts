@@ -88,6 +88,11 @@ export type DataTableProps<
    * Optional message to display when there are no rows.
    */
   noRowsMessage?: string;
+  /**
+   * Optional callback fired whenever the set of selected row keys changes.
+   * Receives the current array of selected keys (empty when nothing is selected).
+   */
+  onSelectionChange?: (selectedKeys: TKeyValue[]) => void;
 };
 
 /**
