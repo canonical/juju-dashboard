@@ -25,8 +25,8 @@
   // div, without this flex row it drops under the provider logo when the
   // cloud/region column is narrow (juju-dashboard#2455).
   .models__cloud-cell {
-    display: inline-flex;
     align-items: center;
+    display: inline-flex;
     gap: $sph--small;
 
     .p-table__logo {
