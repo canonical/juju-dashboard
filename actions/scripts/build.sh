@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # The name of all available actions.
-declare -a ACTIONS=("create-cut-pr" "create-release-pr" "extract-changelog")
+declare -a ACTIONS=("create-cut-pr" "create-release-pr")
 
 # Additional files to copy into the built action.
 declare -a ADDITIONAL_FILES=("README.md" "action.yaml")
@@ -88,13 +88,11 @@ if [ "$current_dir" != "actions" ]; then
     exit 1
 fi
 
-# Ensure there's nothing pending for git, to prevent loosing changes.
+# Ensure there's nothing pending for git, to prevent losing changes.
 if [ -n "$(git status --porcelain)" ]; then
     echo "please stash or commit pending changes before continuing"
-
     echo ""
     git status --short
-
     exit 1
 fi
 
