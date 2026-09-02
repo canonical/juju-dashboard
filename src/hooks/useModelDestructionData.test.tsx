@@ -260,4 +260,46 @@ describe("useModelDestructionData", () => {
       },
     });
   });
+
+  it("should sum unit counts across all applications", () => {
+    const modelData = modelDataFactory.build({
+      uuid: "abc123",
+      applications: {
+        easyrsa: applicationStatusFactory.build({
+          units: {
+            "easyrsa/0": unitStatusFactory.build(),
+            "easyrsa/1": unitStatusFactory.build(),
+          },
+        }),
+        mysql: applicationStatusFactory.build({
+          units: {
+            "mysql/0": unitStatusFactory.build(),
+          },
+        }),
+      },
+    });
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: { abc123: modelData },
+      }),
+    });
+
+    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+      wrapper: generateContainer(state, "*", "/models"),
+    });
+    expect(result.current.unitCount).toBe(3);
+  });
+
+  it("should return unitCount of 0 when there are no applications", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: { abc123: modelDataFactory.build({ uuid: "abc123" }) },
+      }),
+    });
+
+    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+      wrapper: generateContainer(state, "*", "/models"),
+    });
+    expect(result.current.unitCount).toBe(0);
+  });
 });

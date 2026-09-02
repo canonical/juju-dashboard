@@ -27,6 +27,7 @@ type ModelDestructionData = {
   connectedOffers: ConnectedOffer[];
   showInfoTable: boolean;
   storageIDs: string[];
+  unitCount: number;
 };
 
 // Helper function to extract and format cross-model relations
@@ -114,6 +115,10 @@ export default function useModelDestructionData(
     machines.length > 0 ||
     crossModelRelations.length > 0;
   const hasStorage = modelStatusData?.storage !== undefined;
+  const unitCount = applications.reduce((prev, key) => {
+    const units = modelStatusData?.applications?.[key]?.units ?? {};
+    return prev + Object.keys(units).length;
+  }, 0);
 
   return {
     hasStorage,
@@ -123,5 +128,6 @@ export default function useModelDestructionData(
     connectedOffers,
     showInfoTable,
     storageIDs,
+    unitCount,
   };
 }

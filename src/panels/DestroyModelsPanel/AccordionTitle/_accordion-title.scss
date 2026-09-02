@@ -1,0 +1,25 @@
+.accordion-title {
+  &--is-removed {
+    text-decoration: line-through;
+  }
+
+  &__model-summary {
+    display: flex;
+    float: right;
+    gap: $spv--small;
+  }
+
+  &__model-summary-item {
+    align-items: center;
+    border-right: 1px solid $colors--light-theme--border-default;
+    display: flex;
+    float: left;
+    gap: $spv--small;
+    padding-right: $spv--small;
+
+    &:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+  }
+}

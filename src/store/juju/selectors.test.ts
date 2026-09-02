@@ -1195,10 +1195,12 @@ describe("selectors", () => {
       modelSelectionParamsFactory.build({
         modelUUID: "abc123",
         modelName: "test-model-1",
+        isController: true,
       }),
       modelSelectionParamsFactory.build({
         modelUUID: "def456",
         modelName: "test-model-2",
+        isController: false,
       }),
     ];
     expect(
