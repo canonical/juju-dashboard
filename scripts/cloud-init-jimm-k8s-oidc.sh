@@ -49,11 +49,10 @@ yarn install
 export DASHBOARD_CONFIG_NAME=config.local.js
 export DASHBOARD_IS_JUJU=false
 export WRITE_NGINX=false
-export DASHBOARD_CONFIG_DIR=/home/ubuntu/juju-dashboard/charms/k8s-charm/src
 export DASHBOARD_ROOT=/home/ubuntu/juju-dashboard/public
 export DASHBOARD_CONTROLLER_URL="ws://jimm.localhost:17070"
 export DASHBOARD_ANALYTICS_ENABLED=false
-python3 ./charms/k8s-charm/src/config.py
+python3 ./charms/common/src/common/config.py
 
 # Set up k8s controller
 cd /home/ubuntu/juju-dashboard
