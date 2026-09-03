@@ -7,6 +7,8 @@ import type {
 
 import useModelStatus from "hooks/useModelStatus";
 
+import { useCanConfigureModelWithUUID } from "./useCanConfigureModel";
+
 type CrossModelRelation = {
   name: string;
   endpoints: RemoteEndpoint[];
@@ -19,6 +21,13 @@ type ConnectedOffer = {
   endpoint: { name: string; interface: string };
 };
 
+export enum DestroyBlockedReason {
+  NONE = "",
+  IS_CONTROLLER = "isController",
+  NO_ACCESS = "noAccess",
+  CONNECTED_OFFERS = "hasCMRs",
+}
+
 type ModelDestructionData = {
   hasStorage: boolean;
   applications: string[];
@@ -28,6 +37,7 @@ type ModelDestructionData = {
   showInfoTable: boolean;
   storageIDs: string[];
   unitCount: number;
+  destroyBlockedReason: DestroyBlockedReason;
 };
 
 // Helper function to extract and format cross-model relations
@@ -99,6 +109,7 @@ export default function useModelDestructionData(
   modelUUID: string,
 ): ModelDestructionData {
   const modelStatusData = useModelStatus(modelUUID);
+  const canConfigureModel = useCanConfigureModelWithUUID(false, modelUUID);
 
   const offers = modelStatusData?.offers ?? {};
   const remoteApplications = modelStatusData?.["remote-applications"] ?? {};
@@ -120,6 +131,15 @@ export default function useModelDestructionData(
     return prev + Object.keys(units).length;
   }, 0);
 
+  let destroyBlockedReason = DestroyBlockedReason.NONE;
+  if (modelStatusData?.info?.["is-controller"]) {
+    destroyBlockedReason = DestroyBlockedReason.IS_CONTROLLER;
+  } else if (!canConfigureModel) {
+    destroyBlockedReason = DestroyBlockedReason.NO_ACCESS;
+  } else if (connectedOffers.length > 0) {
+    destroyBlockedReason = DestroyBlockedReason.CONNECTED_OFFERS;
+  }
+
   return {
     hasStorage,
     applications,
@@ -129,5 +149,6 @@ export default function useModelDestructionData(
     showInfoTable,
     storageIDs,
     unitCount,
+    destroyBlockedReason,
   };
 }

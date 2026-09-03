@@ -1,5 +1,4 @@
 import { screen } from "@testing-library/react";
-import { vi } from "vitest";
 
 import * as useCanConfigureModelModule from "hooks/useCanConfigureModel";
 import type { RootState } from "store/store";
@@ -96,10 +95,7 @@ describe("AccordionContent", () => {
   });
 
   it("renders action buttons for a normal model", () => {
-    renderComponent(
-      <AccordionContent modelUUID="abc123" isController={false} />,
-      { state },
-    );
+    renderComponent(<AccordionContent modelUUID="abc123" />, { state });
     expect(
       screen.getByRole("button", { name: "Remove from selection" }),
     ).toBeInTheDocument();
@@ -108,11 +104,12 @@ describe("AccordionContent", () => {
     ).toBeInTheDocument();
   });
 
-  it("hides action buttons when isController is true", () => {
-    renderComponent(
-      <AccordionContent modelUUID="abc123" isController={true} />,
-      { state },
-    );
+  it("hides action buttons when model is a controller model", () => {
+    state.juju.modelData["abc123"] = modelDataFactory.build({
+      uuid: "abc123",
+      info: modelInfoFactory.build({ "is-controller": true }),
+    });
+    renderComponent(<AccordionContent modelUUID="abc123" />, { state });
     expect(
       screen.queryByRole("button", { name: "Remove from selection" }),
     ).not.toBeInTheDocument();
@@ -121,15 +118,12 @@ describe("AccordionContent", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("hides action buttons when user does not have model access", () => {
+  it("hides action buttons when user does not have access to destroy", () => {
     vi.spyOn(
       useCanConfigureModelModule,
       "useCanConfigureModelWithUUID",
     ).mockReturnValue(false);
-    renderComponent(
-      <AccordionContent modelUUID="abc123" isController={false} />,
-      { state },
-    );
+    renderComponent(<AccordionContent modelUUID="abc123" />, { state });
     expect(
       screen.queryByRole("button", { name: "Remove from selection" }),
     ).not.toBeInTheDocument();
@@ -148,10 +142,7 @@ describe("AccordionContent", () => {
         }),
       },
     });
-    renderComponent(
-      <AccordionContent modelUUID="abc123" isController={false} />,
-      { state },
-    );
+    renderComponent(<AccordionContent modelUUID="abc123" />, { state });
     expect(
       screen.queryByRole("button", { name: "Remove from selection" }),
     ).not.toBeInTheDocument();

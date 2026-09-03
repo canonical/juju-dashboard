@@ -130,7 +130,6 @@ export default function Models(): JSX.Element {
             models: selectedModelUUIDs.map((modelUUID) => ({
               modelUUID,
               modelName: modelData[modelUUID]?.model.name ?? modelUUID,
-              isController: modelData[modelUUID]?.info?.["is-controller"],
             })),
             wsControllerURL,
           }),

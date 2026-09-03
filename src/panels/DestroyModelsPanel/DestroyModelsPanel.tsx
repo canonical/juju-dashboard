@@ -63,24 +63,11 @@ const DestroyModelsPanel: FC = () => {
       <Accordion
         className="destroy-models-panel__accordion"
         expanded="model-0"
-        sections={selectedModels.map(
-          ({ modelUUID, modelName, isController }, index) => ({
-            key: `model-${index}`,
-            title: (
-              <AccordionTitle
-                modelUUID={modelUUID}
-                modelName={modelName}
-                isController={isController}
-              />
-            ),
-            content: (
-              <AccordionContent
-                modelUUID={modelUUID}
-                isController={isController}
-              />
-            ),
-          }),
-        )}
+        sections={selectedModels.map(({ modelUUID, modelName }, index) => ({
+          key: `model-${index}`,
+          title: <AccordionTitle modelUUID={modelUUID} modelName={modelName} />,
+          content: <AccordionContent modelUUID={modelUUID} />,
+        }))}
       />
     </Panel>
   );

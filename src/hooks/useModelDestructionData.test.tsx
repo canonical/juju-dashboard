@@ -3,6 +3,7 @@ import type { JSX, PropsWithChildren } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router";
 
+import * as useCanConfigureModelModule from "hooks/useCanConfigureModel";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -19,7 +20,9 @@ import {
 } from "testing/factories/juju/juju";
 import { createStore } from "testing/utils";
 
-import useModelDestructionData from "./useModelDestructionData";
+import useModelDestructionData, {
+  DestroyBlockedReason,
+} from "./useModelDestructionData";
 
 const generateContainer =
   (state: RootState, path: string, url: string) =>
@@ -38,6 +41,13 @@ const generateContainer =
   };
 
 describe("useModelDestructionData", () => {
+  beforeEach(() => {
+    vi.spyOn(
+      useCanConfigureModelModule,
+      "useCanConfigureModelWithUUID",
+    ).mockReturnValue(true);
+  });
+
   it("should return initial empty state when modelStatusData is null or empty", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
@@ -56,6 +66,8 @@ describe("useModelDestructionData", () => {
     expect(result.current.connectedOffers).toEqual([]);
     expect(result.current.storageIDs).toEqual([]);
     expect(result.current.showInfoTable).toBe(false);
+    expect(result.current.unitCount).toBe(0);
+    expect(result.current.destroyBlockedReason).toBe(DestroyBlockedReason.NONE);
   });
 
   it("should correctly count applications and machines and set showInfoTable to true", () => {
@@ -301,5 +313,74 @@ describe("useModelDestructionData", () => {
       wrapper: generateContainer(state, "*", "/models"),
     });
     expect(result.current.unitCount).toBe(0);
+  });
+
+  it("should return destroyBlockedReason as IS_CONTROLLER when model is a controller model", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            uuid: "abc123",
+            info: modelInfoFactory.build({ "is-controller": true }),
+          }),
+        },
+      }),
+    });
+
+    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+      wrapper: generateContainer(state, "*", "/models"),
+    });
+    expect(result.current.destroyBlockedReason).toBe(
+      DestroyBlockedReason.IS_CONTROLLER,
+    );
+  });
+
+  it("should return destroyBlockedReason as NO_ACCESS when user cannot configure the model", () => {
+    vi.spyOn(
+      useCanConfigureModelModule,
+      "useCanConfigureModelWithUUID",
+    ).mockReturnValue(false);
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            uuid: "abc123",
+            info: modelInfoFactory.build({ "is-controller": false }),
+          }),
+        },
+      }),
+    });
+
+    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+      wrapper: generateContainer(state, "*", "/models"),
+    });
+    expect(result.current.destroyBlockedReason).toBe(
+      DestroyBlockedReason.NO_ACCESS,
+    );
+  });
+
+  it("should return destroyBlockedReason as CONNECTED_OFFERS when there are offers with active connections", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            uuid: "abc123",
+            info: modelInfoFactory.build({ "is-controller": false }),
+            offers: {
+              db: applicationOfferStatusFactory.build({
+                "total-connected-count": 1,
+              }),
+            },
+          }),
+        },
+      }),
+    });
+
+    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+      wrapper: generateContainer(state, "*", "/models"),
+    });
+    expect(result.current.destroyBlockedReason).toBe(
+      DestroyBlockedReason.CONNECTED_OFFERS,
+    );
   });
 });

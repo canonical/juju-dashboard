@@ -1,7 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { act } from "react";
-import { vi } from "vitest";
 
 import * as useCanConfigureModelModule from "hooks/useCanConfigureModel";
 import type { RootState } from "store/store";
@@ -28,6 +27,10 @@ describe("AccordionTitle", () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
+    vi.spyOn(
+      useCanConfigureModelModule,
+      "useCanConfigureModelWithUUID",
+    ).mockReturnValue(true);
     userEventWithTimers = userEvent.setup({
       advanceTimers: vi.advanceTimersByTime,
     });
@@ -83,13 +86,12 @@ describe("AccordionTitle", () => {
     expect(summaryItems[2]).toHaveTextContent("2"); // machines
   });
 
-  it("renders with a tooltip when the model is a controller model", async () => {
+  it("renders is-removed class when the model is a controller model", async () => {
+    state.juju.modelData["abc123"].info = modelInfoFactory.build({
+      "is-controller": true,
+    });
     renderComponent(
-      <AccordionTitle
-        modelUUID="abc123"
-        modelName="test-model"
-        isController={true}
-      />,
+      <AccordionTitle modelUUID="abc123" modelName="test-model" />,
       { state },
     );
     const icon = document.querySelector(".p-icon--help");
@@ -119,11 +121,7 @@ describe("AccordionTitle", () => {
       },
     });
     renderComponent(
-      <AccordionTitle
-        modelUUID="abc123"
-        modelName="test-model"
-        isController={false}
-      />,
+      <AccordionTitle modelUUID="abc123" modelName="test-model" />,
       { state },
     );
     expect(
@@ -137,11 +135,7 @@ describe("AccordionTitle", () => {
       "useCanConfigureModelWithUUID",
     ).mockReturnValue(false);
     renderComponent(
-      <AccordionTitle
-        modelUUID="abc123"
-        modelName="test-model"
-        isController={false}
-      />,
+      <AccordionTitle modelUUID="abc123" modelName="test-model" />,
       { state },
     );
     expect(

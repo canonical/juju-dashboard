@@ -195,11 +195,9 @@ export type BlockState = Record<string, BlockEntry>;
 export type ModelSelectionParams = {
   modelUUID: string;
   modelName: string;
-  isController?: boolean;
 };
 
-export type ModelDestructionParams = DestroyModelParams &
-  Omit<ModelSelectionParams, "isController">;
+export type ModelDestructionParams = DestroyModelParams & ModelSelectionParams;
 
 export type JujuState = {
   auditEvents: AuditEventsState;

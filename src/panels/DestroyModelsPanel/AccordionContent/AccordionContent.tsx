@@ -3,8 +3,9 @@ import { Button, Icon, MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { useMemo, type JSX } from "react";
 
-import { useCanConfigureModelWithUUID } from "hooks/useCanConfigureModel";
-import useModelDestructionData from "hooks/useModelDestructionData";
+import useModelDestructionData, {
+  DestroyBlockedReason,
+} from "hooks/useModelDestructionData";
 
 // Helper to render the Applications
 const applicationsRow = (applications: string[]): MainTableRow | null => {
@@ -125,21 +126,18 @@ const storageRow = (
 
 const AccordionContent = ({
   modelUUID,
-  isController = false,
 }: {
   modelUUID: string;
-  isController?: boolean;
 }): JSX.Element => {
   const {
     hasStorage,
     applications,
     machines,
     crossModelRelations,
-    connectedOffers,
     showInfoTable,
     storageIDs,
+    destroyBlockedReason,
   } = useModelDestructionData(modelUUID);
-  const canConfigureModel = useCanConfigureModelWithUUID(false, modelUUID);
 
   const infoTableRows = useMemo(() => {
     return [
@@ -149,8 +147,7 @@ const AccordionContent = ({
       storageRow(hasStorage, storageIDs),
     ].filter((row): row is Exclude<typeof row, null> => row !== null);
   }, [applications, crossModelRelations, machines, hasStorage, storageIDs]);
-  const isRemoved =
-    isController || !canConfigureModel || connectedOffers.length > 0;
+  const isDestroyBlocked = destroyBlockedReason !== DestroyBlockedReason.NONE;
 
   return (
     <div className="accordion-content u-sv1">
@@ -164,7 +161,7 @@ const AccordionContent = ({
           className="p-main-table u-no-margin--bottom accordion-content__info-table"
         />
       ) : null}
-      {!isRemoved ? (
+      {!isDestroyBlocked ? (
         <span className="accordion-content__actions u-sv2--top">
           <Button onClick={() => {}} appearance="secondary" hasIcon>
             <Icon name="minus" />

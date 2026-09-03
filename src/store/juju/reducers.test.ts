@@ -444,12 +444,10 @@ describe("reducers", () => {
     const model1 = modelSelectionParamsFactory.build({
       modelUUID: "abc123",
       modelName: "test-model-1",
-      isController: true,
     });
     const model2 = modelSelectionParamsFactory.build({
       modelUUID: "def456",
       modelName: "test-model-2",
-      isController: false,
     });
     const state = jujuStateFactory.build({
       modelsSelectedForDestruction: [],
@@ -472,12 +470,10 @@ describe("reducers", () => {
     const oldModel = modelSelectionParamsFactory.build({
       modelUUID: "old123",
       modelName: "old-model",
-      isController: true,
     });
     const newModel = modelSelectionParamsFactory.build({
       modelUUID: "new456",
       modelName: "new-model",
-      isController: false,
     });
     const state = jujuStateFactory.build({
       modelsSelectedForDestruction: [oldModel],
