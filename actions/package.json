@@ -18,7 +18,7 @@
   "devDependencies": {
     "@octokit/types": "17.0.0",
     "@vercel/ncc": "0.44.1",
-    "eslint": "9.39.5",
+    "eslint": "10.8.1",
     "typescript": "6.0.3",
     "vite": "8.2.1",
     "vitest": "4.1.10"
