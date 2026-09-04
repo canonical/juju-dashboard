@@ -23,7 +23,7 @@
     }
 
     .icon {
-      margin-right: 10px;
+      margin-right: $sph--small;
     }
   }
 
@@ -34,8 +34,7 @@
       @extend %icon;
       @include vf-icon-success-grey($color-light);
 
-      height: 17px;
-      width: 17px;
+      width: 1.1rem;
     }
   }
 }

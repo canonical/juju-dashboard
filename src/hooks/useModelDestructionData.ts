@@ -22,7 +22,6 @@ type ConnectedOffer = {
 };
 
 export enum DestroyBlockedReason {
-  NONE = "",
   IS_CONTROLLER = "isController",
   NO_ACCESS = "noAccess",
   CONNECTED_OFFERS = "hasCMRs",
@@ -37,7 +36,7 @@ type ModelDestructionData = {
   showInfoTable: boolean;
   storageIDs: string[];
   unitCount: number;
-  destroyBlockedReason: DestroyBlockedReason;
+  destroyBlockedReason: DestroyBlockedReason | null;
 };
 
 // Helper function to extract and format cross-model relations
@@ -131,7 +130,7 @@ export default function useModelDestructionData(
     return prev + Object.keys(units).length;
   }, 0);
 
-  let destroyBlockedReason = DestroyBlockedReason.NONE;
+  let destroyBlockedReason = null;
   if (modelStatusData?.info?.["is-controller"]) {
     destroyBlockedReason = DestroyBlockedReason.IS_CONTROLLER;
   } else if (!canConfigureModel) {

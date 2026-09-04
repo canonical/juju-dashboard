@@ -3,9 +3,8 @@ import { Button, Icon, MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { useMemo, type JSX } from "react";
 
-import useModelDestructionData, {
-  DestroyBlockedReason,
-} from "hooks/useModelDestructionData";
+import useModelDestructionData from "hooks/useModelDestructionData";
+import filterBoolean from "utils/filterBoolean";
 
 // Helper to render the Applications
 const applicationsRow = (applications: string[]): MainTableRow | null => {
@@ -139,15 +138,17 @@ const AccordionContent = ({
     destroyBlockedReason,
   } = useModelDestructionData(modelUUID);
 
-  const infoTableRows = useMemo(() => {
-    return [
-      applicationsRow(applications),
-      crossModelRelationsRow(crossModelRelations),
-      machinesRow(machines),
-      storageRow(hasStorage, storageIDs),
-    ].filter((row): row is Exclude<typeof row, null> => row !== null);
-  }, [applications, crossModelRelations, machines, hasStorage, storageIDs]);
-  const isDestroyBlocked = destroyBlockedReason !== DestroyBlockedReason.NONE;
+  const infoTableRows = useMemo(
+    () =>
+      filterBoolean([
+        applicationsRow(applications),
+        crossModelRelationsRow(crossModelRelations),
+        machinesRow(machines),
+        storageRow(hasStorage, storageIDs),
+      ]),
+    [applications, crossModelRelations, machines, hasStorage, storageIDs],
+  );
+  const isDestroyBlocked = destroyBlockedReason !== null;
 
   return (
     <div className="accordion-content u-sv1">

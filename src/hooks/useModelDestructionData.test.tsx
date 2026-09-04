@@ -67,7 +67,7 @@ describe("useModelDestructionData", () => {
     expect(result.current.storageIDs).toEqual([]);
     expect(result.current.showInfoTable).toBe(false);
     expect(result.current.unitCount).toBe(0);
-    expect(result.current.destroyBlockedReason).toBe(DestroyBlockedReason.NONE);
+    expect(result.current.destroyBlockedReason).toBeNull();
   });
 
   it("should correctly count applications and machines and set showInfoTable to true", () => {

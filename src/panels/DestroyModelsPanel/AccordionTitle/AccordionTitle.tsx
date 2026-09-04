@@ -3,9 +3,7 @@ import { Tooltip } from "@canonical/react-components";
 import classNames from "classnames";
 import type { JSX } from "react";
 
-import useModelDestructionData, {
-  DestroyBlockedReason,
-} from "hooks/useModelDestructionData";
+import useModelDestructionData from "hooks/useModelDestructionData";
 
 type Props = {
   modelName: string;
@@ -19,7 +17,7 @@ const AccordionTitle = ({ modelName, modelUUID }: Props): JSX.Element => {
     destroyBlockedReason,
     unitCount,
   } = useModelDestructionData(modelUUID);
-  const isDestroyBlocked = destroyBlockedReason !== DestroyBlockedReason.NONE;
+  const isDestroyBlocked = destroyBlockedReason !== null;
 
   return (
     <span
