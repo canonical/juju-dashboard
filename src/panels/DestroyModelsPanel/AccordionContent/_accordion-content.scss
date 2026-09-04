@@ -1,0 +1,40 @@
+.accordion-content {
+  border-top: 1px solid $colors--theme--border-low-contrast;
+
+  &__info-table {
+    .p-icon--applications {
+      @extend %icon;
+      @include vf-icon-applications($color-mid-dark);
+    }
+
+    .p-icon--get-link {
+      @extend %icon;
+      @include vf-icon-get-link($color-mid-dark);
+    }
+
+    .p-icon--machines {
+      @extend %icon;
+      @include vf-icon-machines($color-mid-dark);
+    }
+
+    .p-icon--pods {
+      @extend %icon;
+      @include vf-icon-pods($color-mid-dark);
+    }
+
+    .icon {
+      margin-right: $sph--small;
+    }
+  }
+
+  &__actions {
+    float: right;
+
+    .p-icon--success-grey {
+      @extend %icon;
+      @include vf-icon-success-grey($color-light);
+
+      width: 1.1rem;
+    }
+  }
+}

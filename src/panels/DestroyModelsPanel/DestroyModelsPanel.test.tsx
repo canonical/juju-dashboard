@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
@@ -61,12 +61,9 @@ describe("DestroyModelsPanel", () => {
 
   it("renders an accordion section for each selected model", () => {
     renderComponent(<DestroyModelsPanel />, { state, url });
-    expect(
-      screen.getByRole("heading", { name: "test-model-1" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "test-model-2" }),
-    ).toBeInTheDocument();
+    const headings = screen.getAllByRole("heading");
+    expect(within(headings[1]).getByText("test-model-1")).toBeInTheDocument();
+    expect(within(headings[2]).getByText("test-model-2")).toBeInTheDocument();
   });
 
   it("closes the panel and clears the store selection when Cancel is clicked", async () => {
