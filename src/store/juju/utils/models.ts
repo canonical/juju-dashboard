@@ -1,13 +1,11 @@
 import type { EndpointStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import type { ModelUserInfo } from "@canonical/jujulib/dist/api/facades/model-manager/ModelManagerV10";
 
-import { JIMMRelation } from "juju/jimm/JIMMV4";
 import type { ModelInfo, UserModelList } from "juju/types";
 import defaultCharmIcon from "static/images/icons/default-charm-icon.svg";
 import { getUserName } from "utils";
 
-import type { ModelData, ModelDataList, ReBACAllowed } from "../types";
-import { DestroyBlockedReason } from "../types";
+import type { ModelData, ModelDataList } from "../types";
 
 export type Filters = Record<string, string[]>;
 
@@ -355,46 +353,4 @@ export const canAdministerModel = (
     });
   }
   return hasPermission;
-};
-
-/**
- * Determines why a model cannot be destroyed, if at all.
- * Checks controller flag, user permissions (Juju or JIMM) and connected offers.
- * Returns `null` if destruction is permitted.
- */
-export const getModelDestroyBlockedReason = (
-  modelUUID: string,
-  modelData: ModelData,
-  activeUserTag: string,
-  reBACAllowed: ReBACAllowed[],
-  isJuju?: boolean,
-): DestroyBlockedReason | null => {
-  if (modelData?.info?.["is-controller"]) {
-    return DestroyBlockedReason.IS_CONTROLLER;
-  }
-
-  const userName = getUserName(activeUserTag);
-  const canDestroy = isJuju
-    ? canAdministerModel(userName, modelData?.info?.users)
-    : reBACAllowed.some(
-        ({ allowed, tuple }) =>
-          allowed === true &&
-          tuple.object === activeUserTag &&
-          tuple.relation === JIMMRelation.WRITER &&
-          tuple.target_object === `model-${modelUUID}`,
-      );
-
-  if (!canDestroy) {
-    return DestroyBlockedReason.NO_ACCESS;
-  }
-
-  if (
-    Object.values(modelData.offers ?? {}).some(
-      (offer) => offer["total-connected-count"] > 0,
-    )
-  ) {
-    return DestroyBlockedReason.CONNECTED_OFFERS;
-  }
-
-  return null;
 };

@@ -1,8 +1,9 @@
-import { act, screen } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 import type { UserEvent } from "@testing-library/user-event";
 import userEvent from "@testing-library/user-event";
 
 import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
+import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import {
   configFactory,
@@ -33,7 +34,7 @@ import {
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { customWithin } from "testing/queries/within";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 
 import ModelActions from "./ModelActions";
 import { Label } from "./types";
@@ -578,6 +579,32 @@ describe("ModelActions", () => {
       expect(
         screen.queryByRole("menuitem", { name: Label.UPGRADE }),
       ).not.toBeInTheDocument();
+    });
+
+    it("dispatches setModelCanConfigure with user's permission to configure", async () => {
+      const [store, actions] = createStore(state, { trackActions: true });
+      renderComponent(
+        <ModelActions
+          qualifier="eggman@external"
+          modelUUID="abc123"
+          modelName="test1"
+        />,
+        { state, store },
+      );
+
+      const setModelCanConfigureAction = jujuActions.setModelCanConfigure({
+        modelUUID: "abc123",
+        canConfigure: false,
+        wsControllerURL: "wss://example.com/api",
+      });
+
+      await waitFor(() => {
+        expect(
+          actions.find(
+            (dispatch) => dispatch.type === setModelCanConfigureAction.type,
+          ),
+        ).toMatchObject(setModelCanConfigureAction);
+      });
     });
   });
 });

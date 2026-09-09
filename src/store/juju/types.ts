@@ -79,6 +79,7 @@ export type ModelListInfo = {
   type: string;
   uuid: string;
   wsControllerURL: string;
+  canConfigure?: boolean;
 };
 
 export type ModelsList = {
