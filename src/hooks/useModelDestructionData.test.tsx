@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router";
 
 import * as useCanConfigureModelModule from "hooks/useCanConfigureModel";
+import { DestroyBlockedReason } from "store/juju/types";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import {
@@ -20,9 +21,7 @@ import {
 } from "testing/factories/juju/juju";
 import { createStore } from "testing/utils";
 
-import useModelDestructionData, {
-  DestroyBlockedReason,
-} from "./useModelDestructionData";
+import useModelDestructionData from "./useModelDestructionData";
 
 const generateContainer =
   (state: RootState, path: string, url: string) =>

@@ -26,6 +26,7 @@ import { JIMMRelation } from "juju/jimm/JIMMV4";
 import MainContent from "layout/MainContent";
 import {
   getControllerUserTag,
+  getIsJuju,
   getWSControllerURL,
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
@@ -36,9 +37,13 @@ import {
   getModelListLoaded,
   getModelsError,
   getModelUUIDs,
+  getReBACAllowedState,
   hasModels,
 } from "store/juju/selectors";
-import { pluralize } from "store/juju/utils/models";
+import {
+  getModelDestroyBlockedReason,
+  pluralize,
+} from "store/juju/utils/models";
 import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import type { ModelsGroupedBy } from "urls";
@@ -91,6 +96,8 @@ export default function Models(): JSX.Element {
   const hasSomeModels = useAppSelector(hasModels);
   const modelData = useAppSelector(getModelData);
   const wsControllerURL = useAppSelector(getWSControllerURL);
+  const isJuju = useAppSelector(getIsJuju);
+  const reBACAllowed = useAppSelector(getReBACAllowedState);
   const filteredModelData = useAppSelector((state) =>
     getFilteredModelData(state, filters),
   );
@@ -124,13 +131,24 @@ export default function Models(): JSX.Element {
       openPortal();
     } else {
       // Multiple models: seed the store and open the destroy models panel.
-      if (wsControllerURL) {
+      if (wsControllerURL && controllerUser) {
         dispatch(
           jujuActions.selectModelsForDestruction({
-            models: selectedModelUUIDs.map((modelUUID) => ({
-              modelUUID,
-              modelName: modelData[modelUUID]?.model.name ?? modelUUID,
-            })),
+            models: selectedModelUUIDs.map((modelUUID) => {
+              const destroyBlockedReason = getModelDestroyBlockedReason(
+                modelUUID,
+                modelData[modelUUID],
+                controllerUser,
+                reBACAllowed,
+                isJuju,
+              );
+              return {
+                modelUUID,
+                modelName: modelData[modelUUID]?.model.name ?? modelUUID,
+                destroyBlockedReason,
+                removed: destroyBlockedReason !== null,
+              };
+            }),
             wsControllerURL,
           }),
         );
@@ -144,6 +162,9 @@ export default function Models(): JSX.Element {
     setPanelQs,
     wsControllerURL,
     modelData,
+    isJuju,
+    reBACAllowed,
+    controllerUser,
   ]);
   const groupBy: ModelsGroupedBy = useMemo(() => {
     if (

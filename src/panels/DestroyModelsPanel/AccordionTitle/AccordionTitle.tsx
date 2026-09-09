@@ -4,6 +4,8 @@ import classNames from "classnames";
 import type { JSX } from "react";
 
 import useModelDestructionData from "hooks/useModelDestructionData";
+import { getSelectedModelForDestruction } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 
 type Props = {
   modelName: string;
@@ -17,15 +19,21 @@ const AccordionTitle = ({ modelName, modelUUID }: Props): JSX.Element => {
     destroyBlockedReason,
     unitCount,
   } = useModelDestructionData(modelUUID);
+  const selectedModel = useAppSelector((state) =>
+    getSelectedModelForDestruction(state, modelUUID),
+  );
+  const isReviewed = selectedModel?.reviewed;
+  const isRemoved = selectedModel?.removed;
   const isDestroyBlocked = destroyBlockedReason !== null;
 
   return (
     <span
       className={classNames("accordion-title", {
-        "accordion-title--is-removed": isDestroyBlocked,
+        "accordion-title--is-removed": isDestroyBlocked || isRemoved,
       })}
     >
       <span>
+        {isReviewed ? <Icon name="success" className="u-sh1--right" /> : null}
         {modelName}
         {isDestroyBlocked ? (
           <Tooltip
