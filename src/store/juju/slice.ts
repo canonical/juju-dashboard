@@ -361,6 +361,30 @@ const slice = createSlice({
     clearSelectedModelsForDestruction: (state) => {
       state.modelsSelectedForDestruction = [];
     },
+    toggleModelRemovedFromDestruction: (
+      state,
+      action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
+    ) => {
+      const index = state.modelsSelectedForDestruction.findIndex(
+        (model) => model.modelUUID === action.payload.modelUUID,
+      );
+      if (index !== -1) {
+        state.modelsSelectedForDestruction[index].removed =
+          !state.modelsSelectedForDestruction[index].removed;
+      }
+    },
+    toggleModelReviewedForDestruction: (
+      state,
+      action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
+    ) => {
+      const index = state.modelsSelectedForDestruction.findIndex(
+        (model) => model.modelUUID === action.payload.modelUUID,
+      );
+      if (index !== -1) {
+        state.modelsSelectedForDestruction[index].reviewed =
+          !state.modelsSelectedForDestruction[index].reviewed;
+      }
+    },
     destroyModelErrors: (
       state,
       action: PayloadAction<{

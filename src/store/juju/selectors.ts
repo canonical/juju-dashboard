@@ -789,11 +789,29 @@ export const getDestructionState = createSelector(
 );
 
 /**
- * Returns the UUIDs of models currently staged for bulk destruction in the UI.
+ * Returns the models currently staged for bulk destruction in the UI.
  */
 export const getSelectedModelsForDestruction = createSelector(
   [slice],
   (sliceState) => sliceState.modelsSelectedForDestruction,
+);
+
+/**
+ * Returns the staged destruction entry for a single model UUID, or null if
+ * the UUID is not in the current selection.
+ */
+export const getSelectedModelForDestruction = createSelector(
+  [
+    slice,
+    (_state: RootState, modelUUID: null | string = null): null | string =>
+      modelUUID,
+  ],
+  (sliceState, modelUUID) =>
+    modelUUID
+      ? (sliceState.modelsSelectedForDestruction.find(
+          (model) => model.modelUUID === modelUUID,
+        ) ?? null)
+      : null,
 );
 
 /**

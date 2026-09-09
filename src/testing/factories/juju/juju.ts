@@ -70,6 +70,7 @@ export const modelSelectionParamsFactory = Factory.define<ModelSelectionParams>(
     // spell-checker:disable-next-line
     modelUUID: "84e872ff-9171-46be-829b-70f0ffake18d",
     modelName: "test-model",
+    destroyBlockedReason: null,
   }),
 );
 

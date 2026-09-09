@@ -6,6 +6,7 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 
 import useModelStatus from "hooks/useModelStatus";
+import { DestroyBlockedReason } from "store/juju/types";
 
 import { useCanConfigureModelWithUUID } from "./useCanConfigureModel";
 
@@ -20,12 +21,6 @@ type ConnectedOffer = {
   applicationName: string;
   endpoint: { name: string; interface: string };
 };
-
-export enum DestroyBlockedReason {
-  IS_CONTROLLER = "isController",
-  NO_ACCESS = "noAccess",
-  CONNECTED_OFFERS = "hasCMRs",
-}
 
 type ModelDestructionData = {
   hasStorage: boolean;
