@@ -81,6 +81,7 @@ export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({
   // spell-checker:disable-next-line
   uuid: "84e872ff-9171-46be-829b-70f0ffake18d",
   wsControllerURL: "wss://example.com/api",
+  canConfigure: undefined,
 }));
 
 export const modelDataFactory = Factory.define<ModelData>(() => ({

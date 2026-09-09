@@ -26,7 +26,6 @@ import { JIMMRelation } from "juju/jimm/JIMMV4";
 import MainContent from "layout/MainContent";
 import {
   getControllerUserTag,
-  getIsJuju,
   getWSControllerURL,
 } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
@@ -34,16 +33,14 @@ import {
   getFilteredModelData,
   getGroupedModelStatusCounts,
   getModelData,
+  getModelList,
   getModelListLoaded,
   getModelsError,
   getModelUUIDs,
-  getReBACAllowedState,
   hasModels,
 } from "store/juju/selectors";
-import {
-  getModelDestroyBlockedReason,
-  pluralize,
-} from "store/juju/utils/models";
+import { DestroyBlockedReason } from "store/juju/types";
+import { pluralize } from "store/juju/utils/models";
 import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import type { ModelsGroupedBy } from "urls";
@@ -95,9 +92,8 @@ export default function Models(): JSX.Element {
   const modelsLoaded = useAppSelector(getModelListLoaded);
   const hasSomeModels = useAppSelector(hasModels);
   const modelData = useAppSelector(getModelData);
+  const modelList = useAppSelector(getModelList);
   const wsControllerURL = useAppSelector(getWSControllerURL);
-  const isJuju = useAppSelector(getIsJuju);
-  const reBACAllowed = useAppSelector(getReBACAllowedState);
   const filteredModelData = useAppSelector((state) =>
     getFilteredModelData(state, filters),
   );
@@ -131,20 +127,27 @@ export default function Models(): JSX.Element {
       openPortal();
     } else {
       // Multiple models: seed the store and open the destroy models panel.
-      if (wsControllerURL && controllerUser) {
+      if (wsControllerURL) {
         dispatch(
           jujuActions.selectModelsForDestruction({
             models: selectedModelUUIDs.map((modelUUID) => {
-              const destroyBlockedReason = getModelDestroyBlockedReason(
-                modelUUID,
-                modelData[modelUUID],
-                controllerUser,
-                reBACAllowed,
-                isJuju,
-              );
+              const data = modelData[modelUUID];
+              const canConfigure = modelList[modelUUID]?.canConfigure;
+              let destroyBlockedReason = null;
+              if (data?.info?.["is-controller"]) {
+                destroyBlockedReason = DestroyBlockedReason.IS_CONTROLLER;
+              } else if (!canConfigure) {
+                destroyBlockedReason = DestroyBlockedReason.NO_ACCESS;
+              } else if (
+                Object.values(data?.offers ?? {}).some(
+                  (offer) => offer["total-connected-count"] > 0,
+                )
+              ) {
+                destroyBlockedReason = DestroyBlockedReason.CONNECTED_OFFERS;
+              }
               return {
                 modelUUID,
-                modelName: modelData[modelUUID]?.model.name ?? modelUUID,
+                modelName: data?.model.name ?? modelUUID,
                 destroyBlockedReason,
                 removed: destroyBlockedReason !== null,
               };
@@ -162,9 +165,7 @@ export default function Models(): JSX.Element {
     setPanelQs,
     wsControllerURL,
     modelData,
-    isJuju,
-    reBACAllowed,
-    controllerUser,
+    modelList,
   ]);
   const groupBy: ModelsGroupedBy = useMemo(() => {
     if (
