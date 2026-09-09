@@ -3,6 +3,7 @@ import {
   Icon,
   Notification as ReactNotification,
   SearchAndFilter,
+  Tooltip,
   usePortal,
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
@@ -47,6 +48,7 @@ import type { ModelsGroupedBy } from "urls";
 import urls, { externalURLs } from "urls";
 
 import { Label, TestId } from "./types";
+import { getDestroyBlockedReason } from "./utils";
 
 // spell-checker:words groupedby
 
@@ -132,19 +134,10 @@ export default function Models(): JSX.Element {
           jujuActions.selectModelsForDestruction({
             models: selectedModelUUIDs.map((modelUUID) => {
               const data = modelData[modelUUID];
-              const canConfigure = modelList[modelUUID]?.canConfigure;
-              let destroyBlockedReason = null;
-              if (data?.info?.["is-controller"]) {
-                destroyBlockedReason = DestroyBlockedReason.IS_CONTROLLER;
-              } else if (!canConfigure) {
-                destroyBlockedReason = DestroyBlockedReason.NO_ACCESS;
-              } else if (
-                Object.values(data?.offers ?? {}).some(
-                  (offer) => offer["total-connected-count"] > 0,
-                )
-              ) {
-                destroyBlockedReason = DestroyBlockedReason.CONNECTED_OFFERS;
-              }
+              const destroyBlockedReason = getDestroyBlockedReason(
+                data,
+                modelList[modelUUID]?.canConfigure,
+              );
               return {
                 modelUUID,
                 modelName: data?.model.name ?? modelUUID,
@@ -306,6 +299,39 @@ export default function Models(): JSX.Element {
     );
   }
 
+  // We don't show the tooltip for models with CMRs as a detailed reason is provided in the modal.
+  let reviewAndDestroyTooltip: null | string = null;
+  if (selectedModelUUIDs.length === 1) {
+    const destroyBlockedReason = getDestroyBlockedReason(
+      modelData[selectedModelUUIDs[0]],
+      modelList[selectedModelUUIDs[0]]?.canConfigure,
+    );
+    if (destroyBlockedReason === DestroyBlockedReason.IS_CONTROLLER) {
+      reviewAndDestroyTooltip = Label.TOOLTIP_CONTROLLER_MODEL;
+    } else if (destroyBlockedReason === DestroyBlockedReason.NO_ACCESS) {
+      reviewAndDestroyTooltip = Label.TOOLTIP_NO_ACCESS;
+    }
+  }
+
+  const reviewAndDestroyButton: ReactNode = (
+    <Button
+      appearance="secondary"
+      className="u-no-margin--bottom"
+      hasIcon
+      disabled={
+        selectedModelUUIDs.length === 0 || reviewAndDestroyTooltip !== null
+      }
+      onClick={handleReviewAndDestroy}
+    >
+      <Icon name="delete" />
+      <span>
+        {selectedModelUUIDs.length > 1
+          ? `${Label.REVIEW_AND_DESTROY} ${selectedModelUUIDs.length} ${pluralize(selectedModelUUIDs.length, "model")}`
+          : Label.DESTROY_MODEL}
+      </span>
+    </Button>
+  );
+
   return (
     <MainContent
       {...testId(TestId.COMPONENT)}
@@ -316,18 +342,17 @@ export default function Models(): JSX.Element {
             {modelCount} {pluralize(modelCount, "model")}
           </span>
           <span>
-            <Button
-              appearance="secondary"
-              className="u-no-margin--bottom"
-              hasIcon
-              disabled={selectedModelUUIDs.length === 0}
-              onClick={handleReviewAndDestroy}
-            >
-              <Icon name="delete" />
-              <span>
-                {`${Label.REVIEW_AND_DESTROY} ${selectedModelUUIDs.length} ${pluralize(selectedModelUUIDs.length, "model")}`}
-              </span>
-            </Button>
+            {reviewAndDestroyTooltip ? (
+              <Tooltip
+                message={reviewAndDestroyTooltip}
+                position="btm-center"
+                className="u-sh2--right"
+              >
+                {reviewAndDestroyButton}
+              </Tooltip>
+            ) : (
+              reviewAndDestroyButton
+            )}
             <Button
               appearance="positive"
               className="u-no-margin--bottom"

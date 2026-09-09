@@ -258,38 +258,64 @@ describe("Models Index page", () => {
     it("is disabled when no models are selected", () => {
       renderComponent(<ModelsIndex />, { state });
       const button = screen.getByRole("button", {
-        name: `${Label.REVIEW_AND_DESTROY} 0 models`,
+        name: `${Label.DESTROY_MODEL}`,
       });
       expect(button).toHaveAttribute("aria-disabled", "true");
     });
 
-    it("shows count after selecting a model", async () => {
+    it("is disabled when the only model selected is controller model", async () => {
+      state.juju.modelData["abc123"].info = modelInfoFactory.build({
+        "is-controller": true,
+      });
+      renderComponent(<ModelsIndex />, { state });
+      const button = screen.getByRole("button", {
+        name: `${Label.DESTROY_MODEL}`,
+      });
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect abc123" }),
+      );
+      expect(button).toHaveAttribute("aria-disabled", "true");
+    });
+
+    it("is disabled when the user doesn't have access to the only selected model", async () => {
+      renderComponent(<ModelsIndex />, { state });
+      const button = screen.getByRole("button", {
+        name: `${Label.DESTROY_MODEL}`,
+      });
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect def456" }),
+      );
+      expect(button).toHaveAttribute("aria-disabled", "true");
+    });
+
+    it("shows count after selecting more than 1 model", async () => {
       renderComponent(<ModelsIndex />, { state });
       // Select the first row checkbox.
-      const checkboxes = screen.getAllByRole("checkbox", {
-        name: /Deselect /,
-      });
-      await userEvent.click(checkboxes[0]);
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect abc123" }),
+      );
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect def456" }),
+      );
       expect(
         screen.getByRole("button", {
-          name: `${Label.REVIEW_AND_DESTROY} 1 model`,
+          name: `${Label.REVIEW_AND_DESTROY} 2 models`,
         }),
       ).toBeInTheDocument();
     });
 
     it("updates count as more models are selected", async () => {
       renderComponent(<ModelsIndex />, { state });
-      const checkboxes = screen.getAllByRole("checkbox", {
-        name: /Deselect /,
-      });
-      await userEvent.click(checkboxes[0]);
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect def456" }),
+      );
       expect(
-        screen.getByRole("button", {
-          name: `${Label.REVIEW_AND_DESTROY} 1 model`,
-        }),
+        screen.getByRole("button", { name: `${Label.DESTROY_MODEL}` }),
       ).toBeInTheDocument();
 
-      await userEvent.click(checkboxes[1]);
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect abc123" }),
+      );
       expect(
         screen.getByRole("button", {
           name: `${Label.REVIEW_AND_DESTROY} 2 models`,
@@ -298,15 +324,16 @@ describe("Models Index page", () => {
     });
 
     it("opens DestroyModelDialog when exactly one model is selected and button is clicked", async () => {
+      vi.spyOn(
+        useCanConfigureModelModule,
+        "useCanConfigureModelWithUUID",
+      ).mockReturnValue(true);
       renderComponent(<ModelsIndex />, { state });
-      const checkboxes = screen.getAllByRole("checkbox", {
-        name: /Deselect /,
-      });
-      await userEvent.click(checkboxes[0]);
       await userEvent.click(
-        screen.getByRole("button", {
-          name: `${Label.REVIEW_AND_DESTROY} 1 model`,
-        }),
+        screen.getByRole("checkbox", { name: "Deselect abc123" }),
+      );
+      await userEvent.click(
+        screen.getByRole("button", { name: `${Label.DESTROY_MODEL}` }),
       );
       expect(
         screen.getByTestId(DestroyModelDialogTestId.DIALOG),
@@ -315,11 +342,12 @@ describe("Models Index page", () => {
 
     it("sets the panel query param when multiple models are selected and button is clicked", async () => {
       const { router } = renderComponent(<ModelsIndex />, { state });
-      const checkboxes = screen.getAllByRole("checkbox", {
-        name: /Deselect /,
-      });
-      await userEvent.click(checkboxes[0]);
-      await userEvent.click(checkboxes[1]);
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect abc123" }),
+      );
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect def456" }),
+      );
       await userEvent.click(
         screen.getByRole("button", {
           name: `${Label.REVIEW_AND_DESTROY} 2 models`,
@@ -336,9 +364,12 @@ describe("Models Index page", () => {
       ).mockReturnValue(true);
       const [store, actions] = createStore(state, { trackActions: true });
       renderComponent(<ModelsIndex />, { state, store });
-      const checkboxes = screen.getAllByRole("checkbox", { name: /Deselect / });
-      await userEvent.click(checkboxes[0]);
-      await userEvent.click(checkboxes[1]);
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect def456" }),
+      );
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect abc123" }),
+      );
       await userEvent.click(
         screen.getByRole("button", {
           name: `${Label.REVIEW_AND_DESTROY} 2 models`,

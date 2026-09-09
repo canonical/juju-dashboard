@@ -5,7 +5,10 @@ import type { JSX } from "react";
 
 import useModelDestructionData from "hooks/useModelDestructionData";
 import { getSelectedModelForDestruction } from "store/juju/selectors";
+import { DestroyBlockedReason } from "store/juju/types";
 import { useAppSelector } from "store/store";
+
+import { Label } from "../types";
 
 type Props = {
   modelName: string;
@@ -25,6 +28,16 @@ const AccordionTitle = ({ modelName, modelUUID }: Props): JSX.Element => {
   const isReviewed = selectedModel?.reviewed;
   const isRemoved = selectedModel?.removed;
   const isDestroyBlocked = destroyBlockedReason !== null;
+  let destroyTooltip: null | string = null;
+  if (isDestroyBlocked) {
+    if (destroyBlockedReason === DestroyBlockedReason.IS_CONTROLLER) {
+      destroyTooltip = Label.TOOLTIP_CONTROLLER_MODEL;
+    } else if (destroyBlockedReason === DestroyBlockedReason.NO_ACCESS) {
+      destroyTooltip = Label.TOOLTIP_NO_ACCESS;
+    } else if (destroyBlockedReason === DestroyBlockedReason.CONNECTED_OFFERS) {
+      destroyTooltip = Label.TOOLTIP_CONNECTED_OFFERS;
+    }
+  }
 
   return (
     <span
@@ -36,10 +49,7 @@ const AccordionTitle = ({ modelName, modelUUID }: Props): JSX.Element => {
         {isReviewed ? <Icon name="success" className="u-sh1--right" /> : null}
         {modelName}
         {isDestroyBlocked ? (
-          <Tooltip
-            message="Controller model cannot be deleted"
-            position="right"
-          >
+          <Tooltip message={destroyTooltip} position="right">
             <Icon name="help" className="u-sh1" />
           </Tooltip>
         ) : null}
