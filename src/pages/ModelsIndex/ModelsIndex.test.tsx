@@ -1,9 +1,12 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import { DestroyModelDialogTestId } from "components/DestroyModelDialog";
 import { LoadingSpinnerTestId } from "components/LoadingSpinner";
+import * as useCanConfigureModelModule from "hooks/useCanConfigureModel";
+import { actions as jujuActions } from "store/juju";
+import { DestroyBlockedReason } from "store/juju/types";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
@@ -19,7 +22,7 @@ import {
   modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 import urls from "urls";
 
 import ModelsIndex from "./ModelsIndex";
@@ -31,12 +34,17 @@ describe("Models Index page", () => {
   let state: RootState;
 
   beforeEach(() => {
+    vi.spyOn(
+      useCanConfigureModelModule,
+      "useCanConfigureModelWithUUID",
+    ).mockReturnValue(false);
     state = rootStateFactory.withGeneralConfig().build({
       juju: jujuStateFactory.build({
         models: {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             wsControllerURL: "wss://jimm.jujucharms.com/api",
+            canConfigure: true,
           }),
         },
         cloudInfo: cloudInfoStateFactory.build({
@@ -47,11 +55,13 @@ describe("Models Index page", () => {
         }),
         modelData: {
           abc123: modelDataFactory.build({
+            uuid: "abc123",
             info: modelInfoFactory.build({
               "cloud-tag": "cloud-aws",
             }),
             model: modelStatusInfoFactory.build({
               "cloud-tag": "cloud-aws",
+              name: "abc123",
             }),
             applications: {
               easyrsa: applicationStatusFactory.build({
@@ -62,11 +72,13 @@ describe("Models Index page", () => {
             },
           }),
           def456: modelDataFactory.build({
+            uuid: "def456",
             info: modelInfoFactory.build({
               "cloud-tag": "cloud-gce",
             }),
             model: modelStatusInfoFactory.build({
               "cloud-tag": "cloud-gce",
+              name: "def456",
             }),
             applications: {
               cockroachdb: applicationStatusFactory.build({
@@ -77,11 +89,13 @@ describe("Models Index page", () => {
             },
           }),
           ghi789: modelDataFactory.build({
+            uuid: "ghi789",
             info: modelInfoFactory.build({
               "cloud-tag": "cloud-aws",
             }),
             model: modelStatusInfoFactory.build({
               "cloud-tag": "cloud-aws",
+              name: "ghi789",
             }),
             applications: {
               elasticsearch: applicationStatusFactory.build({
@@ -313,6 +327,49 @@ describe("Models Index page", () => {
       );
       const params = new URLSearchParams(router.state.location.search);
       expect(params.get("panel")).toBe("destroy-models");
+    });
+
+    it("dispatches selectModelsForDestruction action with correct fields for each selected model", async () => {
+      vi.spyOn(
+        useCanConfigureModelModule,
+        "useCanConfigureModelWithUUID",
+      ).mockReturnValue(true);
+      const [store, actions] = createStore(state, { trackActions: true });
+      renderComponent(<ModelsIndex />, { state, store });
+      const checkboxes = screen.getAllByRole("checkbox", { name: /Deselect / });
+      await userEvent.click(checkboxes[0]);
+      await userEvent.click(checkboxes[1]);
+      await userEvent.click(
+        screen.getByRole("button", {
+          name: `${Label.REVIEW_AND_DESTROY} 2 models`,
+        }),
+      );
+      const selectModelsForDestructionAction =
+        jujuActions.selectModelsForDestruction({
+          models: [
+            {
+              modelName: "def456",
+              modelUUID: "def456",
+              destroyBlockedReason: DestroyBlockedReason.NO_ACCESS,
+              removed: true,
+            },
+            {
+              destroyBlockedReason: null,
+              modelUUID: "abc123",
+              modelName: "abc123",
+              removed: false,
+            },
+          ],
+          wsControllerURL: "wss://controller.example.com",
+        });
+      await waitFor(() => {
+        expect(
+          actions.find(
+            (dispatch) =>
+              dispatch.type === selectModelsForDestructionAction.type,
+          ),
+        ).toMatchObject(selectModelsForDestructionAction);
+      });
     });
   });
 });
