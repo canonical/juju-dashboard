@@ -5,7 +5,11 @@ import Panel from "components/Panel";
 import { usePanelQueryParams } from "panels/hooks";
 import { actions as jujuActions } from "store/juju";
 import { getSelectedModelsForDestruction } from "store/juju/selectors";
+import { pluralize } from "store/juju/utils/models";
 import { useAppDispatch, useAppSelector } from "store/store";
+
+import AccordionContent from "./AccordionContent/AccordionContent";
+import AccordionTitle from "./AccordionTitle/AccordionTitle";
 
 const DestroyModelsPanel: FC = () => {
   const dispatch = useAppDispatch();
@@ -19,7 +23,22 @@ const DestroyModelsPanel: FC = () => {
     handleRemovePanelQueryParams();
   };
 
-  const modelWord = selectedModels.length === 1 ? "model" : "models";
+  const modelWord = pluralize(selectedModels.length, "model");
+  const { reviewedCount, removedCount, destroyableCount } =
+    selectedModels.reduce(
+      (acc, { reviewed, removed }) => {
+        if (removed) {
+          acc.removedCount++;
+        } else {
+          acc.destroyableCount++;
+          if (reviewed) {
+            acc.reviewedCount++;
+          }
+        }
+        return acc;
+      },
+      { reviewedCount: 0, removedCount: 0, destroyableCount: 0 },
+    );
 
   return (
     <Panel
@@ -30,7 +49,10 @@ const DestroyModelsPanel: FC = () => {
       className="destroy-models-panel"
       drawer={
         <div className="destroy-models-panel__actions">
-          <div className="u-align--left">{`0 out of ${selectedModels.length} reviewed`}</div>
+          <div className="u-align--left">
+            {`${reviewedCount}/${destroyableCount} Reviewed`}
+            {removedCount > 0 ? `, ${removedCount} Removed.` : null}
+          </div>
           <span>
             <Button
               appearance="base"
@@ -44,7 +66,10 @@ const DestroyModelsPanel: FC = () => {
               appearance="negative"
               className="u-no-margin--bottom"
               type="submit"
-              disabled
+              disabled={destroyableCount === 0}
+              onClick={() => {
+                // TODO: open confirmation dialog
+              }}
             >
               Complete review & destroy
             </Button>
@@ -60,14 +85,10 @@ const DestroyModelsPanel: FC = () => {
       <Accordion
         className="destroy-models-panel__accordion"
         expanded="model-0"
-        sections={selectedModels.map(({ modelName }, index) => ({
+        sections={selectedModels.map(({ modelUUID, modelName }, index) => ({
           key: `model-${index}`,
-          title: modelName,
-          content: (
-            <p className="u-text--muted">
-              Reviewing <strong>{modelName}</strong> for destruction&hellip;
-            </p>
-          ),
+          title: <AccordionTitle modelUUID={modelUUID} modelName={modelName} />,
+          content: <AccordionContent modelUUID={modelUUID} />,
         }))}
       />
     </Panel>

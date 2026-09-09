@@ -6,6 +6,9 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 
 import useModelStatus from "hooks/useModelStatus";
+import { DestroyBlockedReason } from "store/juju/types";
+
+import { useCanConfigureModelWithUUID } from "./useCanConfigureModel";
 
 type CrossModelRelation = {
   name: string;
@@ -27,6 +30,8 @@ type ModelDestructionData = {
   connectedOffers: ConnectedOffer[];
   showInfoTable: boolean;
   storageIDs: string[];
+  unitCount: number;
+  destroyBlockedReason: DestroyBlockedReason | null;
 };
 
 // Helper function to extract and format cross-model relations
@@ -98,6 +103,7 @@ export default function useModelDestructionData(
   modelUUID: string,
 ): ModelDestructionData {
   const modelStatusData = useModelStatus(modelUUID);
+  const canConfigureModel = useCanConfigureModelWithUUID(false, modelUUID);
 
   const offers = modelStatusData?.offers ?? {};
   const remoteApplications = modelStatusData?.["remote-applications"] ?? {};
@@ -114,6 +120,19 @@ export default function useModelDestructionData(
     machines.length > 0 ||
     crossModelRelations.length > 0;
   const hasStorage = modelStatusData?.storage !== undefined;
+  const unitCount = applications.reduce((prev, key) => {
+    const units = modelStatusData?.applications?.[key]?.units ?? {};
+    return prev + Object.keys(units).length;
+  }, 0);
+
+  let destroyBlockedReason = null;
+  if (modelStatusData?.info?.["is-controller"]) {
+    destroyBlockedReason = DestroyBlockedReason.IS_CONTROLLER;
+  } else if (!canConfigureModel) {
+    destroyBlockedReason = DestroyBlockedReason.NO_ACCESS;
+  } else if (connectedOffers.length > 0) {
+    destroyBlockedReason = DestroyBlockedReason.CONNECTED_OFFERS;
+  }
 
   return {
     hasStorage,
@@ -123,5 +142,7 @@ export default function useModelDestructionData(
     connectedOffers,
     showInfoTable,
     storageIDs,
+    unitCount,
+    destroyBlockedReason,
   };
 }

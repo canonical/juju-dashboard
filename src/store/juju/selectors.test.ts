@@ -162,6 +162,7 @@ import {
   getHighestSupportedVersion,
   getNextSupportedVersion,
   getSelectedModelsForDestruction,
+  getSelectedModelForDestruction,
 } from "./selectors";
 
 describe("selectors", () => {
@@ -1210,6 +1211,29 @@ describe("selectors", () => {
         }),
       ),
     ).toStrictEqual(selectedModels);
+  });
+
+  it("getSelectedModelForDestruction", () => {
+    const selectedModels = [
+      modelSelectionParamsFactory.build({
+        modelUUID: "abc123",
+        modelName: "test-model-1",
+      }),
+      modelSelectionParamsFactory.build({
+        modelUUID: "def456",
+        modelName: "test-model-2",
+      }),
+    ];
+    expect(
+      getSelectedModelForDestruction(
+        rootStateFactory.build({
+          juju: jujuStateFactory.build({
+            modelsSelectedForDestruction: selectedModels,
+          }),
+        }),
+        "abc123",
+      ),
+    ).toStrictEqual(selectedModels[0]);
   });
 
   it("getModelUUID from model name", () => {

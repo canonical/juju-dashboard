@@ -504,6 +504,112 @@ describe("reducers", () => {
     });
   });
 
+  it("toggleModelRemovedFromDestruction toggles removed", () => {
+    const modelSelection = modelSelectionParamsFactory.build({
+      modelUUID: "abc123",
+      removed: false,
+    });
+    const state = jujuStateFactory.build({
+      modelsSelectedForDestruction: [modelSelection],
+    });
+    expect(
+      reducer(
+        state,
+        actions.toggleModelRemovedFromDestruction({
+          modelUUID: "abc123",
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelsSelectedForDestruction: [{ ...modelSelection, removed: true }],
+    });
+  });
+
+  it("toggleModelRemovedFromDestruction does nothing for unknown UUID", () => {
+    const modelSelection = modelSelectionParamsFactory.build({
+      modelUUID: "abc123",
+    });
+    const state = jujuStateFactory.build({
+      modelsSelectedForDestruction: [modelSelection],
+    });
+    expect(
+      reducer(
+        state,
+        actions.toggleModelRemovedFromDestruction({
+          modelUUID: "unknown",
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual(state);
+  });
+
+  it("toggleModelReviewedForDestruction toggles reviewed", () => {
+    const modelSelection = modelSelectionParamsFactory.build({
+      modelUUID: "abc123",
+      reviewed: false,
+    });
+    const state = jujuStateFactory.build({
+      modelsSelectedForDestruction: [modelSelection],
+    });
+    expect(
+      reducer(
+        state,
+        actions.toggleModelReviewedForDestruction({
+          modelUUID: "abc123",
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelsSelectedForDestruction: [{ ...modelSelection, reviewed: true }],
+    });
+  });
+
+  it("setModelCanConfigure sets canConfigure on the matching model", () => {
+    const state = jujuStateFactory.build({
+      models: {
+        abc123: modelListInfoFactory.build({ uuid: "abc123" }),
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.setModelCanConfigure({
+          modelUUID: "abc123",
+          canConfigure: true,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      models: {
+        abc123: modelListInfoFactory.build({
+          uuid: "abc123",
+          canConfigure: true,
+        }),
+      },
+    });
+  });
+
+  it("setModelCanConfigure does nothing for unknown UUID", () => {
+    const state = jujuStateFactory.build({
+      models: {
+        abc123: modelListInfoFactory.build({ uuid: "abc123" }),
+      },
+    });
+    expect(
+      reducer(
+        state,
+        actions.setModelCanConfigure({
+          modelUUID: "unknown",
+          canConfigure: true,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual(state);
+  });
+
   it("destroyModelErrors", () => {
     const state = jujuStateFactory.build({
       destroyModel: {
