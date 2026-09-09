@@ -1,6 +1,8 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import * as useCanConfigureModelModule from "hooks/useCanConfigureModel";
+import { DestroyBlockedReason } from "store/juju/types";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
@@ -11,6 +13,7 @@ import {
 } from "testing/factories/juju/juju";
 import { renderComponent } from "testing/utils";
 
+import { Label } from "./AccordionContent/types";
 import DestroyModelsPanel from "./DestroyModelsPanel";
 
 describe("DestroyModelsPanel", () => {
@@ -18,6 +21,10 @@ describe("DestroyModelsPanel", () => {
   const url = "/?panel=destroy-models";
 
   beforeEach(() => {
+    vi.spyOn(
+      useCanConfigureModelModule,
+      "useCanConfigureModelWithUUID",
+    ).mockReturnValue(true);
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -39,10 +46,15 @@ describe("DestroyModelsPanel", () => {
           modelSelectionParamsFactory.build({
             modelUUID: "abc123",
             modelName: "test-model-1",
+            removed: true,
+            destroyBlockedReason: DestroyBlockedReason.CONNECTED_OFFERS,
+            reviewed: false,
           }),
           modelSelectionParamsFactory.build({
             modelUUID: "def456",
             modelName: "test-model-2",
+            removed: false,
+            reviewed: false,
           }),
         ],
       }),
@@ -77,5 +89,17 @@ describe("DestroyModelsPanel", () => {
     expect(store.getState().juju.modelsSelectedForDestruction).toStrictEqual(
       [],
     );
+  });
+
+  it("updates footer summary", async () => {
+    renderComponent(<DestroyModelsPanel />, { state, url });
+    expect(screen.getByText("0/1 Reviewed, 1 Removed.")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("tab", { name: /test-model-2/ }));
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.MARK_REVIEWED }),
+    );
+    await waitFor(() => {
+      expect(screen.getByText("1/1 Reviewed, 1 Removed.")).toBeInTheDocument();
+    });
   });
 });

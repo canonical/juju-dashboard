@@ -188,7 +188,6 @@ const slice = createSlice({
           type: model.model.type,
           uuid,
           wsControllerURL: action.payload.wsControllerURL,
-          // Preserve canConfigure if it was already resolved for this UUID.
           canConfigure: state.models[uuid]?.canConfigure,
         };
         if (state.modelData[uuid]) {
