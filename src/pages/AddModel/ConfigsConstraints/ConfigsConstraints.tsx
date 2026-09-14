@@ -104,6 +104,7 @@ const ConfigsConstraints = (): JSX.Element => {
         searchName="constraintSearch"
         setYAMLErrors={setYAMLErrors}
         yamlErrorLabel={Label.INCORRECT_YAML_CONSTRAINT_ERROR}
+        listModeDisabled
       />
       <h5 className="u-no-padding--top u-no-margin--bottom">
         {Label.DISABLED_COMMANDS}
