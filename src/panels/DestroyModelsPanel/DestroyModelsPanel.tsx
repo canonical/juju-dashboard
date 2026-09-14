@@ -7,6 +7,9 @@ import { actions as jujuActions } from "store/juju";
 import { getSelectedModelsForDestruction } from "store/juju/selectors";
 import { useAppDispatch, useAppSelector } from "store/store";
 
+import AccordionContent from "./AccordionContent/AccordionContent";
+import AccordionTitle from "./AccordionTitle/AccordionTitle";
+
 const DestroyModelsPanel: FC = () => {
   const dispatch = useAppDispatch();
   const selectedModels = useAppSelector(getSelectedModelsForDestruction);
@@ -30,7 +33,7 @@ const DestroyModelsPanel: FC = () => {
       className="destroy-models-panel"
       drawer={
         <div className="destroy-models-panel__actions">
-          <div className="u-align--left">{`0 out of ${selectedModels.length} reviewed`}</div>
+          <div className="u-align--left">{`0/${selectedModels.length} reviewed`}</div>
           <span>
             <Button
               appearance="base"
@@ -60,14 +63,10 @@ const DestroyModelsPanel: FC = () => {
       <Accordion
         className="destroy-models-panel__accordion"
         expanded="model-0"
-        sections={selectedModels.map(({ modelName }, index) => ({
+        sections={selectedModels.map(({ modelUUID, modelName }, index) => ({
           key: `model-${index}`,
-          title: modelName,
-          content: (
-            <p className="u-text--muted">
-              Reviewing <strong>{modelName}</strong> for destruction&hellip;
-            </p>
-          ),
+          title: <AccordionTitle modelUUID={modelUUID} modelName={modelName} />,
+          content: <AccordionContent modelUUID={modelUUID} />,
         }))}
       />
     </Panel>

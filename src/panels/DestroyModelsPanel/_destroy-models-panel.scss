@@ -13,5 +13,10 @@
     .p-accordion__tab {
       padding-left: 0;
     }
+
+    .p-accordion__panel {
+      padding-left: $sph--x-large;
+      padding-right: $sph--small;
+    }
   }
 }
