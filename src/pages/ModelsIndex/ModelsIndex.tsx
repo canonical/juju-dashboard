@@ -142,7 +142,7 @@ export default function Models(): JSX.Element {
                 modelUUID,
                 modelName: data?.model.name ?? modelUUID,
                 destroyBlockedReason,
-                removed: destroyBlockedReason !== null,
+                skipped: destroyBlockedReason !== null,
               };
             }),
             wsControllerURL,

@@ -504,10 +504,10 @@ describe("reducers", () => {
     });
   });
 
-  it("toggleModelRemovedFromDestruction toggles removed", () => {
+  it("toggleModelSkippedFromDestruction toggles skipped", () => {
     const modelSelection = modelSelectionParamsFactory.build({
       modelUUID: "abc123",
-      removed: false,
+      skipped: false,
     });
     const state = jujuStateFactory.build({
       modelsSelectedForDestruction: [modelSelection],
@@ -515,18 +515,18 @@ describe("reducers", () => {
     expect(
       reducer(
         state,
-        actions.toggleModelRemovedFromDestruction({
+        actions.toggleModelSkippedFromDestruction({
           modelUUID: "abc123",
           wsControllerURL: "wss://example.com",
         }),
       ),
     ).toStrictEqual({
       ...state,
-      modelsSelectedForDestruction: [{ ...modelSelection, removed: true }],
+      modelsSelectedForDestruction: [{ ...modelSelection, skipped: true }],
     });
   });
 
-  it("toggleModelRemovedFromDestruction does nothing for unknown UUID", () => {
+  it("toggleModelSkippedFromDestruction does nothing for unknown UUID", () => {
     const modelSelection = modelSelectionParamsFactory.build({
       modelUUID: "abc123",
     });
@@ -536,7 +536,7 @@ describe("reducers", () => {
     expect(
       reducer(
         state,
-        actions.toggleModelRemovedFromDestruction({
+        actions.toggleModelSkippedFromDestruction({
           modelUUID: "unknown",
           wsControllerURL: "wss://example.com",
         }),

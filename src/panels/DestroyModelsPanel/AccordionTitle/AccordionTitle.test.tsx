@@ -88,7 +88,7 @@ describe("AccordionTitle", () => {
     expect(summaryItems[2]).toHaveTextContent("2"); // machines
   });
 
-  it("renders is-removed class when the model is a controller model", async () => {
+  it("renders is-skipped class when the model is a controller model", async () => {
     state.juju.modelData["abc123"].info = modelInfoFactory.build({
       "is-controller": true,
     });
@@ -110,7 +110,7 @@ describe("AccordionTitle", () => {
     ).toBeVisible();
   });
 
-  it("renders is-removed class when model has connected offers", async () => {
+  it("renders is-skipped class when model has connected offers", async () => {
     state.juju.modelData["abc123"] = modelDataFactory.build({
       uuid: "abc123",
       info: modelInfoFactory.build({ name: "test-model" }),
@@ -125,7 +125,7 @@ describe("AccordionTitle", () => {
       { state },
     );
     expect(
-      document.querySelector(".accordion-title--is-removed"),
+      document.querySelector(".accordion-title--is-skipped"),
     ).toBeInTheDocument();
     const icon = document.querySelector(".p-icon--help");
     expect(icon).toBeInTheDocument();
@@ -141,7 +141,7 @@ describe("AccordionTitle", () => {
     ).toBeVisible();
   });
 
-  it("renders is-removed class when user does not have model access", async () => {
+  it("renders is-skipped class when user does not have model access", async () => {
     vi.spyOn(
       useCanConfigureModelModule,
       "useCanConfigureModelWithUUID",
@@ -151,7 +151,7 @@ describe("AccordionTitle", () => {
       { state },
     );
     expect(
-      document.querySelector(".accordion-title--is-removed"),
+      document.querySelector(".accordion-title--is-skipped"),
     ).toBeInTheDocument();
     const icon = document.querySelector(".p-icon--help");
     expect(icon).toBeInTheDocument();

@@ -26,7 +26,7 @@ const AccordionTitle = ({ modelName, modelUUID }: Props): JSX.Element => {
     getSelectedModelForDestruction(state, modelUUID),
   );
   const isReviewed = selectedModel?.reviewed;
-  const isRemoved = selectedModel?.removed;
+  const isSkipped = selectedModel?.skipped;
   const isDestroyBlocked = destroyBlockedReason !== null;
   let destroyTooltip: null | string = null;
   if (isDestroyBlocked) {
@@ -42,7 +42,7 @@ const AccordionTitle = ({ modelName, modelUUID }: Props): JSX.Element => {
   return (
     <span
       className={classNames("accordion-title", {
-        "accordion-title--is-removed": isDestroyBlocked || isRemoved,
+        "accordion-title--is-skipped": isDestroyBlocked || isSkipped,
       })}
     >
       <span>

@@ -46,14 +46,14 @@ describe("DestroyModelsPanel", () => {
           modelSelectionParamsFactory.build({
             modelUUID: "abc123",
             modelName: "test-model-1",
-            removed: true,
+            skipped: true,
             destroyBlockedReason: DestroyBlockedReason.CONNECTED_OFFERS,
             reviewed: false,
           }),
           modelSelectionParamsFactory.build({
             modelUUID: "def456",
             modelName: "test-model-2",
-            removed: false,
+            skipped: false,
             reviewed: false,
           }),
         ],
@@ -93,13 +93,13 @@ describe("DestroyModelsPanel", () => {
 
   it("updates footer summary", async () => {
     renderComponent(<DestroyModelsPanel />, { state, url });
-    expect(screen.getByText("0/1 Reviewed, 1 Removed.")).toBeInTheDocument();
+    expect(screen.getByText("0/1 Reviewed, 1 Skipped.")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("tab", { name: /test-model-2/ }));
     await userEvent.click(
       screen.getByRole("button", { name: Label.MARK_REVIEWED }),
     );
     await waitFor(() => {
-      expect(screen.getByText("1/1 Reviewed, 1 Removed.")).toBeInTheDocument();
+      expect(screen.getByText("1/1 Reviewed, 1 Skipped.")).toBeInTheDocument();
     });
   });
 });
