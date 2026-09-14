@@ -70,6 +70,7 @@ export const modelSelectionParamsFactory = Factory.define<ModelSelectionParams>(
     // spell-checker:disable-next-line
     modelUUID: "84e872ff-9171-46be-829b-70f0ffake18d",
     modelName: "test-model",
+    destroyBlockedReason: null,
   }),
 );
 
@@ -80,6 +81,7 @@ export const modelListInfoFactory = Factory.define<ModelListInfo>(() => ({
   // spell-checker:disable-next-line
   uuid: "84e872ff-9171-46be-829b-70f0ffake18d",
   wsControllerURL: "wss://example.com/api",
+  canConfigure: undefined,
 }));
 
 export const modelDataFactory = Factory.define<ModelData>(() => ({

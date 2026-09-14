@@ -79,6 +79,7 @@ export type ModelListInfo = {
   type: string;
   uuid: string;
   wsControllerURL: string;
+  canConfigure?: boolean;
 };
 
 export type ModelsList = {
@@ -192,12 +193,22 @@ export type BlockEntry = {
 
 export type BlockState = Record<string, BlockEntry>;
 
+export enum DestroyBlockedReason {
+  IS_CONTROLLER = "isController",
+  NO_ACCESS = "noAccess",
+  CONNECTED_OFFERS = "hasCMRs",
+}
+
 export type ModelSelectionParams = {
   modelUUID: string;
   modelName: string;
+  destroyBlockedReason: DestroyBlockedReason | null;
+  reviewed?: boolean;
+  removed?: boolean;
 };
 
-export type ModelDestructionParams = DestroyModelParams & ModelSelectionParams;
+export type ModelDestructionParams = DestroyModelParams &
+  Omit<ModelSelectionParams, "destroyBlockedReason" | "removed" | "reviewed">;
 
 export type JujuState = {
   auditEvents: AuditEventsState;

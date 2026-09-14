@@ -188,6 +188,7 @@ const slice = createSlice({
           type: model.model.type,
           uuid,
           wsControllerURL: action.payload.wsControllerURL,
+          canConfigure: state.models[uuid]?.canConfigure,
         };
         if (state.modelData[uuid]) {
           modelDataList[uuid] = state.modelData[uuid];
@@ -284,6 +285,17 @@ const slice = createSlice({
         loading: false,
       };
     },
+    setModelCanConfigure: (
+      state,
+      action: PayloadAction<
+        { modelUUID: string; canConfigure: boolean } & WsControllerURLParam
+      >,
+    ) => {
+      const entry = state.models[action.payload.modelUUID];
+      if (entry) {
+        entry.canConfigure = action.payload.canConfigure;
+      }
+    },
     clearControllerData: (state) => {
       state.controllers = {};
     },
@@ -360,6 +372,30 @@ const slice = createSlice({
     },
     clearSelectedModelsForDestruction: (state) => {
       state.modelsSelectedForDestruction = [];
+    },
+    toggleModelRemovedFromDestruction: (
+      state,
+      action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
+    ) => {
+      const index = state.modelsSelectedForDestruction.findIndex(
+        (model) => model.modelUUID === action.payload.modelUUID,
+      );
+      if (index !== -1) {
+        state.modelsSelectedForDestruction[index].removed =
+          !state.modelsSelectedForDestruction[index].removed;
+      }
+    },
+    toggleModelReviewedForDestruction: (
+      state,
+      action: PayloadAction<{ modelUUID: string } & WsControllerURLParam>,
+    ) => {
+      const index = state.modelsSelectedForDestruction.findIndex(
+        (model) => model.modelUUID === action.payload.modelUUID,
+      );
+      if (index !== -1) {
+        state.modelsSelectedForDestruction[index].reviewed =
+          !state.modelsSelectedForDestruction[index].reviewed;
+      }
     },
     destroyModelErrors: (
       state,

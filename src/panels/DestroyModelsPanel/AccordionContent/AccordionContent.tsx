@@ -4,7 +4,13 @@ import type { MainTableRow } from "@canonical/react-components/dist/components/M
 import { useMemo, type JSX } from "react";
 
 import useModelDestructionData from "hooks/useModelDestructionData";
+import { getWSControllerURL } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
+import { getSelectedModelForDestruction } from "store/juju/selectors";
+import { useAppDispatch, useAppSelector } from "store/store";
 import filterBoolean from "utils/filterBoolean";
+
+import { Label } from "./types";
 
 // Helper to render the Applications
 const applicationsRow = (applications: string[]): MainTableRow | null => {
@@ -137,6 +143,13 @@ const AccordionContent = ({
     storageIDs,
     destroyBlockedReason,
   } = useModelDestructionData(modelUUID);
+  const dispatch = useAppDispatch();
+  const wsControllerURL = useAppSelector(getWSControllerURL);
+  const selectedModel = useAppSelector((state) =>
+    getSelectedModelForDestruction(state, modelUUID),
+  );
+  const isReviewed = selectedModel?.reviewed;
+  const isRemoved = selectedModel?.removed;
 
   const infoTableRows = useMemo(
     () =>
@@ -150,6 +163,38 @@ const AccordionContent = ({
   );
   const isDestroyBlocked = destroyBlockedReason !== null;
 
+  const toggleRemoveFromSelection = (): void => {
+    if (wsControllerURL) {
+      dispatch(
+        jujuActions.toggleModelRemovedFromDestruction({
+          modelUUID: modelUUID,
+          wsControllerURL,
+        }),
+      );
+      // If the model was marked as reviewed, undo it.
+      if (isReviewed) {
+        dispatch(
+          jujuActions.toggleModelReviewedForDestruction({
+            modelUUID: modelUUID,
+            wsControllerURL,
+          }),
+        );
+      }
+    }
+  };
+
+  const toggleModelReviewed = (): void => {
+    // Only toggle the reviewed state if the model is not already reviewed.
+    if (wsControllerURL && !isReviewed) {
+      dispatch(
+        jujuActions.toggleModelReviewedForDestruction({
+          modelUUID: modelUUID,
+          wsControllerURL,
+        }),
+      );
+    }
+  };
+
   return (
     <div className="accordion-content u-sv1">
       {showInfoTable ? (
@@ -161,21 +206,28 @@ const AccordionContent = ({
           rows={infoTableRows}
           className="p-main-table u-no-margin--bottom accordion-content__info-table"
         />
-      ) : null}
+      ) : (
+        <div className="u-sv1--top">This model is empty.</div>
+      )}
       {!isDestroyBlocked ? (
         <span className="accordion-content__actions u-sv2--top">
-          <Button onClick={() => {}} appearance="secondary" hasIcon>
-            <Icon name="minus" />
-            <span>Remove from selection</span>
+          <Button
+            onClick={toggleRemoveFromSelection}
+            appearance="secondary"
+            hasIcon
+          >
+            <Icon name={isRemoved ? "plus" : "minus"} />
+            <span>{isRemoved ? Label.ADD_MODEL : Label.REMOVE_MODEL}</span>
           </Button>
           <Button
             appearance="positive"
             type="button"
-            onClick={() => {}}
+            onClick={toggleModelReviewed}
+            disabled={isRemoved}
             hasIcon
           >
             <Icon name="success-grey" />
-            <span>Mark as reviewed</span>
+            <span>{isReviewed ? Label.REVIEWED : Label.MARK_REVIEWED}</span>
           </Button>
         </span>
       ) : null}
