@@ -47,7 +47,7 @@ const CloudCell: FC<Props> = ({ model }: Props) => {
     return generateCloudAndRegion(model);
   }, [model]);
   return (
-    <>
+    <span className="models__cloud-cell">
       {src && alt ? (
         <img
           src={src}
@@ -58,7 +58,7 @@ const CloudCell: FC<Props> = ({ model }: Props) => {
       ) : null}
 
       <TruncatedTooltip message={regionText}>{regionText}</TruncatedTooltip>
-    </>
+    </span>
   );
 };
 
