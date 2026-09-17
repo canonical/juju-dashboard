@@ -24,11 +24,11 @@ const DestroyModelsPanel: FC = () => {
   };
 
   const modelWord = pluralize(selectedModels.length, "model");
-  const { reviewedCount, removedCount, destroyableCount } =
+  const { reviewedCount, skippedCount, destroyableCount } =
     selectedModels.reduce(
-      (acc, { reviewed, removed }) => {
-        if (removed) {
-          acc.removedCount++;
+      (acc, { reviewed, skipped }) => {
+        if (skipped) {
+          acc.skippedCount++;
         } else {
           acc.destroyableCount++;
           if (reviewed) {
@@ -37,7 +37,7 @@ const DestroyModelsPanel: FC = () => {
         }
         return acc;
       },
-      { reviewedCount: 0, removedCount: 0, destroyableCount: 0 },
+      { reviewedCount: 0, skippedCount: 0, destroyableCount: 0 },
     );
 
   return (
@@ -51,7 +51,7 @@ const DestroyModelsPanel: FC = () => {
         <div className="destroy-models-panel__actions">
           <div className="u-align--left">
             {`${reviewedCount}/${destroyableCount} Reviewed`}
-            {removedCount > 0 ? `, ${removedCount} Removed.` : null}
+            {skippedCount > 0 ? `, ${skippedCount} Skipped.` : null}
           </div>
           <span>
             <Button

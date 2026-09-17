@@ -19,6 +19,8 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
+import { Label } from "../types";
+
 import AccordionTitle from "./AccordionTitle";
 
 describe("AccordionTitle", () => {
@@ -86,7 +88,7 @@ describe("AccordionTitle", () => {
     expect(summaryItems[2]).toHaveTextContent("2"); // machines
   });
 
-  it("renders is-removed class when the model is a controller model", async () => {
+  it("renders is-skipped class when the model is a controller model", async () => {
     state.juju.modelData["abc123"].info = modelInfoFactory.build({
       "is-controller": true,
     });
@@ -104,13 +106,11 @@ describe("AccordionTitle", () => {
       vi.runAllTimers();
     });
     expect(
-      screen.getByRole("tooltip", {
-        name: "Controller model cannot be deleted",
-      }),
+      screen.getByRole("tooltip", { name: Label.TOOLTIP_CONTROLLER_MODEL }),
     ).toBeVisible();
   });
 
-  it("renders is-removed class when model has connected offers", () => {
+  it("renders is-skipped class when model has connected offers", async () => {
     state.juju.modelData["abc123"] = modelDataFactory.build({
       uuid: "abc123",
       info: modelInfoFactory.build({ name: "test-model" }),
@@ -125,11 +125,23 @@ describe("AccordionTitle", () => {
       { state },
     );
     expect(
-      document.querySelector(".accordion-title--is-removed"),
+      document.querySelector(".accordion-title--is-skipped"),
     ).toBeInTheDocument();
+    const icon = document.querySelector(".p-icon--help");
+    expect(icon).toBeInTheDocument();
+    await act(async () => {
+      if (!icon) {
+        throw new Error("Icon not found");
+      }
+      await userEventWithTimers.hover(icon);
+      vi.runAllTimers();
+    });
+    expect(
+      screen.getByRole("tooltip", { name: Label.TOOLTIP_CONNECTED_OFFERS }),
+    ).toBeVisible();
   });
 
-  it("renders is-removed class when user does not have model access", () => {
+  it("renders is-skipped class when user does not have model access", async () => {
     vi.spyOn(
       useCanConfigureModelModule,
       "useCanConfigureModelWithUUID",
@@ -139,7 +151,19 @@ describe("AccordionTitle", () => {
       { state },
     );
     expect(
-      document.querySelector(".accordion-title--is-removed"),
+      document.querySelector(".accordion-title--is-skipped"),
     ).toBeInTheDocument();
+    const icon = document.querySelector(".p-icon--help");
+    expect(icon).toBeInTheDocument();
+    await act(async () => {
+      if (!icon) {
+        throw new Error("Icon not found");
+      }
+      await userEventWithTimers.hover(icon);
+      vi.runAllTimers();
+    });
+    expect(
+      screen.getByRole("tooltip", { name: Label.TOOLTIP_NO_ACCESS }),
+    ).toBeVisible();
   });
 });

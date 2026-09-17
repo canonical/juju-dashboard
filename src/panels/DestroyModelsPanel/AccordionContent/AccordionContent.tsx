@@ -149,7 +149,7 @@ const AccordionContent = ({
     getSelectedModelForDestruction(state, modelUUID),
   );
   const isReviewed = selectedModel?.reviewed;
-  const isRemoved = selectedModel?.removed;
+  const isSkipped = selectedModel?.skipped;
 
   const infoTableRows = useMemo(
     () =>
@@ -163,10 +163,10 @@ const AccordionContent = ({
   );
   const isDestroyBlocked = destroyBlockedReason !== null;
 
-  const toggleRemoveFromSelection = (): void => {
+  const toggleSkipModel = (): void => {
     if (wsControllerURL) {
       dispatch(
-        jujuActions.toggleModelRemovedFromDestruction({
+        jujuActions.toggleModelSkippedFromDestruction({
           modelUUID: modelUUID,
           wsControllerURL,
         }),
@@ -211,19 +211,15 @@ const AccordionContent = ({
       )}
       {!isDestroyBlocked ? (
         <span className="accordion-content__actions u-sv2--top">
-          <Button
-            onClick={toggleRemoveFromSelection}
-            appearance="secondary"
-            hasIcon
-          >
-            <Icon name={isRemoved ? "plus" : "minus"} />
-            <span>{isRemoved ? Label.ADD_MODEL : Label.REMOVE_MODEL}</span>
+          <Button onClick={toggleSkipModel} appearance="secondary" hasIcon>
+            <Icon name={isSkipped ? "plus" : "minus"} />
+            <span>{isSkipped ? Label.ADD_MODEL : Label.SKIP_MODEL}</span>
           </Button>
           <Button
             appearance="positive"
             type="button"
             onClick={toggleModelReviewed}
-            disabled={isRemoved}
+            disabled={isSkipped}
             hasIcon
           >
             <Icon name="success-grey" />

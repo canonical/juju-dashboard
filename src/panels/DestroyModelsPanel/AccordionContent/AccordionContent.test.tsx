@@ -153,37 +153,37 @@ describe("AccordionContent", () => {
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(<AccordionContent modelUUID="abc123" />, { state, store });
 
-    const toggleModelRemovedFromDestructionAction =
-      jujuActions.toggleModelRemovedFromDestruction({
+    const toggleModelSkippedFromDestructionAction =
+      jujuActions.toggleModelSkippedFromDestruction({
         modelUUID: "abc123",
         wsControllerURL: "wss://example.com/api",
       });
 
     await userEvent.click(
-      screen.getByRole("button", { name: Label.REMOVE_MODEL }),
+      screen.getByRole("button", { name: Label.SKIP_MODEL }),
     );
     await waitFor(() => {
       expect(
         actions.find(
           (dispatch) =>
-            dispatch.type === toggleModelRemovedFromDestructionAction.type,
+            dispatch.type === toggleModelSkippedFromDestructionAction.type,
         ),
-      ).toMatchObject(toggleModelRemovedFromDestructionAction);
+      ).toMatchObject(toggleModelSkippedFromDestructionAction);
     });
   });
 
-  it("adds a removed model to selection", async () => {
+  it("adds a skipped model to selection", async () => {
     state.juju.modelsSelectedForDestruction = [
       modelSelectionParamsFactory.build({
         modelUUID: "abc123",
-        removed: true,
+        skipped: true,
       }),
     ];
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(<AccordionContent modelUUID="abc123" />, { state, store });
 
-    const toggleModelRemovedFromDestructionAction =
-      jujuActions.toggleModelRemovedFromDestruction({
+    const toggleModelSkippedFromDestructionAction =
+      jujuActions.toggleModelSkippedFromDestruction({
         modelUUID: "abc123",
         wsControllerURL: "wss://example.com/api",
       });
@@ -195,9 +195,9 @@ describe("AccordionContent", () => {
       expect(
         actions.find(
           (dispatch) =>
-            dispatch.type === toggleModelRemovedFromDestructionAction.type,
+            dispatch.type === toggleModelSkippedFromDestructionAction.type,
         ),
-      ).toMatchObject(toggleModelRemovedFromDestructionAction);
+      ).toMatchObject(toggleModelSkippedFromDestructionAction);
     });
   });
 
@@ -211,8 +211,8 @@ describe("AccordionContent", () => {
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(<AccordionContent modelUUID="abc123" />, { state, store });
 
-    const toggleModelRemovedFromDestructionAction =
-      jujuActions.toggleModelRemovedFromDestruction({
+    const toggleModelSkippedFromDestructionAction =
+      jujuActions.toggleModelSkippedFromDestruction({
         modelUUID: "abc123",
         wsControllerURL: "wss://example.com/api",
       });
@@ -223,15 +223,15 @@ describe("AccordionContent", () => {
       });
 
     await userEvent.click(
-      screen.getByRole("button", { name: Label.REMOVE_MODEL }),
+      screen.getByRole("button", { name: Label.SKIP_MODEL }),
     );
     await waitFor(() => {
       expect(
         actions.find(
           (dispatch) =>
-            dispatch.type === toggleModelRemovedFromDestructionAction.type,
+            dispatch.type === toggleModelSkippedFromDestructionAction.type,
         ),
-      ).toMatchObject(toggleModelRemovedFromDestructionAction);
+      ).toMatchObject(toggleModelSkippedFromDestructionAction);
       expect(
         actions.find(
           (dispatch) =>
@@ -244,7 +244,7 @@ describe("AccordionContent", () => {
   it("renders action buttons for a normal model", () => {
     renderComponent(<AccordionContent modelUUID="abc123" />, { state });
     expect(
-      screen.getByRole("button", { name: Label.REMOVE_MODEL }),
+      screen.getByRole("button", { name: Label.SKIP_MODEL }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: Label.MARK_REVIEWED }),
@@ -258,7 +258,7 @@ describe("AccordionContent", () => {
     });
     renderComponent(<AccordionContent modelUUID="abc123" />, { state });
     expect(
-      screen.queryByRole("button", { name: Label.REMOVE_MODEL }),
+      screen.queryByRole("button", { name: Label.SKIP_MODEL }),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: Label.MARK_REVIEWED }),
@@ -272,7 +272,7 @@ describe("AccordionContent", () => {
     ).mockReturnValue(false);
     renderComponent(<AccordionContent modelUUID="abc123" />, { state });
     expect(
-      screen.queryByRole("button", { name: Label.REMOVE_MODEL }),
+      screen.queryByRole("button", { name: Label.SKIP_MODEL }),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: Label.MARK_REVIEWED }),
@@ -291,7 +291,7 @@ describe("AccordionContent", () => {
     });
     renderComponent(<AccordionContent modelUUID="abc123" />, { state });
     expect(
-      screen.queryByRole("button", { name: Label.REMOVE_MODEL }),
+      screen.queryByRole("button", { name: Label.SKIP_MODEL }),
     ).not.toBeInTheDocument();
   });
 });

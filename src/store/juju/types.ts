@@ -204,11 +204,11 @@ export type ModelSelectionParams = {
   modelName: string;
   destroyBlockedReason: DestroyBlockedReason | null;
   reviewed?: boolean;
-  removed?: boolean;
+  skipped?: boolean;
 };
 
 export type ModelDestructionParams = DestroyModelParams &
-  Omit<ModelSelectionParams, "destroyBlockedReason" | "removed" | "reviewed">;
+  Omit<ModelSelectionParams, "destroyBlockedReason" | "reviewed" | "skipped">;
 
 export type JujuState = {
   auditEvents: AuditEventsState;
