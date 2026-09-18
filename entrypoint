@@ -5,7 +5,6 @@
 # The following environment variables can be provided. Only DASHBOARD_CONTROLLER_URL is required.
 # DASHBOARD_CONTROLLER_URL - equivalent to the charm's controller-url config option.
 # DASHBOARD_ROOT - the root directory that the dashboard is located in.
-# DASHBOARD_CONFIG_DIR - the location that the config.js.j2 and nginx.conf.j2 are located in.
 # DASHBOARD_IDENTITY_PROVIDER_URL - equivalent to the charm's identity-provider-url config option.
 # DASHBOARD_IS_JUJU - equivalent to the charm's is-juju config option.
 # DASHBOARD_ANALYTICS_ENABLED - equivalent to the charm's analytics-enabled config option.
