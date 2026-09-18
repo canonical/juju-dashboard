@@ -1,27 +1,24 @@
 # `create-release-pr` action
 
-This action should be triggered by a PR merged into a `release/x.y` branch. This action will create
-a new release PR, which will target the `release/x.y` branch with a commit bumping the package
-version.
+This action is triggered by pushes to a `release/x.y` branch. It maintains an
+open release PR for the next relevant version based on the current `package.json`
+version and the contents of `CHANGELOG.md`.
 
-The package version may be bumped in one of the following ways:
+- If the branch version is a placeholder (`x.y.x`) or stable version and
+  `## Unreleased` has entries, it opens a beta release PR (`release/x.y.z-beta.w`).
+  A freshly cut `release/x.y` branch will therefore get its first beta PR as soon
+  as it has release notes under `## Unreleased`.
+- If the branch version is a beta version and `## Unreleased` has entries, it
+  opens the next beta release PR.
+- If a beta release PR was just merged and `## Unreleased` is empty, it opens a
+  candidate/stable release PR (`release/x.y.z`).
+- If an existing release PR already points to the expected version, its branch
+  is reset to the latest `release/x.y` and the `package.json`/`CHANGELOG.md`
+  changes are reapplied.
 
- 1. If the merged PR was a `beta` release PR (specifically, the merged PR branch was
-    `release/x.y.z-beta.w`), the package version (which should be set to `x.y.z-beta.w`) will be
-    set as `x.y.z`. This would set the package up for a candidate release.
-
- 2. If the merged PR was a `candidate` release PR (the merged PR branch was `release/x.y.z`), then
-    it will be ignored and no release PR will be created.
-
- 3. For all other merged PRs, the package will be bumped to a beta version with the following
-    rules:
-
-    - If the package version is `x.y.z`, the beta version will be set to `x.y.(z+1)-beta.0`. Since
-      the current version was a stable release, the patch version can be incremented (since only
-      patch releases are allowed on a `release/x.y` branch), and the `beta` pre-release can be set.
-
-    - If the package version is `x.y.z-beta.w`, the beta version will be set to `x.y.z-beta.(w+1)`.
-
+The release PR finalises `CHANGELOG.md` by moving the current `## Unreleased`
+entries under a versioned heading. Release notes must therefore be added to
+`## Unreleased` on the `release/x.y` branch **before** the release PR is merged.
 
 > [!note]
 > Do not edit anything in `.github/actions/create-release-pr`, as it is generated and may be
