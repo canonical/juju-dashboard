@@ -1,9 +1,13 @@
-import { branch, changelog, type Ctx } from "@/lib";
+import type { Ctx } from "@/lib";
+import { branch } from "@/lib";
+import * as changelogMd from "@/lib/changelog-md";
 import type { PullRequest } from "@/lib/github";
-import { CHANGELOG_LABEL } from "@/lib/labels";
 import { getPackageVersion, setPackageVersion } from "@/lib/package";
-import type { MajorMinorVersion } from "@/lib/version";
-import { parseVersion, serialiseVersion, type Version } from "@/lib/version";
+import {
+  parseVersion,
+  serialiseVersion,
+  type Version,
+} from "@/lib/version";
 
 export type ReleaseResult = {
   releasePrNumber?: number;
@@ -53,156 +57,212 @@ export function bumpPackageVersion(
   return version;
 }
 
-export async function run(ctx: Ctx): Promise<ReleaseResult> {
-  // Extract versioning information for the current branch.
-  let versioningInfo: MajorMinorVersion | null = null;
-  try {
-    versioningInfo = branch.shortRelease.parse(ctx.context.refName);
-  } catch (_e) {
-    versioningInfo = null;
-  }
+type MergedReleasePr = {
+  head: { ref: string };
+  number: number;
+  merged_at: null | string;
+};
 
-  // Ensure running on `release/x.y` branch.
-  if (versioningInfo === null) {
-    throw new Error("This action can only be run on a `release/x.y` branch.");
-  }
+async function getMergedReleasePr(
+  ctx: Ctx,
+): Promise<MergedReleasePr | null> {
+  const { data: prs } =
+    await ctx.octokit.rest.repos.listPullRequestsAssociatedWithCommit({
+      ...ctx.repo.identifier,
+      commit_sha: ctx.context.sha,
+    });
 
-  // Try seed the changelog if running against a PR.
-  const changelogItems: string[] = [];
-  if (ctx.pr) {
+  for (const pr of prs) {
     if (
-      (branch.cut.test(ctx.pr.head) ||
-        branch.release.test(ctx.pr.head, { preRelease: true })) &&
-      ctx.pr.body !== null &&
-      ctx.pr.body
+      pr.state === "closed" &&
+      pr.merged_at &&
+      branch.release.parse(pr.head.ref) !== null
     ) {
-      // Triggered from a merged cut branch, so re-use the changelog.
-      try {
-        changelogItems.push(...changelog.parse(ctx.pr.body).items);
-      } catch (err) {
-        void err;
-      }
-    } else if (branch.release.test(ctx.pr.head, { preRelease: false })) {
-      // Running on a merged release branch, no need to continue action.
-      ctx.core.info(
-        `Action triggered on merged release PR (#${ctx.pr.number}), exiting.`,
-      );
-      return {};
-    } else if (ctx.pr.hasLabel(CHANGELOG_LABEL)) {
-      // Triggered from a PR that's indicated it should be included in the changelog, so add it.
-      changelogItems.push(ctx.pr.changelogEntry());
+      return pr as unknown as MergedReleasePr;
     }
   }
 
-  // Find an existing release PR for this branch.
+  return null;
+}
+
+function isBetaReleasePrMerge(pr: MergedReleasePr): boolean {
+  const version = branch.release.parse(pr.head.ref);
+  return version !== null && version.preRelease?.identifier === "beta";
+}
+
+function computeExpectedVersion(
+  currentVersion: Version,
+  mergedBeta: boolean,
+): null | Version {
+  if (currentVersion.preRelease?.identifier === "beta") {
+    if (mergedBeta) {
+      // A beta release PR just merged: open the follow-up stable PR.
+      return bumpPackageVersion(structuredClone(currentVersion), "candidate");
+    }
+    return bumpPackageVersion(structuredClone(currentVersion), "beta");
+  }
+
+  // Stable or placeholder: the only valid path to a stable release goes
+  // through a beta first. Always open a beta PR for the next patch version.
+  return bumpPackageVersion(structuredClone(currentVersion), "beta");
+}
+
+async function closeOpenReleasePrs(ctx: Ctx): Promise<void> {
+  const baseBranch = ctx.context.refName;
   const openPrs = ctx.repo.pullRequests({
     state: "open",
-    base: ctx.context.refName,
+    base: baseBranch,
   });
-  const matchingPrs: { pr: PullRequest; version: Version }[] = [];
+
   for await (const pr of openPrs) {
-    // Select all PRs based on the branch.
-    const version = branch.release.parse(pr.head);
-    if (version !== null) {
-      matchingPrs.push({ pr, version });
+    if (branch.release.parse(pr.head) !== null) {
+      ctx.core.info(`Closing stale release PR #${pr.number} (${pr.head}).`);
+      await pr.close();
     }
   }
+}
 
-  // Create or select the release PR.
-  let releasePr: null | PullRequest = null;
-  let releaseVersion: null | string = null;
+export async function run(ctx: Ctx): Promise<ReleaseResult> {
+  const branchInfo = branch.shortRelease.parse(ctx.context.refName);
+  if (branchInfo === null) {
+    ctx.core.info(
+      "Not running on a `release/x.y` branch; no release PR action required.",
+    );
+    return {};
+  }
+
+  const headCommit = ctx.context.payload
+    .head_commit as unknown as {
+    author?: { email?: string };
+  };
+  if (headCommit?.author?.email === ctx.git.user.email) {
+    ctx.core.info(
+      "Skipping release PR action because this push was authored by the automation bot.",
+    );
+    return {};
+  }
+
+  const currentVersionStr = await getPackageVersion(ctx);
+  const currentVersion = parseVersion(currentVersionStr);
+  const mergedReleasePr = await getMergedReleasePr(ctx);
+  const mergedBeta = mergedReleasePr
+    ? isBetaReleasePrMerge(mergedReleasePr)
+    : false;
+
+  const expectedVersion = computeExpectedVersion(
+    currentVersion,
+    mergedBeta,
+  );
+
+  if (expectedVersion === null) {
+    ctx.core.info(
+      "No release PR action is required for the current state of the branch.",
+    );
+
+    // If a stable/candidate PR is open in this state, close it: a stable
+    // release is only valid as the immediate follow-up to a beta release PR.
+    await closeOpenReleasePrs(ctx);
+    return {};
+  }
+
+  const expectedVersionStr = serialiseVersion(expectedVersion);
+  const releaseBranch = branch.release.serialise(expectedVersion);
+  const baseBranch = ctx.context.refName;
+
+  if (
+    mergedReleasePr !== null &&
+    mergedReleasePr.head.ref === releaseBranch
+  ) {
+    ctx.core.info(
+      `Skipping release PR creation because this push is the merge commit of #${mergedReleasePr.number} (${releaseBranch}).`,
+    );
+    return {};
+  }
+
+  const openPrs = ctx.repo.pullRequests({
+    state: "open",
+    base: baseBranch,
+  });
+  const matchingPrs: { pr: PullRequest }[] = [];
+  for await (const pr of openPrs) {
+    if (branch.release.parse(pr.head) !== null) {
+      matchingPrs.push({ pr });
+    }
+  }
 
   if (matchingPrs.length > 1) {
-    // Multiple release PRs for this branch, which is invalid.
     throw new Error(
-      `Multiple release PRs were found, when only one can exist: ${matchingPrs.map(({ pr: { number } }) => `#${number}`).join(", ")}`,
+      `Multiple release PRs were found, when only one can exist: ${matchingPrs.map(({ pr }) => `#${pr.number}`).join(", ")}`,
     );
-  } else if (matchingPrs.length === 1) {
-    // Single release PR found.
-    const [{ pr, version }] = matchingPrs;
+  }
 
-    if (!version.preRelease) {
-      // Save the existing changelog.
-      // WARN: This means that the beta PR will contain the changelog for ALL previous beta PRs.
-      changelogItems.unshift(...changelog.parse(pr.body ?? "").items);
-
-      // This was a candidate release PR, however new changes have been pushed so it's now outdated.
-      await pr.close();
-    } else {
+  let releasePr: null | PullRequest = null;
+  if (matchingPrs.length === 1) {
+    const [{ pr }] = matchingPrs;
+    if (pr.head === releaseBranch) {
       releasePr = pr;
-      releaseVersion = serialiseVersion(version);
+    } else {
+      ctx.core.info(
+        `Closing stale release PR #${pr.number} (${pr.head}) in favour of ${releaseBranch}.`,
+      );
+      await pr.close();
     }
   }
 
+  const kind: "beta" | "stable" =
+    expectedVersion.preRelease?.identifier === "beta" ? "beta" : "stable";
+
+  await ctx.git.fetch();
+
   if (!releasePr) {
-    // Fetch the current package version, and bump it as required.
-    let packageVersion = parseVersion(await getPackageVersion(ctx));
-
-    // Always assume a beta release is being generated.
-    packageVersion = bumpPackageVersion(packageVersion, "beta");
-
-    if (ctx.pr) {
-      const mergedVersion = branch.release.parse(ctx.pr.head);
-      if (mergedVersion !== null) {
-        if (mergedVersion.preRelease?.identifier === "beta") {
-          // If this action was triggered by a merged beta branch, create a candidate release.
-          packageVersion = bumpPackageVersion(packageVersion, "candidate");
-        }
-      }
-    }
-
-    // Create and checkout the new release branch.
-    const baseBranch = ctx.context.refName;
-    const releaseBranch = branch.release.serialise(packageVersion);
-    await ctx.git.fetch();
     await ctx.git.createBranch(releaseBranch, baseBranch);
-    await ctx.git.checkout(releaseBranch);
+  } else {
+    await ctx.git.moveBranch(releaseBranch, baseBranch);
+  }
 
-    // Write the version back.
-    const packageVersionStr = serialiseVersion(packageVersion);
-    await setPackageVersion(ctx, packageVersionStr);
+  await ctx.git.checkout(releaseBranch);
+  const branchVersion = await getPackageVersion(ctx);
+  const versionChanged = branchVersion !== expectedVersionStr;
+  if (versionChanged) {
+    await setPackageVersion(ctx, expectedVersionStr);
+  }
+  const { newContent } = await changelogMd.finalise(
+    ctx,
+    expectedVersionStr,
+    kind,
+  );
 
-    // Commit the bumped package.
-    await ctx.git.commit(`bump package.json version to ${packageVersionStr}`, [
-      "./package.json",
-    ]);
-    await ctx.git.push({ force: true }, releaseBranch);
+  // Only commit when something actually changed, so that retrying the same
+  // state is a no-op.
+  const changed = versionChanged || newContent !== undefined;
 
-    // Restore branch back to where it was.
-    await ctx.git.checkout(baseBranch);
+  if (changed) {
+    await ctx.git.commit(
+      `chore(release): prepare ${expectedVersionStr}`,
+      ["./package.json", "./CHANGELOG.md"],
+    );
+  }
 
-    const header = `> [!important]
-> Merging this PR will publish ${packageVersionStr}
+  // Always push so a rebased branch is synced even if the commit is a no-op.
+  await ctx.git.push({ force: true }, releaseBranch);
+  await ctx.git.checkout(baseBranch);
 
----
-`;
-    // Start with an empty changelog, as it will be filled after it's created.
-    const body = changelog.generate(header, []);
-
-    // Create new release PR.
+  if (!releasePr) {
     releasePr = await ctx.repo.createPullRequest({
       head: releaseBranch,
       base: baseBranch,
-      title: `Release ${packageVersionStr}`,
-      body,
+      title: `Release ${expectedVersionStr}`,
+      body: `> [!important]\n> Merging this PR will publish ${expectedVersionStr}\n\n---\n\nThe changelog for this release has already been finalised from \`## Unreleased\` on \`${baseBranch}\`.`,
     });
-    releaseVersion = packageVersionStr;
-  }
-
-  // Optionally update the changelog if the merged PR allows it.
-  if (changelogItems.length > 0) {
-    // Update the changelog with this merged PR.
+  } else {
     await releasePr.update({
-      body: changelogItems.reduce(
-        (body, item) => changelog.appendItem(body, item),
-        releasePr.body ?? "",
-      ),
+      body: `> [!important]\n> Merging this PR will publish ${expectedVersionStr}\n\n---\n\nThe changelog for this release has already been finalised from \`## Unreleased\` on \`${baseBranch}\`.`,
     });
   }
 
   return {
     releasePrNumber: releasePr.number,
     releasePrHead: releasePr.head,
-    releaseVersion,
+    releaseVersion: expectedVersionStr,
   };
 }
