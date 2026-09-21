@@ -62,10 +62,11 @@ test.describe("Destroy Model", () => {
       .click();
 
     // Confirm destroy
-    await expect(
-      page.getByRole("dialog", { name: `Destroy model ${model.name}` }),
-    ).toBeInViewport();
-    await page
+    const destroyDialog = page.getByRole("dialog", {
+      name: `Destroy model ${model.name}`,
+    });
+    await expect(destroyDialog).toBeInViewport();
+    await destroyDialog
       .getByRole("button", {
         name: "Destroy model",
       })

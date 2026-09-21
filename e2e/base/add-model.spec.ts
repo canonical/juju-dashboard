@@ -180,12 +180,13 @@ test.describe("Add model", () => {
         .click();
 
       // Destroy should fail with appropriate error message
-      await expect(
-        page.getByRole("dialog", {
-          name: `Destroy model ${currentModel.name}`,
-        }),
-      ).toBeInViewport();
-      await page.getByRole("button", { name: "Destroy model" }).click();
+      const destroyDialog = page.getByRole("dialog", {
+        name: `Destroy model ${currentModel.name}`,
+      });
+      await expect(destroyDialog).toBeInViewport();
+      await destroyDialog
+        .getByRole("button", { name: "Destroy model" })
+        .click();
       await expect(
         page.locator('[role="status"]', {
           hasText: `Destroying model "${currentModel.name}" failed`,
