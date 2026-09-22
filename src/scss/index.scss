@@ -58,6 +58,7 @@ $color-navigation-background: $color-brand;
 @include vf-p-icon-get-link;
 @include vf-p-icon-contextual-menu;
 @include vf-p-icon-status-in-progress-small;
+@include vf-p-icon-storage-volume;
 
 // Overrides for Vanilla. This needs to be after the Vanilla includes.
 @import "vanilla-overrides";
@@ -70,6 +71,7 @@ $color-navigation-background: $color-brand;
 @import "../components/AutocompleteInput/autocomplete-input";
 @import "../components/Banner/banner";
 @import "../components/Breadcrumb/breadcrumbs";
+@import "../components/BulkDestroyModelDialog/bulk-destroy-model-dialog";
 @import "../components/ChipGroup/chip-group";
 @import "../components/ContentReveal/content-reveal";
 @import "../components/DataTable/data-table";
