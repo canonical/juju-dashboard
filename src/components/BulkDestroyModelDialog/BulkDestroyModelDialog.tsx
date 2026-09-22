@@ -3,9 +3,7 @@ import {
   Icon,
   Input,
   MainTable,
-  Tooltip,
 } from "@canonical/react-components";
-import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { useState, useMemo, type JSX } from "react";
 import { useDispatch } from "react-redux";
 
@@ -13,34 +11,18 @@ import useModelDestructionData from "hooks/useModelDestructionData";
 import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { getSelectedModelsForDestruction } from "store/juju/selectors";
-import { pluralize } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import filterBoolean from "utils/filterBoolean";
 import { formatBulkDestructionData } from "utils/formatBulkDestructionData";
 
+import ResourceCount, { ResourceType } from "./ResourceCount";
 import { Label, TestId } from "./types";
 
 type Props = {
   closePortal: () => void;
   afterConfirmClicked: () => void;
   redirectOnDestroy?: boolean;
-};
-
-enum ResourceType {
-  APPLICATION = "Application",
-  MODEL = "Model",
-  MACHINE = "Machine",
-  CROSS_MODEL_RELATION = "Cross model relation",
-  STORAGE = "Attached storage",
-}
-
-const resourceIconMap: Record<ResourceType, string> = {
-  [ResourceType.APPLICATION]: "applications",
-  [ResourceType.MODEL]: "models",
-  [ResourceType.MACHINE]: "machines",
-  [ResourceType.CROSS_MODEL_RELATION]: "get-link",
-  [ResourceType.STORAGE]: "storage",
 };
 
 const formatCrossModelRelations = (
@@ -53,34 +35,6 @@ const formatCrossModelRelations = (
     ({ name, endpoints }) =>
       `${name} ${endpoints.map((endpoint) => `${endpoint.name}:${endpoint.interface}`).join(", ")}`,
   );
-
-// Helper to render the resource row
-const resourceRow = (
-  resources: string[],
-  resourceType: ResourceType,
-): MainTableRow | null => {
-  if (!resources.length) {
-    return null;
-  }
-  return {
-    columns: [
-      {
-        content: (
-          <div className="u-flex u-flex-items-center u-flex--gap-x-small">
-            <Icon
-              name={resourceIconMap[resourceType]}
-              className="u-no-margin--right"
-            />
-            {resources.length} {pluralize(resources.length, resourceType)}
-            <Tooltip message={resources.join("\n")} position="right">
-              <Icon name="information" />
-            </Tooltip>
-          </div>
-        ),
-      },
-    ],
-  };
-};
 
 export default function BulkDestroyModelDialog({
   closePortal,
@@ -123,32 +77,72 @@ export default function BulkDestroyModelDialog({
           },
           {
             content: (
-              <div className="u-flex u-flex-items-center u-flex--gap-x-small">
-                <Icon
-                  name={resourceIconMap[ResourceType.MODEL]}
-                  className="u-no-margin--right"
-                />
-                {destroyableCount}{" "}
-                {pluralize(destroyableCount, ResourceType.MODEL)}
-                <Tooltip
-                  message={destroyable
-                    .map(({ modelName }) => modelName)
-                    .join("\n")}
-                  position="right"
-                >
-                  <Icon name="information" />
-                </Tooltip>
-              </div>
+              <ResourceCount
+                resourceType={ResourceType.MODEL}
+                resources={destroyable.map(({ modelName }) => modelName)}
+              />
             ),
           },
         ],
       },
-      resourceRow(applications, ResourceType.APPLICATION),
-      resourceRow(machines, ResourceType.MACHINE),
-      resourceRow(crossModelRelations, ResourceType.CROSS_MODEL_RELATION),
-      resourceRow(storageIDs, ResourceType.STORAGE),
+      applications.length
+        ? {
+            columns: [
+              {
+                content: (
+                  <ResourceCount
+                    resourceType={ResourceType.APPLICATION}
+                    resources={applications}
+                  />
+                ),
+              },
+            ],
+          }
+        : null,
+      machines.length
+        ? {
+            columns: [
+              {
+                content: (
+                  <ResourceCount
+                    resourceType={ResourceType.MACHINE}
+                    resources={machines}
+                  />
+                ),
+              },
+            ],
+          }
+        : null,
+      crossModelRelations.length
+        ? {
+            columns: [
+              {
+                content: (
+                  <ResourceCount
+                    resourceType={ResourceType.CROSS_MODEL_RELATION}
+                    resources={crossModelRelations}
+                  />
+                ),
+              },
+            ],
+          }
+        : null,
+      storageIDs.length
+        ? {
+            columns: [
+              {
+                content: (
+                  <ResourceCount
+                    resourceType={ResourceType.STORAGE}
+                    resources={storageIDs}
+                  />
+                ),
+              },
+            ],
+          }
+        : null,
     ]);
-  }, [destroyable, destructionDataByUUID, destroyableCount]);
+  }, [destroyable, destructionDataByUUID]);
 
   const expectedConfirmString = `destroy ${destroyableCount} models`;
   const isConfirmValid = confirmInput === expectedConfirmString;
