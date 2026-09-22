@@ -3,7 +3,6 @@ import type { JSX, PropsWithChildren } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router";
 
-import * as useCanConfigureModelModule from "hooks/useCanConfigureModel";
 import { DestroyBlockedReason } from "store/juju/types";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -18,6 +17,7 @@ import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
   jujuStateFactory,
   modelDataFactory,
+  modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { createStore } from "testing/utils";
 
@@ -40,36 +40,35 @@ const generateContainer =
   };
 
 describe("useModelDestructionData", () => {
-  beforeEach(() => {
-    vi.spyOn(
-      useCanConfigureModelModule,
-      "useCanConfigureModelWithUUID",
-    ).mockReturnValue(true);
-  });
-
   it("should return initial empty state when modelStatusData is null or empty", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            canConfigure: true,
+          }),
+        },
         modelData: {},
       }),
     });
 
-    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+    const { result } = renderHook(() => useModelDestructionData(["abc123"]), {
       wrapper: generateContainer(state, "*", "/models"),
     });
 
-    expect(result.current.hasStorage).toBe(false);
-    expect(result.current.applications).toEqual([]);
-    expect(result.current.machines).toEqual([]);
-    expect(result.current.crossModelRelations).toEqual([]);
-    expect(result.current.connectedOffers).toEqual([]);
-    expect(result.current.storageIDs).toEqual([]);
-    expect(result.current.showInfoTable).toBe(false);
-    expect(result.current.unitCount).toBe(0);
-    expect(result.current.destroyBlockedReason).toBeNull();
+    expect(result.current["abc123"].hasStorage).toBe(false);
+    expect(result.current["abc123"].applications).toEqual([]);
+    expect(result.current["abc123"].machines).toEqual([]);
+    expect(result.current["abc123"].crossModelRelations).toEqual([]);
+    expect(result.current["abc123"].connectedOffers).toEqual([]);
+    expect(result.current["abc123"].storageIDs).toEqual([]);
+
+    expect(result.current["abc123"].unitCount).toBe(0);
+    expect(result.current["abc123"].destroyBlockedReason).toBeNull();
   });
 
-  it("should correctly count applications and machines and set showInfoTable to true", () => {
+  it("should correctly count applications and machines", () => {
     const modelData = modelDataFactory.build({
       uuid: "abc123",
       info: modelInfoFactory.build({
@@ -97,13 +96,12 @@ describe("useModelDestructionData", () => {
       }),
     });
 
-    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+    const { result } = renderHook(() => useModelDestructionData(["abc123"]), {
       wrapper: generateContainer(state, "*", "/models"),
     });
 
-    expect(result.current.applications).toEqual(["easyrsa"]);
-    expect(result.current.machines).toEqual(["0", "1"]);
-    expect(result.current.showInfoTable).toBe(true);
+    expect(result.current["abc123"].applications).toEqual(["easyrsa"]);
+    expect(result.current["abc123"].machines).toEqual(["0", "1"]);
   });
 
   it("should correctly extract storage IDs and set hasStorage to true", () => {
@@ -147,13 +145,12 @@ describe("useModelDestructionData", () => {
       }),
     });
 
-    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+    const { result } = renderHook(() => useModelDestructionData(["abc123"]), {
       wrapper: generateContainer(state, "*", "/models"),
     });
 
-    expect(result.current.storageIDs).toEqual(["easyrsa/0"]);
-    expect(result.current.hasStorage).toBe(true);
-    expect(result.current.showInfoTable).toBe(true);
+    expect(result.current["abc123"].storageIDs).toEqual(["easyrsa/0"]);
+    expect(result.current["abc123"].hasStorage).toBe(true);
   });
 
   it("should correctly aggregate cross model relations from offers and remote applications", () => {
@@ -192,27 +189,26 @@ describe("useModelDestructionData", () => {
       }),
     });
 
-    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+    const { result } = renderHook(() => useModelDestructionData(["abc123"]), {
       wrapper: generateContainer(state, "*", "/models"),
     });
 
-    expect(result.current.crossModelRelations).toHaveLength(3);
-    expect(result.current.showInfoTable).toBe(true);
+    expect(result.current["abc123"].crossModelRelations).toHaveLength(3);
 
     // Check Offer aggregation
-    expect(result.current.crossModelRelations[0]).toEqual({
+    expect(result.current["abc123"].crossModelRelations[0]).toEqual({
       name: "http",
       endpoints: [],
       isConnectedOffer: true,
     });
-    expect(result.current.crossModelRelations[1]).toEqual({
+    expect(result.current["abc123"].crossModelRelations[1]).toEqual({
       name: "nrpe",
       endpoints: [],
       isConnectedOffer: false,
     });
 
     // Check Remote Application aggregation
-    expect(result.current.crossModelRelations[2]).toEqual({
+    expect(result.current["abc123"].crossModelRelations[2]).toEqual({
       name: "mysql",
       endpoints: [],
       isConnectedOffer: false,
@@ -255,14 +251,14 @@ describe("useModelDestructionData", () => {
       }),
     });
 
-    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+    const { result } = renderHook(() => useModelDestructionData(["abc123"]), {
       wrapper: generateContainer(state, "*", "/models"),
     });
 
-    expect(result.current.connectedOffers).toHaveLength(1);
+    expect(result.current["abc123"].connectedOffers).toHaveLength(1);
 
     // Check one of the mapped results
-    expect(result.current.connectedOffers[0]).toEqual({
+    expect(result.current["abc123"].connectedOffers[0]).toEqual({
       offerName: "db",
       applicationName: "etcd",
       endpoint: {
@@ -295,10 +291,10 @@ describe("useModelDestructionData", () => {
       }),
     });
 
-    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+    const { result } = renderHook(() => useModelDestructionData(["abc123"]), {
       wrapper: generateContainer(state, "*", "/models"),
     });
-    expect(result.current.unitCount).toBe(3);
+    expect(result.current["abc123"].unitCount).toBe(3);
   });
 
   it("should return unitCount of 0 when there are no applications", () => {
@@ -308,10 +304,10 @@ describe("useModelDestructionData", () => {
       }),
     });
 
-    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+    const { result } = renderHook(() => useModelDestructionData(["abc123"]), {
       wrapper: generateContainer(state, "*", "/models"),
     });
-    expect(result.current.unitCount).toBe(0);
+    expect(result.current["abc123"].unitCount).toBe(0);
   });
 
   it("should return destroyBlockedReason as IS_CONTROLLER when model is a controller model", () => {
@@ -326,21 +322,23 @@ describe("useModelDestructionData", () => {
       }),
     });
 
-    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+    const { result } = renderHook(() => useModelDestructionData(["abc123"]), {
       wrapper: generateContainer(state, "*", "/models"),
     });
-    expect(result.current.destroyBlockedReason).toBe(
+    expect(result.current["abc123"].destroyBlockedReason).toBe(
       DestroyBlockedReason.IS_CONTROLLER,
     );
   });
 
   it("should return destroyBlockedReason as NO_ACCESS when user cannot configure the model", () => {
-    vi.spyOn(
-      useCanConfigureModelModule,
-      "useCanConfigureModelWithUUID",
-    ).mockReturnValue(false);
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            canConfigure: false,
+          }),
+        },
         modelData: {
           abc123: modelDataFactory.build({
             uuid: "abc123",
@@ -350,10 +348,10 @@ describe("useModelDestructionData", () => {
       }),
     });
 
-    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+    const { result } = renderHook(() => useModelDestructionData(["abc123"]), {
       wrapper: generateContainer(state, "*", "/models"),
     });
-    expect(result.current.destroyBlockedReason).toBe(
+    expect(result.current["abc123"].destroyBlockedReason).toBe(
       DestroyBlockedReason.NO_ACCESS,
     );
   });
@@ -361,6 +359,12 @@ describe("useModelDestructionData", () => {
   it("should return destroyBlockedReason as CONNECTED_OFFERS when there are offers with active connections", () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            canConfigure: true,
+          }),
+        },
         modelData: {
           abc123: modelDataFactory.build({
             uuid: "abc123",
@@ -375,10 +379,10 @@ describe("useModelDestructionData", () => {
       }),
     });
 
-    const { result } = renderHook(() => useModelDestructionData("abc123"), {
+    const { result } = renderHook(() => useModelDestructionData(["abc123"]), {
       wrapper: generateContainer(state, "*", "/models"),
     });
-    expect(result.current.destroyBlockedReason).toBe(
+    expect(result.current["abc123"].destroyBlockedReason).toBe(
       DestroyBlockedReason.CONNECTED_OFFERS,
     );
   });

@@ -5,10 +5,9 @@ import type {
   StorageDetails,
 } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 
-import useModelStatus from "hooks/useModelStatus";
+import { getModelData, getModelList } from "store/juju/selectors";
 import { DestroyBlockedReason } from "store/juju/types";
-
-import { useCanConfigureModelWithUUID } from "./useCanConfigureModel";
+import { useAppSelector } from "store/store";
 
 type CrossModelRelation = {
   name: string;
@@ -28,7 +27,6 @@ type ModelDestructionData = {
   machines: string[];
   crossModelRelations: CrossModelRelation[];
   connectedOffers: ConnectedOffer[];
-  showInfoTable: boolean;
   storageIDs: string[];
   unitCount: number;
   destroyBlockedReason: DestroyBlockedReason | null;
@@ -100,49 +98,52 @@ const getConnectedOffers = (
 
 // Custom hook to prepare all data needed by the component
 export default function useModelDestructionData(
-  modelUUID: string,
-): ModelDestructionData {
-  const modelStatusData = useModelStatus(modelUUID);
-  const canConfigureModel = useCanConfigureModelWithUUID(false, modelUUID);
+  modelUUIDs: string[],
+): Record<string, ModelDestructionData> {
+  const allModelData = useAppSelector(getModelData);
+  const modelList = useAppSelector(getModelList);
 
-  const offers = modelStatusData?.offers ?? {};
-  const remoteApplications = modelStatusData?.["remote-applications"] ?? {};
-  const applications = Object.keys(modelStatusData?.applications ?? {});
-  const machines = Object.keys(modelStatusData?.machines ?? {});
-  const crossModelRelations = getCrossModelRelations(
-    offers,
-    remoteApplications,
-  );
-  const storageIDs = getStorageIDs(modelStatusData?.storage);
-  const connectedOffers = getConnectedOffers(offers);
-  const showInfoTable =
-    applications.length > 0 ||
-    machines.length > 0 ||
-    crossModelRelations.length > 0;
-  const hasStorage = modelStatusData?.storage !== undefined;
-  const unitCount = applications.reduce((prev, key) => {
-    const units = modelStatusData?.applications?.[key]?.units ?? {};
-    return prev + Object.keys(units).length;
-  }, 0);
+  const result: Record<string, ModelDestructionData> = {};
 
-  let destroyBlockedReason = null;
-  if (modelStatusData?.info?.["is-controller"]) {
-    destroyBlockedReason = DestroyBlockedReason.IS_CONTROLLER;
-  } else if (!canConfigureModel) {
-    destroyBlockedReason = DestroyBlockedReason.NO_ACCESS;
-  } else if (connectedOffers.length > 0) {
-    destroyBlockedReason = DestroyBlockedReason.CONNECTED_OFFERS;
+  for (const modelUUID of modelUUIDs) {
+    const data = allModelData[modelUUID];
+
+    const offers = data?.offers ?? {};
+    const remoteApplications = data?.["remote-applications"] ?? {};
+    const applications = Object.keys(data?.applications ?? {});
+    const machines = Object.keys(data?.machines ?? {});
+    const crossModelRelations = getCrossModelRelations(
+      offers,
+      remoteApplications,
+    );
+    const storageIDs = getStorageIDs(data?.storage);
+    const connectedOffers = getConnectedOffers(offers);
+    const hasStorage = data?.storage !== undefined;
+    const unitCount = applications.reduce((prev, key) => {
+      const units = data?.applications?.[key]?.units ?? {};
+      return prev + Object.keys(units).length;
+    }, 0);
+
+    let destroyBlockedReason = null;
+    if (data?.info?.["is-controller"]) {
+      destroyBlockedReason = DestroyBlockedReason.IS_CONTROLLER;
+    } else if (!modelList[modelUUID]?.canConfigure) {
+      destroyBlockedReason = DestroyBlockedReason.NO_ACCESS;
+    } else if (connectedOffers.length > 0) {
+      destroyBlockedReason = DestroyBlockedReason.CONNECTED_OFFERS;
+    }
+
+    result[modelUUID] = {
+      hasStorage,
+      applications,
+      machines,
+      crossModelRelations,
+      connectedOffers,
+      storageIDs,
+      unitCount,
+      destroyBlockedReason,
+    };
   }
 
-  return {
-    hasStorage,
-    applications,
-    machines,
-    crossModelRelations,
-    connectedOffers,
-    showInfoTable,
-    storageIDs,
-    unitCount,
-    destroyBlockedReason,
-  };
+  return result;
 }

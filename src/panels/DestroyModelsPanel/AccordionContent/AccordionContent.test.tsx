@@ -1,7 +1,6 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import * as useCanConfigureModelModule from "hooks/useCanConfigureModel";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
@@ -16,6 +15,7 @@ import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
   jujuStateFactory,
   modelDataFactory,
+  modelListInfoFactory,
   modelSelectionParamsFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
@@ -28,10 +28,6 @@ describe("AccordionContent", () => {
   let state: RootState;
 
   beforeEach(() => {
-    vi.spyOn(
-      useCanConfigureModelModule,
-      "useCanConfigureModelWithUUID",
-    ).mockReturnValue(true);
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -40,6 +36,12 @@ describe("AccordionContent", () => {
         }),
       }),
       juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            canConfigure: true,
+          }),
+        },
         modelData: {
           abc123: modelDataFactory.build({
             uuid: "abc123",
@@ -266,10 +268,10 @@ describe("AccordionContent", () => {
   });
 
   it("hides action buttons when user does not have access to destroy", () => {
-    vi.spyOn(
-      useCanConfigureModelModule,
-      "useCanConfigureModelWithUUID",
-    ).mockReturnValue(false);
+    state.juju.models["abc123"] = modelListInfoFactory.build({
+      uuid: "abc123",
+      canConfigure: false,
+    });
     renderComponent(<AccordionContent modelUUID="abc123" />, { state });
     expect(
       screen.queryByRole("button", { name: Label.SKIP_MODEL }),

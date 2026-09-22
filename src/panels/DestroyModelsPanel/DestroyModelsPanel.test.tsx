@@ -1,7 +1,6 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import * as useCanConfigureModelModule from "hooks/useCanConfigureModel";
 import { DestroyBlockedReason } from "store/juju/types";
 import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
@@ -21,10 +20,6 @@ describe("DestroyModelsPanel", () => {
   const url = "/?panel=destroy-models";
 
   beforeEach(() => {
-    vi.spyOn(
-      useCanConfigureModelModule,
-      "useCanConfigureModelWithUUID",
-    ).mockReturnValue(true);
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -36,10 +31,12 @@ describe("DestroyModelsPanel", () => {
           abc123: modelListInfoFactory.build({
             uuid: "abc123",
             wsControllerURL: "wss://example.com/api",
+            canConfigure: true,
           }),
           def456: modelListInfoFactory.build({
             uuid: "def456",
             wsControllerURL: "wss://example.com/api",
+            canConfigure: true,
           }),
         },
         modelsSelectedForDestruction: [
