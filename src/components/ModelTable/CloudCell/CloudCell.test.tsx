@@ -29,8 +29,11 @@ describe("CloudCell", () => {
     );
     const cell = container.querySelector(".models__cloud-cell");
     expect(cell).not.toBeNull();
+    expect(cell?.tagName).toBe("DIV");
     expect(cell?.querySelector("img.p-table__logo")).not.toBeNull();
-    expect(cell?.querySelector(".truncated-tooltip")).not.toBeNull();
+    const tooltip = cell?.querySelector(".truncated-tooltip");
+    expect(tooltip).not.toBeNull();
+    expect(tooltip?.tagName).toBe("DIV");
   });
 
   it("can generate an AWS logo", () => {
