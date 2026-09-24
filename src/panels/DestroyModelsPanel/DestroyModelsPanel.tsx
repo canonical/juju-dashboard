@@ -7,6 +7,7 @@ import { actions as jujuActions } from "store/juju";
 import { getSelectedModelsForDestruction } from "store/juju/selectors";
 import { pluralize } from "store/juju/utils/models";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { formatBulkDestructionData } from "utils/formatBulkDestructionData";
 
 import AccordionContent from "./AccordionContent/AccordionContent";
 import AccordionTitle from "./AccordionTitle/AccordionTitle";
@@ -24,21 +25,8 @@ const DestroyModelsPanel: FC = () => {
   };
 
   const modelWord = pluralize(selectedModels.length, "model");
-  const { reviewedCount, skippedCount, destroyableCount } =
-    selectedModels.reduce(
-      (acc, { reviewed, skipped }) => {
-        if (skipped) {
-          acc.skippedCount++;
-        } else {
-          acc.destroyableCount++;
-          if (reviewed) {
-            acc.reviewedCount++;
-          }
-        }
-        return acc;
-      },
-      { reviewedCount: 0, skippedCount: 0, destroyableCount: 0 },
-    );
+  const { destroyable, skipped, reviewed } =
+    formatBulkDestructionData(selectedModels);
 
   return (
     <Panel
@@ -50,8 +38,8 @@ const DestroyModelsPanel: FC = () => {
       drawer={
         <div className="destroy-models-panel__actions">
           <div className="u-align--left">
-            {`${reviewedCount}/${destroyableCount} Reviewed`}
-            {skippedCount > 0 ? `, ${skippedCount} Skipped.` : null}
+            {`${reviewed.length}/${destroyable.length} Reviewed`}
+            {skipped.length > 0 ? `, ${skipped.length} Skipped.` : null}
           </div>
           <span>
             <Button
@@ -66,7 +54,7 @@ const DestroyModelsPanel: FC = () => {
               appearance="negative"
               className="u-no-margin--bottom"
               type="submit"
-              disabled={destroyableCount === 0}
+              disabled={destroyable.length === 0}
               onClick={() => {
                 // TODO: open confirmation dialog
               }}

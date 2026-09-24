@@ -17,6 +17,7 @@ import { actions as jujuActions } from "store/juju";
 import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls, { externalURLs } from "urls";
+import filterBoolean from "utils/filterBoolean";
 
 import { Label, TestId } from "./types";
 
@@ -150,27 +151,33 @@ export default function DestroyModelDialog({
   redirectOnDestroy,
   closePortal,
 }: Props): JSX.Element {
+  const destructionData = useModelDestructionData([modelUUID]);
   const {
     hasStorage,
     applications,
     machines,
     crossModelRelations,
     connectedOffers,
-    showInfoTable,
     storageIDs,
-  } = useModelDestructionData(modelUUID);
+  } = destructionData[modelUUID];
+  const showInfoTable =
+    applications.length > 0 ||
+    machines.length > 0 ||
+    crossModelRelations.length > 0;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
 
-  const infoTableRows = useMemo(() => {
-    return [
-      applicationsRow(applications),
-      crossModelRelationsRow(crossModelRelations),
-      machinesRow(machines),
-      storageRow(hasStorage, storageIDs),
-    ].filter((row): row is Exclude<typeof row, null> => row !== null);
-  }, [applications, crossModelRelations, machines, hasStorage, storageIDs]);
+  const infoTableRows = useMemo(
+    () =>
+      filterBoolean([
+        applicationsRow(applications),
+        crossModelRelationsRow(crossModelRelations),
+        machinesRow(machines),
+        storageRow(hasStorage, storageIDs),
+      ]),
+    [applications, crossModelRelations, machines, hasStorage, storageIDs],
+  );
 
   // Determine the disabled state based on connected offers
   const isConfirmDisabled = connectedOffers.length > 0;

@@ -2,7 +2,6 @@ import { screen } from "@testing-library/react";
 import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { act } from "react";
 
-import * as useCanConfigureModelModule from "hooks/useCanConfigureModel";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
@@ -15,6 +14,7 @@ import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
   jujuStateFactory,
   modelDataFactory,
+  modelListInfoFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -29,10 +29,6 @@ describe("AccordionTitle", () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.spyOn(
-      useCanConfigureModelModule,
-      "useCanConfigureModelWithUUID",
-    ).mockReturnValue(true);
     userEventWithTimers = userEvent.setup({
       advanceTimers: vi.advanceTimersByTime,
     });
@@ -44,6 +40,12 @@ describe("AccordionTitle", () => {
         }),
       }),
       juju: jujuStateFactory.build({
+        models: {
+          abc123: modelListInfoFactory.build({
+            uuid: "abc123",
+            canConfigure: true,
+          }),
+        },
         modelData: {
           abc123: modelDataFactory.build({
             uuid: "abc123",
@@ -111,6 +113,10 @@ describe("AccordionTitle", () => {
   });
 
   it("renders is-skipped class when model has connected offers", async () => {
+    state.juju.models["abc123"] = modelListInfoFactory.build({
+      uuid: "abc123",
+      canConfigure: true,
+    });
     state.juju.modelData["abc123"] = modelDataFactory.build({
       uuid: "abc123",
       info: modelInfoFactory.build({ name: "test-model" }),
@@ -142,10 +148,10 @@ describe("AccordionTitle", () => {
   });
 
   it("renders is-skipped class when user does not have model access", async () => {
-    vi.spyOn(
-      useCanConfigureModelModule,
-      "useCanConfigureModelWithUUID",
-    ).mockReturnValue(false);
+    state.juju.models["abc123"] = modelListInfoFactory.build({
+      uuid: "abc123",
+      canConfigure: false,
+    });
     renderComponent(
       <AccordionTitle modelUUID="abc123" modelName="test-model" />,
       { state },

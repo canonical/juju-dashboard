@@ -16,12 +16,13 @@ type Props = {
 };
 
 const AccordionTitle = ({ modelName, modelUUID }: Props): JSX.Element => {
+  const destructionData = useModelDestructionData([modelUUID]);
   const {
     applications: applicationKeys,
     machines,
     destroyBlockedReason,
     unitCount,
-  } = useModelDestructionData(modelUUID);
+  } = destructionData[modelUUID];
   const selectedModel = useAppSelector((state) =>
     getSelectedModelForDestruction(state, modelUUID),
   );

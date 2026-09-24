@@ -134,15 +134,19 @@ const AccordionContent = ({
 }: {
   modelUUID: string;
 }): JSX.Element => {
+  const destructionData = useModelDestructionData([modelUUID]);
   const {
     hasStorage,
     applications,
     machines,
     crossModelRelations,
-    showInfoTable,
     storageIDs,
     destroyBlockedReason,
-  } = useModelDestructionData(modelUUID);
+  } = destructionData[modelUUID];
+  const showInfoTable =
+    applications.length > 0 ||
+    machines.length > 0 ||
+    crossModelRelations.length > 0;
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const selectedModel = useAppSelector((state) =>
