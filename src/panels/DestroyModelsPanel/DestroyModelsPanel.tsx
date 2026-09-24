@@ -13,6 +13,7 @@ import { formatBulkDestructionData } from "utils/formatBulkDestructionData";
 
 import AccordionContent from "./AccordionContent/AccordionContent";
 import AccordionTitle from "./AccordionTitle/AccordionTitle";
+import { Label } from "./types";
 
 const DestroyModelsPanel: FC = () => {
   const dispatch = useAppDispatch();
@@ -76,7 +77,7 @@ const DestroyModelsPanel: FC = () => {
                 type="button"
                 onClick={handleClose}
               >
-                Cancel
+                {Label.CANCEL}
               </Button>
               <Button
                 appearance="negative"
@@ -85,7 +86,7 @@ const DestroyModelsPanel: FC = () => {
                 disabled={destroyable.length === 0}
                 onClick={openPortal}
               >
-                Complete review & destroy
+                {Label.COMPLETE_REVIEW_DESTROY}
               </Button>
             </span>
           </div>

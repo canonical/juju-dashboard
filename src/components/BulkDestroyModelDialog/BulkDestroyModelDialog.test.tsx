@@ -8,6 +8,7 @@ import {
   applicationStatusFactory,
   unitStatusFactory,
   machineStatusFactory,
+  applicationOfferStatusFactory,
 } from "testing/factories/juju/ClientV8";
 import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
 import {
@@ -70,6 +71,27 @@ describe("BulkDestroyModelDialog", () => {
             }),
             applications: {
               "ceph-mon": applicationStatusFactory.build(),
+            },
+            offers: {
+              db: applicationOfferStatusFactory.build({
+                "total-connected-count": 1,
+                endpoints: {
+                  mockEndpoint: {
+                    interface: "mockInterface",
+                    name: "mockName",
+                  },
+                },
+              }),
+              nrpe: applicationOfferStatusFactory.build({
+                "total-connected-count": undefined,
+                "application-name": "appName",
+                endpoints: {
+                  mockEndpoint: {
+                    interface: "mockInterface2",
+                    name: "mockName2",
+                  },
+                },
+              }),
             },
           }),
         },
