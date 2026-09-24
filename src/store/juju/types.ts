@@ -96,6 +96,7 @@ export type CrossModelQueryState = {
 
 export type DestroyModelState = {
   modelName: string;
+  totalCount: number;
 } & GenericState<ErrorResult["error"] | string>;
 
 export type DestroyState = Record<string, DestroyModelState>;
