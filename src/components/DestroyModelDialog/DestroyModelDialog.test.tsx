@@ -132,6 +132,12 @@ describe("DestroyModelDialog", () => {
             offers: {
               http: applicationOfferStatusFactory.build({
                 "total-connected-count": 2,
+                endpoints: {
+                  mockEndpoint: {
+                    interface: "mockInterface",
+                    name: "mockName",
+                  },
+                },
               }),
             },
           }),
