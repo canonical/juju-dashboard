@@ -52,21 +52,26 @@ export default function BulkDestroyModelDialog({
   );
 
   const tableRows = useMemo(() => {
-    const applications: string[] = [];
-    const machines: string[] = [];
-    const crossModelRelations: string[] = [];
-    const storageIDs: string[] = [];
-    for (const { modelUUID } of destroyable) {
-      const data = destructionDataByUUID[modelUUID];
-      if (data) {
-        applications.push(...data.applications);
-        machines.push(...data.machines);
-        crossModelRelations.push(
-          ...formatCrossModelRelations(data.crossModelRelations),
-        );
-        storageIDs.push(...data.storageIDs);
-      }
-    }
+    const resourceRows = destroyable.reduce<[ResourceType, string[]][]>(
+      (acc, { modelUUID }) => {
+        const data = destructionDataByUUID[modelUUID];
+        if (data) {
+          acc[0][1].push(...data.applications);
+          acc[1][1].push(...data.machines);
+          acc[2][1].push(
+            ...formatCrossModelRelations(data.crossModelRelations),
+          );
+          acc[3][1].push(...data.storageIDs);
+        }
+        return acc;
+      },
+      [
+        [ResourceType.APPLICATION, []],
+        [ResourceType.MACHINE, []],
+        [ResourceType.CROSS_MODEL_RELATION, []],
+        [ResourceType.STORAGE, []],
+      ],
+    );
     return filterBoolean([
       {
         columns: [
@@ -85,62 +90,22 @@ export default function BulkDestroyModelDialog({
           },
         ],
       },
-      applications.length
-        ? {
-            columns: [
-              {
-                content: (
-                  <ResourceCount
-                    resourceType={ResourceType.APPLICATION}
-                    resources={applications}
-                  />
-                ),
-              },
-            ],
-          }
-        : null,
-      machines.length
-        ? {
-            columns: [
-              {
-                content: (
-                  <ResourceCount
-                    resourceType={ResourceType.MACHINE}
-                    resources={machines}
-                  />
-                ),
-              },
-            ],
-          }
-        : null,
-      crossModelRelations.length
-        ? {
-            columns: [
-              {
-                content: (
-                  <ResourceCount
-                    resourceType={ResourceType.CROSS_MODEL_RELATION}
-                    resources={crossModelRelations}
-                  />
-                ),
-              },
-            ],
-          }
-        : null,
-      storageIDs.length
-        ? {
-            columns: [
-              {
-                content: (
-                  <ResourceCount
-                    resourceType={ResourceType.STORAGE}
-                    resources={storageIDs}
-                  />
-                ),
-              },
-            ],
-          }
-        : null,
+      ...resourceRows.map(([resourceType, resources]) =>
+        resources.length
+          ? {
+              columns: [
+                {
+                  content: (
+                    <ResourceCount
+                      resourceType={resourceType}
+                      resources={resources}
+                    />
+                  ),
+                },
+              ],
+            }
+          : null,
+      ),
     ]);
   }, [destroyable, destructionDataByUUID]);
 
