@@ -9,7 +9,10 @@ import type { RootState } from "store/store";
 import { jujuStateFactory, rootStateFactory } from "testing/factories";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import { modelListInfoFactory } from "testing/factories/juju/juju";
-import { findNotificationByText } from "testing/queries/notifications";
+import {
+  findNotificationByText,
+  queryNotificationByText,
+} from "testing/queries/notifications";
 import { createStore, renderComponent } from "testing/utils";
 
 import useModelDestructionToaster from "./useModelDestructionToaster";
@@ -48,6 +51,7 @@ describe("useModelDestructionToaster", () => {
         destroyModel: {
           xyz456: {
             modelName: "enterprise",
+            totalCount: 1,
             errors: null,
             loaded: false,
             loading: false,
@@ -64,6 +68,7 @@ describe("useModelDestructionToaster", () => {
   it("shows an info toast when destruction is loading", async () => {
     state.juju.destroyModel.xyz456 = {
       modelName: "enterprise",
+      totalCount: 1,
       errors: null,
       loaded: false,
       loading: true,
@@ -82,6 +87,7 @@ describe("useModelDestructionToaster", () => {
   it("does not show duplicate loading toasts on re-render", async () => {
     state.juju.destroyModel.xyz456 = {
       modelName: "enterprise",
+      totalCount: 1,
       errors: null,
       loaded: false,
       loading: true,
@@ -97,6 +103,7 @@ describe("useModelDestructionToaster", () => {
   it("shows a negative toast and dispatches clear and invalidate actions on failure", async () => {
     state.juju.destroyModel.xyz456 = {
       modelName: "enterprise",
+      totalCount: 1,
       errors: "Permission denied",
       loaded: false,
       loading: false,
@@ -104,8 +111,8 @@ describe("useModelDestructionToaster", () => {
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(<TestComponent />, { state, store });
 
-    const clearAction = jujuActions.clearDestroyedModel({
-      modelUUID: "xyz456",
+    const clearAction = jujuActions.clearDestroyedModels({
+      modelUUIDs: ["xyz456"],
       wsControllerURL: "wss://example.com:17070/api",
     });
     const invalidateAction = modelListSource.actions.invalidate({
@@ -134,9 +141,10 @@ describe("useModelDestructionToaster", () => {
     });
   });
 
-  it("shows a positive toast and dispatches clear and invalidate actions on success", async () => {
+  it("shows a positive toast and dispatches clear action on success", async () => {
     state.juju.destroyModel.xyz456 = {
       modelName: "enterprise",
+      totalCount: 1,
       errors: null,
       loaded: true,
       loading: false,
@@ -144,11 +152,8 @@ describe("useModelDestructionToaster", () => {
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(<TestComponent />, { state, store });
 
-    const clearAction = jujuActions.clearDestroyedModel({
-      modelUUID: "xyz456",
-      wsControllerURL: "wss://example.com:17070/api",
-    });
-    const invalidateAction = modelListSource.actions.invalidate({
+    const clearAction = jujuActions.clearDestroyedModels({
+      modelUUIDs: ["xyz456"],
       wsControllerURL: "wss://example.com:17070/api",
     });
 
@@ -168,9 +173,68 @@ describe("useModelDestructionToaster", () => {
       expect(
         actions.find((dispatch) => dispatch.type === clearAction.type),
       ).toMatchObject(clearAction);
-      expect(
-        actions.find((dispatch) => dispatch.type === invalidateAction.type),
-      ).toMatchObject(invalidateAction);
     });
+  });
+
+  it("does not show a loading toast for bulk destructions", async () => {
+    state.juju.destroyModel.xyz456 = {
+      modelName: "enterprise",
+      totalCount: 3,
+      errors: null,
+      loaded: false,
+      loading: true,
+    };
+    renderComponent(<TestComponent />, { state });
+    await waitFor(() => {
+      expect(
+        queryNotificationByText(
+          document.body,
+          'Destroying model "enterprise"...',
+          { appearance: "toast", severity: "information" },
+        ),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it("does not show a success toast for bulk destructions", async () => {
+    state.juju.destroyModel.xyz456 = {
+      modelName: "enterprise",
+      totalCount: 3,
+      errors: null,
+      loaded: true,
+      loading: false,
+    };
+    renderComponent(<TestComponent />, { state });
+    await waitFor(() => {
+      expect(
+        queryNotificationByText(
+          document.body,
+          'Model "enterprise" destroyed successfully',
+          { appearance: "toast", severity: "positive" },
+        ),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it("still shows error toast for bulk destructions", async () => {
+    state.juju.destroyModel.xyz456 = {
+      modelName: "enterprise",
+      totalCount: 3,
+      errors: "Permission denied",
+      loaded: false,
+      loading: false,
+    };
+    renderComponent(<TestComponent />, { state });
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
+    expect(
+      await findNotificationByText(
+        card,
+        'Destroying model "enterprise" failed',
+        {
+          appearance: "toast",
+          severity: "negative",
+        },
+      ),
+    ).toBeInTheDocument();
   });
 });
