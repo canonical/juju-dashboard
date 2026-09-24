@@ -3976,3 +3976,67 @@ describe("getRecommendedVersions", () => {
     ]);
   });
 });
+
+describe("getSelectedModelsForDestruction", () => {
+  it("returns empty array when nothing is selected", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelsSelectedForDestruction: [],
+      }),
+    });
+    expect(getSelectedModelsForDestruction(state)).toStrictEqual([]);
+  });
+
+  it("returns the selected models", () => {
+    const model1 = modelSelectionParamsFactory.build({ modelUUID: "abc123" });
+    const model2 = modelSelectionParamsFactory.build({ modelUUID: "def456" });
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelsSelectedForDestruction: [model1, model2],
+      }),
+    });
+    expect(getSelectedModelsForDestruction(state)).toStrictEqual([
+      model1,
+      model2,
+    ]);
+  });
+});
+
+describe("getSelectedModelForDestruction", () => {
+  it("returns null when no UUID is provided", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelsSelectedForDestruction: [
+          modelSelectionParamsFactory.build({ modelUUID: "abc123" }),
+        ],
+      }),
+    });
+    expect(getSelectedModelForDestruction(state, null)).toBeNull();
+  });
+
+  it("returns null when UUID is not in the selection", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelsSelectedForDestruction: [
+          modelSelectionParamsFactory.build({ modelUUID: "abc123" }),
+        ],
+      }),
+    });
+    expect(getSelectedModelForDestruction(state, "unknown")).toBeNull();
+  });
+
+  it("returns the matching model", () => {
+    const model = modelSelectionParamsFactory.build({ modelUUID: "abc123" });
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelsSelectedForDestruction: [
+          model,
+          modelSelectionParamsFactory.build({ modelUUID: "def456" }),
+        ],
+      }),
+    });
+    expect(getSelectedModelForDestruction(state, "abc123")).toStrictEqual(
+      model,
+    );
+  });
+});

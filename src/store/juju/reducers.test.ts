@@ -337,6 +337,7 @@ describe("reducers", () => {
       destroyModel: {
         abc123: {
           modelName: "abc",
+          totalCount: 1,
           errors: null,
           loaded: false,
           loading: false,
@@ -405,7 +406,7 @@ describe("reducers", () => {
     });
   });
 
-  it("clearDestroyedModel", () => {
+  it("clearDestroyedModels", () => {
     const state = jujuStateFactory.build({
       destroyModel: {
         abc123: {
@@ -423,8 +424,8 @@ describe("reducers", () => {
     expect(
       reducer(
         state,
-        actions.clearDestroyedModel({
-          modelUUID: "abc123",
+        actions.clearDestroyedModels({
+          modelUUIDs: ["abc123"],
           wsControllerURL: "wss://example.com",
         }),
       ),

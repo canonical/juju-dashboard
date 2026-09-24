@@ -1,3 +1,4 @@
+import { NotificationSeverity } from "@canonical/react-components";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { isAction, type Middleware } from "redux";
 
@@ -22,6 +23,8 @@ import { actions as jujuActions } from "store/juju";
 import { getDestructionState, getModelList } from "store/juju/selectors";
 import { addControllerCloudRegion } from "store/juju/thunks";
 import { type ModelDestructionParams, DisableType } from "store/juju/types";
+import { pluralize } from "store/juju/utils/models";
+import modelListSource from "store/middleware/source/model-list";
 import type { RootState, Store } from "store/store";
 import { AccessLevel, isSpecificAction } from "types";
 import { getUserName, toErrorString } from "utils";
@@ -416,7 +419,7 @@ function runModelPoller(
         jujuActions.destroyModels.type,
       )
     ) {
-      // Intercept destroyModel actions and fetch and store
+      // Intercept destroyModels actions and fetch and store
       // the models via the controller connection.
       const { wsControllerURL, models, cliTriggered = false } = action.payload;
       // Immediately pass the action along so that it can be handled by the
@@ -451,16 +454,32 @@ function runModelPoller(
           });
         } catch (error) {
           logger.error("Could not destroy model", error);
-          const errorMessages = models.map(({ modelUUID }) => [
-            modelUUID,
-            "Something went wrong during the model destruction process",
-          ]);
-
-          reduxStore.dispatch(
-            jujuActions.destroyModelErrors({
-              errors: errorMessages,
-            }),
-          );
+          if (models.length === 1) {
+            reduxStore.dispatch(
+              jujuActions.destroyModelErrors({
+                errors: [
+                  [
+                    models[0].modelUUID,
+                    "Something went wrong during the model destruction process",
+                  ],
+                ],
+              }),
+            );
+          } else {
+            // Fire one grouped toast and clear state directly.
+            reduxStore.dispatch(
+              appActions.createToast({
+                message: `Something went wrong during the model destruction process. Failed to destroy ${models.length} models.`,
+                severity: NotificationSeverity.NEGATIVE,
+              }),
+            );
+            reduxStore.dispatch(
+              jujuActions.clearDestroyedModels({
+                modelUUIDs: models.map(({ modelUUID }) => modelUUID),
+                wsControllerURL,
+              }),
+            );
+          }
         }
       }
 
@@ -473,14 +492,23 @@ function runModelPoller(
 
       // Only proceed to check for completion if at least one model had no errors
       if (destroyModelErrors.length < models.length) {
-        reduxStore.dispatch(
-          jujuActions.updateDestroyModelsLoading({
-            modelUUIDs: remainingModels,
-            wsControllerURL,
-          }),
-        );
+        if (models.length === 1) {
+          reduxStore.dispatch(
+            jujuActions.updateDestroyModelsLoading({
+              modelUUIDs: remainingModels,
+              wsControllerURL,
+            }),
+          );
+        } else if (remainingModels.length > 0) {
+          // Fire a single grouped loading toast directly if multiple models are being destroyed.
+          reduxStore.dispatch(
+            appActions.createToast({
+              message: `Destroying ${remainingModels.length} ${pluralize(remainingModels.length, "model")}...`,
+              severity: NotificationSeverity.INFORMATION,
+            }),
+          );
+        }
 
-        let isDestructionComplete = false;
         do {
           const modelInfos = await fetchModelInfo(conn, remainingModels);
 
@@ -494,17 +522,34 @@ function runModelPoller(
             }, []) ?? [];
 
           if (destroyedModels.length === remainingModels.length) {
-            isDestructionComplete = true;
-            reduxStore.dispatch(
-              jujuActions.updateModelsDestroyed({
-                modelUUIDs: remainingModels,
-                wsControllerURL,
-              }),
-            );
+            if (models.length === 1) {
+              reduxStore.dispatch(
+                jujuActions.updateModelsDestroyed({
+                  modelUUIDs: remainingModels,
+                  wsControllerURL,
+                }),
+              );
+            } else {
+              // Fire grouped success toast and clear state directly.
+              const succeededCount = models.length - destroyModelErrors.length;
+              reduxStore.dispatch(
+                appActions.createToast({
+                  message: `${succeededCount} ${pluralize(succeededCount, "model")} destroyed`,
+                  severity: NotificationSeverity.POSITIVE,
+                }),
+              );
+              reduxStore.dispatch(
+                jujuActions.clearDestroyedModels({
+                  modelUUIDs: remainingModels,
+                  wsControllerURL,
+                }),
+              );
+            }
             break;
           }
 
-          if (destroyedModels.length > 0) {
+          if (destroyedModels.length > 0 && models.length === 1) {
+            // Only needed for single model so the hook can track incremental progress.
             reduxStore.dispatch(
               jujuActions.updateModelsDestroyed({
                 modelUUIDs: destroyedModels,
@@ -516,14 +561,18 @@ function runModelPoller(
             (modelUUID) => !destroyedModels.includes(modelUUID),
           );
 
-          // TODO: Clear this timeout. Refer: WD-29374
+          // TODO: Clear this timeout once the action is migrated to source.
           // Wait 10s then start again.
           await new Promise((resolve) => {
             setTimeout(() => {
               resolve(true);
             }, 10000);
           });
-        } while (remainingModels.length > 0 && !isDestructionComplete);
+        } while (remainingModels.length > 0);
+        // Invalidate the model list to ensure we have the most up-to-date information.
+        reduxStore.dispatch(
+          modelListSource.actions.invalidate({ wsControllerURL }),
+        );
       }
       // The action has already been passed to the next middleware
       // at the top of this handler.
