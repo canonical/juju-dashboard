@@ -47,7 +47,9 @@ const AccordionTitle = ({ modelName, modelUUID }: Props): JSX.Element => {
       })}
     >
       <span>
-        {isReviewed ? <Icon name="success" className="u-sh1--right" /> : null}
+        {isReviewed && !isSkipped ? (
+          <Icon name="success" className="u-sh1--right" />
+        ) : null}
         {modelName}
         {isDestroyBlocked ? (
           <Tooltip message={destroyTooltip} position="right">

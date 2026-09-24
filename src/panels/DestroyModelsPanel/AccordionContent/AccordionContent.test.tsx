@@ -203,7 +203,7 @@ describe("AccordionContent", () => {
     });
   });
 
-  it("removes a reviewed model from selection", async () => {
+  it("preserves the reviewed state when a skipped model is added to selection again", async () => {
     state.juju.modelsSelectedForDestruction = [
       modelSelectionParamsFactory.build({
         modelUUID: "abc123",
@@ -218,11 +218,6 @@ describe("AccordionContent", () => {
         modelUUID: "abc123",
         wsControllerURL: "wss://example.com/api",
       });
-    const toggleModelReviewedForDestructionAction =
-      jujuActions.toggleModelReviewedForDestruction({
-        modelUUID: "abc123",
-        wsControllerURL: "wss://example.com/api",
-      });
 
     await userEvent.click(
       screen.getByRole("button", { name: Label.SKIP_MODEL }),
@@ -234,13 +229,26 @@ describe("AccordionContent", () => {
             dispatch.type === toggleModelSkippedFromDestructionAction.type,
         ),
       ).toMatchObject(toggleModelSkippedFromDestructionAction);
+    });
+    expect(
+      screen.queryByRole("button", { name: Label.REVIEWED }),
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.ADD_MODEL }),
+    );
+    await waitFor(() => {
       expect(
         actions.find(
           (dispatch) =>
-            dispatch.type === toggleModelReviewedForDestructionAction.type,
+            dispatch.type === toggleModelSkippedFromDestructionAction.type,
         ),
-      ).toMatchObject(toggleModelReviewedForDestructionAction);
+      ).toMatchObject(toggleModelSkippedFromDestructionAction);
     });
+
+    expect(
+      screen.getByRole("button", { name: Label.REVIEWED }),
+    ).toBeInTheDocument();
   });
 
   it("renders action buttons for a normal model", () => {
