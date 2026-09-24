@@ -57,4 +57,28 @@ describe("ResourceCount", () => {
     });
     expect(screen.getByRole("tooltip", { name: "vol-0\nvol-1" })).toBeVisible();
   });
+
+  it("truncates the tooltip after 9 items with a count of remaining", async () => {
+    const resources = Array.from({ length: 12 }, (_, i) => `model-${i}`);
+    render(
+      <ResourceCount resourceType={ResourceType.MODEL} resources={resources} />,
+    );
+    const icon = document.querySelector(".p-icon--information");
+    expect(icon).toBeInTheDocument();
+    await act(async () => {
+      if (!icon) {
+        throw new Error("Icon not found");
+      }
+      await userEventWithTimers.hover(icon);
+      vi.runAllTimers();
+    });
+    const tooltip = screen.getByRole("tooltip");
+    expect(tooltip).toBeVisible();
+    // First 9 items should be present
+    resources.slice(0, 9).forEach((name) => {
+      expect(tooltip).toHaveTextContent(name);
+    });
+    // The remaining items should be summarized in the tooltip
+    expect(tooltip).toHaveTextContent("3 more models...");
+  });
 });
