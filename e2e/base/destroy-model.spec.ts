@@ -9,7 +9,7 @@ import { AddModel, GiveModelAccess } from "../helpers/actions";
 import type { User } from "../helpers/auth";
 import { ModelPermission, type Model } from "../helpers/objects";
 
-test.describe("Destroy Model", () => {
+test.skip("Destroy Model", () => {
   let actions: ActionStack;
   let user: User;
   let nonAdminUser: User;

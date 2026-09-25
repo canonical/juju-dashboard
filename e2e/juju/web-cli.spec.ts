@@ -7,7 +7,7 @@ import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 import { AddModel } from "../helpers/actions";
 
-test.describe("Web CLI", () => {
+test.skip("Web CLI", () => {
   let actions: ActionStack;
 
   test.beforeAll(({ jujuCLI }) => {

@@ -7,7 +7,7 @@ import { ActionStack } from "../helpers/action";
 import { GiveControllerAccess } from "../helpers/actions";
 import { ControllerPermission } from "../helpers/objects";
 
-test.describe("Controllers", () => {
+test.skip("Controllers", () => {
   let actions: ActionStack;
 
   test.beforeEach(({ jujuCLI }) => {

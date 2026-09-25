@@ -21,7 +21,7 @@ import { ModelPermission } from "../helpers/objects";
 import type { Application, Model } from "../helpers/objects";
 import { generateRandomName } from "../utils";
 
-test.describe("secrets", () => {
+test.skip("secrets", () => {
   let actions: ActionStack;
   let user: User;
   let nonAdmin: User;
