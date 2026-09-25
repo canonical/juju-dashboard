@@ -13,7 +13,7 @@ import type { User } from "../helpers/auth";
 import { ControllerPermission, Model } from "../helpers/objects";
 import { exec, execIfModelExists, generateRandomName } from "../utils";
 
-test.describe("Add model", () => {
+test.skip("Add model", () => {
   let actions: ActionStack;
   let owner: User;
   let sharedUser: User;

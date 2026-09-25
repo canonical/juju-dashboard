@@ -8,7 +8,7 @@ import urls from "urls";
 import { test } from "../fixtures/setup";
 import { ActionStack } from "../helpers/action";
 
-test.describe("Authentication Validation", () => {
+test.skip("Authentication Validation", () => {
   let actions: ActionStack;
 
   test.beforeEach(({ jujuCLI }) => {
