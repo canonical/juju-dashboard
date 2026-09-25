@@ -9,7 +9,7 @@ import {
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import classNames from "classnames";
 import type { JSX, ReactNode } from "react";
-import { useCallback, useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import ChipGroup from "components/ChipGroup";
@@ -38,6 +38,7 @@ import {
   getModelListLoaded,
   getModelsError,
   getModelUUIDs,
+  getSelectedModelsForDestruction,
   hasModels,
 } from "store/juju/selectors";
 import { DestroyBlockedReason } from "store/juju/types";
@@ -57,6 +58,9 @@ export default function Models(): JSX.Element {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [selectedModelUUIDs, setSelectedModelUUIDs] = useState<string[]>([]);
+  const selectedModelsForDestruction = useAppSelector(
+    getSelectedModelsForDestruction,
+  );
   const [, setPanelQs] = useQueryParams<{ panel: null | string }>({
     panel: null,
   });
@@ -122,6 +126,14 @@ export default function Models(): JSX.Element {
     () => Object.values(filteredModelData),
     [filteredModelData],
   );
+
+  // Sync selected model UUIDs with the models selected for destruction in the store.
+  // This helps in clearing local state once the store's selection is cleared.
+  useEffect(() => {
+    if (selectedModelsForDestruction.length === 0) {
+      setSelectedModelUUIDs([]);
+    }
+  }, [selectedModelsForDestruction]);
 
   const handleReviewAndDestroy = useCallback(() => {
     if (selectedModelUUIDs.length === 1) {

@@ -357,6 +357,36 @@ describe("Models Index page", () => {
       expect(params.get("panel")).toBe("destroy-models");
     });
 
+    it("clears local selection when the store's selectedModelsForDestruction is cleared", async () => {
+      const [store] = createStore(state, { trackActions: true });
+      renderComponent(<ModelsIndex />, { state, store });
+
+      // Select two models so the button shows the multi-model label.
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect abc123" }),
+      );
+      await userEvent.click(
+        screen.getByRole("checkbox", { name: "Deselect def456" }),
+      );
+      expect(
+        screen.getByRole("button", {
+          name: `${Label.REVIEW_AND_DESTROY} 2 models`,
+        }),
+      ).toBeInTheDocument();
+
+      // Simulate the store clearing its selection (e.g. after the panel closes).
+      store.dispatch(jujuActions.clearSelectedModelsForDestruction());
+
+      // The local selection should be cleared and the button should revert to its
+      // default single-model label and be disabled.
+      await waitFor(() => {
+        const button = screen.getByRole("button", {
+          name: Label.DESTROY_MODEL,
+        });
+        expect(button).toHaveAttribute("aria-disabled", "true");
+      });
+    });
+
     it("dispatches selectModelsForDestruction action with correct fields for each selected model", async () => {
       vi.spyOn(
         useCanConfigureModelModule,

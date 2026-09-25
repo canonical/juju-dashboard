@@ -175,15 +175,6 @@ const AccordionContent = ({
           wsControllerURL,
         }),
       );
-      // If the model was marked as reviewed, undo it.
-      if (isReviewed) {
-        dispatch(
-          jujuActions.toggleModelReviewedForDestruction({
-            modelUUID: modelUUID,
-            wsControllerURL,
-          }),
-        );
-      }
     }
   };
 
@@ -219,16 +210,18 @@ const AccordionContent = ({
             <Icon name={isSkipped ? "plus" : "minus"} />
             <span>{isSkipped ? Label.ADD_MODEL : Label.SKIP_MODEL}</span>
           </Button>
-          <Button
-            appearance="positive"
-            type="button"
-            onClick={toggleModelReviewed}
-            disabled={isSkipped}
-            hasIcon
-          >
-            <Icon name="success-grey" />
-            <span>{isReviewed ? Label.REVIEWED : Label.MARK_REVIEWED}</span>
-          </Button>
+          {!isSkipped ? (
+            <Button
+              appearance="positive"
+              type="button"
+              onClick={toggleModelReviewed}
+              disabled={isSkipped}
+              hasIcon
+            >
+              <Icon name="success-grey" />
+              <span>{isReviewed ? Label.REVIEWED : Label.MARK_REVIEWED}</span>
+            </Button>
+          ) : null}
         </span>
       ) : null}
     </div>
