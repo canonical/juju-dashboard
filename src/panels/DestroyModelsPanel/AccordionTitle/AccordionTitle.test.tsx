@@ -15,6 +15,7 @@ import {
   jujuStateFactory,
   modelDataFactory,
   modelListInfoFactory,
+  modelSelectionParamsFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
@@ -88,6 +89,36 @@ describe("AccordionTitle", () => {
     expect(summaryItems[0]).toHaveTextContent("2"); // apps
     expect(summaryItems[1]).toHaveTextContent("3"); // units
     expect(summaryItems[2]).toHaveTextContent("2"); // machines
+  });
+
+  it("shows the reviewed icon when the model is reviewed and not skipped", () => {
+    state.juju.modelsSelectedForDestruction = [
+      modelSelectionParamsFactory.build({
+        modelUUID: "abc123",
+        reviewed: true,
+        skipped: false,
+      }),
+    ];
+    renderComponent(
+      <AccordionTitle modelUUID="abc123" modelName="test-model" />,
+      { state },
+    );
+    expect(document.querySelector(".p-icon--success")).toBeInTheDocument();
+  });
+
+  it("hides the reviewed icon when the model is reviewed but skipped", () => {
+    state.juju.modelsSelectedForDestruction = [
+      modelSelectionParamsFactory.build({
+        modelUUID: "abc123",
+        reviewed: true,
+        skipped: true,
+      }),
+    ];
+    renderComponent(
+      <AccordionTitle modelUUID="abc123" modelName="test-model" />,
+      { state },
+    );
+    expect(document.querySelector(".p-icon--success")).not.toBeInTheDocument();
   });
 
   it("renders is-skipped class when the model is a controller model", async () => {
