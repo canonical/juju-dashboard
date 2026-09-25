@@ -151,7 +151,13 @@ describe("AccordionContent", () => {
     });
   });
 
-  it("removes a model from selection", async () => {
+  it("removes a model from selection and hides reviewed button", async () => {
+    state.juju.modelsSelectedForDestruction = [
+      modelSelectionParamsFactory.build({
+        modelUUID: "abc123",
+        skipped: false,
+      }),
+    ];
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(<AccordionContent modelUUID="abc123" />, { state, store });
 
@@ -160,6 +166,10 @@ describe("AccordionContent", () => {
         modelUUID: "abc123",
         wsControllerURL: "wss://example.com/api",
       });
+
+    expect(
+      screen.getByRole("button", { name: Label.MARK_REVIEWED }),
+    ).toBeInTheDocument();
 
     await userEvent.click(
       screen.getByRole("button", { name: Label.SKIP_MODEL }),
@@ -172,6 +182,9 @@ describe("AccordionContent", () => {
         ),
       ).toMatchObject(toggleModelSkippedFromDestructionAction);
     });
+    expect(
+      screen.queryByRole("button", { name: Label.MARK_REVIEWED }),
+    ).not.toBeInTheDocument();
   });
 
   it("adds a skipped model to selection", async () => {
