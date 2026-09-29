@@ -1,5 +1,6 @@
 import type { Client } from "@canonical/jujulib";
 import { Connection } from "@canonical/jujulib";
+import { NotificationSeverity } from "@canonical/react-components";
 import { waitFor } from "@testing-library/dom";
 import type { UnknownAction, MiddlewareAPI, Dispatch } from "redux";
 import type { Mock, MockInstance } from "vitest";
@@ -1381,7 +1382,13 @@ describe("model poller", () => {
     );
     expect(fetchModelInfo).toHaveBeenCalledWith(conn, ["456xyz"]);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateModelsDestroyed({
+      appActions.createToast({
+        message: "1 model destroyed",
+        severity: NotificationSeverity.POSITIVE,
+      }),
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.clearDestroyedModels({
         modelUUIDs: ["456xyz"],
         wsControllerURL: "wss://example.com/api",
       }),
@@ -1447,21 +1454,15 @@ describe("model poller", () => {
         ],
       });
       expect(fakeStore.dispatch).toHaveBeenCalledWith(
-        jujuActions.updateDestroyModelsLoading({
-          modelUUIDs: ["123abc", "456xyz"],
-          wsControllerURL: "wss://example.com/api",
+        appActions.createToast({
+          message: "Destroying 2 models...",
+          severity: NotificationSeverity.INFORMATION,
         }),
       );
     });
 
     // Check that the first model was successfully destroyed in Poll 1
     expect(fetchModelInfo).toHaveBeenCalledWith(conn, ["123abc", "456xyz"]);
-    expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateModelsDestroyed({
-        modelUUIDs: ["123abc"],
-        wsControllerURL: "wss://example.com/api",
-      }),
-    );
 
     // This resolves the 10s promise, triggers Poll 2
     await vi.advanceTimersByTimeAsync(10000);
@@ -1473,7 +1474,13 @@ describe("model poller", () => {
     // Check that the second fetch call (Poll 2) targeted the remaining model
     expect(fetchModelInfo).toHaveBeenCalledWith(conn, ["456xyz"]);
     expect(fakeStore.dispatch).toHaveBeenCalledWith(
-      jujuActions.updateModelsDestroyed({
+      appActions.createToast({
+        message: "2 models destroyed",
+        severity: NotificationSeverity.POSITIVE,
+      }),
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.clearDestroyedModels({
         modelUUIDs: ["456xyz"],
         wsControllerURL: "wss://example.com/api",
       }),
@@ -1510,6 +1517,91 @@ describe("model poller", () => {
           ],
         ],
       }),
+    );
+  });
+
+  it("fires a bulk loading toast when destroying multiple models", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    const fetchModelInfo = vi
+      .spyOn(jujuModule, "fetchModelInfo")
+      .mockResolvedValue({
+        results: [{ result: undefined }, { result: undefined }],
+      });
+    conn.facades.modelManager.destroyModels.mockResolvedValue({
+      results: [{}, {}],
+    });
+    const middleware = await runMiddleware();
+    const action = jujuActions.destroyModels({
+      wsControllerURL: "wss://example.com/api",
+      models: [
+        {
+          "model-tag": "model-123abc",
+          modelUUID: "123abc",
+          modelName: "model123",
+        },
+        {
+          "model-tag": "model-456xyz",
+          modelUUID: "456xyz",
+          modelName: "model456",
+        },
+      ],
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      appActions.createToast({
+        message: "Destroying 2 models...",
+        severity: NotificationSeverity.INFORMATION,
+      }),
+    );
+    expect(fetchModelInfo).toHaveBeenCalled();
+  });
+
+  it("fires a grouped error toast and clears state when facade throws for bulk", async () => {
+    vi.spyOn(jujuModule, "loginWithBakery").mockImplementation(async () => ({
+      conn,
+      intervalId,
+      juju,
+    }));
+    conn.facades.modelManager.destroyModels.mockRejectedValue(
+      new Error("Connection lost"),
+    );
+    const middleware = await runMiddleware();
+    const action = jujuActions.destroyModels({
+      wsControllerURL: "wss://example.com/api",
+      models: [
+        {
+          "model-tag": "model-123abc",
+          modelUUID: "123abc",
+          modelName: "model123",
+        },
+        {
+          "model-tag": "model-456xyz",
+          modelUUID: "456xyz",
+          modelName: "model456",
+        },
+      ],
+    });
+    await middleware(next)(action);
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      appActions.createToast({
+        message:
+          "Something went wrong during the model destruction process. Failed to destroy 2 models.",
+        severity: NotificationSeverity.NEGATIVE,
+      }),
+    );
+    expect(fakeStore.dispatch).toHaveBeenCalledWith(
+      jujuActions.clearDestroyedModels({
+        modelUUIDs: ["123abc", "456xyz"],
+        wsControllerURL: "wss://example.com/api",
+      }),
+    );
+    // Should not dispatch individual destroyModelErrors for bulk
+    expect(fakeStore.dispatch).not.toHaveBeenCalledWith(
+      expect.objectContaining({ type: jujuActions.destroyModelErrors.type }),
     );
   });
 
