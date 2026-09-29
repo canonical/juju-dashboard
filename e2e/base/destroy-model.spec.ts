@@ -8,6 +8,7 @@ import { ActionStack } from "../helpers/action";
 import { AddModel, GiveModelAccess } from "../helpers/actions";
 import type { User } from "../helpers/auth";
 import { ModelPermission, type Model } from "../helpers/objects";
+import { modelRow, waitForModelsDestroyed } from "../utils";
 
 test.describe("Destroy Model", () => {
   let actions: ActionStack;
@@ -80,30 +81,13 @@ test.describe("Destroy Model", () => {
       page.locator("tr", { hasText: "Destroying model..." }),
     ).toBeInViewport();
 
-    // Confirm successful destruction
-    // This check is retried as sometimes the destruction takes longer
-    let retry = 3;
-    while (retry-- > 0) {
-      try {
-        // Reloading the page before checking fetches the list of models
-        // which should be updated and we won't have to wait until the next poll
-        await user.reloadDashboard(page);
-        await page
-          .locator("tr", { hasText: model.name })
-          .and(page.locator("tr", { hasText: user.displayName }))
-          .waitFor({ state: "detached", timeout: 30000 });
-        break;
-      } catch (error) {
-        if (retry === 0) {
-          throw error;
-        }
-      }
-    }
+    // Confirm successful destruction — retried as destruction can take time.
+    await waitForModelsDestroyed(page, user, [
+      { modelName: model.name, ownerDisplayName: user.displayName },
+    ]);
 
     await expect(
-      page
-        .locator("tr", { hasText: model.name })
-        .and(page.locator("tr", { hasText: user.displayName })),
+      modelRow(page, model.name, user.displayName),
     ).not.toBeInViewport();
   });
 });
