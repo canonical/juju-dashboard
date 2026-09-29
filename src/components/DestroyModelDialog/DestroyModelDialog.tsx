@@ -142,7 +142,9 @@ type Props = {
   modelName: string;
   modelUUID: string;
   closePortal: () => void;
+  afterConfirmClicked?: () => void;
   redirectOnDestroy?: boolean;
+  cancelButtonLabel?: string;
 };
 
 export default function DestroyModelDialog({
@@ -150,6 +152,8 @@ export default function DestroyModelDialog({
   modelUUID,
   redirectOnDestroy,
   closePortal,
+  cancelButtonLabel,
+  afterConfirmClicked,
 }: Props): JSX.Element {
   const destructionData = useModelDestructionData([modelUUID]);
   const {
@@ -196,6 +200,7 @@ export default function DestroyModelDialog({
         wsControllerURL,
       }),
     );
+    afterConfirmClicked?.();
     closePortal();
     if (redirectOnDestroy) {
       void navigate(urls.models.index);
@@ -215,6 +220,7 @@ export default function DestroyModelDialog({
       confirmButtonDisabled={isConfirmDisabled}
       onConfirm={handleConfirm}
       close={closePortal}
+      cancelButtonLabel={cancelButtonLabel}
     >
       {connectedOffers.length > 0 ? (
         <ReactNotification
