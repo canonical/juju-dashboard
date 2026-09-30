@@ -103,7 +103,11 @@ describe("AccordionContent", () => {
 
   it("marks a model as reviewed", async () => {
     const [store, actions] = createStore(state, { trackActions: true });
-    renderComponent(<AccordionContent modelUUID="abc123" />, { state, store });
+    const onModelReviewed = vi.fn();
+    renderComponent(
+      <AccordionContent modelUUID="abc123" onModelReviewed={onModelReviewed} />,
+      { state, store },
+    );
 
     const toggleModelReviewedForDestructionAction =
       jujuActions.toggleModelReviewedForDestruction({
@@ -122,6 +126,7 @@ describe("AccordionContent", () => {
         ),
       ).toMatchObject(toggleModelReviewedForDestructionAction);
     });
+    expect(onModelReviewed).toHaveBeenCalledTimes(1);
   });
 
   it("does nothing when a reviewed model is reviewed again", async () => {
@@ -132,7 +137,11 @@ describe("AccordionContent", () => {
       }),
     ];
     const [store, actions] = createStore(state, { trackActions: true });
-    renderComponent(<AccordionContent modelUUID="abc123" />, { state, store });
+    const onModelReviewed = vi.fn();
+    renderComponent(
+      <AccordionContent modelUUID="abc123" onModelReviewed={onModelReviewed} />,
+      { state, store },
+    );
 
     const toggleModelReviewedForDestructionAction =
       jujuActions.toggleModelReviewedForDestruction({
@@ -149,6 +158,7 @@ describe("AccordionContent", () => {
         ),
       ).toHaveLength(0);
     });
+    expect(onModelReviewed).not.toHaveBeenCalled();
   });
 
   it("removes a model from selection and hides reviewed button", async () => {

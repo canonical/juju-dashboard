@@ -129,11 +129,15 @@ const storageRow = (
   };
 };
 
+type Props = {
+  modelUUID: string;
+  onModelReviewed?: () => void;
+};
+
 const AccordionContent = ({
   modelUUID,
-}: {
-  modelUUID: string;
-}): JSX.Element => {
+  onModelReviewed,
+}: Props): JSX.Element => {
   const destructionData = useModelDestructionData([modelUUID]);
   const {
     hasStorage,
@@ -187,6 +191,7 @@ const AccordionContent = ({
           wsControllerURL,
         }),
       );
+      onModelReviewed?.();
     }
   };
 
