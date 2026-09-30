@@ -17,6 +17,25 @@ describe("CloudCell", () => {
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 
+  it("wraps the logo and region text in a single-line cell", () => {
+    const { container } = render(
+      <CloudCell
+        model={modelDataFactory.build({
+          info: modelInfoFactory.build({
+            "provider-type": "ec2",
+          }),
+        })}
+      />,
+    );
+    const cell = container.querySelector(".models__cloud-cell");
+    expect(cell).not.toBeNull();
+    expect(cell?.tagName).toBe("DIV");
+    expect(cell?.querySelector("img.p-table__logo")).not.toBeNull();
+    const tooltip = cell?.querySelector(".truncated-tooltip");
+    expect(tooltip).not.toBeNull();
+    expect(tooltip?.tagName).toBe("DIV");
+  });
+
   it("can generate an AWS logo", () => {
     render(
       <CloudCell
