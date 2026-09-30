@@ -36703,6 +36703,7 @@ class Git {
      * Stage and commit the specified files, with a commit message.
      */
     async commit(message, files) {
+        await this.exec("add", "--", ...files);
         await this.exec("commit", "-m", message, "--", ...files);
     }
     async push(maybeOptions = {}, ...branches) {
@@ -36865,72 +36866,6 @@ class Repository {
         const { data: fetchedRepo } = await octokit.rest.repos.get(identifier);
         return new Repository(octokit, fetchedRepo);
     }
-}
-
-;// CONCATENATED MODULE: ./src/lib/changelog.ts
-
-/** Marker to indicate the start of the changelog items. */
-const CHANGELOG_START_MARKER = "<!-- changelog -->";
-/** Marker to indicate the end of the changelog items. */
-const CHANGELOG_END_MARKER = "<!-- /changelog -->";
-/**
- * For the provided release branch and items, generate the changelog.
- */
-function generate(header, items) {
-    let changelog = header;
-    changelog += `\n${CHANGELOG_START_MARKER}\n`;
-    // TODO: Categorise changelog based on item severity.
-    for (const item of items) {
-        changelog += `- ${item}\n`;
-    }
-    changelog += `${CHANGELOG_END_MARKER}\n`;
-    return changelog;
-}
-/**
- * For the provided changelog text, parse out all of the items within it.
- */
-function changelog_parse(changelog) {
-    const [header, changelogEnd] = splitOnce(changelog, CHANGELOG_START_MARKER, false);
-    const [changelogItems, _] = splitOnce(changelogEnd, CHANGELOG_END_MARKER);
-    const items = [];
-    let currentItem = "";
-    for (let item of changelogItems.trim().split("\n")) {
-        // Test if the item is the start of a new bullet point.
-        if (item.startsWith("- ")) {
-            items.push(currentItem);
-            currentItem = "";
-            // Strip off the bullet point.
-            item = item.slice(2);
-        }
-        currentItem += item.trim() + "\n";
-    }
-    items.push(currentItem);
-    return {
-        items: items.map((item) => item.trim()).filter((item) => item.length > 0),
-        header,
-    };
-}
-/**
- * Append an item to the changelog, for a release branch.
- */
-function appendItem(changelog, item) {
-    const { header, items } = changelog_parse(changelog);
-    items.push(item);
-    return generate(header, items);
-}
-
-;// CONCATENATED MODULE: ./src/lib/util.ts
-/**
- * Split a string once at a separator. If there isn't one instance of the separator, an error will
- * be raised.
- */
-function splitOnce(str, sep, allowEmpty = true) {
-    const parts = str.split(sep);
-    if (parts.length !== 2 ||
-        (!allowEmpty && !parts.every((part) => part.length > 0))) {
-        throw new Error(`expected split to produce 2 items, but found ${parts.length}`);
-    }
-    return [parts[0], parts[1]];
 }
 
 ;// CONCATENATED MODULE: ./src/lib/version.ts
@@ -37137,8 +37072,6 @@ const branch = {
 
 
 
-
-
 async function createCtx(fallback) {
     // Configure octokit.
     const githubToken = getInput("github-token");
@@ -37173,10 +37106,145 @@ async function createCtx(fallback) {
     };
 }
 
-;// CONCATENATED MODULE: ./src/lib/labels.ts
-const CHANGELOG_LABEL = "changelog";
-const MAJOR_SEVERITY_LABEL = "severity: major";
-const MINOR_SEVERITY_LABEL = "severity: minor";
+;// CONCATENATED MODULE: external "node:fs/promises"
+const promises_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:fs/promises");
+;// CONCATENATED MODULE: ./src/lib/changelog-md.ts
+
+const VERSION_HEADER_RE = /^##\s+(.+)$/m;
+const BULLET_RE = /^[-*]\s+(.*)$/;
+function parseSections(content) {
+    const lines = content.split("\n");
+    const preambleLines = [];
+    const sections = [];
+    let current = null;
+    for (const rawLine of lines) {
+        const headerMatch = rawLine.match(VERSION_HEADER_RE);
+        if (headerMatch) {
+            current = { header: headerMatch[1].trim(), items: [] };
+            sections.push(current);
+            continue;
+        }
+        if (current) {
+            const bulletMatch = rawLine.trim().match(BULLET_RE);
+            if (bulletMatch) {
+                current.items.push(bulletMatch[1].trim());
+            }
+        }
+        else {
+            preambleLines.push(rawLine);
+        }
+    }
+    return { preamble: preambleLines.join("\n").trimEnd(), sections };
+}
+function formatSections(preamble, sections) {
+    const lines = [];
+    if (preamble) {
+        lines.push(preamble, "");
+    }
+    for (const { header, items } of sections) {
+        lines.push(`## ${header}`);
+        for (const item of items) {
+            lines.push(`- ${item}`);
+        }
+        lines.push("");
+    }
+    return lines.join("\n").trimEnd() + "\n";
+}
+function findUnreleased(sections) {
+    const idx = sections.findIndex((section) => /^Unreleased$/i.test(section.header));
+    if (idx === -1) {
+        throw new Error("CHANGELOG.md is missing an `## Unreleased` section.");
+    }
+    return idx;
+}
+function safeParseHeader(header) {
+    // Expect header in the form [x.y.z[-identifier.number]].
+    const match = /^\[(.+)\]$/.exec(header);
+    if (!match) {
+        return null;
+    }
+    const [, versionStr] = match;
+    const [coreStr, preReleaseStr] = versionStr.split("-");
+    const [majorStr, minorStr, patchStr] = coreStr.split(".");
+    const major = majorStr === "x" ? -1 : Number(majorStr);
+    const minor = minorStr === "x" ? -1 : Number(minorStr);
+    const patch = patchStr === "x" ? -1 : Number(patchStr);
+    if (major < 0 ||
+        minor < 0 ||
+        patch < 0 ||
+        Number.isNaN(major) ||
+        Number.isNaN(minor) ||
+        Number.isNaN(patch)) {
+        return null;
+    }
+    let preRelease = undefined;
+    if (preReleaseStr) {
+        const [identifier, numberStr] = preReleaseStr.split(".");
+        const number = Number(numberStr);
+        if (identifier && !Number.isNaN(number)) {
+            preRelease = { identifier, number };
+        }
+    }
+    return { major, minor, patch, preRelease };
+}
+async function readChangelog(_ctx) {
+    return (0,promises_namespaceObject.readFile)("./CHANGELOG.md", "utf-8");
+}
+async function writeChangelog(_ctx, content) {
+    await (0,promises_namespaceObject.writeFile)("./CHANGELOG.md", content, "utf-8");
+}
+function getUnreleasedEntries(content) {
+    const { sections } = parseSections(content);
+    const idx = findUnreleased(sections);
+    return [...sections[idx].items];
+}
+function getVersionEntries(content, version) {
+    const { sections } = parseSections(content);
+    const idx = sections.findIndex((section) => section.header === `[${version}]`);
+    if (idx === -1) {
+        return [];
+    }
+    return [...sections[idx].items];
+}
+function releaseVersion(content, version, kind) {
+    const { preamble, sections } = parseSections(content);
+    const unreleasedIdx = findUnreleased(sections);
+    const entryItems = [...sections[unreleasedIdx].items];
+    if (kind === "stable") {
+        // Find the most recent stable section below Unreleased.
+        let previousStableIdx = -1;
+        for (let i = unreleasedIdx + 1; i < sections.length; i++) {
+            const parsed = safeParseHeader(sections[i].header);
+            if (parsed && !parsed.preRelease) {
+                previousStableIdx = i;
+                break;
+            }
+        }
+        const collectUntil = previousStableIdx === -1 ? sections.length : previousStableIdx;
+        for (let i = unreleasedIdx + 1; i < collectUntil; i++) {
+            const parsed = safeParseHeader(sections[i].header);
+            if (parsed?.preRelease?.identifier === "beta") {
+                entryItems.push(...sections[i].items);
+            }
+        }
+    }
+    const newSection = { header: `[${version}]`, items: entryItems };
+    sections[unreleasedIdx].items = [];
+    // Keep Unreleased at the top; insert the new version section immediately
+    // after it so chronological history flows downward.
+    sections.splice(unreleasedIdx + 1, 0, newSection);
+    return { content: formatSections(preamble, sections), entryItems };
+}
+async function finalise(ctx, version, kind) {
+    const content = await readChangelog(ctx);
+    const existing = getVersionEntries(content, version);
+    if (existing.length > 0) {
+        return { entryItems: existing };
+    }
+    const { content: newContent, entryItems } = releaseVersion(content, version, kind);
+    await writeChangelog(ctx, newContent);
+    return { entryItems, newContent };
+}
 
 ;// CONCATENATED MODULE: ./src/lib/package.ts
 /**
@@ -37227,136 +37295,148 @@ function bumpPackageVersion(version, bumpKind, options = {}) {
     }
     return version;
 }
-async function run(ctx) {
-    // Extract versioning information for the current branch.
-    let versioningInfo = null;
-    try {
-        versioningInfo = lib_branch.shortRelease.parse(ctx.context.refName);
-    }
-    catch (_e) {
-        versioningInfo = null;
-    }
-    // Ensure running on `release/x.y` branch.
-    if (versioningInfo === null) {
-        throw new Error("This action can only be run on a `release/x.y` branch.");
-    }
-    // Try seed the changelog if running against a PR.
-    const changelogItems = [];
-    if (ctx.pr) {
-        if ((lib_branch.cut.test(ctx.pr.head) ||
-            lib_branch.release.test(ctx.pr.head, { preRelease: true })) &&
-            ctx.pr.body !== null &&
-            ctx.pr.body) {
-            // Triggered from a merged cut branch, so re-use the changelog.
-            try {
-                changelogItems.push(...changelog_parse(ctx.pr.body).items);
-            }
-            catch (err) {
-                void err;
-            }
-        }
-        else if (lib_branch.release.test(ctx.pr.head, { preRelease: false })) {
-            // Running on a merged release branch, no need to continue action.
-            ctx.core.info(`Action triggered on merged release PR (#${ctx.pr.number}), exiting.`);
-            return {};
-        }
-        else if (ctx.pr.hasLabel(CHANGELOG_LABEL)) {
-            // Triggered from a PR that's indicated it should be included in the changelog, so add it.
-            changelogItems.push(ctx.pr.changelogEntry());
+async function getMergedReleasePr(ctx) {
+    const { data: prs } = await ctx.octokit.rest.repos.listPullRequestsAssociatedWithCommit({
+        ...ctx.repo.identifier,
+        commit_sha: ctx.context.sha,
+    });
+    for (const pr of prs) {
+        if (pr.state === "closed" &&
+            pr.merged_at &&
+            lib_branch.release.parse(pr.head.ref) !== null) {
+            return pr;
         }
     }
-    // Find an existing release PR for this branch.
+    return null;
+}
+function isBetaReleasePrMerge(pr) {
+    const version = lib_branch.release.parse(pr.head.ref);
+    return version !== null && version.preRelease?.identifier === "beta";
+}
+function computeExpectedVersion(currentVersion, mergedBeta) {
+    if (currentVersion.preRelease?.identifier === "beta") {
+        if (mergedBeta) {
+            // A beta release PR just merged: open the follow-up stable PR.
+            return bumpPackageVersion(structuredClone(currentVersion), "candidate");
+        }
+        return bumpPackageVersion(structuredClone(currentVersion), "beta");
+    }
+    // Stable or placeholder: the only valid path to a stable release goes
+    // through a beta first. Always open a beta PR for the next patch version.
+    return bumpPackageVersion(structuredClone(currentVersion), "beta");
+}
+async function closeOpenReleasePrs(ctx) {
+    const baseBranch = ctx.context.refName;
     const openPrs = ctx.repo.pullRequests({
         state: "open",
-        base: ctx.context.refName,
+        base: baseBranch,
+    });
+    for await (const pr of openPrs) {
+        if (lib_branch.release.parse(pr.head) !== null) {
+            ctx.core.info(`Closing stale release PR #${pr.number} (${pr.head}).`);
+            await pr.close();
+        }
+    }
+}
+async function run(ctx) {
+    const branchInfo = lib_branch.shortRelease.parse(ctx.context.refName);
+    if (branchInfo === null) {
+        ctx.core.info("Not running on a `release/x.y` branch; no release PR action required.");
+        return {};
+    }
+    const headCommit = ctx.context.payload
+        .head_commit;
+    if (headCommit?.author?.email === ctx.git.user.email) {
+        ctx.core.info("Skipping release PR action because this push was authored by the automation bot.");
+        return {};
+    }
+    const currentVersionStr = await getPackageVersion(ctx);
+    const currentVersion = parseVersion(currentVersionStr);
+    const mergedReleasePr = await getMergedReleasePr(ctx);
+    const mergedBeta = mergedReleasePr
+        ? isBetaReleasePrMerge(mergedReleasePr)
+        : false;
+    const expectedVersion = computeExpectedVersion(currentVersion, mergedBeta);
+    if (expectedVersion === null) {
+        ctx.core.info("No release PR action is required for the current state of the branch.");
+        // If a stable/candidate PR is open in this state, close it: a stable
+        // release is only valid as the immediate follow-up to a beta release PR.
+        await closeOpenReleasePrs(ctx);
+        return {};
+    }
+    const expectedVersionStr = serialiseVersion(expectedVersion);
+    const releaseBranch = lib_branch.release.serialise(expectedVersion);
+    const baseBranch = ctx.context.refName;
+    if (mergedReleasePr !== null &&
+        mergedReleasePr.head.ref === releaseBranch) {
+        ctx.core.info(`Skipping release PR creation because this push is the merge commit of #${mergedReleasePr.number} (${releaseBranch}).`);
+        return {};
+    }
+    const openPrs = ctx.repo.pullRequests({
+        state: "open",
+        base: baseBranch,
     });
     const matchingPrs = [];
     for await (const pr of openPrs) {
-        // Select all PRs based on the branch.
-        const version = lib_branch.release.parse(pr.head);
-        if (version !== null) {
-            matchingPrs.push({ pr, version });
+        if (lib_branch.release.parse(pr.head) !== null) {
+            matchingPrs.push({ pr });
         }
     }
-    // Create or select the release PR.
-    let releasePr = null;
-    let releaseVersion = null;
     if (matchingPrs.length > 1) {
-        // Multiple release PRs for this branch, which is invalid.
-        throw new Error(`Multiple release PRs were found, when only one can exist: ${matchingPrs.map(({ pr: { number } }) => `#${number}`).join(", ")}`);
+        throw new Error(`Multiple release PRs were found, when only one can exist: ${matchingPrs.map(({ pr }) => `#${pr.number}`).join(", ")}`);
     }
-    else if (matchingPrs.length === 1) {
-        // Single release PR found.
-        const [{ pr, version }] = matchingPrs;
-        if (!version.preRelease) {
-            // Save the existing changelog.
-            // WARN: This means that the beta PR will contain the changelog for ALL previous beta PRs.
-            changelogItems.unshift(...changelog_parse(pr.body ?? "").items);
-            // This was a candidate release PR, however new changes have been pushed so it's now outdated.
-            await pr.close();
+    let releasePr = null;
+    if (matchingPrs.length === 1) {
+        const [{ pr }] = matchingPrs;
+        if (pr.head === releaseBranch) {
+            releasePr = pr;
         }
         else {
-            releasePr = pr;
-            releaseVersion = serialiseVersion(version);
+            ctx.core.info(`Closing stale release PR #${pr.number} (${pr.head}) in favour of ${releaseBranch}.`);
+            await pr.close();
         }
     }
+    const kind = expectedVersion.preRelease?.identifier === "beta" ? "beta" : "stable";
+    await ctx.git.fetch();
     if (!releasePr) {
-        // Fetch the current package version, and bump it as required.
-        let packageVersion = parseVersion(await getPackageVersion(ctx));
-        // Always assume a beta release is being generated.
-        packageVersion = bumpPackageVersion(packageVersion, "beta");
-        if (ctx.pr) {
-            const mergedVersion = lib_branch.release.parse(ctx.pr.head);
-            if (mergedVersion !== null) {
-                if (mergedVersion.preRelease?.identifier === "beta") {
-                    // If this action was triggered by a merged beta branch, create a candidate release.
-                    packageVersion = bumpPackageVersion(packageVersion, "candidate");
-                }
-            }
-        }
-        // Create and checkout the new release branch.
-        const baseBranch = ctx.context.refName;
-        const releaseBranch = lib_branch.release.serialise(packageVersion);
-        await ctx.git.fetch();
         await ctx.git.createBranch(releaseBranch, baseBranch);
-        await ctx.git.checkout(releaseBranch);
-        // Write the version back.
-        const packageVersionStr = serialiseVersion(packageVersion);
-        await setPackageVersion(ctx, packageVersionStr);
-        // Commit the bumped package.
-        await ctx.git.commit(`bump package.json version to ${packageVersionStr}`, [
-            "./package.json",
-        ]);
-        await ctx.git.push({ force: true }, releaseBranch);
-        // Restore branch back to where it was.
-        await ctx.git.checkout(baseBranch);
-        const header = `> [!important]
-> Merging this PR will publish ${packageVersionStr}
-
----
-`;
-        // Start with an empty changelog, as it will be filled after it's created.
-        const body = generate(header, []);
-        // Create new release PR.
+    }
+    else {
+        await ctx.git.moveBranch(releaseBranch, baseBranch);
+    }
+    await ctx.git.checkout(releaseBranch);
+    const branchVersion = await getPackageVersion(ctx);
+    const versionChanged = branchVersion !== expectedVersionStr;
+    if (versionChanged) {
+        await setPackageVersion(ctx, expectedVersionStr);
+    }
+    const { newContent } = await finalise(ctx, expectedVersionStr, kind);
+    // Only commit when something actually changed, so that retrying the same
+    // state is a no-op.
+    const changed = versionChanged || newContent !== undefined;
+    if (changed) {
+        await ctx.git.commit(`chore(release): prepare ${expectedVersionStr}`, ["./package.json", "./CHANGELOG.md"]);
+    }
+    // Always push so a rebased branch is synced even if the commit is a no-op.
+    await ctx.git.push({ force: true }, releaseBranch);
+    await ctx.git.checkout(baseBranch);
+    if (!releasePr) {
         releasePr = await ctx.repo.createPullRequest({
             head: releaseBranch,
             base: baseBranch,
-            title: `Release ${packageVersionStr}`,
-            body,
+            title: `Release ${expectedVersionStr}`,
+            body: `> [!important]\n> Merging this PR will publish ${expectedVersionStr}\n\n---\n\nThe changelog for this release has already been finalised from \`## Unreleased\` on \`${baseBranch}\`.`,
         });
-        releaseVersion = packageVersionStr;
     }
-    // Optionally update the changelog if the merged PR allows it.
-    if (changelogItems.length > 0) {
-        // Update the changelog with this merged PR.
+    else {
         await releasePr.update({
-            body: changelogItems.reduce((body, item) => appendItem(body, item), releasePr.body ?? ""),
+            body: `> [!important]\n> Merging this PR will publish ${expectedVersionStr}\n\n---\n\nThe changelog for this release has already been finalised from \`## Unreleased\` on \`${baseBranch}\`.`,
         });
     }
     return {
         releasePrNumber: releasePr.number,
         releasePrHead: releasePr.head,
-        releaseVersion,
+        releaseVersion: expectedVersionStr,
     };
 }
 

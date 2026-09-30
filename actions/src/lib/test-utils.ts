@@ -1,4 +1,3 @@
-import { CHANGELOG_END_MARKER, CHANGELOG_START_MARKER } from "./changelog";
 import type { Severity } from "./severity";
 
 type PRArgs = {
@@ -50,7 +49,6 @@ export function mockCutPr({
   headSuffix = null,
   number = 123,
   additionalLabels = [],
-  changelog = [],
 }: {
   /** Severity of the pull request. */
   severity?: Severity;
@@ -62,11 +60,8 @@ export function mockCutPr({
   headSuffix?: null | string;
   /** Pull request number. */
   number?: number;
-  /** If `true`, default release labels will be included. */
-  defaultLabels?: boolean;
   /** Additional labels to add to the pull request. */
   additionalLabels?: string[];
-  changelog?: string[];
 } = {}): PRResult {
   const labels = [
     "release: cut",
@@ -87,11 +82,6 @@ export function mockCutPr({
     base: `release/${version}`,
     head: `cut/${version}${headBranchSuffix}`,
     labels,
-    body: [
-      "",
-      CHANGELOG_START_MARKER,
-      ...changelog.map((item) => `- ${item}`),
-      CHANGELOG_END_MARKER,
-    ].join("\n"),
+    body: "",
   });
 }

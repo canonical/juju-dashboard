@@ -1,25 +1,59 @@
-import { describe, beforeEach, it, vi } from "vitest";
+import { beforeEach, describe, it, vi } from "vitest";
 
-import { changelog, type Ctx } from "@/lib";
-import { CHANGELOG_END_MARKER, CHANGELOG_START_MARKER } from "@/lib/changelog";
-import type { PullRequest } from "@/lib/github";
-import { CHANGELOG_LABEL } from "@/lib/labels";
-import { asyncIterable, mockCutPr, mockPr } from "@/lib/test-utils";
+import type { Ctx } from "@/lib";
+import * as changelogMd from "@/lib/changelog-md";
+import type * as ChangelogMdModule from "@/lib/changelog-md";
+import { asyncIterable, mockPr } from "@/lib/test-utils";
 import { parseVersion } from "@/lib/version";
 
 import { bumpPackageVersion, run } from "./main";
+
+vi.mock("@/lib/changelog-md", async (importOriginal) => {
+  const actual = (await importOriginal()) as typeof ChangelogMdModule;
+  return {
+    ...actual,
+    readChangelog: vi.fn(),
+    finalise: vi.fn(),
+  };
+});
+
+const EMPTY_CHANGELOG = `# Changelog\n\n## Unreleased\n`;
+
+const headCommit = (
+  email = "some-user@example.com",
+): { author: { email: string }; message: string } => ({
+  author: { email },
+  message: "a push",
+});
+
+function mockPullRequestsAssociatedWithCommit(
+  headRef: null | string,
+): () => Promise<{ data: unknown[] }> {
+  return vi.fn().mockResolvedValue({
+    data: headRef
+      ? [{ state: "closed", merged_at: "2026-01-01T00:00:00Z", head: { ref: headRef } }]
+      : [],
+  });
+}
 
 describe("create-release-pr", () => {
   let ctx: Ctx;
 
   beforeEach(() => {
+    vi.clearAllMocks();
     ctx = {
-      core: {
-        info: vi.fn(),
+      core: { info: vi.fn() },
+      context: {
+        refName: "release/1.0",
+        sha: "push-sha",
+        payload: { head_commit: headCommit() },
       },
-      context: {},
       git: {
         mainBranch: "main",
+        user: {
+          name: "github-actions[bot]",
+          email: "41898282+github-actions[bot]@users.noreply.github.com",
+        },
         configUser: vi.fn(),
         checkout: vi.fn(),
         createBranch: vi.fn(),
@@ -28,8 +62,18 @@ describe("create-release-pr", () => {
         push: vi.fn(),
         fetch: vi.fn(),
       },
+      octokit: {
+        rest: {
+          repos: {
+            listPullRequestsAssociatedWithCommit: vi
+              .fn()
+              .mockResolvedValue({ data: [] }),
+          },
+        },
+      } as unknown as Ctx["octokit"],
       repo: {
         defaultBranch: "main",
+        identifier: { owner: "owner", repo: "repo" },
         pullRequests: vi.fn().mockReturnValue(asyncIterable([])),
         branches: vi.fn().mockReturnValue(asyncIterable([])),
         createPullRequest: vi.fn(),
@@ -37,182 +81,26 @@ describe("create-release-pr", () => {
       exec: vi.fn(),
       execOutput: vi.fn(),
     } as unknown as Ctx;
+
+    vi.mocked(changelogMd.readChangelog).mockResolvedValue(EMPTY_CHANGELOG);
+    vi.mocked(changelogMd.finalise).mockResolvedValue({
+      entryItems: [],
+    });
   });
 
-  it.for([
-    ["1.0.x", "1.0.0"],
-    ["1.0.0", "1.0.1"],
-    ["1.0.6", "1.0.7"],
-    ["1.1.x", "1.1.0"],
-    ["1.1.0", "1.1.1"],
-    ["1.1.6", "1.1.7"],
-  ] as const)(
-    "creates beta release when cut PR merges (%s)",
-    async ([packageVersion, version], { expect }) => {
-      const headBranch = `release/${version}-beta.0`;
-
-      ctx.context.refName = "release/1.0";
-      ctx.pr = mockCutPr({
-        number: 111,
-        changelog: ["item a", "item b"],
-      }) as PullRequest;
-      const createdPr = {
-        ...mockPr({
-          number: 222,
-          head: headBranch,
-          body: changelog.generate("# Some header", []),
-        }),
-        update: vi.fn(),
-      };
-      ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
-      ctx.execOutput = vi.fn().mockResolvedValue({ stdout: packageVersion });
-
-      await expect(run(ctx)).resolves.toStrictEqual({
-        releasePrNumber: 222,
-        releasePrHead: headBranch,
-        releaseVersion: `${version}-beta.0`,
-      });
-
-      // Verify git operations.
-      expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
-        headBranch,
-        "release/1.0",
-      );
-      expect(ctx.git.checkout).toBeCalledTimes(2);
-      expect(ctx.git.checkout).toHaveBeenNthCalledWith(1, headBranch);
-      expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
-      expect(ctx.git.commit).toHaveBeenCalledTimes(1);
-      expect(ctx.git.push).toHaveBeenCalledExactlyOnceWith(
-        { force: true },
-        headBranch,
-      );
-
-      // Ensure package version was read and written.
-      expect(ctx.execOutput).toHaveBeenCalledExactlyOnceWith("yq", [
-        "-r",
-        ".version",
-        "./package.json",
-      ]);
-      expect(ctx.exec).toHaveBeenCalledExactlyOnceWith("yq", [
-        "-i",
-        `.version = "${version}-beta.0"`,
-        "./package.json",
-      ]);
-
-      // Ensure created PR.
-      expect(ctx.repo.createPullRequest).toHaveBeenCalledExactlyOnceWith({
-        head: headBranch,
-        base: "release/1.0",
-        title: `Release ${version}-beta.0`,
-        body: expect.any(String),
-      });
-
-      expect(createdPr.update).toHaveBeenCalledExactlyOnceWith({
-        body: expect.stringContaining("- item a\n- item b"),
-      });
-    },
-  );
-
-  it.for([
-    [
-      "with changelog label",
-      [CHANGELOG_LABEL] as string[],
-      `${CHANGELOG_START_MARKER}\n- my cool feature by @user (#111)\n${CHANGELOG_END_MARKER}`,
-    ],
-    ["without changelog label", [] as string[], null],
-  ] as const)(
-    "creates beta release when feature merges, %s",
-    async ([_, labels, body], { expect }) => {
-      ctx.context.refName = "release/1.0";
-      ctx.pr = mockPr({
-        number: 111,
-        title: "my cool feature",
-        head: "feat/some-feature",
-        labels,
-      }) as PullRequest;
-      const newReleasePr = {
-        ...mockPr({
-          number: 222,
-          head: "release/1.0.0-beta.0",
-          body: changelog.generate("# Some header", []),
-        }),
-        update: vi.fn(),
-      };
-      ctx.repo.createPullRequest = vi.fn().mockResolvedValue(newReleasePr);
-      ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.x" });
-
-      await expect(run(ctx)).resolves.toStrictEqual({
-        releasePrNumber: 222,
-        releasePrHead: "release/1.0.0-beta.0",
-        releaseVersion: "1.0.0-beta.0",
-      });
-
-      // Verify git operations.
-      expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
-        "release/1.0.0-beta.0",
-        "release/1.0",
-      );
-      expect(ctx.git.checkout).toBeCalledTimes(2);
-      expect(ctx.git.checkout).toHaveBeenNthCalledWith(
-        1,
-        "release/1.0.0-beta.0",
-      );
-      expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
-      expect(ctx.git.commit).toHaveBeenCalledTimes(1);
-      expect(ctx.git.push).toHaveBeenCalledExactlyOnceWith(
-        { force: true },
-        "release/1.0.0-beta.0",
-      );
-
-      // Ensure package version was read and written.
-      expect(ctx.execOutput).toHaveBeenCalledExactlyOnceWith("yq", [
-        "-r",
-        ".version",
-        "./package.json",
-      ]);
-      expect(ctx.exec).toHaveBeenCalledExactlyOnceWith("yq", [
-        "-i",
-        `.version = "1.0.0-beta.0"`,
-        "./package.json",
-      ]);
-
-      // Ensure created PR.
-      expect(ctx.repo.createPullRequest).toHaveBeenCalledExactlyOnceWith({
-        head: "release/1.0.0-beta.0",
-        base: "release/1.0",
-        title: "Release 1.0.0-beta.0",
-        body: expect.any(String),
-      });
-
-      if (body !== null) {
-        expect(newReleasePr.update).toHaveBeenCalledExactlyOnceWith({
-          body: expect.stringContaining(body),
-        });
-      } else {
-        expect(newReleasePr.update).not.toHaveBeenCalled();
-      }
-    },
-  );
-
-  it("re-uses beta release when feature merges", async ({ expect }) => {
-    ctx.context.refName = "release/1.0";
-    ctx.pr = mockPr({
-      number: 111,
-      title: "my cool feature",
-      head: "feat/some-feature",
-      labels: [CHANGELOG_LABEL],
-    }) as PullRequest;
-    const EXISTING_RELEASE_PR = {
-      ...mockPr({
-        number: 222,
-        head: "release/1.0.0-beta.0",
-        body: changelog.generate("# Some header", ["item a", "item b"]),
-      }),
+  it("creates the first beta PR when a placeholder version has no Unreleased entries", async ({
+    expect,
+  }) => {
+    ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.x" });
+    vi.mocked(changelogMd.finalise).mockResolvedValue({
+      entryItems: [],
+      newContent: `# Changelog\n\n## Unreleased\n\n## [1.0.0-beta.0]\n`,
+    });
+    const createdPr = {
+      ...mockPr({ number: 222, head: "release/1.0.0-beta.0" }),
       update: vi.fn(),
     };
-    ctx.repo.pullRequests = vi
-      .fn()
-      .mockReturnValue(asyncIterable([EXISTING_RELEASE_PR]));
+    ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
 
     await expect(run(ctx)).resolves.toStrictEqual({
       releasePrNumber: 222,
@@ -220,41 +108,153 @@ describe("create-release-pr", () => {
       releaseVersion: "1.0.0-beta.0",
     });
 
-    // Verify git operations.
-    expect(ctx.git.createBranch).not.toHaveBeenCalled();
-    expect(ctx.git.checkout).not.toHaveBeenCalled();
-    expect(ctx.git.commit).not.toHaveBeenCalled();
-    expect(ctx.git.push).not.toHaveBeenCalled();
-
-    // Ensure package version was read and written.
-    expect(ctx.execOutput).not.toHaveBeenCalled();
-    expect(ctx.exec).not.toHaveBeenCalled();
-
-    // Ensure created PR.
-    expect(ctx.repo.createPullRequest).not.toHaveBeenCalled();
-    expect(EXISTING_RELEASE_PR.update).toHaveBeenCalledExactlyOnceWith({
-      body: expect.stringContaining("- item a\n- item b\n- my cool feature"),
-    });
+    expect(ctx.repo.createPullRequest).toHaveBeenCalled();
   });
 
-  it("creates candidate release when beta merges", async ({ expect }) => {
-    ctx.context.refName = "release/1.0";
-    ctx.pr = mockPr({
-      number: 111,
-      title: "Release: 1.0.0-beta.0",
-      head: "release/1.0.0-beta.0",
-      body: changelog.generate("# Some header", ["item a", "item b", "item c"]),
-    }) as PullRequest;
+  it("creates the first beta PR when a placeholder version has Unreleased entries", async ({
+    expect,
+  }) => {
+    ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.x" });
+    vi.mocked(changelogMd.readChangelog).mockResolvedValue(
+      `# Changelog\n\n## Unreleased\n- first feature\n`,
+    );
+    vi.mocked(changelogMd.finalise).mockResolvedValue({
+      entryItems: ["first feature"],
+      newContent: `# Changelog\n\n## Unreleased\n\n## [1.0.0-beta.0]\n- first feature\n`,
+    });
     const createdPr = {
-      ...mockPr({
-        number: 222,
-        head: "release/1.0.0",
-        body: changelog.generate("# Some header", []),
-      }),
+      ...mockPr({ number: 222, head: "release/1.0.0-beta.0" }),
       update: vi.fn(),
     };
     ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
+
+    await expect(run(ctx)).resolves.toStrictEqual({
+      releasePrNumber: 222,
+      releasePrHead: "release/1.0.0-beta.0",
+      releaseVersion: "1.0.0-beta.0",
+    });
+
+    expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
+      "release/1.0.0-beta.0",
+      "release/1.0",
+    );
+    expect(ctx.git.checkout).toHaveBeenCalledTimes(2);
+    expect(ctx.git.checkout).toHaveBeenNthCalledWith(1, "release/1.0.0-beta.0");
+    expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
+    expect(ctx.exec).toHaveBeenCalledExactlyOnceWith("yq", [
+      "-i",
+      `.version = "1.0.0-beta.0"`,
+      "./package.json",
+    ]);
+    expect(ctx.git.commit).toHaveBeenCalledExactlyOnceWith(
+      "chore(release): prepare 1.0.0-beta.0",
+      ["./package.json", "./CHANGELOG.md"],
+    );
+    expect(ctx.repo.createPullRequest).toHaveBeenCalledExactlyOnceWith({
+      head: "release/1.0.0-beta.0",
+      base: "release/1.0",
+      title: "Release 1.0.0-beta.0",
+      body: expect.stringContaining("Merging this PR will publish 1.0.0-beta.0"),
+    });
+    expect(createdPr.update).not.toHaveBeenCalled();
+  });
+
+  it("creates the first beta PR when a stable version has Unreleased entries", async ({
+    expect,
+  }) => {
+    ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.0" });
+    vi.mocked(changelogMd.readChangelog).mockResolvedValue(
+      `# Changelog\n\n## Unreleased\n- first feature\n`,
+    );
+    vi.mocked(changelogMd.finalise).mockResolvedValue({
+      entryItems: ["first feature"],
+      newContent: `# Changelog\n\n## Unreleased\n\n## [1.0.1-beta.0]\n- first feature\n`,
+    });
+    const createdPr = {
+      ...mockPr({ number: 222, head: "release/1.0.1-beta.0" }),
+      update: vi.fn(),
+    };
+    ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
+
+    await expect(run(ctx)).resolves.toStrictEqual({
+      releasePrNumber: 222,
+      releasePrHead: "release/1.0.1-beta.0",
+      releaseVersion: "1.0.1-beta.0",
+    });
+
+    expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
+      "release/1.0.1-beta.0",
+      "release/1.0",
+    );
+    expect(ctx.git.checkout).toHaveBeenCalledTimes(2);
+    expect(ctx.git.checkout).toHaveBeenNthCalledWith(1, "release/1.0.1-beta.0");
+    expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
+    expect(ctx.exec).toHaveBeenCalledExactlyOnceWith("yq", [
+      "-i",
+      `.version = "1.0.1-beta.0"`,
+      "./package.json",
+    ]);
+    expect(ctx.git.commit).toHaveBeenCalledExactlyOnceWith(
+      "chore(release): prepare 1.0.1-beta.0",
+      ["./package.json", "./CHANGELOG.md"],
+    );
+    expect(ctx.repo.createPullRequest).toHaveBeenCalledExactlyOnceWith({
+      head: "release/1.0.1-beta.0",
+      base: "release/1.0",
+      title: "Release 1.0.1-beta.0",
+      body: expect.stringContaining("Merging this PR will publish 1.0.1-beta.0"),
+    });
+    expect(createdPr.update).not.toHaveBeenCalled();
+  });
+
+  it("creates a beta PR after a stable release", async ({ expect }) => {
+    ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.0" });
+    vi.mocked(changelogMd.readChangelog).mockResolvedValue(
+      `# Changelog\n\n## Unreleased\n- new feature\n`,
+    );
+    vi.mocked(changelogMd.finalise).mockResolvedValue({
+      entryItems: ["new feature"],
+      newContent: `# Changelog\n\n## Unreleased\n\n## [1.0.1-beta.0]\n- new feature\n`,
+    });
+    const createdPr = {
+      ...mockPr({ number: 222, head: "release/1.0.1-beta.0" }),
+      update: vi.fn(),
+    };
+    ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
+
+    await expect(run(ctx)).resolves.toStrictEqual({
+      releasePrNumber: 222,
+      releasePrHead: "release/1.0.1-beta.0",
+      releaseVersion: "1.0.1-beta.0",
+    });
+
+    expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
+      "release/1.0.1-beta.0",
+      "release/1.0",
+    );
+    expect(ctx.repo.createPullRequest).toHaveBeenCalledExactlyOnceWith({
+      head: "release/1.0.1-beta.0",
+      base: "release/1.0",
+      title: "Release 1.0.1-beta.0",
+      body: expect.any(String),
+    });
+  });
+
+  it("creates a candidate PR after a beta release PR merges", async ({
+    expect,
+  }) => {
     ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.0-beta.0" });
+    ctx.octokit.rest.repos.listPullRequestsAssociatedWithCommit =
+      mockPullRequestsAssociatedWithCommit("release/1.0.0-beta.0") as unknown as typeof ctx.octokit.rest.repos.listPullRequestsAssociatedWithCommit;
+    vi.mocked(changelogMd.finalise).mockResolvedValue({
+      entryItems: [],
+      newContent: `# Changelog\n\n## Unreleased\n\n## [1.0.0]\n`,
+    });
+    const createdPr = {
+      ...mockPr({ number: 222, head: "release/1.0.0" }),
+      update: vi.fn(),
+    };
+    ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
 
     await expect(run(ctx)).resolves.toStrictEqual({
       releasePrNumber: 222,
@@ -262,68 +262,59 @@ describe("create-release-pr", () => {
       releaseVersion: "1.0.0",
     });
 
-    // Verify git operations.
     expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
       "release/1.0.0",
       "release/1.0",
     );
-    expect(ctx.git.checkout).toBeCalledTimes(2);
-    expect(ctx.git.checkout).toHaveBeenNthCalledWith(1, "release/1.0.0");
-    expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
-    expect(ctx.git.commit).toHaveBeenCalledTimes(1);
-    expect(ctx.git.push).toHaveBeenCalledExactlyOnceWith(
-      { force: true },
-      "release/1.0.0",
-    );
-
-    // Ensure package version was read and written.
-    expect(ctx.execOutput).toHaveBeenCalledExactlyOnceWith("yq", [
-      "-r",
-      ".version",
-      "./package.json",
-    ]);
     expect(ctx.exec).toHaveBeenCalledExactlyOnceWith("yq", [
       "-i",
       `.version = "1.0.0"`,
       "./package.json",
     ]);
-
-    // Ensure created PR.
     expect(ctx.repo.createPullRequest).toHaveBeenCalledExactlyOnceWith({
       head: "release/1.0.0",
       base: "release/1.0",
       title: "Release 1.0.0",
       body: expect.any(String),
     });
-
-    expect(createdPr.update).toHaveBeenCalledExactlyOnceWith({
-      body: expect.stringContaining("- item a\n- item b\n- item c"),
-    });
   });
 
-  it("closes candidate release if new changes pushed", async ({ expect }) => {
-    ctx.context.refName = "release/1.0";
+  it("creates a beta PR when the push is the merge commit of a stable release PR", async ({
+    expect,
+  }) => {
+    ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.0" });
+    vi.mocked(changelogMd.finalise).mockResolvedValue({
+      entryItems: ["feature"],
+      newContent: `# Changelog\n\n## Unreleased\n\n## [1.0.1-beta.0]\n- feature\n`,
+    });
+    ctx.octokit.rest.repos.listPullRequestsAssociatedWithCommit =
+      mockPullRequestsAssociatedWithCommit("release/1.0.0") as unknown as typeof ctx.octokit.rest.repos.listPullRequestsAssociatedWithCommit;
     const createdPr = {
-      ...mockPr({
-        number: 222,
-        head: "release/1.0.0-beta.1",
-        body: changelog.generate("# Some header", ["item a", "item b"]),
-      }),
+      ...mockPr({ number: 222, head: "release/1.0.1-beta.0" }),
       update: vi.fn(),
     };
     ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
+
+    await expect(run(ctx)).resolves.toStrictEqual({
+      releasePrNumber: 222,
+      releasePrHead: "release/1.0.1-beta.0",
+      releaseVersion: "1.0.1-beta.0",
+    });
+  });
+
+  it("creates the next beta PR when Unreleased is empty after a beta release", async ({
+    expect,
+  }) => {
     ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.0-beta.0" });
-    const EXISTING_RELEASE_PR = {
-      ...mockPr({
-        number: 111,
-        head: "release/1.0.0",
-        body: changelog.generate("# Some header", ["item a", "item b"]),
-      }),
-      close: vi.fn(),
+    vi.mocked(changelogMd.finalise).mockResolvedValue({
+      entryItems: [],
+      newContent: `# Changelog\n\n## Unreleased\n\n## [1.0.0-beta.1]\n`,
+    });
+    const createdPr = {
+      ...mockPr({ number: 222, head: "release/1.0.0-beta.1" }),
+      update: vi.fn(),
     };
-    ctx.repo.pullRequests = vi
-      .fn()
-      .mockReturnValue(asyncIterable([EXISTING_RELEASE_PR]));
+    ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
 
     await expect(run(ctx)).resolves.toStrictEqual({
       releasePrNumber: 222,
@@ -331,72 +322,161 @@ describe("create-release-pr", () => {
       releaseVersion: "1.0.0-beta.1",
     });
 
-    // Verify git operations.
     expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
       "release/1.0.0-beta.1",
       "release/1.0",
     );
-    expect(ctx.git.checkout).toBeCalledTimes(2);
-    expect(ctx.git.checkout).toHaveBeenNthCalledWith(1, "release/1.0.0-beta.1");
-    expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
-    expect(ctx.git.commit).toHaveBeenCalledTimes(1);
-    expect(ctx.git.push).toHaveBeenCalledExactlyOnceWith(
-      { force: true },
-      "release/1.0.0-beta.1",
+    expect(ctx.repo.createPullRequest).toHaveBeenCalled();
+  });
+
+  it("creates the next beta PR when changes land after a beta release", async ({
+    expect,
+  }) => {
+    ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.0-beta.0" });
+    vi.mocked(changelogMd.readChangelog).mockResolvedValue(
+      `# Changelog\n\n## Unreleased\n- new feature\n`,
     );
+    vi.mocked(changelogMd.finalise).mockResolvedValue({
+      entryItems: ["new feature"],
+      newContent: `# Changelog\n\n## Unreleased\n\n## [1.0.0-beta.1]\n- new feature\n`,
+    });
+    const createdPr = {
+      ...mockPr({ number: 222, head: "release/1.0.0-beta.1" }),
+      update: vi.fn(),
+    };
+    ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
 
-    // Ensure package version was read and written.
-    expect(ctx.execOutput).toHaveBeenCalledExactlyOnceWith("yq", [
-      "-r",
-      ".version",
-      "./package.json",
-    ]);
-    expect(ctx.exec).toHaveBeenCalledExactlyOnceWith("yq", [
-      "-i",
-      `.version = "1.0.0-beta.1"`,
-      "./package.json",
-    ]);
+    await expect(run(ctx)).resolves.toStrictEqual({
+      releasePrNumber: 222,
+      releasePrHead: "release/1.0.0-beta.1",
+      releaseVersion: "1.0.0-beta.1",
+    });
 
-    // Ensure previous PR closed.
-    expect(EXISTING_RELEASE_PR.close).toHaveBeenCalledTimes(1);
-
-    // Ensure created PR.
+    expect(ctx.git.createBranch).toHaveBeenCalledExactlyOnceWith(
+      "release/1.0.0-beta.1",
+      "release/1.0",
+    );
     expect(ctx.repo.createPullRequest).toHaveBeenCalledExactlyOnceWith({
       head: "release/1.0.0-beta.1",
       base: "release/1.0",
       title: "Release 1.0.0-beta.1",
       body: expect.any(String),
     });
+  });
 
-    expect(createdPr.update).toHaveBeenCalledExactlyOnceWith({
-      body: expect.stringContaining("- item a\n- item b"),
+  it("closes a stable PR when changes land after the beta release", async ({
+    expect,
+  }) => {
+    ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.0-beta.0" });
+    vi.mocked(changelogMd.readChangelog).mockResolvedValue(
+      `# Changelog\n\n## Unreleased\n- new feature\n`,
+    );
+    vi.mocked(changelogMd.finalise).mockResolvedValue({
+      entryItems: ["new feature"],
+      newContent: `# Changelog\n\n## Unreleased\n\n## [1.0.0-beta.1]\n- new feature\n`,
+    });
+    const stablePr = {
+      ...mockPr({ number: 111, head: "release/1.0.0" }),
+      close: vi.fn(),
+    };
+    ctx.repo.pullRequests = vi.fn().mockReturnValue(asyncIterable([stablePr]));
+    const createdPr = {
+      ...mockPr({ number: 222, head: "release/1.0.0-beta.1" }),
+      update: vi.fn(),
+    };
+    ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
+
+    await expect(run(ctx)).resolves.toStrictEqual({
+      releasePrNumber: 222,
+      releasePrHead: "release/1.0.0-beta.1",
+      releaseVersion: "1.0.0-beta.1",
+    });
+
+    expect(stablePr.close).toHaveBeenCalled();
+    expect(ctx.repo.createPullRequest).toHaveBeenCalled();
+  });
+
+  it("reuses an existing beta PR when the base branch changes", async ({
+    expect,
+  }) => {
+    let callCount = 0;
+    ctx.execOutput = vi.fn().mockImplementation(async () => {
+      callCount += 1;
+      return callCount === 1
+        ? { stdout: "1.0.0" }
+        : { stdout: "1.0.1-beta.0" };
+    });
+    vi.mocked(changelogMd.readChangelog).mockResolvedValue(
+      `# Changelog\n\n## Unreleased\n- new feature\n`,
+    );
+    const existingPr = {
+      ...mockPr({ number: 222, head: "release/1.0.1-beta.0" }),
+      update: vi.fn(),
+    };
+    ctx.repo.pullRequests = vi
+      .fn()
+      .mockReturnValue(asyncIterable([existingPr]));
+
+    await expect(run(ctx)).resolves.toStrictEqual({
+      releasePrNumber: 222,
+      releasePrHead: "release/1.0.1-beta.0",
+      releaseVersion: "1.0.1-beta.0",
+    });
+
+    expect(ctx.git.createBranch).not.toHaveBeenCalled();
+    expect(ctx.repo.createPullRequest).not.toHaveBeenCalled();
+    expect(ctx.git.moveBranch).toHaveBeenCalledExactlyOnceWith(
+      "release/1.0.1-beta.0",
+      "release/1.0",
+    );
+    expect(ctx.git.checkout).toHaveBeenCalledTimes(2);
+    expect(ctx.git.checkout).toHaveBeenNthCalledWith(1, "release/1.0.1-beta.0");
+    expect(ctx.git.checkout).toHaveBeenNthCalledWith(2, "release/1.0");
+    expect(ctx.git.commit).not.toHaveBeenCalled();
+    expect(ctx.exec).not.toHaveBeenCalled();
+    expect(ctx.git.moveBranch).toHaveBeenCalledExactlyOnceWith(
+      "release/1.0.1-beta.0",
+      "release/1.0",
+    );
+    expect(ctx.git.push).toHaveBeenCalledExactlyOnceWith(
+      { force: true },
+      "release/1.0.1-beta.0",
+    );
+    expect(existingPr.update).toHaveBeenCalledExactlyOnceWith({
+      body: expect.stringContaining("Merging this PR will publish 1.0.1-beta.0"),
     });
   });
 
-  it("doesn't create new release PR for merged release PR", async ({
+  it("closes a stale release PR when the expected version changes", async ({
     expect,
   }) => {
-    ctx.context.refName = "release/1.0";
-    ctx.pr = mockPr({
-      number: 111,
-      title: "Release 1.0.0",
-      head: "release/1.0.0",
-    }) as PullRequest;
+    ctx.execOutput = vi.fn().mockResolvedValue({ stdout: "1.0.0" });
+    vi.mocked(changelogMd.readChangelog).mockResolvedValue(
+      `# Changelog\n\n## Unreleased\n- new feature\n`,
+    );
+    vi.mocked(changelogMd.finalise).mockResolvedValue({
+      entryItems: ["new feature"],
+      newContent: `# Changelog\n\n## Unreleased\n\n## [1.0.1-beta.0]\n- new feature\n`,
+    });
+    const stalePr = {
+      ...mockPr({ number: 111, head: "release/1.0.0-beta.0" }),
+      close: vi.fn(),
+    };
+    ctx.repo.pullRequests = vi.fn().mockReturnValue(asyncIterable([stalePr]));
+    const createdPr = {
+      ...mockPr({ number: 222, head: "release/1.0.1-beta.0" }),
+      update: vi.fn(),
+    };
+    ctx.repo.createPullRequest = vi.fn().mockResolvedValue(createdPr);
 
-    await expect(run(ctx)).resolves.toStrictEqual({});
+    await expect(run(ctx)).resolves.toStrictEqual({
+      releasePrNumber: 222,
+      releasePrHead: "release/1.0.1-beta.0",
+      releaseVersion: "1.0.1-beta.0",
+    });
 
-    // Verify git operations.
-    expect(ctx.git.createBranch).not.toHaveBeenCalled();
-    expect(ctx.git.checkout).not.toHaveBeenCalled();
-    expect(ctx.git.commit).not.toHaveBeenCalled();
-    expect(ctx.git.push).not.toHaveBeenCalled();
-
-    // Ensure package version was read and written.
-    expect(ctx.execOutput).not.toHaveBeenCalled();
-    expect(ctx.exec).not.toHaveBeenCalled();
-
-    // Ensure created PR.
-    expect(ctx.repo.createPullRequest).not.toHaveBeenCalled();
+    expect(stalePr.close).toHaveBeenCalled();
+    expect(ctx.repo.createPullRequest).toHaveBeenCalled();
   });
 });
 
@@ -439,8 +519,8 @@ describe("bumpPackageVersion", () => {
 
     describe("invalid", () => {
       it.for([
-        ["missing `beta` pre-release", "1.2.3"],
-        ["`alpha` pre-release", "1.2.3-alpha.0"],
+        ["missing \u0060beta\u0060 pre-release", "1.2.3"],
+        ["\u0060alpha\u0060 pre-release", "1.2.3-alpha.0"],
       ] as const)("%s", ([version], { expect }) => {
         expect(() =>
           bumpPackageVersion(parseVersion(version), "candidate"),

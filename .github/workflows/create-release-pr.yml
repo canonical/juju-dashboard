@@ -1,25 +1,21 @@
 name: Create release PR
 
 on:
-  pull_request:
-    types:
-      - closed
+  push:
     branches:
-      - release/*
+      - "release/*"
 
 permissions:
+  contents: write
   pull-requests: write
 
 jobs:
   create-release-pr:
     name: "Create release PR"
     runs-on: "ubuntu-latest"
-    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    if: github.event.head_commit.author.email != '41898282+github-actions[bot]@users.noreply.github.com'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          ref: ${{ github.base_ref }}
-          persist-credentials: false
       - uses: ./.github/actions/create-release-pr
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
