@@ -140,7 +140,7 @@
     "typescript-eslint": "8.67.0",
     "vite": "8.2.1",
     "vite-plugin-html": "3.2.2",
-    "vitest": "4.1.10",
+    "vitest": "4.1.11",
     "vitest-fetch-mock": "0.4.5"
   },
   "packageManager": "yarn@4.18.0"
