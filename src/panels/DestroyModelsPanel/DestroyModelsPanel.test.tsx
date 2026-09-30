@@ -103,6 +103,57 @@ describe("DestroyModelsPanel", () => {
     });
   });
 
+  it("auto-advances accordion to the next item after marking reviewed", async () => {
+    state.juju.modelsSelectedForDestruction = [
+      modelSelectionParamsFactory.build({
+        modelUUID: "abc123",
+        modelName: "test-model-1",
+        skipped: false,
+        reviewed: false,
+      }),
+      modelSelectionParamsFactory.build({
+        modelUUID: "def456",
+        modelName: "test-model-2",
+        skipped: false,
+        reviewed: false,
+      }),
+    ];
+    renderComponent(<DestroyModelsPanel />, { state, url });
+    expect(
+      screen.getAllByRole("button", { name: AccordionLabel.MARK_REVIEWED })[0],
+    ).toBeVisible();
+    await userEvent.click(
+      screen.getAllByRole("button", { name: AccordionLabel.MARK_REVIEWED })[0],
+    );
+    // After reviewing the first model the second tab should now be expanded.
+    await waitFor(() => {
+      expect(screen.getByRole("tab", { name: /test-model-2/ })).toHaveAttribute(
+        "aria-expanded",
+        "true",
+      );
+    });
+  });
+
+  it("collapses all accordion sections after reviewing the last model", async () => {
+    state.juju.modelsSelectedForDestruction = [
+      modelSelectionParamsFactory.build({
+        modelUUID: "abc123",
+        modelName: "test-model-1",
+        skipped: false,
+        reviewed: false,
+      }),
+    ];
+    renderComponent(<DestroyModelsPanel />, { state, url });
+    await userEvent.click(
+      screen.getByRole("button", { name: AccordionLabel.MARK_REVIEWED }),
+    );
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("tab", { expanded: true }),
+      ).not.toBeInTheDocument();
+    });
+  });
+
   it("disables 'Complete review & destroy' when all models are skipped", () => {
     state.juju.modelsSelectedForDestruction = [
       modelSelectionParamsFactory.build({

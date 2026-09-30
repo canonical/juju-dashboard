@@ -1,5 +1,5 @@
 import { Accordion, Button, usePortal } from "@canonical/react-components";
-import type { FC } from "react";
+import { type FC, useState } from "react";
 
 import BulkDestroyModelDialog from "components/BulkDestroyModelDialog/BulkDestroyModelDialog";
 import DestroyModelDialog from "components/DestroyModelDialog";
@@ -18,6 +18,7 @@ import { Label } from "./types";
 const DestroyModelsPanel: FC = () => {
   const dispatch = useAppDispatch();
   const selectedModels = useAppSelector(getSelectedModelsForDestruction);
+  const [expandedKey, setExpandedKey] = useState<string>("model-0");
   const [, , handleRemovePanelQueryParams] = usePanelQueryParams<{
     panel: null | string;
   }>({ panel: null });
@@ -99,13 +100,27 @@ const DestroyModelsPanel: FC = () => {
         </div>
         <Accordion
           className="destroy-models-panel__accordion"
-          expanded="model-0"
+          expanded={expandedKey}
+          externallyControlled
+          onExpandedChange={setExpandedKey}
           sections={selectedModels.map(({ modelUUID, modelName }, index) => ({
             key: `model-${index}`,
             title: (
               <AccordionTitle modelUUID={modelUUID} modelName={modelName} />
             ),
-            content: <AccordionContent modelUUID={modelUUID} />,
+            content: (
+              <AccordionContent
+                modelUUID={modelUUID}
+                onModelReviewed={() => {
+                  const nextIndex = index + 1;
+                  setExpandedKey(
+                    nextIndex < selectedModels.length
+                      ? `model-${nextIndex}`
+                      : "",
+                  );
+                }}
+              />
+            ),
           }))}
         />
       </Panel>
