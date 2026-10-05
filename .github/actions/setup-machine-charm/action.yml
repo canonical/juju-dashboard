@@ -49,7 +49,7 @@ runs:
       if: ${{ env.build_type != 'charm-release' }}
       shell: bash
       run: |
-        "${{ github.workspace }}/charms/machine-charm/build.sh" \
+        "${{ github.workspace }}/charms/build-machine.sh" \
           "${build_type}" \
           "${INPUTS_DASHBOARD_VERSION}" \
           "--platform ubuntu@24.04:amd64"
@@ -68,7 +68,7 @@ runs:
         INPUTS_CHARM_CHANNEL: ${{ inputs.charm-channel }}
     - name: Deploy built charm
       if: ${{ env.build_type != 'charm-release' }}
-      run: juju deploy ${{ github.workspace }}/charms/machine-charm/juju-dashboard*.charm dashboard
+      run: juju deploy ${{ github.workspace }}/charms/juju-dashboard*.charm dashboard
       shell: bash
     - name: Wait for charm to be ready for integration
       uses: ./.github/actions/juju-wait-for

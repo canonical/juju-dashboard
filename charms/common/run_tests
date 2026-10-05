@@ -2,7 +2,6 @@
 # Copyright 2026 Canonical
 # See LICENSE file for licensing details.
 
-
 if [ -z "$PYTHONPATH" ]; then
     export PYTHONPATH="lib:src"
 else

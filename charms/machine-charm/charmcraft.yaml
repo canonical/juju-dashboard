@@ -56,4 +56,10 @@ requires:
     interface: haproxy-route
 parts:
   charm:
-    charm-python-packages: [setuptools>80.0]
+    plugin: uv
+    source: machine-charm
+    build-snaps:
+      - astral-uv
+    override-build: |
+      ln --symbolic --force $CRAFT_PROJECT_DIR/common
+      craftctl default

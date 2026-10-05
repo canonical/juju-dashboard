@@ -105,10 +105,10 @@ jobs:
       - name: Install LXD
         uses: canonical/setup-lxd@da2ac84e727dc534215fd14cd088b9209d65893b # main
       - name: Build dashboard
-        working-directory: charms/${{ matrix.charm-kind }}-charm
+        working-directory: charms
         id: build
         run: |
-          OUTPUT=$(./build.sh)
+          OUTPUT=$(./build-${{ matrix.charm-kind }}.sh)
 
           if [ "${{ matrix.charm-kind }}" = 'k8s' ]; then
               echo "$OUTPUT" | grep '^id=' >> "$GITHUB_OUTPUT"

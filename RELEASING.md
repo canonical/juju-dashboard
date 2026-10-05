@@ -10,6 +10,7 @@ charms](#release-charms).
     - [Local k8s controller](#local-k8s-controller)
   - [QA steps](#qa-steps)
   - [Release the dashboard](#release-the-dashboard)
+    - [Prepare a new major or minor release](#prepare-a-new-major-or-minor-release)
 
 ## Deployments
 
@@ -32,8 +33,8 @@ yarn install
 Next navigate to the `charms` folder and run the build script to generate the charm and replace build assets.
 
 ```shell
-cd ./charms/machine-charm
-./build.sh
+cd ./charms
+./build-machine.sh
 ```
 
 Then follow the instructions to [build and
@@ -83,9 +84,9 @@ version of the dashboard may receive updates and features.
 [`release.yml`](.github/workflows/release.yml) monitors these branches, and whenever a new version
 of the dashboard is merged, it will build, release, and promote the charms on [Charmhub](https://charmhub.io/) as required.
 
-The charms are built using the `build.sh` scripts located at
-[`charms/k8s-charm/build.sh`](charms/k8s-charm/build.sh) and
-[`charms/machine-charm/build.sh`](charms/machine-charm/build.sh). These are run within the CI, and can
+The charms are built using the `build-[platform].sh` scripts located at
+[`charms/build-k8s.sh`](charms/build-k8s.sh) and
+[`charms/build-machine.sh`](charms/build-machine.sh). These are run within the CI, and can
 also be run manually.
 
 ### Prepare a new major or minor release
