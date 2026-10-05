@@ -21,7 +21,7 @@ type ConnectedOffer = {
   endpoint: { name: string; interface: string };
 };
 
-type ModelDestructionData = {
+export type ModelDestructionData = {
   hasStorage: boolean;
   applications: string[];
   machines: string[];

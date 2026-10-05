@@ -18,6 +18,7 @@ import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import urls, { externalURLs } from "urls";
 import filterBoolean from "utils/filterBoolean";
+import { isModelEmpty } from "utils/isModelEmpty";
 
 import { Label, TestId } from "./types";
 
@@ -164,10 +165,7 @@ export default function DestroyModelDialog({
     connectedOffers,
     storageIDs,
   } = destructionData[modelUUID];
-  const showInfoTable =
-    applications.length > 0 ||
-    machines.length > 0 ||
-    crossModelRelations.length > 0;
+  const showInfoTable = !isModelEmpty(destructionData[modelUUID]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";

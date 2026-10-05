@@ -2,18 +2,12 @@ import { screen } from "@testing-library/react";
 import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { act } from "react";
 
+import type { ModelDestructionData } from "hooks/useModelDestructionData";
+import { DestroyBlockedReason } from "store/juju/types";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
-  applicationStatusFactory,
-  machineStatusFactory,
-  applicationOfferStatusFactory,
-  unitStatusFactory,
-} from "testing/factories/juju/ClientV8";
-import { modelInfoFactory } from "testing/factories/juju/ModelManagerV10";
-import {
   jujuStateFactory,
-  modelDataFactory,
   modelListInfoFactory,
   modelSelectionParamsFactory,
 } from "testing/factories/juju/juju";
@@ -26,9 +20,20 @@ import AccordionTitle from "./AccordionTitle";
 
 describe("AccordionTitle", () => {
   let state: RootState;
+  let destructionData: ModelDestructionData;
   let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
+    destructionData = {
+      hasStorage: false,
+      applications: ["easyrsa", "mysql"],
+      machines: ["0", "1"],
+      crossModelRelations: [],
+      connectedOffers: [],
+      storageIDs: [],
+      unitCount: 3,
+      destroyBlockedReason: null,
+    };
     vi.useFakeTimers();
     userEventWithTimers = userEvent.setup({
       advanceTimers: vi.advanceTimersByTime,
@@ -47,27 +52,6 @@ describe("AccordionTitle", () => {
             canConfigure: true,
           }),
         },
-        modelData: {
-          abc123: modelDataFactory.build({
-            uuid: "abc123",
-            info: modelInfoFactory.build({ name: "test-model" }),
-            applications: {
-              easyrsa: applicationStatusFactory.build({
-                units: {
-                  "easyrsa/0": unitStatusFactory.build(),
-                  "easyrsa/1": unitStatusFactory.build(),
-                },
-              }),
-              mysql: applicationStatusFactory.build({
-                units: { "mysql/0": unitStatusFactory.build() },
-              }),
-            },
-            machines: {
-              "0": machineStatusFactory.build(),
-              "1": machineStatusFactory.build(),
-            },
-          }),
-        },
       }),
     });
   });
@@ -78,7 +62,11 @@ describe("AccordionTitle", () => {
 
   it("renders properly", () => {
     renderComponent(
-      <AccordionTitle modelUUID="abc123" modelName="test-model" />,
+      <AccordionTitle
+        modelUUID="abc123"
+        modelName="test-model"
+        destructionData={destructionData}
+      />,
       { state },
     );
     expect(screen.getByText("test-model")).toBeInTheDocument();
@@ -100,7 +88,11 @@ describe("AccordionTitle", () => {
       }),
     ];
     renderComponent(
-      <AccordionTitle modelUUID="abc123" modelName="test-model" />,
+      <AccordionTitle
+        modelUUID="abc123"
+        modelName="test-model"
+        destructionData={destructionData}
+      />,
       { state },
     );
     expect(document.querySelector(".p-icon--success")).toBeInTheDocument();
@@ -115,18 +107,26 @@ describe("AccordionTitle", () => {
       }),
     ];
     renderComponent(
-      <AccordionTitle modelUUID="abc123" modelName="test-model" />,
+      <AccordionTitle
+        modelUUID="abc123"
+        modelName="test-model"
+        destructionData={destructionData}
+      />,
       { state },
     );
     expect(document.querySelector(".p-icon--success")).not.toBeInTheDocument();
   });
 
   it("renders is-skipped class when the model is a controller model", async () => {
-    state.juju.modelData["abc123"].info = modelInfoFactory.build({
-      "is-controller": true,
-    });
     renderComponent(
-      <AccordionTitle modelUUID="abc123" modelName="test-model" />,
+      <AccordionTitle
+        modelUUID="abc123"
+        modelName="test-model"
+        destructionData={{
+          ...destructionData,
+          destroyBlockedReason: DestroyBlockedReason.IS_CONTROLLER,
+        }}
+      />,
       { state },
     );
     const icon = document.querySelector(".p-icon--help");
@@ -144,21 +144,15 @@ describe("AccordionTitle", () => {
   });
 
   it("renders is-skipped class when model has connected offers", async () => {
-    state.juju.models["abc123"] = modelListInfoFactory.build({
-      uuid: "abc123",
-      canConfigure: true,
-    });
-    state.juju.modelData["abc123"] = modelDataFactory.build({
-      uuid: "abc123",
-      info: modelInfoFactory.build({ name: "test-model" }),
-      offers: {
-        db: applicationOfferStatusFactory.build({
-          "total-connected-count": 1,
-        }),
-      },
-    });
     renderComponent(
-      <AccordionTitle modelUUID="abc123" modelName="test-model" />,
+      <AccordionTitle
+        modelUUID="abc123"
+        modelName="test-model"
+        destructionData={{
+          ...destructionData,
+          destroyBlockedReason: DestroyBlockedReason.CONNECTED_OFFERS,
+        }}
+      />,
       { state },
     );
     expect(
@@ -179,12 +173,15 @@ describe("AccordionTitle", () => {
   });
 
   it("renders is-skipped class when user does not have model access", async () => {
-    state.juju.models["abc123"] = modelListInfoFactory.build({
-      uuid: "abc123",
-      canConfigure: false,
-    });
     renderComponent(
-      <AccordionTitle modelUUID="abc123" modelName="test-model" />,
+      <AccordionTitle
+        modelUUID="abc123"
+        modelName="test-model"
+        destructionData={{
+          ...destructionData,
+          destroyBlockedReason: DestroyBlockedReason.NO_ACCESS,
+        }}
+      />,
       { state },
     );
     expect(
