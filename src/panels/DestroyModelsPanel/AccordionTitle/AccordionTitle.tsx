@@ -3,8 +3,8 @@ import { Tooltip } from "@canonical/react-components";
 import classNames from "classnames";
 import type { JSX } from "react";
 
-import type { ModelDestructionData } from "hooks/useModelDestructionData";
 import { getSelectedModelForDestruction } from "store/juju/selectors";
+import type { ModelDestructionData } from "store/juju/types";
 import { DestroyBlockedReason } from "store/juju/types";
 import { useAppSelector } from "store/store";
 
