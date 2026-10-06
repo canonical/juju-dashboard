@@ -93,6 +93,7 @@ const AddModel: FC = () => {
   const addModelState = useAppSelector(getAddModelState);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isValid, setIsValid] = useState<boolean>(false);
+  const [addingModel, setAddingModel] = useState<boolean>(false);
   const [modelName, setModelName] = useState<string>("");
   useWindowTitle(Label.TITLE);
 
@@ -105,10 +106,10 @@ const AddModel: FC = () => {
   };
 
   const handleCreateClick = (values: AddModelFormState): void => {
-    if (!wsControllerURL || !userTag) {
+    if (!wsControllerURL || !userTag || addingModel) {
       return;
     }
-
+    setAddingModel(true);
     const config = buildConfigsConstraintsPayload(
       values[ConfigFieldName.CONFIG_FIELDS],
       values[ConfigFieldName.CONSTRAINT_FIELDS],
@@ -143,6 +144,7 @@ const AddModel: FC = () => {
         void navigate(urls.models.index);
       } else if (addModelState.errors) {
         // Handle a failed creation
+        setAddingModel(false);
         toastNotification(
           <>
             <b>Adding model "{modelName}" failed</b>
@@ -243,6 +245,7 @@ const AddModel: FC = () => {
             type="submit"
             form={currentStep.key}
             disabled={!isValid}
+            loading={addingModel}
             className="u-no-margin--bottom"
           >
             {Label.CREATE_BUTTON}
