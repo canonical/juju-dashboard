@@ -4,4 +4,5 @@ export enum Label {
   TOOLTIP_CONNECTED_OFFERS = "Remove cross-model relation(s) before destroying",
   COMPLETE_REVIEW_DESTROY = "Complete review & destroy",
   CANCEL = "Cancel",
+  MARK_EMPTY_REVIEWED = "Mark empty models as reviewed",
 }

@@ -400,6 +400,21 @@ const slice = createSlice({
           !state.modelsSelectedForDestruction[index].reviewed;
       }
     },
+    toggleModelsReviewedForDestruction: (
+      state,
+      action: PayloadAction<
+        { modelUUIDs: string[]; reviewed: boolean } & WsControllerURLParam
+      >,
+    ) => {
+      action.payload.modelUUIDs.forEach((modelUUID) => {
+        const entry = state.modelsSelectedForDestruction.find(
+          (model) => model.modelUUID === modelUUID,
+        );
+        if (entry) {
+          entry.reviewed = action.payload.reviewed;
+        }
+      });
+    },
     destroyModelErrors: (
       state,
       action: PayloadAction<{

@@ -567,6 +567,59 @@ describe("reducers", () => {
     });
   });
 
+  it("toggleModelsReviewedForDestruction toggles reviewed on matching models", () => {
+    const modelSelectionA = modelSelectionParamsFactory.build({
+      modelUUID: "abc123",
+      reviewed: false,
+    });
+    const modelSelectionB = modelSelectionParamsFactory.build({
+      modelUUID: "def456",
+      reviewed: false,
+    });
+    const state = jujuStateFactory.build({
+      modelsSelectedForDestruction: [modelSelectionA, modelSelectionB],
+    });
+    expect(
+      reducer(
+        state,
+        actions.toggleModelsReviewedForDestruction({
+          modelUUIDs: ["abc123", "def456"],
+          reviewed: true,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelsSelectedForDestruction: [
+        { ...modelSelectionA, reviewed: true },
+        { ...modelSelectionB, reviewed: true },
+      ],
+    });
+  });
+
+  it("toggleModelsReviewedForDestruction can unset reviewed", () => {
+    const modelSelection = modelSelectionParamsFactory.build({
+      modelUUID: "abc123",
+      reviewed: true,
+    });
+    const state = jujuStateFactory.build({
+      modelsSelectedForDestruction: [modelSelection],
+    });
+    expect(
+      reducer(
+        state,
+        actions.toggleModelsReviewedForDestruction({
+          modelUUIDs: ["abc123"],
+          reviewed: false,
+          wsControllerURL: "wss://example.com",
+        }),
+      ),
+    ).toStrictEqual({
+      ...state,
+      modelsSelectedForDestruction: [{ ...modelSelection, reviewed: false }],
+    });
+  });
+
   it("setModelCanConfigure sets canConfigure on the matching model", () => {
     const state = jujuStateFactory.build({
       models: {

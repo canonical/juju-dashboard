@@ -3,7 +3,7 @@ import { Button, Icon, MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { useMemo, type JSX } from "react";
 
-import useModelDestructionData from "hooks/useModelDestructionData";
+import type { ModelDestructionData } from "hooks/useModelDestructionData";
 import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { getSelectedModelForDestruction } from "store/juju/selectors";
@@ -131,14 +131,15 @@ const storageRow = (
 
 type Props = {
   modelUUID: string;
+  destructionData: ModelDestructionData;
   onModelReviewed?: () => void;
 };
 
 const AccordionContent = ({
   modelUUID,
+  destructionData,
   onModelReviewed,
 }: Props): JSX.Element => {
-  const destructionData = useModelDestructionData([modelUUID]);
   const {
     hasStorage,
     applications,
@@ -146,7 +147,7 @@ const AccordionContent = ({
     crossModelRelations,
     storageIDs,
     destroyBlockedReason,
-  } = destructionData[modelUUID];
+  } = destructionData;
   const showInfoTable =
     applications.length > 0 ||
     machines.length > 0 ||

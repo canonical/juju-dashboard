@@ -3,7 +3,7 @@ import { Tooltip } from "@canonical/react-components";
 import classNames from "classnames";
 import type { JSX } from "react";
 
-import useModelDestructionData from "hooks/useModelDestructionData";
+import type { ModelDestructionData } from "hooks/useModelDestructionData";
 import { getSelectedModelForDestruction } from "store/juju/selectors";
 import { DestroyBlockedReason } from "store/juju/types";
 import { useAppSelector } from "store/store";
@@ -13,16 +13,20 @@ import { Label } from "../types";
 type Props = {
   modelName: string;
   modelUUID: string;
+  destructionData: ModelDestructionData;
 };
 
-const AccordionTitle = ({ modelName, modelUUID }: Props): JSX.Element => {
-  const destructionData = useModelDestructionData([modelUUID]);
+const AccordionTitle = ({
+  modelName,
+  modelUUID,
+  destructionData,
+}: Props): JSX.Element => {
   const {
     applications: applicationKeys,
     machines,
     destroyBlockedReason,
     unitCount,
-  } = destructionData[modelUUID];
+  } = destructionData;
   const selectedModel = useAppSelector((state) =>
     getSelectedModelForDestruction(state, modelUUID),
   );

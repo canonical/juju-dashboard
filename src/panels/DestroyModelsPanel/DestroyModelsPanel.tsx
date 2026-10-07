@@ -1,15 +1,24 @@
-import { Accordion, Button, usePortal } from "@canonical/react-components";
+import {
+  Accordion,
+  Button,
+  Switch,
+  usePortal,
+} from "@canonical/react-components";
 import { type FC, useState } from "react";
 
 import BulkDestroyModelDialog from "components/BulkDestroyModelDialog/BulkDestroyModelDialog";
 import DestroyModelDialog from "components/DestroyModelDialog";
 import Panel from "components/Panel";
+import useModelDestructionData from "hooks/useModelDestructionData";
 import { usePanelQueryParams } from "panels/hooks";
+import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { getSelectedModelsForDestruction } from "store/juju/selectors";
+import type { ModelSelectionParams } from "store/juju/types";
 import { pluralize } from "store/juju/utils/models";
 import { useAppDispatch, useAppSelector } from "store/store";
 import { formatBulkDestructionData } from "utils/formatBulkDestructionData";
+import { isModelEmpty } from "utils/isModelEmpty";
 
 import AccordionContent from "./AccordionContent/AccordionContent";
 import AccordionTitle from "./AccordionTitle/AccordionTitle";
@@ -17,8 +26,15 @@ import { Label } from "./types";
 
 const DestroyModelsPanel: FC = () => {
   const dispatch = useAppDispatch();
+  const wsControllerURL = useAppSelector(getWSControllerURL);
   const selectedModels = useAppSelector(getSelectedModelsForDestruction);
+  const selectedModelUUIDs = selectedModels.map(({ modelUUID }) => modelUUID);
+  const destructionData = useModelDestructionData(selectedModelUUIDs);
   const [expandedKey, setExpandedKey] = useState<string>("model-0");
+  const [markEmptyReviewed, setMarkEmptyReviewed] = useState(false);
+  // Empty models that were already reviewed before the auto-review toggle was switched on.
+  const [manuallyReviewedEmptyModels, setManuallyReviewedEmptyModels] =
+    useState<ModelSelectionParams[]>([]);
   const [, , handleRemovePanelQueryParams] = usePanelQueryParams<{
     panel: null | string;
   }>({ panel: null });
@@ -37,6 +53,44 @@ const DestroyModelsPanel: FC = () => {
   const modelWord = pluralize(selectedModels.length, "model");
   const { destroyable, skipped, reviewed } =
     formatBulkDestructionData(selectedModels);
+  const emptyModelUUIDs = selectedModelUUIDs.filter((modelUUID) =>
+    isModelEmpty(destructionData[modelUUID]),
+  );
+
+  const handleMarkEmptyModelsReviewed = (): void => {
+    if (!wsControllerURL) {
+      return;
+    }
+
+    // Only act on empty models that weren't already reviewed.
+    const modelsToToggle = emptyModelUUIDs.filter(
+      (uuid) =>
+        !manuallyReviewedEmptyModels.some(
+          ({ modelUUID }) => modelUUID === uuid,
+        ),
+    );
+
+    // Save the list of manually reviewed empty models locally if the toggle is switched ON.
+    if (!markEmptyReviewed) {
+      setManuallyReviewedEmptyModels(
+        reviewed.filter(({ modelUUID }) =>
+          isModelEmpty(destructionData[modelUUID]),
+        ),
+      );
+    } else {
+      // Clear the locally stored list of manually reviewed empty models.
+      setManuallyReviewedEmptyModels([]);
+    }
+
+    dispatch(
+      jujuActions.toggleModelsReviewedForDestruction({
+        modelUUIDs: modelsToToggle,
+        reviewed: !markEmptyReviewed,
+        wsControllerURL,
+      }),
+    );
+    setMarkEmptyReviewed((prev) => !prev);
+  };
 
   return (
     <>
@@ -98,6 +152,13 @@ const DestroyModelsPanel: FC = () => {
           destroying all applications, machines and storage within. Review
           before continuing
         </div>
+        {emptyModelUUIDs.length > 0 ? (
+          <Switch
+            label={Label.MARK_EMPTY_REVIEWED}
+            checked={markEmptyReviewed}
+            onChange={handleMarkEmptyModelsReviewed}
+          />
+        ) : null}
         <Accordion
           className="destroy-models-panel__accordion"
           expanded={expandedKey}
@@ -106,11 +167,16 @@ const DestroyModelsPanel: FC = () => {
           sections={selectedModels.map(({ modelUUID, modelName }, index) => ({
             key: `model-${index}`,
             title: (
-              <AccordionTitle modelUUID={modelUUID} modelName={modelName} />
+              <AccordionTitle
+                modelUUID={modelUUID}
+                modelName={modelName}
+                destructionData={destructionData[modelUUID]}
+              />
             ),
             content: (
               <AccordionContent
                 modelUUID={modelUUID}
+                destructionData={destructionData[modelUUID]}
                 onModelReviewed={() => {
                   const nextIndex = index + 1;
                   setExpandedKey(
