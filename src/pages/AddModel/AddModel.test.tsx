@@ -301,14 +301,46 @@ describe("AddModel page", () => {
       screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
       "my-model",
     );
-    await waitFor(() =>
-      fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM)),
-    );
+    fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM));
 
     await waitFor(() => {
       expect(
         actions.find((dispatch) => dispatch.type === addModelAction.type),
       ).toMatchObject(addModelAction);
+    });
+  });
+
+  it("ignores duplicate submissions", async () => {
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(<AddModel />, { store });
+
+    const addModelCTA = screen.getByTestId(TestId.ADD_MODEL_FORM);
+    const addModelAction = jujuActions.addModel({
+      cloudTag: "cloud-aws",
+      credential: "cloudcred-aws_admin_aws-cred",
+      modelName: "my-model",
+      userTag: "user-eggman@external",
+      wsControllerURL: "wss://controller.example.com",
+      disabledCommands: DisableType.NONE,
+    });
+
+    await userEvent.type(
+      screen.getByLabelText(new RegExp(MandatoryDetailsLabel.MODEL_NAME)),
+      "my-model",
+    );
+
+    fireEvent.submit(addModelCTA);
+    await waitFor(() => {
+      expect(
+        actions.find((dispatch) => dispatch.type === addModelAction.type),
+      ).toMatchObject(addModelAction);
+    });
+
+    fireEvent.submit(addModelCTA);
+    await waitFor(() => {
+      expect(
+        actions.filter((dispatch) => dispatch.type === addModelAction.type),
+      ).toHaveLength(1);
     });
   });
 
@@ -337,9 +369,7 @@ describe("AddModel page", () => {
         name: ConfigsConstraintsLabel.DISABLE_DESTROY_MODEL,
       }),
     );
-    await waitFor(() =>
-      fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM)),
-    );
+    fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM));
 
     await waitFor(() => {
       expect(
@@ -372,9 +402,7 @@ describe("AddModel page", () => {
       screen.getByRole("button", { name: Label.NEXT_BUTTON }),
     );
     await userEvent.type(screen.getByLabelText("default-space"), "my-space");
-    await waitFor(() =>
-      fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM)),
-    );
+    fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM));
 
     await waitFor(() => {
       expect(
@@ -411,9 +439,7 @@ describe("AddModel page", () => {
       screen.getByLabelText("net-bond-reconfigure-delay"),
       "42",
     );
-    await waitFor(() =>
-      fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM)),
-    );
+    fireEvent.submit(screen.getByTestId(TestId.ADD_MODEL_FORM));
 
     await waitFor(() => {
       expect(
