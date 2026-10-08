@@ -1,3 +1,4 @@
+import type { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/application/ApplicationV22";
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
@@ -199,6 +200,29 @@ export enum DestroyBlockedReason {
   NO_ACCESS = "noAccess",
   CONNECTED_OFFERS = "hasCMRs",
 }
+
+export type CrossModelRelation = {
+  name: string;
+  endpoints: RemoteEndpoint[];
+  isConnectedOffer: boolean;
+};
+
+export type ConnectedOffer = {
+  offerName: string;
+  applicationName: string;
+  endpoint: { name: string; interface: string };
+};
+
+export type ModelDestructionData = {
+  hasStorage: boolean;
+  applications: string[];
+  machines: string[];
+  crossModelRelations: CrossModelRelation[];
+  connectedOffers: ConnectedOffer[];
+  storageIDs: string[];
+  unitCount: number;
+  destroyBlockedReason: DestroyBlockedReason | null;
+};
 
 export type ModelSelectionParams = {
   modelUUID: string;

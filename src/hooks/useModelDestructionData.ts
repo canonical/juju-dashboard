@@ -1,4 +1,3 @@
-import type { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/application/ApplicationV22";
 import type {
   ApplicationOfferStatus,
   RemoteApplicationStatus,
@@ -7,30 +6,12 @@ import type {
 
 import { getModelData, getModelList } from "store/juju/selectors";
 import { DestroyBlockedReason } from "store/juju/types";
+import type {
+  ModelDestructionData,
+  CrossModelRelation,
+  ConnectedOffer,
+} from "store/juju/types";
 import { useAppSelector } from "store/store";
-
-type CrossModelRelation = {
-  name: string;
-  endpoints: RemoteEndpoint[];
-  isConnectedOffer: boolean;
-};
-
-type ConnectedOffer = {
-  offerName: string;
-  applicationName: string;
-  endpoint: { name: string; interface: string };
-};
-
-export type ModelDestructionData = {
-  hasStorage: boolean;
-  applications: string[];
-  machines: string[];
-  crossModelRelations: CrossModelRelation[];
-  connectedOffers: ConnectedOffer[];
-  storageIDs: string[];
-  unitCount: number;
-  destroyBlockedReason: DestroyBlockedReason | null;
-};
 
 // Helper function to extract and format cross-model relations
 const getCrossModelRelations = (

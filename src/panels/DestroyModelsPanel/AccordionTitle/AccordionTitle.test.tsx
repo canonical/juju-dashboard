@@ -2,12 +2,15 @@ import { screen } from "@testing-library/react";
 import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { act } from "react";
 
-import type { ModelDestructionData } from "hooks/useModelDestructionData";
-import { DestroyBlockedReason } from "store/juju/types";
+import {
+  DestroyBlockedReason,
+  type ModelDestructionData,
+} from "store/juju/types";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
   jujuStateFactory,
+  modelDestructionDataFactory,
   modelListInfoFactory,
   modelSelectionParamsFactory,
 } from "testing/factories/juju/juju";
@@ -24,16 +27,11 @@ describe("AccordionTitle", () => {
   let userEventWithTimers: UserEvent;
 
   beforeEach(() => {
-    destructionData = {
-      hasStorage: false,
+    destructionData = modelDestructionDataFactory.build({
       applications: ["easyrsa", "mysql"],
       machines: ["0", "1"],
-      crossModelRelations: [],
-      connectedOffers: [],
-      storageIDs: [],
       unitCount: 3,
-      destroyBlockedReason: null,
-    };
+    });
     vi.useFakeTimers();
     userEventWithTimers = userEvent.setup({
       advanceTimers: vi.advanceTimersByTime,

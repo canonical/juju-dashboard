@@ -13,6 +13,7 @@ import type {
   JujuState,
   ModelConfigDefaultsState,
   ModelData,
+  ModelDestructionData,
   ModelFeatures,
   ModelFeaturesState,
   ModelListInfo,
@@ -223,3 +224,16 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   addModelState: addModelStateFactory.build(),
   blockState: {},
 }));
+
+export const modelDestructionDataFactory = Factory.define<ModelDestructionData>(
+  () => ({
+    hasStorage: false,
+    applications: [],
+    machines: [],
+    crossModelRelations: [],
+    connectedOffers: [],
+    storageIDs: [],
+    unitCount: 0,
+    destroyBlockedReason: null,
+  }),
+);

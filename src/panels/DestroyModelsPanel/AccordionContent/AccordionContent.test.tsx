@@ -1,13 +1,16 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import type { ModelDestructionData } from "hooks/useModelDestructionData";
 import { actions as jujuActions } from "store/juju";
-import { DestroyBlockedReason } from "store/juju/types";
+import {
+  DestroyBlockedReason,
+  type ModelDestructionData,
+} from "store/juju/types";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
   jujuStateFactory,
+  modelDestructionDataFactory,
   modelListInfoFactory,
   modelSelectionParamsFactory,
 } from "testing/factories/juju/juju";
@@ -22,16 +25,11 @@ describe("AccordionContent", () => {
   let destructionData: ModelDestructionData;
 
   beforeEach(() => {
-    destructionData = {
-      hasStorage: false,
+    destructionData = modelDestructionDataFactory.build({
       applications: ["easyrsa"],
       machines: ["0"],
-      crossModelRelations: [],
-      connectedOffers: [],
-      storageIDs: [],
       unitCount: 1,
-      destroyBlockedReason: null,
-    };
+    });
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -51,23 +49,19 @@ describe("AccordionContent", () => {
   });
 
   it("renders info table", () => {
+    destructionData = modelDestructionDataFactory.build({
+      hasStorage: true,
+      applications: ["easyrsa"],
+      machines: ["0"],
+      crossModelRelations: [
+        { name: "db", endpoints: [], isConnectedOffer: false },
+        { name: "mysql", endpoints: [], isConnectedOffer: false },
+      ],
+      storageIDs: ["easyrsa/0"],
+      unitCount: 1,
+    });
     renderComponent(
-      <AccordionContent
-        modelUUID="abc123"
-        destructionData={{
-          hasStorage: true,
-          applications: ["easyrsa"],
-          machines: ["0"],
-          crossModelRelations: [
-            { name: "db", endpoints: [], isConnectedOffer: false },
-            { name: "mysql", endpoints: [], isConnectedOffer: false },
-          ],
-          connectedOffers: [],
-          storageIDs: ["easyrsa/0"],
-          unitCount: 1,
-          destroyBlockedReason: null,
-        }}
-      />,
+      <AccordionContent modelUUID="abc123" destructionData={destructionData} />,
       { state },
     );
     expect(screen.getByText(/Applications \(1\)/)).toBeInTheDocument();
@@ -80,16 +74,7 @@ describe("AccordionContent", () => {
     renderComponent(
       <AccordionContent
         modelUUID="abc123"
-        destructionData={{
-          hasStorage: false,
-          applications: [],
-          machines: [],
-          crossModelRelations: [],
-          connectedOffers: [],
-          storageIDs: [],
-          unitCount: 0,
-          destroyBlockedReason: null,
-        }}
+        destructionData={modelDestructionDataFactory.build()}
       />,
       { state },
     );

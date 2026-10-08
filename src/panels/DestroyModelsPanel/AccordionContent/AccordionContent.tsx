@@ -3,10 +3,10 @@ import { Button, Icon, MainTable } from "@canonical/react-components";
 import type { MainTableRow } from "@canonical/react-components/dist/components/MainTable/MainTable";
 import { useMemo, type JSX } from "react";
 
-import type { ModelDestructionData } from "hooks/useModelDestructionData";
 import { getWSControllerURL } from "store/general/selectors";
 import { actions as jujuActions } from "store/juju";
 import { getSelectedModelForDestruction } from "store/juju/selectors";
+import type { ModelDestructionData } from "store/juju/types";
 import { useAppDispatch, useAppSelector } from "store/store";
 import filterBoolean from "utils/filterBoolean";
 

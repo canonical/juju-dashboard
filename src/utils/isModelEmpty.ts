@@ -1,4 +1,4 @@
-import type { ModelDestructionData } from "hooks/useModelDestructionData";
+import type { ModelDestructionData } from "store/juju/types";
 
 export const isModelEmpty = (data: ModelDestructionData): boolean =>
   data.applications.length === 0 &&
