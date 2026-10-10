@@ -42,6 +42,7 @@ const CategoriesListing = ({
   setYAMLErrors,
   yamlErrorLabel,
   isLoading = false,
+  listModeDisabled = false,
   onSwitchWhileLoading,
 }: Props): JSX.Element => {
   const id = useId();
@@ -52,7 +53,7 @@ const CategoriesListing = ({
 
   const entries: ConfigFieldEntry[] = values[arrayName];
 
-  const isListMode = values[inputMode] === InputMode.LIST;
+  const isListMode = !listModeDisabled && values[inputMode] === InputMode.LIST;
   const handleModeChange = (isListModeSelected: boolean): void => {
     if (!isListModeSelected) {
       void setFieldValue(yamlKey, buildYAML(entries));
@@ -128,34 +129,36 @@ const CategoriesListing = ({
           {docsLabel}
         </a>
       </p>
-      <div className="u-flex u-flex--gap">
-        <div>
-          <RadioInput
-            checked={isListMode}
-            label={InputMode.LIST}
-            name={`mode-${id}`}
-            onChange={() => {
-              if (isLoading && values[yamlKey]) {
-                onSwitchWhileLoading?.();
-                return;
-              }
-              handleModeChange(true);
-            }}
-            value={InputMode.LIST}
-          />
+      {!listModeDisabled && (
+        <div className="u-flex u-flex--gap">
+          <div>
+            <RadioInput
+              checked={isListMode}
+              label={InputMode.LIST}
+              name={`mode-${id}`}
+              onChange={() => {
+                if (isLoading && values[yamlKey]) {
+                  onSwitchWhileLoading?.();
+                  return;
+                }
+                handleModeChange(true);
+              }}
+              value={InputMode.LIST}
+            />
+          </div>
+          <div>
+            <RadioInput
+              checked={!isListMode}
+              label={InputMode.YAML}
+              name={`mode-${id}`}
+              onChange={() => {
+                handleModeChange(false);
+              }}
+              value={InputMode.YAML}
+            />
+          </div>
         </div>
-        <div>
-          <RadioInput
-            checked={!isListMode}
-            label={InputMode.YAML}
-            name={`mode-${id}`}
-            onChange={() => {
-              handleModeChange(false);
-            }}
-            value={InputMode.YAML}
-          />
-        </div>
-      </div>
+      )}
       {isListMode ? (
         <>
           <div className="row u-no-padding">
