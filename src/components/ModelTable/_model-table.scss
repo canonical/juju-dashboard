@@ -48,6 +48,8 @@
       width: 7rem;
     }
 
+    // Width is set only on non-grouped columns — the grouped column's
+    // rowspan cell must remain unconstrained for the group header layout.
     &.status-group {
       .cloud,
       .owner {

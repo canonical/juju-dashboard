@@ -25,7 +25,7 @@ import { useAppSelector } from "store/store";
 import CloudCell from "./CloudCell";
 import ModelSummary from "./ModelSummary";
 import WarningMessage from "./WarningMessage";
-import { getCredential, getRegion } from "./shared";
+import { getCredential, getRegion } from "./utils";
 
 type Props = {
   models: ModelData[];
