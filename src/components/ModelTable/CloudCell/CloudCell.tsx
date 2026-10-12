@@ -8,7 +8,7 @@ import kubernetesLogo from "static/images/logo/cloud/kubernetes.svg";
 import type { ModelData } from "store/juju/types";
 import { testId } from "testing/utils";
 
-import { generateCloudAndRegion } from "../shared";
+import { generateCloudAndRegion } from "../utils";
 
 import { TestId } from "./types";
 

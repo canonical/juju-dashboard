@@ -25,7 +25,7 @@ import { useAppSelector } from "store/store";
 import CloudCell from "./CloudCell";
 import ModelSummary from "./ModelSummary";
 import WarningMessage from "./WarningMessage";
-import { getCredential, getRegion } from "./shared";
+import { getCredential, getRegion } from "./utils";
 
 type Props = {
   models: ModelData[];
@@ -110,22 +110,22 @@ export default function ModelTable({
             return (
               <>
                 <TruncatedTooltip message={`${name} (${model.model.version})`}>
-                  <ModelDetailsLink modelName={name} qualifier={qualifier}>
+                  <ModelDetailsLink
+                    className="u-sh1--right"
+                    modelName={name}
+                    qualifier={qualifier}
+                  >
                     {name}
                   </ModelDetailsLink>
                   {isUpgrading ? null : (
-                    <ModelVersion
-                      className="models__version"
-                      modelName={name}
-                      qualifier={qualifier}
-                    />
+                    <ModelVersion modelName={name} qualifier={qualifier} />
                   )}
                 </TruncatedTooltip>
                 {isModelDying ? (
                   <div className="p-text-small">Destroying model...</div>
                 ) : null}
                 {isUpgrading ? (
-                  <>
+                  <span>
                     <ModelVersion
                       modelName={name}
                       qualifier={qualifier}
@@ -137,7 +137,7 @@ export default function ModelTable({
                       qualifier={qualifier}
                       versionOverride={upgrade.upgradeVersion}
                     />
-                  </>
+                  </span>
                 ) : null}
                 <WarningMessage model={model} />
               </>
@@ -232,15 +232,16 @@ export default function ModelTable({
             }
 
             return (
-              <TruncatedTooltip message={controller.name}>
-                {controller.name}
+              <TruncatedTooltip
+                message={`${controller.name}${controller.version ? ` (${controller.version})` : ""}`}
+              >
+                <span className="u-sh1--right">{controller.name}</span>
                 {controller.version ? (
                   <Chip
                     isReadOnly
                     isInline
                     isDense
                     value={controller.version}
-                    className="models__version"
                   />
                 ) : null}
               </TruncatedTooltip>
