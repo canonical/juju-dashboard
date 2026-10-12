@@ -78,10 +78,16 @@ The following QA steps should be preformed in each of the
 The release process is governed via a collection of automations. Release branches are maintained by
 the [`create-cut-pr.yml`](.github/workflows/create-cut-pr.yml) and
 [`create-release-pr.yml`](.github/workflows/create-release-pr.yml) workflows. A cut PR is used to
-create a new release branch off of the main branch. As long as this release branch is open, that
+create a new release branch off of `main`. As long as this release branch is open, that
 version of the dashboard may receive updates and features.
-[`release.yml`](.github/workflows/release.yml) monitors these branches, and whenever a new version
-of the dashboard is merged, it will build, release, and promote the charms on [Charmhub](https://charmhub.io/) as required.
+[`release.yml`](.github/workflows/release.yml) watches `release/x.y` branches. When it sees a
+version that is not yet published on Charmhub, it builds, releases, and promotes the charms on
+[Charmhub](https://charmhub.io/).
+
+Developers add release notes directly to the `## Unreleased` section of `CHANGELOG.md` on a
+`release/x.y` branch. The automations do not parse commit messages or PR labels for changelog
+entries. The release PR finalises `CHANGELOG.md` by moving the current `## Unreleased` entries
+under a versioned heading before the PR is merged.
 
 The charms are built using the `build.sh` scripts located at
 [`charms/k8s-charm/build.sh`](charms/k8s-charm/build.sh) and
@@ -90,18 +96,44 @@ also be run manually.
 
 ### Prepare a new major or minor release
 
-1. Merge a PR into `main` with the `severity: major` or `severity:minor` label attached.
+1. Merge a PR into `main` with the `severity: major` or `severity: minor` label attached.
 2. After a few minutes, an automation will create a PR named `chore(release): cut x.y release`.
-3. Merge the new PR to 'cut' the release, and create a new `release/x.y` branch. From this point
-   onwards, the release has diverged from `main`.
+3. Merge the new PR to 'cut' the release and create a new `release/x.y` branch. A new
+   `CHANGELOG.md` is created automatically; the `## Unreleased` section is blank for a major
+   release, and inherits `main`'s current entries for a minor release. From this point onwards,
+   the release has diverged from `main`.
 4. As required, merge additional PRs into `release/x.y` as needed, for release-only functionality.
-5. After a few minutes, an automation will create a PR named `Release x.y.0-beta.0`. The release's
-   changelog will be in the description of the PR, and it can be edited as desired.
-6. When this PR is merged a beta release will be published, and a `Release x.y.0` PR will be
-   created.
-7. If further changes are pushed to `release/x.y`, this PR will be closed in favour for a new
-   `Release x.y.0-beta.1`. Instead if it is merged, a stable released will be published to the
-   `x.y/candidate` channel.
-8. After QA testing, the stable release can be promoted by running the [`Promote release to stable`](https://github.com/canonical/juju-dashboard/actions/workflows/promote-to-stable.yml)
-   action, ensuring that the `release/x.y` branch is seleted from the `Use workflow from`
-   drowpdown.
+   Add the changelog entries for these PRs under `## Unreleased` in `CHANGELOG.md` on the
+   `release/x.y` branch.
+5. Once there are entries under `## Unreleased`, an automation will create a PR named
+   `Release x.y.0-beta.0`.
+6. When this PR is merged a beta release will be published to the `x.y/beta` channel, and a
+   `Release x.y.0` PR will be created.
+7. If further changes are pushed to `release/x.y`, the `Release x.y.0` PR will be closed in
+   favour of a new `Release x.y.0-beta.1`. When that beta PR is merged, beta release
+   `x.y.0-beta.1` will be published to the `x.y/beta` channel.
+8. When a `Release x.y.0` PR is merged, a stable release will be published to the `x.y/candidate`
+   channel. Stable release notes are aggregated from `## Unreleased` plus any `## [x.y.z-beta.*]`
+   sections since the previous stable release.
+9. After QA testing, the stable release can be promoted by running the [`Promote release to stable`](https://github.com/canonical/juju-dashboard/actions/workflows/promote-to-stable.yml)
+   action, ensuring that the `release/x.y` branch is selected from the `Use workflow from`
+   dropdown.
+
+### Bootstrapping an existing release branch
+
+If a `release/x.y` branch already exists but is not using this new release process, add a
+`CHANGELOG.md` at the root of the branch with the following content:
+
+```markdown
+# Changelog
+
+## Unreleased
+```
+
+Then update `package.json` to the version that has already been published (e.g. `x.y.z` or
+`x.y.z-beta.w`), and ensure a corresponding `v<version>` GitHub tag already exists. `release.yml`
+uses the presence of a `refs/tags/v<version>` tag in its workflow-level run check, and the
+upload/promote steps are each gated by per-charm Charmhub idempotence. Without the tag, the
+workflow would proceed past the run check and attempt to publish an already-published version.
+Once both the `CHANGELOG.md` update and tag are in place, a release PR for the next relevant
+version will be opened automatically when the next change lands on the branch.

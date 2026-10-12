@@ -103,6 +103,7 @@ export default class Git {
    * Stage and commit the specified files, with a commit message.
    */
   async commit(message: string, files: string[]): Promise<void> {
+    await this.exec("add", "--", ...files);
     await this.exec("commit", "-m", message, "--", ...files);
   }
 
