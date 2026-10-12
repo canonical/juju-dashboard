@@ -125,7 +125,7 @@ runs:
         juju add-model jimm
         juju deploy juju-jimm-k8s --channel="${INPUTS_JIMM_CHANNEL}" jimm --config postgres-secret-storage=true
         juju deploy openfga-k8s --channel=edge openfga
-        juju deploy postgresql-k8s --channel=16/edge postgresql
+        juju deploy postgresql-k8s --trust --channel=16/edge postgresql --force
         juju deploy traefik-k8s --channel=latest/stable --trust ingress
         juju trust postgresql --scope=cluster
       env:
