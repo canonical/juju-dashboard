@@ -17,6 +17,10 @@ on:
         required: false
         type: string
         description: Charm channel of Juju to use.
+      jimm-channel:
+        required: false
+        type: string
+        description: The JIMM charm channel to use.
       send-notification:
         required: false
         type: boolean
@@ -65,6 +69,7 @@ jobs:
         uses: ./.github/actions/setup-jimm
         with:
           juju-channel: ${{ inputs.juju-channel || steps.config.outputs.juju-channel }}
+          jimm-channel: ${{ inputs.jimm-channel }}
       - name: Set up Juju Dashboard k8s charm
         uses: ./.github/actions/setup-k8s-charm
         with:
