@@ -68,6 +68,28 @@ runs:
       run: |
         cd iam-bundle-integration
         terraform -chdir=examples/tutorial init
+
+        # Temporary compatibility workaround for Juju 4 in fresh CI environments.
+        if [[ "$(juju version)" == 4.* ]]; then
+          terraform -chdir=examples/tutorial apply \
+            -target=juju_model.core -auto-approve
+
+          # Match the tutorial's existing PostgreSQL settings.
+          juju deploy -m core postgresql-k8s postgresql-k8s \
+            --channel=14/edge \
+            --base=ubuntu@22.04 \
+            --num-units=1 \
+            --constraints="arch=amd64" \
+            --storage="pgdata=10G" \
+            --trust --force
+
+          CORE_UUID=$(juju show-model core --format=json | yq -r '.core."model-uuid"')
+
+          terraform -chdir=examples/tutorial import \
+            'module.postgresql.juju_application.k8s_postgresql' \
+            "${CORE_UUID}:postgresql-k8s"
+        fi
+
         terraform -chdir=examples/tutorial apply -auto-approve
     - name: Switch to IAM model
       shell: bash
