@@ -1,5 +1,6 @@
 import {
   Button,
+  ContextualMenu,
   Icon,
   Notification as ReactNotification,
   SearchAndFilter,
@@ -16,7 +17,6 @@ import ChipGroup from "components/ChipGroup";
 import DestroyModelDialog from "components/DestroyModelDialog";
 import LoadingSpinner from "components/LoadingSpinner";
 import ModelTable from "components/ModelTable";
-import SegmentedControl from "components/SegmentedControl";
 import { VALID_MODEL_GROUPINGS } from "consts";
 import { useCanAddModel } from "hooks/useCanAddModel";
 import useModelAttributes from "hooks/useModelAttributes";
@@ -284,20 +284,29 @@ export default function Models(): JSX.Element {
               }
             }}
           />
-          <span>
-            <span className="p-text--default">Group by: </span>
-            <SegmentedControl
-              activeButton={queryParams.groupedby}
-              buttons={VALID_MODEL_GROUPINGS.map((group) => ({
+          <ContextualMenu
+            className="models__group-by"
+            hasToggleIcon
+            toggleClassName="u-no-margin--bottom"
+            toggleProps={{ appearance: "base", dense: true }}
+            toggleLabel="Group by"
+            links={VALID_MODEL_GROUPINGS.map((group) => {
+              const selected = group === queryParams.groupedby;
+              return {
                 children: <span className="u-capitalise">{group}</span>,
                 key: group,
+                element: Link,
                 to: urls.models.group({
                   groupedby: group as ModelsGroupedBy,
                 }),
-              }))}
-              buttonComponent={Link}
-            />
-          </span>
+                // Links have no onClick, and the menu only closes on items that do.
+                onClick: (): void => {},
+                role: "menuitemradio",
+                "aria-checked": selected,
+                className: classNames({ "is-selected": selected }),
+              };
+            })}
+          />
         </span>
         <div className={classNames("models", `${groupBy}-group`)}>
           <ChipGroup chips={{ blocked, alert, running }} />
