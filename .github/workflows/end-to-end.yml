@@ -126,7 +126,6 @@ jobs:
       webbot-url: ${{ secrets.WEBBOT_URL }}
     with:
       juju-channel: "4.0/candidate" # Use the candidate channel while Juju 4.0 is in development.
-      send-notification: false
     if: |
       github.event_name != 'pull_request' || (
         (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
