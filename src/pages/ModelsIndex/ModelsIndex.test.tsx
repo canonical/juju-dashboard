@@ -146,13 +146,16 @@ describe("Models Index page", () => {
       url: urls.models.group({ groupedby: "status" }),
     });
 
-    expect(screen.getByRole("tab", { name: "status" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
-    const ownerButton = screen.getByRole("tab", { name: "owner" });
-    await userEvent.click(ownerButton);
-    expect(ownerButton).toHaveAttribute("aria-selected", "true");
+    await userEvent.click(screen.getByRole("button", { name: "Group by" }));
+    expect(
+      screen.getByRole("menuitemradio", { name: "status" }),
+    ).toHaveAttribute("aria-checked", "true");
+    await userEvent.click(screen.getByRole("menuitemradio", { name: "owner" }));
+    expect(screen.queryByRole("menuitemradio")).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Group by" }));
+    expect(
+      screen.getByRole("menuitemradio", { name: "owner" }),
+    ).toHaveAttribute("aria-checked", "true");
     const searchParams = new URLSearchParams(router.state.location.search);
     expect(searchParams.get("groupedby")).toEqual("owner");
 
