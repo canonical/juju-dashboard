@@ -76,10 +76,10 @@ describe("ModelTabs", () => {
         query: ModelTab.MACHINES,
       },
     ];
-    expect(screen.getAllByRole("link")).toHaveLength(sections.length);
+    expect(screen.getAllByRole("tab")).toHaveLength(sections.length);
     sections.forEach((section) => {
       expect(
-        screen.getByRole("link", { name: section.text }),
+        screen.getByRole("tab", { name: section.text }),
       ).toBeInTheDocument();
     });
   });
@@ -96,7 +96,7 @@ describe("ModelTabs", () => {
     };
     renderComponent(<ModelTabs />, { path, url, state });
     expect(
-      screen.queryByRole("link", { name: Label.MACHINES }),
+      screen.queryByRole("tab", { name: Label.MACHINES }),
     ).not.toBeInTheDocument();
   });
 
@@ -108,7 +108,7 @@ describe("ModelTabs", () => {
     });
     renderComponent(<ModelTabs />, { path, url, state });
     expect(
-      screen.getByRole("link", { name: Label.SECRETS }),
+      screen.getByRole("tab", { name: Label.SECRETS }),
     ).toBeInTheDocument();
   });
 
@@ -137,7 +137,7 @@ describe("ModelTabs", () => {
       }),
     ];
     renderComponent(<ModelTabs />, { path, url, state });
-    expect(screen.getByRole("link", { name: Label.LOGS })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: Label.LOGS })).toBeInTheDocument();
   });
 
   it("clicking the tabs changes the visible section", async () => {
@@ -170,7 +170,7 @@ describe("ModelTabs", () => {
       },
     ];
     for (const section of sections) {
-      await userEvent.click(screen.getByRole("link", { name: section.text }));
+      await userEvent.click(screen.getByRole("tab", { name: section.text }));
       expect(router.state.location.search).toEqual(
         `?activeView=${section.query}`,
       );
@@ -180,7 +180,7 @@ describe("ModelTabs", () => {
   it("scrolls tabs into view", async () => {
     renderComponent(<ModelTabs />, { path, url, state });
     const scrollIntoView = vi.fn();
-    fireEvent.click(screen.getByRole("link", { name: Label.APPLICATIONS }), {
+    fireEvent.click(screen.getByRole("tab", { name: Label.APPLICATIONS }), {
       target: {
         scrollIntoView,
       },
