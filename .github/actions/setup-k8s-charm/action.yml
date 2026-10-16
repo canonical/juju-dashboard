@@ -50,7 +50,7 @@ runs:
       if: ${{ env.build_type != 'charm-release' }}
       shell: bash
       run: |
-        "${{ github.workspace }}/charms/k8s-charm/build.sh" \
+        "${{ github.workspace }}/charms/build-k8s.sh" \
           "${build_type}" \
           "${INPUTS_DASHBOARD_RESOURCE}" \
           "--platform ubuntu@24.04:amd64" \
@@ -76,7 +76,7 @@ runs:
         INPUTS_CHARM_CHANNEL: ${{ inputs.charm-channel }}
     - name: Deploy built charm
       if: ${{ env.build_type != 'charm-release' }}
-      run: juju deploy ${{ github.workspace }}/charms/k8s-charm/juju-dashboard*.charm dashboard --resource "dashboard-image=${STEPS_DASHBOARD_IMAGE_OUTPUTS_ID}"
+      run: juju deploy ${{ github.workspace }}/charms/juju-dashboard*.charm dashboard --resource "dashboard-image=${STEPS_DASHBOARD_IMAGE_OUTPUTS_ID}"
       shell: bash
       env:
         STEPS_DASHBOARD_IMAGE_OUTPUTS_ID: ${{ steps.dashboard-image.outputs.id }}
