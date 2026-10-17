@@ -30,7 +30,7 @@ jobs:
           name: juju-dashboard-coverage
           path: coverage
       - name: Run TICS analysis with github-action
-        uses: tiobe/tics-github-action@016a4d79f3027fe7b4a2901619a58c745ab7cadf # v3
+        uses: tiobe/tics-github-action@06afa6781ba53ab58efbe766d41d84febad1f683 # v4
         with:
           mode: qserver
           project: juju-dashboard
