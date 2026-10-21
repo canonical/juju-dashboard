@@ -128,7 +128,7 @@ describe("useQueryParams", () => {
       { url: "?xss=<img src=x onerror=alert(1)//>" },
     );
     const [searchParams] = result.current;
-    expect(searchParams.xss).toStrictEqual('<img src="x">');
+    expect(searchParams.xss).toStrictEqual("");
   });
 
   it("should sanitize existing query params key in url", () => {
@@ -151,8 +151,7 @@ describe("useQueryParams", () => {
       setSearchParams({ panel: "config" });
     });
     expect(router?.state.location.search).toStrictEqual(
-      // Decoded: ?panel=config&$<svg><g></g></svg>=something
-      "?panel=config&%3Csvg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E=something", // spell-checker:disable-line
+      "?panel=config&=something",
     );
   });
 
@@ -167,6 +166,6 @@ describe("useQueryParams", () => {
       setSearchParams({ xss: "<img src=x onerror=alert(1)//>" });
     });
     [searchParams] = result.current;
-    expect(searchParams.xss).toStrictEqual('<img src="x">');
+    expect(searchParams.xss).toStrictEqual("");
   });
 });
