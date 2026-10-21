@@ -51,7 +51,7 @@ test.describe("secrets", () => {
 
     // Go to the secrets tab inside the model
     await page.getByRole("link", { name: model.name }).click();
-    await page.getByRole("link", { name: ModelTabsLabel.SECRETS }).click();
+    await page.getByRole("tab", { name: ModelTabsLabel.SECRETS }).click();
 
     await page.getByRole("button", { name: SecretsLabel.ADD }).click();
     await expect(
@@ -87,7 +87,7 @@ test.describe("secrets", () => {
     const secretURI = `secret:${secretID}`;
 
     // Go to the application inside the model
-    await page.getByRole("link", { name: ModelTabsLabel.APPLICATIONS }).click();
+    await page.getByRole("tab", { name: ModelTabsLabel.APPLICATIONS }).click();
     await page.getByRole("link", { name: application.name }).click();
 
     await page.getByRole("button", { name: AppLabel.CONFIGURE }).click();
