@@ -2,7 +2,7 @@
 max-line-length = 99
 select: E,W,F,C,N
 exclude:
-  venv
+  .venv
   .git
   build
   dist

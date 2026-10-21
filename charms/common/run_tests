@@ -1,0 +1,13 @@
+#!/bin/sh -e
+# Copyright 2026 Canonical
+# See LICENSE file for licensing details.
+
+if [ -z "$PYTHONPATH" ]; then
+    export PYTHONPATH="lib:src"
+else
+    export PYTHONPATH="lib:src:$PYTHONPATH"
+fi
+
+uv run flake8
+uv run coverage run --source=src -m unittest -v "$@"
+uv run coverage report -m

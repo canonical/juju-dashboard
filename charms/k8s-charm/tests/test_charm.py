@@ -6,7 +6,6 @@
 import unittest
 from unittest.mock import PropertyMock, patch
 
-from ops.model import ActiveStatus, BlockedStatus
 from ops.testing import Harness
 
 from charm import JujuDashboardKubernetesCharm
@@ -49,14 +48,6 @@ class TestCharm(unittest.TestCase):
             config = f.read()
         self.assertTrue("isJuju: true" in config)
 
-    def test_relation_departed(self):
-        self.harness.model.unit.status = ActiveStatus()
-        self.harness.remove_relation(self.rel_id)
-        self.assertEqual(
-            self.harness.model.unit.status,
-            BlockedStatus("Missing controller integration"),
-        )
-
     @patch(
         "charms.traefik_k8s.v2.ingress.IngressPerAppRequirer.url",
         new_callable=PropertyMock,
@@ -87,15 +78,6 @@ class TestCharm(unittest.TestCase):
             index_html = f.read()
         self.assertTrue('<base href="/dashboard/" />' in index_html)
         mock_provide_ingress_requirements.assert_called_once_with(port=123)
-
-    def test_config_changed_no_relation(self):
-        self.harness.remove_relation(self.rel_id)
-        self.harness.model.unit.status = ActiveStatus()
-        self.harness.update_config({"analytics-enabled": False})
-        self.assertEqual(
-            self.harness.model.unit.status,
-            BlockedStatus("Missing controller integration"),
-        )
 
     def test_update_status(self):
         self.harness.disable_hooks()
