@@ -102,7 +102,6 @@ jobs:
       webbot-url: ${{ secrets.WEBBOT_URL }}
     with:
       juju-channel: "4.0/candidate" # Use the candidate channel while Juju 4.0 is in development.
-      send-notification: false
     if: |
       github.event_name != 'pull_request' || (
         (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
@@ -114,7 +113,6 @@ jobs:
       webbot-url: ${{ secrets.WEBBOT_URL }}
     with:
       juju-channel: "4.0/candidate" # Use the candidate channel while Juju 4.0 is in development.
-      send-notification: false
     if: |
       github.event_name != 'pull_request' || (
         (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
@@ -127,7 +125,5 @@ jobs:
     with:
       juju-channel: "4.0/candidate" # Use the candidate channel while Juju 4.0 is in development.
       send-notification: false
-    if: |
-      github.event_name != 'pull_request' || (
-        (github.event.action == 'labeled' && github.event.label.name == 'e2e') ||
-        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'e2e')))
+    # Disabled until JIMM has been tested on a Juju 4 controller.
+    if: false
