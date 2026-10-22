@@ -11,10 +11,6 @@
     grid-template-columns: 1fr;
     white-space: nowrap;
 
-    .p-segmented-control {
-      display: inline-block;
-    }
-
     @media (min-width: $breakpoint-large) {
       display: flex;
       gap: $sp-unit;
@@ -22,13 +18,6 @@
 
       .p-search-and-filter {
         min-width: 745px;
-      }
-    }
-
-    @include mobile-and-medium {
-      .p-segmented-control {
-        display: flex;
-        flex-direction: column;
       }
     }
   }
@@ -42,4 +31,8 @@
     left: calc(50% - 0.875rem);
     margin-bottom: -0.5rem;
   }
+}
+
+.models__group-by .is-selected {
+  font-weight: $font-weight-bold;
 }
