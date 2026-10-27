@@ -146,19 +146,39 @@ describe("Models Index page", () => {
       url: urls.models.group({ groupedby: "status" }),
     });
 
-    expect(screen.getByRole("tab", { name: "status" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
-    const ownerButton = screen.getByRole("tab", { name: "owner" });
-    await userEvent.click(ownerButton);
-    expect(ownerButton).toHaveAttribute("aria-selected", "true");
+    const toggle = screen.getByRole("button", {
+      name: `${Label.GROUP_BY} status`,
+    });
+
+    await userEvent.click(toggle);
+    expect(screen.getByRole("menuitemradio", { name: "status" })).toBeChecked();
+
+    await userEvent.click(screen.getByRole("menuitemradio", { name: "owner" }));
+    expect(screen.queryByRole("menuitemradio")).not.toBeInTheDocument();
+    expect(toggle).toHaveAccessibleName(`${Label.GROUP_BY} owner`);
+
+    await userEvent.click(toggle);
+    expect(screen.getByRole("menuitemradio", { name: "owner" })).toBeChecked();
+
     const searchParams = new URLSearchParams(router.state.location.search);
     expect(searchParams.get("groupedby")).toEqual("owner");
 
     // Find the header, and ensure that it's the first child.
     const header = screen.getByRole("columnheader", { name: "Owner" });
     expect(header.parentElement?.children[0]).toEqual(header);
+  });
+
+  it("falls back to status grouping for an invalid groupedby value", async () => {
+    renderComponent(<ModelsIndex />, {
+      state,
+      path: urls.models.index,
+      url: `${urls.models.index}?groupedby=invalid`,
+    });
+    const toggle = screen.getByRole("button", {
+      name: `${Label.GROUP_BY} status`,
+    });
+    await userEvent.click(toggle);
+    expect(screen.getByRole("menuitemradio", { name: "status" })).toBeChecked();
   });
 
   it("should display the correct window title", () => {
