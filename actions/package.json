@@ -16,11 +16,11 @@
     "@actions/github": "9.1.1"
   },
   "devDependencies": {
-    "@octokit/types": "17.0.0",
+    "@octokit/types": "18.0.0",
     "@vercel/ncc": "0.44.1",
-    "eslint": "9.39.5",
-    "typescript": "6.0.3",
+    "eslint": "10.13.0",
+    "typescript": "7.0.2",
     "vite": "8.2.4",
-    "vitest": "4.1.11"
+    "vitest": "5.0.5"
   }
 }
