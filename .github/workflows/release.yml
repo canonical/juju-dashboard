@@ -15,7 +15,7 @@ defaults:
 jobs:
   run-check:
     name: "Determine if workflow should run"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     if: |
       github.event_name == 'workflow_dispatch' ||
@@ -93,7 +93,7 @@ jobs:
 
   release:
     name: "Release Juju Dashboard"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     needs: [run-check]
     if: needs.run-check.outputs.should-run == 'true'
@@ -260,7 +260,7 @@ jobs:
     name: "Create tags and releases"
     permissions:
       contents: write
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     needs: [run-check, release]
 
@@ -325,7 +325,7 @@ jobs:
 
   sentry-release:
     name: "Create Sentry release"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     needs: [run-check, release]
 
