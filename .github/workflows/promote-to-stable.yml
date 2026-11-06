@@ -14,7 +14,7 @@ jobs:
     name: Check promotion conditions
     permissions:
       contents: write
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     outputs:
       tag: ${{ steps.tag.outputs.name }}
@@ -99,7 +99,7 @@ jobs:
   promote-candidate:
     name: Promote to stable
     needs: [check-valid-promotion]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     if: ${{ needs.check-valid-promotion.outputs.risk == 'candidate' }}
 
@@ -132,7 +132,7 @@ jobs:
     needs: [check-valid-promotion, promote-candidate]
     permissions:
       contents: write
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -163,7 +163,7 @@ jobs:
   already-promoted:
     name: Candidate already promoted
     needs: [check-valid-promotion]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     if: ${{ needs.check-valid-promotion.outputs.risk == 'stable' }}
 
@@ -176,7 +176,7 @@ jobs:
   no-candidate:
     name: No candidate
     needs: [check-valid-promotion]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     if: ${{ needs.check-valid-promotion.outputs.risk != 'stable' && needs.check-valid-promotion.outputs.risk != 'candidate' }}
 
