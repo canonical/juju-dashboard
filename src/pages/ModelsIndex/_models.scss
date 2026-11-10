@@ -7,29 +7,21 @@
   &__controls {
     display: grid;
     flex-wrap: wrap;
-    gap: 0;
+    gap: $sph--small;
     grid-template-columns: 1fr;
     white-space: nowrap;
 
-    .p-segmented-control {
-      display: inline-block;
-    }
-
     @media (min-width: $breakpoint-large) {
       display: flex;
-      gap: $sp-unit;
-      justify-content: space-between;
 
       .p-search-and-filter {
+        flex: 1;
         min-width: 745px;
       }
     }
 
-    @include mobile-and-medium {
-      .p-segmented-control {
-        display: flex;
-        flex-direction: column;
-      }
+    @media (width >= 1360px) {
+      gap: $sp-unit * 17;
     }
   }
 
@@ -41,5 +33,9 @@
   .p-tooltip--top-center .p-tooltip__message {
     left: calc(50% - 0.875rem);
     margin-bottom: -0.5rem;
+  }
+
+  &__group-by-menu [aria-checked="true"] {
+    background-color: $colors--theme--background-active;
   }
 }
