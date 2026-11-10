@@ -41,7 +41,7 @@ const toCredentialOptions = (
   credentials: string[],
 ): OptionHTMLAttributes<HTMLOptionElement>[] =>
   credentials.map((credential) => {
-    const credentialName = extractCredentialName(credential);
+    const { name: credentialName } = extractCredentialName(credential);
     return {
       label: credentialName,
       value: credential,
@@ -97,16 +97,15 @@ const MandatoryDetails = (): JSX.Element => {
   }, [values.credential, values.cloud, userCredentials, setFieldValue]);
 
   // Start polling for credentials when a cloud is selected and credentials are not yet loaded.
+  const credentialsLoaded = selectedCloud
+    ? !!userCredentials.credentials[selectedCloud]
+    : false;
   useEffect(() => {
-    if (
-      wsControllerURL &&
-      selectedCloud &&
-      !userCredentials.credentials[selectedCloud]
-    ) {
+    if (wsControllerURL && selectedCloud && !credentialsLoaded) {
       dispatch(
         userCredentialsMiddleware.actions.start({
           wsControllerURL,
-          cloudTag: selectedCloud,
+          cloudTags: [selectedCloud],
         }),
       );
     }
@@ -115,12 +114,12 @@ const MandatoryDetails = (): JSX.Element => {
         dispatch(
           userCredentialsMiddleware.actions.stop({
             wsControllerURL,
-            cloudTag: selectedCloud,
+            cloudTags: [selectedCloud],
           }),
         );
       }
     };
-  }, [dispatch, wsControllerURL, selectedCloud, userCredentials.credentials]);
+  }, [dispatch, wsControllerURL, selectedCloud, credentialsLoaded]);
 
   // Start polling for live model config defaults when a cloud is selected.
   const providerType = selectedCloud

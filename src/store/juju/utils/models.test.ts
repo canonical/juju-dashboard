@@ -11,6 +11,7 @@ import { modelDataFactory } from "testing/factories/juju/juju";
 
 import {
   canAdministerModel,
+  extractCredentialName,
   generateIconPath,
   pluralize,
   getModelStatusGroupData,
@@ -30,6 +31,77 @@ describe("getModelQualifier", () => {
       "owner-tag": "user-eggman@external",
     });
     expect(getModelQualifier(modelInfo)).toBe("eggman@external");
+  });
+});
+
+describe("extractCredentialName", () => {
+  it.for([null, undefined, ""] as const)(
+    "returns placeholders if the tag is %j",
+    (tag, { expect }) => {
+      expect(extractCredentialName(tag)).toStrictEqual({
+        cloud: "-",
+        user: "-",
+        name: "-",
+      });
+    },
+  );
+
+  it("splits a tag into the cloud, user and credential", () => {
+    expect(extractCredentialName("cloudcred-aws_admin_default")).toStrictEqual({
+      cloud: "aws",
+      user: "admin",
+      name: "default",
+    });
+  });
+
+  it("handles external users", () => {
+    expect(
+      extractCredentialName("cloudcred-google_eggman@external_juju"),
+    ).toStrictEqual({ cloud: "google", user: "eggman@external", name: "juju" });
+  });
+
+  it("handles underscores in the name of an external user", () => {
+    expect(
+      extractCredentialName("cloudcred-aws_egg_man@external_aws-cred"),
+    ).toStrictEqual({
+      cloud: "aws",
+      user: "egg_man@external",
+      name: "aws-cred",
+    });
+  });
+
+  it("handles underscores in the credential name of an external user", () => {
+    expect(
+      extractCredentialName("cloudcred-aws_eggman@external_my_cred"),
+    ).toStrictEqual({
+      cloud: "aws",
+      user: "eggman@external",
+      name: "my_cred",
+    });
+  });
+
+  it("handles underscores in the credential name of a local user", () => {
+    expect(extractCredentialName("cloudcred-aws_admin_my_cred")).toStrictEqual({
+      cloud: "aws",
+      user: "admin",
+      name: "my_cred",
+    });
+  });
+
+  it.for([
+    "cloudcred-aws",
+    "cloudcred-aws_admin",
+    "cloudcred-aws_admin_",
+    "cloudcred-aws_eggman@external",
+    "cloudcred-aws_eggman@external_",
+    "cloudcred-@external_name",
+    "cloudcred-aws_@external_name",
+  ])("returns placeholders for the malformed tag %j", (tag, { expect }) => {
+    expect(extractCredentialName(tag)).toStrictEqual({
+      cloud: "-",
+      user: "-",
+      name: "-",
+    });
   });
 });
 
