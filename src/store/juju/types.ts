@@ -204,6 +204,14 @@ export type BlockEntry = {
 
 export type BlockState = Record<string, BlockEntry>;
 
+export type RemoveCredentialEntry = {
+  running: boolean;
+  status: "pending" | null;
+  outcome: null | ProcessOutcome<void>;
+};
+
+export type RemoveCredentialState = Record<string, RemoveCredentialEntry>;
+
 export enum DestroyBlockedReason {
   IS_CONTROLLER = "isController",
   NO_ACCESS = "noAccess",
@@ -270,4 +278,5 @@ export type JujuState = {
   supportedJujuVersions: SupportedJujuVersionsState;
   addModelState: AddModelState;
   blockState: BlockState;
+  removeCredential: RemoveCredentialState;
 };
