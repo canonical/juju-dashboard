@@ -496,7 +496,7 @@ export const getActiveUser = createSelector(
 
 export const getModelCredential = createSelector(
   [getModelDataByUUID],
-  (model) => extractCredentialName(model?.info?.["cloud-credential-tag"]),
+  (model) => extractCredentialName(model?.info?.["cloud-credential-tag"]).name,
 );
 
 export const getModelAccess = createSelector(
@@ -729,7 +729,7 @@ export const getFilteredModelData = createSelector(
         "model" in data ? extractCloudName(data.model["cloud-tag"]) : null;
       const credential =
         "info" in data
-          ? extractCredentialName(data.info?.["cloud-credential-tag"])
+          ? extractCredentialName(data.info?.["cloud-credential-tag"]).name
           : null;
       const region = "model" in data ? data.model.region : null;
       const owner = data.info

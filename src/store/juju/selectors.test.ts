@@ -3402,6 +3402,7 @@ describe("getUserCredentialsState", () => {
     expect(getUserCredentialsState(state)).toStrictEqual({
       credentials: {},
       errors: null,
+      loaded: false,
       loading: false,
     });
   });

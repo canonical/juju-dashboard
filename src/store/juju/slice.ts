@@ -151,6 +151,7 @@ const slice = createSlice({
     userCredentials: {
       credentials: {},
       errors: null,
+      loaded: false,
       loading: false,
     },
     modelConfigDefaults: {
@@ -282,6 +283,7 @@ const slice = createSlice({
       state.userCredentials = {
         credentials: {},
         errors: null,
+        loaded: false,
         loading: false,
       };
     },
@@ -827,7 +829,6 @@ const slice = createSlice({
       {
         payload,
       }: PayloadAction<{
-        cloudTag: string;
         update: Partial<SourceData<Record<string, string[]>>>;
       }>,
     ) => {
@@ -836,6 +837,7 @@ const slice = createSlice({
       value.loading = payload.update.loading ?? value.loading;
       if (payload.update.data !== undefined) {
         value.credentials = { ...value.credentials, ...payload.update.data };
+        value.loaded = true;
       }
       if (payload.update.error !== undefined) {
         value.errors = payload.update.error;
