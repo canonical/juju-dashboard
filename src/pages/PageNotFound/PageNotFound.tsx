@@ -27,6 +27,9 @@ export default function PageNotFound(
                 <li>
                   <Link to={urls.controllers}>Controllers</Link>
                 </li>
+                <li>
+                  <Link to={urls.credentials.index}>Credentials</Link>
+                </li>
               </ul>
             </>
           </NotFound>

@@ -237,6 +237,32 @@ export const getCredentialsWithContents = createSelector(
     }),
 );
 
+/**
+  Get the credentials (with their contents) that match the provided filters.
+  Values within a filter are ORed and the different filters are ANDed. The
+  `custom` filter matches any of the values against the credential's name and
+  cloud.
+*/
+export const getFilteredCredentials = createSelector(
+  [
+    getCredentialsWithContents,
+    (_state: RootState, filters: Filters): Filters => filters,
+  ],
+  (credentials, { cloud = [], credential = [], custom = [] }) =>
+    credentials.filter((row) => {
+      if (cloud.length && !cloud.includes(row.cloud)) {
+        return false;
+      }
+      if (credential.length && !credential.includes(row.name)) {
+        return false;
+      }
+      const attributes = `${row.name} ${row.cloud}`;
+      return (
+        !custom.length || custom.some((value) => attributes.includes(value))
+      );
+    }),
+);
+
 export const getModelSecretsState = createSelector(
   [
     getSecretsState,
