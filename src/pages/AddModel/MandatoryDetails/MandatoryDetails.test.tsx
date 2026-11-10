@@ -161,7 +161,7 @@ describe("MandatoryDetails", () => {
       ).toMatchObject({
         payload: {
           wsControllerURL: "wss://controller.example.com",
-          cloudTag: "cloud-aws",
+          cloudTags: ["cloud-aws"],
         },
       });
       expect(
@@ -216,7 +216,7 @@ describe("MandatoryDetails", () => {
       ).toMatchObject({
         payload: {
           wsControllerURL: "wss://controller.example.com",
-          cloudTag: "cloud-aws",
+          cloudTags: ["cloud-aws"],
         },
       });
     });
@@ -294,7 +294,7 @@ describe("MandatoryDetails", () => {
       ).toMatchObject({
         payload: {
           wsControllerURL: "wss://controller.example.com",
-          cloudTag: "cloud-gce",
+          cloudTags: ["cloud-gce"],
         },
       });
       expect(

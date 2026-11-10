@@ -11,7 +11,7 @@ export const getRegion = (model: ModelData): string | undefined =>
   model.model.region;
 
 export const getCredential = (model: ModelData): string =>
-  extractCredentialName(model.info?.["cloud-credential-tag"]);
+  extractCredentialName(model.info?.["cloud-credential-tag"]).name;
 
 /**
   Returns the model cloud and region data formatted as {cloud}/{region}.
