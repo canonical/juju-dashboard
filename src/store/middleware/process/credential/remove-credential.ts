@@ -16,7 +16,7 @@ export type Payload = {
   credentialTag: string;
 };
 
-export type RemoveCredentialStatus = { status: "pending" };
+export type RemoveCredentialStatus = { status: "initiated" | "pending" };
 
 export async function* runRemoveCredential(
   credentialTag: string,
@@ -34,6 +34,7 @@ export async function* runRemoveCredential(
   if (error) {
     throw new Error(error.message);
   }
+  yield { status: "initiated" };
 }
 
 export default createProcess<Payload, RemoveCredentialStatus, void>(
@@ -45,9 +46,7 @@ export default createProcess<Payload, RemoveCredentialStatus, void>(
     if (!hasConnections(meta, REQUIRED_CONNECTIONS)) {
       throw new Error(Label.MISSING_CONNECTION_ERROR);
     }
-
     const connection = meta.connections.wsControllerURL;
-
     return yield* runRemoveCredential(credentialTag, connection);
   },
   {

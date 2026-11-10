@@ -206,7 +206,7 @@ export type BlockState = Record<string, BlockEntry>;
 
 export type RemoveCredentialEntry = {
   running: boolean;
-  status: "pending" | null;
+  status: "initiated" | "pending" | null;
   outcome: null | ProcessOutcome<void>;
 };
 

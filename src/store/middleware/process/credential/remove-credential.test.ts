@@ -24,10 +24,10 @@ describe("runRemoveCredential", () => {
     setCloudFacade(vi.fn());
   });
 
-  it("revokes the credential without force and yields pending", async ({
+  it("revokes the credential without force and yields pending then initiated", async ({
     expect,
   }) => {
-    expect.assertions(3);
+    expect.assertions(4);
     const revokeCredentialsCheckModels = vi
       .fn()
       .mockResolvedValue({ results: [{}] });
@@ -37,6 +37,10 @@ describe("runRemoveCredential", () => {
     await expect(progress.next()).resolves.toEqual({
       done: false,
       value: { status: "pending" },
+    });
+    await expect(progress.next()).resolves.toEqual({
+      done: false,
+      value: { status: "initiated" },
     });
     await expect(progress.next()).resolves.toEqual({
       done: true,
