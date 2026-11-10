@@ -1,6 +1,7 @@
 import { Icon } from "@canonical/react-components";
 import type { JSX } from "react";
 
+import CredentialActions from "components/CredentialActions";
 import DataTable from "components/DataTable";
 import TruncatedTooltip from "components/TruncatedTooltip";
 import { getFilteredCredentials } from "store/juju/selectors";
@@ -81,6 +82,12 @@ export default function CredentialsTable({ filters = {} }: Props): JSX.Element {
         models: column({
           header: "Models",
           map: ({ contents }) => contents?.result?.models?.length ?? 0,
+        }),
+        actions: column({
+          header: "Actions",
+          className: "actions u-align--right",
+          collapse: true,
+          map: () => <CredentialActions />,
         }),
       }}
     />
