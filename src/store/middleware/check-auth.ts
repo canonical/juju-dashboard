@@ -109,6 +109,7 @@ export const checkAuthMiddleware: Middleware<
       jujuActions.removeModelUpgrade.type,
       jujuActions.updateModelMigrationTargets.type,
       jujuActions.updateUserCredentials.type,
+      jujuActions.updateCredentialContents.type,
       jujuActions.updateCloudInfo.type,
       jujuActions.updateModelConfigDefaults.type,
       jujuActions.clearSelectedModelsForDestruction.type,
