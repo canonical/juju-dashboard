@@ -45,6 +45,7 @@ import {
   commandHistoryState,
   commandHistoryItem,
   cloudInfoStateFactory,
+  credentialContentsStateFactory,
   userCredentialsStateFactory,
   modelUpgradeFactory,
   supportedJujuVersionsStateFactory,
@@ -149,6 +150,10 @@ import {
   getUnitMachine,
   getSupportedJujuVersions,
   getCloudInfoState,
+  getCloudTags,
+  getCredentialContentsState,
+  getCredentialTags,
+  getCredentialsWithContents,
   getUserCredentialsState,
   getModelConfigDefaultsState,
   getModelUpgrade,
@@ -3404,6 +3409,147 @@ describe("getUserCredentialsState", () => {
       errors: null,
       loading: false,
     });
+  });
+});
+
+describe("getCloudTags", () => {
+  it("gets the tags of the clouds", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        cloudInfo: cloudInfoStateFactory.build({
+          clouds: {
+            "cloud-aws": { type: "ec2" },
+            "cloud-gce": { type: "gce" },
+          },
+        }),
+      }),
+    });
+    expect(getCloudTags(state)).toStrictEqual(["cloud-aws", "cloud-gce"]);
+  });
+
+  it("handles no clouds", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        cloudInfo: cloudInfoStateFactory.build({ clouds: null }),
+      }),
+    });
+    expect(getCloudTags(state)).toStrictEqual([]);
+  });
+});
+
+describe("getCredentialContentsState", () => {
+  it("gets the credential contents state", () => {
+    const contents = { "cloudcred-aws_admin_default": { result: {} } };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        credentialContents: credentialContentsStateFactory.build({ contents }),
+      }),
+    });
+    expect(getCredentialContentsState(state)).toStrictEqual({
+      contents,
+      errors: null,
+      loading: false,
+    });
+  });
+});
+
+describe("getCredentialTags", () => {
+  it("gets the credential tags for all clouds", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: {
+            "cloud-aws": [
+              "cloudcred-aws_admin_default",
+              "cloudcred-aws_admin_backup",
+            ],
+            "cloud-gce": ["cloudcred-gce_admin_secondary"],
+          },
+        }),
+      }),
+    });
+    expect(getCredentialTags(state)).toStrictEqual([
+      "cloudcred-aws_admin_default",
+      "cloudcred-aws_admin_backup",
+      "cloudcred-gce_admin_secondary",
+    ]);
+  });
+
+  it("handles no credentials", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: { "cloud-aws": [] },
+        }),
+      }),
+    });
+    expect(getCredentialTags(state)).toStrictEqual([]);
+  });
+});
+
+describe("getCredentialsWithContents", () => {
+  it("gets the credentials with their parsed name and cloud", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: {
+            "cloud-aws": ["cloudcred-aws_eggman@external_default"],
+            "cloud-gce": ["cloudcred-gce_admin_secondary"],
+          },
+        }),
+      }),
+    });
+    expect(getCredentialsWithContents(state)).toStrictEqual([
+      {
+        credential: "cloudcred-aws_eggman@external_default",
+        cloud: "aws",
+        name: "default",
+        contents: undefined,
+      },
+      {
+        credential: "cloudcred-gce_admin_secondary",
+        cloud: "gce",
+        name: "secondary",
+        contents: undefined,
+      },
+    ]);
+  });
+
+  it("matches the contents to each credential by tag", () => {
+    const awsContents = { result: { models: [] } };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: {
+            "cloud-aws": ["cloudcred-aws_admin_default"],
+            "cloud-gce": ["cloudcred-gce_admin_secondary"],
+          },
+        }),
+        credentialContents: credentialContentsStateFactory.build({
+          contents: { "cloudcred-aws_admin_default": awsContents },
+        }),
+      }),
+    });
+    const [aws, gce] = getCredentialsWithContents(state);
+    expect(aws.contents).toStrictEqual(awsContents);
+    expect(gce.contents).toBeUndefined();
+  });
+
+  it("ignores contents for credentials that no longer exist", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        credentialContents: credentialContentsStateFactory.build({
+          contents: { "cloudcred-aws_admin_removed": { result: {} } },
+        }),
+      }),
+    });
+    expect(getCredentialsWithContents(state)).toStrictEqual([]);
+  });
+
+  it("handles no credentials", () => {
+    expect(getCredentialsWithContents(rootStateFactory.build())).toStrictEqual(
+      [],
+    );
   });
 });
 

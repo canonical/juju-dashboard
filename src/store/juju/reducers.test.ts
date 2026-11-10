@@ -28,6 +28,7 @@ import {
   commandHistoryState,
   commandHistoryItem,
   userCredentialsStateFactory,
+  credentialContentsStateFactory,
   modelUpgradeFactory,
   modelSelectionParamsFactory,
 } from "testing/factories/juju/juju";
@@ -2186,6 +2187,113 @@ describe("reducers", () => {
         "cloud-aws": ["credential-1", "credential-2"],
         "cloud-gce": ["credential-a", "credential-b"],
       });
+    });
+  });
+
+  describe("updateCredentialContents", () => {
+    let state: JujuState;
+
+    beforeEach(() => {
+      state = jujuStateFactory.build({
+        credentialContents: credentialContentsStateFactory.build(),
+      });
+    });
+
+    it("updates data", () => {
+      const contents = { "cloudcred-aws_admin_default": { result: {} } };
+      const result = reducer(
+        state,
+        actions.updateCredentialContents({ update: { data: contents } }),
+      );
+      expect(result.credentialContents).toStrictEqual({
+        contents,
+        errors: null,
+        loading: false,
+      });
+    });
+
+    it("replaces existing data", () => {
+      state.credentialContents.contents = {
+        "cloudcred-aws_admin_old": { result: {} },
+      };
+      const contents = { "cloudcred-aws_admin_new": { result: {} } };
+      const result = reducer(
+        state,
+        actions.updateCredentialContents({ update: { data: contents } }),
+      );
+      expect(result.credentialContents.contents).toStrictEqual(contents);
+    });
+
+    it("clears the error when data is received", () => {
+      state.credentialContents.errors = {
+        message: "Something went wrong",
+        source: "credential-contents",
+      };
+      const result = reducer(
+        state,
+        actions.updateCredentialContents({ update: { data: {} } }),
+      );
+      expect(result.credentialContents.errors).toBeNull();
+    });
+
+    it("does not update the data if it is null", () => {
+      const contents = { "cloudcred-aws_admin_default": { result: {} } };
+      state.credentialContents.contents = contents;
+      state.credentialContents.errors = {
+        message: "Something went wrong",
+        source: "credential-contents",
+      };
+      const result = reducer(
+        state,
+        actions.updateCredentialContents({ update: { data: null } }),
+      );
+      expect(result.credentialContents.contents).toStrictEqual(contents);
+      expect(result.credentialContents.errors).not.toBeNull();
+    });
+
+    it("updates loading", () => {
+      const result = reducer(
+        state,
+        actions.updateCredentialContents({ update: { loading: true } }),
+      );
+      expect(result.credentialContents).toStrictEqual({
+        contents: {},
+        errors: null,
+        loading: true,
+      });
+    });
+
+    it("updates the error without changing the data", () => {
+      const contents = { "cloudcred-aws_admin_default": { result: {} } };
+      state.credentialContents.contents = contents;
+      const result = reducer(
+        state,
+        actions.updateCredentialContents({
+          update: {
+            error: {
+              message: "Something went wrong",
+              source: "credential-contents",
+            },
+          },
+        }),
+      );
+      expect(result.credentialContents).toStrictEqual({
+        contents,
+        errors: {
+          message: "Something went wrong",
+          source: "credential-contents",
+        },
+        loading: false,
+      });
+    });
+
+    it("does not change loading if it is not provided", () => {
+      state.credentialContents.loading = true;
+      const result = reducer(
+        state,
+        actions.updateCredentialContents({ update: { data: {} } }),
+      );
+      expect(result.credentialContents.loading).toBe(true);
     });
   });
 

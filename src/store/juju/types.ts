@@ -1,7 +1,10 @@
 import type { RemoteEndpoint } from "@canonical/jujulib/dist/api/facades/application/ApplicationV22";
 import type { Charm } from "@canonical/jujulib/dist/api/facades/charms/CharmsV6";
 import type { ApplicationStatus } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
-import type { CloudsResult } from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
+import type {
+  CloudsResult,
+  CredentialContentResult,
+} from "@canonical/jujulib/dist/api/facades/cloud/CloudV7";
 import type {
   DestroyModelParams,
   ErrorResult,
@@ -163,6 +166,12 @@ export type SupportedJujuVersionsState = SourceData<VersionElem[]>;
 
 export type ModelMigrationTargetsState = Record<string, SourceData<string[]>>;
 
+export type CredentialContentsState = {
+  contents: Record<string, CredentialContentResult>;
+  errors: SourceData<CredentialContentResult[]>["error"];
+  loading: boolean;
+};
+
 export type ModelConfigDefaultsState = {
   errors: null | string | unknown;
   loading: boolean;
@@ -254,6 +263,7 @@ export type JujuState = {
   secrets: SecretsState;
   cloudInfo: CloudState;
   userCredentials: UserCredentialsState;
+  credentialContents: CredentialContentsState;
   modelConfigDefaults: ModelConfigDefaultsState;
   selectedApplications: Record<string, ApplicationStatus>;
   modelsSelectedForDestruction: ModelSelectionParams[];

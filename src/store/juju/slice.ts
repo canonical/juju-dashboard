@@ -38,6 +38,7 @@ import type {
   BlockEntry,
   ModelDestructionParams,
   ModelSelectionParams,
+  CredentialContentsState,
 } from "./types";
 import { getModelQualifier } from "./utils/models";
 
@@ -150,6 +151,11 @@ const slice = createSlice({
     },
     userCredentials: {
       credentials: {},
+      errors: null,
+      loading: false,
+    },
+    credentialContents: {
+      contents: {},
       errors: null,
       loading: false,
     },
@@ -281,6 +287,11 @@ const slice = createSlice({
       };
       state.userCredentials = {
         credentials: {},
+        errors: null,
+        loading: false,
+      };
+      state.credentialContents = {
+        contents: {},
         errors: null,
         loading: false,
       };
@@ -838,6 +849,24 @@ const slice = createSlice({
       }
       if (payload.update.error !== undefined) {
         value.errors = payload.update.error;
+      }
+    },
+    updateCredentialContents: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        update: Partial<SourceData<CredentialContentsState["contents"]>>;
+      }>,
+    ) => {
+      state.credentialContents.loading =
+        payload.update.loading ?? state.credentialContents.loading;
+      if (payload.update.data !== undefined && payload.update.data !== null) {
+        state.credentialContents.contents = payload.update.data;
+        state.credentialContents.errors = null;
+      }
+      if (payload.update.error !== undefined) {
+        state.credentialContents.errors = payload.update.error;
       }
     },
     updateCloudInfo: (
