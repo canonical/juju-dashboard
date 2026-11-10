@@ -45,9 +45,7 @@ export default createProcess<Payload, BlockStatus, void>(
     if (!hasConnections(meta, REQUIRED_CONNECTIONS)) {
       throw new Error(Label.MISSING_CONNECTION_ERROR);
     }
-
     const modelConnection = meta.connections.modelURL;
-
     return yield* runBlock(params, modelConnection);
   },
   {
