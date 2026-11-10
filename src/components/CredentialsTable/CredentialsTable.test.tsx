@@ -1,11 +1,13 @@
 import { screen } from "@testing-library/react";
 
+import { CredentialActionsLabel } from "components/CredentialActions";
 import {
   credentialContentsStateFactory,
   jujuStateFactory,
   userCredentialsStateFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
+import { customWithin } from "testing/queries/within";
 import { renderComponent } from "testing/utils";
 
 import CredentialsTable from "./CredentialsTable";
@@ -67,6 +69,30 @@ describe("CredentialsTable", () => {
     expect(
       screen.queryByRole("cell", { name: "default" }),
     ).not.toBeInTheDocument();
+  });
+
+  it("renders the actions menu in each row", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: { "cloud-aws": [AWS_TAG], "cloud-gce": [GCE_TAG] },
+        }),
+      }),
+    });
+    renderComponent(<CredentialsTable />, { state });
+
+    expect(
+      customWithin(screen.getByRole("row", { name: /default/ })).getByRole(
+        "button",
+        { name: CredentialActionsLabel.TOGGLE },
+      ),
+    ).toBeInTheDocument();
+    expect(
+      customWithin(screen.getByRole("row", { name: /secondary/ })).getByRole(
+        "button",
+        { name: CredentialActionsLabel.TOGGLE },
+      ),
+    ).toBeInTheDocument();
   });
 
   it.each([
