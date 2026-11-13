@@ -252,22 +252,48 @@ export const extractCloudName = (tag = ""): string => {
   return tag.replace("cloud-", "");
 };
 
+// Split a credential tag into its cloud, user and name. Any part that can't be
+// found is an empty string.
+const splitCredentialTag = (credential: string): [string, string, string] => {
+  if (credential.includes("@")) {
+    // The name of an external user can contain underscores, so split around
+    // the `@` to find where the user ends.
+    const [cloudAndUser, domainAndName] = credential.split("@");
+    const [cloud, ...userParts] = cloudAndUser.split("_");
+    const [domain, ...nameParts] = domainAndName.split("_");
+    const user = userParts.join("_");
+    return [
+      cloud,
+      user && domain ? `${user}@${domain}` : "",
+      nameParts.join("_"),
+    ];
+  }
+  const [cloud, user, ...nameParts] = credential.split("_");
+  return [cloud, user, nameParts.join("_")];
+};
+
 /**
-  Returns credential string from Tag
-  @param cloudTag The cloudTag identifier returns from the API
-  @returns The simplified cloud string
+  Returns the parts of a credential tag
+  A credential tag has the format `cloudcred-<cloud>_<user>_<credential>`.
+  @param tag The credential tag returned from the API
+  @returns The cloud, user and name of the credential
 */
-export const extractCredentialName = (tag: null | string = null): string => {
+export const extractCredentialName = (
+  tag: null | string = null,
+): {
+  cloud: string;
+  user: string;
+  name: string;
+} => {
   // @ is not there in local bootstraps
   // cloudcred-localhost_admin_localhost
-  if (!tag) {
-    return "-";
-  }
-  const [_tag, cred] = tag.split("cloudcred-");
-  if (cred.indexOf("@") > -1) {
-    return cred.split("@")[1].split("_")[1];
-  }
-  return cred.split("_")[2];
+  const [cloud, user, name] = tag
+    ? splitCredentialTag(tag.replace("cloudcred-", ""))
+    : [];
+  // Fall back to placeholders if there is no tag or it doesn't have all of the parts.
+  return cloud && user && name
+    ? { cloud, user, name }
+    : { cloud: "-", user: "-", name: "-" };
 };
 
 /**

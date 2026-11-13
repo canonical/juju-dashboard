@@ -314,6 +314,18 @@ describe("reducers", () => {
     );
   });
 
+  it("clearModelData resets the user credentials", () => {
+    const state = jujuStateFactory.build({
+      userCredentials: userCredentialsStateFactory.build({
+        credentials: { "cloud-aws": ["credential-1"] },
+        loaded: true,
+      }),
+    });
+    expect(
+      reducer(state, actions.clearModelData()).userCredentials,
+    ).toStrictEqual(userCredentialsStateFactory.build());
+  });
+
   it("destroyModels", () => {
     const state = jujuStateFactory.build();
     const destroyModelParams = [
@@ -2111,101 +2123,108 @@ describe("reducers", () => {
   });
 
   describe("updateUserCredentials", () => {
-    describe("set fields", () => {
-      let state: JujuState;
+    let state: JujuState;
 
-      beforeEach(() => {
-        state = jujuStateFactory.build({
-          userCredentials: {
-            credentials: {},
-            errors: null,
-            loading: false,
-          },
-        });
-      });
-
-      it("updates data", () => {
-        const result = reducer(
-          state,
-          actions.updateUserCredentials({
-            cloudTag: "cloud-aws",
-            update: {
-              data: { "cloud-aws": ["credential-1", "credential-2"] },
-            },
-          }),
-        );
-        expect(result.userCredentials).toStrictEqual({
-          credentials: { "cloud-aws": ["credential-1", "credential-2"] },
-          errors: null,
-          loading: false,
-        });
-      });
-
-      it("updates loading", () => {
-        const result = reducer(
-          state,
-          actions.updateUserCredentials({
-            cloudTag: "cloud-aws",
-            update: {
-              loading: true,
-            },
-          }),
-        );
-        expect(result.userCredentials).toStrictEqual({
-          credentials: {},
-          errors: null,
-          loading: true,
-        });
-      });
-
-      it("updates error", () => {
-        const result = reducer(
-          state,
-          actions.updateUserCredentials({
-            cloudTag: "cloud-aws",
-            update: {
-              error: {
-                message: "Something went wrong",
-                source: "Something went wrong",
-              },
-            },
-          }),
-        );
-        expect(result.userCredentials).toStrictEqual({
-          credentials: {},
-          errors: {
-            message: "Something went wrong",
-            source: "Something went wrong",
-          },
-          loading: false,
-        });
+    beforeEach(() => {
+      state = jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build(),
       });
     });
 
-    it("adds credentials for new cloud if not existing", () => {
-      const state = jujuStateFactory.build({
-        userCredentials: userCredentialsStateFactory.build({
-          credentials: { "cloud-aws": ["credential-1", "credential-2"] },
-          errors: null,
-          loading: false,
-        }),
-      });
+    it("updates data", () => {
       const result = reducer(
         state,
         actions.updateUserCredentials({
-          cloudTag: "cloud-gce",
+          update: {
+            data: { "cloud-aws": ["credential-1", "credential-2"] },
+          },
+        }),
+      );
+      expect(result.userCredentials).toStrictEqual({
+        credentials: { "cloud-aws": ["credential-1", "credential-2"] },
+        errors: null,
+        loaded: true,
+        loading: false,
+      });
+    });
+
+    it("updates loading", () => {
+      const result = reducer(
+        state,
+        actions.updateUserCredentials({ update: { loading: true } }),
+      );
+      expect(result.userCredentials).toStrictEqual({
+        credentials: {},
+        errors: null,
+        loaded: false,
+        loading: true,
+      });
+    });
+
+    it("updates error", () => {
+      const result = reducer(
+        state,
+        actions.updateUserCredentials({
+          update: {
+            error: {
+              message: "Something went wrong",
+              source: "Something went wrong",
+            },
+          },
+        }),
+      );
+      expect(result.userCredentials).toStrictEqual({
+        credentials: {},
+        errors: {
+          message: "Something went wrong",
+          source: "Something went wrong",
+        },
+        loaded: false,
+        loading: false,
+      });
+    });
+
+    it("is loaded once data is received, even if there are no credentials", () => {
+      const result = reducer(
+        state,
+        actions.updateUserCredentials({ update: { data: {} } }),
+      );
+      expect(result.userCredentials.loaded).toBe(true);
+      expect(result.userCredentials.credentials).toStrictEqual({});
+    });
+
+    it("stays loaded when other updates are received", () => {
+      state.userCredentials.loaded = true;
+      const loading = reducer(
+        state,
+        actions.updateUserCredentials({ update: { loading: true } }),
+      );
+      expect(loading.userCredentials.loaded).toBe(true);
+      const error = reducer(
+        state,
+        actions.updateUserCredentials({
+          update: { error: { message: "Uh oh!", source: "Uh oh!" } },
+        }),
+      );
+      expect(error.userCredentials.loaded).toBe(true);
+    });
+
+    it("adds credentials for new cloud if not existing", () => {
+      const result = reducer(
+        jujuStateFactory.build({
+          userCredentials: userCredentialsStateFactory.build({
+            credentials: { "cloud-aws": ["credential-1", "credential-2"] },
+          }),
+        }),
+        actions.updateUserCredentials({
           update: {
             data: { "cloud-gce": ["credential-a", "credential-b"] },
           },
         }),
       );
-      expect(result.userCredentials).toStrictEqual({
-        credentials: {
-          "cloud-aws": ["credential-1", "credential-2"],
-          "cloud-gce": ["credential-a", "credential-b"],
-        },
-        errors: null,
-        loading: false,
+      expect(result.userCredentials.credentials).toStrictEqual({
+        "cloud-aws": ["credential-1", "credential-2"],
+        "cloud-gce": ["credential-a", "credential-b"],
       });
     });
   });

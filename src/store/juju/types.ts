@@ -120,7 +120,8 @@ export type CloudState = {
 
 export type UserCredentialsState = {
   credentials: Record<string, string[]>;
-  errors: null | string | unknown;
+  errors: SourceData<Record<string, string[]>>["error"];
+  loaded: boolean;
   loading: boolean;
 };
 
