@@ -1,4 +1,5 @@
 import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
+import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import { charmInfoFactory } from "testing/factories/juju/Charms";
@@ -151,10 +152,12 @@ import {
   getSupportedJujuVersions,
   getCloudInfoState,
   getCloudTags,
+  getCredentialsLoaded,
   getCredentialContentsState,
   getCredentialTags,
   getCredentialsWithContents,
   getUserCredentialsState,
+  getFilteredCredentials,
   getModelConfigDefaultsState,
   getModelUpgrade,
   getModelMigrationTargets,
@@ -3438,6 +3441,54 @@ describe("getCloudTags", () => {
   });
 });
 
+describe("getCredentialsLoaded", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        cloudInfo: cloudInfoStateFactory.build({
+          clouds: {
+            "cloud-aws": { type: "ec2" },
+            "cloud-gce": { type: "gce" },
+          },
+        }),
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: {},
+        }),
+      }),
+    });
+  });
+
+  it("is false if the clouds have not loaded", () => {
+    state.juju.cloudInfo.clouds = null;
+    state.juju.userCredentials.loaded = true;
+    expect(getCredentialsLoaded(state)).toBe(false);
+  });
+
+  it("is false if the credentials have not been received", () => {
+    expect(getCredentialsLoaded(state)).toBe(false);
+  });
+
+  it("is true once the credentials have been received", () => {
+    state.juju.userCredentials.credentials = {
+      "cloud-aws": ["cloudcred-aws_admin_default"],
+    };
+    state.juju.userCredentials.loaded = true;
+    expect(getCredentialsLoaded(state)).toBe(true);
+  });
+
+  it("is true if the credentials were received but there were none", () => {
+    state.juju.userCredentials.loaded = true;
+    expect(getCredentialsLoaded(state)).toBe(true);
+  });
+
+  it("is true if there are no clouds", () => {
+    state.juju.cloudInfo.clouds = {};
+    expect(getCredentialsLoaded(state)).toBe(true);
+  });
+});
+
 describe("getCredentialContentsState", () => {
   it("gets the credential contents state", () => {
     const contents = { "cloudcred-aws_admin_default": { result: {} } };
@@ -3551,6 +3602,76 @@ describe("getCredentialsWithContents", () => {
     expect(getCredentialsWithContents(rootStateFactory.build())).toStrictEqual(
       [],
     );
+  });
+});
+
+describe("getFilteredCredentials", () => {
+  const AWS_DEFAULT = "cloudcred-aws_admin_default";
+  const AWS_BACKUP = "cloudcred-aws_admin_backup";
+  const GCE_DEFAULT = "cloudcred-gce_admin_default";
+  const state = rootStateFactory.build({
+    juju: jujuStateFactory.build({
+      userCredentials: userCredentialsStateFactory.build({
+        credentials: {
+          "cloud-aws": [AWS_DEFAULT, AWS_BACKUP],
+          "cloud-gce": [GCE_DEFAULT],
+        },
+      }),
+      credentialContents: credentialContentsStateFactory.build({
+        contents: { [AWS_DEFAULT]: { result: { models: [] } } },
+      }),
+    }),
+  });
+  const tags = (filters: Record<string, string[]>): string[] =>
+    getFilteredCredentials(state, filters).map(({ credential }) => credential);
+
+  it("returns all credentials, with their contents, if there are no filters", () => {
+    const result = getFilteredCredentials(state, {});
+    expect(result.map(({ credential }) => credential)).toStrictEqual([
+      AWS_DEFAULT,
+      AWS_BACKUP,
+      GCE_DEFAULT,
+    ]);
+    expect(result[0].contents).toStrictEqual({ result: { models: [] } });
+    expect(result[1].contents).toBeUndefined();
+  });
+
+  it("ignores filters with no values", () => {
+    expect(tags({ cloud: [], credential: [], custom: [] })).toHaveLength(3);
+  });
+
+  it("filters by cloud", () => {
+    expect(tags({ cloud: ["gce"] })).toStrictEqual([GCE_DEFAULT]);
+  });
+
+  it("filters by credential name", () => {
+    expect(tags({ credential: ["default"] })).toStrictEqual([
+      AWS_DEFAULT,
+      GCE_DEFAULT,
+    ]);
+  });
+
+  it("matches any of the values for a filter", () => {
+    expect(tags({ cloud: ["aws", "gce"] })).toHaveLength(3);
+  });
+
+  it("matches all of the filters", () => {
+    expect(tags({ cloud: ["aws"], credential: ["default"] })).toStrictEqual([
+      AWS_DEFAULT,
+    ]);
+  });
+
+  it("filters by custom text against the name and cloud", () => {
+    expect(tags({ custom: ["back"] })).toStrictEqual([AWS_BACKUP]);
+    expect(tags({ custom: ["gc"] })).toStrictEqual([GCE_DEFAULT]);
+    expect(tags({ custom: ["back", "gc"] })).toStrictEqual([
+      AWS_BACKUP,
+      GCE_DEFAULT,
+    ]);
+  });
+
+  it("returns nothing if no credentials match", () => {
+    expect(tags({ cloud: ["azure"] })).toStrictEqual([]);
   });
 });
 

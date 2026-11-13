@@ -213,6 +213,16 @@ export const getUserCredentialsState = createSelector(
   (sliceState) => sliceState.userCredentials,
 );
 
+/**
+  Whether the credentials have been fetched.
+*/
+export const getCredentialsLoaded = createSelector(
+  [getCloudInfoState, getUserCredentialsState],
+  (cloudInfo, userCredentials) =>
+    !!cloudInfo.clouds &&
+    (Object.keys(cloudInfo.clouds).length === 0 || userCredentials.loaded),
+);
+
 export const getCredentialContentsState = createSelector(
   [slice],
   (sliceState) => sliceState.credentialContents,
@@ -234,6 +244,32 @@ export const getCredentialsWithContents = createSelector(
         name,
         contents: credentialContents.contents[credential],
       };
+    }),
+);
+
+/**
+  Get the credentials (with their contents) that match the provided filters.
+  Values within a filter are ORed and the different filters are ANDed. The
+  `custom` filter matches any of the values against the credential's name and
+  cloud.
+*/
+export const getFilteredCredentials = createSelector(
+  [
+    getCredentialsWithContents,
+    (_state: RootState, filters: Filters): Filters => filters,
+  ],
+  (credentials, { cloud = [], credential = [], custom = [] }) =>
+    credentials.filter((row) => {
+      if (cloud.length && !cloud.includes(row.cloud)) {
+        return false;
+      }
+      if (credential.length && !credential.includes(row.name)) {
+        return false;
+      }
+      const attributes = `${row.name} ${row.cloud}`;
+      return (
+        !custom.length || custom.some((value) => attributes.includes(value))
+      );
     }),
 );
 
