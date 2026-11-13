@@ -1,4 +1,5 @@
 import disableCommandProcess from "./block/disable-command";
+import { removeCredentialProcess } from "./credential";
 import createMiddleware from "./middleware";
 import { upgradeModelProcess, upgradeToProcess } from "./model-upgrade";
 import type { Process } from "./types";
@@ -9,10 +10,12 @@ export type { ProcessOutcome, ProcessActions, Process } from "./types";
 export const disableCommand = disableCommandProcess.actions;
 export const upgradeTo = upgradeToProcess.actions;
 export const upgradeModel = upgradeModelProcess.actions;
+export const removeCredential = removeCredentialProcess.actions;
 
 // Construct the middleware with process handlers.
 export default createMiddleware([
   disableCommandProcess as Process<unknown>,
   upgradeToProcess as Process<unknown>,
   upgradeModelProcess as Process<unknown>,
+  removeCredentialProcess as Process<unknown>,
 ]);

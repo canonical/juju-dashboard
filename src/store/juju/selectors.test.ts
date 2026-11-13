@@ -159,6 +159,7 @@ import {
   getModelConfigDefaultsState,
   getModelUpgrade,
   getModelMigrationTargets,
+  getRemoveCredential,
   getControllerByUUID,
   getModelMigrationControllersByVersion,
   getModelUpgradeVersions,
@@ -3731,6 +3732,39 @@ describe("getModelMigrationTargets", () => {
       loading: false,
       data: null,
       error: null,
+    });
+  });
+});
+
+describe("getRemoveCredential", () => {
+  it("fetches the entry for the credential", () => {
+    const entry = {
+      running: false,
+      status: "pending" as const,
+      outcome: { result: undefined },
+    };
+    const state = rootStateFactory.build({
+      juju: {
+        removeCredential: {
+          "cloudcred-aws_eggman@external_my-cred": entry,
+        },
+      },
+    });
+
+    expect(
+      getRemoveCredential(state, "cloudcred-aws_eggman@external_my-cred"),
+    ).toStrictEqual(entry);
+  });
+
+  it("returns default for non-existing credential", () => {
+    const state = rootStateFactory.build();
+
+    expect(
+      getRemoveCredential(state, "cloudcred-aws_eggman@external_my-cred"),
+    ).toStrictEqual({
+      running: false,
+      status: null,
+      outcome: null,
     });
   });
 });

@@ -2372,4 +2372,190 @@ describe("reducers", () => {
       });
     });
   });
+
+  describe("removeCredential", () => {
+    const credentialTag = "cloudcred-aws_eggman@external_my-cred";
+    const wsControllerURL = "wss://example.com/api";
+
+    describe("set fields", () => {
+      let state: JujuState;
+
+      beforeEach(() => {
+        state = jujuStateFactory.build({
+          removeCredential: {
+            [credentialTag]: {
+              running: true,
+              status: null,
+              outcome: null,
+            },
+          },
+        });
+      });
+
+      it("updates running", () => {
+        const result = reducer(
+          state,
+          actions.setRemoveCredentialRunning({
+            credentialTag,
+            running: false,
+            wsControllerURL,
+          }),
+        );
+
+        expect(result.removeCredential).toStrictEqual({
+          [credentialTag]: {
+            running: false,
+            status: null,
+            outcome: null,
+          },
+        });
+      });
+
+      it("updates status", () => {
+        const result = reducer(
+          state,
+          actions.setRemoveCredentialStatus({
+            credentialTag,
+            status: "pending",
+            wsControllerURL,
+          }),
+        );
+
+        expect(result.removeCredential).toStrictEqual({
+          [credentialTag]: {
+            running: true,
+            status: "pending",
+            outcome: null,
+          },
+        });
+      });
+
+      it("updates outcome", () => {
+        const result = reducer(
+          state,
+          actions.setRemoveCredentialOutcome({
+            credentialTag,
+            outcome: { result: undefined },
+            wsControllerURL,
+          }),
+        );
+
+        expect(result.removeCredential).toStrictEqual({
+          [credentialTag]: {
+            running: true,
+            status: null,
+            outcome: { result: undefined },
+          },
+        });
+      });
+    });
+
+    it("adds new credential if not existing", () => {
+      const state = jujuStateFactory.build();
+
+      const result = reducer(
+        state,
+        actions.setRemoveCredentialRunning({
+          credentialTag,
+          running: true,
+          wsControllerURL,
+        }),
+      );
+
+      expect(result.removeCredential).toStrictEqual({
+        [credentialTag]: {
+          running: true,
+          status: null,
+          outcome: null,
+        },
+      });
+    });
+
+    it("clears a previous error outcome when a new run starts", () => {
+      const state = jujuStateFactory.build({
+        removeCredential: {
+          [credentialTag]: {
+            running: false,
+            status: "pending",
+            outcome: { error: { message: "Something", source: "Something" } },
+          },
+        },
+      });
+
+      const result = reducer(
+        state,
+        actions.setRemoveCredentialRunning({
+          credentialTag,
+          running: true,
+          wsControllerURL,
+        }),
+      );
+
+      expect(result.removeCredential).toStrictEqual({
+        [credentialTag]: {
+          running: true,
+          status: null,
+          outcome: null,
+        },
+      });
+    });
+
+    it("clears a previous result when a new run starts", () => {
+      const state = jujuStateFactory.build({
+        removeCredential: {
+          [credentialTag]: {
+            running: false,
+            status: "pending",
+            outcome: { result: undefined },
+          },
+        },
+      });
+
+      const result = reducer(
+        state,
+        actions.setRemoveCredentialRunning({
+          credentialTag,
+          running: true,
+          wsControllerURL,
+        }),
+      );
+
+      expect(result.removeCredential).toStrictEqual({
+        [credentialTag]: {
+          running: true,
+          status: null,
+          outcome: null,
+        },
+      });
+    });
+
+    it("keeps the outcome when the run ends", () => {
+      const state = jujuStateFactory.build({
+        removeCredential: {
+          [credentialTag]: {
+            running: true,
+            status: "pending",
+            outcome: { error: { message: "Something", source: "Something" } },
+          },
+        },
+      });
+
+      const result = reducer(
+        state,
+        actions.setRemoveCredentialRunning({
+          credentialTag,
+          running: false,
+          wsControllerURL,
+        }),
+      );
+
+      expect(result.removeCredential).toStrictEqual({
+        [credentialTag]: {
+          running: false,
+          status: "pending",
+          outcome: { error: { message: "Something", source: "Something" } },
+        },
+      });
+    });
+  });
 });
