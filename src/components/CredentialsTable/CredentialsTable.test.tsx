@@ -1,6 +1,8 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { CredentialActionsLabel } from "components/CredentialActions";
+import { RemoveCredentialModalLabel } from "components/RemoveCredentialModal";
 import {
   credentialContentsStateFactory,
   jujuStateFactory,
@@ -93,6 +95,47 @@ describe("CredentialsTable", () => {
         { name: CredentialActionsLabel.TOGGLE },
       ),
     ).toBeInTheDocument();
+  });
+
+  it("opens the remove credential modal with the row's model count", async () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: { "cloud-aws": [AWS_TAG] },
+        }),
+        credentialContents: credentialContentsStateFactory.build({
+          contents: {
+            [AWS_TAG]: {
+              result: {
+                content: {
+                  "auth-type": "access-key",
+                  cloud: "aws",
+                  name: "default",
+                },
+                models: [
+                  { model: "model-one", access: "admin" },
+                  { model: "model-two", access: "read" },
+                ],
+              },
+            },
+          },
+        }),
+      }),
+    });
+    renderComponent(<CredentialsTable />, { state });
+    await userEvent.click(
+      screen.getByRole("button", { name: CredentialActionsLabel.TOGGLE }),
+    );
+    await userEvent.click(
+      screen.getByRole("menuitem", { name: CredentialActionsLabel.DESTROY }),
+    );
+    expect(
+      screen.getByRole("dialog", {
+        name: `${RemoveCredentialModalLabel.IN_USE_TITLE} default`,
+      }),
+    ).toHaveTextContent(
+      `2 models ${RemoveCredentialModalLabel.IN_USE_PLURAL} ${RemoveCredentialModalLabel.IN_USE_DETAILS}`,
+    );
   });
 
   it("renders a message when there are no credentials", () => {
