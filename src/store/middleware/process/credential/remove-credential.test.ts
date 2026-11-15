@@ -24,7 +24,7 @@ describe("runRemoveCredential", () => {
     setCloudFacade(vi.fn());
   });
 
-  it("revokes the credential without force and yields pending then initiated", async ({
+  it("calls revokeCredentialsCheckModels without force and yields pending then initiated", async ({
     expect,
   }) => {
     expect.assertions(4);

@@ -299,6 +299,7 @@ const slice = createSlice({
         errors: null,
         loading: false,
       };
+      state.removeCredential = {};
     },
     setModelCanConfigure: (
       state,

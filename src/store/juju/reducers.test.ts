@@ -327,6 +327,21 @@ describe("reducers", () => {
     ).toStrictEqual(userCredentialsStateFactory.build());
   });
 
+  it("clearModelData resets the remove credential state", () => {
+    const state = jujuStateFactory.build({
+      removeCredential: {
+        "cloudcred-aws_admin_default": {
+          running: false,
+          status: "initiated",
+          outcome: { result: undefined },
+        },
+      },
+    });
+    expect(
+      reducer(state, actions.clearModelData()).removeCredential,
+    ).toStrictEqual({});
+  });
+
   it("destroyModels", () => {
     const state = jujuStateFactory.build();
     const destroyModelParams = [

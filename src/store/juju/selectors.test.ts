@@ -3897,6 +3897,14 @@ describe("getRemoveCredential", () => {
       outcome: null,
     });
   });
+
+  it("returns the same default object for a credential without an entry", () => {
+    const state = rootStateFactory.build();
+
+    expect(
+      getRemoveCredential(state, "cloudcred-aws_eggman@external_my-cred"),
+    ).toBe(getRemoveCredential(state, "cloudcred-aws_eggman@external_other"));
+  });
 });
 
 describe("getModelMigrationControllersByVersion", () => {

@@ -35,6 +35,7 @@ export async function* runRemoveCredential(
     throw new Error(error.message);
   }
   yield { status: "initiated" };
+  return;
 }
 
 export default createProcess<Payload, RemoveCredentialStatus, void>(
