@@ -41,7 +41,6 @@ import type {
   ModelsList,
   ReBACAllowed,
   ReBACRelationship,
-  RemoveCredentialEntry,
 } from "./types";
 import {
   getControllerByUUID as getControllerByUUIDUtil,
@@ -1543,16 +1542,14 @@ export const getModelMigrationTargets = createSelector(
     },
 );
 
-const NO_REMOVE_CREDENTIAL: RemoveCredentialEntry = {
-  running: false,
-  status: null,
-  outcome: null,
-};
-
 export const getRemoveCredential = createSelector(
   [slice, (_state, credentialTag: string): string => credentialTag],
   (state, credentialTag) =>
-    state.removeCredential[credentialTag] ?? NO_REMOVE_CREDENTIAL,
+    state.removeCredential[credentialTag] ?? {
+      running: false,
+      status: null,
+      outcome: null,
+    },
 );
 
 export const getHighestSupportedVersion = createSelector(
