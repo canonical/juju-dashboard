@@ -81,11 +81,12 @@ export default function CredentialsTable({ filters = {} }: Props): JSX.Element {
         }),
         models: column({
           header: "Models",
+          className: "u-align--right",
           map: ({ contents }) => contents?.result?.models?.length ?? 0,
         }),
         actions: column({
           header: "Actions",
-          className: "actions u-align--right",
+          className: "u-align--right",
           collapse: true,
           map: () => <CredentialActions />,
         }),
