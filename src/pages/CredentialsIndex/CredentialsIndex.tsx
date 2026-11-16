@@ -1,0 +1,168 @@
+import { SearchAndFilter } from "@canonical/react-components";
+import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
+import fastDeepEqual from "fast-deep-equal/es6";
+import type { JSX } from "react";
+import { useEffect } from "react";
+import { shallowEqual } from "react-redux";
+
+import CredentialsTable from "components/CredentialsTable";
+import { useQueryParams } from "hooks/useQueryParams";
+import useWindowTitle from "hooks/useWindowTitle";
+import MainContent from "layout/MainContent";
+import { getWSControllerURL } from "store/general/selectors";
+import {
+  getCloudTags,
+  getCredentialsWithContents,
+  getCredentialTags,
+} from "store/juju/selectors";
+import { pluralize } from "store/juju/utils/models";
+import credentialContentsMiddleware from "store/middleware/source/credential-contents";
+import userCredentialsMiddleware from "store/middleware/source/user-credentials";
+import { useAppDispatch, useAppSelector } from "store/store";
+import { externalURLs } from "urls";
+
+import { Label } from "./types";
+import { generateChips } from "./utils";
+
+export default function Credentials(): JSX.Element {
+  useWindowTitle("Credentials");
+  const dispatch = useAppDispatch();
+  const wsControllerURL = useAppSelector(getWSControllerURL);
+  // Compare the tags by value so the sources are only restarted when the tags
+  // change, not each time the credentials state is updated (e.g. by a poll).
+  const cloudTags = useAppSelector(getCloudTags, shallowEqual);
+  const credentialTags = useAppSelector(getCredentialTags, shallowEqual);
+  const credentials = useAppSelector(getCredentialsWithContents);
+
+  useEffect(() => {
+    if (!wsControllerURL || !cloudTags.length) {
+      return;
+    }
+
+    dispatch(
+      userCredentialsMiddleware.actions.start({ wsControllerURL, cloudTags }),
+    );
+    return (): void => {
+      dispatch(
+        userCredentialsMiddleware.actions.stop({ wsControllerURL, cloudTags }),
+      );
+    };
+  }, [dispatch, wsControllerURL, cloudTags]);
+
+  useEffect(() => {
+    if (!wsControllerURL || credentialTags.length === 0) {
+      return;
+    }
+
+    dispatch(
+      credentialContentsMiddleware.actions.start({
+        wsControllerURL,
+        credentialTags,
+      }),
+    );
+    return (): void => {
+      dispatch(
+        credentialContentsMiddleware.actions.stop({
+          wsControllerURL,
+          credentialTags,
+        }),
+      );
+    };
+  }, [dispatch, wsControllerURL, credentialTags]);
+
+  const [queryParams, setQueryParams] = useQueryParams<{
+    cloud: string[];
+    credential: string[];
+    custom: string[];
+  }>({
+    cloud: [],
+    credential: [],
+    custom: [],
+  });
+  const filters = {
+    cloud: queryParams.cloud,
+    credential: queryParams.credential,
+    custom: queryParams.custom,
+  };
+
+  const existingSearchData: SearchAndFilterChip[] = Object.entries(
+    filters,
+  ).flatMap(([lead, values]) =>
+    values.filter(Boolean).map((value) => ({ lead, value })),
+  );
+
+  const credentialCount = credentialTags.length;
+
+  return (
+    <MainContent
+      contentClassName="u-no-padding--top credentials__content-wrapper"
+      title={
+        <span className="u-show--large">
+          {credentialCount} {pluralize(credentialCount, "credential")}
+        </span>
+      }
+      titleComponent="div"
+      titleClassName="u-no-max-width u-full-width"
+    >
+      <div className="credentials__content">
+        {credentialCount === 0 ? (
+          <div>
+            <h3>{Label.NOT_FOUND}</h3>
+            <p>
+              Learn about{" "}
+              <a href={externalURLs.cliHelpCommand("add-credential")}>
+                adding credentials
+              </a>
+              .
+            </p>
+          </div>
+        ) : (
+          <>
+            <SearchAndFilter
+              filterPanelData={[
+                {
+                  id: 0,
+                  heading: "Cloud",
+                  chips: generateChips(
+                    "Cloud",
+                    credentials.map(({ cloud }) => cloud),
+                  ),
+                },
+                {
+                  id: 1,
+                  heading: "Credential",
+                  chips: generateChips(
+                    "Credential",
+                    credentials.map(({ name }) => name),
+                  ),
+                },
+              ]}
+              existingSearchData={existingSearchData}
+              returnSearchData={(searchData) => {
+                const activeFilters: typeof filters = {
+                  cloud: [],
+                  credential: [],
+                  custom: [],
+                };
+                searchData.forEach(({ lead, value }) => {
+                  const key = lead?.toLowerCase();
+                  if (key === "cloud" || key === "credential") {
+                    activeFilters[key].push(value);
+                  } else {
+                    activeFilters.custom.push(value);
+                  }
+                });
+                if (!fastDeepEqual(activeFilters, filters)) {
+                  setQueryParams(activeFilters);
+                }
+              }}
+            />
+            <div className="u-sv3--top">
+              <CredentialsTable filters={filters} />
+            </div>
+          </>
+        )}
+      </div>
+    </MainContent>
+  );
+}

@@ -6,6 +6,7 @@ import BaseLayout from "layout/BaseLayout";
 import AddModel from "pages/AddModel";
 import AdvancedSearch from "pages/AdvancedSearch";
 import ControllersIndex from "pages/ControllersIndex";
+import CredentialsIndex from "pages/CredentialsIndex";
 import Logs from "pages/Logs";
 import ModelDetails from "pages/ModelDetails";
 import ModelsIndex from "pages/ModelsIndex";
@@ -35,6 +36,10 @@ export function Routes(): JSX.Element {
     {
       path: urls.controllers,
       element: <ControllersIndex />,
+    },
+    {
+      path: urls.credentials.index,
+      element: <CredentialsIndex />,
     },
   ];
 
