@@ -120,6 +120,12 @@ const PrimaryNav: FC = () => {
       ),
     },
     controllersLink,
+    {
+      component: NavLink,
+      to: urls.credentials.index,
+      icon: "security",
+      label: "Credentials",
+    },
   ];
   if (auditLogsAllowed) {
     navigation.push({

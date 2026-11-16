@@ -1,7 +1,8 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { LoadingSpinnerTestId } from "components/LoadingSpinner";
+import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
 import {
@@ -10,7 +11,7 @@ import {
   userCredentialsStateFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
-import { renderComponent } from "testing/utils";
+import { createStore, renderComponent } from "testing/utils";
 import { externalURLs } from "urls";
 
 import CredentialsIndex from "./CredentialsIndex";
@@ -104,6 +105,104 @@ describe("CredentialsIndex", () => {
     });
   });
 
+  describe("loading", () => {
+    it("shows a spinner while the clouds have not loaded", () => {
+      state.juju.cloudInfo.clouds = null;
+      state.juju.userCredentials.credentials = {};
+      state.juju.userCredentials.loaded = false;
+      renderComponent(<CredentialsIndex />, { state });
+
+      expect(
+        screen.getByTestId(LoadingSpinnerTestId.LOADING),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole("heading", { name: Label.NOT_FOUND }),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByRole("table")).not.toBeInTheDocument();
+    });
+
+    it("shows a spinner until the credentials have been received", () => {
+      state.juju.userCredentials.credentials = {};
+      state.juju.userCredentials.loaded = false;
+      renderComponent(<CredentialsIndex />, { state });
+
+      expect(
+        screen.getByTestId(LoadingSpinnerTestId.LOADING),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole("heading", { name: Label.NOT_FOUND }),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByRole("table")).not.toBeInTheDocument();
+    });
+
+    it("does not show the spinner if the credentials fail to load", () => {
+      state.juju.userCredentials.credentials = {};
+      state.juju.userCredentials.loaded = false;
+      state.juju.userCredentials.errors = {
+        source: "user-credentials",
+        message: "Uh oh!",
+      };
+      renderComponent(<CredentialsIndex />, { state });
+
+      expect(screen.getByText(/Uh oh!/)).toBeInTheDocument();
+      expect(
+        screen.queryByTestId(LoadingSpinnerTestId.LOADING),
+      ).not.toBeInTheDocument();
+    });
+
+    it("does not show the spinner if the cloud info fails to load", () => {
+      state.juju.cloudInfo.clouds = null;
+      state.juju.cloudInfo.errors = {
+        source: "cloud-info",
+        message: "Uh oh!",
+      };
+      state.juju.userCredentials.credentials = {};
+      state.juju.userCredentials.loaded = false;
+      renderComponent(<CredentialsIndex />, { state });
+
+      expect(screen.getByText(/Uh oh!/)).toBeInTheDocument();
+      expect(
+        screen.queryByTestId(LoadingSpinnerTestId.LOADING),
+      ).not.toBeInTheDocument();
+    });
+
+    it("does not show the message for there being no credentials until the credentials have loaded", () => {
+      state.juju.cloudInfo.clouds = null;
+      state.juju.userCredentials.credentials = {};
+      state.juju.userCredentials.loaded = false;
+      const store = createStore(state);
+      renderComponent(<CredentialsIndex />, { store });
+      const message = (): HTMLElement | null =>
+        screen.queryByRole("heading", { name: Label.NOT_FOUND });
+      expect(message()).not.toBeInTheDocument();
+
+      // The cloud info loads, and then the credentials are requested.
+      act(() => {
+        store.dispatch(
+          jujuActions.updateCloudInfo({
+            update: { data: { "cloud-aws": { type: "ec2" } } },
+          }),
+        );
+      });
+      expect(message()).not.toBeInTheDocument();
+      act(() => {
+        store.dispatch(
+          jujuActions.updateUserCredentials({ update: { loading: true } }),
+        );
+      });
+      expect(message()).not.toBeInTheDocument();
+
+      // It is only known that there are no credentials once the response is
+      // received, even if the response doesn't contain any credentials.
+      act(() => {
+        store.dispatch(
+          jujuActions.updateUserCredentials({ update: { data: {} } }),
+        );
+      });
+      expect(message()).toBeInTheDocument();
+    });
+  });
+
   it.for([
     ["cloud", "gce", "secondary"],
     ["credential", "default", "default"],
@@ -158,5 +257,24 @@ describe("CredentialsIndex", () => {
     expect(
       screen.queryByRole("button", { name: /^(REGION|OWNER)/ }),
     ).not.toBeInTheDocument();
+  });
+
+  it("refreshes the window from the error notification", async () => {
+    const { location } = window;
+    Object.defineProperty(window, "location", {
+      value: { ...location, reload: vi.fn() },
+    });
+
+    state.juju.credentialContents.errors = {
+      source: "credential-contents",
+      message: "Uh oh!",
+    };
+    renderComponent(<CredentialsIndex />, { state });
+    await userEvent.click(screen.getByRole("button", { name: "refreshing" }));
+    expect(window.location.reload).toHaveBeenCalled();
+
+    Object.defineProperty(window, "location", {
+      value: location,
+    });
   });
 });

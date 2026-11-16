@@ -1,4 +1,5 @@
 import { JIMMRelation, JIMMTarget } from "juju/jimm/JIMMV4";
+import type { RootState } from "store/store";
 import { rootStateFactory } from "testing/factories";
 import { generalStateFactory } from "testing/factories/general";
 import { charmInfoFactory } from "testing/factories/juju/Charms";
@@ -151,6 +152,8 @@ import {
   getSupportedJujuVersions,
   getCloudInfoState,
   getCloudTags,
+  getCredentialsLoaded,
+  getCredentialsError,
   getCredentialContentsState,
   getCredentialTags,
   getCredentialsWithContents,
@@ -3436,6 +3439,132 @@ describe("getCloudTags", () => {
       }),
     });
     expect(getCloudTags(state)).toStrictEqual([]);
+  });
+});
+
+describe("getCredentialsLoaded", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        cloudInfo: cloudInfoStateFactory.build({
+          clouds: {
+            "cloud-aws": { type: "ec2" },
+            "cloud-gce": { type: "gce" },
+          },
+        }),
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: {},
+        }),
+      }),
+    });
+  });
+
+  it("is false if the clouds have not loaded", () => {
+    state.juju.cloudInfo.clouds = null;
+    state.juju.userCredentials.loaded = true;
+    expect(getCredentialsLoaded(state)).toBe(false);
+  });
+
+  it("is false if the credentials have not been received", () => {
+    expect(getCredentialsLoaded(state)).toBe(false);
+  });
+
+  it("is true once the credentials have been received", () => {
+    state.juju.userCredentials.credentials = {
+      "cloud-aws": ["cloudcred-aws_admin_default"],
+    };
+    state.juju.userCredentials.loaded = true;
+    expect(getCredentialsLoaded(state)).toBe(true);
+  });
+
+  it("is true if the credentials were received but there were none", () => {
+    state.juju.userCredentials.loaded = true;
+    expect(getCredentialsLoaded(state)).toBe(true);
+  });
+
+  it("is true if there are no clouds", () => {
+    state.juju.cloudInfo.clouds = {};
+    expect(getCredentialsLoaded(state)).toBe(true);
+  });
+});
+
+describe("getCredentialsError", () => {
+  let state: RootState;
+
+  beforeEach(() => {
+    state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        cloudInfo: cloudInfoStateFactory.build({
+          clouds: { "cloud-aws": { type: "ec2" } },
+        }),
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: { "cloud-aws": ["cloudcred-aws_admin_default"] },
+          loaded: true,
+        }),
+        credentialContents: credentialContentsStateFactory.build(),
+      }),
+    });
+  });
+
+  it("has no error if the sources have no errors", () => {
+    expect(getCredentialsError(state)).toBeUndefined();
+  });
+
+  it("gets the cloud info error", () => {
+    state.juju.cloudInfo.errors = { source: "cloud-info", message: "Cloud!" };
+    expect(getCredentialsError(state)).toBe("Cloud!");
+  });
+
+  it("gets the user credentials error", () => {
+    state.juju.userCredentials.errors = {
+      source: "user-credentials",
+      message: "User!",
+    };
+    expect(getCredentialsError(state)).toBe("User!");
+  });
+
+  it("gets the credential contents error", () => {
+    state.juju.credentialContents.errors = {
+      source: "credential-contents",
+      message: "Contents!",
+    };
+    expect(getCredentialsError(state)).toBe("Contents!");
+  });
+
+  it("gets the cloud info error before the others", () => {
+    state.juju.cloudInfo.errors = { source: "cloud-info", message: "Cloud!" };
+    state.juju.userCredentials.errors = {
+      source: "user-credentials",
+      message: "User!",
+    };
+    state.juju.credentialContents.errors = {
+      source: "credential-contents",
+      message: "Contents!",
+    };
+    expect(getCredentialsError(state)).toBe("Cloud!");
+  });
+
+  it("gets the user credentials error before the contents error", () => {
+    state.juju.userCredentials.errors = {
+      source: "user-credentials",
+      message: "User!",
+    };
+    state.juju.credentialContents.errors = {
+      source: "credential-contents",
+      message: "Contents!",
+    };
+    expect(getCredentialsError(state)).toBe("User!");
+  });
+
+  it("ignores the credential contents error if there are no credentials", () => {
+    state.juju.userCredentials.credentials = { "cloud-aws": [] };
+    state.juju.credentialContents.errors = {
+      source: "credential-contents",
+      message: "Contents!",
+    };
+    expect(getCredentialsError(state)).toBeUndefined();
   });
 });
 
