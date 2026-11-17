@@ -204,9 +204,37 @@ export const getCloudInfoState = createSelector(
   (sliceState) => sliceState.cloudInfo,
 );
 
+export const getCloudTags = createSelector([getCloudInfoState], (cloudInfo) =>
+  Object.keys(cloudInfo.clouds ?? {}),
+);
+
 export const getUserCredentialsState = createSelector(
   [slice],
   (sliceState) => sliceState.userCredentials,
+);
+
+export const getCredentialContentsState = createSelector(
+  [slice],
+  (sliceState) => sliceState.credentialContents,
+);
+
+export const getCredentialTags = createSelector(
+  [getUserCredentialsState],
+  (userCredentials) => Object.values(userCredentials.credentials).flat(),
+);
+
+export const getCredentialsWithContents = createSelector(
+  [getCredentialTags, getCredentialContentsState],
+  (credentialTags, credentialContents) =>
+    credentialTags.map((credential) => {
+      const { cloud, name } = extractCredentialName(credential);
+      return {
+        credential,
+        cloud,
+        name,
+        contents: credentialContents.contents[credential],
+      };
+    }),
 );
 
 export const getModelSecretsState = createSelector(

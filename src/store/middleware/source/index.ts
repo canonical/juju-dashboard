@@ -6,6 +6,7 @@ import type { SourceInstance } from "../source-middleware";
 import createMiddleware from "../source-middleware";
 
 import cloudInfo from "./cloud-info";
+import credentialContents from "./credential-contents";
 import jimmSupportedVersions from "./jimm-supported-versions";
 import migrationTargets from "./migration-targets";
 import modelConfigDefaults from "./model-config-defaults";
@@ -22,6 +23,7 @@ export default function createSourceMiddleware(): Middleware<
     jimmSupportedVersions as SourceInstance<unknown, unknown>,
     migrationTargets as SourceInstance<unknown, unknown>,
     userCredentials as SourceInstance<unknown, unknown>,
+    credentialContents as SourceInstance<unknown, unknown>,
     cloudInfo as SourceInstance<unknown, unknown>,
     modelConfigDefaults as SourceInstance<unknown, unknown>,
   ]);
