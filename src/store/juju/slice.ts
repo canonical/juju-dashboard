@@ -36,6 +36,7 @@ import type {
   ModelUpgrade,
   AddModel,
   BlockEntry,
+  RemoveCredentialEntry,
   ModelDestructionParams,
   ModelSelectionParams,
   CredentialContentsState,
@@ -177,6 +178,7 @@ const slice = createSlice({
       loaded: false,
     },
     blockState: {},
+    removeCredential: {},
   } as JujuState,
   reducers: {
     updateModelList: (
@@ -297,6 +299,7 @@ const slice = createSlice({
         errors: null,
         loading: false,
       };
+      state.removeCredential = {};
     },
     setModelCanConfigure: (
       state,
@@ -1012,6 +1015,68 @@ const slice = createSlice({
         };
       }
       state.blockState[action.payload.modelUUID].outcome =
+        action.payload.outcome;
+    },
+    setRemoveCredentialRunning: (
+      state,
+      action: PayloadAction<
+        {
+          credentialTag: string;
+          running: boolean;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      if (!state.removeCredential[action.payload.credentialTag]) {
+        state.removeCredential[action.payload.credentialTag] = {
+          running: false,
+          status: null,
+          outcome: null,
+        };
+      }
+      const entry = state.removeCredential[action.payload.credentialTag];
+      entry.running = action.payload.running;
+      if (action.payload.running) {
+        // A retry or a re-added credential must not show the previous outcome.
+        entry.status = null;
+        entry.outcome = null;
+      }
+    },
+    setRemoveCredentialStatus: (
+      state,
+      action: PayloadAction<
+        {
+          credentialTag: string;
+          status: RemoveCredentialEntry["status"];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      if (!state.removeCredential[action.payload.credentialTag]) {
+        state.removeCredential[action.payload.credentialTag] = {
+          running: false,
+          status: null,
+          outcome: null,
+        };
+      }
+      state.removeCredential[action.payload.credentialTag].status =
+        action.payload.status;
+    },
+    setRemoveCredentialOutcome: (
+      state,
+      action: PayloadAction<
+        {
+          credentialTag: string;
+          outcome: RemoveCredentialEntry["outcome"];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      if (!state.removeCredential[action.payload.credentialTag]) {
+        state.removeCredential[action.payload.credentialTag] = {
+          running: false,
+          status: null,
+          outcome: null,
+        };
+      }
+      state.removeCredential[action.payload.credentialTag].outcome =
         action.payload.outcome;
     },
   },

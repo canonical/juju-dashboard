@@ -1542,6 +1542,16 @@ export const getModelMigrationTargets = createSelector(
     },
 );
 
+export const getRemoveCredential = createSelector(
+  [slice, (_state, credentialTag: string): string => credentialTag],
+  (state, credentialTag) =>
+    state.removeCredential[credentialTag] ?? {
+      running: false,
+      status: null,
+      outcome: null,
+    },
+);
+
 export const getHighestSupportedVersion = createSelector(
   [getSupportedJujuVersions],
   (versions) =>
