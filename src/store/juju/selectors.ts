@@ -213,6 +213,16 @@ export const getUserCredentialsState = createSelector(
   (sliceState) => sliceState.userCredentials,
 );
 
+/**
+  Whether the credentials have been fetched.
+*/
+export const getCredentialsLoaded = createSelector(
+  [getCloudInfoState, getUserCredentialsState],
+  (cloudInfo, userCredentials) =>
+    !!cloudInfo.clouds &&
+    (Object.keys(cloudInfo.clouds).length === 0 || userCredentials.loaded),
+);
+
 export const getCredentialContentsState = createSelector(
   [slice],
   (sliceState) => sliceState.credentialContents,
@@ -221,6 +231,31 @@ export const getCredentialContentsState = createSelector(
 export const getCredentialTags = createSelector(
   [getUserCredentialsState],
   (userCredentials) => Object.values(userCredentials.credentials).flat(),
+);
+
+/**
+  The error that prevented the credentials from being fetched.
+  The sources depend on each other, so the first error takes precedence.
+*/
+export const getCredentialsError = createSelector(
+  [
+    getCloudInfoState,
+    getUserCredentialsState,
+    getCredentialContentsState,
+    getCredentialTags,
+  ],
+  (cloudInfo, userCredentials, credentialContents, credentialTags) => {
+    if (cloudInfo.errors) {
+      return cloudInfo.errors.message;
+    }
+    if (userCredentials.errors) {
+      return userCredentials.errors.message;
+    }
+    if (credentialTags.length && credentialContents.errors) {
+      return credentialContents.errors.message;
+    }
+    return undefined;
+  },
 );
 
 export const getCredentialsWithContents = createSelector(

@@ -1,4 +1,8 @@
-import { SearchAndFilter } from "@canonical/react-components";
+import {
+  Button,
+  Notification as ReactNotification,
+  SearchAndFilter,
+} from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import fastDeepEqual from "fast-deep-equal/es6";
 import type { JSX } from "react";
@@ -6,12 +10,15 @@ import { useEffect } from "react";
 import { shallowEqual } from "react-redux";
 
 import CredentialsTable from "components/CredentialsTable";
+import LoadingSpinner from "components/LoadingSpinner";
 import { useQueryParams } from "hooks/useQueryParams";
 import useWindowTitle from "hooks/useWindowTitle";
 import MainContent from "layout/MainContent";
 import { getWSControllerURL } from "store/general/selectors";
 import {
   getCloudTags,
+  getCredentialsError,
+  getCredentialsLoaded,
   getCredentialsWithContents,
   getCredentialTags,
 } from "store/juju/selectors";
@@ -28,11 +35,13 @@ export default function Credentials(): JSX.Element {
   useWindowTitle("Credentials");
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
+  const credentialsError = useAppSelector(getCredentialsError);
   // Compare the tags by value so the sources are only restarted when the tags
   // change, not each time the credentials state is updated (e.g. by a poll).
   const cloudTags = useAppSelector(getCloudTags, shallowEqual);
   const credentialTags = useAppSelector(getCredentialTags, shallowEqual);
   const credentials = useAppSelector(getCredentialsWithContents);
+  const credentialsLoaded = useAppSelector(getCredentialsLoaded);
 
   useEffect(() => {
     if (!wsControllerURL || !cloudTags.length) {
@@ -93,6 +102,13 @@ export default function Credentials(): JSX.Element {
 
   const credentialCount = credentialTags.length;
 
+  // Wait for the credentials, otherwise the message for there being no
+  // credentials would be shown before they have loaded. Don't wait if there is
+  // an error, as they might never load.
+  if (!credentialsLoaded && !credentialsError) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <MainContent
       contentClassName="u-no-padding--top credentials__content-wrapper"
@@ -104,65 +120,81 @@ export default function Credentials(): JSX.Element {
       titleComponent="div"
       titleClassName="u-no-max-width u-full-width"
     >
-      <div className="credentials__content">
-        {credentialCount === 0 ? (
-          <div>
-            <h3>{Label.NOT_FOUND}</h3>
-            <p>
-              Learn about{" "}
-              <a href={externalURLs.cliHelpCommand("add-credential")}>
-                adding credentials
-              </a>
-              .
-            </p>
-          </div>
-        ) : (
-          <>
-            <SearchAndFilter
-              filterPanelData={[
-                {
-                  id: 0,
-                  heading: "Cloud",
-                  chips: generateChips(
-                    "Cloud",
-                    credentials.map(({ cloud }) => cloud),
-                  ),
-                },
-                {
-                  id: 1,
-                  heading: "Credential",
-                  chips: generateChips(
-                    "Credential",
-                    credentials.map(({ name }) => name),
-                  ),
-                },
-              ]}
-              existingSearchData={existingSearchData}
-              returnSearchData={(searchData) => {
-                const activeFilters: typeof filters = {
-                  cloud: [],
-                  credential: [],
-                  custom: [],
-                };
-                searchData.forEach(({ lead, value }) => {
-                  const key = lead?.toLowerCase();
-                  if (key === "cloud" || key === "credential") {
-                    activeFilters[key].push(value);
-                  } else {
-                    activeFilters.custom.push(value);
-                  }
-                });
-                if (!fastDeepEqual(activeFilters, filters)) {
-                  setQueryParams(activeFilters);
-                }
-              }}
-            />
-            <div className="u-sv3--top">
-              <CredentialsTable filters={filters} />
+      {credentialsError ? (
+        <ReactNotification severity="negative" title="Error">
+          {credentialsError} Try{" "}
+          <Button
+            appearance="link"
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
+            refreshing
+          </Button>{" "}
+          the page.
+        </ReactNotification>
+      ) : null}
+      {credentialsLoaded ? (
+        <div className="credentials__content">
+          {credentialCount === 0 ? (
+            <div>
+              <h3>{Label.NOT_FOUND}</h3>
+              <p>
+                Learn about{" "}
+                <a href={externalURLs.cliHelpCommand("add-credential")}>
+                  adding credentials
+                </a>
+                .
+              </p>
             </div>
-          </>
-        )}
-      </div>
+          ) : (
+            <>
+              <SearchAndFilter
+                filterPanelData={[
+                  {
+                    id: 0,
+                    heading: "Cloud",
+                    chips: generateChips(
+                      "Cloud",
+                      credentials.map(({ cloud }) => cloud),
+                    ),
+                  },
+                  {
+                    id: 1,
+                    heading: "Credential",
+                    chips: generateChips(
+                      "Credential",
+                      credentials.map(({ name }) => name),
+                    ),
+                  },
+                ]}
+                existingSearchData={existingSearchData}
+                returnSearchData={(searchData) => {
+                  const activeFilters: typeof filters = {
+                    cloud: [],
+                    credential: [],
+                    custom: [],
+                  };
+                  searchData.forEach(({ lead, value }) => {
+                    const key = lead?.toLowerCase();
+                    if (key === "cloud" || key === "credential") {
+                      activeFilters[key].push(value);
+                    } else {
+                      activeFilters.custom.push(value);
+                    }
+                  });
+                  if (!fastDeepEqual(activeFilters, filters)) {
+                    setQueryParams(activeFilters);
+                  }
+                }}
+              />
+              <div className="u-sv3--top">
+                <CredentialsTable filters={filters} />
+              </div>
+            </>
+          )}
+        </div>
+      ) : null}
     </MainContent>
   );
 }

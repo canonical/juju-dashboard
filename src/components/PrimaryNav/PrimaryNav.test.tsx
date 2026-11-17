@@ -170,6 +170,9 @@ describe("PrimaryNav", () => {
       screen.getByRole("link", { name: "Controllers" }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole("link", { name: "Credentials" }),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("link", { name: "Report a bug" }),
     ).toBeInTheDocument();
   });

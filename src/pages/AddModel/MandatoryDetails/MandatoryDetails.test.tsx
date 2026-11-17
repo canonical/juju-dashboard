@@ -161,7 +161,7 @@ describe("MandatoryDetails", () => {
       ).toMatchObject({
         payload: {
           wsControllerURL: "wss://controller.example.com",
-          cloudTags: ["cloud-aws"],
+          cloudTags: ["cloud-aws", "cloud-gce"],
         },
       });
       expect(
@@ -178,7 +178,7 @@ describe("MandatoryDetails", () => {
     });
   });
 
-  it("fetches credentials on cloud change if they are not already loaded", async () => {
+  it("fetches the credentials of all clouds once", async () => {
     state.juju.userCredentials = userCredentialsStateFactory.build({
       credentials: {
         "cloud-gce": ["cloudcred-gce_user_gce-cred"],
@@ -216,10 +216,15 @@ describe("MandatoryDetails", () => {
       ).toMatchObject({
         payload: {
           wsControllerURL: "wss://controller.example.com",
-          cloudTags: ["cloud-aws"],
+          cloudTags: ["cloud-aws", "cloud-gce"],
         },
       });
     });
+    expect(
+      actions.filter(
+        (dispatch) => dispatch.type === "source/user-credentials/stop",
+      ),
+    ).toHaveLength(0);
   });
 
   it("fetches model config defaults on region change", async () => {
@@ -294,7 +299,7 @@ describe("MandatoryDetails", () => {
       ).toMatchObject({
         payload: {
           wsControllerURL: "wss://controller.example.com",
-          cloudTags: ["cloud-gce"],
+          cloudTags: ["cloud-aws", "cloud-gce"],
         },
       });
       expect(
