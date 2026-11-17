@@ -148,6 +148,10 @@ describe("CredentialsIndex", () => {
       expect(
         screen.queryByTestId(LoadingSpinnerTestId.LOADING),
       ).not.toBeInTheDocument();
+      expect(screen.queryByRole("table")).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("heading", { name: Label.NOT_FOUND }),
+      ).not.toBeInTheDocument();
     });
 
     it("does not show the spinner if the cloud info fails to load", () => {
@@ -163,6 +167,10 @@ describe("CredentialsIndex", () => {
       expect(screen.getByText(/Uh oh!/)).toBeInTheDocument();
       expect(
         screen.queryByTestId(LoadingSpinnerTestId.LOADING),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByRole("table")).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("heading", { name: Label.NOT_FOUND }),
       ).not.toBeInTheDocument();
     });
 

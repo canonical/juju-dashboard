@@ -184,7 +184,7 @@ const MandatoryDetails = (): JSX.Element => {
         component={Select}
         label={Label.CREDENTIAL}
         name="credential"
-        disabled={userCredentials.loading || !values.cloud}
+        disabled={!userCredentials.loaded || !values.cloud}
         required
         options={credentialsOptions}
       />

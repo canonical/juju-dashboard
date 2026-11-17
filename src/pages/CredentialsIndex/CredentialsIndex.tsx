@@ -134,65 +134,67 @@ export default function Credentials(): JSX.Element {
           the page.
         </ReactNotification>
       ) : null}
-      <div className="credentials__content">
-        {credentialsLoaded && credentialCount === 0 ? (
-          <div>
-            <h3>{Label.NOT_FOUND}</h3>
-            <p>
-              Learn about{" "}
-              <a href={externalURLs.cliHelpCommand("add-credential")}>
-                adding credentials
-              </a>
-              .
-            </p>
-          </div>
-        ) : (
-          <>
-            <SearchAndFilter
-              filterPanelData={[
-                {
-                  id: 0,
-                  heading: "Cloud",
-                  chips: generateChips(
-                    "Cloud",
-                    credentials.map(({ cloud }) => cloud),
-                  ),
-                },
-                {
-                  id: 1,
-                  heading: "Credential",
-                  chips: generateChips(
-                    "Credential",
-                    credentials.map(({ name }) => name),
-                  ),
-                },
-              ]}
-              existingSearchData={existingSearchData}
-              returnSearchData={(searchData) => {
-                const activeFilters: typeof filters = {
-                  cloud: [],
-                  credential: [],
-                  custom: [],
-                };
-                searchData.forEach(({ lead, value }) => {
-                  const key = lead?.toLowerCase();
-                  if (key === "cloud" || key === "credential") {
-                    activeFilters[key].push(value);
-                  } else {
-                    activeFilters.custom.push(value);
-                  }
-                });
-                if (!fastDeepEqual(activeFilters, filters)) {
-                  setQueryParams(activeFilters);
-                }
-              }}
-            />
-            <div className="u-sv3--top">
-              <CredentialsTable filters={filters} />
+      {credentialsLoaded ? (
+        <div className="credentials__content">
+          {credentialCount === 0 ? (
+            <div>
+              <h3>{Label.NOT_FOUND}</h3>
+              <p>
+                Learn about{" "}
+                <a href={externalURLs.cliHelpCommand("add-credential")}>
+                  adding credentials
+                </a>
+                .
+              </p>
             </div>
-          </>
-        )}
-      </div>
+          ) : (
+            <>
+              <SearchAndFilter
+                filterPanelData={[
+                  {
+                    id: 0,
+                    heading: "Cloud",
+                    chips: generateChips(
+                      "Cloud",
+                      credentials.map(({ cloud }) => cloud),
+                    ),
+                  },
+                  {
+                    id: 1,
+                    heading: "Credential",
+                    chips: generateChips(
+                      "Credential",
+                      credentials.map(({ name }) => name),
+                    ),
+                  },
+                ]}
+                existingSearchData={existingSearchData}
+                returnSearchData={(searchData) => {
+                  const activeFilters: typeof filters = {
+                    cloud: [],
+                    credential: [],
+                    custom: [],
+                  };
+                  searchData.forEach(({ lead, value }) => {
+                    const key = lead?.toLowerCase();
+                    if (key === "cloud" || key === "credential") {
+                      activeFilters[key].push(value);
+                    } else {
+                      activeFilters.custom.push(value);
+                    }
+                  });
+                  if (!fastDeepEqual(activeFilters, filters)) {
+                    setQueryParams(activeFilters);
+                  }
+                }}
+              />
+              <div className="u-sv3--top">
+                <CredentialsTable filters={filters} />
+              </div>
+            </>
+          )}
+        </div>
+      ) : null}
     </MainContent>
   );
 }
