@@ -213,6 +213,15 @@ export type RemoveCredentialEntry = {
 
 export type RemoveCredentialState = Record<string, RemoveCredentialEntry>;
 
+export type AddCredentialEntry = {
+  cloud: string;
+  name: string;
+  running: boolean;
+  outcome: null | ProcessOutcome<void>;
+};
+
+export type AddCredentialState = Record<string, AddCredentialEntry>;
+
 export enum DestroyBlockedReason {
   IS_CONTROLLER = "isController",
   NO_ACCESS = "noAccess",
@@ -280,4 +289,5 @@ export type JujuState = {
   addModelState: AddModelState;
   blockState: BlockState;
   removeCredential: RemoveCredentialState;
+  addCredentialState: AddCredentialState;
 };

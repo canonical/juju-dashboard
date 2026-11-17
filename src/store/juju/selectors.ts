@@ -1740,6 +1740,14 @@ export const getAddModelState = createSelector(
 );
 
 /**
+Fetches the add credential state.
+*/
+export const getAddCredentialState = createSelector(
+  [slice],
+  (sliceState) => sliceState.addCredentialState,
+);
+
+/**
 Fetches the model config defaults state.
 */
 export const getModelConfigDefaultsState = createSelector(

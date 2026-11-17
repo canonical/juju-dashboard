@@ -35,6 +35,7 @@ import type {
   SourceData,
   ModelUpgrade,
   AddModel,
+  AddCredentialEntry,
   BlockEntry,
   RemoveCredentialEntry,
   ModelDestructionParams,
@@ -179,6 +180,7 @@ const slice = createSlice({
     },
     blockState: {},
     removeCredential: {},
+    addCredentialState: {},
   } as JujuState,
   reducers: {
     updateModelList: (
@@ -299,7 +301,9 @@ const slice = createSlice({
         errors: null,
         loading: false,
       };
+      state.blockState = {};
       state.removeCredential = {};
+      state.addCredentialState = {};
     },
     setModelCanConfigure: (
       state,
@@ -1078,6 +1082,60 @@ const slice = createSlice({
       }
       state.removeCredential[action.payload.credentialTag].outcome =
         action.payload.outcome;
+    },
+    setAddCredentialRunning: (
+      state,
+      action: PayloadAction<
+        {
+          cloud: string;
+          name: string;
+          running: boolean;
+        } & WsControllerURLParam
+      >,
+    ) => {
+      const { cloud, name, running } = action.payload;
+      const key = `${cloud}_${name}`;
+      if (running) {
+        if (!state.addCredentialState[key]) {
+          state.addCredentialState[key] = {
+            cloud,
+            name,
+            running: false,
+            outcome: null,
+          };
+        }
+        const entry = state.addCredentialState[key];
+        entry.running = true;
+        // A retry must not show the outcome of a previous run.
+        entry.outcome = null;
+      } else if (state.addCredentialState[key]) {
+        state.addCredentialState[key].running = false;
+      }
+    },
+    setAddCredentialOutcome: (
+      state,
+      action: PayloadAction<
+        {
+          cloud: string;
+          name: string;
+          outcome: AddCredentialEntry["outcome"];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      const { cloud, name, outcome } = action.payload;
+      const key = `${cloud}_${name}`;
+      if (state.addCredentialState[key]) {
+        state.addCredentialState[key].outcome = outcome;
+      }
+    },
+    clearAddCredential: (
+      state,
+      action: PayloadAction<
+        { cloud: string; name: string } & WsControllerURLParam
+      >,
+    ) => {
+      const { cloud, name } = action.payload;
+      delete state.addCredentialState[`${cloud}_${name}`];
     },
   },
 });

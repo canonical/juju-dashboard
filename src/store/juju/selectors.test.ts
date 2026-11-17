@@ -151,6 +151,7 @@ import {
   getUnitMachine,
   getSupportedJujuVersions,
   getCloudInfoState,
+  getAddCredentialState,
   getCloudTags,
   getCredentialsLoaded,
   getCredentialsError,
@@ -4419,5 +4420,22 @@ describe("getSelectedModelForDestruction", () => {
     expect(getSelectedModelForDestruction(state, "abc123")).toStrictEqual(
       model,
     );
+  });
+});
+
+describe("getAddCredentialState", () => {
+  it("returns the add credential state", () => {
+    const addCredentialState = {
+      "aws_my-cred": {
+        cloud: "aws",
+        name: "my-cred",
+        running: true,
+        outcome: null,
+      },
+    };
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({ addCredentialState }),
+    });
+    expect(getAddCredentialState(state)).toStrictEqual(addCredentialState);
   });
 });
