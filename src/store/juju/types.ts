@@ -113,14 +113,15 @@ export type ModelSecrets = {
 export type SecretsState = Record<string, ModelSecrets>;
 
 export type CloudState = {
-  errors: null | string | unknown;
+  errors: SourceData<CloudsResult["clouds"]>["error"];
   loading: boolean;
   clouds: CloudsResult["clouds"] | null;
 };
 
 export type UserCredentialsState = {
   credentials: Record<string, string[]>;
-  errors: null | string | unknown;
+  errors: SourceData<Record<string, string[]>>["error"];
+  loaded: boolean;
   loading: boolean;
 };
 
