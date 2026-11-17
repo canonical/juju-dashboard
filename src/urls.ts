@@ -18,6 +18,7 @@ export type ModelsGroupedBy = (typeof VALID_MODEL_GROUPINGS)[number];
 const urls = {
   index: "/",
   controllers: "/controllers",
+  credentials: { index: "/credentials" },
   model: {
     index: argPath<{ qualifier: string; modelName: string }>(
       "/models/:qualifier/:modelName",
