@@ -73,7 +73,7 @@ const CredentialActions: FC<Props> = ({
             }}
           >
             <Icon name="delete" />
-            <span>{Label.DESTROY}</span>
+            <span>{Label.REMOVE}</span>
           </Button>
         )}
       />

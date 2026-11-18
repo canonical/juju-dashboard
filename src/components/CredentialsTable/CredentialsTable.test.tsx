@@ -127,7 +127,7 @@ describe("CredentialsTable", () => {
       screen.getByRole("button", { name: CredentialActionsLabel.TOGGLE }),
     );
     await userEvent.click(
-      screen.getByRole("menuitem", { name: CredentialActionsLabel.DESTROY }),
+      screen.getByRole("menuitem", { name: CredentialActionsLabel.REMOVE }),
     );
     expect(
       screen.getByRole("dialog", {

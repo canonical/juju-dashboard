@@ -23,17 +23,17 @@ describe("CredentialActions", () => {
     expect(screen.getByRole("button")).toHaveAccessibleName(Label.TOGGLE);
   });
 
-  it("shows the destroy option when opened", async () => {
+  it("shows the remove option when opened", async () => {
     renderComponent(
       <CredentialActions credentialTag={TAG} credentialName={NAME} />,
     );
     await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
     expect(
-      screen.getByRole("menuitem", { name: Label.DESTROY }),
+      screen.getByRole("menuitem", { name: Label.REMOVE }),
     ).toBeInTheDocument();
   });
 
-  it("opens the remove credential dialog from the destroy option", async () => {
+  it("opens the remove credential dialog from the remove option", async () => {
     renderComponent(
       <CredentialActions
         credentialTag={TAG}
@@ -42,16 +42,14 @@ describe("CredentialActions", () => {
       />,
     );
     await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
-    await userEvent.click(
-      screen.getByRole("menuitem", { name: Label.DESTROY }),
-    );
+    await userEvent.click(screen.getByRole("menuitem", { name: Label.REMOVE }));
     expect(
       screen.getByRole("dialog", {
         name: `${RemoveCredentialDialogLabel.TITLE} ${NAME}`,
       }),
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole("menuitem", { name: Label.DESTROY }),
+      screen.queryByRole("menuitem", { name: Label.REMOVE }),
     ).not.toBeInTheDocument();
   });
 
@@ -83,7 +81,7 @@ describe("CredentialActions", () => {
       );
       await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
       await userEvent.click(
-        screen.getByRole("menuitem", { name: Label.DESTROY }),
+        screen.getByRole("menuitem", { name: Label.REMOVE }),
       );
       const dialog = screen.getByRole("dialog", {
         name: `${RemoveCredentialDialogLabel.TITLE} ${NAME}`,

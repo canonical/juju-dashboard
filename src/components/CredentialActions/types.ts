@@ -1,4 +1,4 @@
 export enum Label {
-  DESTROY = "Destroy",
+  REMOVE = "Remove",
   TOGGLE = "Toggle credential actions menu",
 }
