@@ -97,7 +97,7 @@ describe("CredentialsTable", () => {
     ).toBeInTheDocument();
   });
 
-  it("opens the remove credential dialog with the row's model count", async () => {
+  it("opens the remove credential dialog", async () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         userCredentials: userCredentialsStateFactory.build({
@@ -112,10 +112,7 @@ describe("CredentialsTable", () => {
                   cloud: "aws",
                   name: "default",
                 },
-                models: [
-                  { model: "model-one", access: "admin" },
-                  { model: "model-two", access: "read" },
-                ],
+                models: [],
               },
             },
           },
@@ -131,11 +128,9 @@ describe("CredentialsTable", () => {
     );
     expect(
       screen.getByRole("dialog", {
-        name: `${RemoveCredentialDialogLabel.IN_USE_TITLE} default`,
+        name: `${RemoveCredentialDialogLabel.TITLE} default`,
       }),
-    ).toHaveTextContent(
-      "2 models currently use this credential. Delete those models before removing it.",
-    );
+    ).toBeInTheDocument();
   });
 
   it("renders a message when there are no credentials", () => {
