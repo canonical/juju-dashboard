@@ -231,29 +231,6 @@ describe("RemoveCredentialDialog", () => {
     expect(closePortal).not.toHaveBeenCalled();
   });
 
-  it("does not show a previous error before confirming", () => {
-    state.juju = jujuStateFactory.build({
-      removeCredential: {
-        [TAG]: {
-          running: false,
-          status: "pending",
-          outcome: { error: { message: "boom", source: null } },
-        },
-      },
-    });
-    renderComponent(
-      <RemoveCredentialDialog
-        credentialTag={TAG}
-        credentialName={NAME}
-        modelCount={0}
-        closePortal={vi.fn()}
-      />,
-      { state },
-    );
-    expect(screen.getByRole("dialog", { name: TITLE })).toBeInTheDocument();
-    expect(screen.queryByText("boom")).not.toBeInTheDocument();
-  });
-
   it("hides a previous error when retrying", async () => {
     state.juju = jujuStateFactory.build({
       removeCredential: {
@@ -273,6 +250,7 @@ describe("RemoveCredentialDialog", () => {
       />,
       { state },
     );
+    expect(screen.getByText("boom")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: Label.REMOVE }));
     expect(screen.getByRole("dialog", { name: TITLE })).toBeInTheDocument();
     expect(screen.queryByText("boom")).not.toBeInTheDocument();
@@ -381,56 +359,5 @@ describe("RemoveCredentialDialog", () => {
           action.type === userCredentialsMiddleware.actions.invalidate.type,
       ),
     ).toBeUndefined();
-  });
-
-  it("ignores a previous success before confirming", () => {
-    state.juju = jujuStateFactory.build({
-      removeCredential: {
-        [TAG]: {
-          running: false,
-          status: "initiated",
-          outcome: { result: undefined },
-        },
-      },
-    });
-    const closePortal = vi.fn();
-    renderComponent(
-      <RemoveCredentialDialog
-        credentialTag={TAG}
-        credentialName={NAME}
-        modelCount={0}
-        closePortal={closePortal}
-      />,
-      { state },
-    );
-    expect(screen.getByRole("dialog", { name: TITLE })).toBeInTheDocument();
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
-    expect(closePortal).not.toHaveBeenCalled();
-  });
-
-  it("does not treat a previous success as a new one when retrying", async () => {
-    state.juju = jujuStateFactory.build({
-      removeCredential: {
-        [TAG]: {
-          running: false,
-          status: "initiated",
-          outcome: { result: undefined },
-        },
-      },
-    });
-    const closePortal = vi.fn();
-    renderComponent(
-      <RemoveCredentialDialog
-        credentialTag={TAG}
-        credentialName={NAME}
-        modelCount={0}
-        closePortal={closePortal}
-      />,
-      { state },
-    );
-    await userEvent.click(screen.getByRole("button", { name: Label.REMOVE }));
-    expect(screen.getByRole("dialog", { name: TITLE })).toBeInTheDocument();
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
-    expect(closePortal).not.toHaveBeenCalled();
   });
 });

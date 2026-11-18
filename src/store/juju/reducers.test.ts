@@ -2526,6 +2526,31 @@ describe("reducers", () => {
       });
     });
 
+    it("clearRemoveCredential only removes the matching entry", () => {
+      const other = {
+        running: false,
+        status: null,
+        outcome: { result: undefined },
+      };
+      const state = jujuStateFactory.build({
+        removeCredential: {
+          [credentialTag]: {
+            running: false,
+            status: "initiated",
+            outcome: { result: undefined },
+          },
+          "cloudcred-aws_admin_other": other,
+        },
+      });
+
+      expect(
+        reducer(
+          state,
+          actions.clearRemoveCredential({ credentialTag, wsControllerURL }),
+        ).removeCredential,
+      ).toStrictEqual({ "cloudcred-aws_admin_other": other });
+    });
+
     it("clears a previous error outcome when a new run starts", () => {
       const state = jujuStateFactory.build({
         removeCredential: {

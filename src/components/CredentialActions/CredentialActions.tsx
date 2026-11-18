@@ -7,6 +7,9 @@ import {
 import type { FC } from "react";
 
 import RemoveCredentialDialog from "components/RemoveCredentialDialog";
+import { getWSControllerURL } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
+import { useAppDispatch, useAppSelector } from "store/store";
 
 import { Label } from "./types";
 
@@ -22,6 +25,8 @@ const CredentialActions: FC<Props> = ({
   modelCount,
 }: Props) => {
   const { openPortal, closePortal, isOpen, Portal } = usePortal();
+  const dispatch = useAppDispatch();
+  const wsControllerURL = useAppSelector(getWSControllerURL);
 
   return (
     <>
@@ -56,6 +61,14 @@ const CredentialActions: FC<Props> = ({
             onClick={(event) => {
               event.stopPropagation();
               handleClose();
+              if (wsControllerURL) {
+                dispatch(
+                  jujuActions.clearRemoveCredential({
+                    credentialTag,
+                    wsControllerURL,
+                  }),
+                );
+              }
               openPortal(event);
             }}
           >

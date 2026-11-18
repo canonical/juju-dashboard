@@ -5,12 +5,12 @@ import {
   Notification as ReactNotification,
 } from "@canonical/react-components";
 import type { JSX } from "react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { shallowEqual } from "react-redux";
 
 import { getWSControllerURL } from "store/general/selectors";
+import { actions as jujuActions } from "store/juju";
 import { getCloudTags, getRemoveCredential } from "store/juju/selectors";
-import type { RemoveCredentialEntry } from "store/juju/types";
 import { removeCredential } from "store/middleware/process";
 import userCredentialsMiddleware from "store/middleware/source/user-credentials";
 import { useAppDispatch, useAppSelector } from "store/store";
@@ -31,19 +31,13 @@ export default function RemoveCredentialDialog({
   modelCount,
   closePortal,
 }: Props): JSX.Element {
-  const [submitted, setSubmitted] = useState(false);
-  const [previousOutcome, setPreviousOutcome] =
-    useState<RemoveCredentialEntry["outcome"]>(null);
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
   const cloudTags = useAppSelector(getCloudTags, shallowEqual);
   const { running, outcome } = useAppSelector((state) =>
     getRemoveCredential(state, credentialTag),
   );
-  // Ignore an outcome left over from an earlier attempt: only react to one
-  // that differs from the outcome in the store when Remove was clicked.
-  const newOutcome = submitted && outcome !== previousOutcome ? outcome : null;
-  const succeeded = !!newOutcome && "result" in newOutcome;
+  const succeeded = !!outcome && "result" in outcome;
 
   useEffect(() => {
     if (succeeded) {
@@ -71,8 +65,9 @@ export default function RemoveCredentialDialog({
     if (!wsControllerURL) {
       return;
     }
-    setPreviousOutcome(outcome);
-    setSubmitted(true);
+    dispatch(
+      jujuActions.clearRemoveCredential({ credentialTag, wsControllerURL }),
+    );
     dispatch(removeCredential.run({ wsControllerURL, credentialTag }));
   };
 
@@ -111,9 +106,9 @@ export default function RemoveCredentialDialog({
       onConfirm={handleConfirm}
       close={closePortal}
     >
-      {newOutcome && "error" in newOutcome ? (
+      {outcome && "error" in outcome ? (
         <ReactNotification severity="negative">
-          {newOutcome.error.message}
+          {outcome.error.message}
         </ReactNotification>
       ) : null}
       <p>Are you sure you want to remove {credentialName}?</p>

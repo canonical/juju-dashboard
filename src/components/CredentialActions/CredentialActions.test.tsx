@@ -2,6 +2,11 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { RemoveCredentialDialogLabel } from "components/RemoveCredentialDialog";
+import { ToastCardTestId } from "components/ToastCard";
+import type { RemoveCredentialEntry } from "store/juju/types";
+import { configFactory, generalStateFactory } from "testing/factories/general";
+import { jujuStateFactory } from "testing/factories/juju/juju";
+import { rootStateFactory } from "testing/factories/root";
 import { renderComponent } from "testing/utils";
 
 import CredentialActions from "./CredentialActions";
@@ -49,4 +54,45 @@ describe("CredentialActions", () => {
       screen.queryByRole("menuitem", { name: Label.DESTROY }),
     ).not.toBeInTheDocument();
   });
+
+  it.each<[string, RemoveCredentialEntry["outcome"]]>([
+    ["success", { result: undefined }],
+    ["error", { error: { message: "boom", source: null } }],
+  ])(
+    "clears a previous %s when opening the remove credential dialog",
+    async (_name, outcome) => {
+      const state = rootStateFactory.build({
+        general: generalStateFactory.build({
+          config: configFactory.build({
+            controllerAPIEndpoint: "wss://example.com:17070/api",
+          }),
+        }),
+        juju: jujuStateFactory.build({
+          removeCredential: {
+            [TAG]: { running: false, status: "initiated", outcome },
+          },
+        }),
+      });
+      renderComponent(
+        <CredentialActions
+          credentialTag={TAG}
+          credentialName={NAME}
+          modelCount={0}
+        />,
+        { state },
+      );
+      await userEvent.click(screen.getByRole("button", { name: Label.TOGGLE }));
+      await userEvent.click(
+        screen.getByRole("menuitem", { name: Label.DESTROY }),
+      );
+      const dialog = screen.getByRole("dialog", {
+        name: `${RemoveCredentialDialogLabel.TITLE} ${NAME}`,
+      });
+      expect(dialog).toBeInTheDocument();
+      expect(screen.queryByText("boom")).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(ToastCardTestId.TOAST_CARD),
+      ).not.toBeInTheDocument();
+    },
+  );
 });
