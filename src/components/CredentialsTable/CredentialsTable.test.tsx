@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { CredentialActionsLabel } from "components/CredentialActions";
-import { RemoveCredentialModalLabel } from "components/RemoveCredentialModal";
+import { RemoveCredentialDialogLabel } from "components/RemoveCredentialDialog";
 import {
   credentialContentsStateFactory,
   jujuStateFactory,
@@ -97,7 +97,7 @@ describe("CredentialsTable", () => {
     ).toBeInTheDocument();
   });
 
-  it("opens the remove credential modal with the row's model count", async () => {
+  it("opens the remove credential dialog with the row's model count", async () => {
     const state = rootStateFactory.build({
       juju: jujuStateFactory.build({
         userCredentials: userCredentialsStateFactory.build({
@@ -131,10 +131,10 @@ describe("CredentialsTable", () => {
     );
     expect(
       screen.getByRole("dialog", {
-        name: `${RemoveCredentialModalLabel.IN_USE_TITLE} default`,
+        name: `${RemoveCredentialDialogLabel.IN_USE_TITLE} default`,
       }),
     ).toHaveTextContent(
-      `2 models ${RemoveCredentialModalLabel.IN_USE_PLURAL} ${RemoveCredentialModalLabel.IN_USE_DETAILS}`,
+      "2 models currently use this credential. Delete those models before removing it.",
     );
   });
 

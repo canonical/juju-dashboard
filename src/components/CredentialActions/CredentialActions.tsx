@@ -6,7 +6,7 @@ import {
 } from "@canonical/react-components";
 import type { FC } from "react";
 
-import RemoveCredentialModal from "components/RemoveCredentialModal";
+import RemoveCredentialDialog from "components/RemoveCredentialDialog";
 
 import { Label } from "./types";
 
@@ -27,7 +27,7 @@ const CredentialActions: FC<Props> = ({
     <>
       {isOpen && (
         <Portal>
-          <RemoveCredentialModal
+          <RemoveCredentialDialog
             credentialTag={credentialTag}
             credentialName={credentialName}
             modelCount={modelCount}

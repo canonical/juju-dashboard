@@ -2,6 +2,7 @@ import { Label as ActionButtonLabel } from "@canonical/react-components/dist/com
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { ToastCardTestId } from "components/ToastCard";
 import { actions as jujuActions } from "store/juju";
 import { removeCredential } from "store/middleware/process";
 import userCredentialsMiddleware from "store/middleware/source/user-credentials";
@@ -12,12 +13,13 @@ import {
   jujuStateFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
+import { findNotificationByText } from "testing/queries/notifications";
 import { createStore, renderComponent } from "testing/utils";
 
-import RemoveCredentialModal from "./RemoveCredentialModal";
+import RemoveCredentialDialog from "./RemoveCredentialDialog";
 import { Label } from "./types";
 
-describe("RemoveCredentialModal", () => {
+describe("RemoveCredentialDialog", () => {
   const TAG = "cloudcred-aws_admin_default";
   const NAME = "default";
   const TITLE = `${Label.TITLE} ${NAME}`;
@@ -35,7 +37,7 @@ describe("RemoveCredentialModal", () => {
 
   it("asks for confirmation when the credential is not in use", () => {
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}
@@ -45,7 +47,9 @@ describe("RemoveCredentialModal", () => {
     );
     const dialog = screen.getByRole("dialog", { name: TITLE });
 
-    expect(dialog).toHaveTextContent(`${Label.CONFIRM_MESSAGE} ${NAME}?`);
+    expect(dialog).toHaveTextContent(
+      `Are you sure you want to remove ${NAME}?`,
+    );
     expect(
       within(dialog).getByRole("button", { name: Label.REMOVE }),
     ).toBeInTheDocument();
@@ -56,7 +60,7 @@ describe("RemoveCredentialModal", () => {
 
   it("asks for confirmation when the model count is unknown", () => {
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         closePortal={vi.fn()}
@@ -71,13 +75,19 @@ describe("RemoveCredentialModal", () => {
   });
 
   it.each([
-    [1, "1 model", Label.IN_USE_SINGULAR],
-    [3, "3 models", Label.IN_USE_PLURAL],
+    [
+      1,
+      "1 model currently uses this credential. Delete that model before removing it.",
+    ],
+    [
+      3,
+      "3 models currently use this credential. Delete those models before removing it.",
+    ],
   ])(
     "explains how many models use the credential (%i)",
-    (modelCount, usedBy, verb) => {
+    (modelCount, message) => {
       renderComponent(
-        <RemoveCredentialModal
+        <RemoveCredentialDialog
           credentialTag={TAG}
           credentialName={NAME}
           modelCount={modelCount}
@@ -89,9 +99,7 @@ describe("RemoveCredentialModal", () => {
         name: `${Label.IN_USE_TITLE} ${NAME}`,
       });
 
-      expect(dialog).toHaveTextContent(
-        `${usedBy} ${verb} ${Label.IN_USE_DETAILS}`,
-      );
+      expect(dialog).toHaveTextContent(message);
       expect(within(dialog).getAllByRole("button")).toHaveLength(2);
       expect(
         within(dialog).getByRole("button", { name: Label.CLOSE }),
@@ -102,10 +110,10 @@ describe("RemoveCredentialModal", () => {
     },
   );
 
-  it("closes the in-use modal", async () => {
+  it("closes the in-use dialog", async () => {
     const closePortal = vi.fn();
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={2}
@@ -120,7 +128,7 @@ describe("RemoveCredentialModal", () => {
   it("cancels the confirmation", async () => {
     const closePortal = vi.fn();
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}
@@ -135,7 +143,7 @@ describe("RemoveCredentialModal", () => {
   it("starts the remove credential process when confirmed", async () => {
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}
@@ -156,6 +164,23 @@ describe("RemoveCredentialModal", () => {
     });
   });
 
+  it("does not start the process without a controller URL", async () => {
+    state.general.config = configFactory.build({ controllerAPIEndpoint: "" });
+    const [store, actions] = createStore(state, { trackActions: true });
+    renderComponent(
+      <RemoveCredentialDialog
+        credentialTag={TAG}
+        credentialName={NAME}
+        modelCount={0}
+        closePortal={vi.fn()}
+      />,
+      { state, store },
+    );
+    await userEvent.click(screen.getByRole("button", { name: Label.REMOVE }));
+
+    expect(actions).toHaveLength(0);
+  });
+
   it("shows the remove button as loading while the process is running", () => {
     state.juju = jujuStateFactory.build({
       removeCredential: {
@@ -163,7 +188,7 @@ describe("RemoveCredentialModal", () => {
       },
     });
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}
@@ -182,7 +207,7 @@ describe("RemoveCredentialModal", () => {
     const store = createStore(state);
     const closePortal = vi.fn();
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}
@@ -217,7 +242,7 @@ describe("RemoveCredentialModal", () => {
       },
     });
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}
@@ -240,7 +265,7 @@ describe("RemoveCredentialModal", () => {
       },
     });
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}
@@ -257,7 +282,7 @@ describe("RemoveCredentialModal", () => {
     const store = createStore(state);
     const closePortal = vi.fn();
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}
@@ -273,9 +298,13 @@ describe("RemoveCredentialModal", () => {
         wsControllerURL: "wss://example.com:17070/api",
       }),
     );
-    expect(await screen.findByRole("status")).toHaveTextContent(
-      `${Label.TOAST_PREFIX} ${NAME} ${Label.REMOVED}`,
-    );
+    const card = await screen.findByTestId(ToastCardTestId.TOAST_CARD);
+    expect(
+      await findNotificationByText(card, `Credential ${NAME} removed`, {
+        appearance: "toast",
+        severity: "positive",
+      }),
+    ).toBeInTheDocument();
     expect(closePortal).toHaveBeenCalledTimes(1);
   });
 
@@ -290,7 +319,7 @@ describe("RemoveCredentialModal", () => {
     });
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}
@@ -329,7 +358,7 @@ describe("RemoveCredentialModal", () => {
     });
     const [store, actions] = createStore(state, { trackActions: true });
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}
@@ -366,7 +395,7 @@ describe("RemoveCredentialModal", () => {
     });
     const closePortal = vi.fn();
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}
@@ -391,7 +420,7 @@ describe("RemoveCredentialModal", () => {
     });
     const closePortal = vi.fn();
     renderComponent(
-      <RemoveCredentialModal
+      <RemoveCredentialDialog
         credentialTag={TAG}
         credentialName={NAME}
         modelCount={0}

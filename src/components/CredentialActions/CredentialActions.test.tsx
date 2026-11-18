@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { RemoveCredentialModalLabel } from "components/RemoveCredentialModal";
+import { RemoveCredentialDialogLabel } from "components/RemoveCredentialDialog";
 import { renderComponent } from "testing/utils";
 
 import CredentialActions from "./CredentialActions";
@@ -28,7 +28,7 @@ describe("CredentialActions", () => {
     ).toBeInTheDocument();
   });
 
-  it("opens the remove credential modal from the destroy option", async () => {
+  it("opens the remove credential dialog from the destroy option", async () => {
     renderComponent(
       <CredentialActions
         credentialTag={TAG}
@@ -42,7 +42,7 @@ describe("CredentialActions", () => {
     );
     expect(
       screen.getByRole("dialog", {
-        name: `${RemoveCredentialModalLabel.TITLE} ${NAME}`,
+        name: `${RemoveCredentialDialogLabel.TITLE} ${NAME}`,
       }),
     ).toBeInTheDocument();
     expect(

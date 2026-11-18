@@ -11,7 +11,6 @@ import { shallowEqual } from "react-redux";
 import { getWSControllerURL } from "store/general/selectors";
 import { getCloudTags, getRemoveCredential } from "store/juju/selectors";
 import type { RemoveCredentialEntry } from "store/juju/types";
-import { pluralize } from "store/juju/utils/models";
 import { removeCredential } from "store/middleware/process";
 import userCredentialsMiddleware from "store/middleware/source/user-credentials";
 import { useAppDispatch, useAppSelector } from "store/store";
@@ -26,7 +25,7 @@ type Props = {
   closePortal: () => void;
 };
 
-export default function RemoveCredentialModal({
+export default function RemoveCredentialDialog({
   credentialTag,
   credentialName,
   modelCount,
@@ -36,7 +35,7 @@ export default function RemoveCredentialModal({
   const [previousOutcome, setPreviousOutcome] =
     useState<RemoveCredentialEntry["outcome"]>(null);
   const dispatch = useAppDispatch();
-  const wsControllerURL = useAppSelector(getWSControllerURL) ?? "";
+  const wsControllerURL = useAppSelector(getWSControllerURL);
   const cloudTags = useAppSelector(getCloudTags, shallowEqual);
   const { running, outcome } = useAppSelector((state) =>
     getRemoveCredential(state, credentialTag),
@@ -49,16 +48,15 @@ export default function RemoveCredentialModal({
   useEffect(() => {
     if (succeeded) {
       closePortal();
-      toastNotification(
-        `${Label.TOAST_PREFIX} ${credentialName} ${Label.REMOVED}`,
-        "positive",
-      );
-      dispatch(
-        userCredentialsMiddleware.actions.invalidate({
-          wsControllerURL,
-          cloudTags,
-        }),
-      );
+      toastNotification(`Credential ${credentialName} removed`, "positive");
+      if (wsControllerURL) {
+        dispatch(
+          userCredentialsMiddleware.actions.invalidate({
+            wsControllerURL,
+            cloudTags,
+          }),
+        );
+      }
     }
   }, [
     succeeded,
@@ -70,6 +68,9 @@ export default function RemoveCredentialModal({
   ]);
 
   const handleConfirm = (): void => {
+    if (!wsControllerURL) {
+      return;
+    }
     setPreviousOutcome(outcome);
     setSubmitted(true);
     dispatch(removeCredential.run({ wsControllerURL, credentialTag }));
@@ -78,7 +79,7 @@ export default function RemoveCredentialModal({
   if (modelCount) {
     return (
       <Modal
-        className="remove-credential-modal"
+        className="remove-credential-dialog"
         title={
           <>
             {Label.IN_USE_TITLE} <b>{credentialName}</b>
@@ -88,9 +89,9 @@ export default function RemoveCredentialModal({
         buttonRow={<Button onClick={closePortal}>{Label.CLOSE}</Button>}
       >
         <p>
-          {modelCount} {pluralize(modelCount, "model")}{" "}
-          {modelCount === 1 ? Label.IN_USE_SINGULAR : Label.IN_USE_PLURAL}{" "}
-          {Label.IN_USE_DETAILS}
+          {modelCount === 1
+            ? "1 model currently uses this credential. Delete that model before removing it."
+            : `${modelCount} models currently use this credential. Delete those models before removing it.`}
         </p>
       </Modal>
     );
@@ -98,7 +99,7 @@ export default function RemoveCredentialModal({
 
   return (
     <ConfirmationModal
-      className="remove-credential-modal"
+      className="remove-credential-dialog"
       title={
         <>
           {Label.TITLE} <b>{credentialName}</b>
@@ -115,9 +116,7 @@ export default function RemoveCredentialModal({
           {newOutcome.error.message}
         </ReactNotification>
       ) : null}
-      <p>
-        {Label.CONFIRM_MESSAGE} {credentialName}?
-      </p>
+      <p>Are you sure you want to remove {credentialName}?</p>
     </ConfirmationModal>
   );
 }
