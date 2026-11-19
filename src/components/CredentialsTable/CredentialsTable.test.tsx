@@ -1,6 +1,8 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { CredentialActionsLabel } from "components/CredentialActions";
+import { RemoveCredentialDialogLabel } from "components/RemoveCredentialDialog";
 import {
   credentialContentsStateFactory,
   jujuStateFactory,
@@ -92,6 +94,42 @@ describe("CredentialsTable", () => {
         "button",
         { name: CredentialActionsLabel.TOGGLE },
       ),
+    ).toBeInTheDocument();
+  });
+
+  it("opens the remove credential dialog", async () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        userCredentials: userCredentialsStateFactory.build({
+          credentials: { "cloud-aws": [AWS_TAG] },
+        }),
+        credentialContents: credentialContentsStateFactory.build({
+          contents: {
+            [AWS_TAG]: {
+              result: {
+                content: {
+                  "auth-type": "access-key",
+                  cloud: "aws",
+                  name: "default",
+                },
+                models: [],
+              },
+            },
+          },
+        }),
+      }),
+    });
+    renderComponent(<CredentialsTable />, { state });
+    await userEvent.click(
+      screen.getByRole("button", { name: CredentialActionsLabel.TOGGLE }),
+    );
+    await userEvent.click(
+      screen.getByRole("menuitem", { name: CredentialActionsLabel.REMOVE }),
+    );
+    expect(
+      screen.getByRole("dialog", {
+        name: `${RemoveCredentialDialogLabel.TITLE} default`,
+      }),
     ).toBeInTheDocument();
   });
 

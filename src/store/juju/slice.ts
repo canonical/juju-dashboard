@@ -1083,6 +1083,12 @@ const slice = createSlice({
       state.removeCredential[action.payload.credentialTag].outcome =
         action.payload.outcome;
     },
+    clearRemoveCredential: (
+      state,
+      action: PayloadAction<{ credentialTag: string } & WsControllerURLParam>,
+    ) => {
+      delete state.removeCredential[action.payload.credentialTag];
+    },
     setAddCredentialRunning: (
       state,
       action: PayloadAction<
