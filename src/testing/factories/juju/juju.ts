@@ -234,6 +234,7 @@ export const jujuStateFactory = Factory.define<JujuState>(() => ({
   addModelState: addModelStateFactory.build(),
   blockState: {},
   removeCredential: {},
+  addCredentialState: {},
 }));
 
 export const modelDestructionDataFactory = Factory.define<ModelDestructionData>(

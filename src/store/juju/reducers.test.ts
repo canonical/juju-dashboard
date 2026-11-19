@@ -2613,4 +2613,138 @@ describe("reducers", () => {
       });
     });
   });
+
+  describe("addCredentialState", () => {
+    const wsControllerURL = "wss://example.com/api";
+    const key = "aws_my-cred";
+    const cloud = "aws";
+    const name = "my-cred";
+    const outcome = { result: undefined };
+    const errorOutcome = {
+      error: { message: "already exists", source: "already exists" },
+    };
+
+    it("setAddCredentialRunning starts a new entry", () => {
+      const state = jujuStateFactory.build({ addCredentialState: {} });
+      expect(
+        reducer(
+          state,
+          actions.setAddCredentialRunning({
+            wsControllerURL,
+            cloud,
+            name,
+            running: true,
+          }),
+        ).addCredentialState,
+      ).toStrictEqual({ [key]: { cloud, name, running: true, outcome: null } });
+    });
+
+    it("setAddCredentialRunning clears the previous outcome when it starts running", () => {
+      const state = jujuStateFactory.build({
+        addCredentialState: {
+          [key]: { cloud, name, running: false, outcome },
+        },
+      });
+      expect(
+        reducer(
+          state,
+          actions.setAddCredentialRunning({
+            wsControllerURL,
+            cloud,
+            name,
+            running: true,
+          }),
+        ).addCredentialState,
+      ).toStrictEqual({ [key]: { cloud, name, running: true, outcome: null } });
+    });
+
+    it("setAddCredentialRunning keeps the entry and outcome when it stops running", () => {
+      const state = jujuStateFactory.build({
+        addCredentialState: {
+          [key]: { cloud, name, running: true, outcome },
+        },
+      });
+      expect(
+        reducer(
+          state,
+          actions.setAddCredentialRunning({
+            wsControllerURL,
+            cloud,
+            name,
+            running: false,
+          }),
+        ).addCredentialState,
+      ).toStrictEqual({ [key]: { cloud, name, running: false, outcome } });
+    });
+
+    it("setAddCredentialRunning is a no-op when stopping and entry doesn't exist", () => {
+      const state = jujuStateFactory.build({ addCredentialState: {} });
+      expect(
+        reducer(
+          state,
+          actions.setAddCredentialRunning({
+            wsControllerURL,
+            cloud,
+            name,
+            running: false,
+          }),
+        ).addCredentialState,
+      ).toStrictEqual({});
+    });
+
+    it.each([
+      ["success", outcome],
+      ["error", errorOutcome],
+    ])("setAddCredentialOutcome stores a %s outcome", (_label, expected) => {
+      const state = jujuStateFactory.build({
+        addCredentialState: {
+          [key]: { cloud, name, running: true, outcome: null },
+        },
+      });
+      expect(
+        reducer(
+          state,
+          actions.setAddCredentialOutcome({
+            wsControllerURL,
+            cloud,
+            name,
+            outcome: expected,
+          }),
+        ).addCredentialState,
+      ).toStrictEqual({
+        [key]: { cloud, name, running: true, outcome: expected },
+      });
+    });
+
+    it("setAddCredentialOutcome is a no-op when the entry doesn't exist", () => {
+      const state = jujuStateFactory.build({ addCredentialState: {} });
+      expect(
+        reducer(
+          state,
+          actions.setAddCredentialOutcome({
+            wsControllerURL,
+            cloud,
+            name,
+            outcome,
+          }),
+        ).addCredentialState,
+      ).toStrictEqual({});
+    });
+
+    it("clearAddCredential only removes the matching entry", () => {
+      const other = { cloud, name: "other", running: false, outcome };
+      const state = jujuStateFactory.build({
+        addCredentialState: {
+          [key]: { cloud, name, running: false, outcome },
+          [`${cloud}_other`]: other,
+        },
+      });
+      expect(
+        reducer(
+          state,
+          actions.clearAddCredential({ wsControllerURL, cloud, name }),
+        ).addCredentialState,
+      ).toStrictEqual({ [`${cloud}_other`]: other });
+    });
+  });
 });
