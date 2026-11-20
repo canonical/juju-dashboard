@@ -285,4 +285,23 @@ describe("CredentialsIndex", () => {
       value: location,
     });
   });
+
+  it("opens the add-credential panel when Add Credential button is clicked", async () => {
+    const { router } = renderComponent(<CredentialsIndex />, { state });
+
+    await userEvent.click(
+      screen.getByRole("button", { name: Label.ADD_CREDENTIAL }),
+    );
+    expect(new URLSearchParams(router.state.location.search)).toStrictEqual(
+      new URLSearchParams({ panel: "add-credential" }),
+    );
+  });
+
+  it("disables the Add Credential button when no clouds are available", () => {
+    state.juju.cloudInfo.clouds = {};
+    renderComponent(<CredentialsIndex />, { state });
+
+    const button = screen.getByRole("button", { name: Label.ADD_CREDENTIAL });
+    expect(button).toHaveAttribute("aria-disabled", "true");
+  });
 });
