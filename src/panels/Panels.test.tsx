@@ -26,6 +26,7 @@ import {
 import { renderComponent } from "testing/utils";
 
 import { ActionsPanelTestId } from "./ActionsPanel";
+import { AddCredentialPanelTestId } from "./AddCredentialPanel";
 import { AuditLogsFilterPanelTestId } from "./AuditLogsFilterPanel";
 import { CharmsAndActionsPanelTestId } from "./CharmsAndActionsPanel";
 import { ConfigPanelTestId } from "./ConfigPanel";
@@ -320,6 +321,35 @@ describe("Panels", () => {
       });
       expect(
         screen.queryByTestId(UpgradeModelPanelTestId.PANEL),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe("add credential panel", () => {
+    it("displays the add credential panel", async () => {
+      renderComponent(<Panels />, {
+        url: "/?panel=add-credential",
+      });
+      expect(
+        await screen.findByTestId(AddCredentialPanelTestId.PANEL),
+      ).toBeInTheDocument();
+    });
+
+    it("does not display the panel when panel query param is not set", () => {
+      renderComponent(<Panels />, {
+        url: "/",
+      });
+      expect(
+        screen.queryByTestId(AddCredentialPanelTestId.PANEL),
+      ).not.toBeInTheDocument();
+    });
+
+    it("does not display the panel when a different panel is requested", () => {
+      renderComponent(<Panels />, {
+        url: "/?panel=some-other-panel",
+      });
+      expect(
+        screen.queryByTestId(AddCredentialPanelTestId.PANEL),
       ).not.toBeInTheDocument();
     });
   });
