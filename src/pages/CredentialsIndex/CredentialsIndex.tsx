@@ -1,5 +1,6 @@
 import {
   Button,
+  Icon,
   Notification as ReactNotification,
   SearchAndFilter,
 } from "@canonical/react-components";
@@ -88,6 +89,9 @@ export default function Credentials(): JSX.Element {
     credential: [],
     custom: [],
   });
+  const [, setPanelQuery] = useQueryParams<{ panel: null | string }>({
+    panel: null,
+  });
   const filters = {
     cloud: queryParams.cloud,
     credential: queryParams.credential,
@@ -113,9 +117,22 @@ export default function Credentials(): JSX.Element {
     <MainContent
       contentClassName="u-no-padding--top credentials__content-wrapper"
       title={
-        <span className="u-show--large">
-          {credentialCount} {pluralize(credentialCount, "credential")}
-        </span>
+        <div className="credentials__header">
+          <span className="u-show--large">
+            {credentialCount} {pluralize(credentialCount, "credential")}
+          </span>
+          <Button
+            appearance="positive"
+            className="u-no-margin--bottom"
+            hasIcon
+            onClick={() => {
+              setPanelQuery({ panel: "add-credential" }, { replace: true });
+            }}
+          >
+            <Icon name="plus" light />
+            <span>{Label.ADD_CREDENTIAL}</span>
+          </Button>
+        </div>
       }
       titleComponent="div"
       titleClassName="u-no-max-width u-full-width"

@@ -5,6 +5,7 @@ import useCanManageSecrets from "hooks/useCanManageSecrets";
 import { useQueryParams } from "hooks/useQueryParams";
 import { useIsJIMMAdmin } from "juju/api-hooks/permissions";
 import ActionsPanel from "panels/ActionsPanel/ActionsPanel";
+import AddCredentialPanel from "panels/AddCredentialPanel";
 import SecretFormPanel from "panels/SecretFormPanel";
 import ShareModel from "panels/ShareModelPanel/ShareModel";
 import { getIsJIMM } from "store/general/selectors";
@@ -50,6 +51,8 @@ export default function Panels(): JSX.Element {
         return isJIMM && isJIMMControllerAdmin ? <UpgradeModelPanel /> : null;
       case "destroy-models":
         return <DestroyModelsPanel />;
+      case "add-credential":
+        return <AddCredentialPanel />;
       default:
         return null;
     }
