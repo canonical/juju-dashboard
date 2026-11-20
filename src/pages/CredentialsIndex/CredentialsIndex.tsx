@@ -3,10 +3,11 @@ import {
   Icon,
   Notification as ReactNotification,
   SearchAndFilter,
+  Tooltip,
 } from "@canonical/react-components";
 import type { SearchAndFilterChip } from "@canonical/react-components/dist/components/SearchAndFilter/types";
 import fastDeepEqual from "fast-deep-equal/es6";
-import type { JSX } from "react";
+import type { JSX, ReactNode } from "react";
 import { useEffect } from "react";
 import { shallowEqual } from "react-redux";
 
@@ -40,6 +41,7 @@ export default function Credentials(): JSX.Element {
   // Compare the tags by value so the sources are only restarted when the tags
   // change, not each time the credentials state is updated (e.g. by a poll).
   const cloudTags = useAppSelector(getCloudTags, shallowEqual);
+  const hasClouds = cloudTags.length > 0;
   const credentialTags = useAppSelector(getCredentialTags, shallowEqual);
   const credentials = useAppSelector(getCredentialsWithContents);
   const credentialsLoaded = useAppSelector(getCredentialsLoaded);
@@ -113,6 +115,21 @@ export default function Credentials(): JSX.Element {
     return <LoadingSpinner />;
   }
 
+  const addCredentialButton: ReactNode = (
+    <Button
+      appearance="positive"
+      className="u-no-margin--bottom"
+      hasIcon
+      disabled={!hasClouds}
+      onClick={() => {
+        setPanelQuery({ panel: "add-credential" }, { replace: true });
+      }}
+    >
+      <Icon name="plus" light />
+      <span>{Label.ADD_CREDENTIAL}</span>
+    </Button>
+  );
+
   return (
     <MainContent
       contentClassName="u-no-padding--top credentials__content-wrapper"
@@ -121,17 +138,13 @@ export default function Credentials(): JSX.Element {
           <span className="u-show--large">
             {credentialCount} {pluralize(credentialCount, "credential")}
           </span>
-          <Button
-            appearance="positive"
-            className="u-no-margin--bottom"
-            hasIcon
-            onClick={() => {
-              setPanelQuery({ panel: "add-credential" }, { replace: true });
-            }}
-          >
-            <Icon name="plus" light />
-            <span>{Label.ADD_CREDENTIAL}</span>
-          </Button>
+          {!hasClouds ? (
+            <Tooltip message={Label.NO_CLOUDS} position="btm-right">
+              {addCredentialButton}
+            </Tooltip>
+          ) : (
+            addCredentialButton
+          )}
         </div>
       }
       titleComponent="div"
