@@ -67,4 +67,10 @@ requires:
     limit: 1
 parts:
   charm:
-    charm-python-packages: [setuptools>80.0]
+    plugin: uv
+    source: k8s-charm
+    build-snaps:
+      - astral-uv
+    override-build: |
+      ln --symbolic --force $CRAFT_PROJECT_DIR/common
+      craftctl default

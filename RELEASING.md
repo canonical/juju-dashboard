@@ -10,6 +10,7 @@ charms](#release-charms).
     - [Local k8s controller](#local-k8s-controller)
   - [QA steps](#qa-steps)
   - [Release the dashboard](#release-the-dashboard)
+    - [Prepare a new major or minor release](#prepare-a-new-major-or-minor-release)
 
 ## Deployments
 
@@ -32,8 +33,8 @@ yarn install
 Next navigate to the `charms` folder and run the build script to generate the charm and replace build assets.
 
 ```shell
-cd ./charms/machine-charm
-./build.sh
+cd ./charms
+./build-machine.sh
 ```
 
 Then follow the instructions to [build and
@@ -89,9 +90,9 @@ Developers add release notes directly to the `## Unreleased` section of `CHANGEL
 entries. The release PR finalises `CHANGELOG.md` by moving the current `## Unreleased` entries
 under a versioned heading before the PR is merged.
 
-The charms are built using the `build.sh` scripts located at
-[`charms/k8s-charm/build.sh`](charms/k8s-charm/build.sh) and
-[`charms/machine-charm/build.sh`](charms/machine-charm/build.sh). These are run within the CI, and can
+The charms are built using the `build-[platform].sh` scripts located at
+[`charms/build-k8s.sh`](charms/build-k8s.sh) and
+[`charms/build-machine.sh`](charms/build-machine.sh). These are run within the CI, and can
 also be run manually.
 
 ### Prepare a new major or minor release

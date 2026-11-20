@@ -119,10 +119,10 @@ jobs:
           version="${{ needs.run-check.outputs.version }}"
           yq -i ".version = \"$version\"" charmcraft.yaml
       - name: Build dashboard
-        working-directory: charms/${{ matrix.charm-kind }}-charm
+        working-directory: charms
         id: build
         run: |
-          OUTPUT=$(./build.sh)
+          OUTPUT=$(./build-${{ matrix.charm-kind }}.sh)
 
           if [ "${{ matrix.charm-kind }}" = 'k8s' ]; then
               echo "$OUTPUT" | grep '^id=' >> "$GITHUB_OUTPUT"

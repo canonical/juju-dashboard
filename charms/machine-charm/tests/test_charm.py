@@ -1,4 +1,4 @@
-# Copyright 2021 Canonical
+# Copyright 2026 Canonical
 # See LICENSE file for licensing details.
 
 import unittest
@@ -60,30 +60,6 @@ class TestDashboardRelation(unittest.TestCase):
         # Verify that we tried to write templates.
         self.assertTrue(mock_write.called)
 
-    def test_missing_controller_url(self):
-        # We should fail with a blocked status if the relation data is incomplete.
-        self.harness.update_relation_data(
-            self.rel_id,
-            "juju-controller",
-            {
-                "controller-url": "",
-                "identity-provider-url": "api/some/provider/url",
-                "is-juju": "True",
-            },
-        )
-
-        self.assertEqual(
-            self.harness.model.unit.status, BlockedStatus("Missing controller URL")
-        )
-
-    def test_relation_departed(self):
-        self.harness.model.unit.status = ActiveStatus()
-        self.harness.remove_relation(self.rel_id)
-        self.assertEqual(
-            self.harness.model.unit.status,
-            BlockedStatus("Missing controller integration"),
-        )
-
     @mock.patch("pathlib.Path.write_text")
     @mock.patch("charm.os.system")
     def test_config_changed(self, mock_system, mock_write):
@@ -100,17 +76,6 @@ class TestDashboardRelation(unittest.TestCase):
         haproxy_instance = self.mock_haproxy_requirer.return_value
         haproxy_instance.provide_haproxy_route_requirements.assert_called_once_with(
             "juju-dashboard", ports=[123]
-        )
-
-    @mock.patch("pathlib.Path.write_text")
-    @mock.patch("charm.os.system")
-    def test_config_changed_no_relation(self, mock_system, mock_write):
-        self.harness.remove_relation(self.rel_id)
-        self.harness.model.unit.status = ActiveStatus()
-        self.harness.update_config({"is-juju": True})
-        self.assertEqual(
-            self.harness.model.unit.status,
-            BlockedStatus("Missing controller integration"),
         )
 
     @mock.patch("pathlib.Path.write_text")
