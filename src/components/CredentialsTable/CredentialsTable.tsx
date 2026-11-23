@@ -88,7 +88,13 @@ export default function CredentialsTable({ filters = {} }: Props): JSX.Element {
           header: "Actions",
           className: "u-align--right",
           collapse: true,
-          map: () => <CredentialActions />,
+          map: ({ credential, name, contents }) => (
+            <CredentialActions
+              credentialTag={credential}
+              credentialName={name}
+              modelCount={contents?.result?.models?.length}
+            />
+          ),
         }),
       }}
     />
