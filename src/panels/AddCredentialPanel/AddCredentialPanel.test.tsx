@@ -11,6 +11,7 @@ import {
 import { renderComponent } from "testing/utils";
 
 import AddCredentialPanel from "./AddCredentialPanel";
+import { Label as FieldsLabel } from "./Fields/types";
 import { Label } from "./types";
 
 describe("AddCredentialPanel", () => {
@@ -62,7 +63,9 @@ describe("AddCredentialPanel", () => {
       url: "/?panel=add-credential",
     });
 
-    const regionField = screen.getByRole("combobox", { name: Label.REGION });
+    const regionField = screen.getByRole("combobox", {
+      name: FieldsLabel.REGION,
+    });
     expect(regionField).toBeDisabled();
   });
 
@@ -72,8 +75,12 @@ describe("AddCredentialPanel", () => {
       url: "/?panel=add-credential",
     });
 
-    const cloudDropdown = screen.getByRole("combobox", { name: Label.CLOUD });
-    const regionDropdown = screen.getByRole("combobox", { name: Label.REGION });
+    const cloudDropdown = screen.getByRole("combobox", {
+      name: FieldsLabel.CLOUD,
+    });
+    const regionDropdown = screen.getByRole("combobox", {
+      name: FieldsLabel.REGION,
+    });
     const submitButton = screen.getByRole("button", { name: Label.SUBMIT });
 
     // Check that the region dropdown and submit button are initially disabled
@@ -82,7 +89,7 @@ describe("AddCredentialPanel", () => {
 
     // Fill in the required fields
     await userEvent.type(
-      screen.getByRole("textbox", { name: Label.NAME }),
+      screen.getByRole("textbox", { name: FieldsLabel.NAME }),
       "my-credential",
     );
     await userEvent.selectOptions(cloudDropdown, "cloud-aws");

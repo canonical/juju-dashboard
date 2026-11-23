@@ -13,8 +13,7 @@ import {
 import { renderComponent } from "testing/utils";
 
 import Fields from "./Fields";
-import type { FormFields } from "./types";
-import { Label } from "./types";
+import { Label, type FormFields } from "./types";
 
 describe("AddCredentialPanel Fields", () => {
   let state: RootState;
