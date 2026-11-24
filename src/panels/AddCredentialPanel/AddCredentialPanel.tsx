@@ -9,8 +9,8 @@ import Panel from "components/Panel";
 import { usePanelQueryParams } from "panels/hooks";
 import { testId } from "testing/utils";
 
-import Fields from "./Fields";
-import type { FormFields } from "./types";
+import Fields from "./Fields/Fields";
+import type { FormFields } from "./Fields/types";
 import { Label, TestId } from "./types";
 
 const AddCredentialPanel: FC = () => {

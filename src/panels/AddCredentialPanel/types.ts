@@ -4,15 +4,6 @@ export enum TestId {
 
 export enum Label {
   CANCEL = "Cancel",
-  CLOUD = "Cloud",
-  NAME = "Credential name",
-  REGION = "Region (optional)",
   SUBMIT = "Add credential",
   TITLE = "Add credential",
 }
-
-export type FormFields = {
-  name: string;
-  cloud: string;
-  region: string;
-};

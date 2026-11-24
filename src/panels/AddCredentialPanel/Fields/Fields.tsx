@@ -8,8 +8,7 @@ import type { CloudState } from "store/juju/types";
 import { extractCloudName } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 
-import type { FormFields } from "./types";
-import { Label } from "./types";
+import { Label, type FormFields } from "./types";
 
 const EMPTY_OPTION: OptionHTMLAttributes<HTMLOptionElement> = {
   label: "",
@@ -49,11 +48,11 @@ const Fields = (): JSX.Element => {
   return (
     <>
       <fieldset className="u-no-padding u-no-margin--bottom add-credential-panel__fieldset">
-        <p className="p-text--small-caps">Credential Details</p>
+        <p className="p-text--small-caps">{Label.CREDENTIAL_DETAILS}</p>
         <FormikField label={Label.NAME} name="name" required type="text" />
       </fieldset>
-      <fieldset className="u-no-padding u-no-margin--bottom add-credential-panel__fieldset with-border-top">
-        <p className="p-text--small-caps">Cloud Details</p>
+      <fieldset className="u-no-padding u-no-margin--bottom add-credential-panel__fieldset--bordered">
+        <p className="p-text--small-caps">{Label.CLOUD_DETAILS}</p>
         <FormikField
           component={Select}
           label={Label.CLOUD}
