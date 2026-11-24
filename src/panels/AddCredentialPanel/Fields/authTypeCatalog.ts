@@ -133,7 +133,7 @@ export const CLOUD_CREDENTIAL_SCHEMAS = {
         {
           name: "private-key",
           label: "Private Key",
-          inputType: "password",
+          inputType: "textarea",
           optional: false,
           sensitive: true,
           format: "pem",
