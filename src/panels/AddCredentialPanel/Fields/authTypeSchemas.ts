@@ -1,27 +1,19 @@
 /* eslint-disable @cspell/spellchecker -- This file contains values as they come from Juju */
+import type { AuthTypeSchema } from "./types";
+
 /**
- * Juju Cloud Credential Schemas
- *
- * Field schema per credential attribute:
- *   name       {string}             - The key used when submitting the credential (must match backend exactly)
- *   label      {string}             - Label for the form field
- *   optional   {boolean}            - If true, the field may be left blank
- *   inputType  {'text'|'textarea'|'password'|'file'} - Control how the field is rendered
- *   sensitive  {boolean}            - If true, the value contains sensitive data (for client-side handling)
- *   format     {'email'|'uuid'|'json'|'pem'} - Optional: use in validation schema builder
+ * Authentication type schemas for each cloud provider.
  *
  * Usage example:
- *   const schema = CLOUD_CREDENTIAL_SCHEMAS["ec2"];
+ *   const schema = AUTH_TYPE_SCHEMAS["ec2"];
  *   const authTypes = Object.keys(schema.authTypes);          // dropdown options
  *   const fields = schema.authTypes["access-key"];             // form fields
  */
-
-export const CLOUD_CREDENTIAL_SCHEMAS = {
+export const AUTH_TYPE_SCHEMAS: Record<string, AuthTypeSchema> = {
   // ---------------------------------------------------------------------------
   // AWS  (provider type: "ec2")
   // ---------------------------------------------------------------------------
   ec2: {
-    cloudType: "ec2",
     displayName: "Amazon Web Services (EC2)",
     authTypes: {
       "access-key": [
@@ -46,7 +38,6 @@ export const CLOUD_CREDENTIAL_SCHEMAS = {
   // Azure  (provider type: "azure")
   // ---------------------------------------------------------------------------
   azure: {
-    cloudType: "azure",
     displayName: "Microsoft Azure",
     authTypes: {
       // Azure-specific auth-type (not a global Juju constant).
@@ -113,7 +104,6 @@ export const CLOUD_CREDENTIAL_SCHEMAS = {
   // Google Cloud (GCE)  (provider type: "gce")
   // ---------------------------------------------------------------------------
   gce: {
-    cloudType: "gce",
     displayName: "Google Cloud (GCE)",
     authTypes: {
       oauth2: [
@@ -164,7 +154,6 @@ export const CLOUD_CREDENTIAL_SCHEMAS = {
   // OpenStack  (provider type: "openstack")
   // ---------------------------------------------------------------------------
   openstack: {
-    cloudType: "openstack",
     displayName: "OpenStack",
     authTypes: {
       userpass: [
@@ -272,7 +261,6 @@ export const CLOUD_CREDENTIAL_SCHEMAS = {
   // MAAS  (provider type: "maas")
   // ---------------------------------------------------------------------------
   maas: {
-    cloudType: "maas",
     displayName: "MAAS",
     authTypes: {
       oauth1: [
@@ -291,7 +279,6 @@ export const CLOUD_CREDENTIAL_SCHEMAS = {
   // LXD  (provider type: "lxd")
   // ---------------------------------------------------------------------------
   lxd: {
-    cloudType: "lxd",
     displayName: "LXD",
     authTypes: {
       // TLS mutual-auth using pre-exchanged certificates.
@@ -327,9 +314,10 @@ export const CLOUD_CREDENTIAL_SCHEMAS = {
 
   // ---------------------------------------------------------------------------
   // Kubernetes (provider type: "kubernetes")
+  // Note: Field names (Token, ClientCertificateData, ClientKeyData) must match
+  // Juju's caas/kubernetes/cloud schemas verbatim — do not normalize to kebab-case.
   // ---------------------------------------------------------------------------
   kubernetes: {
-    cloudType: "kubernetes",
     displayName: "Kubernetes",
     authTypes: {
       userpass: [
@@ -394,7 +382,6 @@ export const CLOUD_CREDENTIAL_SCHEMAS = {
   // Oracle Cloud Infrastructure  (provider type: "oci")
   // ---------------------------------------------------------------------------
   oci: {
-    cloudType: "oci",
     displayName: "Oracle Cloud Infrastructure (OCI)",
     authTypes: {
       httpsig: [
@@ -439,7 +426,6 @@ export const CLOUD_CREDENTIAL_SCHEMAS = {
   // VMware vSphere  (provider type: "vsphere")
   // ---------------------------------------------------------------------------
   vsphere: {
-    cloudType: "vsphere",
     displayName: "VMware vSphere",
     authTypes: {
       userpass: [
@@ -467,12 +453,19 @@ export const CLOUD_CREDENTIAL_SCHEMAS = {
   },
 
   // ---------------------------------------------------------------------------
-  // Unmanaged / Manual  (provider type: "unmanaged")
+  // Unmanaged / Manual  (provider type: "unmanaged" in Juju >= 4.0, "manual" in 2.9/3.x)
   // No credential attributes — Juju uses the "empty" auth-type.
   // ---------------------------------------------------------------------------
   unmanaged: {
-    cloudType: "unmanaged",
     displayName: "Unmanaged / Manual",
+    authTypes: {
+      empty: [],
+    },
+  },
+
+  // Manual cloud type for Juju 2.9/3.x compatibility
+  manual: {
+    displayName: "Manual",
     authTypes: {
       empty: [],
     },
