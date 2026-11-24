@@ -1,5 +1,6 @@
 import { AnimatePresence } from "framer-motion";
 import type { JSX, ReactNode } from "react";
+import { shallowEqual } from "react-redux";
 
 import useCanManageSecrets from "hooks/useCanManageSecrets";
 import { useQueryParams } from "hooks/useQueryParams";
@@ -9,6 +10,7 @@ import AddCredentialPanel from "panels/AddCredentialPanel";
 import SecretFormPanel from "panels/SecretFormPanel";
 import ShareModel from "panels/ShareModelPanel/ShareModel";
 import { getIsJIMM } from "store/general/selectors";
+import { getCloudTags } from "store/juju/selectors";
 import { useAppSelector } from "store/store";
 
 import AuditLogsFilterPanel from "./AuditLogsFilterPanel";
@@ -24,6 +26,8 @@ export default function Panels(): JSX.Element {
     panel: null,
   });
   const canManageSecrets = useCanManageSecrets();
+  const cloudTags = useAppSelector(getCloudTags, shallowEqual);
+  const hasClouds = cloudTags.length > 0;
   const isJIMM = useAppSelector(getIsJIMM);
   const { permitted: isJIMMControllerAdmin } = useIsJIMMAdmin();
 
@@ -52,7 +56,7 @@ export default function Panels(): JSX.Element {
       case "destroy-models":
         return <DestroyModelsPanel />;
       case "add-credential":
-        return <AddCredentialPanel />;
+        return hasClouds ? <AddCredentialPanel /> : null;
       default:
         return null;
     }
