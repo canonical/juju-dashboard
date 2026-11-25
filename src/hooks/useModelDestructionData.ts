@@ -5,12 +5,12 @@ import type {
 } from "@canonical/jujulib/dist/api/facades/client/ClientV8";
 
 import { getModelData, getModelList } from "store/juju/selectors";
-import { DestroyBlockedReason } from "store/juju/types";
 import type {
   ModelDestructionData,
   CrossModelRelation,
   ConnectedOffer,
 } from "store/juju/types";
+import { getDestroyBlockedReason } from "store/juju/utils/models";
 import { useAppSelector } from "store/store";
 
 // Helper function to extract and format cross-model relations
@@ -105,14 +105,10 @@ export default function useModelDestructionData(
       return prev + Object.keys(units).length;
     }, 0);
 
-    let destroyBlockedReason = null;
-    if (data?.info?.["is-controller"]) {
-      destroyBlockedReason = DestroyBlockedReason.IS_CONTROLLER;
-    } else if (!modelList[modelUUID]?.canConfigure) {
-      destroyBlockedReason = DestroyBlockedReason.NO_ACCESS;
-    } else if (connectedOffers.length > 0) {
-      destroyBlockedReason = DestroyBlockedReason.CONNECTED_OFFERS;
-    }
+    const destroyBlockedReason = getDestroyBlockedReason(
+      data,
+      modelList[modelUUID]?.canConfigure,
+    );
 
     result[modelUUID] = {
       hasStorage,

@@ -4,7 +4,6 @@ import { vi } from "vitest";
 
 import { DestroyModelDialogTestId } from "components/DestroyModelDialog";
 import { LoadingSpinnerTestId } from "components/LoadingSpinner";
-import * as useCanConfigureModelModule from "hooks/useCanConfigureModel";
 import { actions as jujuActions } from "store/juju";
 import { DestroyBlockedReason } from "store/juju/types";
 import type { RootState } from "store/store";
@@ -34,10 +33,6 @@ describe("Models Index page", () => {
   let state: RootState;
 
   beforeEach(() => {
-    vi.spyOn(
-      useCanConfigureModelModule,
-      "useCanConfigureModelWithUUID",
-    ).mockReturnValue(false);
     state = rootStateFactory.withGeneralConfig().build({
       juju: jujuStateFactory.build({
         models: {
@@ -344,10 +339,6 @@ describe("Models Index page", () => {
     });
 
     it("opens DestroyModelDialog when exactly one model is selected and button is clicked", async () => {
-      vi.spyOn(
-        useCanConfigureModelModule,
-        "useCanConfigureModelWithUUID",
-      ).mockReturnValue(true);
       renderComponent(<ModelsIndex />, { state });
       await userEvent.click(
         screen.getByRole("checkbox", { name: "Deselect abc123" }),
@@ -408,10 +399,6 @@ describe("Models Index page", () => {
     });
 
     it("dispatches selectModelsForDestruction action with correct fields for each selected model", async () => {
-      vi.spyOn(
-        useCanConfigureModelModule,
-        "useCanConfigureModelWithUUID",
-      ).mockReturnValue(true);
       const [store, actions] = createStore(state, { trackActions: true });
       renderComponent(<ModelsIndex />, { state, store });
       await userEvent.click(

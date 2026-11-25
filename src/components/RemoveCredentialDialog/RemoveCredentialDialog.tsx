@@ -14,8 +14,11 @@ import { getCloudTags, getRemoveCredential } from "store/juju/selectors";
 import { removeCredential } from "store/middleware/process";
 import userCredentialsMiddleware from "store/middleware/source/user-credentials";
 import { useAppDispatch, useAppSelector } from "store/store";
+import { FeatureFlags } from "types";
+import isFeatureFlagEnabled from "utils/isFeatureFlagEnabled";
 import { toastNotification } from "utils/toastNotification";
 
+import RemoveCredentialWithModelsDialog from "./RemoveCredentialWithModelsDialog";
 import { Label } from "./types";
 
 type Props = {
@@ -70,6 +73,20 @@ export default function RemoveCredentialDialog({
     );
     dispatch(removeCredential.run({ wsControllerURL, credentialTag }));
   };
+
+  if (
+    modelCount &&
+    isFeatureFlagEnabled(FeatureFlags.REMOVE_CREDENTIAL_WITH_MODELS)
+  ) {
+    return (
+      <RemoveCredentialWithModelsDialog
+        credentialTag={credentialTag}
+        credentialName={credentialName}
+        modelCount={modelCount}
+        closePortal={closePortal}
+      />
+    );
+  }
 
   if (modelCount) {
     return (

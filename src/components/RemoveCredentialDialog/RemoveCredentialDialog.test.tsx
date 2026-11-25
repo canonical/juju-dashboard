@@ -15,6 +15,7 @@ import {
 import { rootStateFactory } from "testing/factories/root";
 import { findNotificationByText } from "testing/queries/notifications";
 import { createStore, renderComponent } from "testing/utils";
+import { FeatureFlags } from "types";
 
 import RemoveCredentialDialog from "./RemoveCredentialDialog";
 import { Label } from "./types";
@@ -226,5 +227,36 @@ describe("RemoveCredentialDialog", () => {
     await userEvent.click(screen.getByRole("button", { name: Label.REMOVE }));
 
     expect(actions).toHaveLength(0);
+  });
+
+  describe("with the remove credential with models flag", () => {
+    beforeEach(() => {
+      localStorage.setItem(
+        "flags",
+        JSON.stringify([FeatureFlags.REMOVE_CREDENTIAL_WITH_MODELS]),
+      );
+    });
+
+    afterEach(() => {
+      localStorage.removeItem("flags");
+    });
+
+    it("shows the new dialog when the flag is on", () => {
+      renderComponent(
+        <RemoveCredentialDialog
+          credentialTag={TAG}
+          credentialName={NAME}
+          modelCount={2}
+          closePortal={vi.fn()}
+        />,
+        { state },
+      );
+      expect(
+        within(screen.getByRole("dialog", { name: TITLE })).getByRole(
+          "radiogroup",
+          { name: Label.PICK_OPTION },
+        ),
+      ).toBeInTheDocument();
+    });
   });
 });

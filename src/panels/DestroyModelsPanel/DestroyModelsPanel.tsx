@@ -4,7 +4,8 @@ import {
   Switch,
   usePortal,
 } from "@canonical/react-components";
-import { type FC, useState } from "react";
+import classNames from "classnames";
+import { type FC, useEffect, useRef, useState } from "react";
 
 import BulkDestroyModelDialog from "components/BulkDestroyModelDialog/BulkDestroyModelDialog";
 import DestroyModelDialog from "components/DestroyModelDialog";
@@ -35,9 +36,21 @@ const DestroyModelsPanel: FC = () => {
   // Empty models that were already reviewed before the auto-review toggle was switched on.
   const [manuallyReviewedEmptyModels, setManuallyReviewedEmptyModels] =
     useState<ModelSelectionParams[]>([]);
-  const [, , handleRemovePanelQueryParams] = usePanelQueryParams<{
+  const [panelQs, , handleRemovePanelQueryParams] = usePanelQueryParams<{
     panel: null | string;
-  }>({ panel: null });
+    credentialTag: null | string;
+  }>({ panel: null, credentialTag: null });
+  // Opened from the remove credential dialog, which needs the reviewed models.
+  const fromCredential = !!panelQs.credentialTag;
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // The remove credential dialog stays open, so take focus from it.
+    // preventScroll stops the page jumping while the panel is still sliding in.
+    if (fromCredential) {
+      panelRef.current?.querySelector("button")?.focus({ preventScroll: true });
+    }
+  }, [fromCredential]);
   const {
     openPortal,
     closePortal,
@@ -46,7 +59,9 @@ const DestroyModelsPanel: FC = () => {
   } = usePortal();
 
   const handleClose = (): void => {
-    dispatch(jujuActions.clearSelectedModelsForDestruction());
+    if (!fromCredential) {
+      dispatch(jujuActions.clearSelectedModelsForDestruction());
+    }
     handleRemovePanelQueryParams();
   };
 
@@ -114,11 +129,17 @@ const DestroyModelsPanel: FC = () => {
       )}
       <Panel
         onRemovePanelQueryParams={handleClose}
-        checkCanClose={() => !showDestroyDialog}
+        ref={panelRef}
+        checkCanClose={(event) =>
+          !showDestroyDialog &&
+          !(event.target as HTMLElement).closest(".prevent-panel-close")
+        }
         title={`Review ${selectedModels.length} ${modelWord}`}
         width="unset"
         contentClassName="no-indent u-no-padding--bottom"
-        className="destroy-models-panel"
+        className={classNames("destroy-models-panel", {
+          "destroy-models-panel--over-modal": fromCredential,
+        })}
         drawer={
           <div className="destroy-models-panel__actions">
             <div className="u-align--left">
@@ -134,15 +155,25 @@ const DestroyModelsPanel: FC = () => {
               >
                 {Label.CANCEL}
               </Button>
-              <Button
-                appearance="negative"
-                className="u-no-margin--bottom"
-                type="submit"
-                disabled={destroyable.length === 0}
-                onClick={openPortal}
-              >
-                {Label.COMPLETE_REVIEW_DESTROY}
-              </Button>
+              {fromCredential ? (
+                <Button
+                  className="u-no-margin--bottom"
+                  type="button"
+                  onClick={handleClose}
+                >
+                  {Label.COMPLETE_REVIEW}
+                </Button>
+              ) : (
+                <Button
+                  appearance="negative"
+                  className="u-no-margin--bottom"
+                  type="submit"
+                  disabled={destroyable.length === 0}
+                  onClick={openPortal}
+                >
+                  {Label.COMPLETE_REVIEW_DESTROY}
+                </Button>
+              )}
             </span>
           </div>
         }
@@ -177,6 +208,7 @@ const DestroyModelsPanel: FC = () => {
               <AccordionContent
                 modelUUID={modelUUID}
                 destructionData={destructionData[modelUUID]}
+                canSkip={!fromCredential}
                 onModelReviewed={() => {
                   const nextIndex = index + 1;
                   setExpandedKey(

@@ -1,17 +1,28 @@
-import { act, screen } from "@testing-library/react";
+import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { Label as CredentialActionsLabel } from "components/CredentialActions/types";
 import { LoadingSpinnerTestId } from "components/LoadingSpinner";
+import { RemoveCredentialDialogLabel } from "components/RemoveCredentialDialog";
+import { Label as AccordionLabel } from "panels/DestroyModelsPanel/AccordionContent/types";
+import { Label as PanelLabel } from "panels/DestroyModelsPanel/types";
+import Panels from "panels/Panels";
 import { actions as jujuActions } from "store/juju";
 import type { RootState } from "store/store";
 import { configFactory, generalStateFactory } from "testing/factories/general";
+import { modelStatusInfoFactory } from "testing/factories/juju/ClientV8";
+import { modelInfoFactory } from "testing/factories/juju/ModelManagerV11";
 import {
   cloudInfoStateFactory,
+  credentialContentsStateFactory,
   jujuStateFactory,
+  modelDataFactory,
+  modelListInfoFactory,
   userCredentialsStateFactory,
 } from "testing/factories/juju/juju";
 import { rootStateFactory } from "testing/factories/root";
 import { createStore, renderComponent } from "testing/utils";
+import { FeatureFlags } from "types";
 import { externalURLs } from "urls";
 
 import CredentialsIndex from "./CredentialsIndex";
@@ -303,5 +314,103 @@ describe("CredentialsIndex", () => {
 
     const button = screen.getByRole("button", { name: Label.ADD_CREDENTIAL });
     expect(button).toHaveAttribute("aria-disabled", "true");
+  });
+
+  describe("removing a credential that is in use", () => {
+    beforeEach(() => {
+      localStorage.setItem(
+        "flags",
+        JSON.stringify([FeatureFlags.REMOVE_CREDENTIAL_WITH_MODELS]),
+      );
+      state.juju.credentialContents = credentialContentsStateFactory.build({
+        contents: {
+          [AWS_TAG]: {
+            result: {
+              content: {
+                "auth-type": "access-key",
+                cloud: "aws",
+                name: "default",
+              },
+              models: [{ model: "model1", access: "admin" }],
+            },
+          },
+        },
+      });
+      state.juju.modelData = {
+        abc123: modelDataFactory.build({
+          uuid: "abc123",
+          model: modelStatusInfoFactory.build({ name: "model1" }),
+          info: modelInfoFactory.build({ "cloud-credential-tag": AWS_TAG }),
+        }),
+      };
+      state.juju.models = {
+        abc123: modelListInfoFactory.build({
+          uuid: "abc123",
+          canConfigure: true,
+        }),
+      };
+    });
+
+    afterEach(() => {
+      localStorage.removeItem("flags");
+    });
+
+    it("keeps the dialog open whatever closes the review panel", async () => {
+      const { router } = renderComponent(
+        <>
+          <CredentialsIndex />
+          <Panels />
+        </>,
+        { state },
+      );
+      const panelIsOpen = (): boolean =>
+        new URLSearchParams(router.state.location.search).get("panel") ===
+        "destroy-models";
+      await userEvent.click(
+        within(screen.getByRole("row", { name: /default/ })).getByRole(
+          "button",
+          { name: CredentialActionsLabel.TOGGLE },
+        ),
+      );
+      await userEvent.click(
+        screen.getByRole("menuitem", { name: CredentialActionsLabel.REMOVE }),
+      );
+      const dialog = screen.getByRole("dialog", {
+        name: "Remove credential default",
+      });
+      await userEvent.click(
+        within(dialog).getByRole("button", { name: "Review 1 model" }),
+      );
+      const panel = screen.getByRole("dialog", { name: "Review 1 model" });
+      await userEvent.click(
+        within(panel).getByRole("button", {
+          name: AccordionLabel.MARK_REVIEWED,
+        }),
+      );
+      await userEvent.click(
+        within(panel).getByRole("button", { name: PanelLabel.CANCEL }),
+      );
+      expect(panelIsOpen()).toBe(false);
+      expect(dialog).toBeInTheDocument();
+      await userEvent.click(
+        within(dialog).getByRole("button", { name: "1/1 Reviewed" }),
+      );
+      await userEvent.click(within(dialog).getByText(/You cannot remove/));
+      expect(panelIsOpen()).toBe(true);
+      expect(dialog).toBeInTheDocument();
+      await userEvent.click(
+        within(dialog).getByRole("button", {
+          name: RemoveCredentialDialogLabel.CANCEL,
+        }),
+      );
+      expect(panelIsOpen()).toBe(false);
+      expect(dialog).toBeInTheDocument();
+      await userEvent.click(
+        within(dialog).getByRole("button", {
+          name: RemoveCredentialDialogLabel.CANCEL,
+        }),
+      );
+      expect(dialog).not.toBeInTheDocument();
+    });
   });
 });

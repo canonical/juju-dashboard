@@ -46,6 +46,7 @@ export const isSpecificAction = <A extends Action>(
 
 export enum FeatureFlags {
   REBAC = "rebac",
+  REMOVE_CREDENTIAL_WITH_MODELS = "remove-credential-with-models",
 }
 
 export type Nullable<T> = {

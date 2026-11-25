@@ -582,6 +582,17 @@ describe("ModelActions", () => {
     });
 
     it("dispatches setModelCanConfigure with user's permission to configure", async () => {
+      state.juju.rebac.allowed.push(
+        rebacAllowedFactory.build({
+          tuple: {
+            object: "user-eggman@external",
+            relation: JIMMRelation.WRITER,
+            target_object: "model-abc123",
+          },
+          allowed: false,
+          loaded: true,
+        }),
+      );
       const [store, actions] = createStore(state, { trackActions: true });
       renderComponent(
         <ModelActions

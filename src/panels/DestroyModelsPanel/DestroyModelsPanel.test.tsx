@@ -336,4 +336,37 @@ describe("DestroyModelsPanel", () => {
     );
     expect(screen.getByTestId(BulkDestroyTestId.DIALOG)).toBeInTheDocument();
   });
+
+  describe("from the remove credential dialog", () => {
+    const url =
+      "/?panel=destroy-models&credentialTag=cloudcred-aws_admin_default";
+
+    beforeEach(() => {
+      state.juju.modelsSelectedForDestruction[0].skipped = false;
+      state.juju.modelsSelectedForDestruction[0].destroyBlockedReason = null;
+    });
+
+    it("only allows reviewing and returns to the dialog with the review kept", async () => {
+      const { router, store } = renderComponent(<DestroyModelsPanel />, {
+        state,
+        url,
+      });
+      expect(
+        screen.queryByRole("button", { name: AccordionLabel.SKIP_MODEL }),
+      ).not.toBeInTheDocument();
+      await userEvent.click(
+        screen.getByRole("button", { name: AccordionLabel.MARK_REVIEWED }),
+      );
+      expect(
+        screen.queryByRole("button", { name: Label.COMPLETE_REVIEW_DESTROY }),
+      ).not.toBeInTheDocument();
+      await userEvent.click(
+        screen.getByRole("button", { name: Label.COMPLETE_REVIEW }),
+      );
+      expect(router.state.location.search).toBe("");
+      expect(
+        store.getState().juju.modelsSelectedForDestruction[0].reviewed,
+      ).toBe(true);
+    });
+  });
 });

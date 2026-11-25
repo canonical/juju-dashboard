@@ -7,26 +7,25 @@ import {
   usePortal,
 } from "@canonical/react-components";
 import type { ReactNode } from "react";
-import { useEffect, useState, type FC } from "react";
+import { useState, type FC } from "react";
 import { Link } from "react-router";
 
 import DestroyModelDialog from "components/DestroyModelDialog";
 import useCanAccessReBACAdmin from "hooks/useCanAccessReBACAdmin";
-import { useCanConfigureModelWithUUID } from "hooks/useCanConfigureModel";
+import { useSyncModelCanConfigure } from "hooks/useCanConfigureModel";
 import useModelMigrationData from "hooks/useModelMigrationData";
 import useModelStatus from "hooks/useModelStatus";
 import type { SetParams } from "hooks/useQueryParams";
 import { useQueryParams } from "hooks/useQueryParams";
 import { useIsJIMMAdmin } from "juju/api-hooks/permissions";
-import { getIsJuju, getWSControllerURL } from "store/general/selectors";
-import { actions as jujuActions } from "store/juju";
+import { getIsJuju } from "store/general/selectors";
 import {
   getModelUpgradeDataLoaded,
   getModelUpgradeVersions,
   getHighestSupportedVersion,
   getNextSupportedVersion,
 } from "store/juju/selectors";
-import { useAppDispatch, useAppSelector } from "store/store";
+import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import { rebacURLS } from "urls";
 
@@ -153,8 +152,7 @@ const ModelActions: FC<Props> = ({
     panel: null,
     qualifier: null,
   });
-  const dispatch = useAppDispatch();
-  const canConfigureModel = useCanConfigureModelWithUUID(false, modelUUID);
+  const canConfigureModel = useSyncModelCanConfigure(modelUUID);
   const modelStatusData = useModelStatus(modelUUID);
   const isController = modelStatusData?.info?.["is-controller"];
   const isJuju = useAppSelector(getIsJuju);
@@ -181,19 +179,6 @@ const ModelActions: FC<Props> = ({
     Portal,
   } = usePortal();
   useModelMigrationData(modelName, qualifier, fetchUpgrades);
-  const wsControllerURL = useAppSelector(getWSControllerURL);
-
-  useEffect(() => {
-    if (wsControllerURL) {
-      dispatch(
-        jujuActions.setModelCanConfigure({
-          modelUUID,
-          canConfigure: canConfigureModel,
-          wsControllerURL,
-        }),
-      );
-    }
-  }, [dispatch, modelUUID, canConfigureModel, wsControllerURL]);
 
   return (
     <>

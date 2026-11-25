@@ -20,3 +20,8 @@
     }
   }
 }
+
+// Sits above the remove credential dialog's overlay, which stays open beside it.
+.l-aside.destroy-models-panel--over-modal {
+  z-index: z("zelda");
+}

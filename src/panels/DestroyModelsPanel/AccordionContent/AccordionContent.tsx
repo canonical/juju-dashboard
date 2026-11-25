@@ -133,12 +133,14 @@ type Props = {
   modelUUID: string;
   destructionData: ModelDestructionData;
   onModelReviewed?: () => void;
+  canSkip?: boolean;
 };
 
 const AccordionContent = ({
   modelUUID,
   destructionData,
   onModelReviewed,
+  canSkip = true,
 }: Props): JSX.Element => {
   const {
     hasStorage,
@@ -212,10 +214,12 @@ const AccordionContent = ({
       )}
       {!isDestroyBlocked ? (
         <span className="accordion-content__actions u-sv2--top">
-          <Button onClick={toggleSkipModel} appearance="secondary" hasIcon>
-            <Icon name={isSkipped ? "plus" : "minus"} />
-            <span>{isSkipped ? Label.ADD_MODEL : Label.SKIP_MODEL}</span>
-          </Button>
+          {canSkip ? (
+            <Button onClick={toggleSkipModel} appearance="secondary" hasIcon>
+              <Icon name={isSkipped ? "plus" : "minus"} />
+              <span>{isSkipped ? Label.ADD_MODEL : Label.SKIP_MODEL}</span>
+            </Button>
+          ) : null}
           {!isSkipped ? (
             <Button
               appearance="positive"

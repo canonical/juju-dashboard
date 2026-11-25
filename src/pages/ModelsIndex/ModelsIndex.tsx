@@ -42,14 +42,13 @@ import {
   hasModels,
 } from "store/juju/selectors";
 import { DestroyBlockedReason } from "store/juju/types";
-import { pluralize } from "store/juju/utils/models";
+import { getDestroyBlockedReason, pluralize } from "store/juju/utils/models";
 import { useAppDispatch, useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 import type { ModelsGroupedBy } from "urls";
 import urls, { externalURLs } from "urls";
 
 import { Label, TestId } from "./types";
-import { getDestroyBlockedReason } from "./utils";
 
 // spell-checker:words groupedby
 

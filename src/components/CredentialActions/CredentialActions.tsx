@@ -24,7 +24,10 @@ const CredentialActions: FC<Props> = ({
   credentialName,
   modelCount,
 }: Props) => {
-  const { openPortal, closePortal, isOpen, Portal } = usePortal();
+  const { openPortal, closePortal, isOpen, Portal } = usePortal({
+    closeOnOutsideClick: false,
+    closeOnEsc: false,
+  });
   const dispatch = useAppDispatch();
   const wsControllerURL = useAppSelector(getWSControllerURL);
 

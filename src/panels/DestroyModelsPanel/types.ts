@@ -5,4 +5,5 @@ export enum Label {
   COMPLETE_REVIEW_DESTROY = "Complete review & destroy",
   CANCEL = "Cancel",
   MARK_EMPTY_REVIEWED = "Mark empty models as reviewed",
+  COMPLETE_REVIEW = "Complete review",
 }
