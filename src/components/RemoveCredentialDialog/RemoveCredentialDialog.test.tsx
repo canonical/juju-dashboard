@@ -258,5 +258,29 @@ describe("RemoveCredentialDialog", () => {
         ),
       ).toBeInTheDocument();
     });
+
+    it("leaves the success toast to the listener", async () => {
+      state.juju.removeCredential[TAG] = {
+        running: false,
+        status: "initiated",
+        outcome: { result: undefined },
+      };
+      const closePortal = vi.fn();
+      renderComponent(
+        <RemoveCredentialDialog
+          credentialTag={TAG}
+          credentialName={NAME}
+          modelCount={2}
+          closePortal={closePortal}
+        />,
+        { state },
+      );
+      await waitFor(() => {
+        expect(closePortal).toHaveBeenCalledTimes(1);
+      });
+      expect(
+        screen.queryByTestId(ToastCardTestId.TOAST_CARD),
+      ).not.toBeInTheDocument();
+    });
   });
 });

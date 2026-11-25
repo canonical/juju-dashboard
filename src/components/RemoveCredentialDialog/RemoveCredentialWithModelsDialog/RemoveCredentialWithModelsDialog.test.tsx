@@ -1,7 +1,10 @@
+import { Label as ActionButtonLabel } from "@canonical/react-components/dist/components/ActionButton/ActionButton";
+import type { EnhancedStore, UnknownAction } from "@reduxjs/toolkit";
 import { act, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { JIMMRelation } from "juju/jimm/JIMMV4";
+import { Label as DestroyModelsLabel } from "panels/DestroyModelsPanel/types";
 import Panels from "panels/Panels";
 import { actions as jujuActions } from "store/juju";
 import { DestroyBlockedReason } from "store/juju/types";
@@ -354,6 +357,212 @@ describe("RemoveCredentialWithModelsDialog", () => {
     );
     await waitFor(() => {
       expect(reviewButton).toHaveFocus();
+    });
+  });
+
+  describe("removing the credential and its models", () => {
+    const MODELS = [
+      { modelUUID: "abc123", modelName: "model1" },
+      { modelUUID: "def456", modelName: "model2" },
+    ];
+
+    const renderDialog = (): [EnhancedStore<RootState>, UnknownAction[]] => {
+      const storeAndActions = createStore(state, { trackActions: true });
+      renderComponent(
+        <RemoveCredentialWithModelsDialog
+          credentialTag={TAG}
+          credentialName={NAME}
+          modelCount={2}
+          closePortal={vi.fn()}
+        />,
+        { state, store: storeAndActions[0] },
+      );
+      return storeAndActions;
+    };
+
+    const reviewAll = (): void => {
+      state.juju.modelsSelectedForDestruction = MODELS.map((model) =>
+        modelSelectionParamsFactory.build({ ...model, reviewed: true }),
+      );
+    };
+
+    const typeConfirmation = async (): Promise<void> => {
+      await userEvent.type(
+        screen.getByRole("textbox", {
+          name: 'To destroy the models above, enter "destroy 2 models".',
+        }),
+        "destroy 2 models",
+      );
+    };
+
+    const countActions = (actions: UnknownAction[], type: string): number =>
+      actions.filter((action) => action.type === type).length;
+
+    it("only allows removal when every model is reviewed and none is blocked", async () => {
+      reviewAll();
+      const [store] = renderDialog();
+      const removeButton = screen.getByRole("button", {
+        name: Label.REMOVE_WITH_MODELS,
+      });
+      expect(removeButton).toHaveAttribute("aria-disabled");
+      await typeConfirmation();
+      expect(removeButton).not.toHaveAttribute("aria-disabled");
+      act(() => {
+        store.dispatch(
+          jujuActions.selectModelsForDestruction({
+            models: [
+              modelSelectionParamsFactory.build({
+                ...MODELS[0],
+                reviewed: true,
+              }),
+              modelSelectionParamsFactory.build({
+                ...MODELS[1],
+                destroyBlockedReason: DestroyBlockedReason.NO_ACCESS,
+                skipped: true,
+              }),
+            ],
+            wsControllerURL: WS_CONTROLLER_URL,
+          }),
+        );
+      });
+      expect(await screen.findByText(Label.MODELS_BLOCKED)).toBeInTheDocument();
+      expect(
+        screen.getByText(`model2: ${DestroyModelsLabel.TOOLTIP_NO_ACCESS}`),
+      ).toBeInTheDocument();
+      expect(removeButton).toHaveAttribute("aria-disabled");
+    });
+
+    it("starts removing the credential and destroying its models", async () => {
+      reviewAll();
+      const [, actions] = renderDialog();
+      await typeConfirmation();
+      await userEvent.click(
+        screen.getByRole("button", { name: Label.REMOVE_WITH_MODELS }),
+      );
+      const startIndex = actions.findIndex(
+        (action) =>
+          action.type === jujuActions.removeCredentialWithModelsStart.type,
+      );
+      const destroyIndex = actions.findIndex(
+        (action) => action.type === jujuActions.destroyModels.type,
+      );
+      expect(actions[startIndex]).toMatchObject(
+        jujuActions.removeCredentialWithModelsStart({
+          credentialTag: TAG,
+          credentialName: NAME,
+          cloudTags: [],
+          models: MODELS,
+          wsControllerURL: WS_CONTROLLER_URL,
+        }),
+      );
+      expect(actions[destroyIndex]).toMatchObject(
+        jujuActions.destroyModels({
+          models: MODELS.map((model) => ({
+            "model-tag": `model-${model.modelUUID}`,
+            ...model,
+          })),
+          wsControllerURL: WS_CONTROLLER_URL,
+        }),
+      );
+      expect(startIndex).toBeLessThan(destroyIndex);
+      expect(
+        await screen.findByRole("button", { name: "2/2 Reviewed" }),
+      ).toHaveClass("p-button--positive");
+      expect(
+        screen.getByRole("textbox", {
+          name: 'To destroy the models above, enter "destroy 2 models".',
+        }),
+      ).toBeDisabled();
+    });
+
+    it("lists the models that failed to destroy and retries only those", async () => {
+      state.juju.removeCredentialWithModels[TAG] = {
+        status: "failed",
+        models: MODELS,
+        failedModels: { abc123: "boom" },
+      };
+      const [, actions] = renderDialog();
+      expect(screen.getByText(Label.DESTROY_FAILED)).toBeInTheDocument();
+      expect(screen.getByText("model1: boom")).toBeInTheDocument();
+      await userEvent.click(
+        screen.getByRole("button", { name: Label.REMOVE_WITH_MODELS }),
+      );
+      expect(
+        actions.find(
+          (action) =>
+            action.type === jujuActions.removeCredentialWithModelsStart.type,
+        ),
+      ).toMatchObject({ payload: { models: MODELS } });
+      expect(
+        actions.find(
+          (action) => action.type === jujuActions.destroyModels.type,
+        ),
+      ).toMatchObject({
+        payload: {
+          models: [{ "model-tag": "model-abc123", modelUUID: "abc123" }],
+        },
+      });
+    });
+
+    it("says when destroying the models takes too long", () => {
+      state.juju.removeCredentialWithModels[TAG] = {
+        status: "timedOut",
+        models: MODELS,
+        failedModels: {},
+      };
+      renderDialog();
+      expect(screen.getByText(Label.DESTROY_TIMED_OUT)).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "2/2 Reviewed" }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: Label.REMOVE_WITH_MODELS }),
+      ).not.toHaveAttribute("aria-disabled");
+    });
+
+    it("retries only the removal when it was refused", async () => {
+      state.juju.removeCredentialWithModels[TAG] = {
+        status: "removing",
+        models: MODELS,
+        failedModels: {},
+      };
+      // The removal's progress comes from the existing removeCredential state.
+      state.juju.removeCredential[TAG] = {
+        running: true,
+        status: "pending",
+        outcome: null,
+      };
+      state.juju.models = {};
+      const [store, actions] = renderDialog();
+      expect(
+        screen.getByRole("button", { name: ActionButtonLabel.WAITING }),
+      ).toHaveAttribute("aria-disabled");
+      act(() => {
+        store.dispatch(
+          jujuActions.setRemoveCredentialOutcome({
+            credentialTag: TAG,
+            outcome: { error: { message: "still in use", source: null } },
+            wsControllerURL: WS_CONTROLLER_URL,
+          }),
+        );
+      });
+      act(() => {
+        store.dispatch(
+          jujuActions.setRemoveCredentialRunning({
+            credentialTag: TAG,
+            running: false,
+            wsControllerURL: WS_CONTROLLER_URL,
+          }),
+        );
+      });
+      expect(await screen.findByText("still in use")).toBeInTheDocument();
+      await userEvent.click(
+        await screen.findByRole("button", { name: Label.REMOVE_WITH_MODELS }),
+      );
+      expect(
+        countActions(actions, jujuActions.removeCredentialWithModelsStart.type),
+      ).toBe(1);
+      expect(countActions(actions, jujuActions.destroyModels.type)).toBe(0);
     });
   });
 });

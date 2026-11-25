@@ -1563,6 +1563,12 @@ export const getRemoveCredential = createSelector(
     },
 );
 
+export const getRemoveCredentialWithModels = createSelector(
+  [slice, (_state: RootState, credentialTag: string): string => credentialTag],
+  (state, credentialTag) =>
+    state.removeCredentialWithModels[credentialTag] ?? null,
+);
+
 export const getHighestSupportedVersion = createSelector(
   [getSupportedJujuVersions],
   (versions) =>

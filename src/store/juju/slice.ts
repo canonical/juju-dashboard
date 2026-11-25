@@ -38,6 +38,7 @@ import type {
   AddCredentialEntry,
   BlockEntry,
   RemoveCredentialEntry,
+  RemoveCredentialWithModelsEntry,
   ModelDestructionParams,
   ModelSelectionParams,
   CredentialContentsState,
@@ -180,6 +181,7 @@ const slice = createSlice({
     },
     blockState: {},
     removeCredential: {},
+    removeCredentialWithModels: {},
     addCredentialState: {},
   } as JujuState,
   reducers: {
@@ -303,6 +305,7 @@ const slice = createSlice({
       };
       state.blockState = {};
       state.removeCredential = {};
+      state.removeCredentialWithModels = {};
       state.addCredentialState = {};
     },
     setModelCanConfigure: (
@@ -1088,6 +1091,48 @@ const slice = createSlice({
       action: PayloadAction<{ credentialTag: string } & WsControllerURLParam>,
     ) => {
       delete state.removeCredential[action.payload.credentialTag];
+    },
+    removeCredentialWithModelsStart: (
+      state,
+      action: PayloadAction<
+        {
+          credentialTag: string;
+          credentialName: string;
+          cloudTags: string[];
+          models: RemoveCredentialWithModelsEntry["models"];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      state.removeCredentialWithModels[action.payload.credentialTag] = {
+        status: "destroying",
+        models: action.payload.models,
+        failedModels: {},
+      };
+    },
+    setRemoveCredentialWithModelsStatus: (
+      state,
+      action: PayloadAction<
+        {
+          credentialTag: string;
+          status: RemoveCredentialWithModelsEntry["status"];
+          failedModels?: RemoveCredentialWithModelsEntry["failedModels"];
+        } & WsControllerURLParam
+      >,
+    ) => {
+      const entry =
+        state.removeCredentialWithModels[action.payload.credentialTag];
+      if (entry) {
+        entry.status = action.payload.status;
+        if (action.payload.failedModels) {
+          entry.failedModels = action.payload.failedModels;
+        }
+      }
+    },
+    clearRemoveCredentialWithModels: (
+      state,
+      action: PayloadAction<{ credentialTag: string } & WsControllerURLParam>,
+    ) => {
+      delete state.removeCredentialWithModels[action.payload.credentialTag];
     },
     setAddCredentialRunning: (
       state,

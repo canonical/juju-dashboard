@@ -41,10 +41,17 @@ export default function RemoveCredentialDialog({
     getRemoveCredential(state, credentialTag),
   );
   const succeeded = !!outcome && "result" in outcome;
+  const withModels =
+    !!modelCount &&
+    isFeatureFlagEnabled(FeatureFlags.REMOVE_CREDENTIAL_WITH_MODELS);
 
   useEffect(() => {
     if (succeeded) {
       closePortal();
+      if (withModels) {
+        // The listener that removed the credential shows the toast and refresh.
+        return;
+      }
       toastNotification(`Credential ${credentialName} removed`, "positive");
       if (wsControllerURL) {
         dispatch(
@@ -57,6 +64,7 @@ export default function RemoveCredentialDialog({
     }
   }, [
     succeeded,
+    withModels,
     closePortal,
     credentialName,
     dispatch,
@@ -74,10 +82,7 @@ export default function RemoveCredentialDialog({
     dispatch(removeCredential.run({ wsControllerURL, credentialTag }));
   };
 
-  if (
-    modelCount &&
-    isFeatureFlagEnabled(FeatureFlags.REMOVE_CREDENTIAL_WITH_MODELS)
-  ) {
+  if (withModels && modelCount) {
     return (
       <RemoveCredentialWithModelsDialog
         credentialTag={credentialTag}

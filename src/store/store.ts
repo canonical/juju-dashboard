@@ -11,6 +11,7 @@ import { modelPollerMiddleware } from "store/middleware/model-poller";
 import { notificationsMiddleware } from "store/middleware/notifications";
 import { logger } from "utils/logger";
 
+import { addRemoveCredentialWithModelsListener } from "./juju/listeners";
 import { listenerMiddleware } from "./listenerMiddleware";
 import processMiddleware from "./middleware/process";
 import createSourceMiddleware from "./middleware/source";
@@ -58,6 +59,8 @@ const store = configureStore({
     juju: jujuReducer,
   }),
 });
+
+addRemoveCredentialWithModelsListener(listenerMiddleware.startListening);
 
 export type RootState = ReturnType<typeof store.getState>;
 

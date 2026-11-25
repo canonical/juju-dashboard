@@ -10,4 +10,7 @@ export enum Label {
   PICK_OPTION = "Pick one of the options to continue:",
   SET_NEW_CREDENTIAL = "Set new credential for models",
   DELETE_MODELS_AND_CREDENTIAL = "Delete models and credential",
+  MODELS_BLOCKED = "These models can't be destroyed, so the credential can't be removed:",
+  DESTROY_FAILED = "Not all models were destroyed, so the credential was not removed:",
+  DESTROY_TIMED_OUT = "The models are taking longer than expected to be destroyed. Try again later to remove the credential.",
 }

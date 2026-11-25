@@ -213,6 +213,17 @@ export type RemoveCredentialEntry = {
 
 export type RemoveCredentialState = Record<string, RemoveCredentialEntry>;
 
+export type RemoveCredentialWithModelsEntry = {
+  status: "destroying" | "failed" | "removing" | "timedOut";
+  models: { modelUUID: string; modelName: string }[];
+  failedModels: Record<string, string>;
+};
+
+export type RemoveCredentialWithModelsState = Record<
+  string,
+  RemoveCredentialWithModelsEntry
+>;
+
 export type AddCredentialEntry = {
   cloud: string;
   name: string;
@@ -289,5 +300,6 @@ export type JujuState = {
   addModelState: AddModelState;
   blockState: BlockState;
   removeCredential: RemoveCredentialState;
+  removeCredentialWithModels: RemoveCredentialWithModelsState;
   addCredentialState: AddCredentialState;
 };
