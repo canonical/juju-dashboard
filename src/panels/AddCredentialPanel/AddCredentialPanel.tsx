@@ -12,6 +12,7 @@ import { testId } from "testing/utils";
 import Fields from "./Fields/Fields";
 import type { FormFields } from "./Fields/types";
 import { Label, TestId } from "./types";
+import { EMPTY_FORM_FIELDS } from "./utils";
 
 const AddCredentialPanel: FC = () => {
   const formId = useId();
@@ -45,11 +46,7 @@ const AddCredentialPanel: FC = () => {
       width="unset"
     >
       <Formik<FormFields>
-        initialValues={{
-          name: "",
-          cloud: "",
-          region: "",
-        }}
+        initialValues={EMPTY_FORM_FIELDS}
         validateOnMount
         // Submit will be handled later
         onSubmit={(_values) => {

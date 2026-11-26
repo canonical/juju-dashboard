@@ -6,10 +6,25 @@ export enum Label {
   CLOUD_DETAILS = "Cloud Details",
 }
 
+export enum FieldName {
+  NAME = "name",
+  CLOUD = "cloud",
+  REGION = "region",
+  AUTH_TYPE = "authType",
+  AUTH_ATTRS = "authAttrs",
+}
+
 export type FormFields = {
-  name: string;
-  cloud: string;
-  region: string;
+  [FieldName.NAME]: string;
+  [FieldName.CLOUD]: string;
+  [FieldName.REGION]: string;
+  [FieldName.AUTH_TYPE]: string;
+  [FieldName.AUTH_ATTRS]: Record<string, string>;
+};
+
+export type SelectOption = {
+  label: string;
+  value: string;
 };
 
 export type AuthTypeField = {
