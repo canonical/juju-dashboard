@@ -2,9 +2,13 @@ export enum Label {
   CLOUD = "Cloud",
   NAME = "Credential name",
   REGION = "Region (optional)",
+  AUTH_TYPE = "Auth type",
   CREDENTIAL_DETAILS = "Credential Details",
   CLOUD_DETAILS = "Cloud Details",
+  AUTH_DETAILS = "Authentication Details",
 }
+
+export const EMPTY_AUTH_TYPE = "empty";
 
 export enum FieldName {
   NAME = "name",

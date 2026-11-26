@@ -21,3 +21,7 @@ export const BOOLEAN_OPTIONS = [
  * Valid grouping options for model table. See `ModelsIndex`.
  */
 export const VALID_MODEL_GROUPINGS = ["status", "cloud", "owner"] as const;
+
+// The maximum size (in bytes) of a file that can be read into a form field.
+// This is 100 KB.
+export const MAX_FILE_SIZE = 100 * 1024;
