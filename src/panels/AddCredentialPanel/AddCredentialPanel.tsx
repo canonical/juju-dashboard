@@ -1,27 +1,28 @@
 import { ActionButton, Button } from "@canonical/react-components";
 import { Formik } from "formik";
 import type { FC } from "react";
-import { useId, useState } from "react";
-import * as Yup from "yup";
+import { useId, useMemo, useState } from "react";
 
 import FormikFormData from "components/FormikFormData";
 import Panel from "components/Panel";
 import { usePanelQueryParams } from "panels/hooks";
+import { getCloudInfoState } from "store/juju/selectors";
+import { useAppSelector } from "store/store";
 import { testId } from "testing/utils";
 
 import Fields from "./Fields/Fields";
 import type { FormFields } from "./Fields/types";
 import { Label, TestId } from "./types";
-import { EMPTY_FORM_FIELDS } from "./utils";
+import { EMPTY_FORM_FIELDS, getValidationSchema } from "./utils";
 
 const AddCredentialPanel: FC = () => {
   const formId = useId();
+  const { clouds } = useAppSelector(getCloudInfoState);
+  const validationSchema = useMemo(() => getValidationSchema(clouds), [clouds]);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [, , handleRemovePanelQueryParams] = usePanelQueryParams<{
     panel: null | string;
-  }>({
-    panel: null,
-  });
+  }>({ panel: null });
 
   return (
     <Panel
@@ -48,14 +49,11 @@ const AddCredentialPanel: FC = () => {
       <Formik<FormFields>
         initialValues={EMPTY_FORM_FIELDS}
         validateOnMount
+        validationSchema={validationSchema}
         // Submit will be handled later
         onSubmit={(_values) => {
           handleRemovePanelQueryParams();
         }}
-        validationSchema={Yup.object().shape({
-          name: Yup.string().required("Required"),
-          cloud: Yup.string().required("Required"),
-        })}
       >
         <FormikFormData onValidate={setIsValid} id={formId}>
           <Fields />
