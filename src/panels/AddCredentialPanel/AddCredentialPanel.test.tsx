@@ -1,4 +1,4 @@
-import { act, fireEvent, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { RootState } from "store/store";
@@ -93,9 +93,6 @@ describe("AddCredentialPanel", () => {
       "my-credential",
     );
     await userEvent.selectOptions(cloudDropdown, "cloud-aws");
-
-    // Vanilla doesn't display validation until the field loses focus.
-    await act(() => fireEvent.blur(cloudDropdown));
 
     // The region field and submit button should now be enabled
     expect(regionDropdown).not.toBeDisabled();
