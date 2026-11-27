@@ -588,6 +588,17 @@ export const getModelCredential = createSelector(
   (model) => extractCredentialName(model?.info?.["cloud-credential-tag"]).name,
 );
 
+export const getModelsByCredential = createSelector(
+  [
+    getModelData,
+    (_state: RootState, credentialTag: string): string => credentialTag,
+  ],
+  (modelData, credentialTag) =>
+    Object.values(modelData)
+      .filter(({ info }) => info?.["cloud-credential-tag"] === credentialTag)
+      .map(({ uuid, model }) => ({ modelUUID: uuid, modelName: model.name })),
+);
+
 export const getModelAccess = createSelector(
   [
     getModelByUUID,

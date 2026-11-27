@@ -110,6 +110,7 @@ import {
   getFullModelName,
   getControllersCount,
   getModelCredential,
+  getModelsByCredential,
   getSecretsErrors,
   getSecretsLoaded,
   getSecretsLoading,
@@ -2762,6 +2763,57 @@ describe("selectors", () => {
       }),
     });
     expect(getCommandHistory(state)).toStrictEqual(commandHistory);
+  });
+});
+
+describe("getModelsByCredential", () => {
+  it("returns the UUID and name of each model using the credential", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({
+            uuid: "abc123",
+            model: modelStatusInfoFactory.build({ name: "model1" }),
+            info: modelManagerV11ModelInfoFactory.build({
+              "cloud-credential-tag": "cloudcred-aws_admin_default",
+            }),
+          }),
+          def456: modelDataFactory.build({
+            uuid: "def456",
+            model: modelStatusInfoFactory.build({ name: "model2" }),
+            info: modelManagerV11ModelInfoFactory.build({
+              "cloud-credential-tag": "cloudcred-aws_admin_default",
+            }),
+          }),
+          ghi789: modelDataFactory.build({
+            uuid: "ghi789",
+            model: modelStatusInfoFactory.build({ name: "model3" }),
+            info: modelManagerV11ModelInfoFactory.build({
+              "cloud-credential-tag": "cloudcred-aws_admin_other",
+            }),
+          }),
+        },
+      }),
+    });
+    expect(
+      getModelsByCredential(state, "cloudcred-aws_admin_default"),
+    ).toStrictEqual([
+      { modelUUID: "abc123", modelName: "model1" },
+      { modelUUID: "def456", modelName: "model2" },
+    ]);
+  });
+
+  it("excludes models whose info has not loaded", () => {
+    const state = rootStateFactory.build({
+      juju: jujuStateFactory.build({
+        modelData: {
+          abc123: modelDataFactory.build({ uuid: "abc123", info: undefined }),
+        },
+      }),
+    });
+    expect(
+      getModelsByCredential(state, "cloudcred-aws_admin_default"),
+    ).toStrictEqual([]);
   });
 });
 
