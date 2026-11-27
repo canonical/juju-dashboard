@@ -114,11 +114,6 @@ describe("getAuthTypeFields", () => {
       cloudType: "",
       authType: "access-key",
     },
-    {
-      description: "an undefined cloud type",
-      cloudType: undefined,
-      authType: "access-key",
-    },
     { description: "an empty auth type", cloudType: "ec2", authType: "" },
     {
       description: "an unknown cloud type",

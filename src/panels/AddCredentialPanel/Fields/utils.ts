@@ -49,7 +49,7 @@ export const toAuthTypeOptions = (
 };
 
 export const getAuthTypeFields = (
-  cloudType: string | undefined,
+  cloudType: string,
   authType: string,
 ): AuthTypeField[] => {
   if (!cloudType || !authType) {

@@ -32,7 +32,7 @@ export const EMPTY_FORM_FIELDS: FormFields = {
  * Returns a Yup schema shape that can be spread into a larger schema.
  */
 export const getAuthFieldsValidationSchema = (
-  cloudType: string | undefined,
+  cloudType: string,
   authType: string,
 ): Record<string, Yup.StringSchema> => {
   const fields = getAuthTypeFields(cloudType, authType);
@@ -81,16 +81,19 @@ export const getAuthFieldsValidationSchema = (
 export const getValidationSchema = (
   clouds: CloudState["clouds"],
 ): Yup.Lazy<Yup.AnyObject> =>
-  Yup.lazy((values: FormFields) =>
-    Yup.object({
+  Yup.lazy((values: FormFields) => {
+    const cloudType = clouds?.[values[FieldName.CLOUD]]?.type;
+    return Yup.object({
       [FieldName.NAME]: Yup.string().required("Required"),
       [FieldName.CLOUD]: Yup.string().required("Required"),
       [FieldName.AUTH_TYPE]: Yup.string().required("Required"),
       [FieldName.AUTH_ATTRS]: Yup.object(
-        getAuthFieldsValidationSchema(
-          clouds?.[values[FieldName.CLOUD]]?.type,
-          values[FieldName.AUTH_TYPE],
-        ),
+        cloudType
+          ? getAuthFieldsValidationSchema(
+              cloudType,
+              values[FieldName.AUTH_TYPE],
+            )
+          : {},
       ),
-    }),
-  );
+    });
+  });
