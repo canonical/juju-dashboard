@@ -21,6 +21,7 @@ const Fields = (): JSX.Element => {
   const { values, touched, setValues, setTouched } =
     useFormikContext<FormFields>();
   const { clouds } = useAppSelector(getCloudInfoState);
+  const cloudType = clouds?.[values.cloud]?.type;
 
   const cloudOptions = useMemo(() => toCloudOptions(clouds), [clouds]);
   const regionOptions = useMemo(
@@ -28,10 +29,9 @@ const Fields = (): JSX.Element => {
     [clouds, values.cloud],
   );
 
-  const authFields = getAuthTypeFields(
-    clouds?.[values.cloud]?.type,
-    values.authType,
-  );
+  const authFields = cloudType
+    ? getAuthTypeFields(cloudType, values.authType)
+    : [];
 
   return (
     <>
