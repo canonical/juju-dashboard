@@ -8,6 +8,29 @@ import type { AuthTypeSchema } from "./types";
  *   const schema = AUTH_TYPE_SCHEMAS["ec2"];
  *   const authTypes = Object.keys(schema.authTypes);          // dropdown options
  *   const fields = schema.authTypes["access-key"];             // form fields
+ *
+ * Auth types (and fields) that Juju supports but are intentionally omitted from the schemas below,
+ * and so are not offered in the dashboard:
+ *
+ * - EC2
+ *   - instance-role: set by the controller during bootstrap, never exposed to the user for setting.
+ * - Azure
+ *   - interactive: redirects the user to the browser to provide the same values that the only other
+ *     auth type for this cloud asks for.
+ * - GCE
+ *   - service-account: set by the controller during bootstrap, never exposed to the user for
+ *     setting.
+ * - Kubernetes
+ *   - certificate: legacy auth type, only kept in Juju to support credentials created with 2.9.
+ *   - oauth2withcert: legacy auth type, only kept in Juju to support credentials created with 2.9.
+ * - LXD
+ *   - interactive: the controller can't finalise a credential from a userpass/token yet
+ *     (https://github.com/juju/juju/issues/23932).
+ * - OCI
+ *   - httpsig "region" field: ignored at runtime as Juju moved region handling out of credentials.
+ * - OpenStack
+ *   - userpass "trust-id" field: only on Juju main, not in 4.0. It is mutually exclusive with other
+ *     fields in the auth type, so it is left out for now (see the TODO in the OpenStack schema).
  */
 export const AUTH_TYPE_SCHEMAS: Record<string, AuthTypeSchema> = {
   // ---------------------------------------------------------------------------

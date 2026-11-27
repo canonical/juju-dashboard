@@ -13,12 +13,20 @@ import {
 import { renderComponent } from "testing/utils";
 
 import Fields from "./Fields";
-import { Label, type FormFields } from "./types";
+import { FieldName, Label, type FormFields } from "./types";
 
 describe("AddCredentialPanel Fields", () => {
   let state: RootState;
+  let initialValues: FormFields;
 
   beforeEach(() => {
+    initialValues = {
+      [FieldName.NAME]: "",
+      [FieldName.CLOUD]: "",
+      [FieldName.REGION]: "",
+      [FieldName.AUTH_TYPE]: "",
+      [FieldName.AUTH_ATTRS]: {},
+    };
     state = rootStateFactory.build({
       general: generalStateFactory.build({
         config: configFactory.build({
@@ -50,10 +58,7 @@ describe("AddCredentialPanel Fields", () => {
 
   it("renders cloud options from cloud info", () => {
     renderComponent(
-      <Formik<FormFields>
-        initialValues={{ name: "", cloud: "", region: "" }}
-        onSubmit={vi.fn()}
-      >
+      <Formik<FormFields> initialValues={initialValues} onSubmit={vi.fn()}>
         <Fields />
       </Formik>,
       { state },
@@ -69,10 +74,7 @@ describe("AddCredentialPanel Fields", () => {
 
   it("disables region field when no cloud is selected", () => {
     renderComponent(
-      <Formik<FormFields>
-        initialValues={{ name: "", cloud: "", region: "" }}
-        onSubmit={vi.fn()}
-      >
+      <Formik<FormFields> initialValues={initialValues} onSubmit={vi.fn()}>
         <Fields />
       </Formik>,
       { state },
@@ -84,10 +86,7 @@ describe("AddCredentialPanel Fields", () => {
 
   it("populates region options when cloud is selected", async () => {
     renderComponent(
-      <Formik<FormFields>
-        initialValues={{ name: "", cloud: "", region: "" }}
-        onSubmit={vi.fn()}
-      >
+      <Formik<FormFields> initialValues={initialValues} onSubmit={vi.fn()}>
         <Fields />
       </Formik>,
       { state },
@@ -112,7 +111,11 @@ describe("AddCredentialPanel Fields", () => {
   it("clears region when cloud selection changes", async () => {
     renderComponent(
       <Formik<FormFields>
-        initialValues={{ name: "", cloud: "cloud-aws", region: "us-east-1" }}
+        initialValues={{
+          ...initialValues,
+          [FieldName.CLOUD]: "cloud-aws",
+          [FieldName.REGION]: "us-east-1",
+        }}
         onSubmit={vi.fn()}
       >
         <Fields />
@@ -137,10 +140,7 @@ describe("AddCredentialPanel Fields", () => {
 
   it("shows different regions for different clouds", async () => {
     renderComponent(
-      <Formik<FormFields>
-        initialValues={{ name: "", cloud: "", region: "" }}
-        onSubmit={vi.fn()}
-      >
+      <Formik<FormFields> initialValues={initialValues} onSubmit={vi.fn()}>
         <Fields />
       </Formik>,
       { state },
